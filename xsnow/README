@@ -21,5 +21,7 @@ For users of debian distro's: you can download the appropriate
   
   sudo dpkg -i xsnow_<version>_<arch>.deb
 
+Raspberry pi - Raspian users: choose the .deb with arch='armhf' .
+
 Have fun!
 
