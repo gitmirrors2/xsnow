@@ -19,7 +19,7 @@ xsnow will be installed in /usr/local/games.
 For users of debian distro's: you can download the appropriate 
 .deb file and install with:
   
-  sudo dpkg -i xsnow_<version>_<arch>.deb
+  sudo apt install ./xsnow_<version>_<arch>.deb
 
 Raspberry pi - Raspian users: choose the .deb with arch='armhf' .
 
