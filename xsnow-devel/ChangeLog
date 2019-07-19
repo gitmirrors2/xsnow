@@ -1,0 +1,88 @@
+version 2.0.8
+	some more debian stuff
+	add support for xfce desktop
+version 2.0.7
+	added some debian stuff
+version 2.05
+	Fixed issues when trees are not shown: snow was still
+	collecting on trees, snow was not visible after not-shown
+	tree. 
+
+version 2.04
+	Fixed bug in main.c: check for valid return value of 
+	FindWindow() in do_wupdate().
+
+Version 2.03
+	Fixed bug in main.c: only set transworkspace if usingtrans.
+
+Version 2.02
+	Snowing halted when a workspade before the snow workspace was
+	removed. Fixed by checking the workspace of SnowWin in do_wupdate().
+
+Solved in 2.01
+	tree-xpm's are mirrored randomly
+	flag -treeregion implemented
+	fluff on bottom in snow window when nokeepsnowonscreen
+	parametrize MAXONTREES
+	implement vintage
+	in fvwm: after minimize window, no snow is shown on the
+	  window when it is restored. 
+	Handle window that is visible on all workspaces
+	implement no snow when window disappears
+	implement nowplow
+	Try to snow on trees
+	plowing should be partial: only take snow away where Santa was: Won't
+	fix
+	stars are competing with fallen snow: let snow win: Won't fix
+	Create precise region from bitmap vintage tree
+	Implement nokeepsnowonwindows etc
+	when wind: make generated flakes at bottom cyclic
+	Solved strange behaviour with system monitor window
+	  and others: gedit, nautilus etc. on gnome desktop
+	  no problem on fvwm desktop
+	find automatically desired offsets
+	  determine size of decoration from a partial screendump ?
+	  use xwininfo to point to a gauge window ?
+	no rounding of edges of fallen snow at the bottom
+	automatically determine tree regions
+	create 'fuse': remove nearly all flakes when number is really too high
+	for testing purposes: color a region see do_testing()
+	read tree.xpm from ~/xsnow/pixmaps/tree.xpm if present
+	let Santa plough through fallensnow: do not redraw fallen snow
+	   if overlap with Santa
+	faster update of fallen snow after move of window
+	animation of blown fallen  snow
+	extra snow not cyclic
+	get rid of flake.x and y, use only rx and ry
+	animation of snow fallen from disappeared windows
+	gracefully exit when window where is snowing in, disappears
+	let trees not overlap
+	fallensnow surfaces often too jerky
+	round snow at the edges
+	animation of do_clean
+	let Santa be affected by strong wind
+	replace old wind by storm now and then
+	offsets for windows & bottom
+	wind is changing continuously
+	cyclic disappear, appear of flakes
+	Solve floating point exception when starting in too small
+	  window (oclock) (div by 0 in RandInt)
+	move to other workspace of a window: bad behaviour:
+	  snow stays on original workspace, window does no
+	  receive snow any more: see put correct workspace in fallensnow areas
+	  in xsnow.c
+	snow on windows: implemented
+	ctrl-c sometimes causes: cannot parse output of wmctrl: solved by
+	  letting wmctrl return -1 in case of problems
+
+2019-01
+	A few minor changes after 1.42:
+	changed timing loop
+	find Desktop in Gnome and KDE
+	can run in user-pointed window (-xwininfo)
+	added another kind of tree
+	added starts
+	added meteorite
+	changed algorithm for fallen snow
+	nosnowarea's
+	and some more ...

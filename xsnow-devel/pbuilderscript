@@ -1,0 +1,42 @@
+#!/bin/bash
+# script for pbuilder to create upload directory
+workdir=$1
+oldversion=$2
+newversion=$3
+if [ -z "$3" ] ; then
+   echo usage: pbuilderscript workdir oldversion newversion
+   exit 1
+fi
+cd "$workdir" || exit 1
+echo "working in `pwd`"
+export DEBEMAIL=wvermin@gmail.com
+export DEBFULLNAME="Willem Vermin"
+sed -i 's/^#//;s/$/ non-free/' /etc/apt/sources.list   # oncomment 2de regel
+apt update
+apt -y install apt-utils || exit 1
+apt -y install quilt devscripts debhelper autotools-dev equivs || exit 1
+apt source xsnow || exit 1
+cd xsnow-$oldversion || exit 1
+uupdate -v $newversion ../xsnow-$newversion.tar.gz || exit 1
+cd ../xsnow-$newversion
+if [ -d debian.upstream ] ; then
+   rm -r debian
+   mv debian.upstream debian || exit 1
+fi
+#apt -y install vim
+#echo dpkg-source ...
+#dpkg-source --commit
+echo quilt ...
+while quilt push; do quilt refresh; done
+#dch
+echo "---------- mk-build-deps -----------------"
+echo | mk-build-deps -i -r debian/control || exit 1
+#dpkg-source --commit
+#while quilt push; do quilt refresh; done
+echo "-------------- dpkg-buildpackage ------------"
+dpkg-buildpackage -us -uc
+cd ..
+echo "running lintian ..."
+lintian -i -I --show-overrides xsnow_$newversion-1_amd64.changes
+echo "end lintian"
+echo $0 done
