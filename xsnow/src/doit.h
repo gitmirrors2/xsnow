@@ -36,6 +36,7 @@
    DOIT_I(done)  \
    DOIT_I(windnow)  \
    DOIT_I(xwininfohandling) \
+   DOIT_I(showstats) \
    DOIT_L(window_id)  \
    DOIT
 
@@ -73,7 +74,6 @@
    DOIT_I(quiet) \
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
-   DOIT_I(showstats) \
    DOIT_I(snowflakesfactor) \
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(treefill) \

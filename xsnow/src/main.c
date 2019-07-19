@@ -1471,7 +1471,7 @@ void do_wupdate()
       flags.done = 1;
       return;
    };
-   // Take care of the situation that the transparent window changes fro workspace, 
+   // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
    WinInfo *winfo;
@@ -1488,7 +1488,11 @@ void do_wupdate()
    if(usingtrans && winfo)
    {
       //P("winfo: %p\n",(void*)winfo);
-      transworkspace = winfo->ws;
+      // in xfce and maybe others, workspace info is not to be found
+      // in our transparent window. winfo->ws will be 0, and we keep
+      // the same value for transworkspace.
+      if (winfo->ws)
+	 transworkspace = winfo->ws;
    }
 
    update_windows();
@@ -1813,8 +1817,9 @@ void updateSnowFlake(Snow *flake)
 		     {
 			// always erase flake, but repaint it on top of
 			// the correct position on fsnow (if !NoFluffy))
-			eraseSnowFlake(flake); // flake is removed from screen, but still available
-			if (!flags.NoFluffy)
+			if (flags.NoFluffy)
+			   eraseSnowFlake(flake); // flake is removed from screen, but still available
+			else
 			{
 			   // x-value: NewX;
 			   // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
@@ -2933,24 +2938,23 @@ int determine_window()
       {
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 char *desktopsession = getenv("DESKTOP_SESSION");
+	 if (!desktopsession)
+	    desktopsession = getenv("XDG_SESSION_DESKTOP");
+	 if (!desktopsession)
+	    desktopsession = getenv("XDG_CURRENT_DESKTOP");
+	 if (!desktopsession)
+	    desktopsession = getenv("GDMSESSION");
 	 if (desktopsession)
-	 {
 	    printf("Detected desktop session: %s\n",desktopsession);
-	 }
+	 else
+	    printf("Could not determine desktop session\n");
 	 int lxdefound = 0;
-	 int xfcefound = 0;
 	 if (desktopsession != NULL && !strncmp(desktopsession,"LXDE",4))
 	 {
 	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
 	    printf("LXDE session found, searching for window 'pcmanfm'\n");
 	 }
-	 else if (desktopsession != NULL && !strncmp(desktopsession,"xfce",4))
-	 {
-	    // somehow, snowing in a transparent window does not work in xfce
-	    xfcefound = FindWindowWithName("Desktop",&SnowWin,&SnowWinName);
-	    printf("XFCE session found, searching for window 'Desktop'\n");
-	 }
-	 if(lxdefound || xfcefound)
+	 if(lxdefound)
 	 {
 	    Usealpha  = 0;
 	    Isdesktop = 1;

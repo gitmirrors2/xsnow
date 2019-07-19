@@ -80,8 +80,8 @@ int GetWindows(WinInfo **windows, int *nwin)
    int i;
    WinInfo *w = (*windows);
    static Atom net_atom = 0, gtk_atom = 0;
-   if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
    if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
+   if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
    for (i=0; i<nitems; i++,w++)
    {
       Window root,child_return;
@@ -142,17 +142,19 @@ int GetWindows(WinInfo **windows, int *nwin)
       properties = 0;
       nitems = 0;
 
-      XGetWindowProperty(display, w->id, net_atom, 0, 4, False, 
+      // first try to get adjustments for _GTK_FRAME_EXTENTS
+      XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
-      int wintype = NET;
+      int wintype = GTK;
+      // if not succesfull, try _NET_FRAME_EXTENTS
       if (nitems != 4)
       {
 	 if(properties) XFree(properties);
 	 properties = 0;
-	 //printf("%d: trying gtk...\n",__LINE__);
-	 XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
+	 //printf("%d: trying net...\n",__LINE__);
+	 XGetWindowProperty(display, w->id, net_atom, 0, 4, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
-	 wintype = GTK;
+	 wintype = NET;
       }
       //printf("%d: nitems: %ld %ld %d\n",__LINE__,type,nitems,format);
       if(nitems == 4 && format == 32 && type) // adjust x,y,w,h of window

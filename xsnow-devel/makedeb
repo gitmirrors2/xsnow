@@ -21,9 +21,8 @@ cp $tar . || exit 1
 tar xf $tar || exit
 cd $dir || exit
 codename=`lsb_release -sc`
-echo compat before $codename: `cat debian/compat` `grep Standards-Version debian/control`
+rm -f debian/compat
 cp debian.$codename/* debian || exit
-echo compat after $codename: `cat debian/compat` `grep Standards-Version debian/control`
 #dh_make --yes -s -f $tar
 echo xxxxxxxxx dh_make
 dh_make --yes -s --createorig

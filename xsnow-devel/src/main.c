@@ -593,7 +593,6 @@ int main(int argc, char *argv[])
 /* ------------------------------------------------------------------ */ 
 #define TRANSSKIP \
    if (usingtrans && cworkspace != transworkspace) return
-//#define TRANSSKIP
 
 void do_santa()
 {
@@ -1818,8 +1817,9 @@ void updateSnowFlake(Snow *flake)
 		     {
 			// always erase flake, but repaint it on top of
 			// the correct position on fsnow (if !NoFluffy))
-			//eraseSnowFlake(flake); // flake is removed from screen, but still available
-			if (!flags.NoFluffy)
+			if (flags.NoFluffy)
+			   eraseSnowFlake(flake); // flake is removed from screen, but still available
+			else
 			{
 			   // x-value: NewX;
 			   // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
@@ -2938,10 +2938,16 @@ int determine_window()
       {
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 char *desktopsession = getenv("DESKTOP_SESSION");
+	 if (!desktopsession)
+	    desktopsession = getenv("XDG_SESSION_DESKTOP");
+	 if (!desktopsession)
+	    desktopsession = getenv("XDG_CURRENT_DESKTOP");
+	 if (!desktopsession)
+	    desktopsession = getenv("GDMSESSION");
 	 if (desktopsession)
-	 {
 	    printf("Detected desktop session: %s\n",desktopsession);
-	 }
+	 else
+	    printf("Could not determine desktop session\n");
 	 int lxdefound = 0;
 	 if (desktopsession != NULL && !strncmp(desktopsession,"LXDE",4))
 	 {
