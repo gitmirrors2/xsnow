@@ -7,7 +7,7 @@ xsnow (1:2.0.9-1) unstable; urgency=low
   * Changed non-free -> main
   * Bump debhelper compat level to 12.
 
- -- Willem Vermin <wvermin@gmail.com>  Sat, 20 Jul 2019 05:37:57 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Sat, 20 Jul 2019 05:40:39 +0200
 
 xsnow (1:1.42-9build1) bionic; urgency=high
 
