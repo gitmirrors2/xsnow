@@ -23,4 +23,4 @@ SUBDIRS = src
 EXTRA_DIST = bootstrap Changes getversion README.md \
 	     copyright.inc addcopyright.sh prevent-remakes \
 	     pbuilderscript makeupload debian dependencies \
-	     debian.disco debian.stretch debian.sid
+	     debian.disco debian.stretch debian.sid debian.tara
