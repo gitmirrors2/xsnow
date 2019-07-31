@@ -1477,10 +1477,10 @@ void do_wupdate()
    WinInfo *winfo;
    winfo = FindWindow(windows,nwindows,SnowWin);
 
-   //P("SnowWin: 0x%lx\n",SnowWin);
-   //P("current workspace: %d %d\n",cworkspace,RunCounter);
-   //printwindows(windows, nwindows);
-   //P("ws:%d\n",winfo->ws);
+   P("SnowWin: 0x%lx\n",SnowWin);
+   P("current workspace: %d %d\n",cworkspace,RunCounter);
+   printwindows(windows, nwindows);
+   P("ws:%d\n",winfo->ws);
 
    // check also on valid winfo: after toggling 'below'
    // winfo is nil sometimes
@@ -1535,9 +1535,10 @@ void update_windows()
 	 {
 	    // window found in windows, nut not in list of fallensnow,
 	    // add it, but not if we are snowing in this window (Desktop for example)
+	    // and also not if this window has y == 0
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(fsnow_first);
-	    if (w->id != SnowWin)
+	    if (w->id != SnowWin && w->y != 0)
 	       PushFallenSnow(&fsnow_first, w->id, w->ws, w->sticky,
 		     w->x+flags.offset_x, w->y+flags.offset_y, w->w+flags.offset_w, 
 		     flags.MaxWinSnowDepth); 
