@@ -1477,10 +1477,10 @@ void do_wupdate()
    WinInfo *winfo;
    winfo = FindWindow(windows,nwindows,SnowWin);
 
-   P("SnowWin: 0x%lx\n",SnowWin);
-   P("current workspace: %d %d\n",cworkspace,RunCounter);
-   printwindows(windows, nwindows);
-   P("ws:%d\n",winfo->ws);
+   //P("SnowWin: 0x%lx\n",SnowWin);
+   //P("current workspace: %d %d\n",cworkspace,RunCounter);
+   //printwindows(windows, nwindows);
+   //P("ws:%d\n",winfo->ws);
 
    // check also on valid winfo: after toggling 'below'
    // winfo is nil sometimes
