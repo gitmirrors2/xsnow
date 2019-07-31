@@ -115,6 +115,7 @@ static int        ontrees = 0;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019 also by Willem Vermin\n";
 static int      activate_clean = 0;  // trigger for do_clean
+static int      session_is_x11 = 0;
 
 // tree stuff
 static int      ntrees;                       // actual number of trees
@@ -244,6 +245,7 @@ ALARMALL
 double Delay[lastalarm];
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
 static int    blowoff(void);
+static void   check_x11(void);
 static void   clean_fallen_area(FallenSnow *fsnow, int x, int w);
 static void   clean_fallen(Window id);
 static void   ClearScreen(void);
@@ -309,7 +311,9 @@ static void thanks(void)
 int main(int argc, char *argv[])
 {
    int i;
+   printversion();
    init_flags();
+   check_x11();
    int rc = handleflags(argc, argv);
    switch(rc)
    {
@@ -325,7 +329,11 @@ int main(int argc, char *argv[])
 	 break;
    }
    gtk_init(&argc, &argv);
-   printversion();
+   if (!session_is_x11)
+   {
+      ui_error_x11(&argc, &argv);
+      exit(1);
+   }
    if (!flags.noconfig)
       writeflags();
    display = XOpenDisplay(flags.display_name);
@@ -3019,4 +3027,34 @@ int determine_window()
    if(flags.KDEbg)
       kdesetbg1(flags.bgcolor);
    return 1;
+}
+
+void check_x11()
+{
+   if (getenv("XSNOW_FORCE_RUN"))
+   {
+      printf("Xsnow will not check if this is a X11 environment, but assume it is.\n");
+      session_is_x11 = 1;
+   }
+   else
+   {
+      char *sessiontype = getenv("XDG_SESSION_TYPE");
+      if (sessiontype == 0)
+      {
+	 printf("Xsnow cannot determine session type, assume it is 'x11'\n");
+	 session_is_x11 = 1;
+      }
+      else if (strstr(sessiontype,"x11") || strstr(sessiontype,"X11"))
+      {
+	 printf("Xsnow detected session type is 'x11'\n");
+	 session_is_x11 = 1;
+      }
+   }
+
+   if (!session_is_x11)
+   {
+      printf("Alas! This not a X11 session, xsnow will probably bot run.\n");
+      printf("If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, eg:\n");
+      printf("   XSNOW_FORCE_RUN=1 xsnow\n");
+   }
 }

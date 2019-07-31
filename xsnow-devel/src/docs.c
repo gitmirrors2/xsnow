@@ -30,6 +30,18 @@
 static char *replace_all(const char *s, const char *needle, const char *rep);
 static void manout(const char*flag, const char*txt);
 static int doman;
+static void printdescription(void);
+
+void printdescription()
+{
+      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
+      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
+      printf("Xsnow depends on a X11 environment. This is checked by the value of\n");
+      printf("the environment variable XDG_SESSION_TYPE. If this does not exist or if\n");
+      printf("it contains the string 'x11' or 'X11', xsnow will run. Otherwize an\n");
+      printf("error message is produced and xsnow exits. Setting the environment variable\n");
+      printf("XSNOW_FORCE_RUN to some value will cause xsnow not to check for X11 but simply run.\n");
+}
 
 void docs_usage(int man)
 {
@@ -40,14 +52,15 @@ void docs_usage(int man)
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage\n");
       printf(".TH XSNOW \"6\" \"2019\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
+      printf(".\\\" Turn of hyphenation:\n");
+      printf(".hy 0\n");
       printf("xsnow \\- Snow and Santa on your Gnome desktop\n");
       printf(".SH SYNOPSIS\n");
       printf(".B xsnow\n");
       printf("[\\fIOPTION\\fR]...\n");
       printf(".PP\n");
       printf(".SH DESCRIPTION\n");
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
+      printdescription();
       printf(".PP\n"); 
       printf(".SS \"General options:\n");
    }
@@ -61,9 +74,7 @@ void docs_usage(int man)
       printf("xsnow ");
       printf("[OPTION...\n");
       printf("\n");
-      printf("DESCRIPTION\n");
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
+      printdescription();
       printf("\n"); 
       printf("General options:\n");
    }
