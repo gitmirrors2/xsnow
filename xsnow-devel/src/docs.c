@@ -36,11 +36,11 @@ void printdescription()
 {
       printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
       printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
-      printf("Xsnow depends on a X11 environment. This is checked by the value of\n");
-      printf("the environment variable XDG_SESSION_TYPE. If this does not exist or if\n");
-      printf("it contains the string 'x11' or 'X11', xsnow will run. Otherwize an\n");
-      printf("error message is produced and xsnow exits. Setting the environment variable\n");
-      printf("XSNOW_FORCE_RUN to some value will cause xsnow not to check for X11 but simply run.\n");
+      printf("(These options only work satisfactorely in a X11 environment.)\n");
+      printf("Xsnow depends on a X11 environment. This is forced by setting the\n");
+      printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
+      printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
+      printf("for some time.\n");
 }
 
 void docs_usage(int man)
@@ -259,13 +259,13 @@ void docs_usage(int man)
    {
       printf("\n   BUGS\n\n");
    }
-   manout(" ","Xsnow needs a complete rewrite: the code is a mess.");
-   manout(" ","Xsnow stresses the Xserver too much.");
-   manout(" ","Xsnow generates race conditions, e.g.: sometimes fallen snow is not");
-   manout(" ","removed when it should be.");
-   manout(" ","Xsnow does not run in Wayland.");
-   manout(" ","Remnants of fluffy snow can persist after removing the");
-   manout(" ","fallen snow. These will gradually disappear, so no big deal.");
+   manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
+   manout(".","- Xsnow stresses the Xserver too much.");
+   manout(".","- Xsnow generates race conditions, e.g.: sometimes fallen snow");
+   manout(" ","  is not removed when it should be.");
+   manout(".","- Xsnow does run in Wayland, but xsnow will not snow on all window.");
+   manout(".","- Remnants of fluffy snow can persist after removing the");
+   manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
 
 
    if(doman)

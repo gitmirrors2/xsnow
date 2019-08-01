@@ -310,7 +310,8 @@ int main(int argc, char *argv[])
 {
    int i;
    printversion();
-   // before starting gtk: make sure that the x11 backend is used.
+   // Circumvent wayland problems:before starting gtk: make sure that the 
+   // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
    // it seems that it cannot be done there.
    setenv("GDK_BACKEND","x11",1);
