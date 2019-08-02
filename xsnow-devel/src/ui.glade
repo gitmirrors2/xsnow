@@ -43,13 +43,13 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">
-Alas! This not a X11 session, xsnow will probably bot run.
+Alas! This not an X11 session, xsnow will probably bot run.
 
 If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, eg:
 
     XSNOW_FORCE_RUN=1 xsnow
 
-Or, you could force a X11 session, for example by tweaking /etc/gdm3/daemon.conf.
+Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.conf.
 
 </property>
           </object>
@@ -95,15 +95,6 @@ Or, you could force a X11 session, for example by tweaking /etc/gdm3/daemon.conf
             <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>

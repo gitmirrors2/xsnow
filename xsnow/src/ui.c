@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include "clocks.h"
 #include "ui.h"
+#include "ui_xml.h"
 #include "xsnow.h"
 #include "flags.h"
 #include "csvpos.h"
@@ -145,7 +146,7 @@ static struct santa_buttons
 {
    SANTA_ALL
 
-   santa_button santa_show;
+      santa_button santa_show;
    santa_button santa_speed;
 } santa_buttons;
 #undef SANTA
@@ -243,7 +244,7 @@ static struct tree_buttons
 {
    TREE_ALL
 
-   tree_button desired_trees;
+      tree_button desired_trees;
    tree_button tree_fill;
    tree_button show;
    tree_button color;
@@ -570,7 +571,7 @@ void button_cpuload(GtkWidget *w, gpointer d)
    P("button_cpuload: %d\n",flags.cpuload);
 }
 
-HANDLE_TOGGLE(button_use_bgcolor, usebg, 1,0)
+   HANDLE_TOGGLE(button_use_bgcolor, usebg, 1,0)
 HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0)
 
    G_MODULE_EXPORT
@@ -584,10 +585,10 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    P("button_bgcolor: %s\n",flags.bgcolor);
 }
 
-HANDLE_TOGGLE(button_alpha, usealpha, 1,0)
-HANDLE_TOGGLE(button_exposures, exposures, 1,0)
-HANDLE_TOGGLE(button_fullscreen, fullscreen, 1,0)
-HANDLE_TOGGLE(button_below, below, 1,0)
+   HANDLE_TOGGLE(button_alpha, usealpha, 1,0)
+   HANDLE_TOGGLE(button_exposures, exposures, 1,0)
+   HANDLE_TOGGLE(button_fullscreen, fullscreen, 1,0)
+   HANDLE_TOGGLE(button_below, below, 1,0)
 HANDLE_RANGE(button_lift, offset_s, -value)
 
    G_MODULE_EXPORT
@@ -695,20 +696,20 @@ static void set_snow_buttons()
 }
 
 
-HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
-HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1)
-HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1)
-HANDLE_TOGGLE(button_snow_trees_show    ,NoKeepSnowOnTrees  ,0,1)
-HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1)
+   HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
+   HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1)
+   HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1)
+   HANDLE_TOGGLE(button_snow_trees_show    ,NoKeepSnowOnTrees  ,0,1)
+   HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1)
 HANDLE_TOGGLE(button_snow_windows_show  ,NoKeepSWin         ,0,1)
 
 HANDLE_COLOR(button_snow_color,snowColor)
 
-HANDLE_RANGE(button_snow_blowoff_intensity   , blowofffactor    ,value)
-HANDLE_RANGE(button_snow_intensity           , snowflakesfactor ,value)
-HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value)
-HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
-HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
+   HANDLE_RANGE(button_snow_blowoff_intensity   , blowofffactor    ,value)
+   HANDLE_RANGE(button_snow_intensity           , snowflakesfactor ,value)
+   HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value)
+   HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
+   HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
 HANDLE_RANGE(button_snow_trees               , maxontrees       ,value)
 
 void snow_default(int vintage)
@@ -900,7 +901,6 @@ void button_gnome()
 
 void ui (int *argc, char **argv[])
 {
-#include "ui_xml.h"
 
    // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
@@ -920,4 +920,29 @@ void ui (int *argc, char **argv[])
 void ui_loop()
 {
    gtk_main_iteration_do(0);
+}
+
+// next function is not used, I leave it here as a template, who knows...
+// see also ui.glade
+void ui_error_x11(int *argc, char **argv[])
+{
+   GtkWidget *errorfenster;
+   GObject *button;
+   builder = gtk_builder_new_from_string (xsnow_xml, -1);
+   gtk_builder_connect_signals (builder, builder);
+   errorfenster = GTK_WIDGET(gtk_builder_get_object (builder, "error_x11_fenster"));
+   button = gtk_builder_get_object(builder,"error_x11_ok_button");
+   g_signal_connect (button,"clicked",G_CALLBACK(gtk_main_quit),NULL);
+
+   GtkImage *image; 
+   GdkPixbuf *pixbuf;
+   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)xsnow_logo);
+   image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image1"));
+   gtk_image_set_from_pixbuf(image,pixbuf);
+   image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image2"));
+   gtk_image_set_from_pixbuf(image,pixbuf);
+   g_object_unref(pixbuf);
+
+   gtk_widget_show_all (errorfenster);
+   gtk_main();
 }

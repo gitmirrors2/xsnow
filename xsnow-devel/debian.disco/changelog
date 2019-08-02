@@ -1,10 +1,10 @@
-xsnow (1:2.0.10~pre2-1) unstable; urgency=low
+xsnow (1:2.0.11~pre1-1) unstable; urgency=low
 
   * New upstream release
   * Changed Standards-Version: 4.3.0
   * Bump debhelper compat level to 11.
 
- -- Willem Vermin <wvermin@gmail.com>  Wed, 31 Jul 2019 13:55:53 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Fri, 02 Aug 2019 13:49:48 +0200
 
 xsnow (1:1.42-9build1) bionic; urgency=high
 

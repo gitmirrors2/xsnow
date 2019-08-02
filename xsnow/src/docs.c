@@ -30,6 +30,18 @@
 static char *replace_all(const char *s, const char *needle, const char *rep);
 static void manout(const char*flag, const char*txt);
 static int doman;
+static void printdescription(void);
+
+void printdescription()
+{
+      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
+      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id .\n");
+      printf("(These options only work satisfactorily in an X11 environment.)\n");
+      printf("Xsnow depends on an X11 environment. This is forced by setting the\n");
+      printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
+      printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
+      printf("for some time.\n");
+}
 
 void docs_usage(int man)
 {
@@ -37,17 +49,18 @@ void docs_usage(int man)
    if (man)
    {
       doman = 1;
-      printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage\n");
+      printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
       printf(".TH XSNOW \"6\" \"2019\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
+      printf(".\\\" Turn of hyphenation:\n");
+      printf(".hy 0\n");
       printf("xsnow \\- Snow and Santa on your Gnome desktop\n");
       printf(".SH SYNOPSIS\n");
       printf(".B xsnow\n");
       printf("[\\fIOPTION\\fR]...\n");
       printf(".PP\n");
       printf(".SH DESCRIPTION\n");
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
+      printdescription();
       printf(".PP\n"); 
       printf(".SS \"General options:\n");
    }
@@ -61,9 +74,7 @@ void docs_usage(int man)
       printf("xsnow ");
       printf("[OPTION...\n");
       printf("\n");
-      printf("DESCRIPTION\n");
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id.\n");
+      printdescription();
       printf("\n"); 
       printf("General options:\n");
    }
@@ -74,33 +85,33 @@ void docs_usage(int man)
    manout(" "," ");
    if (!doman)
       printf("\n");
-   manout("-h, -help"                 ,"print this text");
-   manout("-H, -manpage"              ,"print man page");
-   manout("-v, -version"              ,"prints xsnow version");
+   manout("-h, -help"                 ,"print this text.");
+   manout("-H, -manpage"              ,"print man page.");
+   manout("-v, -version"              ,"prints version of xsnow.");
    manout("-display name"             ,"Drop the snowflakes on the given display.");
    manout(" "                         ,"Make sure the display is nearby, so you can hear them enjoy...");
-   manout("-vintage"                  ,"Run xsnow in vintage settings");
+   manout("-vintage"                  ,"Run xsnow in vintage settings.");
    manout("-defaults"                 ,"Do not read config file (see FILES).");
    manout("-noconfig"                 ,"Do not read or write config file (see FILES).");
    manout("-nomenu"                   ,"Do not how interactive menu.");
    manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
-   manout("-fullscreen"               ,"Snow on fullscreen window: panels, taskbars etc. will be not accessible.");
+   manout("-fullscreen"               ,"Snow on full screen window: panels, task bars etc. will be not accessible.");
    manout("-above"                    ,"Snow above your windows. Default is to snow below your windows.");
    manout("-xwininfo  "               ,"Use a cursor to point at the window you want the snow to be fallen in.");
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
-   manout(" "                         ,"the same color here, eg: -bg \"#123456\" (default: " EQ(DEFAULT_bgcolor) ".)");
-   manout("-kdebg"                    ,"sets the KDE desktop background color to the value given at '-bg'");
+   manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_bgcolor) ".)");
+   manout("-kdebg"                    ,"sets the KDE desktop background color to the value given at '-bg'.");
    manout("-exposures"                ,"Force XClearArea(...,exposures=True) when erasing.");
    manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
-   manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'");
-   manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel");
-   manout("-kde"                      ,"prepare for KDE: use background (see -bg), -alpha 1, -noexposures");
-   manout("-fvwm"                     ,"prepare for FVWM: no background, -alpha 0, -exposures");
-   manout("-gnome"                    ,"prepare for GNOME: no background, -alpha 1, -noexposures");
-   manout("-stopafter <n>"            ,"Stop Xsnow after so many seconds.");
-   manout("-showstats"                ,"Print some statistics about the various things that happen in Xsnow.");
+   manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
+   manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel.");
+   manout("-kde"                      ,"prepare for KDE: no background, -alpha 1, -noexposures .");
+   manout("-fvwm"                     ,"prepare for FVWM: no background, -alpha 0, -exposures .");
+   manout("-gnome"                    ,"prepare for GNOME: no background, -alpha 1, -noexposures .");
+   manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
+   manout("-showstats"                ,"Print some statistics about the various things that happen in xsnow.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
    if(doman)
    {
@@ -128,8 +139,8 @@ void docs_usage(int man)
    }
    manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default " EQ(DEFAULT_TreeType) ").");
    manout(" "                         ,"Thanks to Carla Vermin for numbers >=3!"); 
-   manout(" "                         ,"Credits: Image by b0red on Pixabay");
-   manout("-treetype all"             ,"Use all available treetypes");
+   manout(" "                         ,"Credits: Image by b0red on Pixabay.");
+   manout("-treetype all"             ,"Use all available tree types.");
    manout("-tc <c>"                   ,"Use the given string as the color for the default trees (default: " EQ(DEFAULT_trColor) ").");
    manout(" "                         ,"Works only for treetype 0.");
    manout("-notrees"                  ,"Do not display the trees.");
@@ -148,7 +159,7 @@ void docs_usage(int man)
    manout("-norudolf"                 ,"No Rudolf.");
    manout("-santa <n>"                ,"The minimum size of Santa is 0, the maximum size is " EQ(MAXSANTA) ". Default is " EQ(DEFAULT_SantaSize) ".");
    manout(" "                         ,"Thanks to Thomas Linder for the (big) Santa 2!");
-   manout(" "                         ,"Santa 3 is derived from Santa 2, and shows the required eight reindeers.");
+   manout(" "                         ,"Santa 3 is derived from Santa 2, and shows the required eight reindeer.");
    manout(" "                         ,"The appearance of Santa 4 may be a surprise, thanks to Carla Vermin for this one.");
    manout("-santaspeedfactor <n>"     ,"The speed Santa should not be excessive if he doesn't want to get");
    manout(" "                         ,"fined. The appropriate speed for the Santa chosen");
@@ -219,11 +230,11 @@ void docs_usage(int man)
    manout (" "," ");
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
-   manout(" ", "https://en.wikipedia.org/wiki/X_PixMap");
+   manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
    manout("$HOME/xsnow/pixmaps/santa<n>.xpm", "where <n> = 1,2,3,4.");
    manout(" ", "If present, xsnow will try this files (4 of them) for displaying");
    manout(" ", "Santa. The format must be xpm (X PixMap) format, see");
-   manout(" ", "https://en.wikipedia.org/wiki/X_PixMap");
+   manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
 
    if(doman)
    {
@@ -236,7 +247,7 @@ void docs_usage(int man)
    }
    manout(".","    $ xsnow -defaults        # run with defaults.");
    manout(".","    $ xsnow                  # run using values from the config file.");
-   manout(".","    $ xsnow -treetype 1,2    # use treetype 1 and 2.");
+   manout(".","    $ xsnow -treetype 1,2    # use tree types 1 and 2.");
    manout(".","    $ xsnow -kde -kdebg -bg blue4  # for the KDE environment.");
 
    if(doman)
@@ -248,13 +259,13 @@ void docs_usage(int man)
    {
       printf("\n   BUGS\n\n");
    }
-   manout(" ","Xsnow needs a complete rewrite: the code is a mess.");
-   manout(" ","Xsnow stresses the Xserver too much.");
-   manout(" ","Xsnow generates race conditions, e.g.: sometimes fallen snow is not");
-   manout(" ","removed when it should be.");
-   manout(" ","Xsnow does not run in Wayland.");
-   manout(" ","Remnants of fluffy snow can persist after removing the");
-   manout(" ","fallen snow. These will gradually disappear, so no big deal.");
+   manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
+   manout(".","- Xsnow stresses the Xserver too much.");
+   manout(".","- Xsnow generates race conditions, e.g.: sometimes fallen snow");
+   manout(" ","  is not removed when it should be.");
+   manout(".","- Xsnow does run in Wayland, but will not snow on all window.");
+   manout(".","- Remnants of fluffy snow can persist after removing the");
+   manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
 
 
    if(doman)

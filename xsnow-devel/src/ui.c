@@ -922,6 +922,8 @@ void ui_loop()
    gtk_main_iteration_do(0);
 }
 
+// next function is not used, I leave it here as a template, who knows...
+// see also ui.glade
 void ui_error_x11(int *argc, char **argv[])
 {
    GtkWidget *errorfenster;

@@ -74,7 +74,7 @@
 #ifdef DEBUG
 #undef DEBUG
 #endif
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
 #else
@@ -309,6 +309,12 @@ static void thanks(void)
 int main(int argc, char *argv[])
 {
    int i;
+   printversion();
+   // Circumvent wayland problems:before starting gtk: make sure that the 
+   // gdk-x11 backend is used.
+   // I would prefer if this could be arranged in argc-argv, but 
+   // it seems that it cannot be done there.
+   setenv("GDK_BACKEND","x11",1);
    init_flags();
    int rc = handleflags(argc, argv);
    switch(rc)
@@ -325,7 +331,6 @@ int main(int argc, char *argv[])
 	 break;
    }
    gtk_init(&argc, &argv);
-   printversion();
    if (!flags.noconfig)
       writeflags();
    display = XOpenDisplay(flags.display_name);
@@ -1535,9 +1540,10 @@ void update_windows()
 	 {
 	    // window found in windows, nut not in list of fallensnow,
 	    // add it, but not if we are snowing in this window (Desktop for example)
+	    // and also not if this window has y == 0
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(fsnow_first);
-	    if (w->id != SnowWin)
+	    if (w->id != SnowWin && w->y != 0)
 	       PushFallenSnow(&fsnow_first, w->id, w->ws, w->sticky,
 		     w->x+flags.offset_x, w->y+flags.offset_y, w->w+flags.offset_w, 
 		     flags.MaxWinSnowDepth); 
@@ -2914,7 +2920,7 @@ void kdesetbg1(const char *color)
 
 int determine_window()
 {
-   //P("determine_window\n");
+   P("determine_window\n");
    if (flags.window_id)
    {
       SnowWin = flags.window_id;
@@ -2963,7 +2969,7 @@ int determine_window()
 	 else
 	 {
 
-	    //P("determine_window\n");
+	    P("determine_window\n");
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
@@ -2981,7 +2987,7 @@ int determine_window()
 	    Usealpha  = 1;
 	    XGetGeometry(display,SnowWin,&root,
 		  &x, &y, &w, &h, &b, &depth);
-	    // P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
+	    P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
 	    if(SnowWin)
 	    {
 	       transworkspace = GetCurrentWorkspace();
@@ -2990,6 +2996,7 @@ int determine_window()
 	    else
 	    {
 	       // snow in root window:
+	       P("snow in root window\n");
 	       Isdesktop = 1;
 	       Usealpha  = 0;
 	       if(SnowWinName) free(SnowWinName);
@@ -3019,3 +3026,4 @@ int determine_window()
       kdesetbg1(flags.bgcolor);
    return 1;
 }
+
