@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=xsnow
+Exec=xsnow
+Icon=xsnow.xpm
+Type=Application
+Categories=Game;
+Terminal=false
+Name[en_US]=xsnow
+Keywords=christmas;santa;snow
+Version=1.0
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=Open a New Window
+Exec=xsnow
