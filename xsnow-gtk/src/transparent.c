@@ -33,6 +33,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include "transparent.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -47,6 +48,12 @@
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
 static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
 
+int supports_alpha(GtkWidget *widget)
+{
+   GdkScreen *screen = gtk_widget_get_screen(widget);
+   return gdk_screen_is_composited(screen); 
+}
+
 static int get_monitor_rects(GdkDisplay *display, GdkRectangle **rectangles) {
    int n = gdk_display_get_n_monitors(display);
    GdkRectangle *new_rectangles = (GdkRectangle*)malloc(n * sizeof(GdkRectangle));
@@ -58,7 +65,7 @@ static int get_monitor_rects(GdkDisplay *display, GdkRectangle **rectangles) {
    return n;
 }
 
-static gboolean supports_alpha = FALSE;
+//static gboolean supports_alpha = FALSE;
 static int is_below = 1;
 
 void create_transparent_window(int fullscreen, int below, 
@@ -75,7 +82,7 @@ void create_transparent_window(int fullscreen, int below,
    g_signal_connect(G_OBJECT(*gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
    gtk_widget_add_events(*gtkwin, GDK_BUTTON_PRESS_MASK);
    screen_changed(*gtkwin, NULL, NULL);
-   if (!supports_alpha)
+   if (!supports_alpha(*gtkwin))
    {
       P("No alpha\n");
       gtk_window_close(GTK_WINDOW(*gtkwin));
@@ -160,14 +167,12 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
       if(!msg1)
 	 printf("Your screen supports alpha channel, good.\n");
       msg1 = 1;
-      supports_alpha = TRUE;
    }
    else
    {
       if(!msg2)
 	 printf("Your screen does not support transparency.\n");
       msg2 = 1;
-      supports_alpha = FALSE; 
    }
 
    // Ensure the widget (the window, actually) can take RGBA
@@ -187,9 +192,8 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
    gtk_window_set_accept_focus(GTK_WINDOW(widget),FALSE);
    cairo_save (cr);
 
-   if (supports_alpha)
+   if (supports_alpha(widget))
    {
-      //cairo_set_source_rgba (cr, 0.5, 1.0, 0.50, 0.5); /* transparent */
       cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0); /* transparent */
       P("Draw: transparent %d\n",++count);
    }

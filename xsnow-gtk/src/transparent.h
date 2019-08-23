@@ -18,9 +18,10 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
  */
-#ifndef CREATE_TRANSPARENT_WINDOW_H
-#define CREATE_TRANSPARENT_WINDOW_H
+#ifndef TRANSPARENT_H
+#define TRANSPARENT_H
 #include <gtk/gtk.h>
-void create_transparent_window(int fullscreen, int below,
+extern void create_transparent_window(int fullscreen, int below,
       Window *w, char **name, GtkWidget **gtkwin);
+extern int supports_alpha(GtkWidget *widget);
 #endif
