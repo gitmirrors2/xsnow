@@ -1,0 +1,3 @@
+This is an attempt to create an xsnow without using X11, but only gtk3.
+
+At this moment, the status is: unusable.

@@ -229,12 +229,21 @@ static GC TreeGC;
 //static GC TreesGC[2];
 
 // region stuff
+#ifdef USEX11
 static Region NoSnowArea_dynamic;
 static Region NoSnowArea_static;
 static Region TreeRegion;
 static Region SantaRegion;
 static Region SantaPlowRegion;
 static Region snow_on_trees_region;
+#else
+static cairo_region_t *NoSnowArea_dynamic;
+static cairo_region_t *NoSnowArea_static;
+static cairo_region_t *TreeRegion;
+static cairo_region_t *SantaRegion;
+static cairo_region_t *SantaPlowRegion;
+static cairo_region_t *snow_on_trees_region;
+#endif
 
 /* Forward decls */
 // declare actions for alarms:
@@ -424,11 +433,20 @@ int main(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, Usealpha,exposures);
 
+#ifdef USEX11
    NoSnowArea_dynamic   = XCreateRegion();
    TreeRegion           = XCreateRegion();
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
    snow_on_trees_region = XCreateRegion();
+#else
+   NoSnowArea_dynamic   = cairo_region_create();
+   TreeRegion           = cairo_region_create();
+   SantaRegion          = cairo_region_create();
+   SantaPlowRegion      = cairo_region_create();
+   snow_on_trees_region = cairo_region_create();
+#endif
+
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
@@ -920,7 +938,11 @@ void do_snow_on_trees()
       XSetForeground(display, SnowOnTreesGC, ~blackPix); 
       XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
    }
+#ifdef USEX11
    XSetRegion(display, SnowOnTreesGC, snow_on_trees_region);
+   // gtk_todo
+#else
+#endif
    XSetForeground(display, SnowOnTreesGC, snowcPix); 
    XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
 }
@@ -942,7 +964,13 @@ void do_snowflakes()
       flakecount++;
    }
    if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
+   {
+#ifdef USEX11
       XSubtractRegion(snow_on_trees_region,TreeRegion,snow_on_trees_region);
+#else
+      cairo_region_subtract(snow_on_trees_region,TreeRegion);
+#endif
+   }
    //P("%d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount);
 }
 
@@ -992,28 +1020,37 @@ void DrawFallen(FallenSnow *fsnow)
 	 // do not interfere with Santa
 	 if(!flags.NoSanta)
 	 {
+#ifdef USEX11
 	    int in = XRectInRegion(SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
 		  fsnow->w, fsnow->h);
+#else
+	    cairo_rectangle_int_t rect = {fsnow->x, fsnow->y - fsnow->h, fsnow->w, fsnow->h }; 
+	    cairo_region_overlap_t in = cairo_region_contains_rectangle(SantaPlowRegion, &rect);
+#endif
+#ifdef USEX11
 	    if (in == RectangleIn || in == RectanglePart)
-	    {
-	       // determine front of Santa in fsnow
-	       int xfront = SantaX+SantaWidth - fsnow->x;
-	       // determine back of Santa in fsnow, Santa can move backwards in srong wind
-	       int xback = xfront - SantaWidth;
-	       const int clearing = 10;
-	       float vy = -1.5*ActualSantaSpeed; 
-	       if(vy > 0) vy = -vy;
-	       if (vy > -100.0)
-		  vy = -100;
-	       if (ActualSantaSpeed > 0)
-		  generate_flakes_on_fallen(fsnow,xfront,clearing,vy);
-	       clean_fallen_area(fsnow,xback-clearing,SantaWidth+2*clearing);
-	       int i;
-	       for (i=0; i<fsnow->w; i++)
-		  if (i < xfront+clearing && i>=xback-clearing)
-		     fsnow->acth[i] = 0;
-	       XFlush(display);
-	    }
+#else
+	       if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
+#endif
+	       {
+		  // determine front of Santa in fsnow
+		  int xfront = SantaX+SantaWidth - fsnow->x;
+		  // determine back of Santa in fsnow, Santa can move backwards in srong wind
+		  int xback = xfront - SantaWidth;
+		  const int clearing = 10;
+		  float vy = -1.5*ActualSantaSpeed; 
+		  if(vy > 0) vy = -vy;
+		  if (vy > -100.0)
+		     vy = -100;
+		  if (ActualSantaSpeed > 0)
+		     generate_flakes_on_fallen(fsnow,xfront,clearing,vy);
+		  clean_fallen_area(fsnow,xback-clearing,SantaWidth+2*clearing);
+		  int i;
+		  for (i=0; i<fsnow->w; i++)
+		     if (i < xfront+clearing && i>=xback-clearing)
+			fsnow->acth[i] = 0;
+		  XFlush(display);
+	       }
 	 }
 
 	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
@@ -1195,13 +1232,23 @@ void do_event()
 		  init_stars();
 		  if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
 		  {
+#if USEX11
 		     XDestroyRegion(snow_on_trees_region);
 		     snow_on_trees_region = XCreateRegion();
+#else
+		     cairo_region_destroy(snow_on_trees_region);
+		     snow_on_trees_region = cairo_region_create();
+#endif
 		  }
 		  if(!flags.NoTrees)
 		  {
+#ifdef USEX11
 		     XDestroyRegion(TreeRegion);
 		     TreeRegion = XCreateRegion();
+#else
+		     cairo_region_destroy(TreeRegion);
+		     TreeRegion = cairo_region_create();
+#endif
 		     init_baum_koordinaten();
 		  }
 		  NoSnowArea_static = TreeRegion;
@@ -1347,8 +1394,13 @@ void convert_ontree_to_flakes()
 	 break;
    }
    ontrees = 0;
+#ifdef USEX11
    XDestroyRegion(snow_on_trees_region);
    snow_on_trees_region = XCreateRegion();
+#else
+   cairo_region_destroy(snow_on_trees_region);
+   snow_on_trees_region = cairo_region_create();
+#endif
 }
 
 void do_stars()
@@ -1392,6 +1444,7 @@ void do_meteorite()
    if (meteorite.y2 == meteorite.y1)
       meteorite.y2 +=5;
    meteorite.active  = 1;
+#if USEX11
    const int npoints = 5;
    XPoint points[npoints];
    points[0].x = meteorite.x1+1;
@@ -1407,6 +1460,11 @@ void do_meteorite()
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
    XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
+#else
+   // gtk_todo
+   meteorite.r = cairo_region_create();
+   cairo_region_union(NoSnowArea_dynamic, meteorite.r);
+#endif
    meteorite.starttime = wallclock();
    XDrawLine(display, SnowWin, meteorite.gc, 
 	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
@@ -1422,8 +1480,13 @@ void do_emeteorite()
       {
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
+#ifdef USEX11
 	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
 	 XDestroyRegion(meteorite.r);
+#else
+	 cairo_region_subtract(NoSnowArea_dynamic ,meteorite.r);
+	 cairo_region_destroy(meteorite.r);
+#endif
 	 meteorite.active = 0;
       }
    XFlush(display);
@@ -1650,7 +1713,11 @@ void do_testing()
    NoSnowArea_static = TreeRegion;
    //P("%d:\n",ntrees);
    return;
+#ifdef USEX11
    Region region;
+#else
+   cairo_region_t *region;
+#endif
    //region = SantaRegion;
    //region = NoSnowArea_static;
    region = snow_on_trees_region;
@@ -1661,7 +1728,11 @@ void do_testing()
    XSetFunction(display,   testingGC, GXcopy);
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
+#if USEX11
    XSetRegion(display,     testingGC, region);
+#else
+   // gtk_todo
+#endif
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
 }
@@ -1846,8 +1917,14 @@ void updateSnowFlake(Snow *flake)
 
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+#ifdef USEX11
    int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
    int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
+#else
+   cairo_rectangle_int_t rect = {x, y, flake->w, flake->h }; 
+   cairo_region_overlap_t in = cairo_region_contains_rectangle(NoSnowArea_dynamic, &rect);
+   int b  = (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART); // true if in nosnowarea_dynamic
+#endif
    //
    // if (b): no erase, no draw, no move
    if(b) return;
@@ -1856,8 +1933,14 @@ void updateSnowFlake(Snow *flake)
    {
       // check if flake is touching or in snow_on_trees_region
       // if so: remove it
+#ifdef USEX11
       in = XRectInRegion(snow_on_trees_region,x,y,flake->w,flake->h);
       if (in == RectanglePart || in == RectangleIn)
+#else
+	 rect = (cairo_rectangle_int_t) {x,y,flake->w,flake->h};
+      in = cairo_region_contains_rectangle(snow_on_trees_region,&rect);
+      if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
+#endif
       {
 	 eraseSnowFlake(flake);
 	 deleteFlake(flake);
@@ -1866,8 +1949,14 @@ void updateSnowFlake(Snow *flake)
 
       // check if flake is touching TreeRegion. If so: add snow to 
       // snow_on_trees_region.
+#ifdef USEX11
       in = XRectInRegion(TreeRegion,x,y,flake->w,flake->h);
       if (in == RectanglePart)
+#else
+	 rect = (cairo_rectangle_int_t) {x,y,flake->w,flake->h};
+      in = cairo_region_contains_rectangle(TreeRegion,&rect);
+      if (in == CAIRO_REGION_OVERLAP_PART)
+#endif
       {
 	 // so, part of the flake is in TreeRegion.
 	 // For each bottom pixel of the flake:
@@ -1883,18 +1972,32 @@ void updateSnowFlake(Snow *flake)
 	    if(found) break;
 	    int ybot = y+flake->h;
 	    int xbot = x+i;
+#ifdef USEX11
 	    int in = XRectInRegion(TreeRegion,xbot,ybot,1,1);
 	    if (in != RectangleIn) // if bottom pixel not in TreeRegion, skip
 	       continue;
+#else
+	    cairo_rectangle_int_t rect = {xbot,ybot,1,1};
+	    cairo_region_overlap_t in = cairo_region_contains_rectangle(TreeRegion,&rect);
+	    if (in != CAIRO_REGION_OVERLAP_IN)
+	       continue;
+#endif
 	    // move upwards, until pixel is not in TreeRegion
 	    int j;
 	    for (j=ybot-1; j >= y; j--)
 	    {
+#ifdef USEX11
 	       int in = XRectInRegion(TreeRegion,xbot,j,1,1); 
 	       if (in != RectangleIn)
+#else
+		  cairo_rectangle_int_t rect = {xbot,j,1,1};
+	       cairo_region_overlap_t in = cairo_region_contains_rectangle(TreeRegion, &rect);
+	       if (in != CAIRO_REGION_OVERLAP_IN)
+#endif
 	       {
 		  // pixel (xbot,j) is snow-on-tree
 		  found = 1;
+#ifdef USEX11
 		  XRectangle rec;
 		  rec.x = xbot;
 		  int p = RandInt(4);
@@ -1902,6 +2005,11 @@ void updateSnowFlake(Snow *flake)
 		  rec.width = p;
 		  rec.height = p;
 		  XUnionRectWithRegion(&rec, snow_on_trees_region, snow_on_trees_region);
+#else
+		  int p = RandInt(4);
+		  cairo_rectangle_int_t rec = {xbot,j-p+1,p,p};
+		  cairo_region_union_rectangle(snow_on_trees_region,&rec);
+#endif
 		  if(!flags.NoBlowSnow && ontrees < flags.maxontrees)
 		  {
 		     snow_on_trees[ontrees].x = rec.x;
@@ -1919,15 +2027,27 @@ void updateSnowFlake(Snow *flake)
       }
    }
 
+#ifdef USEX11
    in = XRectInRegion(NoSnowArea_static,x, y, flake ->w, flake->h);
    b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
+#else
+   rect = (cairo_rectangle_int_t) {x,y,flake->w,flake->h};
+   in = cairo_region_contains_rectangle(NoSnowArea_static,&rect);
+   b = (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART);
+#endif
    // if(b): erase: no, move: yes
    // erase this flake 
    if(!b) eraseSnowFlake(flake);
    flake->rx = NewX;
    flake->ry = NewY;
+#ifdef USEX11
    in = XRectInRegion(NoSnowArea_static,nx, ny, flake ->w, flake->h);
    b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
+#else
+   rect = (cairo_rectangle_int_t) {nx,ny,flake->w,flake->h};
+   in = cairo_region_contains_rectangle(NoSnowArea_static, &rect);
+   b = (in == CAIRO_REGION_OVERLAP_IN || CAIRO_REGION_OVERLAP_PART);
+#endif
    // if b: draw: no
    if(!b) drawSnowFlake(flake);
 }
@@ -2081,9 +2201,16 @@ void init_baum_koordinaten()
       int y = y1 - RandInt(y1-y2);
 
       //P("treetry %4d %4d %4d %4d\n",x,y,y1,y2);
+#ifdef USEX11
       int in = XRectInRegion(TreeRegion,x,y,w,h);
       if (in == RectangleIn || in == RectanglePart)
 	 continue;
+#else
+      cairo_rectangle_int_t rect = {x,y,w,h};
+      cairo_region_overlap_t in = cairo_region_contains_rectangle(TreeRegion,&rect);
+      if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
+	 continue;
+#endif
 
       //P("treesuc %4d %4d\n",x,y);
       tree[ntrees].x    = x;
@@ -2092,7 +2219,11 @@ void init_baum_koordinaten()
       int flop = (drand48()>0.5);
       tree[ntrees].rev  = flop;
 
+#ifdef USEX11
       Region r;
+#else
+      cairo_region_t *r;
+#endif
 
       switch(tt)
       {
@@ -2103,9 +2234,15 @@ void init_baum_koordinaten()
 	    r = regionfromxpm(xpmtrees[tt],tree[ntrees].rev);
 	    break;
       }
+#ifdef USEX11
       XOffsetRegion(r,x,y);
       XUnionRegion(r,TreeRegion,TreeRegion);
       XDestroyRegion(r);
+#else
+      cairo_region_translate(r,x,y);
+      cairo_region_union(TreeRegion,r);
+      cairo_region_destroy(r);
+#endif
       ntrees++;
    }
    //for(i=0; i<ntrees; i++)
@@ -2337,6 +2474,7 @@ void ResetSanta()
    SantaY = RandInt(SnowWinHeight / 3)+40;
    SantaYStep = 1;
    CurrentSanta = 0;
+#ifdef USEX11
    const int npoints = 5;
    XPoint points[npoints];
 
@@ -2350,8 +2488,17 @@ void ResetSanta()
    points[3].y = points[0].y;
    points[4] = points[0];
    XDestroyRegion(SantaRegion);
+#else
+   cairo_region_destroy(SantaRegion);
+#endif
+#ifdef USEX11
    SantaRegion = XPolygonRegion(points, npoints, EvenOddRule);
+#else
+   cairo_rectangle_int_t rect = {SantaX, SantaY, SantaWidth, SantaHeight};
+   SantaRegion = cairo_region_create_rectangle(&rect);
+#endif
 
+#ifdef USEX11
    points[0].x = SantaX + SantaWidth;
    points[0].y = SantaY + SantaHeight;
    points[1].x = points[0].x + 1;
@@ -2363,6 +2510,11 @@ void ResetSanta()
    points[4] = points[0];
    XDestroyRegion(SantaPlowRegion);
    SantaPlowRegion = XPolygonRegion(points, npoints, EvenOddRule);
+#else
+   rect = (cairo_rectangle_int_t) {SantaX + SantaWidth,SantaY + SantaHeight, 1, SantaHeight};
+   cairo_region_destroy(SantaPlowRegion);
+   SantaPlowRegion = cairo_region_create_rectangle(&rect);
+#endif
 }
 
 void UpdateSanta()
@@ -2400,8 +2552,13 @@ void UpdateSanta()
    if (SantaY < 0) SantaY = 0;
    if (RandInt(100) > 80) SantaYStep = -SantaYStep;
 
+#ifdef USEX11
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
    XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
+#else
+   cairo_region_translate(SantaRegion,     SantaX - oldx, SantaY - oldy);
+   cairo_region_translate(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
+#endif
 
    return;
 }
@@ -2477,11 +2634,18 @@ void erase_trees()
 	       x, y, w, h, exposures);
    }
 
+#ifdef USEX11
    XDestroyRegion(TreeRegion);
    TreeRegion = XCreateRegion();
    XDestroyRegion(snow_on_trees_region);
    snow_on_trees_region = XCreateRegion();
+#else
+   cairo_region_destroy(TreeRegion);
+   TreeRegion = cairo_region_create();
+   cairo_region_destroy(snow_on_trees_region);
+   snow_on_trees_region = cairo_region_create();
    ClearScreen();
+#endif
 }
 
 /* ------------------------------------------------------------------ */ 

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <gtk/gtk.h>
 #include "ixpm.h"
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
@@ -114,6 +115,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
    return rc;
 }
 
+#ifdef USEX11
 // given xpmdata **data, add the non-transparent pixels to Region r
 Region regionfromxpm(char **data, int flop)
 {
@@ -165,3 +167,56 @@ Region regionfromxpm(char **data, int flop)
    free(code);
    return r;
 }
+#else
+// given xpmdata **data, add the non-transparent pixels to Region r
+cairo_region_t *regionfromxpm(char **data, int flop)
+{
+   int w,h,nc,n;
+   cairo_region_t *r = cairo_region_create();
+   // width, height, #colors, $chars to code color
+   sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
+   //printf("%d: %d %d %d %d %ld\n",__LINE__,w,h,nc,n,strlen(*data));
+   // find color "None":
+   int i;
+   char *code = "";
+   int offset = nc + 1;
+   for(i=1; i<=nc; i++)
+   {
+      char s[100];
+      //printf("%d: %s\n",__LINE__,data[i]);
+      sscanf(data[i]+n,"%*s %100s",s);
+      //printf("%d: %s\n",__LINE__,s);
+      if(!strcmp(s,"None"))
+      {
+	 code = strndup(data[i],n);
+	 break;
+      }
+   }
+   //printf("%d: code [%s]\n",__LINE__,code);
+   cairo_rectangle_int_t rect;
+   rect.width = 1;
+   rect.height = 1;
+   int y;
+   for (y=0; y<h; y++)
+   {
+      //printf("%d: %s\n",__LINE__,data[y+offset]);
+      int x;
+      char*s = strdup(data[y+offset]);
+      if(flop)
+	 strrevert(s,n);
+      for(x=0; x<w; x++)
+      {
+	 //printf("%d: %d %d %d %d\n",__LINE__,x,y,offset,n);
+	 if (strncmp(s+n*x,code,n))
+	 {
+	    rect.x = x;
+	    rect.y = y;
+	    cairo_region_union_rectangle(r,&rect);
+	 }
+      }
+      free(s);
+   }
+   free(code);
+   return r;
+}
+#endif

@@ -23,5 +23,9 @@
 #include <X11/xpm.h>
 extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
       char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
+#ifdef USEX11
 extern Region regionfromxpm(char **data, int flop);
+#else
+extern cairo_region_t *regionfromxpm(char **data, int flop);
+#endif
 #endif

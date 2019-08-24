@@ -20,6 +20,8 @@
 */
 #ifndef XSNOW_H
 #define XSNOW_H
+
+#include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -148,7 +150,11 @@ typedef struct MeteoMap {
    int x1,x2,y1,y2,active;
    double starttime;
    GC gc,egc;
+#ifdef USEX11 
    Region r;
+#else
+   cairo_region_t *r;
+#endif
 } MeteoMap;
 
 /* ------------------------------------------------------------------ */
