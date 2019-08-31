@@ -89,6 +89,20 @@
 #define REGION_UNION(x,y) XUnionRegion(x,y,x)
 #define REGION_TRANSLATE XOffsetRegion
 #define REGION_OVERLAP_T int
+#define REGION_OVERLAP_RECT(r,x,y,w,h) XRectInRegion(r,x,y,w,h)
+#define REGION_OVERLAP_RECTANGLE_IN RectangleIn
+#define REGION_OVERLAP_RECTANGLE_PART RectanglePart
+static Region region_create_rectangle(int x, int y, int w, int h)
+{
+   XPoint p[5];
+   p[0] = {x  , y  };
+   p[1] = {x+w, y  };
+   p[2] = {x+w, y+h};
+   p[3] = {x  , y+h}; 
+   p[4] = {x  , y  };
+   return XPolygonRegion(p, 5, EvenOddRule);
+}
+#define REGION_CREATE_RECTANGLE(x,y,w,h) region_create_rectangle(x,y,w,h)
 #else
 #define REGION_DECLARE cairo_region_t * 
 #define REGION_CREATE cairo_region_create
@@ -97,7 +111,12 @@
 #define REGION_UNION(x,y) cairo_region_union(x,y)
 #define REGION_TRANSLATE cairo_region_translate
 #define REGION_OVERLAP_T cairo_region_overlap_t
+#define REGION_OVERLAP_RECT(r,x,y,w,h) cairo_region_contains_rectangle(r,&(cairo_rectangle_int_t){x,y,w,h})
+#define REGION_OVERLAP_RECTANGLE_IN CAIRO_REGION_OVERLAP_IN
+#define REGION_OVERLAP_RECTANGLE_PART CAIRO_REGION_OVERLAP_PART
+#define REGION_CREATE_RECTANGLE(x,y,w,h) cairo_region_create_rectangle(&(cairo_rectangle_int_t){x,y,w,h})
 #endif
+
 
 // from flags.h
 FLAGS flags;
@@ -1056,6 +1075,7 @@ void DrawFallen(FallenSnow *fsnow)
 	 // do not interfere with Santa
 	 if(!flags.NoSanta)
 	 {
+#if 0
 #ifdef USEX11
 	    int in = XRectInRegion(SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
 		  fsnow->w, fsnow->h);
@@ -1063,32 +1083,38 @@ void DrawFallen(FallenSnow *fsnow)
 	    cairo_rectangle_int_t rect = {fsnow->x, fsnow->y - fsnow->h, fsnow->w, fsnow->h }; 
 	    cairo_region_overlap_t in = cairo_region_contains_rectangle(SantaPlowRegion, &rect);
 #endif
+#endif
+	    REGION_OVERLAP_T in = REGION_OVERLAP_RECT(SantaPlowRegion, 
+		  fsnow->x, fsnow->y - fsnow->h, fsnow->w, fsnow->h);
 
 
+#if 0
 #ifdef USEX11
 	    if (in == RectangleIn || in == RectanglePart)
 #else
 	       if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
 #endif
-	       {
-		  // determine front of Santa in fsnow
-		  int xfront = SantaX+SantaWidth - fsnow->x;
-		  // determine back of Santa in fsnow, Santa can move backwards in srong wind
-		  int xback = xfront - SantaWidth;
-		  const int clearing = 10;
-		  float vy = -1.5*ActualSantaSpeed; 
-		  if(vy > 0) vy = -vy;
-		  if (vy > -100.0)
-		     vy = -100;
-		  if (ActualSantaSpeed > 0)
-		     generate_flakes_on_fallen(fsnow,xfront,clearing,vy);
-		  clean_fallen_area(fsnow,xback-clearing,SantaWidth+2*clearing);
-		  int i;
-		  for (i=0; i<fsnow->w; i++)
-		     if (i < xfront+clearing && i>=xback-clearing)
-			fsnow->acth[i] = 0;
-		  XFlush(display);
-	       }
+#endif
+		  if (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART)
+		  {
+		     // determine front of Santa in fsnow
+		     int xfront = SantaX+SantaWidth - fsnow->x;
+		     // determine back of Santa in fsnow, Santa can move backwards in srong wind
+		     int xback = xfront - SantaWidth;
+		     const int clearing = 10;
+		     float vy = -1.5*ActualSantaSpeed; 
+		     if(vy > 0) vy = -vy;
+		     if (vy > -100.0)
+			vy = -100;
+		     if (ActualSantaSpeed > 0)
+			generate_flakes_on_fallen(fsnow,xfront,clearing,vy);
+		     clean_fallen_area(fsnow,xback-clearing,SantaWidth+2*clearing);
+		     int i;
+		     for (i=0; i<fsnow->w; i++)
+			if (i < xfront+clearing && i>=xback-clearing)
+			   fsnow->acth[i] = 0;
+		     XFlush(display);
+		  }
 	 }
 
 	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
@@ -1980,6 +2006,7 @@ void updateSnowFlake(Snow *flake)
 
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+#if 0
 #ifdef USEX11
    int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
    int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
@@ -1988,6 +2015,9 @@ void updateSnowFlake(Snow *flake)
    cairo_region_overlap_t in = cairo_region_contains_rectangle(NoSnowArea_dynamic, &rect);
    int b  = (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART); // true if in nosnowarea_dynamic
 #endif
+#endif
+   REGION_OVERLAP_T in = REGION_OVERLAP_RECT(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
+   int b  = (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
    if(b) return;
@@ -1996,6 +2026,7 @@ void updateSnowFlake(Snow *flake)
    {
       // check if flake is touching or in snow_on_trees_region
       // if so: remove it
+#if 0
 #ifdef USEX11
       in = XRectInRegion(snow_on_trees_region,x,y,flake->w,flake->h);
       if (in == RectanglePart || in == RectangleIn)
@@ -2004,6 +2035,10 @@ void updateSnowFlake(Snow *flake)
       in = cairo_region_contains_rectangle(snow_on_trees_region,&rect);
       if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
 #endif
+#endif
+	 in = REGION_OVERLAP_RECT(snow_on_trees_region,x,y,flake->w,flake->h);
+      if (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART)
+
       {
 	 eraseSnowFlake(flake);
 	 deleteFlake(flake);
@@ -2012,6 +2047,7 @@ void updateSnowFlake(Snow *flake)
 
       // check if flake is touching TreeRegion. If so: add snow to 
       // snow_on_trees_region.
+#if 0
 #ifdef USEX11
       in = XRectInRegion(TreeRegion,x,y,flake->w,flake->h);
       if (in == RectanglePart)
@@ -2020,6 +2056,9 @@ void updateSnowFlake(Snow *flake)
       in = cairo_region_contains_rectangle(TreeRegion,&rect);
       if (in == CAIRO_REGION_OVERLAP_PART)
 #endif
+#endif
+	 in = REGION_OVERLAP_RECT(TreeRegion,x,y,flake->w,flake->h);
+      if (in == REGION_OVERLAP_RECTANGLE_PART)
       {
 	 // so, part of the flake is in TreeRegion.
 	 // For each bottom pixel of the flake:
@@ -2035,6 +2074,7 @@ void updateSnowFlake(Snow *flake)
 	    if(found) break;
 	    int ybot = y+flake->h;
 	    int xbot = x+i;
+#if 0
 #ifdef USEX11
 	    int in = XRectInRegion(TreeRegion,xbot,ybot,1,1);
 	    if (in != RectangleIn) // if bottom pixel not in TreeRegion, skip
@@ -2045,10 +2085,15 @@ void updateSnowFlake(Snow *flake)
 	    if (in != CAIRO_REGION_OVERLAP_IN)
 	       continue;
 #endif
+#endif
+	    REGION_OVERLAP_T in = REGION_OVERLAP_RECT(TreeRegion,xbot,ybot,1,1);
+	    if (in != REGION_OVERLAP_RECTANGLE_IN) // if bottom pixel not in TreeRegion, skip
+	       continue;
 	    // move upwards, until pixel is not in TreeRegion
 	    int j;
 	    for (j=ybot-1; j >= y; j--)
 	    {
+#if 0
 #ifdef USEX11
 	       int in = XRectInRegion(TreeRegion,xbot,j,1,1); 
 	       if (in != RectangleIn)
@@ -2057,6 +2102,9 @@ void updateSnowFlake(Snow *flake)
 	       cairo_region_overlap_t in = cairo_region_contains_rectangle(TreeRegion, &rect);
 	       if (in != CAIRO_REGION_OVERLAP_IN)
 #endif
+#endif
+		  REGION_OVERLAP_T in = REGION_OVERLAP_RECT(TreeRegion,xbot,j,1,1); 
+	       if (in != REGION_OVERLAP_RECTANGLE_IN)
 	       {
 		  // pixel (xbot,j) is snow-on-tree
 		  found = 1;
@@ -2090,6 +2138,7 @@ void updateSnowFlake(Snow *flake)
       }
    }
 
+#if 0
 #ifdef USEX11
    in = XRectInRegion(NoSnowArea_static,x, y, flake ->w, flake->h);
    b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
@@ -2098,11 +2147,16 @@ void updateSnowFlake(Snow *flake)
    in = cairo_region_contains_rectangle(NoSnowArea_static,&rect);
    b = (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART);
 #endif
+#endif
+   in = REGION_OVERLAP_RECT(NoSnowArea_static,x, y, flake ->w, flake->h);
+   b  = (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART); // true if in nosnowarea_static
+
    // if(b): erase: no, move: yes
    // erase this flake 
    if(!b) eraseSnowFlake(flake);
    flake->rx = NewX;
    flake->ry = NewY;
+#if 0
 #ifdef USEX11
    in = XRectInRegion(NoSnowArea_static,nx, ny, flake ->w, flake->h);
    b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
@@ -2111,6 +2165,9 @@ void updateSnowFlake(Snow *flake)
    in = cairo_region_contains_rectangle(NoSnowArea_static, &rect);
    b = (in == CAIRO_REGION_OVERLAP_IN || CAIRO_REGION_OVERLAP_PART);
 #endif
+#endif
+   in = REGION_OVERLAP_RECT(NoSnowArea_static,nx, ny, flake ->w, flake->h);
+   b  = (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART); // true if in nosnowarea_static
    // if b: draw: no
    if(!b) drawSnowFlake(flake);
 }
@@ -2264,6 +2321,7 @@ void init_baum_koordinaten()
       int y = y1 - RandInt(y1-y2);
 
       //P("treetry %4d %4d %4d %4d\n",x,y,y1,y2);
+#if 0
 #ifdef USEX11
       int in = XRectInRegion(TreeRegion,x,y,w,h);
       if (in == RectangleIn || in == RectanglePart)
@@ -2274,6 +2332,10 @@ void init_baum_koordinaten()
       if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
 	 continue;
 #endif
+#endif
+      REGION_OVERLAP_T in = REGION_OVERLAP_RECT(TreeRegion,x,y,w,h);
+      if (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART)
+	 continue;
 
       //P("treesuc %4d %4d\n",x,y);
       tree[ntrees].x    = x;
@@ -2545,6 +2607,7 @@ void ResetSanta()
    SantaY = RandInt(SnowWinHeight / 3)+40;
    SantaYStep = 1;
    CurrentSanta = 0;
+#if 0
 #ifdef USEX11
    const int npoints = 5;
    XPoint points[npoints];
@@ -2568,7 +2631,10 @@ void ResetSanta()
    cairo_rectangle_int_t rect = {SantaX, SantaY, SantaWidth, SantaHeight};
    SantaRegion = cairo_region_create_rectangle(&rect);
 #endif
-
+#endif
+   REGION_DESTROY(SantaRegion);
+   SantaRegion = REGION_CREATE_RECTANGLE(SantaX, SantaY, SantaWidth, SantaHeight);
+#if 0
 #ifdef USEX11
    points[0].x = SantaX + SantaWidth;
    points[0].y = SantaY + SantaHeight;
@@ -2586,6 +2652,9 @@ void ResetSanta()
    cairo_region_destroy(SantaPlowRegion);
    SantaPlowRegion = cairo_region_create_rectangle(&rect);
 #endif
+#endif
+   REGION_DESTROY(SantaPlowRegion);
+   SantaPlowRegion = REGION_CREATE_RECTANGLE(SantaX + SantaWidth, SantaY, 1, SantaHeight);
 }
 
 void UpdateSanta()
