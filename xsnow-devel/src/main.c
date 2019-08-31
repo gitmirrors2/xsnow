@@ -284,6 +284,7 @@ static void   kdesetbg1(const char *color);
 static void   printversion(void);
 static int    RandInt(int maxVal);
 static void   redraw_trees(void);
+static Region region_create_rectangle(int x, int y, int w, int h);
 static void   ResetSanta(void);
 static void   set_gc_functions(void);
 static void   set_maxscrsnowdepth(void);
@@ -2337,6 +2338,7 @@ void ResetSanta()
    SantaY = RandInt(SnowWinHeight / 3)+40;
    SantaYStep = 1;
    CurrentSanta = 0;
+#if 0
    const int npoints = 5;
    XPoint points[npoints];
 
@@ -2349,9 +2351,13 @@ void ResetSanta()
    points[3].x = points[2].x;
    points[3].y = points[0].y;
    points[4] = points[0];
+#endif
    XDestroyRegion(SantaRegion);
-   SantaRegion = XPolygonRegion(points, npoints, EvenOddRule);
+   //SantaRegion = XPolygonRegion(points, npoints, EvenOddRule);
+   SantaRegion = region_create_rectangle(
+	 SantaX,SantaY,SantaHeight,SantaWidth);
 
+#if 0
    points[0].x = SantaX + SantaWidth;
    points[0].y = SantaY + SantaHeight;
    points[1].x = points[0].x + 1;
@@ -2361,8 +2367,11 @@ void ResetSanta()
    points[3].x = points[0].x;
    points[3].y = points[2].y;
    points[4] = points[0];
+#endif
    XDestroyRegion(SantaPlowRegion);
-   SantaPlowRegion = XPolygonRegion(points, npoints, EvenOddRule);
+   //SantaPlowRegion = XPolygonRegion(points, npoints, EvenOddRule);
+   SantaPlowRegion = region_create_rectangle(
+	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
 }
 
 void UpdateSanta()
@@ -3025,5 +3034,16 @@ int determine_window()
    if(flags.KDEbg)
       kdesetbg1(flags.bgcolor);
    return 1;
+}
+
+Region region_create_rectangle(int x, int y, int w, int h)
+{
+   XPoint p[5];
+   p[0] = (XPoint){x  , y  };
+   p[1] = (XPoint){x+w, y  };
+   p[2] = (XPoint){x+w, y+h};
+   p[3] = (XPoint){x  , y+h}; 
+   p[4] = (XPoint){x  , y  };
+   return XPolygonRegion(p, 5, EvenOddRule);
 }
 

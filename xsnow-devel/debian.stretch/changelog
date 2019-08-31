@@ -4,7 +4,7 @@ xsnow (1:2.0.11~pre1-1) unstable; urgency=low
   * Changed Standards-Version: 3.9.8
   * Bump debhelper compat level to 9.
 
- -- Willem Vermin <wvermin@gmail.com>  Fri, 02 Aug 2019 13:49:48 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Sat, 31 Aug 2019 14:00:11 +0200
 
 xsnow (1:1.42-9build1) bionic; urgency=high
 
