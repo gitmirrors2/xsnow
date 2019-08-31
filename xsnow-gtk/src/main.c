@@ -81,6 +81,24 @@
 #define P(...)
 #endif
 
+#ifdef USEX11
+#define REGION_DECLARE Region
+#define REGION_CREATE XCreateRegion
+#define REGION_DESTROY XDestroyRegion
+#define REGION_SUBTRACT(x,y) XSubtractRegion(x,y,x)
+#define REGION_UNION(x,y) XUnionRegion(x,y,x)
+#define REGION_TRANSLATE XOffsetRegion
+#define REGION_OVERLAP_T int
+#else
+#define REGION_DECLARE cairo_region_t * 
+#define REGION_CREATE cairo_region_create
+#define REGION_DESTROY cairo_region_destroy
+#define REGION_SUBTRACT(x,y) cairo_region_subtract(x,y)
+#define REGION_UNION(x,y) cairo_region_union(x,y)
+#define REGION_TRANSLATE cairo_region_translate
+#define REGION_OVERLAP_T cairo_region_overlap_t
+#endif
+
 // from flags.h
 FLAGS flags;
 FLAGS oldflags;
@@ -228,7 +246,7 @@ static GC testingGC;
 static GC TreeGC;
 //static GC TreesGC[2];
 
-// region stuff
+#if 0
 #ifdef USEX11
 static Region NoSnowArea_dynamic;
 static Region NoSnowArea_static;
@@ -244,6 +262,14 @@ static cairo_region_t *SantaRegion;
 static cairo_region_t *SantaPlowRegion;
 static cairo_region_t *snow_on_trees_region;
 #endif
+#endif
+// region stuff
+static REGION_DECLARE NoSnowArea_dynamic;
+static REGION_DECLARE NoSnowArea_static;
+static REGION_DECLARE TreeRegion;
+static REGION_DECLARE SantaRegion;
+static REGION_DECLARE SantaPlowRegion;
+static REGION_DECLARE snow_on_trees_region;
 
 /* Forward decls */
 // declare actions for alarms:
@@ -433,6 +459,7 @@ int main(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, Usealpha,exposures);
 
+#if 0
 #ifdef USEX11
    NoSnowArea_dynamic   = XCreateRegion();
    TreeRegion           = XCreateRegion();
@@ -446,6 +473,12 @@ int main(int argc, char *argv[])
    SantaPlowRegion      = cairo_region_create();
    snow_on_trees_region = cairo_region_create();
 #endif
+#endif
+   NoSnowArea_dynamic   = REGION_CREATE();
+   TreeRegion           = REGION_CREATE();
+   SantaRegion          = REGION_CREATE();
+   SantaPlowRegion      = REGION_CREATE();
+   snow_on_trees_region = REGION_CREATE();
 
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
@@ -965,11 +998,14 @@ void do_snowflakes()
    }
    if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
    {
+#if 0
 #ifdef USEX11
       XSubtractRegion(snow_on_trees_region,TreeRegion,snow_on_trees_region);
 #else
       cairo_region_subtract(snow_on_trees_region,TreeRegion);
 #endif
+#endif
+      REGION_SUBTRACT(snow_on_trees_region,TreeRegion);
    }
    //P("%d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount);
 }
@@ -1027,6 +1063,8 @@ void DrawFallen(FallenSnow *fsnow)
 	    cairo_rectangle_int_t rect = {fsnow->x, fsnow->y - fsnow->h, fsnow->w, fsnow->h }; 
 	    cairo_region_overlap_t in = cairo_region_contains_rectangle(SantaPlowRegion, &rect);
 #endif
+
+
 #ifdef USEX11
 	    if (in == RectangleIn || in == RectanglePart)
 #else
@@ -1232,6 +1270,7 @@ void do_event()
 		  init_stars();
 		  if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
 		  {
+#if 0
 #if USEX11
 		     XDestroyRegion(snow_on_trees_region);
 		     snow_on_trees_region = XCreateRegion();
@@ -1239,9 +1278,13 @@ void do_event()
 		     cairo_region_destroy(snow_on_trees_region);
 		     snow_on_trees_region = cairo_region_create();
 #endif
+#endif
+		     REGION_DESTROY(snow_on_trees_region);
+		     snow_on_trees_region = REGION_CREATE();
 		  }
 		  if(!flags.NoTrees)
 		  {
+#if 0
 #ifdef USEX11
 		     XDestroyRegion(TreeRegion);
 		     TreeRegion = XCreateRegion();
@@ -1249,9 +1292,13 @@ void do_event()
 		     cairo_region_destroy(TreeRegion);
 		     TreeRegion = cairo_region_create();
 #endif
+#endif
+		     REGION_DESTROY(TreeRegion);
+		     TreeRegion = REGION_CREATE();
 		     init_baum_koordinaten();
 		  }
 		  NoSnowArea_static = TreeRegion;
+		  // gtk_todo
 		  XClearArea(display, SnowWin, 0,0,0,0,exposures);
 	       }
 	       break;
@@ -1394,6 +1441,7 @@ void convert_ontree_to_flakes()
 	 break;
    }
    ontrees = 0;
+#if 0
 #ifdef USEX11
    XDestroyRegion(snow_on_trees_region);
    snow_on_trees_region = XCreateRegion();
@@ -1401,6 +1449,9 @@ void convert_ontree_to_flakes()
    cairo_region_destroy(snow_on_trees_region);
    snow_on_trees_region = cairo_region_create();
 #endif
+#endif
+   REGION_DESTROY(snow_on_trees_region);
+   snow_on_trees_region = REGION_CREATE();
 }
 
 void do_stars()
@@ -1459,11 +1510,15 @@ void do_meteorite()
    points[4].y = meteorite.y1-1;
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
+   REGION_UNION(meteorite.r,NoSnowArea_dynamic);
 #else
    // gtk_todo
+#if 0
    meteorite.r = cairo_region_create();
    cairo_region_union(NoSnowArea_dynamic, meteorite.r);
+#endif
+   meteorite.r = REGION_CREATE();
+   REGION_UNION(NoSnowArea_dynamic, meteorite.r);
 #endif
    meteorite.starttime = wallclock();
    XDrawLine(display, SnowWin, meteorite.gc, 
@@ -1480,6 +1535,7 @@ void do_emeteorite()
       {
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
+#if 0
 #ifdef USEX11
 	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
 	 XDestroyRegion(meteorite.r);
@@ -1487,6 +1543,10 @@ void do_emeteorite()
 	 cairo_region_subtract(NoSnowArea_dynamic ,meteorite.r);
 	 cairo_region_destroy(meteorite.r);
 #endif
+#endif
+	 REGION_SUBTRACT(NoSnowArea_dynamic ,meteorite.r);
+	 REGION_DESTROY(meteorite.r);
+
 	 meteorite.active = 0;
       }
    XFlush(display);
@@ -1713,11 +1773,14 @@ void do_testing()
    NoSnowArea_static = TreeRegion;
    //P("%d:\n",ntrees);
    return;
+#if 0
 #ifdef USEX11
    Region region;
 #else
    cairo_region_t *region;
 #endif
+#endif
+   REGION_DECLARE region;
    //region = SantaRegion;
    //region = NoSnowArea_static;
    region = snow_on_trees_region;
@@ -2219,11 +2282,14 @@ void init_baum_koordinaten()
       int flop = (drand48()>0.5);
       tree[ntrees].rev  = flop;
 
+#if 0
 #ifdef USEX11
       Region r;
 #else
       cairo_region_t *r;
 #endif
+#endif
+      REGION_DECLARE r;
 
       switch(tt)
       {
@@ -2234,6 +2300,7 @@ void init_baum_koordinaten()
 	    r = regionfromxpm(xpmtrees[tt],tree[ntrees].rev);
 	    break;
       }
+#if 0
 #ifdef USEX11
       XOffsetRegion(r,x,y);
       XUnionRegion(r,TreeRegion,TreeRegion);
@@ -2243,6 +2310,10 @@ void init_baum_koordinaten()
       cairo_region_union(TreeRegion,r);
       cairo_region_destroy(r);
 #endif
+#endif
+      REGION_TRANSLATE(r,x,y);
+      REGION_UNION(TreeRegion,r);
+      REGION_DESTROY(r);
       ntrees++;
    }
    //for(i=0; i<ntrees; i++)
@@ -2634,6 +2705,7 @@ void erase_trees()
 	       x, y, w, h, exposures);
    }
 
+#if 0
 #ifdef USEX11
    XDestroyRegion(TreeRegion);
    TreeRegion = XCreateRegion();
@@ -2644,8 +2716,13 @@ void erase_trees()
    TreeRegion = cairo_region_create();
    cairo_region_destroy(snow_on_trees_region);
    snow_on_trees_region = cairo_region_create();
-   ClearScreen();
 #endif
+#endif
+   REGION_DESTROY(TreeRegion);
+   TreeRegion = REGION_CREATE();
+   REGION_DESTROY(snow_on_trees_region);
+   snow_on_trees_region = REGION_CREATE();
+   ClearScreen();
 }
 
 /* ------------------------------------------------------------------ */ 
