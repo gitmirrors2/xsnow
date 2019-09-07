@@ -23,6 +23,7 @@
 #include <X11/xpm.h>
 extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
       char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
+cairo_surface_t *igdk_cairo_surface_create_from_xpm(char *data[], int flop);
 #ifdef USEX11
 extern Region regionfromxpm(char **data, int flop);
 #else

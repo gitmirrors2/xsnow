@@ -115,6 +115,28 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
    return rc;
 }
 
+cairo_surface_t *igdk_cairo_surface_create_from_xpm(char *data[], int flop)
+{
+
+   int lines, i, ncolors, height, w;
+   char **idata;
+
+   sscanf(data[0],"%*s %d %d %d", &height, &ncolors, &w);
+   lines = height+ncolors+1;
+   idata = malloc(lines*sizeof(*idata));
+   for (i=0; i<lines; i++)
+      idata[i] = strdup(data[i]);
+   if(flop)
+      // flop the image data
+      for (i=1+ncolors; i<lines; i++)
+	 strrevert(idata[i],w);
+
+   GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)idata);
+   cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(
+	 pixbuf, 0, 0);
+   return surface;
+}
+
 #ifdef USEX11
 // given xpmdata **data, add the non-transparent pixels to Region r
 Region regionfromxpm(char **data, int flop)
