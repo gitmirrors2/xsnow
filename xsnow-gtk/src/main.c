@@ -81,6 +81,13 @@
 #define P(...)
 #endif
 
+// gtk - cairo stuff
+static GtkWidget       *gtkwin  = NULL;
+static GdkWindow       *gdkwin  = NULL;
+static cairo_surface_t *surface = NULL;
+static cairo_t         *cr      = NULL;
+static GtkWidget       *darea   = NULL;
+
 #ifdef USEX11
 typedef Region REGION;
 typedef int    REGION_OVERLAP_T;
@@ -103,13 +110,11 @@ static Region region_create_rectangle(int x, int y, int w, int h)
 #define REGION_OVERLAP_RECTANGLE_IN RectangleIn
 #define REGION_OVERLAP_RECTANGLE_PART RectanglePart
 #define REGION_CREATE_RECTANGLE(x,y,w,h) region_create_rectangle(x,y,w,h)
+static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
+{
+   return FALSE;
+}
 #else
-// gtk - cairo stuff
-static GtkWidget       *gtkwin  = NULL;
-static GdkWindow       *gdkwin  = NULL;
-static cairo_t         *cr      = NULL;
-static cairo_surface_t *surface = NULL;
-static GtkWidget       *darea   = NULL;
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
    static int counter =0;
@@ -150,14 +155,15 @@ int     SnowWinY;
 
 // locals
 // snow flakes stuff
-static float blowofffactor;
-static int   DoNotMakeSnow = 0;
-static Snow  *firstflake = 0;
-static int   flakecount = 0;
-static float flakes_per_sec;
-static int   MaxSnowFlakeHeight = 0;  /* Biggest flake */
-static int   MaxSnowFlakeWidth = 0;   /* Biggest flake */
-static float SnowSpeedFactor;
+static float   blowofffactor;
+static int     DoNotMakeSnow = 0;
+static Snow    *firstflake = 0;
+static int     flakecount = 0;
+static float   flakes_per_sec;
+static int     MaxSnowFlakeHeight = 0;  /* Biggest flake */
+static int     MaxSnowFlakeWidth = 0;   /* Biggest flake */
+static float   SnowSpeedFactor;
+static GdkRGBA snow_rgba;
 
 // fallen snow stuff
 static FallenSnow *fsnow_first = 0;
@@ -1017,30 +1023,22 @@ void do_snow_on_trees()
    GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,testregion);
    cairo_t *cairocontext =
       gdk_drawing_context_get_cairo_context (gdkcontext);
-   cairo_set_source_rgba(cairocontext,1,0.8,0,1);
+   cairo_set_source_rgba(cairocontext,1,1,0,1);
    cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
    cairo_paint(cairocontext);
    gdk_window_end_draw_frame(gdkwin,gdkcontext);
    REGION_DESTROY(testregion);
-   gtk_widget_queue_draw_area(darea,100,100,40,40);
-   P("numrectangles: %d\n",cairo_region_num_rectangles(snow_on_trees_region));
-#if 0
-   int i;
-   for (i=0; i<cairo_region_num_rectangles(snow_on_trees_region; i++))
-   {
-      GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame etc...
 
-   }
-#endif
-
-#if 0
-   GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
-   cairo_set_source_rgba(cr,1,0,0,1);
-   cairo_rectangle(cr,0,0,SnowWinWidth,SnowWinHeight);
-   cairo_fill(cr);
+   gdkcontext = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
+   cairocontext =
+      gdk_drawing_context_get_cairo_context (gdkcontext);
+   cairo_set_source_rgb(cairocontext,snow_rgba.red,snow_rgba.green,snow_rgba.blue);
+   cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cairocontext);
    gdk_window_end_draw_frame(gdkwin,gdkcontext);
-   gtk_widget_queue_draw_area(gtkwin,0,0,SnowWinWidth,SnowWinHeight);
-#endif
+   //gtk_widget_queue_draw_area(darea,100,100,40,40);
+   P("numrectangles: %d\n",cairo_region_num_rectangles(snow_on_trees_region));
+
 #endif
 }
 
@@ -1833,6 +1831,7 @@ void update_windows()
 void do_testing()
 {
    return;
+#if 0
    static int first = 1;
    if(first)
    {
@@ -1844,31 +1843,32 @@ void do_testing()
    NoSnowArea_static = TreeRegion;
    //P("%d:\n",ntrees);
    return;
-#if 0
-#ifdef USEX11
-   Region region;
-#else
-   cairo_region_t *region;
-#endif
 #endif
    REGION region;
    //region = SantaRegion;
    //region = NoSnowArea_static;
-   region = snow_on_trees_region;
+   //region = snow_on_trees_region;
    //region = NoSnowArea_dynamic;
    //region = SantaPlowRegion;
-   //region = TreeRegion;
+   region = TreeRegion;
 
    XSetFunction(display,   testingGC, GXcopy);
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
 #if USEX11
    XSetRegion(display,     testingGC, region);
-#else
-   // gtk_todo
-#endif
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
+#else
+   // gtk_todo
+   GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,region);
+   cairo_t *cairocontext =
+      gdk_drawing_context_get_cairo_context (gdkcontext);
+   cairo_set_source_rgb(cairocontext,0,0,0);
+   cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cairocontext);
+   gdk_window_end_draw_frame(gdkwin,gdkcontext);
+#endif
 }
 
 void do_fuse()
@@ -3147,6 +3147,8 @@ void init_snow_color()
    snowcPix = iAllocNamedColor(flags.snowColor, white);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], snowcPix);
+   if (!gdk_rgba_parse(&snow_rgba,flags.snowColor))
+      gdk_rgba_parse(&snow_rgba,"white");
 }
 
 void init_SnowSpeedFactor()
