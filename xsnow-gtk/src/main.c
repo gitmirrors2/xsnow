@@ -74,7 +74,7 @@
 #ifdef DEBUG
 #undef DEBUG
 #endif
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
 #else
@@ -82,35 +82,50 @@
 #endif
 
 #ifdef USEX11
-#define REGION_DECLARE Region
-#define REGION_CREATE XCreateRegion
-#define REGION_DESTROY XDestroyRegion
-#define REGION_SUBTRACT(x,y) XSubtractRegion(x,y,x)
-#define REGION_UNION(x,y) XUnionRegion(x,y,x)
-#define REGION_TRANSLATE XOffsetRegion
-#define REGION_OVERLAP_T int
-#define REGION_OVERLAP_RECT(r,x,y,w,h) XRectInRegion(r,x,y,w,h)
-#define REGION_OVERLAP_RECTANGLE_IN RectangleIn
-#define REGION_OVERLAP_RECTANGLE_PART RectanglePart
+typedef Region REGION;
+typedef int    REGION_OVERLAP_T;
 static Region region_create_rectangle(int x, int y, int w, int h)
 {
    XPoint p[5];
-   p[0] = {x  , y  };
-   p[1] = {x+w, y  };
-   p[2] = {x+w, y+h};
-   p[3] = {x  , y+h}; 
-   p[4] = {x  , y  };
+   p[0] = (XPoint){x  , y  };
+   p[1] = (XPoint){x+w, y  };
+   p[2] = (XPoint){x+w, y+h};
+   p[3] = (XPoint){x  , y+h}; 
+   p[4] = (XPoint){x  , y  };
    return XPolygonRegion(p, 5, EvenOddRule);
 }
+#define REGION_CREATE() XCreateRegion()
+#define REGION_DESTROY(r) XDestroyRegion(r)
+#define REGION_SUBTRACT(x,y) XSubtractRegion(x,y,x)
+#define REGION_UNION(x,y) XUnionRegion(x,y,x)
+#define REGION_TRANSLATE(r,dx,dy) XOffsetRegion(r,dx,dy)
+#define REGION_OVERLAP_RECT(r,x,y,w,h) XRectInRegion(r,x,y,w,h)
+#define REGION_OVERLAP_RECTANGLE_IN RectangleIn
+#define REGION_OVERLAP_RECTANGLE_PART RectanglePart
 #define REGION_CREATE_RECTANGLE(x,y,w,h) region_create_rectangle(x,y,w,h)
 #else
-#define REGION_DECLARE cairo_region_t * 
-#define REGION_CREATE cairo_region_create
-#define REGION_DESTROY cairo_region_destroy
+// gtk - cairo stuff
+static GtkWidget       *gtkwin  = NULL;
+static GdkWindow       *gdkwin  = NULL;
+static cairo_t         *cr      = NULL;
+static cairo_surface_t *surface = NULL;
+static GtkWidget       *darea   = NULL;
+static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
+{
+   static int counter =0;
+   P("draw_cb: %d\n",counter++);
+   cairo_set_source_surface (cr, surface, 0, 0);
+   cairo_paint (cr);
+
+   return FALSE;
+}
+typedef cairo_region_t         *REGION;
+typedef cairo_region_overlap_t REGION_OVERLAP_T;
+#define REGION_CREATE() cairo_region_create()
+#define REGION_DESTROY(r) cairo_region_destroy(r)
 #define REGION_SUBTRACT(x,y) cairo_region_subtract(x,y)
 #define REGION_UNION(x,y) cairo_region_union(x,y)
-#define REGION_TRANSLATE cairo_region_translate
-#define REGION_OVERLAP_T cairo_region_overlap_t
+#define REGION_TRANSLATE(r,dx,dy) cairo_region_translate(r,dx,dy)
 #define REGION_OVERLAP_RECT(r,x,y,w,h) cairo_region_contains_rectangle(r,&(cairo_rectangle_int_t){x,y,w,h})
 #define REGION_OVERLAP_RECTANGLE_IN CAIRO_REGION_OVERLAP_IN
 #define REGION_OVERLAP_RECTANGLE_PART CAIRO_REGION_OVERLAP_PART
@@ -236,8 +251,8 @@ static double WindTimer;
 // desktop stuff
 static int       Isdesktop;
 static int       Usealpha;
-static XPoint    *snow_on_trees;
-static GtkWidget *gtkwin = NULL;
+static XPoint          *snow_on_trees;
+
 
 /* Colo(u)rs */
 static char *blackColor = "black";
@@ -283,12 +298,12 @@ static cairo_region_t *snow_on_trees_region;
 #endif
 #endif
 // region stuff
-static REGION_DECLARE NoSnowArea_dynamic;
-static REGION_DECLARE NoSnowArea_static;
-static REGION_DECLARE TreeRegion;
-static REGION_DECLARE SantaRegion;
-static REGION_DECLARE SantaPlowRegion;
-static REGION_DECLARE snow_on_trees_region;
+static REGION NoSnowArea_dynamic;
+static REGION NoSnowArea_static;
+static REGION TreeRegion;
+static REGION SantaRegion;
+static REGION SantaPlowRegion;
+static REGION snow_on_trees_region;
 
 /* Forward decls */
 // declare actions for alarms:
@@ -992,11 +1007,41 @@ void do_snow_on_trees()
    }
 #ifdef USEX11
    XSetRegion(display, SnowOnTreesGC, snow_on_trees_region);
-   // gtk_todo
-#else
-#endif
    XSetForeground(display, SnowOnTreesGC, snowcPix); 
    XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
+#else
+   // gtk_todo
+   REGION testregion;
+   P("testregion %d\n",RunCounter);
+   testregion = REGION_CREATE_RECTANGLE(100,900,40,40);
+   GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,testregion);
+   cairo_t *cairocontext =
+      gdk_drawing_context_get_cairo_context (gdkcontext);
+   cairo_set_source_rgba(cairocontext,1,0.8,0,1);
+   cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cairocontext);
+   gdk_window_end_draw_frame(gdkwin,gdkcontext);
+   REGION_DESTROY(testregion);
+   gtk_widget_queue_draw_area(darea,100,100,40,40);
+   P("numrectangles: %d\n",cairo_region_num_rectangles(snow_on_trees_region));
+#if 0
+   int i;
+   for (i=0; i<cairo_region_num_rectangles(snow_on_trees_region; i++))
+   {
+      GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame etc...
+
+   }
+#endif
+
+#if 0
+   GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
+   cairo_set_source_rgba(cr,1,0,0,1);
+   cairo_rectangle(cr,0,0,SnowWinWidth,SnowWinHeight);
+   cairo_fill(cr);
+   gdk_window_end_draw_frame(gdkwin,gdkcontext);
+   gtk_widget_queue_draw_area(gtkwin,0,0,SnowWinWidth,SnowWinHeight);
+#endif
+#endif
 }
 
 
@@ -1806,7 +1851,7 @@ void do_testing()
    cairo_region_t *region;
 #endif
 #endif
-   REGION_DECLARE region;
+   REGION region;
    //region = SantaRegion;
    //region = NoSnowArea_static;
    region = snow_on_trees_region;
@@ -2108,19 +2153,19 @@ void updateSnowFlake(Snow *flake)
 	       {
 		  // pixel (xbot,j) is snow-on-tree
 		  found = 1;
+		  int p = RandInt(4);
 #ifdef USEX11
 		  XRectangle rec;
 		  rec.x = xbot;
-		  int p = RandInt(4);
 		  rec.y = j-p+1;
 		  rec.width = p;
 		  rec.height = p;
 		  XUnionRectWithRegion(&rec, snow_on_trees_region, snow_on_trees_region);
 #else
-		  int p = RandInt(4);
 		  cairo_rectangle_int_t rec = {xbot,j-p+1,p,p};
 		  cairo_region_union_rectangle(snow_on_trees_region,&rec);
 #endif
+		  //P("add to snow_on_trees: %d %d %d %d\n",rec.x,rec.y,rec.width,rec.height);
 		  if(!flags.NoBlowSnow && ontrees < flags.maxontrees)
 		  {
 		     snow_on_trees[ontrees].x = rec.x;
@@ -2351,7 +2396,7 @@ void init_baum_koordinaten()
       cairo_region_t *r;
 #endif
 #endif
-      REGION_DECLARE r;
+      REGION r;
 
       switch(tt)
       {
@@ -3290,9 +3335,22 @@ int determine_window()
 	    {
 	       gtk_window_close(GTK_WINDOW(gtkwin));
 	       gtk_widget_destroy(GTK_WIDGET(gtkwin));
+	       // gtk_todo: gdkwin, surface, cr
 	    }
 	    create_transparent_window(flags.fullscreen, flags.below,
 		  &SnowWin, &SnowWinName, &gtkwin);
+
+	    gdkwin  = gtk_widget_get_window(gtkwin);
+	    surface = gdk_window_create_similar_surface (gdkwin, CAIRO_CONTENT_COLOR_ALPHA,w,h);
+	    cr      = cairo_create(surface);
+	    darea   = gtk_drawing_area_new();
+	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
+	    cairo_set_source_rgba(cr,0,0,0,0);
+	    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	    cairo_paint(cr);
+	    g_signal_connect(G_OBJECT(darea),"draw",G_CALLBACK(draw_cb),NULL);
+	    gtk_widget_show_all(gtkwin);
+
 	    Isdesktop = 1;
 	    Usealpha  = 1;
 	    XGetGeometry(display,SnowWin,&root,
