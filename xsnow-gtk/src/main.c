@@ -70,6 +70,7 @@
 #include "windows.h"
 #include "wmctrl.h"
 #include "xsnow.h"
+#include "x11cairo.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -89,30 +90,6 @@ static cairo_t         *cr      = NULL;
 static GtkWidget       *darea   = NULL;
 
 #ifdef USEX11
-typedef Region     REGION;
-typedef int        REGION_OVERLAP_T;
-typedef XRectangle RECTANGLE;
-static Region region_create_rectangle(int x, int y, int w, int h)
-{
-   XPoint p[5];
-   p[0] = (XPoint){x  , y  };
-   p[1] = (XPoint){x+w, y  };
-   p[2] = (XPoint){x+w, y+h};
-   p[3] = (XPoint){x  , y+h}; 
-   p[4] = (XPoint){x  , y  };
-   return XPolygonRegion(p, 5, EvenOddRule);
-}
-#define REGION_CREATE() XCreateRegion()
-#define REGION_DESTROY(r) XDestroyRegion(r)
-#define REGION_SUBTRACT(x,y) XSubtractRegion(x,y,x)
-#define REGION_UNION(x,y) XUnionRegion(x,y,x)
-#define REGION_TRANSLATE(r,dx,dy) XOffsetRegion(r,dx,dy)
-#define REGION_OVERLAP_RECT(r,x,y,w,h) XRectInRegion(r,x,y,w,h)
-#define REGION_OVERLAP_RECTANGLE_IN RectangleIn
-#define REGION_OVERLAP_RECTANGLE_PART RectanglePart
-#define REGION_CREATE_RECTANGLE(x,y,w,h) region_create_rectangle(x,y,w,h)
-#define REGION_UNION_RECTANGLE(r,x,y,w,h) XUnionRectWithRegion( \
-      &(RECTANGLE){x,y,w,h}, r,r)
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
    return FALSE;
@@ -127,22 +104,6 @@ static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 
    return FALSE;
 }
-typedef cairo_region_t         *REGION;
-typedef cairo_region_overlap_t REGION_OVERLAP_T;
-typedef cairo_rectangle_int_t  RECTANGLE;
-#define REGION_CREATE() cairo_region_create()
-#define REGION_DESTROY(r) cairo_region_destroy(r)
-#define REGION_SUBTRACT(x,y) cairo_region_subtract(x,y)
-#define REGION_UNION(x,y) cairo_region_union(x,y)
-#define REGION_TRANSLATE(r,dx,dy) cairo_region_translate(r,dx,dy)
-#define REGION_OVERLAP_RECT(r,x,y,w,h) cairo_region_contains_rectangle( \
-      r,&(cairo_rectangle_int_t){x,y,w,h})
-#define REGION_OVERLAP_RECTANGLE_IN CAIRO_REGION_OVERLAP_IN
-#define REGION_OVERLAP_RECTANGLE_PART CAIRO_REGION_OVERLAP_PART
-#define REGION_CREATE_RECTANGLE(x,y,w,h) cairo_region_create_rectangle( \
-      &(cairo_rectangle_int_t){x,y,w,h})
-#define REGION_UNION_RECTANGLE(r,x,y,w,h) cairo_region_union_rectangle( \
-      r,&(RECTANGLE){x,y,w,h})
 #endif
 
 // from flags.h
@@ -432,7 +393,6 @@ int main(int argc, char *argv[])
    star = malloc(sizeof(*star)); // will be re-allocated in init_stars
    tree = malloc(sizeof(*tree)); // will be re-allocated in init_baum_koordinaten
    srand48((unsigned int)wallclock());
-   SnowMap *rp;
    //signal(SIGKILL, SigHandler);  // wwvv
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
@@ -499,11 +459,13 @@ int main(int argc, char *argv[])
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
-      rp = &snowPix[flake];
+      SnowMap *rp = &snowPix[flake];
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
 	    rp->snowBits, rp->width, rp->height);
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+
+      rp->r = regionfromxbm((unsigned char*)rp->snowBits, rp->width, rp->height);
    }
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	 (char*)starPix.starBits, starPix.width, starPix.height);
@@ -2017,19 +1979,6 @@ void updateSnowFlake(Snow *flake)
 		  // pixel (xbot,j) is snow-on-tree
 		  found = 1;
 		  int p = RandInt(4);
-#if 0
-#ifdef USEX11
-		  XRectangle rec;
-		  rec.x = xbot;
-		  rec.y = j-p+1;
-		  rec.width = p;
-		  rec.height = p;
-		  XUnionRectWithRegion(&rec, snow_on_trees_region, snow_on_trees_region);
-#else
-		  cairo_rectangle_int_t rec = {xbot,j-p+1,p,p};
-		  cairo_region_union_rectangle(snow_on_trees_region,&rec);
-#endif
-#endif
 		  REGION_UNION_RECTANGLE(snow_on_trees_region,xbot,j-p+1,p,p);
 		  //P("add to snow_on_trees: %d %d %d %d\n",rec.x,rec.y,rec.width,rec.height);
 		  if(!flags.NoBlowSnow && ontrees < flags.maxontrees)
@@ -2088,6 +2037,19 @@ void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 	 x + flake->w, y + flake->h);
    XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
 	 x, y, flake->w, flake->h);
+#if 0
+   REGION r;
+   r = REGION_CREATE_RECTANGLE(x,y,flake->w,flake->h);
+   GdkDrawingContext *c = 
+      gdk_window_begin_draw_frame(gdkwin,r);
+   cairo_t *cc = 
+      gdk_drawing_context_get_cairo_context(c);
+   cairo_set_source_surface( 
+	 cc,FlakeSurface[flake->whatFlake],x,y);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame(gdkwin, c);
+   REGION_DESTROY(r);
+#endif
 }
 
 void eraseSnowFlake(Snow *flake)
@@ -2095,6 +2057,7 @@ void eraseSnowFlake(Snow *flake)
    if(flags.NoSnowFlakes) return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+#ifdef USEX11
    if(Usealpha|flags.usebg)
    {
       XSetTSOrigin(display, eSnowGC[flake->whatFlake], 
@@ -2107,6 +2070,17 @@ void eraseSnowFlake(Snow *flake)
 	    x, y,
 	    flake->w, flake->h,
 	    exposures);
+#else
+   REGION r;
+   r = REGION_CREATE_RECTANGLE(x,y,flake->w,flake->h);
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin,r);
+   cairo_t *cc = gdk_drawing_context_get_cairo_context(c);
+   cairo_set_source_rgba(cc,0,0,0,0);
+   cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame(gdkwin,c);
+   REGION_DESTROY(r);
+#endif
 }
 
 // fallen snow and trees must have been initialized 
@@ -2509,15 +2483,6 @@ void UpdateSanta()
    if (SantaY < 0) SantaY = 0;
    if (RandInt(100) > 80) SantaYStep = -SantaYStep;
 
-#if 0
-#ifdef USEX11
-   XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
-   XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
-#else
-   cairo_region_translate(SantaRegion,     SantaX - oldx, SantaY - oldy);
-   cairo_region_translate(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
-#endif
-#endif
    REGION_TRANSLATE(SantaRegion,     SantaX - oldx, SantaY - oldy);
    REGION_TRANSLATE(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
 
@@ -2557,7 +2522,8 @@ void DrawSanta1()
    GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
    cairo_t *cc =
       gdk_drawing_context_get_cairo_context (c);
-   cairo_set_source_surface(cc,SantaSurface[CurrentSanta],SantaX,SantaY);
+   cairo_set_source_surface(
+	 cc,SantaSurface[CurrentSanta],SantaX,SantaY);
    cairo_paint(cc);
    gdk_window_end_draw_frame (gdkwin, c);
    REGION_DESTROY(r);
@@ -3019,6 +2985,9 @@ void set_gc_functions()
       XSetStipple(    display, eSnowGC[i], snowPix[i].pixmap);
       XSetForeground( display, eSnowGC[i], erasePixel);
       XSetFillStyle(  display, eSnowGC[i], FillStippled);
+
+      //FlakeSurface[i] = igdk_cairo_surface_create_from_xpm();
+
    }
 
    for (i=0; i<STARANIMATIONS; i++)

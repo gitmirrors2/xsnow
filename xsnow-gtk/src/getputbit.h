@@ -18,13 +18,10 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-#ifndef IXPM_H
-#define IXPM_H
-#include <X11/xpm.h>
-#include "x11cairo.h"
-extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
-      char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
-cairo_surface_t *igdk_cairo_surface_create_from_xpm(char *data[], int flop);
-extern REGION regionfromxpm(char **data, int flop);
-extern REGION regionfromxbm(unsigned char *data, int width, int height);
+#ifndef GETPUTBIT_H
+#define GETPUTBIT_H
+
+unsigned int getbit(unsigned char *a, unsigned int index);
+void putbit(unsigned char *a, unsigned int index, unsigned int bit);
+
 #endif

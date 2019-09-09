@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "ixpm.h"
+#include "getputbit.h"
+#include "x11cairo.h"
+
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
       Display	*display,
@@ -137,12 +140,11 @@ cairo_surface_t *igdk_cairo_surface_create_from_xpm(char *data[], int flop)
    return surface;
 }
 
-#ifdef USEX11
 // given xpmdata **data, add the non-transparent pixels to Region r
-Region regionfromxpm(char **data, int flop)
+REGION regionfromxpm(char **data, int flop)
 {
    int w,h,nc,n;
-   Region r = XCreateRegion();
+   REGION r = REGION_CREATE();
    // width, height, #colors, $chars to code color
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    //printf("%d: %d %d %d %d %ld\n",__LINE__,w,h,nc,n,strlen(*data));
@@ -163,9 +165,6 @@ Region regionfromxpm(char **data, int flop)
       }
    }
    //printf("%d: code [%s]\n",__LINE__,code);
-   XRectangle rect;
-   rect.width = 1;
-   rect.height = 1;
    int y;
    for (y=0; y<h; y++)
    {
@@ -175,27 +174,46 @@ Region regionfromxpm(char **data, int flop)
       if(flop)
 	 strrevert(s,n);
       for(x=0; x<w; x++)
-      {
-	 //printf("%d: %d %d %d %d\n",__LINE__,x,y,offset,n);
 	 if (strncmp(s+n*x,code,n))
-	 {
-	    rect.x = x;
-	    rect.y = y;
-	    XUnionRectWithRegion(&rect,r,r);
-	 }
-      }
+	    REGION_UNION_RECTANGLE(r,x,y,1,1);
       free(s);
    }
    free(code);
    return r;
 }
-#else
-// given xpmdata **data, add the non-transparent pixels to Region r
-cairo_region_t *regionfromxpm(char **data, int flop)
+
+REGION regionfromxbm(unsigned char *data, int width, int height)
 {
-   int w,h,nc,n;
-   cairo_region_t *r = cairo_region_create();
+   REGION r = cairo_region_create();
+
+   int x,y,k,w;
+
+   // xbm aligned on bytes, so the number of bits actually used:
+   // width   #bits
+   //   0       0
+   //   1       8
+   //   7       8
+   //   8       8
+   //   9      16
+   //  10      16
+   //  15      16
+   //  16      16
+   //  17      24
+   //
+   w = 8*((width+7)/8);
+
+   for (y = 0; y< height; y++)
+   {
+      k = y*w;
+      for (x = 0; x< width; x++)
+	 if (getbit(data,k++))
+	    REGION_UNION_RECTANGLE(r,x,y,1,1);
+   }
+   return r;
+#if 0
+
    // width, height, #colors, $chars to code color
+
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    //printf("%d: %d %d %d %d %ld\n",__LINE__,w,h,nc,n,strlen(*data));
    // find color "None":
@@ -240,5 +258,5 @@ cairo_region_t *regionfromxpm(char **data, int flop)
    }
    free(code);
    return r;
-}
 #endif
+}

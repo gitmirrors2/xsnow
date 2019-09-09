@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include "x11cairo.h"
 
 #define SOMENUMBER 42
 
@@ -123,6 +124,7 @@
 typedef struct SnowMap {
    char *snowBits;
    Pixmap pixmap;
+   REGION r;
    int width;
    int height;
 } SnowMap;
@@ -150,11 +152,7 @@ typedef struct MeteoMap {
    int x1,x2,y1,y2,active;
    double starttime;
    GC gc,egc;
-#ifdef USEX11 
-   Region r;
-#else
-   cairo_region_t *r;
-#endif
+   REGION r;
 } MeteoMap;
 
 /* ------------------------------------------------------------------ */

@@ -18,13 +18,22 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-#ifndef IXPM_H
-#define IXPM_H
-#include <X11/xpm.h>
-#include "x11cairo.h"
-extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
-      char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
-cairo_surface_t *igdk_cairo_surface_create_from_xpm(char *data[], int flop);
-extern REGION regionfromxpm(char **data, int flop);
-extern REGION regionfromxbm(unsigned char *data, int width, int height);
-#endif
+#include "getputbit.h"
+/*
+ * a rude implementation of getting a bit from or setting a 
+ * bit in an unsigned char*.
+ *
+ */
+unsigned int getbit(unsigned char *a, unsigned int index)
+{
+   unsigned int charpos = index >>3;
+   unsigned int bitpos  = index - (charpos<<3);
+   return ((a[charpos]>>bitpos) & 1 );
+}
+void putbit(unsigned char *a, unsigned int index, unsigned int bit)
+{
+   unsigned int charpos = index >>3;
+   unsigned int bitpos  = index - (charpos<<3);
+   unsigned char m = 1<<bitpos;
+   a[charpos] = (a[charpos] & ~m) | ((bit & 1)<<bitpos);
+}
