@@ -1,3 +1,7 @@
+version 2.0.11
+	pixmaps.c: corrected width and height for snow.
+	main.c: simplified create rectangular region
+
 version 2.0.10
 	prepare for running in wayland by setting environment
 	  variable GDK_BACKEND=x11 (main.c)

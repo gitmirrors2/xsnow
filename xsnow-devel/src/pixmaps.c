@@ -30,13 +30,13 @@
 #include "Pixmaps/snow06.xbm"
 
 SnowMap snowPix[] = {
-   {snow00_bits, None, snow00_height, snow00_width},
-   {snow01_bits, None, snow01_height, snow01_width},
-   {snow02_bits, None, snow02_height, snow02_width},
-   {snow03_bits, None, snow03_height, snow03_width},
-   {snow04_bits, None, snow04_height, snow04_width},
-   {snow05_bits, None, snow05_height, snow05_width},
-   {snow06_bits, None, snow06_height, snow06_width},
+   {snow00_bits, None, snow00_width, snow00_height},
+   {snow01_bits, None, snow01_width, snow01_height},
+   {snow02_bits, None, snow02_width, snow02_height},
+   {snow03_bits, None, snow03_width, snow03_height},
+   {snow04_bits, None, snow04_width, snow04_height},
+   {snow05_bits, None, snow05_width, snow05_height},
+   {snow06_bits, None, snow06_width, snow06_height},
 }; 
 
 #include "Pixmaps/BigSanta1.xpm"
