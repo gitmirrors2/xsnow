@@ -2033,10 +2033,29 @@ void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    if(flags.NoSnowFlakes) return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+#ifdef USEX11
    XSetTSOrigin(display, SnowGC[flake->whatFlake], 
 	 x + flake->w, y + flake->h);
    XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
 	 x, y, flake->w, flake->h);
+#else
+   cairo_region_t *r = cairo_region_copy(snowPix[flake->whatFlake].r); 
+   //cairo_region_t *r = snowPix[flake->whatFlake].r; 
+   cairo_region_translate(r,x,y);
+
+   GdkDrawingContext *c = 
+      gdk_window_begin_draw_frame(gdkwin,r);
+   cairo_t *cc = 
+      gdk_drawing_context_get_cairo_context(c);
+
+   cairo_set_source_rgb(cc,snow_rgba.red,snow_rgba.green,snow_rgba.blue);
+   cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame(gdkwin,c);
+   cairo_region_destroy(r);
+   //cairo_region_translate(r,-x,-y);
+#endif
+
 #if 0
    REGION r;
    r = REGION_CREATE_RECTANGLE(x,y,flake->w,flake->h);
