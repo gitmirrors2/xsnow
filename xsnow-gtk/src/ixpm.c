@@ -184,7 +184,7 @@ REGION regionfromxpm(char **data, int flop)
 
 REGION regionfromxbm(unsigned char *data, int width, int height)
 {
-   REGION r = cairo_region_create();
+   REGION r = REGION_CREATE();
 
    int x,y,k,w;
 

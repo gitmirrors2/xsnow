@@ -21,19 +21,12 @@
 #ifndef X11CAIRO_H
 #define X11CAIRO_H
 #ifdef USEX11
+#include <X11/Intrinsic.h>
+#include <X11/Xlib.h>
 typedef Region     REGION;
 typedef int        REGION_OVERLAP_T;
 typedef XRectangle RECTANGLE;
-static Region region_create_rectangle(int x, int y, int w, int h)
-{
-   XPoint p[5];
-   p[0] = (XPoint){x  , y  };
-   p[1] = (XPoint){x+w, y  };
-   p[2] = (XPoint){x+w, y+h};
-   p[3] = (XPoint){x  , y+h}; 
-   p[4] = (XPoint){x  , y  };
-   return XPolygonRegion(p, 5, EvenOddRule);
-}
+Region region_create_rectangle(int x, int y, int w, int h);
 #define REGION_CREATE() XCreateRegion()
 #define REGION_DESTROY(r) XDestroyRegion(r)
 #define REGION_SUBTRACT(x,y) XSubtractRegion(x,y,x)
@@ -47,7 +40,7 @@ static Region region_create_rectangle(int x, int y, int w, int h)
       &(RECTANGLE){x,y,w,h}, r,r)
 
 #else
-
+#include <gtk/gtk.h>
 typedef cairo_region_t         *REGION;
 typedef cairo_region_overlap_t REGION_OVERLAP_T;
 typedef cairo_rectangle_int_t  RECTANGLE;

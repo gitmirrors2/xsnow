@@ -28,7 +28,7 @@ ALARM(event,          0.01          )  /* time between checking events */ \
 ALARM(fallen,         0.15 * factor )  /* time between redraw fallen snow */ \
 ALARM(fuse,           1.00          )  /* time between testing on too much flakes */ \
 ALARM(genflakes,      0.10          )  /* time between generation of flakes */ \
-ALARM(meteorite,      3.00          )  /* time between meteorites */ \
+ALARM(meteorite,      3.10          )  /* time between meteorites */ \
 ALARM(newwind,        1.00          )  /* time between changing wind */ \
 ALARM(santa,          0.05 * factor )  /* time between drawings of santa */ \
 ALARM(santa1,         0.01 * factor )  /* time between redrawings of santa */ \

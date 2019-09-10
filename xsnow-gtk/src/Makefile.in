@@ -109,7 +109,7 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-csvpos.$(OBJEXT) xsnow-dsimple.$(OBJEXT) \
 	xsnow-clientwin.$(OBJEXT) xsnow-ui.$(OBJEXT) \
 	xsnow-kdesetbg.$(OBJEXT) xsnow-transparent.$(OBJEXT) \
-	xsnow-getputbit.$(OBJEXT)
+	xsnow-getputbit.$(OBJEXT) xsnow-x11cairo.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -139,7 +139,7 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-clientwin.Po \
 	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
 	./$(DEPDIR)/xsnow-snowflakes.Po \
 	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-ui.Po \
-	./$(DEPDIR)/xsnow-wmctrl.Po
+	./$(DEPDIR)/xsnow-wmctrl.Po ./$(DEPDIR)/xsnow-x11cairo.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -567,7 +567,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		doit.h ui.c ui.h ui.glade alarm.h \
 		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h \
-		getputbit.c getputbit.h x11cairo.h
+		getputbit.c getputbit.h x11cairo.h x11cairo.c
 
 nodist_xsnow_SOURCES = ui_xml.h
 BUILT_SOURCES = ui_xml.h
@@ -682,6 +682,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transparent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wmctrl.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-x11cairo.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -940,6 +941,20 @@ xsnow-getputbit.obj: getputbit.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getputbit.c' object='xsnow-getputbit.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-getputbit.obj `if test -f 'getputbit.c'; then $(CYGPATH_W) 'getputbit.c'; else $(CYGPATH_W) '$(srcdir)/getputbit.c'; fi`
+
+xsnow-x11cairo.o: x11cairo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-x11cairo.o -MD -MP -MF $(DEPDIR)/xsnow-x11cairo.Tpo -c -o xsnow-x11cairo.o `test -f 'x11cairo.c' || echo '$(srcdir)/'`x11cairo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-x11cairo.Tpo $(DEPDIR)/xsnow-x11cairo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='x11cairo.c' object='xsnow-x11cairo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-x11cairo.o `test -f 'x11cairo.c' || echo '$(srcdir)/'`x11cairo.c
+
+xsnow-x11cairo.obj: x11cairo.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-x11cairo.obj -MD -MP -MF $(DEPDIR)/xsnow-x11cairo.Tpo -c -o xsnow-x11cairo.obj `if test -f 'x11cairo.c'; then $(CYGPATH_W) 'x11cairo.c'; else $(CYGPATH_W) '$(srcdir)/x11cairo.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-x11cairo.Tpo $(DEPDIR)/xsnow-x11cairo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='x11cairo.c' object='xsnow-x11cairo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-x11cairo.obj `if test -f 'x11cairo.c'; then $(CYGPATH_W) 'x11cairo.c'; else $(CYGPATH_W) '$(srcdir)/x11cairo.c'; fi`
 install-man6: $(man6_MANS)
 	@$(NORMAL_INSTALL)
 	@list1='$(man6_MANS)'; \
@@ -1412,6 +1427,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
+	-rm -f ./$(DEPDIR)/xsnow-x11cairo.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1475,6 +1491,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
+	-rm -f ./$(DEPDIR)/xsnow-x11cairo.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

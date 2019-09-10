@@ -240,6 +240,7 @@ static Pixel snowcPix;
 static Pixel starcPix[STARANIMATIONS];
 static Pixel trPix;
 static Pixel black, white;
+static GdkRGBA meteo_rgba;
 
 /* GC's */
 static GC CleanGC;
@@ -327,6 +328,9 @@ static void   uSsleep(long usec);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window xwininfo(char **name);
 
+#ifndef USEX11
+static void   cairoDrawFlake(Snow *flake, int erase);
+#endif
 
 static void thanks(void)
 {
@@ -357,6 +361,7 @@ int main(int argc, char *argv[])
       default:
 	 break;
    }
+   gdk_rgba_parse(&meteo_rgba,"orange");
    gtk_init(&argc, &argv);
    if (!flags.noconfig)
       writeflags();
@@ -958,7 +963,7 @@ void do_snow_on_trees()
    GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
    cairo_t *cairocontext =
       gdk_drawing_context_get_cairo_context (gdkcontext);
-   cairo_set_source_rgb(cairocontext,snow_rgba.red,snow_rgba.green,snow_rgba.blue);
+   gdk_cairo_set_source_rgba(cairocontext,&snow_rgba);
    cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
    cairo_paint(cairocontext);
    gdk_window_end_draw_frame(gdkwin,gdkcontext);
@@ -1422,6 +1427,43 @@ void do_ustars()
 	 star[i].color = RandInt(STARANIMATIONS);
 }
 
+#ifndef USEX11
+void cairoDrawMeteorite(MeteoMap *meteorite, int erase)
+{
+   P("meteo %d %d %d %d %d\n",erase,
+	 meteorite->x1,meteorite->y1,meteorite->x2,meteorite->y2);
+   int x = meteorite->x1 < meteorite->x2 ? meteorite->x1 : meteorite->x2;
+   int y = meteorite->y1 < meteorite->y2 ? meteorite->y1 : meteorite->y2;
+   int w = abs(meteorite->x1-meteorite->x2);
+   int h = abs(meteorite->y1-meteorite->y2);
+   P("meteo1 %d %d %d %d\n",x,y,w,h);
+
+   if (!erase)
+      meteorite->r = REGION_CREATE_RECTANGLE(x,y,w,h);
+
+   GdkDrawingContext *c = 
+      gdk_window_begin_draw_frame(gdkwin,meteorite->r);
+   cairo_t *cc = 
+      gdk_drawing_context_get_cairo_context(c);
+
+   if(erase)
+   {
+      gdk_cairo_set_source_rgba(cc,&(GdkRGBA){0,0,0,0});
+      cairo_set_line_width(cc, 3);
+   }
+   else
+   {
+      gdk_cairo_set_source_rgba(cc,&meteo_rgba);
+      cairo_set_line_width (cc,2);
+   }
+   cairo_move_to(cc,meteorite->x1,meteorite->y1);
+   cairo_line_to(cc,meteorite->x2,meteorite->y2);
+   cairo_stroke(cc);
+   gdk_window_end_draw_frame(gdkwin,c);
+   //gtk_widget_queue_draw(gtkwin);
+}
+#endif
+
 void do_meteorite()
 {
    TRANSSKIP;
@@ -1452,26 +1494,23 @@ void do_meteorite()
    points[4].y = meteorite.y1-1;
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-   REGION_UNION(meteorite.r,NoSnowArea_dynamic);
-#else
-   // gtk_todo
-#if 0
-   meteorite.r = cairo_region_create();
-   cairo_region_union(NoSnowArea_dynamic, meteorite.r);
-#endif
-   meteorite.r = REGION_CREATE();
-   REGION_UNION(NoSnowArea_dynamic, meteorite.r);
-#endif
-   meteorite.starttime = wallclock();
+   REGION_UNION(NoSnowArea_dynamic,meteorite.r);
    XDrawLine(display, SnowWin, meteorite.gc, 
 	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
    XFlush(display);
+#else
+   // gtk_todo
+   cairoDrawMeteorite(&meteorite,0);
+#endif
+
+   meteorite.starttime = wallclock();
 }
 
 void do_emeteorite()
 {
    TRANSSKIP;
    if(flags.NoMeteorites) return;
+#if USEX11
    if (meteorite.active)
       if (wallclock() - meteorite.starttime > 0.3)
       {
@@ -1483,6 +1522,13 @@ void do_emeteorite()
 	 meteorite.active = 0;
       }
    XFlush(display);
+#else
+   if (meteorite.active)
+   {
+      cairoDrawMeteorite(&meteorite,1);
+      meteorite.active = 0;
+   }
+#endif
 }
 
 // used after kdesetbg: it appears that after kdesetbg 
@@ -2027,17 +2073,11 @@ void deleteFlake(Snow *flake)
       }
 }
 
-void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
+#ifndef USEX11
+void cairoDrawFlake(Snow *flake, int erase)
 {
-   if(flags.NoSnowFlakes) return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-#ifdef USEX11
-   XSetTSOrigin(display, SnowGC[flake->whatFlake], 
-	 x + flake->w, y + flake->h);
-   XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
-	 x, y, flake->w, flake->h);
-#else
    cairo_region_t *r = snowPix[flake->whatFlake].r; 
    cairo_region_translate(r,x,y);
 
@@ -2047,19 +2087,37 @@ void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    cairo_t *cc = 
       gdk_drawing_context_get_cairo_context(c);
 
-   cairo_set_source_rgb(cc,snow_rgba.red,snow_rgba.green,snow_rgba.blue);
+   if(erase)
+      gdk_cairo_set_source_rgba(cc,&(GdkRGBA){0,0,0,0});
+   else
+      gdk_cairo_set_source_rgba(cc,&snow_rgba);
    cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
    cairo_paint(cc);
    gdk_window_end_draw_frame(gdkwin,c);
+}
+#endif
+
+void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
+{
+   if(flags.NoSnowFlakes) return;
+#ifdef USEX11
+   int x = lrintf(flake->rx);
+   int y = lrintf(flake->ry);
+   XSetTSOrigin(display, SnowGC[flake->whatFlake], 
+	 x + flake->w, y + flake->h);
+   XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
+	 x, y, flake->w, flake->h);
+#else
+   cairoDrawFlake(flake,0);
 #endif
 }
 
 void eraseSnowFlake(Snow *flake)
 {
    if(flags.NoSnowFlakes) return;
+#ifdef USEX11
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-#ifdef USEX11
    if(Usealpha|flags.usebg)
    {
       XSetTSOrigin(display, eSnowGC[flake->whatFlake], 
@@ -2073,15 +2131,7 @@ void eraseSnowFlake(Snow *flake)
 	    flake->w, flake->h,
 	    exposures);
 #else
-   REGION r;
-   r = REGION_CREATE_RECTANGLE(x,y,flake->w,flake->h);
-   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin,r);
-   cairo_t *cc = gdk_drawing_context_get_cairo_context(c);
-   cairo_set_source_rgba(cc,0,0,0,0);
-   cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
-   cairo_paint(cc);
-   gdk_window_end_draw_frame(gdkwin,c);
-   REGION_DESTROY(r);
+   cairoDrawFlake(flake,1);
 #endif
 }
 

@@ -34,7 +34,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		doit.h ui.c ui.h ui.glade alarm.h \
 		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h \
-		getputbit.c getputbit.h x11cairo.h
+		getputbit.c getputbit.h x11cairo.h x11cairo.c
 
 nodist_xsnow_SOURCES = ui_xml.h
 
