@@ -2027,7 +2027,6 @@ void deleteFlake(Snow *flake)
       }
 }
 
-
 void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(flags.NoSnowFlakes) return;
@@ -2039,12 +2038,12 @@ void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
 	 x, y, flake->w, flake->h);
 #else
-   cairo_region_t *r = cairo_region_copy(snowPix[flake->whatFlake].r); 
-   //cairo_region_t *r = snowPix[flake->whatFlake].r; 
+   cairo_region_t *r = snowPix[flake->whatFlake].r; 
    cairo_region_translate(r,x,y);
 
    GdkDrawingContext *c = 
       gdk_window_begin_draw_frame(gdkwin,r);
+   cairo_region_translate(r,-x,-y);
    cairo_t *cc = 
       gdk_drawing_context_get_cairo_context(c);
 
@@ -2052,22 +2051,6 @@ void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
    cairo_paint(cc);
    gdk_window_end_draw_frame(gdkwin,c);
-   cairo_region_destroy(r);
-   //cairo_region_translate(r,-x,-y);
-#endif
-
-#if 0
-   REGION r;
-   r = REGION_CREATE_RECTANGLE(x,y,flake->w,flake->h);
-   GdkDrawingContext *c = 
-      gdk_window_begin_draw_frame(gdkwin,r);
-   cairo_t *cc = 
-      gdk_drawing_context_get_cairo_context(c);
-   cairo_set_source_surface( 
-	 cc,FlakeSurface[flake->whatFlake],x,y);
-   cairo_paint(cc);
-   gdk_window_end_draw_frame(gdkwin, c);
-   REGION_DESTROY(r);
 #endif
 }
 
