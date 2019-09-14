@@ -1,6 +1,9 @@
 version 2.0.11
 	pixmaps.c: corrected width and height for snow.
 	main.c: simplified create rectangular region
+	debian/copyright: corrected
+	main.c: remove flakes that fall below bottom of screen, also if
+	   no fallensnow on bottom
 
 version 2.0.10
 	prepare for running in wayland by setting environment

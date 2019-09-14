@@ -1786,10 +1786,16 @@ void updateSnowFlake(Snow *flake)
       return;
    }
 
-   // keep flakes within y=0 and y=snowwinheight:
+   // keep flakes y>0: 
    if (NewY < 0) { NewY = 1; flake->vy = 0;}
-   if (NewY > SnowWinHeight)
-      NewY = SnowWinHeight;
+
+   // remove flake if it falls below bottom of screen:
+   if (NewY >= SnowWinHeight)
+   {
+      eraseSnowFlake(flake);
+      deleteFlake(flake);
+      return;
+   }
 
    int nx = lrintf(NewX);
    int ny = lrintf(NewY);
