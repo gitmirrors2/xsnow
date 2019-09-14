@@ -127,6 +127,10 @@ typedef struct SnowMap {
    REGION r;
    int width;
    int height;
+#ifndef USEX11
+   cairo_surface_t *s;
+   GdkPixbuf *pixbuf;
+#endif
 } SnowMap;
 
 

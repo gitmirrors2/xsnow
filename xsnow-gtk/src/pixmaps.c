@@ -29,7 +29,7 @@
 #include "Pixmaps/snow05.xbm"
 #include "Pixmaps/snow06.xbm"
 
-SnowMap snowPix[] = {
+SnowMap snowPix[SNOWFLAKEMAXTYPE+1] = {
    {snow00_bits, None, 0, snow00_width, snow00_height},
    {snow01_bits, None, 0, snow01_width, snow01_height},
    {snow02_bits, None, 0, snow02_width, snow02_height},
@@ -39,12 +39,23 @@ SnowMap snowPix[] = {
    {snow06_bits, None, 0, snow06_width, snow06_height},
 }; 
 
+#include "Pixmaps/snow00.xpm"
+#include "Pixmaps/snow01.xpm"
+#include "Pixmaps/snow02.xpm"
+#include "Pixmaps/snow03.xpm"
+#include "Pixmaps/snow04.xpm"
+#include "Pixmaps/snow05.xpm"
+#include "Pixmaps/snow06.xpm"
+
+char **Snows[SNOWFLAKEMAXTYPE+1] =
+{snow00,snow01,snow02,snow03,snow04,snow05,snow06};
+
 #include "Pixmaps/BigSanta1.xpm"
 #include "Pixmaps/BigSanta2.xpm"
 #include "Pixmaps/BigSanta3.xpm"
 #include "Pixmaps/BigSanta4.xpm"
 
-static char **BigSanta[] = 
+static char **BigSanta[PIXINANIMATION] = 
 {BigSanta1,BigSanta2,BigSanta3,BigSanta4};
 
 #include "Pixmaps/BigSantaRudolf1.xpm"
@@ -52,7 +63,7 @@ static char **BigSanta[] =
 #include "Pixmaps/BigSantaRudolf3.xpm"
 #include "Pixmaps/BigSantaRudolf4.xpm"
 
-static char **BigSantaRudolf[] =
+static char **BigSantaRudolf[PIXINANIMATION] =
 {BigSantaRudolf1,BigSantaRudolf2,BigSantaRudolf3,BigSantaRudolf4};
 
 #include "Pixmaps/BigSanta81.xpm"
@@ -60,7 +71,7 @@ static char **BigSantaRudolf[] =
 #include "Pixmaps/BigSanta83.xpm"
 #include "Pixmaps/BigSanta84.xpm"
 
-static char **BigSanta8[] =
+static char **BigSanta8[PIXINANIMATION] =
 {BigSanta81,BigSanta82,BigSanta83,BigSanta84};
 
 #include "Pixmaps/BigSantaRudolf81.xpm"
@@ -68,7 +79,7 @@ static char **BigSanta8[] =
 #include "Pixmaps/BigSantaRudolf83.xpm"
 #include "Pixmaps/BigSantaRudolf84.xpm"
 
-static char **BigSantaRudolf8[] =
+static char **BigSantaRudolf8[PIXINANIMATION] =
 {BigSantaRudolf81,BigSantaRudolf82,BigSantaRudolf83,BigSantaRudolf84};
 
 #include "Pixmaps/MediumSanta1.xpm"
@@ -76,7 +87,7 @@ static char **BigSantaRudolf8[] =
 #include "Pixmaps/MediumSanta3.xpm"
 #include "Pixmaps/MediumSanta4.xpm"
 
-static char **MediumSanta[] =
+static char **MediumSanta[PIXINANIMATION] =
 {MediumSanta1,MediumSanta2,MediumSanta3,MediumSanta4};
 
 #include "Pixmaps/MediumSantaRudolf1.xpm"
@@ -84,7 +95,7 @@ static char **MediumSanta[] =
 #include "Pixmaps/MediumSantaRudolf3.xpm"
 #include "Pixmaps/MediumSantaRudolf4.xpm"
 
-static char **MediumSantaRudolf[] =
+static char **MediumSantaRudolf[PIXINANIMATION] =
 {MediumSantaRudolf1,MediumSantaRudolf2,MediumSantaRudolf3,MediumSantaRudolf4};
 
 #include "Pixmaps/RegularSanta1.xpm"
@@ -92,7 +103,7 @@ static char **MediumSantaRudolf[] =
 #include "Pixmaps/RegularSanta3.xpm"
 #include "Pixmaps/RegularSanta4.xpm"
 
-static char **RegularSanta[] = 
+static char **RegularSanta[PIXINANIMATION] = 
 {RegularSanta1,RegularSanta2,RegularSanta3,RegularSanta4};
 
 #include "Pixmaps/RegularSantaRudolf1.xpm"
@@ -100,7 +111,7 @@ static char **RegularSanta[] =
 #include "Pixmaps/RegularSantaRudolf3.xpm"
 #include "Pixmaps/RegularSantaRudolf4.xpm"
 
-static char **RegularSantaRudolf[] =
+static char **RegularSantaRudolf[PIXINANIMATION] =
 {RegularSantaRudolf1,RegularSantaRudolf2,RegularSantaRudolf3,RegularSantaRudolf4};
 
 #include "Pixmaps/AltSanta1.xpm"
@@ -108,7 +119,7 @@ static char **RegularSantaRudolf[] =
 #include "Pixmaps/AltSanta3.xpm"
 #include "Pixmaps/AltSanta4.xpm"
 
-static char **AltSanta[] =
+static char **AltSanta[PIXINANIMATION] =
 {AltSanta1,AltSanta2,AltSanta3,AltSanta4};
 
 #include "Pixmaps/AltSantaRudolf1.xpm"
@@ -116,7 +127,7 @@ static char **AltSanta[] =
 #include "Pixmaps/AltSantaRudolf3.xpm"
 #include "Pixmaps/AltSantaRudolf4.xpm"
 
-static char **AltSantaRudolf[] =
+static char **AltSantaRudolf[PIXINANIMATION] =
 {AltSantaRudolf1,AltSantaRudolf2,AltSantaRudolf3,AltSantaRudolf4};
 
 char ***Santas[MAXSANTA+1][2] =

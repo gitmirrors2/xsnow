@@ -44,6 +44,7 @@
 #include <X11/xpm.h>
 #include <assert.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 #include <math.h>
 #include <math.h>
 #include <signal.h>
@@ -75,12 +76,13 @@
 #ifdef DEBUG
 #undef DEBUG
 #endif
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
 #else
 #define P(...)
 #endif
+#define R(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
 
 // gtk - cairo stuff
 static GtkWidget       *gtkwin  = NULL;
@@ -97,12 +99,37 @@ static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 #else
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-   static int counter =0;
-   P("draw_cb: %d\n",counter++);
+   static int counter =0; if(counter==0){}
+   R("draw_cb: %d\n",counter++);
    cairo_set_source_surface (cr, surface, 0, 0);
    cairo_paint (cr);
 
    return FALSE;
+}
+#endif
+
+#ifdef USEX11
+static gboolean configure_event_cb(GtkWidget *widget,
+      GdkEventConfigure *event,
+      gpointer          data)
+{
+   return TRUE;
+}
+#else
+static gboolean configure_event_cb(GtkWidget *widget,
+      GdkEventConfigure *event,
+      gpointer          data)
+{
+   static int counter = 0; if(counter == 0){}
+   R("configure event %d\n",counter++);
+   if(surface)
+      cairo_surface_destroy(surface);
+   SnowWinWidth = gtk_widget_get_allocated_width(widget);
+   SnowWinHeight = gtk_widget_get_allocated_height(widget);
+   surface = gdk_window_create_similar_surface(gtk_widget_get_window (widget),
+	 CAIRO_CONTENT_COLOR_ALPHA, SnowWinWidth,SnowWinHeight);
+   cr = cairo_create(surface);
+   return TRUE;
 }
 #endif
 
@@ -362,7 +389,6 @@ int main(int argc, char *argv[])
 	 break;
    }
    gdk_rgba_parse(&meteo_rgba,"orange");
-   gtk_init(&argc, &argv);
    if (!flags.noconfig)
       writeflags();
    display = XOpenDisplay(flags.display_name);
@@ -446,6 +472,7 @@ int main(int argc, char *argv[])
 
    rootwindow = DefaultRootWindow(display);
 
+   gtk_init(&argc, &argv);
    if (!determine_window())
    {
       printf("xsnow: cannot determine window, exiting...\n");
@@ -471,6 +498,12 @@ int main(int argc, char *argv[])
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
 
       rp->r = regionfromxbm((unsigned char*)rp->snowBits, rp->width, rp->height);
+#ifndef USEX11
+      rp->pixbuf = gdk_pixbuf_new_from_xpm_data((const char**)Snows[flake]);
+      rp->s = gdk_cairo_surface_create_from_pixbuf(rp->pixbuf,0,0);
+      rp->width = cairo_image_surface_get_width(rp->s);
+      rp->height = cairo_image_surface_get_height(rp->s);
+#endif
    }
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	 (char*)starPix.starBits, starPix.width, starPix.height);
@@ -635,12 +668,14 @@ int main(int argc, char *argv[])
 
 void do_santa()
 {
+   return;
    TRANSSKIP;
    if (!flags.NoSanta)
       DrawSanta();
 }
 void do_santa1()
 {
+   return;
    TRANSSKIP;
    if (!flags.NoSanta)
       DrawSanta1();
@@ -967,6 +1002,7 @@ void do_snow_on_trees()
    cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
    cairo_paint(cairocontext);
    gdk_window_end_draw_frame(gdkwin,gdkcontext);
+   cairo_set_operator(cairocontext, CAIRO_OPERATOR_OVER);
 
 #endif
 }
@@ -1791,6 +1827,7 @@ void do_testing()
    cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
    cairo_paint(cairocontext);
    gdk_window_end_draw_frame(gdkwin,gdkcontext);
+   cairo_set_operator(cairocontext, CAIRO_OPERATOR_OVER);
 #endif
 }
 
@@ -1851,6 +1888,7 @@ int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
 void initFlake(Snow *flake)
 {
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
+   flake->whatFlake = 3;
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
    if (0) {
@@ -1913,10 +1951,16 @@ void updateSnowFlake(Snow *flake)
       return;
    }
 
-   // keep flakes within y=0 and y=snowwinheight:
+   // keep flakes y>0: 
    if (NewY < 0) { NewY = 1; flake->vy = 0;}
-   if (NewY > SnowWinHeight)
-      NewY = SnowWinHeight;
+
+   // remove flake if it falls below bottom of screen:
+   if (NewY >= SnowWinHeight)
+   {
+      eraseSnowFlake(flake);
+      deleteFlake(flake);
+      return;
+   }
 
    int nx = lrintf(NewX);
    int ny = lrintf(NewY);
@@ -2076,11 +2120,13 @@ void deleteFlake(Snow *flake)
 #ifndef USEX11
 void cairoDrawFlake(Snow *flake, int erase)
 {
+#ifdef DRAWFRAME
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
    cairo_region_t *r = snowPix[flake->whatFlake].r; 
    cairo_region_translate(r,x,y);
 
+   R("%d %d %d %d\n",x,y,flakecount,erase);
    GdkDrawingContext *c = 
       gdk_window_begin_draw_frame(gdkwin,r);
    cairo_region_translate(r,-x,-y);
@@ -2094,12 +2140,35 @@ void cairoDrawFlake(Snow *flake, int erase)
    cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
    cairo_paint(cc);
    gdk_window_end_draw_frame(gdkwin,c);
+   cairo_set_operator(cc,CAIRO_OPERATOR_OVER);
+#else
+   gint x = lrint(flake->rx);
+   gint y = lrint(flake->ry);
+   gint w = snowPix[flake->whatFlake].width; 
+   gint h = snowPix[flake->whatFlake].height; 
+   P("%d %d %d %d %d %d\n",x,y,w,h,flakecount,erase);
+   if(erase)
+   {
+      cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+      cairo_rectangle(cr,x,y,w,h);
+      cairo_fill(cr);
+      cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+   else
+   {
+      cairo_set_source_surface(cr,snowPix[flake->whatFlake].s,x,y);
+      cairo_paint(cr);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+#endif
 }
 #endif
 
 void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(flags.NoSnowFlakes) return;
+   P("%d %ld %ld\n",RunCounter,lrint(flake->rx),lrint(flake->ry));
 #ifdef USEX11
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
@@ -2606,6 +2675,7 @@ void EraseSanta(int x, int y)
    cairo_paint(cc);
    gdk_window_end_draw_frame (gdkwin, c);
    REGION_DESTROY(r);
+   cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
    //gtk_widget_queue_draw_area(gtkwin,x,y,SantaWidth,SantaHeight);
 #endif
 }
@@ -3151,6 +3221,7 @@ int determine_window()
 	    XGetGeometry(display,rootwindow,&root,
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
+#if 0
 	    if (gtkwin)
 	    {
 	       gtk_window_close(GTK_WINDOW(gtkwin));
@@ -3164,12 +3235,39 @@ int determine_window()
 	    surface = gdk_window_create_similar_surface (gdkwin, CAIRO_CONTENT_COLOR_ALPHA,w,h);
 	    cr      = cairo_create(surface);
 	    darea   = gtk_drawing_area_new();
-	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
-	    cairo_set_source_rgba(cr,0,0,0,0);
-	    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	    cairo_paint(cr);
 	    g_signal_connect(G_OBJECT(darea),"draw",G_CALLBACK(draw_cb),NULL);
+	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
+	    //cairo_set_source_rgba(cr,0,0,0,0);
+	    //cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	    //cairo_paint(cr);
+	    P("signal connect %d\n",RunCounter);
+	    g_signal_connect(darea,"configure-event",
+		  G_CALLBACK(configure_event_cb),NULL);
 	    gtk_widget_show_all(gtkwin);
+#else
+	    gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	    gtk_window_set_position(GTK_WINDOW(gtkwin),GTK_WIN_POS_CENTER);
+	    SnowWinName = strdup("Xsnow-Window");
+	    gtk_window_set_title(GTK_WINDOW(gtkwin), SnowWinName);
+
+	    darea   = gtk_drawing_area_new();
+	    g_signal_connect(G_OBJECT(darea),"draw",G_CALLBACK(draw_cb),NULL);
+
+	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
+	    g_signal_connect(darea,"configure-event",
+		  G_CALLBACK(configure_event_cb),NULL);
+
+	    if (flags.fullscreen)
+	       gtk_window_fullscreen(GTK_WINDOW(gtkwin));
+	    if(flags.below)
+	       gtk_window_set_keep_below       (GTK_WINDOW(gtkwin), TRUE);
+	    else
+	       gtk_window_set_keep_above       (GTK_WINDOW(gtkwin), TRUE);
+	    make_transparent(gtkwin);
+	    gtk_widget_show_all(gtkwin);
+	    gdkwin  = gtk_widget_get_window(gtkwin);
+	    SnowWin = gdk_x11_window_get_xid(gdkwin);
+#endif
 
 	    Isdesktop = 1;
 	    Usealpha  = 1;

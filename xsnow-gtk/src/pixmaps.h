@@ -21,10 +21,11 @@
 #ifndef PIXMAPS_H
 #define PIXMAPS_H
 #include "xsnow.h"
-extern SnowMap       snowPix[];
+extern SnowMap       snowPix[SNOWFLAKEMAXTYPE+1];
 extern StarMap       starPix;
-extern char          ***Santas[][2];
-extern char          **xpmtrees[];
-extern TannenbaumMap tannenbaumPix[];
+extern char          ***Santas[MAXSANTA+1][2];
+extern char          **xpmtrees[MAXTREETYPE+1];
+//extern TannenbaumMap tannenbaumPix[];
 extern char          **xsnow_logo;
+extern char          **Snows[SNOWFLAKEMAXTYPE+1];
 #endif

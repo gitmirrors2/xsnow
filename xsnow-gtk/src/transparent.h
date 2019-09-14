@@ -24,4 +24,5 @@
 extern void create_transparent_window(int fullscreen, int below,
       Window *w, char **name, GtkWidget **gtkwin);
 extern int supports_alpha(GtkWidget *widget);
+int make_transparent(GtkWidget *window);
 #endif

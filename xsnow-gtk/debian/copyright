@@ -1,11 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: gnome-terminal
-Source: https://download.gnome.org/sources/gnome-terminal/
+Upstream-Name: xsnow
+Source: https://sourceforge.net/projects/xsnow/files/
 
 Files: *
 Copyright: 1993-2001 Rick Jansen
            2019 Willem Vermin
-License: GPL-3+
 
 License: GPL-3+
  This program is free software: you can redistribute it and/or modify

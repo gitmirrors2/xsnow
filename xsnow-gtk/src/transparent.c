@@ -211,3 +211,57 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
 
    return FALSE;
 }
+
+int make_transparent(GtkWidget *window)
+{
+   // check if we are dealing with an alpha-blendeing screen.
+   // If not: return FALSE
+   //
+   if (!supports_alpha(window))
+      return FALSE;
+
+   gtk_widget_set_app_paintable(window, TRUE);
+
+   // Set up a callback to react to screen changes
+   //
+   g_signal_connect(G_OBJECT(window), "screen-changed",
+	 G_CALLBACK(screen_changed), NULL);
+
+   // Initialise the window and make it active.  We need this so it can
+   // fullscreen to the correct size.
+   //
+   screen_changed(window, NULL, NULL);
+   gtk_widget_show_all(window);
+
+   // Hide the window, so we can get our properties ready without the window
+   // manager trying to mess with us.
+   //
+   GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(window));
+   gdk_window_hide(GDK_WINDOW(gdk_window));
+   cairo_region_t *region = cairo_region_create();
+   gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window),
+	 region, 0,0);
+   cairo_region_destroy(region);
+   gtk_window_set_keep_below       (GTK_WINDOW(window), TRUE);
+   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(window), TRUE);
+   gtk_window_set_accept_focus     (GTK_WINDOW(window), FALSE);
+   gtk_window_set_decorated        (GTK_WINDOW(window), FALSE);
+   gtk_window_set_resizable        (GTK_WINDOW(window), FALSE);
+   //
+   //   this arranges that the window manager will not touch the
+   //   window, but yeah, that implies that all drawings are on
+   //   top of everything. That is not what we want here.
+   //   gdk_window_set_override_redirect(GDK_WINDOW(gdk_window), true);
+   //
+
+   // Now it's safe to show the window again.  
+   // It should be click-through
+   //
+   gdk_window_show(GDK_WINDOW(gdk_window));
+
+   // some nvidia drivers seem to need this:
+   //
+   usleep(200000);
+   return TRUE;
+}
+
