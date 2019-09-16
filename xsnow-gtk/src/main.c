@@ -87,6 +87,7 @@
 // gtk - cairo stuff
 static GtkWidget       *gtkwin  = NULL;
 static GdkWindow       *gdkwin  = NULL;
+
 #ifndef USEX11
 static cairo_surface_t *surface = NULL;
 static cairo_t         *cr      = NULL;
@@ -1023,9 +1024,6 @@ void do_snowflakes()
       updateSnowFlake(flake);
       flake = next;
       flakecount++;
-#ifndef DRAWFRAME
-      //gtk_main_iteration_do(0);
-#endif
    }
    if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
    {
@@ -2166,8 +2164,6 @@ void cairoDrawFlake(Snow *flake, int erase)
       cairo_paint(cr);
       gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
    }
-   //static int counter = 0;
-   //if (counter++ % 10 == 0)
    gtk_main_iteration_do(0);
 #endif
 }
@@ -2621,6 +2617,7 @@ void UpdateSanta()
 #ifndef USEX11
 void cairoDrawSanta(int x, int y, int erase)
 {
+#ifdef DRAWFRAME
    REGION r;
    // should use SantaRegion, but that one seems to have slightly wrong x and y.
    int w = SantaWidth;
@@ -2640,11 +2637,31 @@ void cairoDrawSanta(int x, int y, int erase)
    else
    {
       cairo_set_source_surface(
-	    cc,SantaSurface[CurrentSanta],SantaX,SantaY);
+	    cc,SantaSurface[CurrentSanta],x,y);
       cairo_paint(cc);
    }
    gdk_window_end_draw_frame (gdkwin, c);
    REGION_DESTROY(r);
+#else
+   int w = SantaWidth;
+   int h = SantaHeight;
+   if(erase)
+   {
+      w += 4;
+      cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+      cairo_rectangle(cr,x,y,w,h);
+      cairo_fill(cr);
+      cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+   else
+   {
+      cairo_set_source_surface(cr,SantaSurface[CurrentSanta],x,y);
+      cairo_paint(cr);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+   gtk_main_iteration_do(0);
+#endif
 }
 #endif
 
