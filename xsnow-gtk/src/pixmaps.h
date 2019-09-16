@@ -28,4 +28,5 @@ extern char          **xpmtrees[MAXTREETYPE+1];
 //extern TannenbaumMap tannenbaumPix[];
 extern char          **xsnow_logo;
 extern char          **Snows[SNOWFLAKEMAXTYPE+1];
+void surface_change_color(cairo_surface_t *s, GdkRGBA *c);
 #endif

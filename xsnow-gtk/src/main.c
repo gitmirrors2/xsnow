@@ -1891,7 +1891,6 @@ int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
 void initFlake(Snow *flake)
 {
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
-   flake->whatFlake = 3;
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
    if (0) {
@@ -3099,12 +3098,24 @@ void init_flakes_per_second()
 
 void init_snow_color()
 {
+   //#ifdef USEX11
    int i;
    snowcPix = iAllocNamedColor(flags.snowColor, white);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], snowcPix);
+   //#else
    if (!gdk_rgba_parse(&snow_rgba,flags.snowColor))
       gdk_rgba_parse(&snow_rgba,"white");
+   //#endif
+#ifndef USEX11
+#ifndef DRAWFRAME
+   for (i=0; i<=SNOWFLAKEMAXTYPE; i++)
+   {
+      surface_change_color(snowPix[i].s,&snow_rgba);
+   }
+
+#endif
+#endif
 }
 
 void init_SnowSpeedFactor()

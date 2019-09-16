@@ -160,3 +160,22 @@ StarMap starPix =
 #include "Pixmaps/xsnow.xpm"
 char **xsnow_logo = xsnow_xpm;
 
+// changes pixels with alpha >0 into rgba
+void surface_change_color(cairo_surface_t *s, GdkRGBA *c)
+{
+   int j,k,l = 0;
+   unsigned int color = (int)(c->red*255) << 16 |
+      (unsigned int)(255*c->green) << 8  | (unsigned int)(255*c->blue);
+   cairo_surface_flush(s);
+   unsigned int *p = (unsigned int *)cairo_image_surface_get_data(s);
+   int height = cairo_image_surface_get_height(s);
+   int stride = cairo_image_surface_get_stride(s);
+   for (j=0; j<height; j++)
+      for (k=0; k<stride/4; k++)
+      {
+	 if (p[l]& 0xff000000)
+	    p[l] = color | (p[l] & 0xff000000);
+	 l++;
+      }
+   cairo_surface_mark_dirty(s);
+}
