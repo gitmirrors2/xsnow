@@ -44,6 +44,7 @@
 #else
 #define P(...) 
 #endif
+#define R(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
 
 #define PREFIX_SANTA   "santa-"
 #define PREFIX_TREE    "tree-"
@@ -919,6 +920,8 @@ void ui (int *argc, char **argv[])
 
 void ui_loop()
 {
+   //static int counter  = 0; if(counter == 0) {}
+   //R("ui_loop: %d\n",counter++);
    gtk_main_iteration_do(0);
 }
 

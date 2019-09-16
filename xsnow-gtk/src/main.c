@@ -87,20 +87,22 @@
 // gtk - cairo stuff
 static GtkWidget       *gtkwin  = NULL;
 static GdkWindow       *gdkwin  = NULL;
+#ifndef USEX11
 static cairo_surface_t *surface = NULL;
 static cairo_t         *cr      = NULL;
 static GtkWidget       *darea   = NULL;
+#endif
 
 #ifdef USEX11
-static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
-{
-   return FALSE;
-}
+//static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
+//{
+//   return FALSE;
+//}
 #else
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
    static int counter =0; if(counter==0){}
-   R("draw_cb: %d\n",counter++);
+   P("draw_cb: %d\n",counter++);
    cairo_set_source_surface (cr, surface, 0, 0);
    cairo_paint (cr);
 
@@ -109,12 +111,12 @@ static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 #endif
 
 #ifdef USEX11
-static gboolean configure_event_cb(GtkWidget *widget,
-      GdkEventConfigure *event,
-      gpointer          data)
-{
-   return TRUE;
-}
+//static gboolean configure_event_cb(GtkWidget *widget,
+//      GdkEventConfigure *event,
+//      gpointer          data)
+//{
+//   return TRUE;
+//}
 #else
 static gboolean configure_event_cb(GtkWidget *widget,
       GdkEventConfigure *event,
@@ -668,14 +670,12 @@ int main(int argc, char *argv[])
 
 void do_santa()
 {
-   return;
    TRANSSKIP;
    if (!flags.NoSanta)
       DrawSanta();
 }
 void do_santa1()
 {
-   return;
    TRANSSKIP;
    if (!flags.NoSanta)
       DrawSanta1();
@@ -1012,6 +1012,7 @@ void do_snowflakes()
 {
    TRANSSKIP;
    flakesdt = wallclock() - Prevtime[alarm_snowflakes];
+   P("do_snow_flakes %f\n",flakesdt);
    Snow *flake = firstflake;
    //int flakecount_orig = flakecount;
    flakecount = 0;
@@ -1022,6 +1023,9 @@ void do_snowflakes()
       updateSnowFlake(flake);
       flake = next;
       flakecount++;
+#ifndef DRAWFRAME
+      //gtk_main_iteration_do(0);
+#endif
    }
    if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
    {
@@ -1252,6 +1256,7 @@ void do_event()
    // a memory leak appears
    XEvent ev;
    XFlush(display);
+
    while (XPending(display)) 
    {
       XNextEvent(display, &ev);
@@ -1260,7 +1265,7 @@ void do_event()
 	 switch (ev.type) 
 	 {
 	    case ConfigureNotify:
-	       P("ConfigureNotify: r=%ld w=%ld geo=(%d,%d,%d,%d) bw=%d root: %d\n", 
+	       R("ConfigureNotify: r=%ld w=%ld geo=(%d,%d,%d,%d) bw=%d root: %d\n", 
 		     ev.xconfigure.event,
 		     ev.xconfigure.window,
 		     ev.xconfigure.x,
@@ -2126,7 +2131,7 @@ void cairoDrawFlake(Snow *flake, int erase)
    cairo_region_t *r = snowPix[flake->whatFlake].r; 
    cairo_region_translate(r,x,y);
 
-   R("%d %d %d %d\n",x,y,flakecount,erase);
+   P("%d %d %d %d\n",x,y,flakecount,erase);
    GdkDrawingContext *c = 
       gdk_window_begin_draw_frame(gdkwin,r);
    cairo_region_translate(r,-x,-y);
@@ -2161,6 +2166,9 @@ void cairoDrawFlake(Snow *flake, int erase)
       cairo_paint(cr);
       gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
    }
+   //static int counter = 0;
+   //if (counter++ % 10 == 0)
+   gtk_main_iteration_do(0);
 #endif
 }
 #endif
@@ -2610,6 +2618,36 @@ void UpdateSanta()
    return;
 }
 
+#ifndef USEX11
+void cairoDrawSanta(int x, int y, int erase)
+{
+   REGION r;
+   // should use SantaRegion, but that one seems to have slightly wrong x and y.
+   int w = SantaWidth;
+   if(erase)
+      w += 4;
+   r = REGION_CREATE_RECTANGLE(x,y,w, SantaHeight);
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
+   cairo_t *cc =
+      gdk_drawing_context_get_cairo_context (c);
+   if(erase)
+   {
+      cairo_set_source_rgba(cc,0,0,0,0);
+      cairo_set_operator(cc, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cc);
+      cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
+   }
+   else
+   {
+      cairo_set_source_surface(
+	    cc,SantaSurface[CurrentSanta],SantaX,SantaY);
+      cairo_paint(cc);
+   }
+   gdk_window_end_draw_frame (gdkwin, c);
+   REGION_DESTROY(r);
+}
+#endif
+
 void DrawSanta() 
 {
    if(oldSantaX != SantaX || oldSantaY != SantaY)
@@ -2637,6 +2675,7 @@ void DrawSanta1()
 	 0,0,SantaWidth,SantaHeight,
 	 SantaX,SantaY);
 #else
+#if 0
    REGION r;
    // should use SantaRegion, but that one seems to have slightly wrong x and y.
    r = REGION_CREATE_RECTANGLE(SantaX,SantaY,SantaWidth, SantaHeight);
@@ -2648,6 +2687,9 @@ void DrawSanta1()
    cairo_paint(cc);
    gdk_window_end_draw_frame (gdkwin, c);
    REGION_DESTROY(r);
+#else
+   cairoDrawSanta(SantaX, SantaY, 0);
+#endif
 #endif
 }
 
@@ -2664,6 +2706,7 @@ void EraseSanta(int x, int y)
 	    SantaWidth+1,SantaHeight,
 	    exposures);
 #else
+#if 0
    REGION r;
    // should use SantaRegion, but that one seems to have slightly wrong x and y.
    r = REGION_CREATE_RECTANGLE(x,y,SantaWidth+4, SantaHeight);
@@ -2677,6 +2720,9 @@ void EraseSanta(int x, int y)
    REGION_DESTROY(r);
    cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
    //gtk_widget_queue_draw_area(gtkwin,x,y,SantaWidth,SantaHeight);
+#else
+   cairoDrawSanta(x,y,1);
+#endif
 #endif
 }
 
@@ -2804,6 +2850,14 @@ void printversion()
    printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
 	 "March 2019 by Willem Vermin\n"
 	 , VERSION);
+   printf("configured with:");
+#ifdef USEX11
+   printf(" USEX11");
+#endif
+#ifdef DRAWFRAME
+   printf(" DRAWFRAME");
+#endif
+   printf("\n");
 }
 
 void set_SantaSpeed()
@@ -3250,12 +3304,14 @@ int determine_window()
 	    SnowWinName = strdup("Xsnow-Window");
 	    gtk_window_set_title(GTK_WINDOW(gtkwin), SnowWinName);
 
+#ifndef USEX11
 	    darea   = gtk_drawing_area_new();
 	    g_signal_connect(G_OBJECT(darea),"draw",G_CALLBACK(draw_cb),NULL);
 
 	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
 	    g_signal_connect(darea,"configure-event",
 		  G_CALLBACK(configure_event_cb),NULL);
+#endif
 
 	    if (flags.fullscreen)
 	       gtk_window_fullscreen(GTK_WINDOW(gtkwin));
