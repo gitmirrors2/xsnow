@@ -33,6 +33,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include "transparent.h"
 
 #ifdef DEBUG
 #undef DEBUG
