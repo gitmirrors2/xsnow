@@ -1726,17 +1726,8 @@ void initFlake(Snow *flake)
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
-   if (0) {
-      if (direction == 1) 
-	 flake->rx = drand48()*(SnowWinWidth/3);
-      else
-	 flake->rx = SnowWinWidth - drand48()*(SnowWinWidth/3);
-      flake->ry =  drand48()*SnowWinHeight;
-   }
-   else  {
-      flake->rx = drand48()*(SnowWinWidth - flake->w);
-      flake->ry = drand48()*(SnowWinHeight/10);
-   }
+   flake->rx = drand48()*(SnowWinWidth - flake->w);
+   flake->ry = drand48()*(SnowWinHeight/10);
    flake->cyclic = 1;
    flake->m      = drand48()+0.1;
    if(flags.NoWind)
@@ -2344,38 +2335,11 @@ void ResetSanta()
    SantaY = RandInt(SnowWinHeight / 3)+40;
    SantaYStep = 1;
    CurrentSanta = 0;
-#if 0
-   const int npoints = 5;
-   XPoint points[npoints];
-
-   points[0].x = SantaX;
-   points[0].y = SantaY;
-   points[1].x = points[0].x;
-   points[1].y = SantaY + SantaHeight;
-   points[2].x = points[1].x + SantaWidth;
-   points[2].y = points[1].y;
-   points[3].x = points[2].x;
-   points[3].y = points[0].y;
-   points[4] = points[0];
-#endif
    XDestroyRegion(SantaRegion);
-   //SantaRegion = XPolygonRegion(points, npoints, EvenOddRule);
    SantaRegion = region_create_rectangle(
 	 SantaX,SantaY,SantaHeight,SantaWidth);
 
-#if 0
-   points[0].x = SantaX + SantaWidth;
-   points[0].y = SantaY + SantaHeight;
-   points[1].x = points[0].x + 1;
-   points[1].y = points[0].y;
-   points[2].x = points[1].x;
-   points[2].y = points[0].y - SantaHeight;
-   points[3].x = points[0].x;
-   points[3].y = points[2].y;
-   points[4] = points[0];
-#endif
    XDestroyRegion(SantaPlowRegion);
-   //SantaPlowRegion = XPolygonRegion(points, npoints, EvenOddRule);
    SantaPlowRegion = region_create_rectangle(
 	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
 }
