@@ -112,6 +112,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
+#define SNOWCHUNK 64         // number of flakes to consider in do_snowflakes
 #define SNOWFLAKEMAXTYPE 6  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define STARANIMATIONS 4

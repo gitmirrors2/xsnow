@@ -30,10 +30,10 @@ ALARM(fuse,           1.00          )  /* time between testing on too much flake
 ALARM(genflakes,      0.10          )  /* time between generation of flakes */ \
 ALARM(meteorite,      3.10          )  /* time between meteorites */ \
 ALARM(newwind,        1.00          )  /* time between changing wind */ \
-ALARM(santa,          0.05 * factor )  /* time between drawings of santa */ \
+ALARM(santa,          0.02 * factor )  /* time between drawings of santa */ \
 ALARM(santa1,         0.01 * factor )  /* time between redrawings of santa */ \
 ALARM(sfallen,        2.30          )  /* time between smoothing of fallen snow */ \
-ALARM(snowflakes,     0.05 * factor )  /* time between redrawings of snow 0.05*/ \
+ALARM(snowflakes,     0.01 * factor )  /* time between redrawings of snow 0.05*/ \
 ALARM(snow_on_trees,  0.50          )  /* time between redrawings of snow on trees */ \
 ALARM(stars,          0.50          )  /* time between drawing stars */ \
 ALARM(testing,        0.10          )  /* time between testing code */ \

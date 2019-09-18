@@ -162,6 +162,7 @@ static int     MaxSnowFlakeHeight = 0;  /* Biggest flake */
 static int     MaxSnowFlakeWidth = 0;   /* Biggest flake */
 static float   SnowSpeedFactor;
 static GdkRGBA snow_rgba;
+static int     snow_running = 0;
 
 // fallen snow stuff
 static FallenSnow *fsnow_first = 0;
@@ -611,7 +612,18 @@ int main(int argc, char *argv[])
       for (i=1; i<lastalarm; i++)
 	 if (Alarm[i] < Alarm[action])
 	    action = i;
-      uSsleep((long)(1e6*(Alarm[action] - tnow)));
+      double waittime = Alarm[action] - tnow;
+      while (snow_running)
+      {
+	 do_snowflakes();
+	 waittime = Alarm[action] - wallclock();
+	 if (waittime <=0)
+	 {
+	    waittime = 0;
+	    break;
+	 }
+      }
+      uSsleep((long)(1e6*(waittime)));
       tnow = wallclock();
       // define actions for alarms:
 #define ALARM(x,y) case alarm_ ## x: do_ ## x(); break;
@@ -1012,24 +1024,36 @@ void do_snow_on_trees()
 void do_snowflakes()
 {
    TRANSSKIP;
-   flakesdt = wallclock() - Prevtime[alarm_snowflakes];
+   static Snow *flake;
+   int flakecount_orig = flakecount;
+   static double prevtime = 0;
+   if (!snow_running)
+   {
+      flake = firstflake;
+      prevtime = Prevtime[alarm_snowflakes];
+   }
+   flakesdt = wallclock() - prevtime;
    P("do_snow_flakes %f\n",flakesdt);
-   Snow *flake = firstflake;
-   //int flakecount_orig = flakecount;
-   flakecount = 0;
-   while(flake)
+   int count = 0;
+
+   snow_running = 1;
+   while(flake && count++ < SNOWCHUNK)
    {
       Snow *next = flake->next;  // flake can disappear, so we have to save the 
       //                            pointer to the next flake
       updateSnowFlake(flake);
       flake = next;
-      flakecount++;
    }
-   if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
+   if(!flake)
    {
-      REGION_SUBTRACT(snow_on_trees_region,TreeRegion);
+      snow_running = 0;
+
+      if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
+      {
+	 REGION_SUBTRACT(snow_on_trees_region,TreeRegion);
+      }
    }
-   //P("%d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount);
+   P("%d %d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount,snow_running);
 }
 
 int handlefallensnow(FallenSnow *fsnow)
@@ -1780,32 +1804,6 @@ void update_windows()
 void do_testing()
 {
    return;
-#if 0
-   REGION testregion;
-   P("testregion %d\n",RunCounter);
-   testregion = REGION_CREATE_RECTANGLE(100,900,40,40);
-   GdkDrawingContext *gdkcontext1 = gdk_window_begin_draw_frame(gdkwin,testregion);
-   cairo_t *cairocontext1 =
-      gdk_drawing_context_get_cairo_context (gdkcontext1);
-   cairo_set_source_rgba(cairocontext1,1,1,0,1);
-   cairo_set_operator(cairocontext1, CAIRO_OPERATOR_SOURCE);
-   cairo_paint(cairocontext1);
-   gdk_window_end_draw_frame(gdkwin,gdkcontext1);
-   REGION_DESTROY(testregion);
-#endif
-#if 0
-   static int first = 1;
-   if(first)
-   {
-      first = 0;
-      return;
-   }
-   erase_trees();
-   init_baum_koordinaten();
-   NoSnowArea_static = TreeRegion;
-   //P("%d:\n",ntrees);
-   return;
-#endif
    REGION region;
    region = SantaRegion;
    //region = NoSnowArea_static;
@@ -1836,6 +1834,9 @@ void do_testing()
 
 void do_fuse()
 {
+   if (!snow_running) // updateSnowFlake would be very confused when
+      // flakes suddenly disappear.
+      return;
    if (flakecount >= flags.flakecountmax)
    {
       if (!flags.quiet)
@@ -1893,17 +1894,8 @@ void initFlake(Snow *flake)
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
-   if (0) {
-      if (direction == 1) 
-	 flake->rx = drand48()*(SnowWinWidth/3);
-      else
-	 flake->rx = SnowWinWidth - drand48()*(SnowWinWidth/3);
-      flake->ry =  drand48()*SnowWinHeight;
-   }
-   else  {
-      flake->rx = drand48()*(SnowWinWidth - flake->w);
-      flake->ry = drand48()*(SnowWinHeight/10);
-   }
+   flake->rx = drand48()*(SnowWinWidth - flake->w);
+   flake->ry = drand48()*(SnowWinHeight/10);
    flake->cyclic = 1;
    flake->m      = drand48()+0.1;
    if(flags.NoWind)
@@ -2104,6 +2096,8 @@ void updateSnowFlake(Snow *flake)
    if(!b) drawSnowFlake(flake);
 }
 
+// Note: this function is only to be called in updateSnowFlake()
+// or after a check if snow_running == 0
 void deleteFlake(Snow *flake)
 {
    if (flake->prev)
@@ -2111,7 +2105,7 @@ void deleteFlake(Snow *flake)
       delFlake(flake);
       flakecount--;
    }
-   else                 //  deleting the first flake, but not it is the only one left
+   else                 //  deleting the first flake, but not if is the only one left
       if(flake->next) 
       {
 	 firstflake = delFlake(flake);
@@ -2691,21 +2685,7 @@ void DrawSanta1()
 	 0,0,SantaWidth,SantaHeight,
 	 SantaX,SantaY);
 #else
-#if 0
-   REGION r;
-   // should use SantaRegion, but that one seems to have slightly wrong x and y.
-   r = REGION_CREATE_RECTANGLE(SantaX,SantaY,SantaWidth, SantaHeight);
-   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
-   cairo_t *cc =
-      gdk_drawing_context_get_cairo_context (c);
-   cairo_set_source_surface(
-	 cc,SantaSurface[CurrentSanta],SantaX,SantaY);
-   cairo_paint(cc);
-   gdk_window_end_draw_frame (gdkwin, c);
-   REGION_DESTROY(r);
-#else
    cairoDrawSanta(SantaX, SantaY, 0);
-#endif
 #endif
 }
 
@@ -2722,23 +2702,7 @@ void EraseSanta(int x, int y)
 	    SantaWidth+1,SantaHeight,
 	    exposures);
 #else
-#if 0
-   REGION r;
-   // should use SantaRegion, but that one seems to have slightly wrong x and y.
-   r = REGION_CREATE_RECTANGLE(x,y,SantaWidth+4, SantaHeight);
-   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
-   cairo_t *cc =
-      gdk_drawing_context_get_cairo_context (c);
-   cairo_set_source_rgba(cc,0,0,0,0);
-   cairo_set_operator(cc, CAIRO_OPERATOR_SOURCE);
-   cairo_paint(cc);
-   gdk_window_end_draw_frame (gdkwin, c);
-   REGION_DESTROY(r);
-   cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
-   //gtk_widget_queue_draw_area(gtkwin,x,y,SantaWidth,SantaHeight);
-#else
    cairoDrawSanta(x,y,1);
-#endif
 #endif
 }
 
@@ -3303,30 +3267,6 @@ int determine_window()
 	    XGetGeometry(display,rootwindow,&root,
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
-#if 0
-	    if (gtkwin)
-	    {
-	       gtk_window_close(GTK_WINDOW(gtkwin));
-	       gtk_widget_destroy(GTK_WIDGET(gtkwin));
-	       // gtk_todo: gdkwin, surface, cr
-	    }
-	    create_transparent_window(flags.fullscreen, flags.below,
-		  &SnowWin, &SnowWinName, &gtkwin);
-
-	    gdkwin  = gtk_widget_get_window(gtkwin);
-	    surface = gdk_window_create_similar_surface (gdkwin, CAIRO_CONTENT_COLOR_ALPHA,w,h);
-	    cr      = cairo_create(surface);
-	    darea   = gtk_drawing_area_new();
-	    g_signal_connect(G_OBJECT(darea),"draw",G_CALLBACK(draw_cb),NULL);
-	    gtk_container_add(GTK_CONTAINER(gtkwin),darea);
-	    //cairo_set_source_rgba(cr,0,0,0,0);
-	    //cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	    //cairo_paint(cr);
-	    P("signal connect %d\n",RunCounter);
-	    g_signal_connect(darea,"configure-event",
-		  G_CALLBACK(configure_event_cb),NULL);
-	    gtk_widget_show_all(gtkwin);
-#else
 	    gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	    gtk_window_set_position(GTK_WINDOW(gtkwin),GTK_WIN_POS_CENTER);
 	    SnowWinName = strdup("Xsnow-Window");
@@ -3351,7 +3291,6 @@ int determine_window()
 	    gtk_widget_show_all(gtkwin);
 	    gdkwin  = gtk_widget_get_window(gtkwin);
 	    SnowWin = gdk_x11_window_get_xid(gdkwin);
-#endif
 
 	    Isdesktop = 1;
 	    Usealpha  = 1;
