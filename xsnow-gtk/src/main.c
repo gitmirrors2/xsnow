@@ -360,6 +360,7 @@ static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window xwininfo(char **name);
 
 #ifndef USEX11
+static void   cairoClearRectangle(int x, int y, int w, int h);
 static void   cairoDrawFlake(Snow *flake, int erase);
 #endif
 
@@ -1025,7 +1026,7 @@ void do_snowflakes()
 {
    TRANSSKIP;
    static Snow *flake;
-   int flakecount_orig = flakecount;
+   //int flakecount_orig = flakecount;
    static double prevtime = 0;
    if (!snow_running)
    {
@@ -1161,13 +1162,41 @@ void clean_fallen_area(FallenSnow *fsnow,int xstart,int w)
    if(fsnow->clean) return;
    int x = fsnow->x;
    int y = fsnow->y - fsnow->h;
+#ifdef USEX11
    if(Usealpha|flags.usebg)
       XFillRectangle(display, SnowWin,  eFallenGC, x+xstart,y,
 	    w, fsnow->h+MaxSnowFlakeHeight);
    else
       XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h, exposures);
+#else
+   cairoClearRectangle(x,y,w,fsnow->h);
+#endif
    fsnow->clean = 1;
 }
+
+#ifndef USEX11
+void cairoClearRectangle(int x, int y, int w, int h)
+{
+   P("%d %d %d %d\n",x,y,w,h);
+#ifdef DRAWFRAME
+   cairo_region_t *r = REGION_CREATE_RECTANGLE(x,y,w,h);
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin,r);
+   cairo_t *cc = gdk_drawing_context_get_cairo_context(c);
+   gdk_cairo_set_source_rgba(cc,&(GdkRGBA){0,0,0,0});
+   cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame(gdkwin,c);
+   cairo_set_operator(cc,CAIRO_OPERATOR_OVER);
+   cairo_region_destroy(r);
+#else
+   cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+   cairo_rectangle(cr,x,y,w,h);
+   cairo_fill(cr);
+   cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+   gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+#endif
+}
+#endif
 
 void generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy)
 {
@@ -2116,9 +2145,10 @@ void deleteFlake(Snow *flake)
 #ifndef USEX11
 void cairoDrawFlake(Snow *flake, int erase)
 {
+   gint x = lrintf(flake->rx);
+   gint y = lrintf(flake->ry);
+
 #ifdef DRAWFRAME
-   int x = lrintf(flake->rx);
-   int y = lrintf(flake->ry);
    cairo_region_t *r = snowPix[flake->whatFlake].r; 
    cairo_region_translate(r,x,y);
 
@@ -2138,8 +2168,6 @@ void cairoDrawFlake(Snow *flake, int erase)
    gdk_window_end_draw_frame(gdkwin,c);
    cairo_set_operator(cc,CAIRO_OPERATOR_OVER);
 #else
-   gint x = lrint(flake->rx);
-   gint y = lrint(flake->ry);
    gint w = snowPix[flake->whatFlake].width; 
    gint h = snowPix[flake->whatFlake].height; 
    P("%d %d %d %d %d %d\n",x,y,w,h,flakecount,erase);
