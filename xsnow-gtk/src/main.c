@@ -153,16 +153,18 @@ int     SnowWinY;
 
 // locals
 // snow flakes stuff
-static float   blowofffactor;
-static int     DoNotMakeSnow = 0;
-static Snow    *firstflake = 0;
-static int     flakecount = 0;
-static float   flakes_per_sec;
-static int     MaxSnowFlakeHeight = 0;  /* Biggest flake */
-static int     MaxSnowFlakeWidth = 0;   /* Biggest flake */
-static float   SnowSpeedFactor;
-static GdkRGBA snow_rgba;
-static int     snow_running = 0;
+static float    blowofffactor;
+static int      DoNotMakeSnow = 0;
+static Snow     *firstflake = 0;
+static int      flakecount = 0;
+static float    flakes_per_sec;
+static int      MaxSnowFlakeHeight = 0;  /* Biggest flake */
+static int      MaxSnowFlakeWidth = 0;   /* Biggest flake */
+static float    SnowSpeedFactor;
+static GdkRGBA  snow_rgba;         // GdkRGBA representation
+static char     *snow_color = 0;   // textual representation: "green", "#123456"
+static int      snow_intcolor = 0; // rgba integer, bytes: alpha, red, green, blue
+static int      snow_running = 0;
 
 // fallen snow stuff
 static FallenSnow *fsnow_first = 0;
@@ -302,13 +304,16 @@ ALARMALL
 #undef ALARM
 double Delay[lastalarm];
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
+unsigned char *bitmap_from_fallen(FallenSnow *f,int stride);
 static int    blowoff(void);
 static void   clean_fallen_area(FallenSnow *fsnow, int x, int w);
 static void   clean_fallen(Window id);
 static void   ClearScreen(void);
 static void   convert_ontree_to_flakes(void);
 static void   create_alarm_delays(void);
+#ifdef USEX11
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
+#endif
 static void   deleteFlake(Snow *flake);
 static int    determine_window();
 static void   DrawFallen(FallenSnow *fsnow);
@@ -340,6 +345,7 @@ static void   init_snow_color(void);
 static void   init_stars(void);
 static void   InitTreePixmaps(void);
 static void   kdesetbg1(const char *color);
+unsigned char *pixmap_from_fallen(FallenSnow *f,int stride);
 static void   printversion(void);
 static int    RandInt(int maxVal);
 static void   redraw_trees(void);
@@ -360,8 +366,10 @@ static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window xwininfo(char **name);
 
 #ifndef USEX11
-static void   cairoClearRectangle(int x, int y, int w, int h);
-static void   cairoDrawFlake(Snow *flake, int erase);
+static void            cairoClearRectangle(int x, int y, int w, int h);
+static void            cairoDrawFlake(Snow *flake, int erase);
+static cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f);
+static void            cairoDrawFallen(FallenSnow *fsnow);
 #endif
 
 static void thanks(void)
@@ -1128,18 +1136,50 @@ void DrawFallen(FallenSnow *fsnow)
 	    }
 	 }
 
+#ifdef USEX11
+	 int x = fsnow->x;
+	 int y = fsnow->y - fsnow->h;
 	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
 	 XSetStipple(display, FallenGC, pixmap);
 	 XFreePixmap(display,pixmap);
-	 int x = fsnow->x;
-	 int y = fsnow->y - fsnow->h;
 	 XSetFillStyle( display, FallenGC, FillStippled);
 	 XSetFunction(  display, FallenGC, GXcopy);
 	 XSetForeground(display, FallenGC, snowcPix);
 	 XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
 	 XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+#else
+	 cairoDrawFallen(fsnow);
+#endif
       }
 }
+
+#ifndef USEX11
+void cairoDrawFallen(FallenSnow *fsnow)
+{
+   int x = fsnow->x;
+   int y = fsnow->y - fsnow->h;
+   int w = fsnow->w;
+   int h = fsnow->h;
+   cairo_surface_t *s = CreateSurfaceFromFallen(fsnow);
+#ifdef DRAWFRAME
+   REGION r = REGION_CREATE_RECTANGLE(x,y,w,h);
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
+   cairo_t *cc =
+      gdk_drawing_context_get_cairo_context (c);
+   cairo_set_source_surface(cc,s,x,y);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame (gdkwin, c);
+   REGION_DESTROY(r);
+#else
+   cairo_set_source_surface(cr,s,x,y);
+   cairo_paint(cr);
+   gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   R("%d %d %d %d %d\n",x,y,w,h,RunCounter);
+   gtk_main_iteration_do(0);
+#endif
+   cairo_surface_destroy(s);
+}
+#endif
 
 // clean area for fallensnow with id
 void clean_fallen(Window id)
@@ -1194,6 +1234,7 @@ void cairoClearRectangle(int x, int y, int w, int h)
    cairo_fill(cr);
    cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
    gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   gtk_main_iteration_do(0);
 #endif
 }
 #endif
@@ -2508,16 +2549,22 @@ void update_fallensnow_with_wind(FallenSnow *fsnow, int w, int h)
       }
 }
 
-Pixmap CreatePixmapFromFallen(FallenSnow *f)
+
+unsigned char *bitmap_from_fallen(FallenSnow *f,int stride)
 {
+   // stride in chars
    // todo: takes too much cpu
    int j;
    int p = 0;
-   unsigned char bitmap[f->w8*f->h/8];
+   unsigned char *bitmap;
+   R("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
+   //bitmap = malloc(f->w8 * f->h/8);
+   bitmap = malloc(stride * f->h);
 
    for (j=0; j<f->h; j++)
    {
       int i;
+      p = j*stride;
       for (i=0; i<f->w8; i+=8)
       {
 	 int b = 0;
@@ -2534,52 +2581,64 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 	 bitmap[p++] = b;
       }
    }
-   return XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
+   return bitmap;
 }
 
-/*
-   Region regionfrompixmap(char *bits, int w, int h)
-   {
-   Region r = XCreateRegion();
-   int i,j,m=1,n=0;
-   int bit;
-   char *b = bits;
-   XRectangle rec;
-   rec.width  = 1;
-   rec.height = 1;
-   int w8 = ((w-1)/8+1)*8;
+// creates pixmap for format CAIRO_FORMAT_ARGB32
+unsigned char *pixmap_from_fallen(FallenSnow *f,int stride)
+{
+   // stride in chars
+   int j;
+   int p = 0;
+   unsigned char *pixmap;
+   R("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
+   pixmap = malloc(stride * f->h);
+   memset(pixmap,0,stride*f->h);
 
-   for(j=0; j<h; j++)
-   for (i=0; i<w8; i++)
+   int intstride = stride/4;  // stride in ints
+   assert (intstride*4 == stride);
+   for (j=0; j<f->h; j++)
    {
-   if (n>7)
-   {
-   n=0;
-   m=1;
-   b++;
+      int i;
+      p = j*intstride;
+      for (i=0; i<f->w8; i++)
+	 tot hier
+      {
+	 ((unsigned int*)pixmap)[p++] = snow_intcolor;
+      }
    }
-   bit = (*b)&m;
-   if (bit)
-   {
-   rec.x = i;
-   rec.y = j;
-   XUnionRectWithRegion(&rec,r,r);
-   }
-   m <<= 1;
-   n++;
-   }
-   return r;
-   }
-   */
+   return pixmap;
+}
 
-//void DrawTannenbaum(int i)
-//{
-//  int x = tree[i].x; int y =tree[i].y; int t = tree[i].type;
-// XSetTSOrigin(display, TreesGC[t], x+tannenbaumPix[t].width,y+tannenbaumPix[t].height);
-//XFillRectangle(display, SnowWin, TreesGC[t],
-//	 x,y,
-//	 tannenbaumPix[t].width, tannenbaumPix[t].height);
-//}
+#ifdef USEX11
+Pixmap CreatePixmapFromFallen(FallenSnow *f)
+{
+   unsigned char *bitmap = bitmap_from_fallen(f,f->w8/8);
+   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
+   free(bitmap);
+   return pixmap;
+}
+#endif
+
+#ifndef USEX11
+cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f)
+{
+   int stride = 
+      cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,f->w);
+   unsigned char *pixmap = pixmap_from_fallen(f, stride);
+   cairo_surface_t *s;
+   R("%d %d %d %d %d\n",f->w,f->h,f->w8,f->w8/8,RunCounter);
+   s = cairo_image_surface_create_for_data (pixmap,
+	 CAIRO_FORMAT_ARGB32, f->w, f->h, stride);
+   int w = cairo_image_surface_get_width(s);
+   int h = cairo_image_surface_get_height(s);
+   int t = cairo_image_surface_get_stride(s);
+   int tt = cairo_format_stride_for_width(CAIRO_FORMAT_A1,f->w);
+   R("%d %d %d %d %p %d\n",w,h,t,tt,(void*)s,RunCounter);
+   // free(pixmap);
+   return s;
+}
+#endif
 
 void ResetSanta()      
 {
@@ -3090,15 +3149,18 @@ void init_flakes_per_second()
 
 void init_snow_color()
 {
-   //#ifdef USEX11
    int i;
+   if (snow_color != NULL)
+      free(snow_color);
+   snow_color = strdup(flags.snowColor);
    snowcPix = iAllocNamedColor(flags.snowColor, white);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], snowcPix);
-   //#else
-   if (!gdk_rgba_parse(&snow_rgba,flags.snowColor))
+   if (!gdk_rgba_parse(&snow_rgba,snow_color))
       gdk_rgba_parse(&snow_rgba,"white");
-   //#endif
+   snow_intcolor = (int)(snow_rgba.red*255) << 16 |
+      (unsigned int)(255*snow_rgba.green) << 8  | (unsigned int)(255*snow_rgba.blue);
+
 #ifndef USEX11
 #ifndef DRAWFRAME
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++)
