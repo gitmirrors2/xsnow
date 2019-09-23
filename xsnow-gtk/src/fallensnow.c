@@ -38,6 +38,7 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
 {
    FallenSnow *p = malloc(sizeof(FallenSnow));
    p->id         = window_id;
+   p->map        = strdup("");
    p->x          = x;
    p->y          = y;
    p->w          = w;
@@ -119,6 +120,7 @@ int RemoveFallenSnow(FallenSnow **list, int id)
 
 void FreeFallenSnow(FallenSnow *fallen)
 {
+   free(fallen->map);
    free(fallen->acth);
    free(fallen->desh);
    //XDestroyRegion(fallen->region);

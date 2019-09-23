@@ -1174,7 +1174,7 @@ void cairoDrawFallen(FallenSnow *fsnow)
    cairo_set_source_surface(cr,s,x,y);
    cairo_paint(cr);
    gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
-   R("%d %d %d %d %d\n",x,y,w,h,RunCounter);
+   P("%d %d %d %d %d\n",x,y,w,h,RunCounter);
    gtk_main_iteration_do(0);
 #endif
    cairo_surface_destroy(s);
@@ -2588,24 +2588,20 @@ unsigned char *bitmap_from_fallen(FallenSnow *f,int stride)
 unsigned char *pixmap_from_fallen(FallenSnow *f,int stride)
 {
    // stride in chars
-   int j;
-   int p = 0;
    unsigned char *pixmap;
-   R("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
+   P("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
    pixmap = malloc(stride * f->h);
    memset(pixmap,0,stride*f->h);
 
    int intstride = stride/4;  // stride in ints
    assert (intstride*4 == stride);
-   for (j=0; j<f->h; j++)
+   int i;
+   unsigned int color = snow_intcolor | 0xff000000;
+   for (i=0; i<f->w; i++)
    {
-      int i;
-      p = j*intstride;
-      for (i=0; i<f->w8; i++)
-	 tot hier
-      {
-	 ((unsigned int*)pixmap)[p++] = snow_intcolor;
-      }
+      int j;
+      for (j=f->acth[i]; j>=0; j--)
+	 ((unsigned int*)pixmap)[i+intstride*(f->h-1-j)] = color;
    }
    return pixmap;
 }
@@ -2627,15 +2623,15 @@ cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f)
       cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,f->w);
    unsigned char *pixmap = pixmap_from_fallen(f, stride);
    cairo_surface_t *s;
-   R("%d %d %d %d %d\n",f->w,f->h,f->w8,f->w8/8,RunCounter);
+   P("%d %d %d %d %d\n",f->w,f->h,f->w8,f->w8/8,RunCounter);
    s = cairo_image_surface_create_for_data (pixmap,
 	 CAIRO_FORMAT_ARGB32, f->w, f->h, stride);
-   int w = cairo_image_surface_get_width(s);
-   int h = cairo_image_surface_get_height(s);
-   int t = cairo_image_surface_get_stride(s);
-   int tt = cairo_format_stride_for_width(CAIRO_FORMAT_A1,f->w);
-   R("%d %d %d %d %p %d\n",w,h,t,tt,(void*)s,RunCounter);
-   // free(pixmap);
+   //int w = cairo_image_surface_get_width(s);
+   //int h = cairo_image_surface_get_height(s);
+   //int t = cairo_image_surface_get_stride(s);
+   //int tt = cairo_format_stride_for_width(CAIRO_FORMAT_A1,f->w);
+   P("%d %d %d %d %p %d\n",w,h,t,tt,(void*)s,RunCounter);
+   //free(pixmap);
    return s;
 }
 #endif

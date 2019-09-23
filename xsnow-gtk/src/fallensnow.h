@@ -24,6 +24,7 @@
 #include <X11/Intrinsic.h>
 typedef struct FallenSnow {
    long int id;               // window id, 0 for snow at bottom
+   unsigned char *map;        // bitmap or pixmap
    int x,y;                   // Coordinates of fallen snow, y for bottom
    unsigned int w,h;          // width, max height of fallen snow
    unsigned int w8;           // width rounded up to 8-fold
