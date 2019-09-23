@@ -185,6 +185,7 @@ static int      *TreeType;
 static int      treeread = 0;
 static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static char     **treexpm = 0;
+static cairo_surface_t *TreeSurface[MAXTREETYPE+1][2];
 
 // Santa stuff
 static float           ActualSantaSpeed;
@@ -304,7 +305,6 @@ ALARMALL
 #undef ALARM
 double Delay[lastalarm];
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
-unsigned char *bitmap_from_fallen(FallenSnow *f,int stride);
 static int    blowoff(void);
 static void   clean_fallen_area(FallenSnow *fsnow, int x, int w);
 static void   clean_fallen(Window id);
@@ -345,7 +345,6 @@ static void   init_snow_color(void);
 static void   init_stars(void);
 static void   InitTreePixmaps(void);
 static void   kdesetbg1(const char *color);
-unsigned char *pixmap_from_fallen(FallenSnow *f,int stride);
 static void   printversion(void);
 static int    RandInt(int maxVal);
 static void   redraw_trees(void);
@@ -368,7 +367,6 @@ static Window xwininfo(char **name);
 #ifndef USEX11
 static void            cairoClearRectangle(int x, int y, int w, int h);
 static void            cairoDrawFlake(Snow *flake, int erase);
-static cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f);
 static void            cairoDrawFallen(FallenSnow *fsnow);
 #endif
 
@@ -1160,7 +1158,7 @@ void cairoDrawFallen(FallenSnow *fsnow)
    int y = fsnow->y - fsnow->h;
    int w = fsnow->w;
    int h = fsnow->h;
-   cairo_surface_t *s = CreateSurfaceFromFallen(fsnow);
+   cairo_surface_t *s = CreateSurfaceFromFallen(fsnow, snow_intcolor);
 #ifdef DRAWFRAME
    REGION r = REGION_CREATE_RECTANGLE(x,y,w,h);
    GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, r);
@@ -2549,90 +2547,12 @@ void update_fallensnow_with_wind(FallenSnow *fsnow, int w, int h)
       }
 }
 
-
-unsigned char *bitmap_from_fallen(FallenSnow *f,int stride)
-{
-   // stride in chars
-   // todo: takes too much cpu
-   int j;
-   int p = 0;
-   unsigned char *bitmap;
-   R("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
-   //bitmap = malloc(f->w8 * f->h/8);
-   bitmap = malloc(stride * f->h);
-
-   for (j=0; j<f->h; j++)
-   {
-      int i;
-      p = j*stride;
-      for (i=0; i<f->w8; i+=8)
-      {
-	 int b = 0;
-	 int m = 1;
-	 int k;
-	 int kmax = i+8;
-	 if (kmax > f->w) kmax = f->w;
-	 for (k=i; k<kmax; k++)
-	 {
-	    if(f->acth[k] >= f->h-j)
-	       b |= m;
-	    m <<= 1;
-	 }
-	 bitmap[p++] = b;
-      }
-   }
-   return bitmap;
-}
-
-// creates pixmap for format CAIRO_FORMAT_ARGB32
-unsigned char *pixmap_from_fallen(FallenSnow *f,int stride)
-{
-   // stride in chars
-   unsigned char *pixmap;
-   P("%d %d %d %d\n",stride,f->w8, f->h, RunCounter);
-   pixmap = malloc(stride * f->h);
-   memset(pixmap,0,stride*f->h);
-
-   int intstride = stride/4;  // stride in ints
-   assert (intstride*4 == stride);
-   int i;
-   unsigned int color = snow_intcolor | 0xff000000;
-   for (i=0; i<f->w; i++)
-   {
-      int j;
-      for (j=f->acth[i]; j>=0; j--)
-	 ((unsigned int*)pixmap)[i+intstride*(f->h-1-j)] = color;
-   }
-   return pixmap;
-}
-
 #ifdef USEX11
 Pixmap CreatePixmapFromFallen(FallenSnow *f)
 {
-   unsigned char *bitmap = bitmap_from_fallen(f,f->w8/8);
-   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
-   free(bitmap);
+   bitmap_from_fallen(f,f->w8/8);
+   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)f->map, f->w, f->h);
    return pixmap;
-}
-#endif
-
-#ifndef USEX11
-cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f)
-{
-   int stride = 
-      cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,f->w);
-   unsigned char *pixmap = pixmap_from_fallen(f, stride);
-   cairo_surface_t *s;
-   P("%d %d %d %d %d\n",f->w,f->h,f->w8,f->w8/8,RunCounter);
-   s = cairo_image_surface_create_for_data (pixmap,
-	 CAIRO_FORMAT_ARGB32, f->w, f->h, stride);
-   //int w = cairo_image_surface_get_width(s);
-   //int h = cairo_image_surface_get_height(s);
-   //int t = cairo_image_surface_get_stride(s);
-   //int tt = cairo_format_stride_for_width(CAIRO_FORMAT_A1,f->w);
-   P("%d %d %d %d %p %d\n",w,h,t,tt,(void*)s,RunCounter);
-   //free(pixmap);
-   return s;
 }
 #endif
 

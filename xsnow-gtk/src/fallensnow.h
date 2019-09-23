@@ -22,6 +22,8 @@
 #define FALLENSNOW_H
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
+#include <gtk/gtk.h>
+
 typedef struct FallenSnow {
    long int id;               // window id, 0 for snow at bottom
    unsigned char *map;        // bitmap or pixmap
@@ -55,5 +57,20 @@ extern void FreeFallenSnow(FallenSnow *fallen);
 
 // find fallensnow with id
 extern FallenSnow *FindFallen(FallenSnow *first, Window id);
+
+#ifndef USEX11
+// 32 bit pixmap from fallen snow
+extern void pixmap_from_fallen(FallenSnow *f,int stride,unsigned int snowcolor);
+#endif
+
+#ifndef USEX11
+// 32 bit cairo surface from fallen snow
+extern cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f, unsigned int snowcolor);
+#endif
+
+#ifdef USEX11
+// bitmap from fallen snow
+extern void bitmap_from_fallen(FallenSnow *f,int stride);
+#endif
 
 #endif

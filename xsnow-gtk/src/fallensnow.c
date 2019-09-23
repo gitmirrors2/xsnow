@@ -38,7 +38,7 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
 {
    FallenSnow *p = malloc(sizeof(FallenSnow));
    p->id         = window_id;
-   p->map        = strdup("");
+   p->map        = (unsigned char*) malloc(1);
    p->x          = x;
    p->y          = y;
    p->w          = w;
@@ -138,6 +138,77 @@ FallenSnow *FindFallen(FallenSnow *first, Window id)
    }
    return 0;
 }
+
+#ifndef USEX11
+cairo_surface_t *CreateSurfaceFromFallen(FallenSnow *f, unsigned int snowcolor)
+{
+   const int format = CAIRO_FORMAT_ARGB32;
+   int stride = cairo_format_stride_for_width(format,f->w);
+   pixmap_from_fallen(f, stride, snowcolor);
+   cairo_surface_t *s;
+   s = cairo_image_surface_create_for_data (f->map, format, f->w, f->h, stride);
+   return s;
+}
+#endif
+
+#ifndef USEX11
+// creates pixmap for format CAIRO_FORMAT_ARGB32
+void pixmap_from_fallen(FallenSnow *f,int stride,unsigned int snowcolor)
+{
+   // stride in chars
+   unsigned char *pixmap;
+   pixmap = malloc(stride * f->h);
+   memset(pixmap,0,stride*f->h);
+
+   int intstride = stride/4;  // stride in ints
+   int i;
+   unsigned int color = snowcolor | 0xff000000;
+   for (i=0; i<f->w; i++)
+   {
+      int j;
+      for (j=f->acth[i]-1; j>=0; j--)
+	 ((unsigned int*)pixmap)[i+intstride*(f->h-1-j)] = color;
+   }
+   free(f->map);
+   f->map = pixmap;
+}
+#endif
+
+#ifdef USEX11
+void bitmap_from_fallen(FallenSnow *f,int stride)
+{
+   // stride in chars
+   // todo: takes too much cpu
+   int j;
+   int p = 0;
+   unsigned char *bitmap;
+   bitmap = malloc(stride * f->h);
+
+   for (j=0; j<f->h; j++)
+   {
+      int i;
+      p = j*stride;
+      for (i=0; i<f->w8; i+=8)
+      {
+	 int b = 0;
+	 int m = 1;
+	 int k;
+	 int kmax = i+8;
+	 if (kmax > f->w) kmax = f->w;
+	 for (k=i; k<kmax; k++)
+	 {
+	    if(f->acth[k] >= f->h-j)
+	       b |= m;
+	    m <<= 1;
+	 }
+	 bitmap[p++] = b;
+      }
+   }
+   free(f->map);
+   f->map = bitmap;
+}
+#endif
+
 // print list
 void PrintFallenSnow(FallenSnow *list)
 {
