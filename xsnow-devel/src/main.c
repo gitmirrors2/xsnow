@@ -2697,13 +2697,11 @@ void InitTreePixmaps()
       for(i=0; i<2; i++)
       {
 	 int tt;
-	 int j=0;
 	 for (tt=0; tt<=MAXTREETYPE; tt++)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[j],
+	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
-	    sscanf(xpmtrees[j][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
-	    j++;
+	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 	 }
       }
       reinit_tree0();
