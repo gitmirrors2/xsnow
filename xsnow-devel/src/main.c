@@ -615,8 +615,6 @@ void do_santa1()
 
 void do_ui_loop()
 {
-   if (flags.nomenu)
-      return;
    ui_loop();
 }
 
@@ -2445,6 +2443,7 @@ void erase_trees()
       int x = tree[i].x-d; 
       int y = tree[i].y-d; 
       int t = tree[i].type; 
+      assert (t>= 0);
       if (t<0) t=0;
       int w = TreeWidth[t]+d+d;
       int h = TreeHeight[t]+d+d;
