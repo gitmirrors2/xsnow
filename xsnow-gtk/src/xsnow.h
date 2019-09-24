@@ -121,6 +121,7 @@
 
 /* ------------------------------------------------------------------ */
 
+extern unsigned int RunCounter;
 
 typedef struct SnowMap {
    char *snowBits;

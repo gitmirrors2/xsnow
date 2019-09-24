@@ -94,12 +94,7 @@ static cairo_t         *cr      = NULL;
 static GtkWidget       *darea   = NULL;
 #endif
 
-#ifdef USEX11
-//static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
-//{
-//   return FALSE;
-//}
-#else
+#ifndef USEX11
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
    static int counter =0; if(counter==0){}
@@ -111,14 +106,7 @@ static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 }
 #endif
 
-#ifdef USEX11
-//static gboolean configure_event_cb(GtkWidget *widget,
-//      GdkEventConfigure *event,
-//      gpointer          data)
-//{
-//   return TRUE;
-//}
-#else
+#ifndef USEX11
 static gboolean configure_event_cb(GtkWidget *widget,
       GdkEventConfigure *event,
       gpointer          data)
@@ -219,7 +207,7 @@ static int nstars;
 static MeteoMap meteorite;
 
 // timing stuff
-static unsigned int RunCounter = 0;
+unsigned int RunCounter = 0;  // from xsnow.h
 static double       *Prevtime = 0;
 static double       totsleeptime = 0;
 static double       tnow;
@@ -264,8 +252,9 @@ static XPoint    *snow_on_trees;
 
 
 /* Colo(u)rs */
-static char *blackColor = "black";
 static char *meteoColor = "orange";
+#ifdef USEX11
+static char *blackColor = "black";
 static char *starColor[]  = { "gold", "gold1", "gold4", "orange" };
 static Pixel blackPix;
 static Pixel erasePixel;
@@ -274,8 +263,10 @@ static Pixel snowcPix;
 static Pixel starcPix[STARANIMATIONS];
 static Pixel trPix;
 static Pixel black, white;
+#endif
 static GdkRGBA meteo_rgba;
 
+#ifdef USEX11
 /* GC's */
 static GC CleanGC;
 static GC eFallenGC;
@@ -288,7 +279,7 @@ static GC SnowOnTreesGC;
 static GC starGC[STARANIMATIONS];
 static GC testingGC;
 static GC TreeGC;
-//static GC TreesGC[2];
+#endif
 
 // region stuff
 static REGION NoSnowArea_dynamic;
@@ -304,7 +295,9 @@ static REGION snow_on_trees_region;
 ALARMALL
 #undef ALARM
 double Delay[lastalarm];
+#ifdef USEX11
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
+#endif
 static int    blowoff(void);
 static void   clean_fallen_area(FallenSnow *fsnow, int x, int w);
 static void   clean_fallen(Window id);
@@ -330,7 +323,9 @@ static void   eraseSnowFlake(Snow *flake);
 static void   generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy);
 static int    handlefallensnow(FallenSnow *fsnow);
 static FILE   *homeopen(char *file,char *mode,char **path);
+#ifdef USEX11
 static Pixel  iAllocNamedColor(char *colorName, Pixel dfltPix);
+#endif
 static void   init_baum_koordinaten(void);
 static void   init_blowofffactor(void);
 static void   initdisplaydimensions(void);
@@ -400,15 +395,17 @@ int main(int argc, char *argv[])
       default:
 	 break;
    }
-   gdk_rgba_parse(&meteo_rgba,"orange");
+   gdk_rgba_parse(&meteo_rgba,meteoColor);
    if (!flags.noconfig)
       writeflags();
    display = XOpenDisplay(flags.display_name);
    XSynchronize(display,dosync);
    XSetErrorHandler(XsnowErrors);
    screen = DefaultScreen(display);
+#ifdef USEX11
    black = BlackPixel(display, screen);
    white = WhitePixel(display, screen);
+#endif
 
 
    if (flags.exposures == -SOMENUMBER) // no -exposures or -noexposures given
@@ -512,8 +509,8 @@ int main(int argc, char *argv[])
       rp->r = regionfromxbm((unsigned char*)rp->snowBits, rp->width, rp->height);
 #ifndef USEX11
       rp->pixbuf = gdk_pixbuf_new_from_xpm_data((const char**)Snows[flake]);
-      rp->s = gdk_cairo_surface_create_from_pixbuf(rp->pixbuf,0,0);
-      rp->width = cairo_image_surface_get_width(rp->s);
+      rp->s      = gdk_cairo_surface_create_from_pixbuf(rp->pixbuf,0,0);
+      rp->width  = cairo_image_surface_get_width(rp->s);
       rp->height = cairo_image_surface_get_height(rp->s);
 #endif
    }
@@ -538,6 +535,7 @@ int main(int argc, char *argv[])
       ui(&argc, &argv);
 
    NoSnowArea_static = TreeRegion;
+#ifdef USEX11
    blackPix = AllocNamedColor(blackColor, black);
    //snowcPix = iAllocNamedColor(flags.snowColor, white);   
    meteoPix = iAllocNamedColor(meteoColor, white);
@@ -564,6 +562,7 @@ int main(int argc, char *argv[])
       starGC[i]  = XCreateGC(display,SnowWin,0,0);
 
    set_gc_functions();
+#endif
 
    init_baum_koordinaten();
    init_snow_color();
@@ -1000,6 +999,8 @@ void do_snow_on_trees()
       return;
    if (wind == 2)
       convert_ontree_to_flakes();
+
+#ifdef USEX11
    static int second = 0;
 
    if (second)
@@ -1008,7 +1009,6 @@ void do_snow_on_trees()
       XSetForeground(display, SnowOnTreesGC, ~blackPix); 
       XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
    }
-#ifdef USEX11
    XSetRegion(display, SnowOnTreesGC, snow_on_trees_region);
    XSetForeground(display, SnowOnTreesGC, snowcPix); 
    XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
@@ -1281,10 +1281,32 @@ void erase_fallen_pixel(FallenSnow *fsnow, int x)
    {
       int x1 = fsnow->x + x;
       int y1 = fsnow->y - fsnow->acth[x];
+#ifdef USEX11
       if(Usealpha|flags.usebg)
 	 XDrawPoint(display, SnowWin, eFallenGC, x1, y1);
       else
 	 XClearArea(display, SnowWin, x1 , y1, 1, 1, exposures);     
+#else
+#ifdef DRAWFRAME
+      REGION r = REGION_CREATE_RECTANGLE(x1,y1,1,1);
+      GdkDrawingContext *c = 
+	 gdk_window_begin_draw_frame(gdkwin,r);
+      cairo_t *cc = 
+	 gdk_drawing_context_get_cairo_context(c);
+      gdk_cairo_set_source_rgba(cc,&(GdkRGBA){0,0,0,0});
+      cairo_set_operator(cc,CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cc);
+      gdk_window_end_draw_frame(gdkwin,c);
+      cairo_set_operator(cc,CAIRO_OPERATOR_OVER);
+#else
+      cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+      cairo_rectangle(cr,x1,y1,1,1);
+      cairo_fill(cr);
+      cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x1,y1,1,1);
+#endif
+      gtk_main_iteration_do(0);
+#endif
       fsnow->acth[x]--;
    }
 }
@@ -1534,6 +1556,7 @@ void convert_ontree_to_flakes()
 void do_stars()
 {
    TRANSSKIP;
+#ifdef USEX11
    int i;
    for (i=0; i<nstars; i++)
    {
@@ -1546,6 +1569,7 @@ void do_stars()
       XFillRectangle(display,SnowWin,starGC[k],x,y,w,h);
    }
    XFlush(display);
+#endif
 }
 
 void do_ustars()
@@ -1879,10 +1903,10 @@ void do_testing()
    //region = SantaPlowRegion;
    //region = TreeRegion;
 
+#ifdef USEX11
    XSetFunction(display,   testingGC, GXcopy);
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
-#if USEX11
    XSetRegion(display,     testingGC, region);
    XSetForeground(display, testingGC, blackPix); 
    XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
@@ -2420,6 +2444,7 @@ void init_stars()
 
 void erase_stars()
 {
+#ifdef USEX11
    int i;
    for (i=0; i<nstars; i++)
    {
@@ -2434,6 +2459,7 @@ void erase_stars()
 	 XClearArea(display, SnowWin,
 	       x, y, w, h, exposures);
    }
+#endif
 }
 
 void init_fallen_snow()
@@ -2816,6 +2842,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 }
 /* ------------------------------------------------------------------ */ 
 
+#ifdef USEX11
 Pixel AllocNamedColor(char *colorName, Pixel dfltPix)
 {
    XColor scrncolor;
@@ -2831,6 +2858,7 @@ Pixel iAllocNamedColor(char *colorName, Pixel dfltPix)
 {
    return AllocNamedColor(colorName, dfltPix) | 0xff000000;
 }
+#endif
 /* ------------------------------------------------------------------ */ 
 
 
@@ -3128,13 +3156,15 @@ void init_flakes_per_second()
 
 void init_snow_color()
 {
-   int i;
    if (snow_color != NULL)
       free(snow_color);
    snow_color = strdup(flags.snowColor);
+#ifdef USEX11
+   int i;
    snowcPix = iAllocNamedColor(flags.snowColor, white);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], snowcPix);
+#endif
    if (!gdk_rgba_parse(&snow_rgba,snow_color))
       gdk_rgba_parse(&snow_rgba,"white");
    snow_intcolor = (int)(snow_rgba.alpha*255) << 24 | (int)(snow_rgba.red*255) << 16 |
@@ -3142,6 +3172,7 @@ void init_snow_color()
 
 #ifndef USEX11
 #ifndef DRAWFRAME
+   int i;
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++)
    {
       surface_change_color(snowPix[i].s,&snow_rgba);
@@ -3192,6 +3223,7 @@ void create_alarm_delays()
 
 void set_gc_functions()
 {
+#ifdef USEX11
    int i;
    if (flags.usebg)
       erasePixel = AllocNamedColor(flags.bgcolor,black) | 0xff000000;
@@ -3260,6 +3292,7 @@ void set_gc_functions()
       XSetFunction(display,   meteorite.egc, GXxor);
       XSetForeground(display, meteorite.egc, meteoPix);
    }
+#endif
 }
 
 void set_whirl()
