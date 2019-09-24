@@ -34,10 +34,10 @@ ALARM(santa,          0.02 * factor )  /* time between drawings of santa */ \
 ALARM(santa1,         0.01 * factor )  /* time between redrawings of santa */ \
 ALARM(sfallen,        2.30          )  /* time between smoothing of fallen snow */ \
 ALARM(snowflakes,     0.01 * factor )  /* time between redrawings of snow 0.05*/ \
-ALARM(snow_on_trees,  0.50          )  /* time between redrawings of snow on trees */ \
+ALARM(snow_on_trees,  0.55          )  /* time between redrawings of snow on trees */ \
 ALARM(stars,          0.50          )  /* time between drawing stars */ \
 ALARM(testing,        0.10          )  /* time between testing code */ \
-ALARM(tree,           0.05 * factor )  /* time between redrawings of trees */ \
+ALARM(tree,           0.55 * factor )  /* time between redrawings of trees */ \
 ALARM(ui_check,       0.25          )  /* time between checking values from ui */ \
 ALARM(ui_loop,        0.01          )  /* time between entering ui_loop */ \
 ALARM(usanta,         0.05          )  /* time between update of santa position */ \

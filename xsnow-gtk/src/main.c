@@ -176,15 +176,15 @@ char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 
 static int      activate_clean = 0;  // trigger for do_clean
 
 // tree stuff
-static int      ntrees;                       // actual number of trees
-static int      ntreetypes = 0;
-static Treeinfo *tree = 0;
-static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
-static Pixmap   TreePixmap[MAXTREETYPE+1][2];
-static int      *TreeType;
-static int      treeread = 0;
-static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-static char     **treexpm = 0;
+static int             ntrees;                       // actual number of trees
+static int             ntreetypes = 0;
+static Treeinfo        *tree = 0;
+static Pixmap          TreeMaskPixmap[MAXTREETYPE+1][2];
+static Pixmap          TreePixmap[MAXTREETYPE+1][2];
+static int             *TreeType;
+static int             treeread = 0;
+static int             TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
+static char            **treexpm = 0;
 static cairo_surface_t *TreeSurface[MAXTREETYPE+1][2];
 
 // Santa stuff
@@ -260,7 +260,7 @@ static double WindTimer;
 // desktop stuff
 static int       Isdesktop;
 static int       Usealpha;
-static XPoint          *snow_on_trees;
+static XPoint    *snow_on_trees;
 
 
 /* Colo(u)rs */
@@ -365,9 +365,10 @@ static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window xwininfo(char **name);
 
 #ifndef USEX11
-static void            cairoClearRectangle(int x, int y, int w, int h);
-static void            cairoDrawFlake(Snow *flake, int erase);
-static void            cairoDrawFallen(FallenSnow *fsnow);
+static void cairoClearRectangle(int x, int y, int w, int h);
+static void cairoDrawFlake(Snow *flake, int erase);
+static void cairoDrawFallen(FallenSnow *fsnow);
+static void cairoDrawTree(int i, int erase);
 #endif
 
 static void thanks(void)
@@ -703,8 +704,6 @@ void do_santa1()
 
 void do_ui_loop()
 {
-   if (flags.nomenu)
-      return;
    ui_loop();
 }
 
@@ -1015,15 +1014,15 @@ void do_snow_on_trees()
    XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
 #else
 
-   GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
-   cairo_t *cairocontext =
-      gdk_drawing_context_get_cairo_context (gdkcontext);
-   gdk_cairo_set_source_rgba(cairocontext,&snow_rgba);
-   cairo_set_operator(cairocontext, CAIRO_OPERATOR_SOURCE);
-   cairo_paint(cairocontext);
-   gdk_window_end_draw_frame(gdkwin,gdkcontext);
-   cairo_set_operator(cairocontext, CAIRO_OPERATOR_OVER);
-
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
+   cairo_t *cc =
+      gdk_drawing_context_get_cairo_context (c);
+   gdk_cairo_set_source_rgba(cc,&snow_rgba);
+   cairo_set_operator(cc, CAIRO_OPERATOR_SOURCE);
+   cairo_paint(cc);
+   gdk_window_end_draw_frame(gdkwin,c);
+   cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
+   gtk_main_iteration_do(0);
 #endif
 }
 
@@ -2130,7 +2129,7 @@ void updateSnowFlake(Snow *flake)
 	       {
 		  // pixel (xbot,j) is snow-on-tree
 		  found = 1;
-		  int p = RandInt(4);
+		  int p = RandInt(4)+1;
 		  REGION_UNION_RECTANGLE(snow_on_trees_region,xbot,j-p+1,p,p);
 		  //P("add to snow_on_trees: %d %d %d %d\n",rec.x,rec.y,rec.width,rec.height);
 		  if(!flags.NoBlowSnow && ontrees < flags.maxontrees)
@@ -2711,6 +2710,7 @@ void EraseSanta(int x, int y)
 
 void DrawTree(int i) 
 {
+#ifdef USEX11
    int x = tree[i].x; int y = tree[i].y; int t = tree[i].type; int r = tree[i].rev;
    //P("t = %d\n",t);
    if (t<0) t=0;
@@ -2718,18 +2718,73 @@ void DrawTree(int i)
    XSetClipOrigin(display, TreeGC, x, y);
    XCopyArea(display, TreePixmap[t][r], SnowWin, TreeGC, 
 	 0,0,TreeWidth[t],TreeHeight[t], x, y);
+#else
+   cairoDrawTree(i,0);
+   do_snow_on_trees();
+#endif
 }
+
+#ifndef USEX11
+void cairoDrawTree(int i, int erase)
+{
+   P("cairoDrawTree: %d %d %d\n",i,erase,RunCounter);
+   int x = tree[i].x; int y = tree[i].y; int t = tree[i].type; int r = tree[i].rev;
+   int w = TreeWidth[t]; int h = TreeHeight[t];
+   const int d = 3;
+   if (erase)
+   {
+      x -= d; y -= d; w += 2*d; h += 2*d;
+   }
+#ifdef DRAWFRAME
+   REGION region;
+   region = REGION_CREATE_RECTANGLE(x,y,w,h);
+   GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, region);
+   cairo_t *cc =
+      gdk_drawing_context_get_cairo_context (c);
+   if(erase)
+   {
+      cairo_set_source_rgba(cc,0,0,0,0);
+      cairo_set_operator(cc, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cc);
+      cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
+   }
+   else
+   {
+      cairo_set_source_surface(cc,TreeSurface[t][r],x,y);
+      cairo_paint(cc);
+   }
+   gdk_window_end_draw_frame (gdkwin, c);
+   REGION_DESTROY(region);
+#else
+   if(erase)
+   {
+      cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+      cairo_rectangle(cr,x,y,w,h);
+      cairo_fill(cr);
+      cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+   else
+   {
+      cairo_set_source_surface(cr,TreeSurface[t][r],x,y);
+      cairo_paint(cr);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+   }
+   gtk_main_iteration_do(0);
+#endif
+}
+#endif
 
 void erase_trees()
 {
    int i;
-   int d = 3;
    for (i=0; i<ntrees; i++)
    {
+#ifdef USEX11
+      const int d = 3;
       int x = tree[i].x-d; 
       int y = tree[i].y-d; 
       int t = tree[i].type; 
-      if (t<0) t=0;
       int w = TreeWidth[t]+d+d;
       int h = TreeHeight[t]+d+d;
       if(Usealpha|flags.usebg)
@@ -2738,6 +2793,9 @@ void erase_trees()
       else
 	 XClearArea(display, SnowWin,
 	       x, y, w, h, exposures);
+#else
+      cairoDrawTree(i,1);
+#endif
    }
 
    REGION_DESTROY(TreeRegion);
@@ -2995,13 +3053,14 @@ void InitTreePixmaps()
       for(i=0; i<2; i++)
       {
 	 int tt;
-	 int j=0;
 	 for (tt=0; tt<=MAXTREETYPE; tt++)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[j],
+	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
-	    sscanf(xpmtrees[j][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
-	    j++;
+	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
+
+	    TreeSurface[tt][i] = igdk_cairo_surface_create_from_xpm(
+		  xpmtrees[tt],i);
 	 }
       }
       reinit_tree0();
@@ -3032,6 +3091,10 @@ void reinit_tree0()
       XFreePixmap(display,TreePixmap[0][i]);
       iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
+
+      cairo_surface_destroy(TreeSurface[0][1]);
+      TreeSurface[0][i] = igdk_cairo_surface_create_from_xpm(
+	    xpmtrees[0],i);
    }
    for (j=0; j<n; j++)
       free(xpmtmp[j]);
@@ -3074,7 +3137,7 @@ void init_snow_color()
       XSetForeground(display, SnowGC[i], snowcPix);
    if (!gdk_rgba_parse(&snow_rgba,snow_color))
       gdk_rgba_parse(&snow_rgba,"white");
-   snow_intcolor = (int)(snow_rgba.red*255) << 16 |
+   snow_intcolor = (int)(snow_rgba.alpha*255) << 24 | (int)(snow_rgba.red*255) << 16 |
       (unsigned int)(255*snow_rgba.green) << 8  | (unsigned int)(255*snow_rgba.blue);
 
 #ifndef USEX11

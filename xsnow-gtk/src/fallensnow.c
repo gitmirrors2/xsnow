@@ -162,12 +162,11 @@ void pixmap_from_fallen(FallenSnow *f,int stride,unsigned int snowcolor)
 
    int intstride = stride/4;  // stride in ints
    int i;
-   unsigned int color = snowcolor | 0xff000000;
    for (i=0; i<f->w; i++)
    {
       int j;
       for (j=f->acth[i]-1; j>=0; j--)
-	 ((unsigned int*)pixmap)[i+intstride*(f->h-1-j)] = color;
+	 ((unsigned int*)pixmap)[i+intstride*(f->h-1-j)] = snowcolor;
    }
    free(f->map);
    f->map = pixmap;
