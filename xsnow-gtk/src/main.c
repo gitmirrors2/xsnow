@@ -375,6 +375,12 @@ int main(int argc, char *argv[])
 {
    int i;
    printversion();
+   for (i=0; i<MAXTREETYPE +1; i++)
+   {
+      int j;
+      for (j=0; j<2; j++)
+	 TreeSurface[i][j]=NULL;
+   }
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
@@ -3120,7 +3126,8 @@ void reinit_tree0()
       iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
 
-      cairo_surface_destroy(TreeSurface[0][1]);
+      if(TreeSurface[0][1])
+	 cairo_surface_destroy(TreeSurface[0][1]);
       TreeSurface[0][i] = igdk_cairo_surface_create_from_xpm(
 	    xpmtrees[0],i);
    }
