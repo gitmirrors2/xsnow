@@ -259,7 +259,6 @@ static XPoint    *snow_on_trees;
 static char *meteoColor = "orange";
 #ifdef USEX11
 static char *blackColor = "black";
-static char *starColor[]  = { "gold", "gold1", "gold4", "orange" };
 static Pixel blackPix;
 static Pixel erasePixel;
 static Pixel meteoPix;
@@ -267,8 +266,11 @@ static Pixel snowcPix;
 static Pixel starcPix[STARANIMATIONS];
 static Pixel trPix;
 static Pixel black, white;
-#endif
+#else
 static GdkRGBA meteo_rgba;
+static cairo_surface_t *StarSurface[STARANIMATIONS];
+#endif
+static char *starColor[STARANIMATIONS]  = { "gold", "gold1", "gold4", "orange" };
 
 #ifdef USEX11
 /* GC's */
@@ -312,12 +314,11 @@ static void   create_alarm_delays(void);
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 #endif
 static void   deleteFlake(Snow *flake);
-static int    determine_window();
+static int    determine_window(void);
 static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSanta1(void);
 static void   DrawSanta(void);
 static void   drawSnowFlake(Snow *flake);
-// static void   DrawTannenbaum(int i);
 static void   DrawTree(int i);
 static void   erase_fallen_pixel(FallenSnow *fsnow,int x);
 static void   erase_stars(void);
@@ -368,6 +369,7 @@ static void cairoClearRectangle(int x, int y, int w, int h);
 static void cairoDrawFlake(Snow *flake, int erase);
 static void cairoDrawFallen(FallenSnow *fsnow);
 static void cairoDrawTree(int i, int erase);
+static void init_star_surfaces(void);
 #endif
 
 static void thanks(void)
@@ -399,7 +401,9 @@ int main(int argc, char *argv[])
       default:
 	 break;
    }
+#ifndef USEX11
    gdk_rgba_parse(&meteo_rgba,meteoColor);
+#endif
    if (!flags.noconfig)
       writeflags();
    display = XOpenDisplay(flags.display_name);
@@ -518,6 +522,9 @@ int main(int argc, char *argv[])
       rp->height = cairo_image_surface_get_height(rp->s);
 #endif
    }
+#ifndef USEX11
+   init_star_surfaces();
+#endif
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	 (char*)starPix.starBits, starPix.width, starPix.height);
    firstflake = createFlake();
@@ -1560,7 +1567,6 @@ void convert_ontree_to_flakes()
 void do_stars()
 {
    TRANSSKIP;
-#ifdef USEX11
    int i;
    for (i=0; i<nstars; i++)
    {
@@ -1569,9 +1575,29 @@ void do_stars()
       int y = star[i].y;
       int w = starPix.width;
       int h = starPix.height;
+#ifdef USEX11
       XSetTSOrigin(display, starGC[k],x+w, y+h);
       XFillRectangle(display,SnowWin,starGC[k],x,y,w,h);
+#else
+#ifdef DRAWFRAME
+      REGION region;
+      region = REGION_CREATE_RECTANGLE(x,y,w,h);
+      GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, region);
+      cairo_t *cc =
+	 gdk_drawing_context_get_cairo_context (c);
+      cairo_set_source_surface(cc,StarSurface[k],x,y);
+      cairo_paint(cc);
+      gdk_window_end_draw_frame (gdkwin, c);
+      REGION_DESTROY(region);
+#else
+      cairo_set_source_surface(cr,StarSurface[k],x,y);
+      cairo_paint(cr);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
+#endif
+      gtk_main_iteration_do(0);
+#endif
    }
+#ifdef USEX11
    XFlush(display);
 #endif
 }
@@ -2431,6 +2457,21 @@ void init_baum_koordinaten()
    return;
 }
 
+#ifndef USEX11
+void init_star_surfaces()
+{
+   int i;
+   for(i=0; i<STARANIMATIONS; i++)
+   {
+      StarSurface[i] = igdk_cairo_surface_create_from_xpm(star_xpm,0);
+      GdkRGBA rgba;
+      if(!gdk_rgba_parse(&rgba,starColor[i]))
+	 gdk_rgba_parse(&rgba,"white");
+      surface_change_color(StarSurface[i],&rgba);
+   }
+}
+#endif
+
 void init_stars()
 {
    int i;
@@ -2448,7 +2489,6 @@ void init_stars()
 
 void erase_stars()
 {
-#ifdef USEX11
    int i;
    for (i=0; i<nstars; i++)
    {
@@ -2456,14 +2496,34 @@ void erase_stars()
       int y = star[i].y; 
       int w = starPix.width;
       int h = starPix.height;
+#ifdef USEX11
       if(Usealpha|flags.usebg)
 	 XFillRectangle(display, SnowWin, eSantaGC, 
 	       x, y, w, h);
       else
 	 XClearArea(display, SnowWin,
 	       x, y, w, h, exposures);
-   }
+#else
+#ifdef DRAWFRAME
+      REGION region;
+      region = REGION_CREATE_RECTANGLE(x,y,w,h);
+      GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin, region);
+      cairo_t *cc =
+	 gdk_drawing_context_get_cairo_context (c);
+      cairo_set_source_rgba(cc,0,0,0,0);
+      cairo_set_operator(cc, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cc);
+      gdk_window_end_draw_frame(gdkwin, c);
+      cairo_set_operator(cc, CAIRO_OPERATOR_OVER);
+#else
+      cairo_set_operator(cr,CAIRO_OPERATOR_CLEAR);
+      cairo_rectangle(cr,x,y,w,h);
+      cairo_fill(cr);
+      cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
+      gtk_widget_queue_draw_area(GTK_WIDGET(darea),x,y,w,h);
 #endif
+#endif
+   }
 }
 
 void init_fallen_snow()

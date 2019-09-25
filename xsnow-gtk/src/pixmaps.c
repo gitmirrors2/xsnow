@@ -160,6 +160,9 @@ StarMap starPix =
 #include "Pixmaps/xsnow.xpm"
 char **xsnow_logo = xsnow_xpm;
 
+#include "Pixmaps/star.xpm"
+char **star_xpm = starblack;
+
 // changes pixels with alpha >0 into rgba
 void surface_change_color(cairo_surface_t *s, GdkRGBA *c)
 {
