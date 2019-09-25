@@ -28,7 +28,6 @@
 #define DOIT_S(x) char *x;
 
 typedef struct flags {
-   //unsigned long int window_id;
    DOITALL
 }FLAGS;
 #undef DOIT_I
@@ -53,10 +52,9 @@ typedef struct flags {
       flags.usebg     = 0; \
       flags.exposures = 0; } while(0)
 
-void readflags();
-void writeflags();
-void init_flags();
 extern FLAGS flags;
-void setdefaultflags();
-int handleflags(int argc, char*argv[]);
+extern int   HandleFlags(int argc, char*argv[]);
+extern void  InitFlags(void);
+extern void  PrintVersion(void);
+extern void  WriteFlags(void);
 #endif

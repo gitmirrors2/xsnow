@@ -81,6 +81,7 @@
 #define DEFAULT_window_id 0
 #define DEFAULT_WindTimer 30
 #define DEFAULT_xwininfohandling 0
+#define DEFAULT_UseX11 0
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 

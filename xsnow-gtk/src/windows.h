@@ -20,11 +20,11 @@
 */
 #ifndef WINDOWS_H
 #define WINDOWS_H
-extern Display *display;
-extern int screen;
-extern Window SnowWin;
-extern int SnowWinWidth; 
-extern int SnowWinHeight;
-extern int SnowWinBorderWidth;
-extern int SnowWinDepth;
+extern Display *MyDisplay;
+extern int     MyScreen;
+extern Window  SnowWin;
+extern int     SnowWinWidth; 
+extern int     SnowWinHeight;
+extern int     SnowWinBorderWidth;
+extern int     SnowWinDepth;
 #endif

@@ -81,6 +81,7 @@
    DOIT_I(usebg) \
    DOIT_I(WhirlFactor) \
    DOIT_I(WindTimer) \
+   DOIT_I(UseX11) \
    \
    DOIT_S(bgcolor) \
    DOIT_S(display_name) \

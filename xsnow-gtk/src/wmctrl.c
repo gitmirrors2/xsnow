@@ -22,11 +22,14 @@
 #include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <gdk/gdkx.h>
 #include <string.h>
 #include <unistd.h>
 #include "wmctrl.h"
 #include "windows.h"
 #include "dsimple.h"
+
+#ifdef USEX11
 int GetCurrentWorkspace()
 {
    Atom atom, type;
@@ -34,15 +37,15 @@ int GetCurrentWorkspace()
    unsigned long nitems,b;
    unsigned char *properties = 0;
    long r;
-   atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
-   XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
+   atom = XInternAtom(MyDisplay,"_NET_CURRENT_DESKTOP",False);
+   XGetWindowProperty(MyDisplay, DefaultRootWindow(MyDisplay), atom, 0, 1, False, 
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_CARDINAL)
    {
       //printf("%d: nog eens ...\n",__LINE__);
       if(properties) XFree(properties);
-      atom = XInternAtom(display,"_WIN_WORKSPACE",False);
-      XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
+      atom = XInternAtom(MyDisplay,"_WIN_WORKSPACE",False);
+      XGetWindowProperty(MyDisplay, DefaultRootWindow(MyDisplay), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
    }
    if(type != XA_CARDINAL)
@@ -53,6 +56,13 @@ int GetCurrentWorkspace()
    if(properties) XFree(properties);
    return (int)r;
 }
+#else
+int GetCurrentWorkspace()
+{
+   return gdk_x11_screen_get_current_desktop(gdk_screen_get_default());
+}
+#endif
+
 
 int GetWindows(WinInfo **windows, int *nwin)
 {
@@ -62,15 +72,15 @@ int GetWindows(WinInfo **windows, int *nwin)
    unsigned char *properties = 0;
    long *r;
    (*windows) = 0;
-   atom = XInternAtom(display,"_NET_CLIENT_LIST",False);
-   XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
+   atom = XInternAtom(MyDisplay,"_NET_CLIENT_LIST",False);
+   XGetWindowProperty(MyDisplay, DefaultRootWindow(MyDisplay), atom, 0, 1000000, False, 
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_WINDOW)
    {
       printf("%d: nog eens ...\n",__LINE__);
       if(properties) XFree(properties);
-      atom = XInternAtom(display,"_WIN_CLIENT_LIST",False);
-      XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
+      atom = XInternAtom(MyDisplay,"_WIN_CLIENT_LIST",False);
+      XGetWindowProperty(MyDisplay, DefaultRootWindow(MyDisplay), atom, 0, 1000000, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
    }
    //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
@@ -80,31 +90,31 @@ int GetWindows(WinInfo **windows, int *nwin)
    int i;
    WinInfo *w = (*windows);
    static Atom net_atom = 0, gtk_atom = 0;
-   if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
-   if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
+   if(gtk_atom == 0) gtk_atom = XInternAtom(MyDisplay, "_GTK_FRAME_EXTENTS", True);
+   if(net_atom == 0) net_atom = XInternAtom(MyDisplay, "_NET_FRAME_EXTENTS", True);
    for (i=0; i<nitems; i++,w++)
    {
       Window root,child_return;
       int x0,y0;
       unsigned int bw,depth;
       w->id = r[i];
-      XGetGeometry (display, w->id, &root, &x0, &y0,
+      XGetGeometry (MyDisplay, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
-      XTranslateCoordinates (display, w->id, SnowWin, 0, 0,
+      XTranslateCoordinates (MyDisplay, w->id, SnowWin, 0, 0,
 	    &(w->x), &(w->y), &child_return);
 
       enum{NET,GTK};
       Atom type; int format; unsigned long nitems,b; unsigned char *properties = 0;
       Atom atom;
-      atom = XInternAtom(display,"_NET_WM_DESKTOP",False);
-      XGetWindowProperty(display, w->id, atom, 0, 1, False, 
+      atom = XInternAtom(MyDisplay,"_NET_WM_DESKTOP",False);
+      XGetWindowProperty(MyDisplay, w->id, atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if(type != XA_CARDINAL)
       {
 	 if(properties) XFree(properties);
 	 properties = 0;
-	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
-	 XGetWindowProperty(display, w->id, atom, 0, 1, False, 
+	 atom = XInternAtom(MyDisplay,"_WIN_WORKSPACE",False);
+	 XGetWindowProperty(MyDisplay, w->id, atom, 0, 1, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
       }
       if(properties)
@@ -118,8 +128,8 @@ int GetWindows(WinInfo **windows, int *nwin)
       w->sticky = 0;
       properties = 0;
       nitems = 0;
-      atom = XInternAtom(display,"_NET_WM_STATE",True);
-      XGetWindowProperty(display, w->id, atom, 0, (~0L), False,
+      atom = XInternAtom(MyDisplay,"_NET_WM_STATE",True);
+      XGetWindowProperty(MyDisplay, w->id, atom, 0, (~0L), False,
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if (type == XA_ATOM)
       {
@@ -127,7 +137,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 for(i=0; i<nitems; i++)
 	 {
 	    char *s = 0;
-	    s = XGetAtomName(display,((Atom*)properties)[i]);
+	    s = XGetAtomName(MyDisplay,((Atom*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_STATE_STICKY"))
 	    { 
 	       //printf("%d: %#lx is sticky\n",__LINE__,w->id);
@@ -143,7 +153,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       nitems = 0;
 
       // first try to get adjustments for _GTK_FRAME_EXTENTS
-      XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
+      XGetWindowProperty(MyDisplay, w->id, gtk_atom, 0, 4, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       int wintype = GTK;
       // if not succesfull, try _NET_FRAME_EXTENTS
@@ -152,7 +162,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 if(properties) XFree(properties);
 	 properties = 0;
 	 //printf("%d: trying net...\n",__LINE__);
-	 XGetWindowProperty(display, w->id, net_atom, 0, 4, False, 
+	 XGetWindowProperty(MyDisplay, w->id, net_atom, 0, 4, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
 	 wintype = NET;
       }
@@ -194,7 +204,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 
 int FindWindowWithName(char *needle, Window *win, char **name)
 {
-   *win = Window_With_Name(display,DefaultRootWindow(display),needle);
+   *win = Window_With_Name(MyDisplay,DefaultRootWindow(MyDisplay),needle);
    (*name) = strdup(needle);
    if (*win == 0)
       return 0;
@@ -216,7 +226,7 @@ WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
    return 0;
 }
 
-void printwindows(WinInfo *windows, int nwin)
+void PrintWindows(WinInfo *windows, int nwin)
 {
    WinInfo *w = windows;
    int i;

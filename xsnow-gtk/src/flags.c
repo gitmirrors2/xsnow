@@ -30,26 +30,45 @@
 #include "version.h"
 #include "doit.h"
 
-static long int s2int(char *s)     // string to integer
+static void ReadFlags(void);
+static void SetDefaultFlags(void);
+
+static long int S2Int(char *s)     // string to integer
 {
    return strtol(s,0,0);
 }
 static long int s2posint(char *s)  //string to positive integer
 {
-   int x = s2int(s);
+   int x = S2Int(s);
    if (x<0) return 0;
    return x;
 }
+void PrintVersion()
+{
+   printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
+	 "March 2019 by Willem Vermin\n"
+	 , VERSION);
+   printf("configured with:");
+#ifdef USEX11
+   printf(" USEX11");
+#endif
+#ifdef DRAWFRAME
+   printf(" DRAWFRAME");
+#endif
+   printf("\n");
+}
+#if 0
 static void printversion()
 {
    printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
 	 "March 2019 by Willem Vermin\n"
 	 , VERSION);
 }
+#endif
 
 char *flagsfile = 0;
 
-void setdefaultflags()
+void SetDefaultFlags()
 {
    //flags.window_id                = WINDOW_ID; 
 #define DOIT_I(x) flags.x = DEFAULT_ ## x ;
@@ -67,7 +86,7 @@ void setdefaultflags()
 // 1: did request, program can stop.
 #define checkax {if(ax>=argc-1){fprintf(stderr,"** missing parameter for '%s', exiting.\n",argv[ax]);return -1;}}
 
-void init_flags()
+void InitFlags()
 {
    // to make sure that strings in flags are malloc'd
 #define DOIT_I(x)  flags.x = 0;
@@ -77,6 +96,7 @@ void init_flags()
 #undef DOIT_I
 #undef DOIT_L
 #undef DOIT_S
+   flags.UseX11 = 0;    // todo, now for testing
 }
 
 #define handlestring(x) checkax; free(flags.x); flags.x = strdup(argv[++ax])
@@ -85,7 +105,7 @@ void init_flags()
    do { checkax; flags.y=s2posint(argv[++ax]);} while(0)
 
 #define handle_im(x,y) else if (!strcmp(arg,# x)) \
-   do { checkax; flags.y=s2int(argv[++ax]);} while(0)
+   do { checkax; flags.y=S2Int(argv[++ax]);} while(0)
 
 #define handle_iv(x,y,z) else if (!strcmp(arg,# x)) \
    do { flags.y = z; } while(0)
@@ -93,9 +113,9 @@ void init_flags()
 #define handle_is(x,y) else if (!strcmp(arg, #x)) \
    do { handlestring(y);} while(0)
 
-int handleflags(int argc, char*argv[])
+int HandleFlags(int argc, char*argv[])
 {
-   setdefaultflags();
+   SetDefaultFlags();
    char *arg;
    int ax;
    int pass;
@@ -105,7 +125,7 @@ int handleflags(int argc, char*argv[])
       {
 	 if(flags.defaults || flags.noconfig)
 	    break;
-	 readflags();
+	 ReadFlags();
       }
       for (ax=1; ax<argc; ax++) {
 	 arg = argv[ax];
@@ -118,7 +138,7 @@ int handleflags(int argc, char*argv[])
 	    return 1;
 	 }
 	 else if (strcmp(arg, "-version") == 0) {
-	    printversion();
+	    PrintVersion();
 	    return 1;
 	 }
 	 else if (strcmp(arg, "-nokeepsnow") == 0) {
@@ -273,7 +293,7 @@ static void makeflagsfile()
    //printf("%d: flagsfile: %s\n",__LINE__,flagsfile);
 }
 
-void readflags()
+void ReadFlags()
 {
    xmlXPathObjectPtr result;
    xmlChar *value;
@@ -329,7 +349,7 @@ static void myxmlNewChild(xmlNodePtr node, xmlNsPtr p, char *name,long int value
    xmlNewChild(node, p, BAD_CAST name, BAD_CAST svalue);
 }
 
-void writeflags()
+void WriteFlags()
 {
    xmlDocPtr doc = NULL;
    xmlNodePtr root_node = NULL;

@@ -129,8 +129,8 @@ FLAGS flags;
 FLAGS oldflags;
 
 // from windows.h
-Display *display;
-int     screen;
+Display *MyDisplay;
+int     MyScreen;
 Window  SnowWin;
 int     SnowWinBorderWidth;
 int     SnowWinDepth;
@@ -304,72 +304,71 @@ double Delay[lastalarm];
 #ifdef USEX11
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
 #endif
-static int    blowoff(void);
-static void   clean_fallen_area(FallenSnow *fsnow, int x, int w);
-static void   clean_fallen(Window id);
+static int    BlowOff(void);
+static void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
+static void   CleanFallen(Window id);
 static void   ClearScreen(void);
-static void   convert_ontree_to_flakes(void);
-static void   create_alarm_delays(void);
+static void   ConvertOnTreeToFlakes(void);
+static void   CreateAlarmDelays(void);
 #ifdef USEX11
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 #endif
-static void   deleteFlake(Snow *flake);
-static int    determine_window(void);
+static void   DeleteFlake(Snow *flake);
+static int    DetermineWindow(void);
 static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSanta1(void);
 static void   DrawSanta(void);
-static void   drawSnowFlake(Snow *flake);
+static void   DrawSnowFlake(Snow *flake);
 static void   DrawTree(int i);
-static void   erase_fallen_pixel(FallenSnow *fsnow,int x);
-static void   erase_stars(void);
-static void   erase_trees(void);
+static void   EraseFallenPixel(FallenSnow *fsnow,int x);
+static void   EraseStars(void);
+static void   EraseTrees(void);
 static void   EraseSanta(int x, int y);
-static void   eraseSnowFlake(Snow *flake);
-static void   generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy);
-static int    handlefallensnow(FallenSnow *fsnow);
-static FILE   *homeopen(char *file,char *mode,char **path);
+static void   EraseSnowFlake(Snow *flake);
+static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
+static int    HandleFallenSnow(FallenSnow *fsnow);
+static FILE   *HomeOpen(char *file,char *mode,char **path);
 #ifdef USEX11
 static Pixel  iAllocNamedColor(char *colorName, Pixel dfltPix);
 #endif
-static void   init_baum_koordinaten(void);
-static void   init_blowofffactor(void);
-static void   initdisplaydimensions(void);
-static void   init_fallen_snow(void);
-static void   init_flakes_per_second(void);
-static void   reinit_tree0(void);
-static void   initFlake(Snow *flake);
+static void   InitBaumKoordinaten(void);
+static void   InitBlowOffFactor(void);
+static void   InitDisplayDimensions(void);
+static void   InitFallenSnow(void);
+static void   InitFlakesPerSecond(void);
+static void   ReinitTree0(void);
+static void   InitFlake(Snow *flake);
 static void   InitSantaPixmaps(void);
-static void   init_snow_on_trees(void);
-static void   init_SnowSpeedFactor(void);
-static void   init_snow_color(void);
-static void   init_stars(void);
+static void   InitSnowOnTrees(void);
+static void   InitSnowSpeedFactor(void);
+static void   InitSnowColor(void);
+static void   InitStars(void);
 static void   InitTreePixmaps(void);
-static void   kdesetbg1(const char *color);
-static void   printversion(void);
+static void   KdeSetBG1(const char *color);
 static int    RandInt(int maxVal);
-static void   redraw_trees(void);
+static void   RedrawTrees(void);
 static void   ResetSanta(void);
-static void   set_gc_functions(void);
-static void   set_maxscrsnowdepth(void);
-static void   set_SantaSpeed(void);
-static void   set_whirl(void);
-static void   set_windtimer(void);
+static void   SetGCFunctions(void);
+static void   SetMaxSCRSnowDepth(void);
+static void   SetSantaSpeed(void);
+static void   SetWhirl(void);
+static void   SetWindTimer(void);
 static void   SigHandler(int signum);
-static void   update_fallensnow_partial(FallenSnow *fsnow, int x, int w);
-static void   update_fallensnow_with_wind(FallenSnow *fsnow,int w, int h);
+static void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
+static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 static void   UpdateSanta(void);
-static void   updateSnowFlake(Snow *flake);
-static void   update_windows(void);
-static void   uSsleep(long usec);
+static void   UpdateSnowFlake(Snow *flake);
+static void   UpdateWindows(void);
+static void   USleep(long usec);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
-static Window xwininfo(char **name);
+static Window XWinInfo(char **name);
 
 #ifndef USEX11
-static void cairoClearRectangle(int x, int y, int w, int h);
-static void cairoDrawFlake(Snow *flake, int erase);
-static void cairoDrawFallen(FallenSnow *fsnow);
-static void cairoDrawTree(int i, int erase);
-static void init_star_surfaces(void);
+static void CairoClearRectangle(int x, int y, int w, int h);
+static void CairoDrawFlake(Snow *flake, int erase);
+static void CairoDrawFallen(FallenSnow *fsnow);
+static void CairoDrawTree(int i, int erase);
+static void InitStarSurfaces(void);
 #endif
 
 static void thanks(void)
@@ -380,14 +379,14 @@ static void thanks(void)
 int main(int argc, char *argv[])
 {
    int i;
-   printversion();
+   PrintVersion();
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
    // it seems that it cannot be done there.
    setenv("GDK_BACKEND","x11",1);
-   init_flags();
-   int rc = handleflags(argc, argv);
+   InitFlags();
+   int rc = HandleFlags(argc, argv);
    switch(rc)
    {
       case -1:
@@ -405,14 +404,14 @@ int main(int argc, char *argv[])
    gdk_rgba_parse(&meteo_rgba,meteoColor);
 #endif
    if (!flags.noconfig)
-      writeflags();
-   display = XOpenDisplay(flags.display_name);
-   XSynchronize(display,dosync);
+      WriteFlags();
+   MyDisplay = XOpenDisplay(flags.display_name);
+   XSynchronize(MyDisplay,dosync);
    XSetErrorHandler(XsnowErrors);
-   screen = DefaultScreen(display);
+   MyScreen = DefaultScreen(MyDisplay);
 #ifdef USEX11
-   black = BlackPixel(display, screen);
-   white = WhitePixel(display, screen);
+   black = BlackPixel(MyDisplay, MyScreen);
+   white = WhitePixel(MyDisplay, MyScreen);
 #endif
 
 
@@ -427,19 +426,19 @@ int main(int argc, char *argv[])
    flags.exposures = exposures;   // trouble ?
 
 
-   TreeType = malloc(sizeof(*TreeType)); // to make realloc() possible in init_baum_koordinaten
+   TreeType = malloc(sizeof(*TreeType)); // to make realloc() possible in InitBaumKoordinaten
 
-   init_SnowSpeedFactor();
-   set_whirl();
-   set_windtimer();
+   InitSnowSpeedFactor();
+   SetWhirl();
+   SetWindTimer();
 
-   snow_on_trees = malloc(sizeof(*snow_on_trees));  // will be remallloced in init_snow_on_trees
-   init_snow_on_trees();
-   init_blowofffactor();
+   snow_on_trees = malloc(sizeof(*snow_on_trees));  // will be remallloced in InitSnowOnTrees
+   InitSnowOnTrees();
+   InitBlowOffFactor();
 
    snow_on_trees = malloc(sizeof(*snow_on_trees)*flags.maxontrees);
-   star = malloc(sizeof(*star)); // will be re-allocated in init_stars
-   tree = malloc(sizeof(*tree)); // will be re-allocated in init_baum_koordinaten
+   star = malloc(sizeof(*star)); // will be re-allocated in InitStars
+   tree = malloc(sizeof(*tree)); // will be re-allocated in InitBaumKoordinaten
    srand48((unsigned int)wallclock());
    //signal(SIGKILL, SigHandler);  // wwvv
    signal(SIGINT, SigHandler);
@@ -449,7 +448,7 @@ int main(int argc, char *argv[])
 #else
    signal(SIGHUP, SigHandler);
 #endif
-   if (display == NULL) {
+   if (MyDisplay == NULL) {
       if (flags.display_name == NULL) flags.display_name = getenv("DISPLAY");
       (void) fprintf(stderr, "%s: cannot connect to X server %s\n", argv[0],
 	    flags.display_name ? flags.display_name : "(default)");
@@ -487,10 +486,10 @@ int main(int argc, char *argv[])
    //     but we do not use XClearArea in Gnome).
    //
 
-   rootwindow = DefaultRootWindow(display);
+   rootwindow = DefaultRootWindow(MyDisplay);
 
    gtk_init(&argc, &argv);
-   if (!determine_window())
+   if (!DetermineWindow())
    {
       printf("xsnow: cannot determine window, exiting...\n");
       return 1;
@@ -509,7 +508,7 @@ int main(int argc, char *argv[])
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
-      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
+      rp->pixmap = XCreateBitmapFromData(MyDisplay, SnowWin,
 	    rp->snowBits, rp->width, rp->height);
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
@@ -523,16 +522,16 @@ int main(int argc, char *argv[])
 #endif
    }
 #ifndef USEX11
-   init_star_surfaces();
+   InitStarSurfaces();
 #endif
-   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
+   starPix.pixmap = XCreateBitmapFromData(MyDisplay, SnowWin,
 	 (char*)starPix.starBits, starPix.width, starPix.height);
    firstflake = createFlake();
-   initFlake(firstflake);
-   init_flakes_per_second();
+   InitFlake(firstflake);
+   InitFlakesPerSecond();
    InitSantaPixmaps();
-   init_fallen_snow();
-   init_stars();
+   InitFallenSnow();
+   InitStars();
    InitTreePixmaps();  // can change value of flags.nomenu
 
 #define DOIT_I(x) oldflags.x = flags.x;
@@ -554,36 +553,36 @@ int main(int argc, char *argv[])
    for(i=0; i<STARANIMATIONS; i++)
       starcPix[i] = iAllocNamedColor(starColor[i], black);
 
-   SantaGC       = XCreateGC(display, SnowWin, 0, 0);
-   testingGC     = XCreateGC(display, rootwindow, 0,0);
-   eSantaGC      = XCreateGC(display, SnowWin, 0, 0);
-   TreeGC        = XCreateGC(display, SnowWin, 0, 0);
-   SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
-   CleanGC       = XCreateGC(display,SnowWin,0,0);
-   FallenGC      = XCreateGC(display, SnowWin, 0, 0);
-   eFallenGC     = XCreateGC(display, SnowWin, 0, 0);  // used to erase fallen snow
-   meteorite.gc  = XCreateGC(display, SnowWin, 0, 0);
-   meteorite.egc = XCreateGC(display, SnowWin, 0, 0);
+   SantaGC       = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   testingGC     = XCreateGC(MyDisplay, rootwindow, 0,0);
+   eSantaGC      = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   TreeGC        = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   SnowOnTreesGC = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   CleanGC       = XCreateGC(MyDisplay,SnowWin,0,0);
+   FallenGC      = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   eFallenGC     = XCreateGC(MyDisplay, SnowWin, 0, 0);  // used to erase fallen snow
+   meteorite.gc  = XCreateGC(MyDisplay, SnowWin, 0, 0);
+   meteorite.egc = XCreateGC(MyDisplay, SnowWin, 0, 0);
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    {
-      SnowGC[i]  = XCreateGC(display, SnowWin, 0, 0);
-      eSnowGC[i] = XCreateGC(display, SnowWin, 0, 0);
+      SnowGC[i]  = XCreateGC(MyDisplay, SnowWin, 0, 0);
+      eSnowGC[i] = XCreateGC(MyDisplay, SnowWin, 0, 0);
    }
    for (i=0; i<STARANIMATIONS; i++)
-      starGC[i]  = XCreateGC(display,SnowWin,0,0);
+      starGC[i]  = XCreateGC(MyDisplay,SnowWin,0,0);
 
-   set_gc_functions();
+   SetGCFunctions();
 #endif
 
-   init_baum_koordinaten();
-   init_snow_color();
+   InitBaumKoordinaten();
+   InitSnowColor();
 
    ResetSanta();   
    // events
    if(Isdesktop)
-      XSelectInput(display, SnowWin, 0);
+      XSelectInput(MyDisplay, SnowWin, 0);
    else
-      XSelectInput(display, SnowWin, 
+      XSelectInput(MyDisplay, SnowWin, 
 	    StructureNotifyMask);
    //	    ExposureMask|SubstructureNotifyMask|StructureNotifyMask);
 
@@ -598,7 +597,7 @@ int main(int argc, char *argv[])
    ALARMALL;
 #undef ALARM
 
-   create_alarm_delays();
+   CreateAlarmDelays();
    //
    // about alarm_santa1: if exposures == True, Santa has to
    // be redrawn in a high frequency because there seems
@@ -621,7 +620,7 @@ int main(int argc, char *argv[])
       {
 	 // check if snow window still exists:
 	 XWindowAttributes wattr;
-	 if (!XGetWindowAttributes(display,SnowWin,&wattr))
+	 if (!XGetWindowAttributes(MyDisplay,SnowWin,&wattr))
 	    break;
       }
       int i,action;
@@ -641,7 +640,7 @@ int main(int argc, char *argv[])
 	    break;
 	 }
       }
-      uSsleep((long)(1e6*(waittime)));
+      USleep((long)(1e6*(waittime)));
       tnow = wallclock();
       // define actions for alarms:
 #define ALARM(x,y) case alarm_ ## x: do_ ## x(); break;
@@ -665,9 +664,9 @@ int main(int argc, char *argv[])
    if (SnowWinName) free(SnowWinName);
    if (Prevtime) free(Prevtime);
 
-   XClearArea(display, SnowWin, 0,0,0,0,True);
-   XFlush(display);
-   XCloseDisplay(display); //also frees the GC's, pixmaps and other resources on display
+   XClearArea(MyDisplay, SnowWin, 0,0,0,0,True);
+   XFlush(MyDisplay);
+   XCloseDisplay(MyDisplay); //also frees the GC's, pixmaps and other resources on MyDisplay
    while(fsnow_first)
       PopFallenSnow(&fsnow_first);
    double telapsed = wallclock() - tstart;
@@ -741,49 +740,49 @@ void do_ui_check()
    }
    if(flags.SantaSpeedFactor != oldflags.SantaSpeedFactor)
    {
-      set_SantaSpeed();
+      SetSantaSpeed();
       oldflags.SantaSpeedFactor = flags.SantaSpeedFactor;
       changes++;
    }
    if(strcmp(flags.TreeType, oldflags.TreeType))
    {
       //P(%s %s\n",flags.TreeType,oldflags.TreeType);
-      redraw_trees();
+      RedrawTrees();
       free(oldflags.TreeType);
       oldflags.TreeType = strdup(flags.TreeType);
       changes++;
    }
    if(flags.desired_number_of_trees != oldflags.desired_number_of_trees)
    {
-      redraw_trees();
+      RedrawTrees();
       oldflags.desired_number_of_trees = flags.desired_number_of_trees;
       changes++;
    }
    if(flags.treefill != oldflags.treefill)
    {
-      redraw_trees();
+      RedrawTrees();
       oldflags.treefill = flags.treefill;
       changes++;
    }
    if(flags.NoTrees != oldflags.NoTrees)
    {
-      redraw_trees();
+      RedrawTrees();
       oldflags.NoTrees = flags.NoTrees;
       changes++;
    }
    if(strcmp(flags.trColor, oldflags.trColor))
    {
       //P("%s %s\n",flags.trColor,oldflags.trColor);
-      reinit_tree0();
-      //redraw_trees();
+      ReinitTree0();
+      //RedrawTrees();
       free(oldflags.trColor);
       oldflags.trColor = strdup(flags.trColor);
       changes++;
    }
    if(flags.nstars != oldflags.nstars)
    {
-      erase_stars();
-      init_stars();
+      EraseStars();
+      InitStars();
       oldflags.nstars = flags.nstars;
       changes++;
    }
@@ -802,13 +801,13 @@ void do_ui_check()
    if(flags.snowflakesfactor != oldflags.snowflakesfactor)
    {
       oldflags.snowflakesfactor = flags.snowflakesfactor;
-      init_flakes_per_second();
+      InitFlakesPerSecond();
       changes++;
    }
    if(strcmp(flags.snowColor, oldflags.snowColor))
    {
       //P("%s %s\n",flags.snowColor,oldflags.snowColor);
-      init_snow_color();
+      InitSnowColor();
       ClearScreen();
       free(oldflags.snowColor);
       oldflags.snowColor = strdup(flags.snowColor);
@@ -817,13 +816,13 @@ void do_ui_check()
    if(flags.SnowSpeedFactor != oldflags.SnowSpeedFactor)
    {
       oldflags.SnowSpeedFactor = flags.SnowSpeedFactor;
-      init_SnowSpeedFactor();
+      InitSnowSpeedFactor();
       changes++;
    }
    if(flags.blowofffactor != oldflags.blowofffactor)
    {
       oldflags.blowofffactor = flags.blowofffactor;
-      init_blowofffactor();
+      InitBlowOffFactor();
       changes++;
    }
    if(flags.NoBlowSnow != oldflags.NoBlowSnow)
@@ -834,13 +833,13 @@ void do_ui_check()
    if(flags.cpuload != oldflags.cpuload)
    {
       oldflags.cpuload = flags.cpuload;
-      create_alarm_delays();
+      CreateAlarmDelays();
       changes++;
    }
    if(flags.usebg != oldflags.usebg)
    {
       oldflags.usebg = flags.usebg;
-      set_gc_functions();
+      SetGCFunctions();
       ClearScreen();
       changes++;
    }
@@ -848,18 +847,18 @@ void do_ui_check()
    {
       oldflags.KDEbg = flags.KDEbg;
       if (flags.KDEbg)
-	 kdesetbg1(flags.bgcolor);
+	 KdeSetBG1(flags.bgcolor);
       else
-	 kdesetbg1(0);
+	 KdeSetBG1(0);
       ClearScreen();
    }
    if(strcmp(flags.bgcolor,oldflags.bgcolor))
    {
       free(oldflags.bgcolor);
       oldflags.bgcolor = strdup(flags.bgcolor);
-      set_gc_functions();
+      SetGCFunctions();
       if(flags.KDEbg)
-	 kdesetbg1(flags.bgcolor);
+	 KdeSetBG1(flags.bgcolor);
       ClearScreen();
       changes++;
    }
@@ -867,7 +866,7 @@ void do_ui_check()
    {
       oldflags.usealpha = flags.usealpha;
       Usealpha          = flags.usealpha;
-      set_gc_functions();
+      SetGCFunctions();
       ClearScreen();
       changes++;
    }
@@ -875,32 +874,32 @@ void do_ui_check()
    {
       oldflags.exposures = flags.exposures;
       exposures          = flags.exposures;
-      create_alarm_delays();
+      CreateAlarmDelays();
       ClearScreen();
       changes++;
    }
    if(flags.offset_s != oldflags.offset_s)
    {
       oldflags.offset_s = flags.offset_s;
-      initdisplaydimensions();
-      init_fallen_snow();
-      init_stars();
-      redraw_trees();
+      InitDisplayDimensions();
+      InitFallenSnow();
+      InitStars();
+      RedrawTrees();
       ClearScreen();
       changes++;
    }
    if(flags.MaxWinSnowDepth != oldflags.MaxWinSnowDepth)
    {
       oldflags.MaxWinSnowDepth = flags.MaxWinSnowDepth;
-      init_fallen_snow();
+      InitFallenSnow();
       ClearScreen();
       changes++;
    }
    if(flags.MaxScrSnowDepth != oldflags.MaxScrSnowDepth)
    {
       oldflags.MaxScrSnowDepth = flags.MaxScrSnowDepth;
-      set_maxscrsnowdepth();
-      init_fallen_snow();
+      SetMaxSCRSnowDepth();
+      InitFallenSnow();
       ClearScreen();
       changes++;
    }
@@ -925,14 +924,14 @@ void do_ui_check()
    if(flags.NoKeepSBot != oldflags.NoKeepSBot)
    {
       oldflags.NoKeepSBot = flags.NoKeepSBot;
-      init_fallen_snow();
+      InitFallenSnow();
       ClearScreen();
       changes++;
    }
    if(flags.NoKeepSWin != oldflags.NoKeepSWin)
    {
       oldflags.NoKeepSWin = flags.NoKeepSWin;
-      init_fallen_snow();
+      InitFallenSnow();
       ClearScreen();
       changes++;
    }
@@ -944,29 +943,29 @@ void do_ui_check()
    if(flags.WhirlFactor != oldflags.WhirlFactor)
    {
       oldflags.WhirlFactor = flags.WhirlFactor;
-      set_whirl();
+      SetWhirl();
       changes++;
    }
    if(flags.WindTimer != oldflags.WindTimer)
    {
       oldflags.WindTimer = flags.WindTimer;
-      set_windtimer();
+      SetWindTimer();
       changes++;
    }
    if(flags.fullscreen != oldflags.fullscreen)
    {
       oldflags.fullscreen = flags.fullscreen;
-      determine_window();
-      init_fallen_snow();
-      init_stars();
-      redraw_trees();
+      DetermineWindow();
+      InitFallenSnow();
+      InitStars();
+      RedrawTrees();
       ClearScreen();
       changes++;
    }
    if(flags.below != oldflags.below)
    {
       oldflags.below = flags.below;
-      determine_window();
+      DetermineWindow();
       changes++;
    }
    if(flags.windnow)
@@ -977,18 +976,18 @@ void do_ui_check()
 
    if (changes > 0)
    {
-      writeflags();
+      WriteFlags();
    }
 }
 
 void ClearScreen()
 {
-   XClearArea(display, SnowWin, 0,0,0,0,True);
+   XClearArea(MyDisplay, SnowWin, 0,0,0,0,True);
 }
-void redraw_trees()
+void RedrawTrees()
 {
-   erase_trees();
-   init_baum_koordinaten();
+   EraseTrees();
+   InitBaumKoordinaten();
    NoSnowArea_static = TreeRegion;
 }
 
@@ -1009,7 +1008,7 @@ void do_snow_on_trees()
    if(flags.NoKeepSnowOnTrees || flags.NoTrees)
       return;
    if (wind == 2)
-      convert_ontree_to_flakes();
+      ConvertOnTreeToFlakes();
 
 #ifdef USEX11
    static int second = 0;
@@ -1017,12 +1016,12 @@ void do_snow_on_trees()
    if (second)
    {
       second = 1;
-      XSetForeground(display, SnowOnTreesGC, ~blackPix); 
-      XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
+      XSetForeground(MyDisplay, SnowOnTreesGC, ~blackPix); 
+      XFillRectangle(MyDisplay, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
    }
-   XSetRegion(display, SnowOnTreesGC, snow_on_trees_region);
-   XSetForeground(display, SnowOnTreesGC, snowcPix); 
-   XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
+   XSetRegion(MyDisplay, SnowOnTreesGC, snow_on_trees_region);
+   XSetForeground(MyDisplay, SnowOnTreesGC, snowcPix); 
+   XFillRectangle(MyDisplay, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
 #else
 
    GdkDrawingContext *c = gdk_window_begin_draw_frame(gdkwin,snow_on_trees_region);
@@ -1058,7 +1057,7 @@ void do_snowflakes()
    {
       Snow *next = flake->next;  // flake can disappear, so we have to save the 
       //                            pointer to the next flake
-      updateSnowFlake(flake);
+      UpdateSnowFlake(flake);
       flake = next;
    }
    if(!flake)
@@ -1073,7 +1072,7 @@ void do_snowflakes()
    P("%d %d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount,snow_running);
 }
 
-int handlefallensnow(FallenSnow *fsnow)
+int HandleFallenSnow(FallenSnow *fsnow)
 {
    // soo complicated to determine if a fallensnow should be handled, therefore
    // we isolate this question in this function for further use
@@ -1089,11 +1088,11 @@ void do_fallen()
    //PrintFallenSnow(fsnow_first);
    while(fsnow)
    {
-      if (handlefallensnow(fsnow)) 
+      if (HandleFallenSnow(fsnow)) 
 	 DrawFallen(fsnow);
       fsnow = fsnow->next;
    }
-   XFlush(display);
+   XFlush(MyDisplay);
 }
 
 void do_blowoff()
@@ -1102,10 +1101,10 @@ void do_blowoff()
    FallenSnow *fsnow = fsnow_first;
    while(fsnow)
    {
-      if (handlefallensnow(fsnow)) 
+      if (HandleFallenSnow(fsnow)) 
 	 if(fsnow->id == 0 || (!fsnow->hidden &&
 		  (fsnow->ws == cworkspace || fsnow->sticky)))
-	    update_fallensnow_with_wind(fsnow,fsnow->w/4,fsnow->h/4); 
+	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
       fsnow = fsnow->next;
    }
 }
@@ -1134,13 +1133,13 @@ void DrawFallen(FallenSnow *fsnow)
 	       if (vy > -100.0)
 		  vy = -100;
 	       if (ActualSantaSpeed > 0)
-		  generate_flakes_on_fallen(fsnow,xfront,clearing,vy);
-	       clean_fallen_area(fsnow,xback-clearing,SantaWidth+2*clearing);
+		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
+	       CleanFallenArea(fsnow,xback-clearing,SantaWidth+2*clearing);
 	       int i;
 	       for (i=0; i<fsnow->w; i++)
 		  if (i < xfront+clearing && i>=xback-clearing)
 		     fsnow->acth[i] = 0;
-	       XFlush(display);
+	       XFlush(MyDisplay);
 	    }
 	 }
 
@@ -1148,21 +1147,21 @@ void DrawFallen(FallenSnow *fsnow)
 	 int x = fsnow->x;
 	 int y = fsnow->y - fsnow->h;
 	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
-	 XSetStipple(display, FallenGC, pixmap);
-	 XFreePixmap(display,pixmap);
-	 XSetFillStyle( display, FallenGC, FillStippled);
-	 XSetFunction(  display, FallenGC, GXcopy);
-	 XSetForeground(display, FallenGC, snowcPix);
-	 XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
-	 XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+	 XSetStipple(MyDisplay, FallenGC, pixmap);
+	 XFreePixmap(MyDisplay,pixmap);
+	 XSetFillStyle( MyDisplay, FallenGC, FillStippled);
+	 XSetFunction(  MyDisplay, FallenGC, GXcopy);
+	 XSetForeground(MyDisplay, FallenGC, snowcPix);
+	 XSetTSOrigin(  MyDisplay, FallenGC, x+fsnow->w, y+fsnow->h);
+	 XFillRectangle(MyDisplay, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
 #else
-	 cairoDrawFallen(fsnow);
+	 CairoDrawFallen(fsnow);
 #endif
       }
 }
 
 #ifndef USEX11
-void cairoDrawFallen(FallenSnow *fsnow)
+void CairoDrawFallen(FallenSnow *fsnow)
 {
    int x = fsnow->x;
    int y = fsnow->y - fsnow->h;
@@ -1190,7 +1189,7 @@ void cairoDrawFallen(FallenSnow *fsnow)
 #endif
 
 // clean area for fallensnow with id
-void clean_fallen(Window id)
+void CleanFallen(Window id)
 {
    FallenSnow *fsnow = fsnow_first;
    // search the id
@@ -1198,32 +1197,32 @@ void clean_fallen(Window id)
    {
       if(fsnow->id == id)
       {
-	 clean_fallen_area(fsnow,0,fsnow->w);
+	 CleanFallenArea(fsnow,0,fsnow->w);
 	 break;
       }
       fsnow = fsnow->next;
    }
 }
 
-void clean_fallen_area(FallenSnow *fsnow,int xstart,int w)
+void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
    if(fsnow->clean) return;
    int x = fsnow->x;
    int y = fsnow->y - fsnow->h;
 #ifdef USEX11
    if(Usealpha|flags.usebg)
-      XFillRectangle(display, SnowWin,  eFallenGC, x+xstart,y,
+      XFillRectangle(MyDisplay, SnowWin,  eFallenGC, x+xstart,y,
 	    w, fsnow->h+MaxSnowFlakeHeight);
    else
-      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h, exposures);
+      XClearArea(MyDisplay, SnowWin, x+xstart, y, w, fsnow->h, exposures);
 #else
-   cairoClearRectangle(x,y,w,fsnow->h);
+   CairoClearRectangle(x,y,w,fsnow->h);
 #endif
    fsnow->clean = 1;
 }
 
 #ifndef USEX11
-void cairoClearRectangle(int x, int y, int w, int h)
+void CairoClearRectangle(int x, int y, int w, int h)
 {
    P("%d %d %d %d\n",x,y,w,h);
 #ifdef DRAWFRAME
@@ -1247,7 +1246,7 @@ void cairoClearRectangle(int x, int y, int w, int h)
 }
 #endif
 
-void generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy)
+void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
    if (flags.NoBlowSnow)
       return;
@@ -1267,11 +1266,11 @@ void generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy)
       int j;
       for(j=0; j<fsnow->acth[i]; j++)
       {
-	 int k, kmax = blowoff();
+	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
 	    firstflake = addFlake(firstflake);
-	    initFlake(firstflake);
+	    InitFlake(firstflake);
 	    firstflake->rx     = fsnow->x + i;
 	    firstflake->ry     = fsnow->y - j;
 	    if (flags.NoWind)
@@ -1286,7 +1285,7 @@ void generate_flakes_on_fallen(FallenSnow *fsnow, int x, int w, float vy)
    }
 }
 
-void erase_fallen_pixel(FallenSnow *fsnow, int x)
+void EraseFallenPixel(FallenSnow *fsnow, int x)
 {
    if(fsnow->acth[x] > 0)
    {
@@ -1294,9 +1293,9 @@ void erase_fallen_pixel(FallenSnow *fsnow, int x)
       int y1 = fsnow->y - fsnow->acth[x];
 #ifdef USEX11
       if(Usealpha|flags.usebg)
-	 XDrawPoint(display, SnowWin, eFallenGC, x1, y1);
+	 XDrawPoint(MyDisplay, SnowWin, eFallenGC, x1, y1);
       else
-	 XClearArea(display, SnowWin, x1 , y1, 1, 1, exposures);     
+	 XClearArea(MyDisplay, SnowWin, x1 , y1, 1, 1, exposures);     
 #else
 #ifdef DRAWFRAME
       REGION r = REGION_CREATE_RECTANGLE(x1,y1,1,1);
@@ -1326,7 +1325,7 @@ void erase_fallen_pixel(FallenSnow *fsnow, int x)
 void do_sfallen()
 {
    TRANSSKIP;
-   return; // taken care of in update_fallensnow_partial()
+   return; // taken care of in UpdateFallenSnowPartial()
    FallenSnow *fsnow = fsnow_first;
    while(fsnow)
    {
@@ -1358,7 +1357,7 @@ void do_sfallen()
 		  int h = sum/(jmax-jmin);
 		  if (h > fsnow->desh[i]) h = fsnow->desh[i];
 		  while(fsnow->acth[i] > h)
-		     erase_fallen_pixel(fsnow,i);
+		     EraseFallenPixel(fsnow,i);
 		  fsnow->acth[i] = h;
 	       }
 	    free(old);
@@ -1377,11 +1376,11 @@ void do_event()
    //if(Usealpha) return; we are tempted, but if the event loop is escaped,
    // a memory leak appears
    XEvent ev;
-   XFlush(display);
+   XFlush(MyDisplay);
 
-   while (XPending(display)) 
+   while (XPending(MyDisplay)) 
    {
-      XNextEvent(display, &ev);
+      XNextEvent(MyDisplay, &ev);
       if(!Usealpha) 
       {
 	 switch (ev.type) 
@@ -1402,9 +1401,9 @@ void do_event()
 		      ev.xconfigure.height != SnowWinHeight))
 	       {
 		  //P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
-		  initdisplaydimensions();
-		  init_fallen_snow();
-		  init_stars();
+		  InitDisplayDimensions();
+		  InitFallenSnow();
+		  InitStars();
 		  if(!flags.NoKeepSnowOnTrees && !flags.NoTrees)
 		  {
 		     REGION_DESTROY(snow_on_trees_region);
@@ -1414,11 +1413,11 @@ void do_event()
 		  {
 		     REGION_DESTROY(TreeRegion);
 		     TreeRegion = REGION_CREATE();
-		     init_baum_koordinaten();
+		     InitBaumKoordinaten();
 		  }
 		  NoSnowArea_static = TreeRegion;
 		  // gtk_todo
-		  XClearArea(display, SnowWin, 0,0,0,0,exposures);
+		  XClearArea(MyDisplay, SnowWin, 0,0,0,0,exposures);
 	       }
 	       break;
 	 } 
@@ -1438,7 +1437,7 @@ void do_genflakes()
    for(i=0; i<desflakes; i++)
    {
       firstflake = addFlake(firstflake);
-      initFlake(firstflake);
+      InitFlake(firstflake);
    }
 }
 
@@ -1532,7 +1531,7 @@ void do_wind()
 }
 
 // blow snow off trees
-void convert_ontree_to_flakes()
+void ConvertOnTreeToFlakes()
 {
    if(flags.NoKeepSnowOnTrees || flags.NoBlowSnow || flags.NoTrees)
       return;
@@ -1544,11 +1543,11 @@ void convert_ontree_to_flakes()
       int j;
       for (j=0; j<3; j++)
       {
-	 int k, kmax = blowoff();
+	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
 	    firstflake = addFlake(firstflake);
-	    initFlake(firstflake);
+	    InitFlake(firstflake);
 	    firstflake->rx = snow_on_trees[i].x;
 	    firstflake->ry = snow_on_trees[i].y-5*j;
 	    firstflake->vy = -10;
@@ -1576,8 +1575,8 @@ void do_stars()
       int w = starPix.width;
       int h = starPix.height;
 #ifdef USEX11
-      XSetTSOrigin(display, starGC[k],x+w, y+h);
-      XFillRectangle(display,SnowWin,starGC[k],x,y,w,h);
+      XSetTSOrigin(MyDisplay, starGC[k],x+w, y+h);
+      XFillRectangle(MyDisplay,SnowWin,starGC[k],x,y,w,h);
 #else
 #ifdef DRAWFRAME
       REGION region;
@@ -1598,7 +1597,7 @@ void do_stars()
 #endif
    }
 #ifdef USEX11
-   XFlush(display);
+   XFlush(MyDisplay);
 #endif
 }
 
@@ -1679,9 +1678,9 @@ void do_meteorite()
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
    REGION_UNION(NoSnowArea_dynamic,meteorite.r);
-   XDrawLine(display, SnowWin, meteorite.gc, 
+   XDrawLine(MyDisplay, SnowWin, meteorite.gc, 
 	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-   XFlush(display);
+   XFlush(MyDisplay);
 #else
    // gtk_todo
    cairoDrawMeteorite(&meteorite,0);
@@ -1698,14 +1697,14 @@ void do_emeteorite()
    if (meteorite.active)
       if (wallclock() - meteorite.starttime > 0.3)
       {
-	 XDrawLine(display, SnowWin, meteorite.egc,  
+	 XDrawLine(MyDisplay, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
 	 REGION_SUBTRACT(NoSnowArea_dynamic ,meteorite.r);
 	 REGION_DESTROY(meteorite.r);
 
 	 meteorite.active = 0;
       }
-   XFlush(display);
+   XFlush(MyDisplay);
 #else
    if (meteorite.active)
    {
@@ -1786,10 +1785,10 @@ void do_wupdate()
 	 transworkspace = winfo->ws;
    }
 
-   update_windows();
+   UpdateWindows();
 }
 
-void update_windows()
+void UpdateWindows()
 {
    typeof(windows) w;
    typeof(fsnow_first) f;
@@ -1820,7 +1819,7 @@ void update_windows()
 	 if(f)
 	 {
 	    if ((!f->sticky) && f->ws != cworkspace)
-	       clean_fallen_area(f,0,f->w);
+	       CleanFallenArea(f,0,f->w);
 	 }
 	 if (!f)
 	 {
@@ -1842,7 +1841,7 @@ void update_windows()
    long int *toremove = malloc(sizeof(*toremove)*nf);
    int ntoremove = 0;
    f = fsnow_first;
-   Atom wmState = XInternAtom(display, "_NET_WM_STATE", True);
+   Atom wmState = XInternAtom(MyDisplay, "_NET_WM_STATE", True);
    while(f)
    {
       if (f->id != 0)  // f->id=0: this is the snow at the bottom
@@ -1850,13 +1849,13 @@ void update_windows()
 	 w = FindWindow(windows,nwindows,f->id);
 	 if(!w)   // this window is gone
 	 {
-	    generate_flakes_on_fallen(f,0,f->w,-10.0);
+	    GenerateFlakesFromFallen(f,0,f->w,-10.0);
 	    toremove[ntoremove++] = f->id;
 	 }
 
 	 // test if f->id is hidden. If so: clear the area and notify in f
 	 Atom type; int format; unsigned long n, b; unsigned char *properties = 0;
-	 XGetWindowProperty(display, f->id, wmState, 0, (~0L), False, AnyPropertyType, 
+	 XGetWindowProperty(MyDisplay, f->id, wmState, 0, (~0L), False, AnyPropertyType, 
 	       &type, &format, &n, &b, &properties);
 	 f->hidden = 0;
 	 if(format == 32)
@@ -1865,12 +1864,12 @@ void update_windows()
 	    for (i=0; i<n; i++)
 	    {
 	       char *s = 0;
-	       s = XGetAtomName(display,((Atom*)properties)[i]);
+	       s = XGetAtomName(MyDisplay,((Atom*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
 		  //P("%#lx is hidden %d\n",f->id, RunCounter);
 		  f->hidden = 1;
-		  clean_fallen_area(f,0,f->w);
+		  CleanFallenArea(f,0,f->w);
 		  if(s) XFree(s);
 		  break;
 	       }
@@ -1897,11 +1896,11 @@ void update_windows()
 	    if (f->x != w->x + flags.offset_x || f->y != w->y + flags.offset_y)
 	    {
 	       //P("window moved\n");
-	       clean_fallen_area(f,0,f->w);
+	       CleanFallenArea(f,0,f->w);
 	       f->x = w->x + flags.offset_x;
 	       f->y = w->y + flags.offset_y;
 	       DrawFallen(f);
-	       XFlush(display);
+	       XFlush(MyDisplay);
 	    }
 	 }
 	 else
@@ -1916,7 +1915,7 @@ void update_windows()
    for (i=0; i<ntoremove; i++)
    {
       //P("remove window %#lx\n",toremove[i]);
-      clean_fallen(toremove[i]);
+      CleanFallen(toremove[i]);
       RemoveFallenSnow(&fsnow_first,toremove[i]);
    }
    free(toremove);
@@ -1934,12 +1933,12 @@ void do_testing()
    //region = TreeRegion;
 
 #ifdef USEX11
-   XSetFunction(display,   testingGC, GXcopy);
-   XSetForeground(display, testingGC, blackPix); 
-   XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
-   XSetRegion(display,     testingGC, region);
-   XSetForeground(display, testingGC, blackPix); 
-   XFillRectangle(display, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
+   XSetFunction(MyDisplay,   testingGC, GXcopy);
+   XSetForeground(MyDisplay, testingGC, blackPix); 
+   XFillRectangle(MyDisplay, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
+   XSetRegion(MyDisplay,     testingGC, region);
+   XSetForeground(MyDisplay, testingGC, blackPix); 
+   XFillRectangle(MyDisplay, SnowWin, testingGC, 0,0,SnowWinWidth,SnowWinHeight);
 #else
    // gtk_todo
    GdkDrawingContext *gdkcontext = gdk_window_begin_draw_frame(gdkwin,region);
@@ -1955,7 +1954,7 @@ void do_testing()
 
 void do_fuse()
 {
-   if (!snow_running) // updateSnowFlake would be very confused when
+   if (!snow_running) // UpdateSnowFlake would be very confused when
       // flakes suddenly disappear.
       return;
    if (flakecount >= flags.flakecountmax)
@@ -1965,8 +1964,8 @@ void do_fuse()
 
       while(firstflake->next != 0)
       {
-	 eraseSnowFlake(firstflake);
-	 deleteFlake(firstflake);
+	 EraseSnowFlake(firstflake);
+	 DeleteFlake(firstflake);
       }
       DoNotMakeSnow = 1;
    }
@@ -1990,7 +1989,7 @@ int RandInt(int maxVal)
    return drand48()*maxVal;
 }
 /* ------------------------------------------------------------------ */ 
-void uSsleep(long usec) 
+void USleep(long usec) 
 {
    struct timespec t;
    if (usec <= 0) return;
@@ -2010,7 +2009,7 @@ int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
    return 1;
 }
 
-void initFlake(Snow *flake)
+void InitFlake(Snow *flake)
 {
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
    flake->w         = snowPix[flake->whatFlake].width;
@@ -2031,7 +2030,7 @@ void initFlake(Snow *flake)
 }
 
 
-void updateSnowFlake(Snow *flake)
+void UpdateSnowFlake(Snow *flake)
 {
    //
    // update speed in x direction
@@ -2061,8 +2060,8 @@ void updateSnowFlake(Snow *flake)
    else if (NewX < 0 || NewX > SnowWinWidth)
    {
       // not-cyclic flakes die when going left or right out of the window
-      eraseSnowFlake(flake);
-      deleteFlake(flake);
+      EraseSnowFlake(flake);
+      DeleteFlake(flake);
       return;
    }
 
@@ -2072,8 +2071,8 @@ void updateSnowFlake(Snow *flake)
    // remove flake if it falls below bottom of screen:
    if (NewY >= SnowWinHeight)
    {
-      eraseSnowFlake(flake);
-      deleteFlake(flake);
+      EraseSnowFlake(flake);
+      DeleteFlake(flake);
       return;
    }
 
@@ -2105,22 +2104,22 @@ void updateSnowFlake(Snow *flake)
 		  if (ny > fsnow->y - fsnow->acth[i] - 1)
 		  {
 		     if(fsnow->acth[i] < fsnow->h/2)
-			update_fallensnow_partial(fsnow,nx - fsnow->x, flake->w);
-		     if(handlefallensnow(fsnow))
+			UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flake->w);
+		     if(HandleFallenSnow(fsnow))
 		     {
 			// always erase flake, but repaint it on top of
 			// the correct position on fsnow (if !NoFluffy))
 			if (flags.NoFluffy)
-			   eraseSnowFlake(flake); // flake is removed from screen, but still available
+			   EraseSnowFlake(flake); // flake is removed from screen, but still available
 			else
 			{
 			   // x-value: NewX;
 			   // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
 			   flake->rx = NewX;
 			   flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
-			   drawSnowFlake(flake);
+			   DrawSnowFlake(flake);
 			}
-			deleteFlake(flake);
+			DeleteFlake(flake);
 			return;
 		     }
 		     found = 1;
@@ -2147,8 +2146,8 @@ void updateSnowFlake(Snow *flake)
       if (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART)
 
       {
-	 eraseSnowFlake(flake);
-	 deleteFlake(flake);
+	 EraseSnowFlake(flake);
+	 DeleteFlake(flake);
 	 return;
       }
 
@@ -2196,8 +2195,8 @@ void updateSnowFlake(Snow *flake)
 		  break;
 	       }
 	    }
-	    eraseSnowFlake(flake);
-	    deleteFlake(flake);
+	    EraseSnowFlake(flake);
+	    DeleteFlake(flake);
 	    return;
 	 }
       }
@@ -2208,18 +2207,18 @@ void updateSnowFlake(Snow *flake)
 
    // if(b): erase: no, move: yes
    // erase this flake 
-   if(!b) eraseSnowFlake(flake);
+   if(!b) EraseSnowFlake(flake);
    flake->rx = NewX;
    flake->ry = NewY;
    in = REGION_OVERLAP_RECT(NoSnowArea_static,nx, ny, flake ->w, flake->h);
    b  = (in == REGION_OVERLAP_RECTANGLE_IN || in == REGION_OVERLAP_RECTANGLE_PART); // true if in nosnowarea_static
    // if b: draw: no
-   if(!b) drawSnowFlake(flake);
+   if(!b) DrawSnowFlake(flake);
 }
 
-// Note: this function is only to be called in updateSnowFlake()
+// Note: this function is only to be called in UpdateSnowFlake()
 // or after a check if snow_running == 0
-void deleteFlake(Snow *flake)
+void DeleteFlake(Snow *flake)
 {
    if (flake->prev)
    {
@@ -2235,7 +2234,7 @@ void deleteFlake(Snow *flake)
 }
 
 #ifndef USEX11
-void cairoDrawFlake(Snow *flake, int erase)
+void CairoDrawFlake(Snow *flake, int erase)
 {
    gint x = lrintf(flake->rx);
    gint y = lrintf(flake->ry);
@@ -2282,23 +2281,23 @@ void cairoDrawFlake(Snow *flake, int erase)
 }
 #endif
 
-void drawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
+void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(flags.NoSnowFlakes) return;
    P("%d %ld %ld\n",RunCounter,lrint(flake->rx),lrint(flake->ry));
 #ifdef USEX11
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-   XSetTSOrigin(display, SnowGC[flake->whatFlake], 
+   XSetTSOrigin(MyDisplay, SnowGC[flake->whatFlake], 
 	 x + flake->w, y + flake->h);
-   XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
+   XFillRectangle(MyDisplay, SnowWin, SnowGC[flake->whatFlake],
 	 x, y, flake->w, flake->h);
 #else
-   cairoDrawFlake(flake,0);
+   CairoDrawFlake(flake,0);
 #endif
 }
 
-void eraseSnowFlake(Snow *flake)
+void EraseSnowFlake(Snow *flake)
 {
    if(flags.NoSnowFlakes) return;
 #ifdef USEX11
@@ -2306,23 +2305,23 @@ void eraseSnowFlake(Snow *flake)
    int y = lrintf(flake->ry);
    if(Usealpha|flags.usebg)
    {
-      XSetTSOrigin(display, eSnowGC[flake->whatFlake], 
+      XSetTSOrigin(MyDisplay, eSnowGC[flake->whatFlake], 
 	    x + flake->w, y + flake->h);
-      XFillRectangle(display, SnowWin, eSnowGC[flake->whatFlake],
+      XFillRectangle(MyDisplay, SnowWin, eSnowGC[flake->whatFlake],
 	    x, y, flake->w, flake->h);
    }
    else
-      XClearArea(display, SnowWin, 
+      XClearArea(MyDisplay, SnowWin, 
 	    x, y,
 	    flake->w, flake->h,
 	    exposures);
 #else
-   cairoDrawFlake(flake,1);
+   CairoDrawFlake(flake,1);
 #endif
 }
 
 // fallen snow and trees must have been initialized 
-void init_baum_koordinaten()
+void InitBaumKoordinaten()
 {
    if (flags.NoTrees)
       return;
@@ -2458,7 +2457,7 @@ void init_baum_koordinaten()
 }
 
 #ifndef USEX11
-void init_star_surfaces()
+void InitStarSurfaces()
 {
    int i;
    for(i=0; i<STARANIMATIONS; i++)
@@ -2472,7 +2471,7 @@ void init_star_surfaces()
 }
 #endif
 
-void init_stars()
+void InitStars()
 {
    int i;
    free(star);
@@ -2487,7 +2486,7 @@ void init_stars()
       star[i].color = RandInt(STARANIMATIONS);
 }
 
-void erase_stars()
+void EraseStars()
 {
    int i;
    for (i=0; i<nstars; i++)
@@ -2498,10 +2497,10 @@ void erase_stars()
       int h = starPix.height;
 #ifdef USEX11
       if(Usealpha|flags.usebg)
-	 XFillRectangle(display, SnowWin, eSantaGC, 
+	 XFillRectangle(MyDisplay, SnowWin, eSantaGC, 
 	       x, y, w, h);
       else
-	 XClearArea(display, SnowWin,
+	 XClearArea(MyDisplay, SnowWin,
 	       x, y, w, h, exposures);
 #else
 #ifdef DRAWFRAME
@@ -2526,7 +2525,7 @@ void erase_stars()
    }
 }
 
-void init_fallen_snow()
+void InitFallenSnow()
 {
    //P("%d\n",SnowWinHeight);
    while (fsnow_first)
@@ -2535,10 +2534,10 @@ void init_fallen_snow()
 	 SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
 }
 
-void update_fallensnow_partial(FallenSnow *fsnow, int x, int w)
+void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 {
    //P("%#lx %d %d %d\n",fsnow ->id, x,w,fsnow->ws);
-   if(!handlefallensnow(fsnow)) return;
+   if(!HandleFallenSnow(fsnow)) return;
    int imin = x;
    if(imin < 0) imin = 0;
    int imax = x + w;
@@ -2601,7 +2600,7 @@ void update_fallensnow_partial(FallenSnow *fsnow, int x, int w)
 
 // removes some fallen snow from fsnow, w pixels. If fallensnowheight < h: no removal
 // also add snowflakes
-void update_fallensnow_with_wind(FallenSnow *fsnow, int w, int h)
+void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
    if(flags.NoBlowSnow)
       return;
@@ -2617,19 +2616,19 @@ void update_fallensnow_with_wind(FallenSnow *fsnow, int w, int h)
 	 //if (!flags.NoBlowSnow && abs(NewWind) > 100 && drand48() > 0.5)
 	 if (!flags.NoWind && !flags.NoBlowSnow && wind != 0 && drand48() > 0.5)
 	 {
-	    int j, jmax = blowoff();
+	    int j, jmax = BlowOff();
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
 	       firstflake = addFlake(firstflake);
-	       initFlake(firstflake);
+	       InitFlake(firstflake);
 	       firstflake->rx     = fsnow->x + i;
 	       firstflake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
 	       firstflake->vx     = NewWind/8;
 	       firstflake->vy     = -10;
 	       firstflake->cyclic = (fsnow->id == 0); // not cyclic for windows, cyclic for bottom
 	    }
-	    erase_fallen_pixel(fsnow,i);
+	    EraseFallenPixel(fsnow,i);
 	 }
 	 if(flakecount > flags.flakecountmax)
 	    return;
@@ -2640,7 +2639,7 @@ void update_fallensnow_with_wind(FallenSnow *fsnow, int w, int h)
 Pixmap CreatePixmapFromFallen(FallenSnow *f)
 {
    bitmap_from_fallen(f,f->w8/8);
-   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)f->map, f->w, f->h);
+   Pixmap pixmap = XCreateBitmapFromData(MyDisplay, SnowWin, (char*)f->map, f->w, f->h);
    return pixmap;
 }
 #endif
@@ -2764,13 +2763,13 @@ void DrawSanta()
 void DrawSanta1()
 {
 #ifdef USEX11
-   XSetClipMask(display,
+   XSetClipMask(MyDisplay,
 	 SantaGC,
 	 SantaMaskPixmap[CurrentSanta]);
-   XSetClipOrigin(display,
+   XSetClipOrigin(MyDisplay,
 	 SantaGC,
 	 SantaX,SantaY);
-   XCopyArea(display,
+   XCopyArea(MyDisplay,
 	 SantaPixmap[CurrentSanta],
 	 SnowWin,
 	 SantaGC,
@@ -2785,11 +2784,11 @@ void EraseSanta(int x, int y)
 {
 #ifdef USEX11
    if(Usealpha|flags.usebg)
-      XFillRectangle(display, SnowWin, eSantaGC, x,y,SantaWidth+1,SantaHeight);
+      XFillRectangle(MyDisplay, SnowWin, eSantaGC, x,y,SantaWidth+1,SantaHeight);
    // probably due to rounding errors in computing SantaX, one pixel in front 
    // is not erased when leaving out the +1
    else
-      XClearArea(display, SnowWin,
+      XClearArea(MyDisplay, SnowWin,
 	    x , y,     
 	    SantaWidth+1,SantaHeight,
 	    exposures);
@@ -2804,20 +2803,20 @@ void DrawTree(int i)
    int x = tree[i].x; int y = tree[i].y; int t = tree[i].type; int r = tree[i].rev;
    //P("t = %d\n",t);
    if (t<0) t=0;
-   XSetClipMask(display, TreeGC, TreeMaskPixmap[t][r]);
-   XSetClipOrigin(display, TreeGC, x, y);
-   XCopyArea(display, TreePixmap[t][r], SnowWin, TreeGC, 
+   XSetClipMask(MyDisplay, TreeGC, TreeMaskPixmap[t][r]);
+   XSetClipOrigin(MyDisplay, TreeGC, x, y);
+   XCopyArea(MyDisplay, TreePixmap[t][r], SnowWin, TreeGC, 
 	 0,0,TreeWidth[t],TreeHeight[t], x, y);
 #else
-   cairoDrawTree(i,0);
+   CairoDrawTree(i,0);
    do_snow_on_trees();
 #endif
 }
 
 #ifndef USEX11
-void cairoDrawTree(int i, int erase)
+void CairoDrawTree(int i, int erase)
 {
-   P("cairoDrawTree: %d %d %d\n",i,erase,RunCounter);
+   P("CairoDrawTree: %d %d %d\n",i,erase,RunCounter);
    int x = tree[i].x; int y = tree[i].y; int t = tree[i].type; int r = tree[i].rev;
    int w = TreeWidth[t]; int h = TreeHeight[t];
    const int d = 3;
@@ -2865,7 +2864,7 @@ void cairoDrawTree(int i, int erase)
 }
 #endif
 
-void erase_trees()
+void EraseTrees()
 {
    int i;
    for (i=0; i<ntrees; i++)
@@ -2878,13 +2877,13 @@ void erase_trees()
       int w = TreeWidth[t]+d+d;
       int h = TreeHeight[t]+d+d;
       if(Usealpha|flags.usebg)
-	 XFillRectangle(display, SnowWin, eSantaGC, 
+	 XFillRectangle(MyDisplay, SnowWin, eSantaGC, 
 	       x, y, w, h);
       else
-	 XClearArea(display, SnowWin,
+	 XClearArea(MyDisplay, SnowWin,
 	       x, y, w, h, exposures);
 #else
-      cairoDrawTree(i,1);
+      CairoDrawTree(i,1);
 #endif
    }
 
@@ -2911,7 +2910,7 @@ Pixel AllocNamedColor(char *colorName, Pixel dfltPix)
 {
    XColor scrncolor;
    XColor exactcolor;
-   if (XAllocNamedColor(display, DefaultColormap(display, screen),
+   if (XAllocNamedColor(MyDisplay, DefaultColormap(MyDisplay, MyScreen),
 	    colorName, &scrncolor, &exactcolor)) 
       return scrncolor.pixel;
    else
@@ -2926,11 +2925,11 @@ Pixel iAllocNamedColor(char *colorName, Pixel dfltPix)
 /* ------------------------------------------------------------------ */ 
 
 
-Window xwininfo(char **name)
+Window XWinInfo(char **name)
 {
-   Window win = Select_Window(display,1);
+   Window win = Select_Window(MyDisplay,1);
    XTextProperty text_prop;
-   int rc = XGetWMName(display,win,&text_prop);
+   int rc = XGetWMName(MyDisplay,win,&text_prop);
    if (!rc)
       (*name) = strdup("No Name");
    else
@@ -2939,17 +2938,17 @@ Window xwininfo(char **name)
    return win;
 }
 
-void initdisplaydimensions()
+void InitDisplayDimensions()
 {
    unsigned int w,h,b,d;
    int x,y;
    unsigned int wroot,hroot,broot,droot;
    int xroot,yroot;
    Window root;
-   XGetGeometry(display,rootwindow,&root,
+   XGetGeometry(MyDisplay,rootwindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
    // P("%d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
-   XGetGeometry(display,SnowWin,&root,
+   XGetGeometry(MyDisplay,SnowWin,&root,
 	 &x, &y, &w, &h, &b, &d);
    // P("%d %d %d %d %d %d\n",x,y,w,h,b,d);
    SnowWinX           = x;
@@ -2966,10 +2965,10 @@ void initdisplaydimensions()
    //P("%d %d %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,
    //	 SnowWinHeight,SnowWinDepth,flags.offset_s);
 
-   set_maxscrsnowdepth();
+   SetMaxSCRSnowDepth();
 }
 
-void set_maxscrsnowdepth()
+void SetMaxSCRSnowDepth()
 {
    MaxScrSnowDepth = flags.MaxScrSnowDepth;
    if (MaxScrSnowDepth> (SnowWinHeight-SNOWFREE)) {
@@ -2978,22 +2977,8 @@ void set_maxscrsnowdepth()
    }
 }
 
-void printversion()
-{
-   printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
-	 "March 2019 by Willem Vermin\n"
-	 , VERSION);
-   printf("configured with:");
-#ifdef USEX11
-   printf(" USEX11");
-#endif
-#ifdef DRAWFRAME
-   printf(" DRAWFRAME");
-#endif
-   printf("\n");
-}
 
-void set_SantaSpeed()
+void SetSantaSpeed()
 {
    SantaSpeed = Speed[flags.SantaSize];
    if (flags.SantaSpeedFactor < 10)
@@ -3008,12 +2993,12 @@ void InitSantaPixmaps()
 {
    XpmAttributes attributes;
    //P("InitSantaPixmaps: SantaSize=%d NoRudolf=%d\n",flags.SantaSize,flags.NoRudolf);
-   //attributes.visual = DefaultVisual(display,DefaultScreen(display));
+   //attributes.visual = DefaultVisual(MyDisplay,DefaultScreen(MyDisplay));
    attributes.valuemask = XpmDepth /*| XpmColorKey*/;
    attributes.depth = SnowWinDepth;
    //attributes.color_key = XPM_COLOR;
 
-   set_SantaSpeed();
+   SetSantaSpeed();
 
    char *path[PIXINANIMATION];
    char *filenames[] = 
@@ -3028,7 +3013,7 @@ void InitSantaPixmaps()
    int ok = 1;
    for (i=0; i<PIXINANIMATION; i++)
    {
-      f = homeopen(filenames[i],"r",&path[i]);
+      f = HomeOpen(filenames[i],"r",&path[i]);
       if(!f){ ok = 0; free(path[i]); break; }
       fclose(f);
    }
@@ -3043,13 +3028,13 @@ void InitSantaPixmaps()
       for (i=0; i<PIXINANIMATION; i++)
       {
 	 if(SantaPixmap[i]) 
-	    XFreePixmap(display,SantaPixmap[i]);
+	    XFreePixmap(MyDisplay,SantaPixmap[i]);
 	 if(SantaMaskPixmap[i]) 
-	    XFreePixmap(display,SantaMaskPixmap[i]);
+	    XFreePixmap(MyDisplay,SantaMaskPixmap[i]);
 	 rc = XpmReadFileToData(path[i],&santaxpm);
 	 if(rc == XpmSuccess)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
+	    iXpmCreatePixmapFromData(MyDisplay, SnowWin, santaxpm, 
 		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
 
 	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
@@ -3075,10 +3060,10 @@ void InitSantaPixmaps()
    {
 #ifdef USEX11
       if(SantaPixmap[i]) 
-	 XFreePixmap(display,SantaPixmap[i]);
+	 XFreePixmap(MyDisplay,SantaPixmap[i]);
       if(SantaMaskPixmap[i]) 
-	 XFreePixmap(display,SantaMaskPixmap[i]);
-      rc[i] = iXpmCreatePixmapFromData(display, SnowWin, 
+	 XFreePixmap(MyDisplay,SantaMaskPixmap[i]);
+      rc[i] = iXpmCreatePixmapFromData(MyDisplay, SnowWin, 
 	    Santas[flags.SantaSize][withRudolf][i], 
 	    &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
 #else
@@ -3112,7 +3097,7 @@ void InitTreePixmaps()
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
    char *path;
-   FILE *f = homeopen("xsnow/pixmaps/tree.xpm","r",&path);
+   FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
    if (f)
    {
       // there seems to be a local definition of tree
@@ -3126,7 +3111,7 @@ void InitTreePixmaps()
       {
 	 int i;
 	 for(i=0; i<2; i++)
-	    iXpmCreatePixmapFromData(display, SnowWin, treexpm, 
+	    iXpmCreatePixmapFromData(MyDisplay, SnowWin, treexpm, 
 		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
 	 sscanf(*treexpm,"%d %d", &TreeWidth[0],&TreeHeight[0]);
 	 //P("%d %d\n",TreeWidth[0],TreeHeight[0]);
@@ -3151,7 +3136,7 @@ void InitTreePixmaps()
 	 for (tt=0; tt<=MAXTREETYPE; tt++)
 	 {
 #ifdef USEX11
-	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
+	    iXpmCreatePixmapFromData(MyDisplay, SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
 #else
 	    TreeSurface[tt][i] = igdk_cairo_surface_create_from_xpm(
@@ -3160,14 +3145,14 @@ void InitTreePixmaps()
 	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 	 }
       }
-      reinit_tree0();
+      ReinitTree0();
    }
    free(path);
    ontrees = 0;
 }
 
 // apply trColor to xpmtree[0] and xpmtree[1]
-void reinit_tree0()
+void ReinitTree0()
 {
 #ifdef USEX11
    XpmAttributes attributes;
@@ -3188,8 +3173,8 @@ void reinit_tree0()
    for(i=0; i<2; i++)
    {
 #ifdef USEX11
-      XFreePixmap(display,TreePixmap[0][i]);
-      iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
+      XFreePixmap(MyDisplay,TreePixmap[0][i]);
+      iXpmCreatePixmapFromData(MyDisplay, SnowWin, xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
 #else
       cairo_surface_destroy(TreeSurface[0][i]);
@@ -3202,7 +3187,7 @@ void reinit_tree0()
 }
 
 
-FILE *homeopen(char *file,char *mode, char**path)
+FILE *HomeOpen(char *file,char *mode, char**path)
 {
    char *home = strdup(getenv("HOME"));
    (*path) = malloc(strlen(home)+strlen(file)+2);
@@ -3214,20 +3199,20 @@ FILE *homeopen(char *file,char *mode, char**path)
    return f;
 }
 
-int blowoff()
+int BlowOff()
 {
    float g = gaussian(blowofffactor,0.5*blowofffactor,0.0,2.0*MAXBLOWOFFFACTOR);
    //P("%f %f %f %ld\n",blowofffactor,2.0*MAXBLOWOFFFACTOR,g,lrint(g));
    return lrint(g);
 }
 
-void init_flakes_per_second()
+void InitFlakesPerSecond()
 {
    flakes_per_sec = SnowWinWidth*0.01*flags.snowflakesfactor*
       0.001*FLAKES_PER_SEC_PER_PIXEL*SnowSpeedFactor;
 }
 
-void init_snow_color()
+void InitSnowColor()
 {
    if (snow_color != NULL)
       free(snow_color);
@@ -3236,7 +3221,7 @@ void init_snow_color()
    int i;
    snowcPix = iAllocNamedColor(flags.snowColor, white);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
-      XSetForeground(display, SnowGC[i], snowcPix);
+      XSetForeground(MyDisplay, SnowGC[i], snowcPix);
 #endif
    if (!gdk_rgba_parse(&snow_rgba,snow_color))
       gdk_rgba_parse(&snow_rgba,"white");
@@ -3255,7 +3240,7 @@ void init_snow_color()
 #endif
 }
 
-void init_SnowSpeedFactor()
+void InitSnowSpeedFactor()
 {
    if (flags.SnowSpeedFactor < 10)
       SnowSpeedFactor = 0.01*10;
@@ -3263,20 +3248,20 @@ void init_SnowSpeedFactor()
       SnowSpeedFactor = 0.01*flags.SnowSpeedFactor;
 }
 
-void init_blowofffactor()
+void InitBlowOffFactor()
 {
    blowofffactor = 0.01*flags.blowofffactor;
    if (blowofffactor > MAXBLOWOFFFACTOR)
       blowofffactor = MAXBLOWOFFFACTOR;
 }
 
-void init_snow_on_trees()
+void InitSnowOnTrees()
 {
    free(snow_on_trees);
    snow_on_trees = malloc(sizeof(*snow_on_trees)*flags.maxontrees);
 }
 
-void create_alarm_delays()
+void CreateAlarmDelays()
 {
    double factor;
    if (flags.cpuload <= 0)
@@ -3294,7 +3279,7 @@ void create_alarm_delays()
       Delay[alarm_santa1] = 10*factor;
 }
 
-void set_gc_functions()
+void SetGCFunctions()
 {
 #ifdef USEX11
    int i;
@@ -3302,31 +3287,31 @@ void set_gc_functions()
       erasePixel = AllocNamedColor(flags.bgcolor,black) | 0xff000000;
    else
       erasePixel = 0;
-   XSetFunction(display,   SantaGC, GXcopy);
-   XSetForeground(display, SantaGC, blackPix);
-   XSetFillStyle(display,  SantaGC, FillStippled);
+   XSetFunction(MyDisplay,   SantaGC, GXcopy);
+   XSetForeground(MyDisplay, SantaGC, blackPix);
+   XSetFillStyle(MyDisplay,  SantaGC, FillStippled);
 
-   XSetFunction(display,   eSantaGC, GXcopy);
-   XSetFillStyle(display,  eSantaGC, FillSolid);
-   XSetForeground(display, eSantaGC, erasePixel);
+   XSetFunction(MyDisplay,   eSantaGC, GXcopy);
+   XSetFillStyle(MyDisplay,  eSantaGC, FillSolid);
+   XSetForeground(MyDisplay, eSantaGC, erasePixel);
 
-   XSetFunction(display,   TreeGC, GXcopy);
-   XSetForeground(display, TreeGC, blackPix);
-   XSetFillStyle(display,  TreeGC, FillStippled);
+   XSetFunction(MyDisplay,   TreeGC, GXcopy);
+   XSetForeground(MyDisplay, TreeGC, blackPix);
+   XSetFillStyle(MyDisplay,  TreeGC, FillStippled);
 
-   XSetFunction(display, SnowOnTreesGC, GXcopy);
+   XSetFunction(MyDisplay, SnowOnTreesGC, GXcopy);
 
 
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    {
-      XSetFunction(   display, SnowGC[i], GXcopy);
-      XSetStipple(    display, SnowGC[i], snowPix[i].pixmap);
-      XSetFillStyle(  display, SnowGC[i], FillStippled);
+      XSetFunction(   MyDisplay, SnowGC[i], GXcopy);
+      XSetStipple(    MyDisplay, SnowGC[i], snowPix[i].pixmap);
+      XSetFillStyle(  MyDisplay, SnowGC[i], FillStippled);
 
-      XSetFunction(   display, eSnowGC[i], GXcopy);
-      XSetStipple(    display, eSnowGC[i], snowPix[i].pixmap);
-      XSetForeground( display, eSnowGC[i], erasePixel);
-      XSetFillStyle(  display, eSnowGC[i], FillStippled);
+      XSetFunction(   MyDisplay, eSnowGC[i], GXcopy);
+      XSetStipple(    MyDisplay, eSnowGC[i], snowPix[i].pixmap);
+      XSetForeground( MyDisplay, eSnowGC[i], erasePixel);
+      XSetFillStyle(  MyDisplay, eSnowGC[i], FillStippled);
 
       //FlakeSurface[i] = igdk_cairo_surface_create_from_xpm();
 
@@ -3334,59 +3319,59 @@ void set_gc_functions()
 
    for (i=0; i<STARANIMATIONS; i++)
    {
-      XSetFunction(   display,starGC[i],GXcopy);
-      XSetStipple(    display,starGC[i],starPix.pixmap);
-      XSetForeground( display,starGC[i],starcPix[i]);
-      XSetFillStyle(  display,starGC[i],FillStippled);
+      XSetFunction(   MyDisplay,starGC[i],GXcopy);
+      XSetStipple(    MyDisplay,starGC[i],starPix.pixmap);
+      XSetForeground( MyDisplay,starGC[i],starcPix[i]);
+      XSetFillStyle(  MyDisplay,starGC[i],FillStippled);
    }
 
-   XSetFunction(display,CleanGC, GXcopy);
-   XSetForeground(display,CleanGC,blackPix);
+   XSetFunction(MyDisplay,CleanGC, GXcopy);
+   XSetForeground(MyDisplay,CleanGC,blackPix);
 
-   XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
+   XSetLineAttributes(MyDisplay, FallenGC, 1, LineSolid,CapRound,JoinMiter);
 
-   XSetFillStyle( display, eFallenGC, FillSolid);
-   XSetFunction(  display, eFallenGC, GXcopy);
-   XSetForeground(display, eFallenGC, erasePixel);
+   XSetFillStyle( MyDisplay, eFallenGC, FillSolid);
+   XSetFunction(  MyDisplay, eFallenGC, GXcopy);
+   XSetForeground(MyDisplay, eFallenGC, erasePixel);
 
-   XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
-   XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
+   XSetLineAttributes(MyDisplay, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
+   XSetLineAttributes(MyDisplay, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
    if(Usealpha)
    {
-      XSetFunction(display,   meteorite.gc,  GXcopy);
-      XSetForeground(display, meteorite.gc,  meteoPix);
-      XSetFunction(display,   meteorite.egc, GXcopy);
-      XSetForeground(display, meteorite.egc, erasePixel);
+      XSetFunction(MyDisplay,   meteorite.gc,  GXcopy);
+      XSetForeground(MyDisplay, meteorite.gc,  meteoPix);
+      XSetFunction(MyDisplay,   meteorite.egc, GXcopy);
+      XSetForeground(MyDisplay, meteorite.egc, erasePixel);
    }
    else
    {
-      XSetFunction(display,   meteorite.gc,  GXxor);
-      XSetForeground(display, meteorite.gc,  meteoPix);
-      XSetFunction(display,   meteorite.egc, GXxor);
-      XSetForeground(display, meteorite.egc, meteoPix);
+      XSetFunction(MyDisplay,   meteorite.gc,  GXxor);
+      XSetForeground(MyDisplay, meteorite.gc,  meteoPix);
+      XSetFunction(MyDisplay,   meteorite.egc, GXxor);
+      XSetForeground(MyDisplay, meteorite.egc, meteoPix);
    }
 #endif
 }
 
-void set_whirl()
+void SetWhirl()
 {
    Whirl = 0.01*flags.WhirlFactor*WHIRL;
 }
-void set_windtimer()
+void SetWindTimer()
 {
    WindTimer                      = flags.WindTimer;
    if (WindTimer < 3) WindTimer   = 3;
    wind_timer                     = WindTimer;
 }
-void kdesetbg1(const char *color)
+void KdeSetBG1(const char *color)
 {
    kdesetbg(color);
    activate_clean = 1;
 }
 
-int determine_window()
+int DetermineWindow()
 {
-   P("determine_window\n");
+   P("DetermineWindow\n");
    if (flags.window_id)
    {
       SnowWin = flags.window_id;
@@ -3397,10 +3382,10 @@ int determine_window()
    {
       if (flags.xwininfohandling)
       {
-	 SnowWin = xwininfo(&SnowWinName);
+	 SnowWin = XWinInfo(&SnowWinName);
 	 if (SnowWin == 0)
 	 {
-	    fprintf(stderr,"xwininfo failed\n");
+	    fprintf(stderr,"XWinInfo failed\n");
 	    exit(1);
 	 }
 	 Isdesktop = 0;
@@ -3435,11 +3420,11 @@ int determine_window()
 	 else
 	 {
 
-	    P("determine_window\n");
+	    P("DetermineWindow\n");
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
-	    XGetGeometry(display,rootwindow,&root,
+	    XGetGeometry(MyDisplay,rootwindow,&root,
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
 	    gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -3469,7 +3454,7 @@ int determine_window()
 
 	    Isdesktop = 1;
 	    Usealpha  = 1;
-	    XGetGeometry(display,SnowWin,&root,
+	    XGetGeometry(MyDisplay,SnowWin,&root,
 		  &x, &y, &w, &h, &b, &depth);
 	    P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
 	    if(SnowWin)
@@ -3484,7 +3469,7 @@ int determine_window()
 	       Isdesktop = 1;
 	       Usealpha  = 0;
 	       if(SnowWinName) free(SnowWinName);
-	       SnowWin     = DefaultRootWindow(display);
+	       SnowWin     = DefaultRootWindow(MyDisplay);
 	       SnowWinName = strdup("No Name");
 	    }
 	 }
@@ -3497,7 +3482,7 @@ int determine_window()
    if(Isdesktop) cworkspace = GetCurrentWorkspace();
    if (cworkspace < 0)
       return 0;
-   initdisplaydimensions();
+   InitDisplayDimensions();
    // if depth != 32, we assume that the desktop is not gnome-like TODO
    if (Isdesktop && SnowWinDepth != 32)
       Usealpha = 0;
@@ -3507,7 +3492,7 @@ int determine_window()
 
    flags.usealpha = Usealpha;   // we could run into trouble with this, let's see...
    if(flags.KDEbg)
-      kdesetbg1(flags.bgcolor);
+      KdeSetBG1(flags.bgcolor);
    return 1;
 }
 
