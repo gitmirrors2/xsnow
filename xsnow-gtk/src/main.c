@@ -173,7 +173,9 @@ static int             *TreeType;
 static int             treeread = 0;
 static int             TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static char            **treexpm = 0;
+#ifndef USEX11
 static cairo_surface_t *TreeSurface[MAXTREETYPE+1][2];
+#endif
 
 // Santa stuff
 static float           ActualSantaSpeed;
@@ -189,7 +191,9 @@ static float           SantaXr;
 static int             SantaX;   // should always be lrintf(SantaXr)
 static int             SantaY;
 static int             SantaYStep;
+#ifndef USEX11
 static cairo_surface_t *SantaSurface[PIXINANIMATION] = {NULL,NULL,NULL,NULL};
+#endif
 
 /* Speed for each Santa  in pixels/second*/
 static float Speed[] = {SANTASPEED0,  /* Santa 0 */
@@ -375,12 +379,6 @@ int main(int argc, char *argv[])
 {
    int i;
    printversion();
-   for (i=0; i<MAXTREETYPE +1; i++)
-   {
-      int j;
-      for (j=0; j<2; j++)
-	 TreeSurface[i][j]=NULL;
-   }
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
@@ -3015,6 +3013,7 @@ void InitSantaPixmaps()
 
    for(i=0; i<PIXINANIMATION; i++)
    {
+#ifdef USEX11
       if(SantaPixmap[i]) 
 	 XFreePixmap(display,SantaPixmap[i]);
       if(SantaMaskPixmap[i]) 
@@ -3022,14 +3021,16 @@ void InitSantaPixmaps()
       rc[i] = iXpmCreatePixmapFromData(display, SnowWin, 
 	    Santas[flags.SantaSize][withRudolf][i], 
 	    &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
-      sscanf(Santas[flags.SantaSize][withRudolf][0][0],"%d %d", 
-	    &SantaWidth,&SantaHeight);
-
+#else
       if(SantaSurface[i])
 	 cairo_surface_destroy(SantaSurface[i]);
       SantaSurface[i] = igdk_cairo_surface_create_from_xpm(
 	    Santas[flags.SantaSize][withRudolf][i],0);
       rc[i] = (SantaSurface[i] == NULL); // cannot happen?
+#endif
+
+      sscanf(Santas[flags.SantaSize][withRudolf][0][0],"%d %d", 
+	    &SantaWidth,&SantaHeight);
    }
 
    int wrong = 0;
@@ -3089,12 +3090,14 @@ void InitTreePixmaps()
 	 int tt;
 	 for (tt=0; tt<=MAXTREETYPE; tt++)
 	 {
+#ifdef USEX11
 	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
-	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
-
+#else
 	    TreeSurface[tt][i] = igdk_cairo_surface_create_from_xpm(
 		  xpmtrees[tt],i);
+#endif
+	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 	 }
       }
       reinit_tree0();
@@ -3106,9 +3109,11 @@ void InitTreePixmaps()
 // apply trColor to xpmtree[0] and xpmtree[1]
 void reinit_tree0()
 {
+#ifdef USEX11
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
+#endif
    int i;
    int n = TreeHeight[0]+3;
    char *xpmtmp[n];
@@ -3122,14 +3127,15 @@ void reinit_tree0()
       xpmtmp[j] = strdup(xpmtrees[0][j]);
    for(i=0; i<2; i++)
    {
+#ifdef USEX11
       XFreePixmap(display,TreePixmap[0][i]);
       iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
-
-      if(TreeSurface[0][1])
-	 cairo_surface_destroy(TreeSurface[0][1]);
+#else
+      cairo_surface_destroy(TreeSurface[0][i]);
       TreeSurface[0][i] = igdk_cairo_surface_create_from_xpm(
 	    xpmtrees[0],i);
+#endif
    }
    for (j=0; j<n; j++)
       free(xpmtmp[j]);
