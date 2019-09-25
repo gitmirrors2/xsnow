@@ -4,6 +4,7 @@ version 2.0.11
 	debian/copyright: corrected
 	main.c: remove flakes that fall below bottom of screen, also if
 	   no fallensnow on bottom
+	main.c: corrected bug which coaused no snow at all with -nomenu
 
 version 2.0.10
 	prepare for running in wayland by setting environment

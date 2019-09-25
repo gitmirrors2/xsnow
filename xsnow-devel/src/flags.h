@@ -28,7 +28,7 @@
 #define DOIT_S(x) char *x;
 
 typedef struct flags {
-   //unsigned long int window_id;
+   //unsigned long int WindowId;
    DOITALL
 }FLAGS;
 #undef DOIT_I
@@ -37,26 +37,26 @@ typedef struct flags {
 
 #define FVWMFLAGS \
    do { \
-      flags.usealpha  = 0; \
-      flags.usebg     = 0; \
-      flags.exposures = 0; } while(0)
+      Flags.UseAlpha  = 0; \
+      Flags.UseBG     = 0; \
+      Flags.Exposures = 0; } while(0)
 
 #define GNOMEFLAGS \
    do { \
-      flags.usealpha  = 1; \
-      flags.usebg     = 0; \
-      flags.exposures = 0; } while(0)
+      Flags.UseAlpha  = 1; \
+      Flags.UseBG     = 0; \
+      Flags.Exposures = 0; } while(0)
 
 #define KDEFLAGS \
    do { \
-      flags.usealpha  = 1; \
-      flags.usebg     = 0; \
-      flags.exposures = 0; } while(0)
+      Flags.UseAlpha  = 1; \
+      Flags.UseBG     = 0; \
+      Flags.Exposures = 0; } while(0)
 
-void readflags();
-void writeflags();
-void init_flags();
-extern FLAGS flags;
-void setdefaultflags();
-int handleflags(int argc, char*argv[]);
+extern FLAGS Flags;
+
+extern int  HandleFlags(int argc, char*argv[]);
+extern void InitFlags(void);
+extern void PrintVersion(void);
+extern void WriteFlags(void);
 #endif

@@ -60,8 +60,8 @@
    if(!human_interaction) return;\
    gdouble value;\
    value = gtk_range_get_value(GTK_RANGE(w));\
-   flags._flag = lrint(_value);\
-   P(#_name ": %d\n",flags._flag);\
+   Flags._flag = lrint(_value);\
+   P(#_name ": %d\n",Flags._flag);\
 }
 
 #define HANDLE_TOGGLE(_name,_flag,_t,_f) \
@@ -71,10 +71,10 @@
    if(!human_interaction) return; \
    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
    if(active) \
-   flags._flag = _t; \
+   Flags._flag = _t; \
    else \
-   flags._flag = _f; \
-   P(#_name ": %d\n",flags._flag); \
+   Flags._flag = _f; \
+   P(#_name ": %d\n",Flags._flag); \
 }
 
 #define HANDLE_COLOR(_name,_flag) \
@@ -84,15 +84,15 @@
    if(!human_interaction) return; \
    GdkRGBA color; \
    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w),&color); \
-   free(flags._flag); \
-   rgba2color(&color,&flags._flag); \
-   P(#_name ": %s\n",flags._flag); \
+   free(Flags._flag); \
+   rgba2color(&color,&Flags._flag); \
+   P(#_name ": %s\n",Flags._flag); \
 }
 
 #define HANDLE_SET_COLOR(_button,_flag) \
    do { \
       GdkRGBA color; \
-      gdk_rgba_parse(&color,flags._flag); \
+      gdk_rgba_parse(&color,Flags._flag); \
       gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(_button),&color); \
    } while(0)
 
@@ -100,16 +100,16 @@
    _button = GTK_WIDGET(gtk_builder_get_object(builder,#_id))
 
 #define HANDLE_SET_RANGE(_button,_flag,_fun) \
-   gtk_range_set_value(GTK_RANGE(_button), _fun((gdouble)flags._flag))
+   gtk_range_set_value(GTK_RANGE(_button), _fun((gdouble)Flags._flag))
 
 #define HANDLE_SET_TOGGLE_(_button,_x) \
    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),_x)
 
 #define HANDLE_SET_TOGGLE(_button,_flag)\
-   HANDLE_SET_TOGGLE_(_button,flags._flag)
+   HANDLE_SET_TOGGLE_(_button,Flags._flag)
 
 #define HANDLE_SET_TOGGLE_I(_button,_flag) \
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),!flags._flag)
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),!Flags._flag)
 
 #define self(x) (x)
 
@@ -176,8 +176,8 @@ static void init_santa_buttons()
 
 static void set_santa_buttons()
 {
-   int n = 2*flags.SantaSize;
-   if (!flags.NoRudolf)
+   int n = 2*Flags.SantaSize;
+   if (!Flags.NoRudolf)
       n++;
    if (n<NBUTTONS)
       HANDLE_SET_TOGGLE_(santa_barray[n]->button,TRUE);
@@ -195,8 +195,8 @@ void button_santa(GtkWidget *w, gpointer d)
    int santa_type  = atoi(s);
    int have_rudolf = ('r' == s[strlen(s)-1]);
    P("button_santa: Santa %d Rudolf %d\n",santa_type,have_rudolf);
-   flags.SantaSize = santa_type;
-   flags.NoRudolf  = !have_rudolf;
+   Flags.SantaSize = santa_type;
+   Flags.NoRudolf  = !have_rudolf;
 }
 
 HANDLE_TOGGLE(button_santa_show, NoSanta, 1, 0)
@@ -207,14 +207,14 @@ void santa_default(int vintage)
 {
    int h = human_interaction;
    human_interaction      = 0;
-   flags.SantaSize        = DEFAULT_SantaSize;
-   flags.NoRudolf         = DEFAULT_NoRudolf; 
-   flags.SantaSpeedFactor = DEFAULT_SantaSpeedFactor;
-   flags.NoSanta          = DEFAULT_NoSanta;
+   Flags.SantaSize        = DEFAULT_SantaSize;
+   Flags.NoRudolf         = DEFAULT_NoRudolf; 
+   Flags.SantaSpeedFactor = DEFAULT_SantaSpeedFactor;
+   Flags.NoSanta          = DEFAULT_NoSanta;
    if(vintage)
    {
-      flags.SantaSize = VINTAGE_SantaSize;
-      flags.NoRudolf  = VINTAGE_NoRudolf; 
+      Flags.SantaSize = VINTAGE_SantaSize;
+      Flags.NoRudolf  = VINTAGE_NoRudolf; 
    }
    set_santa_buttons();
    human_interaction      = h;
@@ -273,10 +273,10 @@ static struct meteo_buttons
 
 static void report_tree_type(int p, gint active)
 {
-   P("Tree: %d %d %s\n",p,active,flags.TreeType);
+   P("Tree: %d %d %s\n",p,active,Flags.TreeType);
    int *a;
    int n;
-   csvpos(flags.TreeType,&a,&n);
+   csvpos(Flags.TreeType,&a,&n);
    if(active)
    {
       a = realloc(a,sizeof(*a)*(n+1));
@@ -309,11 +309,11 @@ static void report_tree_type(int p, gint active)
 	 m++;
       }
    }
-   free(flags.TreeType);
-   vsc(&flags.TreeType,b,m);
+   free(Flags.TreeType);
+   vsc(&Flags.TreeType,b,m);
    free(a);
    free(b);
-   P("Tree_Type set to %s\n",flags.TreeType);
+   P("Tree_Type set to %s\n",Flags.TreeType);
 }
 
    G_MODULE_EXPORT
@@ -332,22 +332,22 @@ void scenery_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
-   flags.desired_number_of_trees = DEFAULT_desired_number_of_trees; 
-   free(flags.TreeType);
-   flags.TreeType                = strdup(DEFAULT_TreeType);
-   flags.nstars                  = DEFAULT_nstars;
-   flags.NoMeteorites            = DEFAULT_NoMeteorites;
-   flags.NoTrees                 = DEFAULT_NoTrees;
-   flags.treefill                = DEFAULT_treefill;
-   free(flags.trColor);
-   flags.trColor                 = strdup(DEFAULT_trColor);
+   Flags.DesiredNumberOfTrees = DEFAULT_DesiredNumberOfTrees; 
+   free(Flags.TreeType);
+   Flags.TreeType                = strdup(DEFAULT_TreeType);
+   Flags.NStars                  = DEFAULT_NStars;
+   Flags.NoMeteorites            = DEFAULT_NoMeteorites;
+   Flags.NoTrees                 = DEFAULT_NoTrees;
+   Flags.TreeFill                = DEFAULT_TreeFill;
+   free(Flags.TreeColor);
+   Flags.TreeColor                 = strdup(DEFAULT_TreeColor);
    if (vintage)
    {
-      flags.desired_number_of_trees = VINTAGE_desired_number_of_trees; 
-      free(flags.TreeType);
-      flags.TreeType                = strdup(VINTAGE_TreeType);
-      flags.nstars                  = VINTAGE_nstars;
-      flags.NoMeteorites            = VINTAGE_NoMeteorites;
+      Flags.DesiredNumberOfTrees = VINTAGE_DesiredNumberOfTrees; 
+      free(Flags.TreeType);
+      Flags.TreeType             = strdup(VINTAGE_TreeType);
+      Flags.NStars               = VINTAGE_NStars;
+      Flags.NoMeteorites         = VINTAGE_NoMeteorites;
    }
    set_tree_buttons();
    set_star_buttons();
@@ -442,9 +442,9 @@ static void init_pixmaps()
    init_hello_pixmaps();
 }
 
-HANDLE_RANGE(button_ntrees,desired_number_of_trees,value)
+HANDLE_RANGE(button_ntrees,DesiredNumberOfTrees,value)
 
-HANDLE_RANGE(button_tree_fill, treefill, value)
+HANDLE_RANGE(button_tree_fill, TreeFill, value)
 
 HANDLE_TOGGLE(button_show_trees,NoTrees,0,1)
 
@@ -455,7 +455,7 @@ static void rgba2color(GdkRGBA *c, char **s)
 }
 
 
-HANDLE_COLOR(button_tree_color,trColor)
+HANDLE_COLOR(button_tree_color,TreeColor)
 
 static void set_tree_buttons()
 {
@@ -466,11 +466,11 @@ static void set_tree_buttons()
 #undef TREE
    int i;
    int *a,n;
-   csvpos(flags.TreeType,&a,&n);
+   csvpos(Flags.TreeType,&a,&n);
 
    for (i=0; i<n; i++)
    {
-      // P("set_tree_buttons::::::::::::::::::::: %s %d %d\n",flags.TreeType,n,a[i]);
+      // P("set_tree_buttons::::::::::::::::::::: %s %d %d\n",Flags.TreeType,n,a[i]);
       switch (a[i])
       {
 #define TREE(x) \
@@ -481,15 +481,15 @@ static void set_tree_buttons()
       }
    }
    free(a);
-   HANDLE_SET_RANGE(tree_buttons.desired_trees.button ,desired_number_of_trees ,self);
-   HANDLE_SET_RANGE(tree_buttons.tree_fill.button     ,treefill                ,self);
+   HANDLE_SET_RANGE(tree_buttons.desired_trees.button ,DesiredNumberOfTrees ,self);
+   HANDLE_SET_RANGE(tree_buttons.tree_fill.button     ,TreeFill             ,self);
    HANDLE_SET_TOGGLE_I(tree_buttons.show.button,NoTrees);
 
-   HANDLE_SET_COLOR(tree_buttons.color.button,trColor);
+   HANDLE_SET_COLOR(tree_buttons.color.button,TreeColor);
 }
 
 
-HANDLE_RANGE(button_star_nstars, nstars, value)
+HANDLE_RANGE(button_star_nstars, NStars, value)
 
 static void init_star_buttons()
 {
@@ -498,7 +498,7 @@ static void init_star_buttons()
 
 static void set_star_buttons()
 {
-   HANDLE_SET_RANGE(star_buttons.nstars.button,nstars,self);
+   HANDLE_SET_RANGE(star_buttons.nstars.button,NStars,self);
 }
 
 HANDLE_TOGGLE(button_meteo_show, NoMeteorites, 0,1)
@@ -547,16 +547,16 @@ static void init_general_buttons()
 
 static void set_general_buttons()
 {
-   HANDLE_SET_RANGE(general_buttons.cpuload.button,cpuload,self);
-   HANDLE_SET_TOGGLE(general_buttons.usebg.button,usebg);
-   HANDLE_SET_COLOR(general_buttons.bgcolor.button,bgcolor);
-   HANDLE_SET_TOGGLE(general_buttons.alpha.button,usealpha);
+   HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
+   HANDLE_SET_TOGGLE(general_buttons.usebg.button,UseBG);
+   HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
+   HANDLE_SET_TOGGLE(general_buttons.alpha.button,UseAlpha);
    HANDLE_SET_TOGGLE(general_buttons.kdebg.button,KDEbg);
-   HANDLE_SET_RANGE(general_buttons.lift.button,offset_s,-self);
-   HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,fullscreen);
-   HANDLE_SET_TOGGLE(general_buttons.below.button,below);
-   if (flags.exposures != -SOMENUMBER)
-      HANDLE_SET_TOGGLE(general_buttons.exposures.button,exposures);
+   HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
+   HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,FullScreen);
+   HANDLE_SET_TOGGLE(general_buttons.below.button,BelowAll);
+   if (Flags.Exposures != -SOMENUMBER)
+      HANDLE_SET_TOGGLE(general_buttons.exposures.button,Exposures);
    else
       HANDLE_SET_TOGGLE_(general_buttons.exposures.button,0);
 }
@@ -567,11 +567,11 @@ void button_cpuload(GtkWidget *w, gpointer d)
    if(!human_interaction) return;
    gdouble value;
    value = gtk_range_get_value(GTK_RANGE(w));
-   flags.cpuload = lrint(value);
-   P("button_cpuload: %d\n",flags.cpuload);
+   Flags.CpuLoad = lrint(value);
+   P("button_cpuload: %d\n",Flags.cpuload);
 }
 
-   HANDLE_TOGGLE(button_use_bgcolor, usebg, 1,0)
+   HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0)
 HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0)
 
    G_MODULE_EXPORT
@@ -580,22 +580,22 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    if(!human_interaction) return;
    GdkRGBA color;
    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w),&color);
-   free(flags.bgcolor);
-   rgba2color(&color,&flags.bgcolor);
-   P("button_bgcolor: %s\n",flags.bgcolor);
+   free(Flags.BGColor);
+   rgba2color(&color,&Flags.BGColor);
+   P("button_bgcolor: %s\n",Flags.BGColor);
 }
 
-   HANDLE_TOGGLE(button_alpha, usealpha, 1,0)
-   HANDLE_TOGGLE(button_exposures, exposures, 1,0)
-   HANDLE_TOGGLE(button_fullscreen, fullscreen, 1,0)
-   HANDLE_TOGGLE(button_below, below, 1,0)
-HANDLE_RANGE(button_lift, offset_s, -value)
+   HANDLE_TOGGLE(button_alpha, UseAlpha, 1,0)
+   HANDLE_TOGGLE(button_exposures, Exposures, 1,0)
+   HANDLE_TOGGLE(button_fullscreen, FullScreen, 1,0)
+   HANDLE_TOGGLE(button_below, BelowAll, 1,0)
+HANDLE_RANGE(button_lift, OffsetS, -value)
 
    G_MODULE_EXPORT
 void button_quit(GtkWidget *w, gpointer d)
 {
-   flags.done = 1;
-   P("button_quit: %d\n",flags.done);
+   Flags.Done = 1;
+   P("button_quit: %d\n",Flags.Done);
 }
 
 void general_default(int vintage)
@@ -603,16 +603,16 @@ void general_default(int vintage)
    int h = human_interaction;
    human_interaction      = 0;
 
-   flags.cpuload    = DEFAULT_cpuload;
-   flags.usebg      = DEFAULT_usebg;
-   free(flags.bgcolor);
-   flags.bgcolor    = strdup(DEFAULT_bgcolor);
-   flags.usealpha   = DEFAULT_usealpha;
-   flags.exposures  = DEFAULT_exposures;
-   flags.offset_s   = DEFAULT_offset_s;
-   flags.KDEbg      = DEFAULT_KDEbg;
-   flags.fullscreen = DEFAULT_fullscreen;
-   flags.below      = DEFAULT_below;
+   Flags.CpuLoad    = DEFAULT_CpuLoad;
+   Flags.UseBG      = DEFAULT_UseBG;
+   free(Flags.BGColor);
+   Flags.BGColor    = strdup(DEFAULT_BGColor);
+   Flags.UseAlpha   = DEFAULT_UseAlpha;
+   Flags.Exposures  = DEFAULT_Exposures;
+   Flags.OffsetS    = DEFAULT_OffsetS;
+   Flags.KDEbg      = DEFAULT_KDEbg;
+   Flags.FullScreen = DEFAULT_FullScreen;
+   Flags.BelowAll   = DEFAULT_BelowAll;
    if (vintage)
    {
    }
@@ -685,14 +685,14 @@ static void set_snow_buttons()
    HANDLE_SET_TOGGLE_I(snow_buttons.trees_show.button         ,NoKeepSnowOnTrees);
    HANDLE_SET_TOGGLE_I(snow_buttons.fluff_show.button         ,NoFluffy);
 
-   HANDLE_SET_RANGE(snow_buttons.intensity.button             ,snowflakesfactor ,self);
-   HANDLE_SET_RANGE(snow_buttons.blowoff_intensity.button     ,blowofffactor    ,self);
+   HANDLE_SET_RANGE(snow_buttons.intensity.button             ,SnowFlakesFactor ,self);
+   HANDLE_SET_RANGE(snow_buttons.blowoff_intensity.button     ,BlowOffFactor    ,self);
    HANDLE_SET_RANGE(snow_buttons.speed.button                 ,SnowSpeedFactor  ,self);
    HANDLE_SET_RANGE(snow_buttons.windows.button               ,MaxWinSnowDepth  ,self);
    HANDLE_SET_RANGE(snow_buttons.bottom.button                ,MaxScrSnowDepth  ,self);
-   HANDLE_SET_RANGE(snow_buttons.trees.button                 ,maxontrees       ,self);
+   HANDLE_SET_RANGE(snow_buttons.trees.button                 ,MaxOnTrees       ,self);
 
-   HANDLE_SET_COLOR(snow_buttons.color.button,snowColor);
+   HANDLE_SET_COLOR(snow_buttons.color.button,SnowColor);
 }
 
 
@@ -703,38 +703,38 @@ static void set_snow_buttons()
    HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1)
 HANDLE_TOGGLE(button_snow_windows_show  ,NoKeepSWin         ,0,1)
 
-HANDLE_COLOR(button_snow_color,snowColor)
+HANDLE_COLOR(button_snow_color,SnowColor)
 
-   HANDLE_RANGE(button_snow_blowoff_intensity   , blowofffactor    ,value)
-   HANDLE_RANGE(button_snow_intensity           , snowflakesfactor ,value)
+   HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value)
+   HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value)
    HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value)
    HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
    HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
-HANDLE_RANGE(button_snow_trees               , maxontrees       ,value)
+HANDLE_RANGE(button_snow_trees               , MaxOnTrees       ,value)
 
 void snow_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
-   flags.NoBlowSnow        = DEFAULT_NoBlowSnow;
-   flags.snowflakesfactor  = DEFAULT_snowflakesfactor;
-   flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
-   free(flags.snowColor);
-   flags.snowColor         = strdup(DEFAULT_snowColor);
-   flags.SnowSpeedFactor   = DEFAULT_SnowSpeedFactor;
-   flags.blowofffactor     = DEFAULT_blowofffactor;
-   flags.MaxWinSnowDepth   = DEFAULT_MaxWinSnowDepth;
-   flags.MaxScrSnowDepth   = DEFAULT_MaxScrSnowDepth;
-   flags.maxontrees        = DEFAULT_maxontrees;
-   flags.NoKeepSWin        = DEFAULT_NoKeepSWin;
-   flags.NoKeepSBot        = DEFAULT_NoKeepSBot;
-   flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
-   flags.NoFluffy          = DEFAULT_NoFluffy;
+   Flags.NoBlowSnow        = DEFAULT_NoBlowSnow;
+   Flags.SnowFlakesFactor  = DEFAULT_SnowFlakesFactor;
+   Flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
+   free(Flags.SnowColor);
+   Flags.SnowColor         = strdup(DEFAULT_SnowColor);
+   Flags.SnowSpeedFactor   = DEFAULT_SnowSpeedFactor;
+   Flags.BlowOffFactor     = DEFAULT_BlowOffFactor;
+   Flags.MaxWinSnowDepth   = DEFAULT_MaxWinSnowDepth;
+   Flags.MaxScrSnowDepth   = DEFAULT_MaxScrSnowDepth;
+   Flags.MaxOnTrees        = DEFAULT_MaxOnTrees;
+   Flags.NoKeepSWin        = DEFAULT_NoKeepSWin;
+   Flags.NoKeepSBot        = DEFAULT_NoKeepSBot;
+   Flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
+   Flags.NoFluffy          = DEFAULT_NoFluffy;
    if(vintage)
    {
-      flags.NoBlowSnow        = VINTAGE_NoBlowSnow;
-      flags.snowflakesfactor  = VINTAGE_snowflakesfactor;
-      flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
+      Flags.NoBlowSnow        = VINTAGE_NoBlowSnow;
+      Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
+      Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
    }
    set_snow_buttons();
    human_interaction = h;
@@ -790,16 +790,16 @@ HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value)
 void button_wind_activate(GtkWidget *w, gpointer p)
 {
    P("button_wind_activate\n");
-   flags.windnow = 1;
+   Flags.WindNow = 1;
 }
 
 void wind_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
-   flags.NoWind        = DEFAULT_NoWind;
-   flags.WhirlFactor   = DEFAULT_WhirlFactor;
-   flags.WindTimer     = DEFAULT_WindTimer;
+   Flags.NoWind        = DEFAULT_NoWind;
+   Flags.WhirlFactor   = DEFAULT_WhirlFactor;
+   Flags.WindTimer     = DEFAULT_WindTimer;
    if(vintage)
    {
    }
