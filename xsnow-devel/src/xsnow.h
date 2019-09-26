@@ -109,8 +109,10 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
+#define SNOWCHUNK 32        // handle this number of flakes at a time
 #define SNOWFLAKEMAXTYPE 6  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
+#define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define STARANIMATIONS 4
 #define WHIRL 150
 
