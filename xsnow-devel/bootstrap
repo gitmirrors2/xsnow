@@ -27,6 +27,17 @@ date=`date -R`
 echo "version = $version"
 sed -i "/^AC_INIT(\[xsnow]/s/^.*/AC_INIT([xsnow], [$version], [wvermin@gmail.com])/" configure.ac    || exit 1
 
+# take care that debian*/changelog is ok: contains changelog from
+# previous debian version and a first lines like:
+# xsnow (1:2.0.9-1) unstable; urgency=low
+#
+#  * New upstream release
+#
+# -- Willem Vermin <wvermin@gmail.com>  Fri, 19 Jul 2019 14:59:21 +0200
+#
+# the 'xsnow' line and the -- Willem line will be adapted to the
+# new version and date automatically
+
 for d in debian debian.disco debian.stretch debian.sid debian.tara ; do
    if [ -e $d/changelog ] ; then
       sed -i "1s/(.*)/(1:$version-1)/" $d/changelog       || exit 1
