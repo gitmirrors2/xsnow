@@ -1807,9 +1807,9 @@ void UpdateSnowFlake(Snow *flake)
    if(flake->cyclic)
    {
       if (NewX < 0)            NewX = NewX + SnowWinWidth-1;
-      if (NewX > SnowWinWidth) NewX = NewX - SnowWinWidth;
+      if (NewX >= SnowWinWidth) NewX = NewX - SnowWinWidth;
    }
-   else if (NewX < 0 || NewX > SnowWinWidth)
+   else if (NewX < 0 || NewX >= SnowWinWidth)
    {
       // not-cyclic flakes die when going left or right out of the window
       EraseSnowFlake(flake);
