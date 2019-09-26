@@ -1092,7 +1092,7 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
       XFillRectangle(display, SnowWin,  EFallenGC, x+xstart,y,
 	    w, fsnow->h+MaxSnowFlakeHeight);
    else
-      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h, Exposures);
+      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
    fsnow->clean = 1;
 }
 
