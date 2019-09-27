@@ -926,29 +926,6 @@ void do_snow_on_trees()
    XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
 }
 
-
-#if 0
-void do_snowflakes()
-{
-   TRANSSKIP;
-   FlakesDT = wallclock() - Prevtime[alarm_snowflakes];
-   Snow *flake = FirstFlake;
-   //int flakecount_orig = FlakeCount;
-   FlakeCount = 0;
-   while(flake)
-   {
-      Snow *next = flake->next;  // flake can disappear, so we have to save the 
-      //                            pointer to the next flake
-      UpdateSnowFlake(flake);
-      flake = next;
-      FlakeCount++;
-   }
-   if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
-      XSubtractRegion(SnowOnTreesRegion,TreeRegion,SnowOnTreesRegion);
-   //P("%d %d %d\n",flakecount_orig,FlakeCount, flakecount_orig - FlakeCount);
-}
-#endif
-
 void do_snowflakes()
 {
    TRANSSKIP;
@@ -1806,8 +1783,8 @@ void UpdateSnowFlake(Snow *flake)
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
    if(flake->cyclic)
    {
-      if (NewX < 0)            NewX = NewX + SnowWinWidth-1;
-      if (NewX >= SnowWinWidth) NewX = NewX - SnowWinWidth;
+      if (NewX < -flake->w)     NewX += SnowWinWidth-1;
+      if (NewX >= SnowWinWidth) NewX -= SnowWinWidth;
    }
    else if (NewX < 0 || NewX >= SnowWinWidth)
    {
