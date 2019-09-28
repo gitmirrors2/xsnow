@@ -451,26 +451,6 @@ int main(int argc, char *argv[])
 
    if(!Flags.NoMenu)
    {
-      Window root;
-      int x, y; 
-      unsigned int w, h, b, d;
-      XGetGeometry(display,RootWindow,&root,
-	    &x, &y, &w, &h, &b, &d);
-      // choose smaller font if we are running in a small screen
-      R("%d %d\n",w,h);
-      if (w < 1300 && h < 800)
-      {
-	 const gchar *data = "* { font-size: 8px; }";
-	 R("%s\n",data);
-	 GtkCssProvider *cssProvider = gtk_css_provider_new();
-	 gtk_css_provider_load_from_data(cssProvider,
-	       data,-1,NULL);
-	 //gtk_css_provider_load_from_path(cssProvider,"theme.css",NULL);
-	 gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-	       GTK_STYLE_PROVIDER(cssProvider),
-	       GTK_STYLE_PROVIDER_PRIORITY_USER);
-      }
-
       ui(&argc, &argv);
    }
 
