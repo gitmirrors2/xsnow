@@ -43,7 +43,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">
-Alas! This not an X11 session, xsnow will probably bot run.
+Alas! This not an X11 session, xsnow will probably not run.
 
 If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, eg:
 
