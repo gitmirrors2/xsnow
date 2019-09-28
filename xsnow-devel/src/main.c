@@ -457,9 +457,10 @@ int main(int argc, char *argv[])
       XGetGeometry(display,RootWindow,&root,
 	    &x, &y, &w, &h, &b, &d);
       // choose smaller font if we are running in a small screen
+      R("%d %d\n",w,h);
       if (w < 1000 && h < 800)
       {
-	 const gchar *data = "* { font-size: 14px; }";
+	 const gchar *data = "* { font-size: 8px; }";
 	 GtkCssProvider *cssProvider = gtk_css_provider_new();
 	 gtk_css_provider_load_from_data(cssProvider,
 	       data,-1,NULL);
