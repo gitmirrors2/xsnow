@@ -461,6 +461,7 @@ int main(int argc, char *argv[])
       if (w < 1200 && h < 800)
       {
 	 const gchar *data = "* { font-size: 8px; }";
+	 R("%s\n",data);
 	 GtkCssProvider *cssProvider = gtk_css_provider_new();
 	 gtk_css_provider_load_from_data(cssProvider,
 	       data,-1,NULL);
