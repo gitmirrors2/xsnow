@@ -866,6 +866,7 @@ void button_all_vintage()
    all_default(1);
 }
 
+#if 0
    G_MODULE_EXPORT
 void button_kde()
 {
@@ -876,6 +877,7 @@ void button_kde()
    set_general_buttons();
    human_interaction = h;
 }
+#endif
 
    G_MODULE_EXPORT
 void button_fvwm()

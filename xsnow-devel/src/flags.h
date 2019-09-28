@@ -47,11 +47,13 @@ typedef struct flags {
       Flags.UseBG     = 0; \
       Flags.Exposures = 0; } while(0)
 
+#if 0
 #define KDEFLAGS \
    do { \
       Flags.UseAlpha  = 1; \
       Flags.UseBG     = 0; \
       Flags.Exposures = 0; } while(0)
+#endif
 
 extern FLAGS Flags;
 

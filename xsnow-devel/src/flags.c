@@ -160,9 +160,11 @@ int HandleFlags(int argc, char*argv[])
 	 else if(strcmp(arg,"-kdebg") == 0) {
 	    Flags.KDEbg  = 1;
 	 }
+#if 0
 	 else if(strcmp(arg,"-kde") == 0) {
 	    KDEFLAGS;
 	 }
+#endif
 	 else if(strcmp(arg,"-fvwm") == 0) {
 	    FVWMFLAGS;
 	 }

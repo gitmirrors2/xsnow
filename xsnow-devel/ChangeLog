@@ -8,6 +8,7 @@ version 2.0.11
 	Lower default snowspeed (SNOWSPEED in xsnow.h)
 	update snowflakes in chunks, so that other animations run at
 	   desired speed.
+	remove option -kde: settings are the same as for -gnome
 
 version 2.0.10
 	prepare for running in wayland by setting environment
