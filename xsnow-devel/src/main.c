@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
 	    &x, &y, &w, &h, &b, &d);
       // choose smaller font if we are running in a small screen
       R("%d %d\n",w,h);
-      if (w < 1200 && h < 800)
+      if (w < 1300 && h < 800)
       {
 	 const gchar *data = "* { font-size: 8px; }";
 	 R("%s\n",data);
