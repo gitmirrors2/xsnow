@@ -9,6 +9,8 @@ version 2.0.11
 	update snowflakes in chunks, so that other animations run at
 	   desired speed.
 	remove option -kde: settings are the same as for -gnome
+	do not add or delete flakes when updating snowflakes
+	   is running (test on SnowRunning)
 
 version 2.0.10
 	prepare for running in wayland by setting environment

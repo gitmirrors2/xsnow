@@ -20,6 +20,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "snowflakes.h"
 #include <X11/Xutil.h>
 
@@ -51,14 +52,23 @@ Snow *createFlake()
    return flake;
 }
 
-void printSnow(Snow *flake)
+int countSnow(Snow *flake, int print)
 {
+   int i=0;
    while(1)
    {
-      printf("whatFlake: %d\n",flake->whatFlake);
-      if (flake->next)
-	 flake = flake->next;
-      else
+      ++i;
+      if (print)
+	 printf("printSnow: %d %d %d %d\n",i,flake->whatFlake,flake->w,flake->h);
+      assert(flake->whatFlake <= 6);
+      assert(flake->w>0);
+      assert(flake->w<9);
+      assert(flake->h>0);
+      assert(flake->h<9);
+
+      if (flake->next == NULL)
 	 break;
+      flake = flake->next;
    }
+   return i;
 }

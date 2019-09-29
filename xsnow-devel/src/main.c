@@ -432,7 +432,7 @@ int main(int argc, char *argv[])
    }
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	 (char*)starPix.starBits, starPix.width, starPix.height);
-   FirstFlake = createFlake();
+   FirstFlake = createFlake(); FlakeCount++;
    InitFlake(FirstFlake);
    InitFlakesPerSecond();
    InitSantaPixmaps();
@@ -565,7 +565,9 @@ int main(int argc, char *argv[])
 
    if(TreeXpm) XpmFree(TreeXpm);
    while (FirstFlake->next)
-      FirstFlake = delFlake(FirstFlake);
+   {
+      FirstFlake = delFlake(FirstFlake); FlakeCount--;
+   }
 
    free(FirstFlake);
 
@@ -934,7 +936,6 @@ void do_snowflakes()
 {
    TRANSSKIP;
    static Snow *flake;
-   //int flakecount_orig = flakecount;
    static double prevtime = 0;
    if (!SnowRunning)
    {
@@ -942,7 +943,7 @@ void do_snowflakes()
       prevtime = Prevtime[alarm_snowflakes];
    }
    FlakesDT = wallclock() - prevtime;
-   P("do_snow_flakes %f\n",flakesdt);
+   P("do_snow_flakes %f\n",FlakesDT);
    int count = 0;
 
    SnowRunning = 1;
@@ -962,7 +963,14 @@ void do_snowflakes()
 	 XSubtractRegion(SnowOnTreesRegion,TreeRegion,SnowOnTreesRegion);
       }
    }
-   P("%d %d %d %d\n",flakecount_orig,flakecount, flakecount_orig - flakecount,SnowRunning);
+
+   if(1)
+   {
+      int test = countSnow(FirstFlake,0);
+      P("%d %d %d %d %p %p\n",FlakeCount,test,SnowRunning,RunCounter,(void*)FirstFlake->prev,(void*)FirstFlake->next);
+      assert(FlakeCount == test);
+   }
+
 }
 
 int HandleFallenSnow(FallenSnow *fsnow)
@@ -1079,11 +1087,8 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
-   if (Flags.NoBlowSnow)
-      return;
-   if (Flags.NoWind)
-      return;
-   if (FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if (SnowRunning || Flags.NoBlowSnow || Flags.NoWind || 
+	 FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
@@ -1100,7 +1105,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    FirstFlake = addFlake(FirstFlake);
+	    FirstFlake = addFlake(FirstFlake); FlakeCount++;
 	    InitFlake(FirstFlake);
 	    FirstFlake->rx     = fsnow->x + i;
 	    FirstFlake->ry     = fsnow->y - j;
@@ -1235,7 +1240,7 @@ void do_event()
 void do_genflakes()
 {
    TRANSSKIP;
-   if (DoNotMakeSnow)
+   if (SnowRunning || DoNotMakeSnow)
       return;
    int desflakes = 1 + lrint((TNow - Prevtime[alarm_genflakes])*FlakesPerSecond);
    if (FlakeCount + desflakes > Flags.FlakeCountMax)
@@ -1243,7 +1248,7 @@ void do_genflakes()
    int i;
    for(i=0; i<desflakes; i++)
    {
-      FirstFlake = addFlake(FirstFlake);
+      FirstFlake = addFlake(FirstFlake); FlakeCount++;
       InitFlake(FirstFlake);
    }
 }
@@ -1340,7 +1345,7 @@ void do_wind()
 // blow snow off trees
 void ConvertOnTreeToFlakes()
 {
-   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
+   if(SnowRunning || Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
       return;
    if (FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
       return;
@@ -1353,7 +1358,7 @@ void ConvertOnTreeToFlakes()
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    FirstFlake = addFlake(FirstFlake);
+	    FirstFlake = addFlake(FirstFlake); FlakeCount++;
 	    InitFlake(FirstFlake);
 	    FirstFlake->rx = SnowOnTrees[i].x;
 	    FirstFlake->ry = SnowOnTrees[i].y-5*j;
@@ -1687,8 +1692,8 @@ void do_testing()
 
 void do_fuse()
 {
-   if (!SnowRunning) // UpdateSnowFlake would be very confused when
-      // flakes suddenly disappear.
+   if (SnowRunning) // UpdateSnowFlake would be very confused when
+      //               flakes suddenly disappear.
       return;
    if (FlakeCount >= Flags.FlakeCountMax)
    {
@@ -1758,7 +1763,6 @@ void InitFlake(Snow *flake)
    flake->ivy    = INITIALYSPEED * sqrt(flake->m);
    flake->vy     = flake->ivy;
    flake->wsens  = MAXWSENS*drand48();
-   FlakeCount++;
    //P("%f %f\n",flake->rx, flake->ry);
 }
 
@@ -1957,15 +1961,14 @@ void DeleteFlake(Snow *flake)
 {
    if (flake->prev)
    {
-      delFlake(flake);
-      FlakeCount--;
+      delFlake(flake); FlakeCount--;
    }
    else                 //  deleting the first flake, but not it is the only one left
       if(flake->next) 
       {
-	 FirstFlake = delFlake(flake);
-	 FlakeCount--;
+	 FirstFlake = delFlake(flake); FlakeCount--;
       }
+   P("deleteflake: flakecount:: %d\n",FlakeCount);
 }
 
 
@@ -2245,9 +2248,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 // also add snowflakes
 void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
-   if(Flags.NoBlowSnow)
-      return;
-   if (FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if(SnowRunning || Flags.NoBlowSnow || FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
       return;
    //P("%#lx\n",fsnow->id);
    int i;
@@ -2263,7 +2264,7 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       FirstFlake = addFlake(FirstFlake);
+	       FirstFlake = addFlake(FirstFlake); FlakeCount++;
 	       InitFlake(FirstFlake);
 	       FirstFlake->rx     = fsnow->x + i;
 	       FirstFlake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
@@ -2468,8 +2469,6 @@ void EraseTrees()
       int x = Tree[i].x-d; 
       int y = Tree[i].y-d; 
       int t = Tree[i].type; 
-      assert (t>= 0);
-      if (t<0) t=0;
       int w = TreeWidth[t]+d+d;
       int h = TreeHeight[t]+d+d;
       if(UseAlpha|Flags.UseBG)
