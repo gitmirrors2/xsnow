@@ -50,6 +50,6 @@ extern Snow *createFlake();
 extern Snow *delFlake(Snow *flake);
 
 // prints flakes, starting with flake
-extern void printSnow(Snow *flake);
+extern int countSnow(Snow *flake,int print);
 #endif
 

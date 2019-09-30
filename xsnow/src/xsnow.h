@@ -25,70 +25,70 @@
 
 #define SOMENUMBER 42
 
-#define DEFAULT_below 1
-#define DEFAULT_bgcolor "#000000"
-#define DEFAULT_blowofffactor 100
-#define DEFAULT_cpuload 100
-#define DEFAULT_defaults 0
-#define DEFAULT_desired_number_of_trees 10
-#define DEFAULT_desktop 0
-#define DEFAULT_display_name ""
-#define DEFAULT_done 0
-#define DEFAULT_exposures -SOMENUMBER
-#define DEFAULT_flakecountmax 10000     // more flakes leads to a broken fuse
-#define DEFAULT_fullscreen 0
+#define DEFAULT_BelowAll 1
+#define DEFAULT_BGColor "#000000"
+#define DEFAULT_BlowOffFactor 100
+#define DEFAULT_CpuLoad 100
+#define DEFAULT_Defaults 0
+#define DEFAULT_DesiredNumberOfTrees 10
+#define DEFAULT_Desktop 0
+#define DEFAULT_DisplayName ""
+#define DEFAULT_Done 0
+#define DEFAULT_Exposures -SOMENUMBER
+#define DEFAULT_FlakeCountMax 10000     // more flakes leads to a broken fuse
+#define DEFAULT_FullScreen 0
 #define DEFAULT_KDEbg 0
-#define DEFAULT_maxontrees 200
+#define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
 #define DEFAULT_NoBlowSnow 0
-#define DEFAULT_noconfig 0
+#define DEFAULT_NoConfig 0
 #define DEFAULT_NoFluffy 0
 #define DEFAULT_NoKeepSBot 0
 #define DEFAULT_NoKeepSnow 0
 #define DEFAULT_NoKeepSnowOnTrees 0
 #define DEFAULT_NoKeepSWin 0
-#define DEFAULT_nomenu 0
+#define DEFAULT_NoMenu 0
 #define DEFAULT_NoMeteorites 0
 #define DEFAULT_NoRudolf 0 
 #define DEFAULT_NoSanta 0
 #define DEFAULT_NoSnowFlakes 0
 #define DEFAULT_NoTrees 0
 #define DEFAULT_NoWind 0
-#define DEFAULT_nstars 20
-#define DEFAULT_offset_s 0 
-#define DEFAULT_offset_w -8
-#define DEFAULT_offset_x 4
-#define DEFAULT_offset_y 0 
-#define DEFAULT_quiet 1
+#define DEFAULT_NStars 20
+#define DEFAULT_OffsetS 0 
+#define DEFAULT_OffsetW -8
+#define DEFAULT_OffsetX 4
+#define DEFAULT_OffsetY 0 
+#define DEFAULT_Quiet 1
 #define DEFAULT_SantaSize 3         // default santa size    
 #define DEFAULT_SantaSpeedFactor 100
-#define DEFAULT_showstats 0 
-#define DEFAULT_snowColor "snow"
-#define DEFAULT_snowflakesfactor 100
+#define DEFAULT_ShowStats 0 
+#define DEFAULT_SnowColor "snow"
+#define DEFAULT_SnowFlakesFactor 100
 #define DEFAULT_SnowSpeedFactor 100
-#define DEFAULT_stopafter -1
-#define DEFAULT_trColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */
-#define DEFAULT_treefill 30
+#define DEFAULT_StopAfter -1
+#define DEFAULT_TreeColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */
+#define DEFAULT_TreeFill 30
 #define DEFAULT_TreeType "1,2,3,4,5,6,"       // default treetype
-#define DEFAULT_usealpha  SOMENUMBER
-#define DEFAULT_usebg 0 
+#define DEFAULT_UseAlpha  SOMENUMBER
+#define DEFAULT_UseBG 0 
 #define DEFAULT_WhirlFactor 100
-#define DEFAULT_windnow 0
-#define DEFAULT_window_id 0
+#define DEFAULT_WindNow 0
+#define DEFAULT_WindowId 0
 #define DEFAULT_WindTimer 30
-#define DEFAULT_xwininfohandling 0
+#define DEFAULT_XWinInfoHandling 0
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
-#define VINTAGE_desired_number_of_trees 6
+#define VINTAGE_DesiredNumberOfTrees 6
 #define VINTAGE_NoBlowSnow 1
 #define VINTAGE_NoKeepSnowOnTrees 1
 #define VINTAGE_NoMeteorites 1
 #define VINTAGE_NoRudolf 0 
-#define VINTAGE_nstars 0
+#define VINTAGE_NStars 0
 #define VINTAGE_SantaSize 2 
-#define VINTAGE_snowflakesfactor 15
+#define VINTAGE_SnowFlakesFactor 15
 #define VINTAGE_TreeType "0,"
 
 #define FLAGSFILE ".xsnowrc"
@@ -109,8 +109,10 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
+#define SNOWCHUNK 32        // handle this number of flakes at a time
 #define SNOWFLAKEMAXTYPE 6  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
+#define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define STARANIMATIONS 4
 #define WHIRL 150
 

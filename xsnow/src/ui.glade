@@ -43,7 +43,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">
-Alas! This not an X11 session, xsnow will probably bot run.
+Alas! This not an X11 session, xsnow will probably not run.
 
 If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, eg:
 
@@ -2888,11 +2888,11 @@ xsnow, created in 1993 by Rick Jansen.\n
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">GNOME</property>
+                    <property name="label" translatable="yes">GNOME/KDE-like</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">GNOME (default) settings.</property>
+                    <property name="tooltip_text" translatable="yes">Settings for screens supporting alpha channel.</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_gnome" swapped="no"/>
                   </object>
@@ -2904,34 +2904,18 @@ xsnow, created in 1993 by Rick Jansen.\n
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">KDE</property>
+                    <property name="label" translatable="yes">FVWM-like</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">KDE settings.</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_kde" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">FVWM</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">FVWM settings. Will probably also work for other window managers that use the root window as desktop.</property>
+                    <property name="tooltip_text" translatable="yes">Settings for screens NOT supporting alpha channel.</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_fvwm" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -2974,7 +2958,7 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Set background color for KDE. Use this in conjunction with 'Use color to erase' if the wallpaper in KDE gets cluttered. But first try 'Desktop: KDE.</property>
+                <property name="tooltip_text" translatable="yes">Set background color for KDE. Use this in conjunction with 'Use color to erase' if the wallpaper in KDE gets cluttered. But first try 'Desktop: GNOME/KDE.</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <signal name="toggled" handler="button_kde_background" swapped="no"/>

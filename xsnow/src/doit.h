@@ -28,30 +28,30 @@
 // these flags are not written to the config file and
 // are no part of the ui
 #define DOITALL \
-   DOIT_I(defaults)  \
-   DOIT_I(desktop) \
-   DOIT_I(noconfig)  \
-   DOIT_I(nomenu)  \
-   DOIT_I(stopafter)  \
-   DOIT_I(done)  \
-   DOIT_I(windnow)  \
-   DOIT_I(xwininfohandling) \
-   DOIT_I(showstats) \
-   DOIT_L(window_id)  \
+   DOIT_I(Defaults)  \
+   DOIT_I(Desktop) \
+   DOIT_I(NoConfig)  \
+   DOIT_I(NoMenu)  \
+   DOIT_I(StopAfter)  \
+   DOIT_I(Done)  \
+   DOIT_I(WindNow)  \
+   DOIT_I(XWinInfoHandling) \
+   DOIT_I(ShowStats) \
+   DOIT_L(WindowId)  \
    DOIT
 
 // following flags are written to the config file and
 // are part of the ui
 #define DOIT  \
-   DOIT_I(below) \
-   DOIT_I(blowofffactor)  \
-   DOIT_I(cpuload)  \
-   DOIT_I(desired_number_of_trees)  \
-   DOIT_I(exposures)  \
-   DOIT_I(flakecountmax)  \
-   DOIT_I(fullscreen) \
+   DOIT_I(BelowAll) \
+   DOIT_I(BlowOffFactor)  \
+   DOIT_I(CpuLoad)  \
+   DOIT_I(DesiredNumberOfTrees)  \
+   DOIT_I(Exposures)  \
+   DOIT_I(FlakeCountMax)  \
+   DOIT_I(FullScreen) \
    DOIT_I(KDEbg) \
-   DOIT_I(maxontrees)  \
+   DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
    DOIT_I(NoBlowSnow) \
@@ -66,26 +66,26 @@
    DOIT_I(NoSnowFlakes) \
    DOIT_I(NoTrees) \
    DOIT_I(NoWind) \
-   DOIT_I(nstars) \
-   DOIT_I(offset_s) \
-   DOIT_I(offset_w) \
-   DOIT_I(offset_x) \
-   DOIT_I(offset_y) \
-   DOIT_I(quiet) \
+   DOIT_I(NStars) \
+   DOIT_I(OffsetS) \
+   DOIT_I(OffsetW) \
+   DOIT_I(OffsetX) \
+   DOIT_I(OffsetY) \
+   DOIT_I(Quiet) \
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
-   DOIT_I(snowflakesfactor) \
+   DOIT_I(SnowFlakesFactor) \
    DOIT_I(SnowSpeedFactor) \
-   DOIT_I(treefill) \
-   DOIT_I(usealpha)  \
-   DOIT_I(usebg) \
+   DOIT_I(TreeFill) \
+   DOIT_I(UseAlpha)  \
+   DOIT_I(UseBG) \
    DOIT_I(WhirlFactor) \
    DOIT_I(WindTimer) \
    \
-   DOIT_S(bgcolor) \
-   DOIT_S(display_name) \
-   DOIT_S(snowColor) \
-   DOIT_S(trColor) \
+   DOIT_S(BGColor) \
+   DOIT_S(DisplayName) \
+   DOIT_S(SnowColor) \
+   DOIT_S(TreeColor) \
    DOIT_S(TreeType)   
 
 #endif

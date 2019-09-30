@@ -30,30 +30,35 @@
 #include "version.h"
 #include "doit.h"
 
-static long int s2int(char *s)     // string to integer
+static void ReadFlags(void);
+static void SetDefaultFlags(void);
+
+static long int S2Int(char *s)     // string to integer
 {
    return strtol(s,0,0);
 }
-static long int s2posint(char *s)  //string to positive integer
+static long int S2PosInt(char *s)  //string to positive integer
 {
-   int x = s2int(s);
+   int x = S2Int(s);
    if (x<0) return 0;
    return x;
 }
-static void printversion()
+
+void PrintVersion()
 {
    printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
 	 "March 2019 by Willem Vermin\n"
 	 , VERSION);
 }
 
-char *flagsfile = 0;
 
-void setdefaultflags()
+char *FlagsFile = 0;
+
+void SetDefaultFlags()
 {
-   //flags.window_id                = WINDOW_ID; 
-#define DOIT_I(x) flags.x = DEFAULT_ ## x ;
-#define DOIT_S(x) free(flags.x); flags.x = strdup(DEFAULT_ ## x);
+   //Flags.WindowId                = WINDOW_ID; 
+#define DOIT_I(x) Flags.x = DEFAULT_ ## x ;
+#define DOIT_S(x) free(Flags.x); Flags.x = strdup(DEFAULT_ ## x);
 #define DOIT_L(x) DOIT_I(x)
    DOITALL;
 #undef DOIT_I
@@ -67,11 +72,11 @@ void setdefaultflags()
 // 1: did request, program can stop.
 #define checkax {if(ax>=argc-1){fprintf(stderr,"** missing parameter for '%s', exiting.\n",argv[ax]);return -1;}}
 
-void init_flags()
+void InitFlags()
 {
-   // to make sure that strings in flags are malloc'd
-#define DOIT_I(x)  flags.x = 0;
-#define DOIT_S(x)  flags.x = strdup("");
+   // to make sure that strings in Flags are malloc'd
+#define DOIT_I(x)  Flags.x = 0;
+#define DOIT_S(x)  Flags.x = strdup("");
 #define DOIT_L(x) DOIT_I(x)
    DOITALL;
 #undef DOIT_I
@@ -79,23 +84,23 @@ void init_flags()
 #undef DOIT_S
 }
 
-#define handlestring(x) checkax; free(flags.x); flags.x = strdup(argv[++ax])
+#define handlestring(x) checkax; free(Flags.x); Flags.x = strdup(argv[++ax])
 
 #define handle_ia(x,y) else if (!strcmp(arg,# x)) \
-   do { checkax; flags.y=s2posint(argv[++ax]);} while(0)
+   do { checkax; Flags.y=S2PosInt(argv[++ax]);} while(0)
 
 #define handle_im(x,y) else if (!strcmp(arg,# x)) \
-   do { checkax; flags.y=s2int(argv[++ax]);} while(0)
+   do { checkax; Flags.y=S2Int(argv[++ax]);} while(0)
 
 #define handle_iv(x,y,z) else if (!strcmp(arg,# x)) \
-   do { flags.y = z; } while(0)
+   do { Flags.y = z; } while(0)
 
 #define handle_is(x,y) else if (!strcmp(arg, #x)) \
    do { handlestring(y);} while(0)
 
-int handleflags(int argc, char*argv[])
+int HandleFlags(int argc, char*argv[])
 {
-   setdefaultflags();
+   SetDefaultFlags();
    char *arg;
    int ax;
    int pass;
@@ -103,9 +108,9 @@ int handleflags(int argc, char*argv[])
    {
       if (pass == 2)
       {
-	 if(flags.defaults || flags.noconfig)
+	 if(Flags.Defaults || Flags.NoConfig)
 	    break;
-	 readflags();
+	 ReadFlags();
       }
       for (ax=1; ax<argc; ax++) {
 	 arg = argv[ax];
@@ -118,100 +123,102 @@ int handleflags(int argc, char*argv[])
 	    return 1;
 	 }
 	 else if (strcmp(arg, "-version") == 0) {
-	    printversion();
+	    PrintVersion();
 	    return 1;
 	 }
 	 else if (strcmp(arg, "-nokeepsnow") == 0) {
-	    flags.NoKeepSnow = 1;
-	    flags.NoKeepSWin = 1;
-	    flags.NoKeepSBot = 1;
-	    flags.NoKeepSnowOnTrees = 1;
+	    Flags.NoKeepSnow = 1;
+	    Flags.NoKeepSWin = 1;
+	    Flags.NoKeepSBot = 1;
+	    Flags.NoKeepSnowOnTrees = 1;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-	    flags.snowflakesfactor         = VINTAGE_snowflakesfactor;
-	    flags.NoBlowSnow               = VINTAGE_NoBlowSnow;
-	    flags.nstars                   = VINTAGE_nstars;
-	    flags.desired_number_of_trees  = VINTAGE_desired_number_of_trees;
-	    flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
-	    flags.NoMeteorites             = VINTAGE_NoMeteorites;
-	    flags.NoRudolf                 = VINTAGE_NoRudolf;
-	    flags.SantaSize                = VINTAGE_SantaSize;
-	    free(flags.TreeType);
-	    flags.TreeType                 = strdup(VINTAGE_TreeType);
+	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
+	    Flags.NoBlowSnow               = VINTAGE_NoBlowSnow;
+	    Flags.NStars                   = VINTAGE_NStars;
+	    Flags.DesiredNumberOfTrees  = VINTAGE_DesiredNumberOfTrees;
+	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
+	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
+	    Flags.NoRudolf                 = VINTAGE_NoRudolf;
+	    Flags.SantaSize                = VINTAGE_SantaSize;
+	    free(Flags.TreeType);
+	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
 	 }
 	 else if (strcmp(arg, "-bg") == 0) {
-	    handlestring(bgcolor);
-	    flags.usebg   = 1;
+	    handlestring(BGColor);
+	    Flags.UseBG   = 1;
 	 }
 	 else if (strcmp(arg, "-desktop") == 0) {
-	    flags.desktop = 1;
+	    Flags.Desktop = 1;
 	 }
 	 else if (strcmp(arg, "-fullscreen") == 0) {
-	    flags.fullscreen = 1;
+	    Flags.FullScreen = 1;
 	 }
 	 else if (strcmp(arg, "-above") == 0) {
-	    flags.below = 0;
+	    Flags.BelowAll = 0;
 	 }
 	 else if(strcmp(arg,"-kdebg") == 0) {
-	    flags.KDEbg  = 1;
+	    Flags.KDEbg  = 1;
 	 }
+#if 0
 	 else if(strcmp(arg,"-kde") == 0) {
 	    KDEFLAGS;
 	 }
+#endif
 	 else if(strcmp(arg,"-fvwm") == 0) {
 	    FVWMFLAGS;
 	 }
 	 else if(strcmp(arg,"-gnome") == 0) {
 	    GNOMEFLAGS;
 	 }
-	 handle_ia(-blowofffactor,blowofffactor);
-	 handle_ia(-cpuload,cpuload);
-	 handle_ia(-flakecountmax,flakecountmax);
-	 handle_ia(-gnome,usealpha);
-	 handle_ia(-id,window_id);
-	 handle_ia(-maxontrees,maxontrees);
-	 handle_im(-offsets,offset_s);
-	 handle_im(-offsetw,offset_w);
-	 handle_im(-offsetx,offset_x);
-	 handle_im(-offsety,offset_y);
+	 handle_ia(-blowofffactor,BlowOffFactor);
+	 handle_ia(-cpuload,CpuLoad);
+	 handle_ia(-flakecountmax,FlakeCountMax);
+	 handle_ia(-gnome,UseAlpha);
+	 handle_ia(-id,WindowId);
+	 handle_ia(-maxontrees,MaxOnTrees);
+	 handle_im(-offsets,OffsetS);
+	 handle_im(-offsetw,OffsetW);
+	 handle_im(-offsetx,OffsetX);
+	 handle_im(-offsety,OffsetY);
 	 handle_ia(-santa,SantaSize);
 	 handle_ia(-santaspeedfactor,SantaSpeedFactor);
-	 handle_ia(-snowflakes,snowflakesfactor);
+	 handle_ia(-snowflakes,SnowFlakesFactor);
 	 handle_ia(-snowspeedfactor,SnowSpeedFactor);
 	 handle_ia(-ssnowdepth,MaxScrSnowDepth);
-	 handle_ia(-stars,nstars);
-	 handle_ia(-stopafter,stopafter);
-	 handle_ia(-treefill,treefill);
-	 handle_ia(-trees,desired_number_of_trees);
+	 handle_ia(-stars,NStars);
+	 handle_ia(-stopafter,StopAfter);
+	 handle_ia(-treefill,TreeFill);
+	 handle_ia(-trees,DesiredNumberOfTrees);
 	 handle_ia(-whirlwactor,WhirlFactor);
 	 handle_ia(-windtimer,WindTimer);
 	 handle_ia(-wsnowdepth,MaxWinSnowDepth);
 
-	 handle_is(-display,display_name);
-	 handle_is(-sc,snowColor);
-	 handle_is(-tc,trColor);
+	 handle_is(-display,DisplayName);
+	 handle_is(-sc,SnowColor);
+	 handle_is(-tc,TreeColor);
 	 handle_is(-treetype,TreeType);
 
-	 handle_iv(-defaults,defaults,1);
-	 handle_iv(-exposures,exposures,True);
+	 handle_iv(-defaults,Defaults,1);
+	 handle_iv(-exposures,Exposures,True);
 	 handle_iv(-noblowsnow,NoBlowSnow,1);
-	 handle_iv(-noconfig,noconfig,1);
-	 handle_iv(-noexposures,exposures,False);
+	 handle_iv(-noconfig,NoConfig,1);
+	 handle_iv(-noexposures,Exposures,False);
 	 handle_iv(-nofluffy,NoFluffy,1);
 	 handle_iv(-nokeepsnowonscreen,NoKeepSBot,1);
 	 handle_iv(-nokeepsnowontrees,NoKeepSnowOnTrees,1);
 	 handle_iv(-nokeepsnowontrees,NoKeepSnowOnTrees,1);
 	 handle_iv(-nokeepsnowonwindows,NoKeepSWin,1);
-	 handle_iv(-nomenu,nomenu,1);
+	 handle_iv(-nomenu,NoMenu,1);
 	 handle_iv(-nometeorites,NoMeteorites,1);
-	 handle_iv(-noquiet,quiet,0);
+	 handle_iv(-noquiet,Quiet,0);
 	 handle_iv(-norudolf,NoRudolf,1);
 	 handle_iv(-nosanta,NoSanta,1);
 	 handle_iv(-nosnowflakes,NoSnowFlakes,1);
 	 handle_iv(-notrees,NoTrees,1);
 	 handle_iv(-nowind,NoWind,1);
-	 handle_iv(-showstats,showstats,1);
-	 handle_iv(-xwininfo,xwininfohandling,1);
+	 handle_iv(-showstats,ShowStats,1);
+	 handle_iv(-xwininfo,XWinInfoHandling,1);
 	 else {
 	    fprintf(stderr,"** unknown flag: '%s', exiting.\n",argv[ax]);
 	    fprintf(stderr," Try: xsnow -h\n");
@@ -219,17 +226,17 @@ int handleflags(int argc, char*argv[])
 	 }
       }
    }
-   if ((flags.SantaSize < 0) || (flags.SantaSize > MAXSANTA)) {
+   if ((Flags.SantaSize < 0) || (Flags.SantaSize > MAXSANTA)) {
       printf("** Maximum Santa is %d\n",MAXSANTA);
       return -1;
    }
    /* Eskimo warning */
-   if (strstr(flags.snowColor,"yellow") != NULL)
+   if (strstr(Flags.SnowColor,"yellow") != NULL)
       printf("\nWarning: don't eat yellow snow!\n\n");
-   if (!strcmp(flags.TreeType,"all"))
+   if (!strcmp(Flags.TreeType,"all"))
    {
-      free(flags.TreeType);
-      flags.TreeType = strdup(ALLTREETYPES);
+      free(Flags.TreeType);
+      Flags.TreeType = strdup(ALLTREETYPES);
    }
    return 0;
 }
@@ -265,15 +272,15 @@ static xmlXPathObjectPtr getnodeset (xmlDocPtr doc, xmlChar *xpath){
 
 static void makeflagsfile()
 {
-   if (flagsfile != 0) return;
-   flagsfile = strdup(getenv("HOME"));
-   flagsfile = realloc (flagsfile,strlen(flagsfile) + 1 + strlen(FLAGSFILE) + 1);
-   strcat(flagsfile,"/");
-   strcat(flagsfile,FLAGSFILE);
-   //printf("%d: flagsfile: %s\n",__LINE__,flagsfile);
+   if (FlagsFile != 0) return;
+   FlagsFile = strdup(getenv("HOME"));
+   FlagsFile = realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
+   strcat(FlagsFile,"/");
+   strcat(FlagsFile,FLAGSFILE);
+   //printf("%d: FlagsFile: %s\n",__LINE__,FlagsFile);
 }
 
-void readflags()
+void ReadFlags()
 {
    xmlXPathObjectPtr result;
    xmlChar *value;
@@ -281,7 +288,7 @@ void readflags()
    long int intval;
    xmlDocPtr doc;
    makeflagsfile();
-   doc = xmlParseFile(flagsfile);
+   doc = xmlParseFile(FlagsFile);
 #define DOIT_I(x) \
    /* printf("%d:DOIT_I:%s\n",__LINE__,#x); */ \
    result = getnodeset(doc, BAD_CAST "//" # x); \
@@ -292,8 +299,8 @@ void readflags()
       intval = 0; \
       else \
       intval = strtol((char*)value,0,0); \
-      flags.x = intval; \
-      /* printf(# x ": %ld\n",(long int)flags.x); */ \
+      Flags.x = intval; \
+      /* printf(# x ": %ld\n",(long int)Flags.x); */ \
       xmlFree(value); \
       xmlXPathFreeObject(result); \
    } 
@@ -304,12 +311,12 @@ void readflags()
    if (result) {\
       nodeset = result->nodesetval; \
       value = xmlNodeListGetString(doc, nodeset->nodeTab[0]->xmlChildrenNode, 1); \
-      free(flags.x); \
+      free(Flags.x); \
       if (value == NULL) \
-      flags.x = strdup(""); \
+      Flags.x = strdup(""); \
       else \
-      flags.x = strdup((char*)value); \
-      /* printf(# x ": %s\n",flags.x); */  \
+      Flags.x = strdup((char*)value); \
+      /* printf(# x ": %s\n",Flags.x); */  \
       xmlFree(value); \
       xmlXPathFreeObject(result); \
    } 
@@ -329,7 +336,7 @@ static void myxmlNewChild(xmlNodePtr node, xmlNsPtr p, char *name,long int value
    xmlNewChild(node, p, BAD_CAST name, BAD_CAST svalue);
 }
 
-void writeflags()
+void WriteFlags()
 {
    xmlDocPtr doc = NULL;
    xmlNodePtr root_node = NULL;
@@ -337,15 +344,15 @@ void writeflags()
    root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
    xmlDocSetRootElement(doc, root_node);
 
-#define DOIT_I(x) myxmlNewChild(root_node,NULL,# x,flags.x,"%d");
+#define DOIT_I(x) myxmlNewChild(root_node,NULL,# x,Flags.x,"%d");
 #define DOIT_L(x) DOIT_I(x)
-#define DOIT_S(x) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST flags.x);
+#define DOIT_S(x) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
    DOIT;
 #undef DOIT_I
 #undef DOIT_L
 #undef DOIT_S
 
    makeflagsfile();
-   xmlSaveFormatFileEnc(flagsfile , doc, "UTF-8", 1);
+   xmlSaveFormatFileEnc(FlagsFile , doc, "UTF-8", 1);
    xmlFreeDoc(doc);
 }

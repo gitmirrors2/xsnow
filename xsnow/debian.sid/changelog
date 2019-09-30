@@ -1,4 +1,10 @@
-xsnow (1:2.0.11-1) unstable; urgency=low
+xsnow (1:2.0.12-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Willem Vermin <wvermin@gmail.com>  Mon, 30 Sep 2019 14:29:26 +0200
+
+xsnow (1:2.0.9-1) unstable; urgency=low
 
   * New upstream release
   * New maintainer (Closes: #931349)
@@ -7,8 +13,8 @@ xsnow (1:2.0.11-1) unstable; urgency=low
   * Changed non-free -> main
   * Bump debhelper compat level to 12.
 
- -- Willem Vermin <wvermin@gmail.com>  Tue, 17 Sep 2019 15:37:11 +0200
-
+ -- Willem Vermin <wvermin@gmail.com>  Fri, 19 Jul 2019 14:59:21 +0200
+  
 xsnow (1:1.42-9build1) bionic; urgency=high
 
   * No change rebuild to pick up -fPIE compiler default

@@ -54,7 +54,7 @@ void docs_usage(int man)
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
-      printf("xsnow \\- Snow and Santa on your Gnome desktop\n");
+      printf("xsnow \\- Snow and Santa on your desktop\n");
       printf(".SH SYNOPSIS\n");
       printf(".B xsnow\n");
       printf("[\\fIOPTION\\fR]...\n");
@@ -69,7 +69,7 @@ void docs_usage(int man)
       doman = 0;
       printf("XSNOW 2019 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
-      printf("xsnow - Snow and Santa on your Gnome desktop\n");
+      printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
       printf("xsnow ");
       printf("[OPTION...\n");
@@ -107,9 +107,11 @@ void docs_usage(int man)
    manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
    manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel.");
+#if 0
    manout("-kde"                      ,"prepare for KDE: no background, -alpha 1, -noexposures .");
-   manout("-fvwm"                     ,"prepare for FVWM: no background, -alpha 0, -exposures .");
-   manout("-gnome"                    ,"prepare for GNOME: no background, -alpha 1, -noexposures .");
+#endif
+   manout("-fvwm"                     ,"prepare for FVWM and the like: no background, -alpha 0, -noexposures .");
+   manout("-gnome"                    ,"prepare for GNOME, KDE and the like: no background, -alpha 1, -noexposures .");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-showstats"                ,"Print some statistics about the various things that happen in xsnow.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");

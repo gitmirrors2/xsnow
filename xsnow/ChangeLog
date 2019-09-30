@@ -4,6 +4,16 @@ version 2.0.11
 	debian/copyright: corrected
 	main.c: remove flakes that fall below bottom of screen, also if
 	   no fallensnow on bottom
+	main.c: corrected bug which coaused no snow at all with -nomenu
+	Lower default snowspeed (SNOWSPEED in xsnow.h)
+	update snowflakes in chunks, so that other animations run at
+	   desired speed.
+	remove option -kde: settings are the same as for -gnome
+	do not add or delete flakes when updating snowflakes
+	   is running (test on SnowRunning)
+	for updatesanta, gensnowflakes, snowflakes: after a suspend
+	   or sleep the elapsed time can have a strange
+	   value. Take care of that.
 
 version 2.0.10
 	prepare for running in wayland by setting environment

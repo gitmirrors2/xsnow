@@ -971,12 +971,13 @@ void do_snowflakes()
       }
    }
 
-   if(1)
+#if 0
    {
       int test = countSnow(FirstFlake,0);
       P("%d %d %d %d %p %p\n",FlakeCount,test,SnowRunning,RunCounter,(void*)FirstFlake->prev,(void*)FirstFlake->next);
       assert(FlakeCount == test);
    }
+#endif
 
 }
 
