@@ -943,6 +943,13 @@ void do_snowflakes()
       prevtime = Prevtime[alarm_snowflakes];
    }
    FlakesDT = wallclock() - prevtime;
+   // after suspend or sleep FlakesDT could have a strange
+   // value. return if so.
+   if (FlakesDT < 0 || FlakesDT > 10*Delay[alarm_snowflakes])
+   {
+      SnowRunning = 0;
+      return;
+   }
    P("do_snow_flakes %f\n",FlakesDT);
    int count = 0;
 
@@ -1242,7 +1249,11 @@ void do_genflakes()
    TRANSSKIP;
    if (SnowRunning || DoNotMakeSnow)
       return;
-   int desflakes = 1 + lrint((TNow - Prevtime[alarm_genflakes])*FlakesPerSecond);
+   double dt = TNow - Prevtime[alarm_genflakes];
+   // after suspend or sleep dt could have a strange value
+   if (dt < 0 || dt > 10*Delay[alarm_genflakes])
+      return;
+   int desflakes = 1 + lrint(dt*FlakesPerSecond);
    if (FlakeCount + desflakes > Flags.FlakeCountMax)
       return;
    int i;
@@ -2376,6 +2387,9 @@ void UpdateSanta()
    int oldy = SantaY;
    static double dtt = 0;
    double dt = TNow - Prevtime[alarm_usanta];
+   // after suspend or sleep dt could have a strange value
+   if (dt < 0 || dt > 10*Delay[alarm_usanta])
+      return;
    ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
    if (ActualSantaSpeed>3*SantaSpeed)
       ActualSantaSpeed = 3*SantaSpeed;

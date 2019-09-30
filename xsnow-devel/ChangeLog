@@ -11,6 +11,9 @@ version 2.0.11
 	remove option -kde: settings are the same as for -gnome
 	do not add or delete flakes when updating snowflakes
 	   is running (test on SnowRunning)
+	for updatesanta, gensnowflakes, snowflakes: after a suspend
+	   or sleep the elapsed time can have a strange
+	   value. Take care of that.
 
 version 2.0.10
 	prepare for running in wayland by setting environment
