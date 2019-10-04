@@ -1248,9 +1248,28 @@ void do_event()
 void do_genflakes()
 {
    TRANSSKIP;
-   if (SnowRunning || DoNotMakeSnow)
+   if (DoNotMakeSnow)
       return;
-   double dt = TNow - Prevtime[alarm_genflakes];
+   static double prevtime;
+   static int    halted_by_snowrunning = 0;
+
+   if(SnowRunning)
+   {
+      if (!halted_by_snowrunning)
+      {
+	 prevtime               = Prevtime[alarm_genflakes];
+	 halted_by_snowrunning  = 1;
+      }
+      return;
+   }
+
+   double dt;
+   if(halted_by_snowrunning)
+      dt = TNow - prevtime;
+   else
+      dt = TNow - Prevtime[alarm_genflakes];
+   halted_by_snowrunning = 0;
+
    // after suspend or sleep dt could have a strange value
    if (dt < 0 || dt > 10*Delay[alarm_genflakes])
       return;
@@ -1357,9 +1376,8 @@ void do_wind()
 // blow snow off trees
 void ConvertOnTreeToFlakes()
 {
-   if(SnowRunning || Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
-      return;
-   if (FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if(SnowRunning || Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees ||
+	 FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
       return;
    int i;
    for (i=0; i<OnTrees; i++)
