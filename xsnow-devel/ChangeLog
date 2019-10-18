@@ -1,6 +1,7 @@
 version 2.0.13
 	main.c: do_genflakes(): take into account that do_genflakes()
 	   can be disabled by SnowRunning
+	flags.c: add forgotten -alpha flag
 version 2.0.12
 	pixmaps.c: corrected width and height for snow.
 	main.c: simplified create rectangular region

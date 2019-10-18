@@ -175,6 +175,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-cpuload,CpuLoad);
 	 handle_ia(-flakecountmax,FlakeCountMax);
 	 handle_ia(-gnome,UseAlpha);
+	 handle_ia(-alpha,UseAlpha);
 	 handle_ia(-id,WindowId);
 	 handle_ia(-maxontrees,MaxOnTrees);
 	 handle_im(-offsets,OffsetS);
