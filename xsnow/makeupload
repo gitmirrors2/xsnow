@@ -2,7 +2,7 @@
 # creates directory for upload
 # version numbers for upstream releases:
 newversion=`./getversion`
-oldversion=1.42
+oldversion=2.0.9
 curdir=`pwd`
 dist=sid
 tar=$curdir/xsnow-$newversion.tar.gz
