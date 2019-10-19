@@ -22,7 +22,7 @@
 #-#
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [2.0.13~pre1], [wvermin@gmail.com])
+AC_INIT([xsnow], [2.0.14~pre1], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -34,12 +34,12 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lX11':
+
 AC_CHECK_LIB([X11], [XOpenDisplay], [],[
 	     echo "libX11 is required"
 	     exit -1])
 AC_CHECK_LIB([Xpm], [XpmCreatePixmapFromData], [], AC_MSG_ERROR([Exiting]))
-# FIXME: Replace `main' with a function in `-lm':
+
 AC_CHECK_LIB([m], [sin], [], [
 	      echo "libm is required"
 	      exit -1])
@@ -64,4 +64,5 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile)
+
 AC_OUTPUT
