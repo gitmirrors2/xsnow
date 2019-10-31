@@ -48,23 +48,17 @@
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
 static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
 
-static int get_monitor_rects(GdkDisplay *display, GdkRectangle **rectangles) {
-   int n = gdk_display_get_n_monitors(display);
-   GdkRectangle *new_rectangles = (GdkRectangle*)malloc(n * sizeof(GdkRectangle));
-   for (int i = 0; i < n; ++i) {
-      GdkMonitor *monitor = gdk_display_get_monitor(display, i);
-      gdk_monitor_get_geometry(monitor, &new_rectangles[i]);
-   }
-   *rectangles = new_rectangles;
-   return n;
-}
 
 static gboolean supports_alpha = FALSE;
 static int is_below = 1;
 
+static GdkRectangle workarea;
+
 void create_transparent_window(int fullscreen, int below, 
-      Window *win, char **name, GtkWidget **gtkwin)
+      Window *win, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
 {
+   workarea.width  = width;
+   workarea.height = height;
    is_below = below;
    P("create_transparent_window\n");
    *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL); 
@@ -114,6 +108,35 @@ void create_transparent_window(int fullscreen, int below,
    *win = gdk_x11_window_get_xid(gdk_window);
 }
 
+#if 1
+static void size_to_screen(GtkWindow *window)
+{
+// see https://stackoverflow.com/questions/43225956/how-to-get-the-size-of-the-screen-with-gtk:
+// also gdk_monitor_get_workarea is not always available ...
+   /* GdkRectangle workarea = {0};
+   gdk_monitor_get_workarea(
+	 gdk_display_get_primary_monitor(gdk_display_get_default()),
+	 &workarea);
+	 */
+
+   //printf ("W: %u x H:%u\n", workarea.width, workarea.height);
+   gtk_window_set_default_size(window, workarea.width, workarea.height);
+   gtk_window_resize          (window, workarea.width, workarea.height);
+   gtk_window_set_resizable   (window, FALSE);
+}
+#else
+// sometimes (e.g. in slackware) gdkmonitor.h is missing, so we use a simpler solution
+// see above
+static int get_monitor_rects(GdkDisplay *display, GdkRectangle **rectangles) {
+   int n = gdk_display_get_n_monitors(display);
+   GdkRectangle *new_rectangles = (GdkRectangle*)malloc(n * sizeof(GdkRectangle));
+   for (int i = 0; i < n; ++i) {
+      GdkMonitor *monitor = gdk_display_get_monitor(display, i);
+      gdk_monitor_get_geometry(monitor, &new_rectangles[i]);
+   }
+   *rectangles = new_rectangles;
+   return n;
+}
 static void size_to_screen(GtkWindow *window) {
    //GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(window));
 
@@ -149,6 +172,7 @@ static void size_to_screen(GtkWindow *window) {
    gtk_window_resize(window, width, height);
    gtk_window_set_resizable(window, FALSE);
 }
+#endif
 
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata)
 {
@@ -173,7 +197,7 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
 
    // Ensure the widget (the window, actually) can take RGBA
    gtk_widget_set_visual(widget, gdk_screen_get_rgba_visual(screen));
-   size_to_screen(GTK_WINDOW(widget));
+   size_to_screen(GTK_WINDOW(widget)); 
 }
 
 static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)

@@ -3012,7 +3012,7 @@ int DetermineWindow()
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll,
-		  &SnowWin, &SnowWinName, &GtkWin);
+		  &SnowWin, &SnowWinName, &GtkWin,w,h);
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
 	    XGetGeometry(display,SnowWin,&root,

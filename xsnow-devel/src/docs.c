@@ -263,9 +263,10 @@ void docs_usage(int man)
    }
    manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
    manout(".","- Xsnow stresses the Xserver too much.");
+   manout(".","- The -xwininfo and -id flags do not function properly.");
    manout(".","- Xsnow generates race conditions, e.g.: sometimes fallen snow");
    manout(" ","  is not removed when it should be.");
-   manout(".","- Xsnow does run in Wayland, but will not snow on all window.");
+   manout(".","- Xsnow does run in Wayland, but will not snow on all windows.");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
 
