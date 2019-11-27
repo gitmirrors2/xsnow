@@ -1,6 +1,11 @@
 version 2.0.14
 	src/Makefile.am: use exec_prefix in stead of prefix for gamesdir
 	transparent.c: simplify creation of transparent window
+	main.c: removed use of SigHupHandler 
+	docs.c: corrected misspelled default values
+	test1.sh: check 'xsnow -h' if default values are subtituted
+	main.c, ui.glade: better algorithm to determine number of flakes
+	    to generate
 version 2.0.13
 	main.c: do_genflakes(): take into account that do_genflakes()
 	   can be disabled by SnowRunning

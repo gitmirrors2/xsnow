@@ -101,7 +101,7 @@ void docs_usage(int man)
    manout("-xwininfo  "               ,"Use a cursor to point at the window you want the snow to be fallen in.");
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
-   manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_bgcolor) ".)");
+   manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
    manout("-kdebg"                    ,"sets the KDE desktop background color to the value given at '-bg'.");
    manout("-exposures"                ,"Force XClearArea(...,exposures=True) when erasing.");
    manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
@@ -123,13 +123,13 @@ void docs_usage(int man)
    {
       printf("\n  Snow options:\n\n");
    }
-   manout("-snowflakes <n>"           ,"The higher, the more snowflakes are generated per second. Default: " EQ(DEFAULT_snowflakesfactor) ".");
+   manout("-snowflakes <n>"           ,"The higher, the more snowflakes are generated per second. Default: " EQ(DEFAULT_SnowFlakesFactor) ".");
    manout("-noblowsnow"               ,"Do not animate blowing snow from trees or windows.");
-   manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_snowflakesfactor) ").");
+   manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_SnowColor) ").");
    manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default:" EQ(DEFAULT_SnowSpeedFactor) ").");
    manout("-nosnowflakes"             ,"Do not show falling snowflakes. (Weird!)");
-   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default " EQ(DEFAULT_flakecountmax) ").");
-   manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_blowofffactor) ").");
+   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default " EQ(DEFAULT_FlakeCountMax) ").");
+   manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_BlowOffFactor) ").");
 
    if(doman)
    {
@@ -143,11 +143,11 @@ void docs_usage(int man)
    manout(" "                         ,"Thanks to Carla Vermin for numbers >=3!"); 
    manout(" "                         ,"Credits: Image by b0red on Pixabay.");
    manout("-treetype all"             ,"Use all available tree types.");
-   manout("-tc <c>"                   ,"Use the given string as the color for the default trees (default: " EQ(DEFAULT_trColor) ").");
+   manout("-tc <c>"                   ,"Use the given string as the color for the default trees (default: " EQ(DEFAULT_TreeColor) ").");
    manout(" "                         ,"Works only for treetype 0.");
    manout("-notrees"                  ,"Do not display the trees.");
-   manout("-trees <n>"                ,"Desired number of trees. Default " EQ(DEFAULT_desired_number_of_trees) ".");
-   manout("-treefill <n>"             ,"Region in percents of the height of the window where trees grow (default: " EQ(DEFAULT_treefill) ").");
+   manout("-trees <n>"                ,"Desired number of trees. Default " EQ(DEFAULT_DesiredNumberOfTrees) ".");
+   manout("-treefill <n>"             ,"Region in percents of the height of the window where trees grow (default: " EQ(DEFAULT_TreeFill) ").");
 
    if(doman)
    {
@@ -192,17 +192,17 @@ void docs_usage(int man)
    }
    manout("-wsnowdepth <n>"           ,"Maximum thickness of snow on top of windows (default: " EQ(DEFAULT_MaxWinSnowDepth) ").");
    manout("-ssnowdepth <n>"           ,"Maximum thickness of snow at the bottom of the screen (default: " EQ(DEFAULT_MaxScrSnowDepth) ").");
-   manout("-maxontrees <n>"           ,"Maximum number of flakes on trees. Default " EQ(DEFAULT_maxontrees) ".");
+   manout("-maxontrees <n>"           ,"Maximum number of flakes on trees. Default " EQ(DEFAULT_MaxOnTrees) ".");
    manout("-nokeepsnowonwindows"      ,"Do not keep snow on top of the windows.");
    manout("-nokeepsnowonscreen"       ,"Do not keep snow at the bottom of the screen.");
    manout("-nokeepsnowontrees"        ,"Do not keep snow on trees.");
    manout("-nokeepsnow"               ,"Do not have snow sticking anywhere.");
    manout("-nofluffy"                 ,"Do not create fluff on fallen snow.");
-   manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_offset_x) ".");
-   manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_offset_y) ".");
-   manout("-offsetw <n>"              ,"Correction for window-manager provided of width of window. Default " EQ(DEFAULT_offset_w) ".");
+   manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
+   manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
+   manout("-offsetw <n>"              ,"Correction for window-manager provided of width of window. Default " EQ(DEFAULT_OffsetW) ".");
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
-   manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_offset_s) ".");
+   manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");
 
 
    if(doman)
@@ -213,10 +213,10 @@ void docs_usage(int man)
    {
       printf("\n  Other options:\n\n");
    }
-   manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_nstars) ").");
+   manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_NStars) ").");
    manout("-nometeorites"             ,"Do not show meteorites.");
    manout("-cpuload <n>"              ,"How busy is your system with xsnow:");
-   manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_cpuload) ").");
+   manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_CpuLoad) ").");
 
    if(doman)
    {

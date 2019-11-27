@@ -362,11 +362,7 @@ int main(int argc, char *argv[])
    //signal(SIGKILL, SigHandler);  // wwvv
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
-#if debug
-   signal(SIGHUP, SigHupHandler);
-#else
    signal(SIGHUP, SigHandler);
-#endif
    if (display == NULL) {
       if (Flags.DisplayName == NULL) Flags.DisplayName = getenv("DISPLAY");
       (void) fprintf(stderr, "%s: cannot connect to X server %s\n", argv[0],
@@ -1251,6 +1247,7 @@ void do_genflakes()
    if (DoNotMakeSnow)
       return;
    static double prevtime;
+   static double sumdt = 0;
    static int    halted_by_snowrunning = 0;
 
    if(SnowRunning)
@@ -1273,7 +1270,12 @@ void do_genflakes()
    // after suspend or sleep dt could have a strange value
    if (dt < 0 || dt > 10*Delay[alarm_genflakes])
       return;
-   int desflakes = 1 + lrint(dt*FlakesPerSecond);
+   int desflakes = lrint((dt+sumdt)*FlakesPerSecond);
+   P("desflakes: %d\n",desflakes);
+   if(desflakes == 0)  // save dt for use next time: happens with low snowfall rate
+      sumdt += dt; 
+   else
+      sumdt = 0;
    if (FlakeCount + desflakes > Flags.FlakeCountMax)
       return;
    int i;
@@ -2809,6 +2811,7 @@ int BlowOff()
 
 void InitFlakesPerSecond()
 {
+   P("snowflakesfactor: %d\n",Flags.SnowFlakesFactor);
    FlakesPerSecond = SnowWinWidth*0.01*Flags.SnowFlakesFactor*
       0.001*FLAKES_PER_SEC_PER_PIXEL*SnowSpeedFactor;
 }

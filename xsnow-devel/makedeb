@@ -41,8 +41,8 @@ if test "x$1" != xall ; then
 fi
 cd ..
 #for dist in amd64-sid ; do
-#for dist in amd64-stretch ; do
-for dist in amd64-sid i386-stretch amd64-stretch ; do
+for dist in i386-stretch amd64-stretch ; do
+#for dist in amd64-sid i386-stretch amd64-stretch ; do
    debdirbuild=$curdir/../debian/xsnow-$version-deb-build.$dist
    rm -rf $debdirbuild
    mkdir -p $debdirbuild || exit 1

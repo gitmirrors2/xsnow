@@ -23,4 +23,18 @@ XSNOW=xsnow
 if [ $(basename `pwd`) = "src" ]; then
    XSNOW=./xsnow
 fi
+# test if 'xsnow -h' more or less works:
 $XSNOW -h | grep -q -i xsnow 
+if [ $? -ne 0 ] ; then
+   echo "Error in executing: $XSNOW -h"
+   exit 1
+fi
+# test if all default values are substituted:
+$XSNOW -h | grep -q DEFAULT_
+if [ $? -eq 0 ] ; then
+   echo "Not all default values are substituted:"
+   $XSNOW -h | grep DEFAULT_
+   exit 1
+fi
+
+
