@@ -1,3 +1,5 @@
+version 2.0.15
+	ui.glade: added 'Donate' button
 version 2.0.14
 	src/Makefile.am: use exec_prefix in stead of prefix for gamesdir
 	transparent.c: simplify creation of transparent window

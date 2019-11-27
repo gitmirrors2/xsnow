@@ -38,7 +38,7 @@ sed -i "/^AC_INIT(\[xsnow]/s/^.*/AC_INIT([xsnow], [$version], [wvermin@gmail.com
 # the 'xsnow' line and the -- Willem line will be adapted to the
 # new version and date automatically
 
-for d in debian debian.disco debian.stretch debian.sid debian.tara ; do
+for d in debian debian.eoan debian.stretch debian.sid debian.tara ; do
    if [ -e $d/changelog ] ; then
       sed -i "1s/(.*)/(1:$version-1)/" $d/changelog       || exit 1
       sed -i "0,/^ --.*>/{/^ --.*>/s/>  .*/>  $date/}" $d/changelog || exit 1
