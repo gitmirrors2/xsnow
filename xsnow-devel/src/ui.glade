@@ -746,7 +746,7 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If you feel urge to make a donation to inspire the 
+                <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
 maintainer of xsnow, here is a paypal link.</property>
                 <property name="uri">https://paypal.me/wvermin</property>
               </object>
