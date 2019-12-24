@@ -22,7 +22,7 @@ SUBDIRS = Pixmaps
 TOCC     = $(top_srcdir)/src/tocc.sh
 TOASCII  = $(top_srcdir)/src/toascii.sh
 
-gamesdir = $(exec_prefix)/games
+gamesdir = $(exec_prefix)/bin
 games_PROGRAMS = xsnow
 
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) 
