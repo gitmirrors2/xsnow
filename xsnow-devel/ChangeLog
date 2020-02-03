@@ -1,3 +1,6 @@
+version 2.0.16
+	dsimple.c: int screen = 0; -> static int screen = 0;
+	   and move to the top of the file. Ticket 1: gcc-10 related
 version 2.0.15
 	ui.glade: added 'Donate' button
 version 2.0.14
