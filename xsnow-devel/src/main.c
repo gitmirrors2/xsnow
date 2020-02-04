@@ -601,8 +601,20 @@ int main(int argc, char *argv[])
    return 0;
 }		/* End of the snow */
 /* ------------------------------------------------------------------ */ 
+/*
+ * TRANSSKIP was defined as follows, to prevent that the workspace xsnow is running in
+ * is updated if the current workspace is different.
+ * Now, with the GDK_WINDOW_TYPE_HINT_DOCK hint in transparent.c, this is
+ * not desired any more: xsnow is now visible on all workspaces.
+ * Luckily, the fallensnow on windows code works still ok: fallensnow is only visible
+ * if the accompanying window is visible.
+ */
+/*
 #define TRANSSKIP \
    if (UsingTrans && CWorkSpace != TransWorkSpace) return
+   */
+/* so, let us nullify TRANSSKIP: */
+#define TRANSSKIP {}
 
 void do_santa()
 {

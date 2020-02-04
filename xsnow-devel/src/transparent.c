@@ -84,6 +84,10 @@ void create_transparent_window(int fullscreen, int below,
    gtk_widget_show_all(*gtkwin);
 
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
+   // keep xsnow visible after 'show desktop', and as a bonus, keep
+   // xsnow visible on all workspaces:
+   gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
+
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
