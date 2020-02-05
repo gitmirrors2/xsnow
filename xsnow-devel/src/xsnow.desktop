@@ -9,7 +9,6 @@ Name[en_US]=xsnow
 Keywords=christmas;santa;snow
 Version=1.0
 Actions=new-window;
-StartupWMClass=xsnow
 
 [Desktop Action new-window]
 Name=Open a New Window
