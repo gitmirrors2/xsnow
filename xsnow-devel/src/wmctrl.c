@@ -49,12 +49,12 @@ long GetCurrentWorkspace()
       r = -1;
    else
       r = *(long *)properties;
-   //printf("TD: wmctrl: %d: %ld %ld\n",__LINE__,nitems,r);
    if(properties) XFree(properties);
    // in compiz, we need to do a bit different
    // in compiz: r will be 0, let us check if the following works:
    if (r == 0)
    {
+      properties = 0;
       atom = XInternAtom(display,"_NET_DESKTOP_VIEWPORT",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 2, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
@@ -66,10 +66,11 @@ long GetCurrentWorkspace()
       {
 	 // we have the x-y coordinates of the workspace, we hussle this
 	 // into one long number:
-	 r = ((long *)properties)[0]+(((long *)properties)[1]<<32);
+	 r = ((long *)properties)[0]+(((long *)properties)[1]<<16);
       }
       if(properties) XFree(properties);
    }
+   //printf("TD: wmctrl: %d: %ld %#lx\n",__LINE__,nitems,r);
 
    return r;
 }

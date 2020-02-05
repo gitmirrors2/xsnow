@@ -605,16 +605,11 @@ int main(int argc, char *argv[])
 /*
  * do nothing if current workspace is not to be updated
  */
-/*
-#define TRANSSKIP \
-if (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)) return
-*/
 #define NOTACTIVE \
    (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace))
 
 void do_santa()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if (!Flags.NoSanta)
@@ -622,7 +617,6 @@ void do_santa()
 }
 void do_santa1()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if (!Flags.NoSanta)
@@ -917,8 +911,7 @@ void RedrawTrees()
 
 void do_tree()
 {
-   //TRANSSKIP;
-   // printf("TD: do_tree %d %d %#lx %#lx %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace, TransWorkSpace,RunCounter); fflush(stdout);
+   //printf("TD: do_tree %d %d %#lx %#lx %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace, TransWorkSpace,RunCounter); fflush(stdout);
 
    if (NOTACTIVE)
       return;
@@ -932,7 +925,6 @@ void do_tree()
 
 void do_snow_on_trees()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
@@ -954,7 +946,6 @@ void do_snow_on_trees()
 
 void do_snowflakes()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
    {
       SnowRunning = 0;
@@ -1015,7 +1006,6 @@ int HandleFallenSnow(FallenSnow *fsnow)
 
 void do_fallen()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
 
@@ -1033,7 +1023,6 @@ void do_fallen()
 
 void do_blowoff()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    FallenSnow *fsnow = FsnowFirst;
@@ -1175,7 +1164,6 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 // smooth fallen snow
 void do_sfallen()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    return; // taken care of in UpdateFallenSnowPartial()
@@ -1220,7 +1208,6 @@ void do_sfallen()
 }
 
 void do_usanta() { 
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    UpdateSanta(); 
@@ -1280,7 +1267,6 @@ void do_event()
 
 void do_genflakes()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if (DoNotMakeSnow)
@@ -1327,7 +1313,6 @@ void do_genflakes()
 
 void do_newwind()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    //
@@ -1369,7 +1354,6 @@ void do_newwind()
 
 void do_wind()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if(Flags.NoWind) return;
@@ -1452,7 +1436,6 @@ void ConvertOnTreeToFlakes()
 
 void do_stars()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    int i;
@@ -1471,7 +1454,6 @@ void do_stars()
 
 void do_ustars()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    int i;
@@ -1482,7 +1464,6 @@ void do_ustars()
 
 void do_meteorite()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if(Flags.NoMeteorites) return;
@@ -1520,7 +1501,6 @@ void do_meteorite()
 
 void do_emeteorite()
 {
-   //TRANSSKIP;
    if (NOTACTIVE)
       return;
    if(Flags.NoMeteorites) return;
@@ -1604,7 +1584,10 @@ void do_wupdate()
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
       if (winfo->ws)
+      {
 	 TransWorkSpace = winfo->ws;
+	 //printf("TD: TransWorkSpace from winfo: %#lx\n",TransWorkSpace);
+      }
    }
 
    UpdateWindows();
@@ -3094,7 +3077,8 @@ int DetermineWindow()
    if (Flags.Desktop)
       Isdesktop = 1;
    // P("Isdesktop: %d\n",Isdesktop);
-   if(Isdesktop) CWorkSpace = GetCurrentWorkspace();
+   if(Isdesktop) 
+      CWorkSpace = GetCurrentWorkspace();
    if (CWorkSpace < 0)
       return 0;
    InitDisplayDimensions();
