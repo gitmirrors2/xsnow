@@ -27,7 +27,7 @@
 #include "wmctrl.h"
 #include "windows.h"
 #include "dsimple.h"
-int GetCurrentWorkspace()
+long GetCurrentWorkspace()
 {
    Atom atom, type;
    int format;
@@ -49,9 +49,29 @@ int GetCurrentWorkspace()
       r = -1;
    else
       r = *(long *)properties;
-   //printf("wmctrl: %d: %ld %ld\n",__LINE__,nitems,r);
+   //printf("TD: wmctrl: %d: %ld %ld\n",__LINE__,nitems,r);
    if(properties) XFree(properties);
-   return (int)r;
+   // in compiz, we need to do a bit different
+   // in compiz: r will be 0, let us check if the following works:
+   if (r == 0)
+   {
+      atom = XInternAtom(display,"_NET_DESKTOP_VIEWPORT",False);
+      XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 2, False, 
+	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (type != XA_CARDINAL || nitems != 2)
+      {
+	 // so, probably it is not compiz, let r as it is
+      }
+      else
+      {
+	 // we have the x-y coordinates of the workspace, we hussle this
+	 // into one long number:
+	 r = ((long *)properties)[0]+(((long *)properties)[1]<<32);
+      }
+      if(properties) XFree(properties);
+   }
+
+   return r;
 }
 
 int GetWindows(WinInfo **windows, int *nwin)
@@ -67,7 +87,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_WINDOW)
    {
-      printf("%d: nog eens ...\n",__LINE__);
+      //printf("%d: nog eens ...\n",__LINE__);
       if(properties) XFree(properties);
       atom = XInternAtom(display,"_WIN_CLIENT_LIST",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
@@ -222,7 +242,7 @@ void printwindows(WinInfo *windows, int nwin)
    int i;
    for (i=0; i<nwin; i++)
    {
-      printf("id:%#lx ws:%d x:%d y:%d w:%d h:%d sticky:%d\n",w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky);
+      printf("id:%#lx ws:%#lx x:%d y:%d w:%d h:%d sticky:%d\n",w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky);
       w++;
    }
    return;

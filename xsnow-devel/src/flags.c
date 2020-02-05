@@ -193,6 +193,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-trees,DesiredNumberOfTrees);
 	 handle_ia(-whirlwactor,WhirlFactor);
 	 handle_ia(-windtimer,WindTimer);
+	 handle_ia(-allworkspaces,AllWorkspaces);
 	 handle_ia(-wsnowdepth,MaxWinSnowDepth);
 
 	 handle_is(-display,DisplayName);

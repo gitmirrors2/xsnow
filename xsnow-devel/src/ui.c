@@ -529,6 +529,7 @@ static struct general_buttons
    general_button lift;
    general_button fullscreen;
    general_button below;
+   general_button allworkspaces;
 } general_buttons;
 
 static void init_general_buttons()
@@ -542,6 +543,7 @@ static void init_general_buttons()
    HANDLE_INIT(general_buttons.lift.button,general-lift);
    HANDLE_INIT(general_buttons.fullscreen.button,general-fullscreen);
    HANDLE_INIT(general_buttons.below.button,general-below);
+   HANDLE_INIT(general_buttons.allworkspaces.button,general-allworkspaces);
    gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"general-version")),"xsnow version " VERSION);
 }
 
@@ -555,6 +557,7 @@ static void set_general_buttons()
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
    HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,FullScreen);
    HANDLE_SET_TOGGLE(general_buttons.below.button,BelowAll);
+   HANDLE_SET_TOGGLE(general_buttons.allworkspaces.button,AllWorkspaces);
    if (Flags.Exposures != -SOMENUMBER)
       HANDLE_SET_TOGGLE(general_buttons.exposures.button,Exposures);
    else
@@ -589,6 +592,7 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    HANDLE_TOGGLE(button_exposures, Exposures, 1,0)
    HANDLE_TOGGLE(button_fullscreen, FullScreen, 1,0)
    HANDLE_TOGGLE(button_below, BelowAll, 1,0)
+   HANDLE_TOGGLE(button_allworkspaces, AllWorkspaces, 1,0)
 HANDLE_RANGE(button_lift, OffsetS, -value)
 
    G_MODULE_EXPORT
@@ -603,16 +607,17 @@ void general_default(int vintage)
    int h = human_interaction;
    human_interaction      = 0;
 
-   Flags.CpuLoad    = DEFAULT_CpuLoad;
-   Flags.UseBG      = DEFAULT_UseBG;
+   Flags.CpuLoad       = DEFAULT_CpuLoad;
+   Flags.UseBG         = DEFAULT_UseBG;
    free(Flags.BGColor);
-   Flags.BGColor    = strdup(DEFAULT_BGColor);
-   Flags.UseAlpha   = DEFAULT_UseAlpha;
-   Flags.Exposures  = DEFAULT_Exposures;
-   Flags.OffsetS    = DEFAULT_OffsetS;
-   Flags.KDEbg      = DEFAULT_KDEbg;
-   Flags.FullScreen = DEFAULT_FullScreen;
-   Flags.BelowAll   = DEFAULT_BelowAll;
+   Flags.BGColor       = strdup(DEFAULT_BGColor);
+   Flags.UseAlpha      = DEFAULT_UseAlpha;
+   Flags.Exposures     = DEFAULT_Exposures;
+   Flags.OffsetS       = DEFAULT_OffsetS;
+   Flags.KDEbg         = DEFAULT_KDEbg;
+   Flags.FullScreen    = DEFAULT_FullScreen;
+   Flags.BelowAll      = DEFAULT_BelowAll;
+   Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
    if (vintage)
    {
    }

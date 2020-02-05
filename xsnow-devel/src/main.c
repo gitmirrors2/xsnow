@@ -175,12 +175,13 @@ enum{
 #undef ALARM
 
 // windows stuff
-static int     NWindows, CWorkSpace = 0;
+static int     NWindows;
+static long    CWorkSpace = 0;
 static Window  RootWindow;
 static char    *SnowWinName = 0;
 static WinInfo *Windows = 0;
 static int     Exposures;
-static int     TransWorkSpace = -1;  // workspace on which transparent window is placed
+static long    TransWorkSpace = -1;  // workspace on which transparent window is placed
 static int     UsingTrans     = 0;   // using transparent window or not
 
 /* Wind stuff */
@@ -602,29 +603,28 @@ int main(int argc, char *argv[])
 }		/* End of the snow */
 /* ------------------------------------------------------------------ */ 
 /*
- * TRANSSKIP was defined as follows, to prevent that the workspace xsnow is running in
- * is updated if the current workspace is different.
- * Now, with the GDK_WINDOW_TYPE_HINT_DOCK hint in transparent.c, this is
- * not desired any more: xsnow is now visible on all workspaces.
- * Luckily, the fallensnow on windows code works still ok: fallensnow is only visible
- * if the accompanying window is visible.
+ * do nothing if current workspace is not to be updated
  */
 /*
 #define TRANSSKIP \
-   if (UsingTrans && CWorkSpace != TransWorkSpace) return
-   */
-/* so, let us nullify TRANSSKIP: */
-#define TRANSSKIP {}
+if (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)) return
+*/
+#define NOTACTIVE \
+   (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace))
 
 void do_santa()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (!Flags.NoSanta)
       DrawSanta();
 }
 void do_santa1()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (!Flags.NoSanta)
       DrawSanta1();
 }
@@ -880,6 +880,12 @@ void do_ui_check()
       ClearScreen();
       changes++;
    }
+   if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
+   {
+      OldFlags.AllWorkspaces = Flags.AllWorkspaces;
+      DetermineWindow();
+      changes++;
+   }
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
@@ -911,7 +917,11 @@ void RedrawTrees()
 
 void do_tree()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   // printf("TD: do_tree %d %d %#lx %#lx %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace, TransWorkSpace,RunCounter); fflush(stdout);
+
+   if (NOTACTIVE)
+      return;
    if(!Flags.NoTrees)
    {
       int i;
@@ -922,7 +932,9 @@ void do_tree()
 
 void do_snow_on_trees()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return;
    if (Wind == 2)
@@ -942,7 +954,12 @@ void do_snow_on_trees()
 
 void do_snowflakes()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+   {
+      SnowRunning = 0;
+      return;
+   }
    static Snow *flake;
    static double prevtime = 0;
    if (!SnowRunning)
@@ -998,7 +1015,9 @@ int HandleFallenSnow(FallenSnow *fsnow)
 
 void do_fallen()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
 
    FallenSnow *fsnow = FsnowFirst;
    //P("%d\n",RunCounter);
@@ -1014,7 +1033,9 @@ void do_fallen()
 
 void do_blowoff()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
@@ -1154,7 +1175,9 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 // smooth fallen snow
 void do_sfallen()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    return; // taken care of in UpdateFallenSnowPartial()
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
@@ -1197,7 +1220,9 @@ void do_sfallen()
 }
 
 void do_usanta() { 
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    UpdateSanta(); 
 }
 
@@ -1255,7 +1280,9 @@ void do_event()
 
 void do_genflakes()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (DoNotMakeSnow)
       return;
    static double prevtime;
@@ -1300,7 +1327,9 @@ void do_genflakes()
 
 void do_newwind()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    //
    // the speed of newwind is pixels/second
    // at steady Wind, eventually all flakes get this speed.
@@ -1340,7 +1369,9 @@ void do_newwind()
 
 void do_wind()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoWind) return;
    static int first = 1;
    static double prevtime;
@@ -1421,7 +1452,9 @@ void ConvertOnTreeToFlakes()
 
 void do_stars()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    int i;
    for (i=0; i<NStars; i++)
    {
@@ -1438,7 +1471,9 @@ void do_stars()
 
 void do_ustars()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    int i;
    for (i=0; i<NStars; i++)
       if (drand48() > 0.7)
@@ -1447,7 +1482,9 @@ void do_ustars()
 
 void do_meteorite()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoMeteorites) return;
    if (meteorite.active) return;
    if (RandInt(1000) > 200) return;
@@ -1483,7 +1520,9 @@ void do_meteorite()
 
 void do_emeteorite()
 {
-   TRANSSKIP;
+   //TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoMeteorites) return;
    if (meteorite.active)
       if (wallclock() - meteorite.starttime > 0.3)
@@ -1527,10 +1566,10 @@ void do_wupdate()
 {
    if(!Isdesktop) return;
    if(Flags.NoKeepSWin) return;
-   int i;
-   i = GetCurrentWorkspace();
-   if(i>=0) 
-      CWorkSpace = i;
+   long r;
+   r = GetCurrentWorkspace();
+   if(r>=0) 
+      CWorkSpace = r;
    else
    {
       Flags.Done = 1;
@@ -3026,7 +3065,7 @@ int DetermineWindow()
 	       gtk_window_close(GTK_WINDOW(GtkWin));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
-	    create_transparent_window(Flags.FullScreen, Flags.BelowAll,
+	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &SnowWin, &SnowWinName, &GtkWin,w,h);
 	    Isdesktop = 1;
 	    UseAlpha  = 1;

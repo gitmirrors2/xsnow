@@ -4,6 +4,7 @@ version 2.0.16
 	transparent.c:
 	  keep xsnow visible after 'show desktop', and show xsnow on all 
 	  desktops
+	wmctrl.c: special care for compiz
 version 2.0.15
 	ui.glade: added 'Donate' button
 version 2.0.14

@@ -2992,25 +2992,25 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-fullscreen">
-                    <property name="label" translatable="yes">Fullscreen</property>
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <signal name="toggled" handler="button_fullscreen" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">cpu
+ load</property>
+                    <property name="width_chars">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="general-below">
-                    <property name="label" translatable="yes">Below</property>
+                    <property name="label" translatable="yes">Below
+windows</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3022,20 +3022,46 @@ maintainer of xsnow, here is a paypal link.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkToggleButton" id="general-fullscreen">
+                    <property name="label" translatable="yes">Full
+screen</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">cpu load</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_fullscreen" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="general-allworkspaces">
+                    <property name="label" translatable="yes">Snow on all
+desktops</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_allworkspaces" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
