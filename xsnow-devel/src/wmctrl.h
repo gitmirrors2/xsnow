@@ -32,6 +32,7 @@ typedef struct WinInfo
 } WinInfo;
 
 extern long GetCurrentWorkspace();
+extern long GetWorkspace(Window window);
 extern int GetWindows(WinInfo **w, int *nw);
 extern int FindWindowWithName(char* needle, Window *win, char **name);
 extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);

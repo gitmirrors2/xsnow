@@ -106,7 +106,7 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    gdk_window_show                 (GDK_WINDOW(gdk_window));
    // xsnow visible on all workspaces:
    if (allworkspaces)
-      gtk_window_stick (GTK_WINDOW(*gtkwin));
+      gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));

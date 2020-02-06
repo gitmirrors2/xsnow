@@ -47,7 +47,7 @@ static long int S2PosInt(char *s)  //string to positive integer
 void PrintVersion()
 {
    printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
-	 "March 2019 by Willem Vermin\n"
+	 "February 2020 by Willem Vermin\n"
 	 , VERSION);
 }
 

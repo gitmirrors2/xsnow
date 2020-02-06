@@ -43,6 +43,7 @@
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
 #include <assert.h>
+#include <ctype.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <math.h>
@@ -96,6 +97,8 @@ int     SnowWinHeight;
 int     SnowWinWidth; 
 int     SnowWinX; 
 int     SnowWinY; 
+char   *DesktopSession = 0;
+int     IsCompiz;
 
 // locals
 // snow flakes stuff
@@ -911,8 +914,6 @@ void RedrawTrees()
 
 void do_tree()
 {
-   //printf("TD: do_tree %d %d %#lx %#lx %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace, TransWorkSpace,RunCounter); fflush(stdout);
-
    if (NOTACTIVE)
       return;
    if(!Flags.NoTrees)
@@ -1586,7 +1587,6 @@ void do_wupdate()
       if (winfo->ws)
       {
 	 TransWorkSpace = winfo->ws;
-	 //printf("TD: TransWorkSpace from winfo: %#lx\n",TransWorkSpace);
       }
    }
 
@@ -3010,7 +3010,8 @@ int DetermineWindow()
       else
       {
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 char *desktopsession = getenv("DESKTOP_SESSION");
+	 char *desktopsession;
+	 desktopsession = getenv("DESKTOP_SESSION");
 	 if (!desktopsession)
 	    desktopsession = getenv("XDG_SESSION_DESKTOP");
 	 if (!desktopsession)
@@ -3021,8 +3022,20 @@ int DetermineWindow()
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
 	    printf("Could not determine desktop session\n");
+	 
+	 if (DesktopSession)
+	    free(DesktopSession);
+	 DesktopSession = strdup(desktopsession);
+	 // convert DesktopSession to upper case
+	 char *a = DesktopSession;
+	 while (*a)
+	 {
+	    *a = toupper(*a);
+	    a++;
+	 }
+	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
 	 int lxdefound = 0;
-	 if (desktopsession != NULL && !strncmp(desktopsession,"LXDE",4))
+	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
 	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
 	    printf("LXDE session found, searching for window 'pcmanfm'\n");
