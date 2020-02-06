@@ -315,7 +315,6 @@ static void Thanks(void)
 int main(int argc, char *argv[])
 {
    int i;
-   PrintVersion();
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
@@ -323,6 +322,7 @@ int main(int argc, char *argv[])
    setenv("GDK_BACKEND","x11",1);
    InitFlags();
    int rc = HandleFlags(argc, argv);
+   PrintVersion();
    switch(rc)
    {
       case -1:
