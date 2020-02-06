@@ -1,6 +1,8 @@
 version 2.0.17
 	main.c: The output of PrintVersion() appeared in the top of the man page.
 	   Corrected this.
+	main.c: CleanFallenArea() marked the fallensnow region always as clean,
+	   but this must be done only when whole x-range is cleared.
 version 2.0.16
 	dsimple.c: int screen = 0; -> static int screen = 0;
 	   and move to the top of the file. Ticket 1: gcc-10 related
