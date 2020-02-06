@@ -43,6 +43,7 @@
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
 #include <assert.h>
+#include <ctype.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <math.h>
@@ -96,6 +97,8 @@ int     SnowWinHeight;
 int     SnowWinWidth; 
 int     SnowWinX; 
 int     SnowWinY; 
+char   *DesktopSession = 0;
+int     IsCompiz;
 
 // locals
 // snow flakes stuff
@@ -175,12 +178,13 @@ enum{
 #undef ALARM
 
 // windows stuff
-static int     NWindows, CWorkSpace = 0;
+static int     NWindows;
+static long    CWorkSpace = 0;
 static Window  RootWindow;
 static char    *SnowWinName = 0;
 static WinInfo *Windows = 0;
 static int     Exposures;
-static int     TransWorkSpace = -1;  // workspace on which transparent window is placed
+static long    TransWorkSpace = -1;  // workspace on which transparent window is placed
 static int     UsingTrans     = 0;   // using transparent window or not
 
 /* Wind stuff */
@@ -362,11 +366,7 @@ int main(int argc, char *argv[])
    //signal(SIGKILL, SigHandler);  // wwvv
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
-#if debug
-   signal(SIGHUP, SigHupHandler);
-#else
    signal(SIGHUP, SigHandler);
-#endif
    if (display == NULL) {
       if (Flags.DisplayName == NULL) Flags.DisplayName = getenv("DISPLAY");
       (void) fprintf(stderr, "%s: cannot connect to X server %s\n", argv[0],
@@ -605,18 +605,23 @@ int main(int argc, char *argv[])
    return 0;
 }		/* End of the snow */
 /* ------------------------------------------------------------------ */ 
-#define TRANSSKIP \
-   if (UsingTrans && CWorkSpace != TransWorkSpace) return
+/*
+ * do nothing if current workspace is not to be updated
+ */
+#define NOTACTIVE \
+   (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace))
 
 void do_santa()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (!Flags.NoSanta)
       DrawSanta();
 }
 void do_santa1()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (!Flags.NoSanta)
       DrawSanta1();
 }
@@ -872,6 +877,12 @@ void do_ui_check()
       ClearScreen();
       changes++;
    }
+   if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
+   {
+      OldFlags.AllWorkspaces = Flags.AllWorkspaces;
+      DetermineWindow();
+      changes++;
+   }
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
@@ -903,7 +914,8 @@ void RedrawTrees()
 
 void do_tree()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(!Flags.NoTrees)
    {
       int i;
@@ -914,7 +926,8 @@ void do_tree()
 
 void do_snow_on_trees()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return;
    if (Wind == 2)
@@ -934,7 +947,11 @@ void do_snow_on_trees()
 
 void do_snowflakes()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+   {
+      SnowRunning = 0;
+      return;
+   }
    static Snow *flake;
    static double prevtime = 0;
    if (!SnowRunning)
@@ -990,7 +1007,8 @@ int HandleFallenSnow(FallenSnow *fsnow)
 
 void do_fallen()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
 
    FallenSnow *fsnow = FsnowFirst;
    //P("%d\n",RunCounter);
@@ -1006,7 +1024,8 @@ void do_fallen()
 
 void do_blowoff()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
@@ -1146,7 +1165,8 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 // smooth fallen snow
 void do_sfallen()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    return; // taken care of in UpdateFallenSnowPartial()
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
@@ -1189,7 +1209,8 @@ void do_sfallen()
 }
 
 void do_usanta() { 
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    UpdateSanta(); 
 }
 
@@ -1247,10 +1268,12 @@ void do_event()
 
 void do_genflakes()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if (DoNotMakeSnow)
       return;
    static double prevtime;
+   static double sumdt = 0;
    static int    halted_by_snowrunning = 0;
 
    if(SnowRunning)
@@ -1273,7 +1296,12 @@ void do_genflakes()
    // after suspend or sleep dt could have a strange value
    if (dt < 0 || dt > 10*Delay[alarm_genflakes])
       return;
-   int desflakes = 1 + lrint(dt*FlakesPerSecond);
+   int desflakes = lrint((dt+sumdt)*FlakesPerSecond);
+   P("desflakes: %d\n",desflakes);
+   if(desflakes == 0)  // save dt for use next time: happens with low snowfall rate
+      sumdt += dt; 
+   else
+      sumdt = 0;
    if (FlakeCount + desflakes > Flags.FlakeCountMax)
       return;
    int i;
@@ -1286,7 +1314,8 @@ void do_genflakes()
 
 void do_newwind()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    //
    // the speed of newwind is pixels/second
    // at steady Wind, eventually all flakes get this speed.
@@ -1326,7 +1355,8 @@ void do_newwind()
 
 void do_wind()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoWind) return;
    static int first = 1;
    static double prevtime;
@@ -1407,7 +1437,8 @@ void ConvertOnTreeToFlakes()
 
 void do_stars()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    int i;
    for (i=0; i<NStars; i++)
    {
@@ -1424,7 +1455,8 @@ void do_stars()
 
 void do_ustars()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    int i;
    for (i=0; i<NStars; i++)
       if (drand48() > 0.7)
@@ -1433,7 +1465,8 @@ void do_ustars()
 
 void do_meteorite()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoMeteorites) return;
    if (meteorite.active) return;
    if (RandInt(1000) > 200) return;
@@ -1469,7 +1502,8 @@ void do_meteorite()
 
 void do_emeteorite()
 {
-   TRANSSKIP;
+   if (NOTACTIVE)
+      return;
    if(Flags.NoMeteorites) return;
    if (meteorite.active)
       if (wallclock() - meteorite.starttime > 0.3)
@@ -1513,10 +1547,10 @@ void do_wupdate()
 {
    if(!Isdesktop) return;
    if(Flags.NoKeepSWin) return;
-   int i;
-   i = GetCurrentWorkspace();
-   if(i>=0) 
-      CWorkSpace = i;
+   long r;
+   r = GetCurrentWorkspace();
+   if(r>=0) 
+      CWorkSpace = r;
    else
    {
       Flags.Done = 1;
@@ -1551,7 +1585,9 @@ void do_wupdate()
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
       if (winfo->ws)
+      {
 	 TransWorkSpace = winfo->ws;
+      }
    }
 
    UpdateWindows();
@@ -2809,6 +2845,7 @@ int BlowOff()
 
 void InitFlakesPerSecond()
 {
+   P("snowflakesfactor: %d\n",Flags.SnowFlakesFactor);
    FlakesPerSecond = SnowWinWidth*0.01*Flags.SnowFlakesFactor*
       0.001*FLAKES_PER_SEC_PER_PIXEL*SnowSpeedFactor;
 }
@@ -2973,7 +3010,8 @@ int DetermineWindow()
       else
       {
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 char *desktopsession = getenv("DESKTOP_SESSION");
+	 char *desktopsession;
+	 desktopsession = getenv("DESKTOP_SESSION");
 	 if (!desktopsession)
 	    desktopsession = getenv("XDG_SESSION_DESKTOP");
 	 if (!desktopsession)
@@ -2984,8 +3022,20 @@ int DetermineWindow()
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
 	    printf("Could not determine desktop session\n");
+	 
+	 if (DesktopSession)
+	    free(DesktopSession);
+	 DesktopSession = strdup(desktopsession);
+	 // convert DesktopSession to upper case
+	 char *a = DesktopSession;
+	 while (*a)
+	 {
+	    *a = toupper(*a);
+	    a++;
+	 }
+	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
 	 int lxdefound = 0;
-	 if (desktopsession != NULL && !strncmp(desktopsession,"LXDE",4))
+	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
 	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
 	    printf("LXDE session found, searching for window 'pcmanfm'\n");
@@ -3011,8 +3061,8 @@ int DetermineWindow()
 	       gtk_window_close(GTK_WINDOW(GtkWin));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
-	    create_transparent_window(Flags.FullScreen, Flags.BelowAll,
-		  &SnowWin, &SnowWinName, &GtkWin);
+	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
+		  &SnowWin, &SnowWinName, &GtkWin,w,h);
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
 	    XGetGeometry(display,SnowWin,&root,
@@ -3040,7 +3090,8 @@ int DetermineWindow()
    if (Flags.Desktop)
       Isdesktop = 1;
    // P("Isdesktop: %d\n",Isdesktop);
-   if(Isdesktop) CWorkSpace = GetCurrentWorkspace();
+   if(Isdesktop) 
+      CWorkSpace = GetCurrentWorkspace();
    if (CWorkSpace < 0)
       return 0;
    InitDisplayDimensions();

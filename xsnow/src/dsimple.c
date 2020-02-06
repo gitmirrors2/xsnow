@@ -47,6 +47,7 @@
 
 */
 
+//static int      screen = 0;
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -84,7 +85,6 @@ static void usage()
 /* This stuff is defined in the calling program by just_display.h */
 const char *program_name = "unknown_program";
 Display *dpy = NULL;
-int      screen = 0;
 
 /*
  * Get_Display_Name (argc, argv) Look for -display, -d, or host:dpy (obselete)

@@ -18,7 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 SUBDIRS = Pixmaps
-gamesdir = $(prefix)/games
+
+gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
 xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS)

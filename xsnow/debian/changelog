@@ -1,8 +1,9 @@
-xsnow (1:2.0.13-1) unstable; urgency=low
+xsnow (1:2.0.16-1) unstable; urgency=low
 
   * New upstream release
+  * Changed Standards-Version: 4.5.0
 
- -- Willem Vermin <wvermin@gmail.com>  Sat, 19 Oct 2019 12:30:25 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Thu, 06 Feb 2020 13:51:52 +0100
 
 xsnow (1:2.0.9-1) unstable; urgency=low
 

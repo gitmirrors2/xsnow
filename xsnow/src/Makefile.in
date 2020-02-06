@@ -552,7 +552,7 @@ top_srcdir = @top_srcdir@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 SUBDIRS = Pixmaps
-gamesdir = $(prefix)/games
+gamesdir = $(exec_prefix)/games
 xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS)
 xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \

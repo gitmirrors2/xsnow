@@ -43,6 +43,7 @@
 // following flags are written to the config file and
 // are part of the ui
 #define DOIT  \
+   DOIT_I(AllWorkspaces) \
    DOIT_I(BelowAll) \
    DOIT_I(BlowOffFactor)  \
    DOIT_I(CpuLoad)  \

@@ -25,6 +25,7 @@
 
 #define SOMENUMBER 42
 
+#define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 100

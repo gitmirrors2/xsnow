@@ -154,7 +154,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="snow-intensity-adjustment">
-    <property name="lower">5</property>
+    <property name="lower">1</property>
     <property name="upper">200</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -738,6 +738,25 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="left_attach">1</property>
                 <property name="top_attach">17</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLinkButton" id="donate-button">
+                <property name="label" translatable="yes">Donate</property>
+                <property name="name">donate</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
+maintainer of xsnow, here is a paypal link.</property>
+                <property name="uri">https://paypal.me/wvermin</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">19</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -2973,25 +2992,25 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-fullscreen">
-                    <property name="label" translatable="yes">Fullscreen</property>
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <signal name="toggled" handler="button_fullscreen" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">cpu
+ load</property>
+                    <property name="width_chars">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="general-below">
-                    <property name="label" translatable="yes">Below</property>
+                    <property name="label" translatable="yes">Below
+windows</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3003,20 +3022,46 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkToggleButton" id="general-fullscreen">
+                    <property name="label" translatable="yes">Full
+screen</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">cpu load</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_fullscreen" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="pack_type">end</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="general-allworkspaces">
+                    <property name="label" translatable="yes">Snow on all
+desktops</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_allworkspaces" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

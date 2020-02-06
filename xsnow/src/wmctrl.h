@@ -24,14 +24,15 @@
 typedef struct WinInfo
 {
    Window id;
-   int ws;                // workspace
+   long ws;               // workspace
    int x,y;               // x,y coordinates
    unsigned int w,h;      // width, height
    unsigned int sticky:1; // visible on all workspaces
 
 } WinInfo;
 
-extern int GetCurrentWorkspace();
+extern long GetCurrentWorkspace();
+extern long GetWorkspace(Window window);
 extern int GetWindows(WinInfo **w, int *nw);
 extern int FindWindowWithName(char* needle, Window *win, char **name);
 extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);
