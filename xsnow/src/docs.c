@@ -50,7 +50,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2019\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2020\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");

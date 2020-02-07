@@ -78,53 +78,6 @@ long GetCurrentWorkspace()
    return r;
 }
 
-long GetCurrentWorkspace1()
-{
-   Atom atom, type;
-   int format;
-   unsigned long nitems,b;
-   unsigned char *properties = 0;
-   long r;
-   atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
-   XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
-	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
-   if(type != XA_CARDINAL)
-   {
-      //printf("%d: nog eens ...\n",__LINE__);
-      if(properties) XFree(properties);
-      atom = XInternAtom(display,"_WIN_WORKSPACE",False);
-      XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
-	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
-   }
-   if(type != XA_CARDINAL)
-      r = -1;
-   else
-      r = *(long *)properties;
-   if(properties) XFree(properties);
-   // in compiz, we need to do a bit different
-   // in compiz: r will be 0, let us check if the following works:
-   if (r == 0)
-   {
-      properties = 0;
-      atom = XInternAtom(display,"_NET_DESKTOP_VIEWPORT",False);
-      XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 2, False, 
-	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
-      if (type != XA_CARDINAL || nitems != 2)
-      {
-	 // so, probably it is not compiz, let r as it is
-      }
-      else
-      {
-	 // we have the x-y coordinates of the workspace, we hussle this
-	 // into one long number:
-	 r = ((long *)properties)[0]+(((long *)properties)[1]<<16);
-      }
-      if(properties) XFree(properties);
-   }
-   //printf("TD: wmctrl: %d: %ld %#lx\n",__LINE__,nitems,r);
-
-   return r;
-}
 
 int GetWindows(WinInfo **windows, int *nwin)
 {

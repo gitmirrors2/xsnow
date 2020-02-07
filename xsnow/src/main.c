@@ -315,7 +315,6 @@ static void Thanks(void)
 int main(int argc, char *argv[])
 {
    int i;
-   PrintVersion();
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
@@ -325,15 +324,17 @@ int main(int argc, char *argv[])
    int rc = HandleFlags(argc, argv);
    switch(rc)
    {
-      case -1:
+      case -1:   // wrong flag
+	 PrintVersion();
 	 Thanks();
 	 return 1;
 	 break;
-      case 1:
+      case 1:    // manpage or help
 	 Thanks();
 	 return 0;
 	 break;
       default:
+	 PrintVersion();
 	 break;
    }
    gtk_init(&argc, &argv);
@@ -1052,7 +1053,7 @@ void DrawFallen(FallenSnow *fsnow)
 	    {
 	       // determine front of Santa in fsnow
 	       int xfront = SantaX+SantaWidth - fsnow->x;
-	       // determine back of Santa in fsnow, Santa can move backwards in srong wind
+	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
 	       int xback = xfront - SantaWidth;
 	       const int clearing = 10;
 	       float vy = -1.5*ActualSantaSpeed; 
@@ -1101,7 +1102,8 @@ void CleanFallen(Window id)
 
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
-   if(fsnow->clean) return;
+   if(fsnow->clean) 
+      return;
    int x = fsnow->x;
    int y = fsnow->y - fsnow->h;
    if(UseAlpha|Flags.UseBG)
@@ -1109,7 +1111,9 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 	    w, fsnow->h+MaxSnowFlakeHeight);
    else
       XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
-   fsnow->clean = 1;
+   if(xstart <= 0 && w >= fsnow->w)
+      fsnow->clean = 1;
+   //R("fsnow->clean: %d\n",fsnow->clean);
 }
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
@@ -1700,7 +1704,7 @@ void UpdateWindows()
 	    //P("%#lx no change width %d %d %d %d %d %d\n",f->id,f->x,f->y,w->x,w->y,f->w,RunCounter);
 	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
 	    {
-	       //P("window moved\n");
+	       //R("window moved %d\n",RunCounter);
 	       CleanFallenArea(f,0,f->w);
 	       f->x = w->x + Flags.OffsetX;
 	       f->y = w->y + Flags.OffsetY;
@@ -3022,7 +3026,7 @@ int DetermineWindow()
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
 	    printf("Could not determine desktop session\n");
-	 
+
 	 if (DesktopSession)
 	    free(DesktopSession);
 	 DesktopSession = strdup(desktopsession);
