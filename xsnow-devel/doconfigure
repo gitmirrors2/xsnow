@@ -1,0 +1,2 @@
+#!/bin/bash
+CFLAGS='-fno-common -O0 -Wall -Wpedantic -g' ./configure
