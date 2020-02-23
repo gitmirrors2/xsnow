@@ -21,6 +21,7 @@
 #ifndef TRANSPARENT_H
 #define TRANSPARENT_H
 #include <gtk/gtk.h>
+#include <X11/Xlib.h>
 void create_transparent_window(int fullscreen, int below, int allworkspaces,
       Window *w, char **name, GtkWidget **gtkwin,unsigned int width, unsigned int height);
 #endif
