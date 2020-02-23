@@ -1,6 +1,6 @@
 version 2.0.18
 	main.c: test if WAYLAND_DISPLAY is set before setting GDK_BACKEND
-	main.c: re-establish SnowWin after changing display settings 
+	main.c: restart after changing display settings 
 	main.c: no Thanks after man page or help
 	docs.c: minor adjustments
 version 2.0.17

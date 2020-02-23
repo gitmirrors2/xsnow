@@ -77,11 +77,11 @@
 #endif
 //#define DEBUG
 #ifdef DEBUG
-#define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout)
+#define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
 #else
 #define P(...)
 #endif
-#define R(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout)
+#define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
 
 // from flags.h
 FLAGS Flags;
@@ -120,6 +120,8 @@ static int        OnTrees = 0;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
+static int      Argc;
+static char**   Argv;
 
 // tree stuff
 static int      NTrees;                       // actual number of trees
@@ -319,7 +321,13 @@ static void Thanks(void)
 
 int main(int argc, char *argv[])
 {
+   Argc = argc;
+   Argv = argv;
    int i;
+   for (i=0; i<Argc; i++)
+   {
+      R("flag%d: %s\n",i,Argv[i]);
+   }
    InitFlags();
    int rc = HandleFlags(argc, argv);
    switch(rc)
@@ -1231,10 +1239,25 @@ void do_event()
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
+   // If the size has been changed, we restart the program
    if (Isdesktop)
    {
-      int          x,y;
-      unsigned int w,h,b,d;
+      {
+	 unsigned int w,h;
+	 Display* display = XOpenDisplay(Flags.DisplayName);
+	 Screen* screen   = DefaultScreenOfDisplay(display);
+	 w = WidthOfScreen(screen);
+	 h = HeightOfScreen(screen);
+	 P("width height: %d %d\n",w,h);
+	 if(Wroot != w || Hroot != h)
+	 {
+	    sleep(1);
+	    extern char** environ;
+	    execve(Argv[0],Argv,environ);
+	 }
+	 XCloseDisplay(display);
+      }
+#if 0
       Window       root;
       XGetGeometry(display,RootWindow,&root,
 	    &x, &y, &w, &h, &b, &d);
@@ -1245,10 +1268,12 @@ void do_event()
 	 sleep(1); // sleep is needed to let the displays settle
 	 //           without it, snowing is done in wrong places, especially 
 	 //           when switching to 'mirror'
+	 R("Calling execve:\n");
 	 DetermineWindow();
 	 RestartDisplay();
 	 P("new geometry: %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
       }
+#endif
    }
    //if(UseAlpha) return; we are tempted, but if the event loop is escaped,
    // a memory leak appears

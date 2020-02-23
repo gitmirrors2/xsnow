@@ -93,7 +93,7 @@ void docs_usage(int man)
    manout("-vintage"                  ,"Run xsnow in vintage settings.");
    manout("-defaults"                 ,"Do not read config file (see FILES).");
    manout("-noconfig"                 ,"Do not read or write config file (see FILES).");
-   manout("-nomenu"                   ,"Do not how interactive menu.");
+   manout("-nomenu"                   ,"Do not show interactive menu.");
    manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
