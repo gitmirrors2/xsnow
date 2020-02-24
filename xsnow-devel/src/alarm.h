@@ -23,6 +23,7 @@
 #define ALARMALL \
 ALARM(blowoff,        0.50          )  /* time between blow snow off windows */ \
 ALARM(clean,          1.00          )  /* time between cleaning desktop */ \
+ALARM(displaychanged, 1.00          )  /* time between checks if display has changed */ \
 ALARM(emeteorite,     0.20          )  /* time between meteorites erasures */ \
 ALARM(event,          0.01          )  /* time between checking events */ \
 ALARM(fallen,         0.15 * factor )  /* time between redraw fallen snow */ \

@@ -3,6 +3,8 @@ version 2.0.18
 	main.c: restart after changing display settings 
 	main.c: no Thanks after man page or help
 	docs.c: minor adjustments
+	debug.h: added
+	main.c, flags.c: do not assume getenv("HOME") works as expected.
 version 2.0.17
 	main.c: The output of PrintVersion() appeared in the top of the man page.
 	   Corrected this.

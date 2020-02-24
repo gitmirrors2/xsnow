@@ -39,12 +39,7 @@
 #undef DEBUG
 #endif
 //#define DEBUG
-
-#ifdef DEBUG
-#define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
-#else
-#define P(...)
-#endif
+#include "debug.h"
 
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
 static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);

@@ -76,12 +76,7 @@
 #undef DEBUG
 #endif
 //#define DEBUG
-#ifdef DEBUG
-#define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
-#else
-#define P(...)
-#endif
-#define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
+#include "debug.h"
 
 // from flags.h
 FLAGS Flags;
@@ -192,6 +187,7 @@ static int          Xroot;
 static int          Yroot;
 static unsigned int Wroot;
 static unsigned int Hroot;
+static int          DoRestart = 0;
 
 /* Wind stuff */
 // Wind = 0: no wind
@@ -326,7 +322,7 @@ int main(int argc, char *argv[])
    int i;
    for (i=0; i<Argc; i++)
    {
-      R("flag%d: %s\n",i,Argv[i]);
+      P("flag%d: %s\n",i,Argv[i]);
    }
    InitFlags();
    int rc = HandleFlags(argc, argv);
@@ -581,6 +577,7 @@ int main(int argc, char *argv[])
       if (Flags.StopAfter > 0 && TNow - TStart > Flags.StopAfter) Flags.Done = 1;
    }
 
+
    if(TreeXpm) XpmFree(TreeXpm);
    while (FirstFlake->next)
    {
@@ -617,11 +614,17 @@ int main(int argc, char *argv[])
       }
    }
 
-   Thanks();
    if(star) free(star);
    if(Tree) free(Tree);
+   if (DoRestart)
+   {
+      sleep(2);
+      extern char** environ;
+      execve(Argv[0],Argv,environ);
+   }
+   Thanks();
    return 0;
-}		/* End of the snow */
+}		/* End of snowing */
 /* ------------------------------------------------------------------ */ 
 /*
  * do nothing if current workspace is not to be updated
@@ -1235,46 +1238,49 @@ void do_usanta() {
    UpdateSanta(); 
 }
 
-void do_event()
+void do_displaychanged()
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
    // If the size has been changed, we restart the program
-   if (Isdesktop)
+   if (!Isdesktop)
+      return;
    {
+      unsigned int w,h;
+      Display* display = XOpenDisplay(Flags.DisplayName);
+      Screen* screen   = DefaultScreenOfDisplay(display);
+      w = WidthOfScreen(screen);
+      h = HeightOfScreen(screen);
+      P("width height: %d %d\n",w,h);
+      if(Wroot != w || Hroot != h)
       {
-	 unsigned int w,h;
-	 Display* display = XOpenDisplay(Flags.DisplayName);
-	 Screen* screen   = DefaultScreenOfDisplay(display);
-	 w = WidthOfScreen(screen);
-	 h = HeightOfScreen(screen);
-	 P("width height: %d %d\n",w,h);
-	 if(Wroot != w || Hroot != h)
-	 {
-	    sleep(1);
-	    extern char** environ;
-	    execve(Argv[0],Argv,environ);
-	 }
-	 XCloseDisplay(display);
+	 DoRestart = 1;
+	 Flags.Done = 1;
+	 printf("Restart due to change of display settings...\n");
       }
-#if 0
-      Window       root;
-      XGetGeometry(display,RootWindow,&root,
-	    &x, &y, &w, &h, &b, &d);
-      if(Xroot != x || Yroot != y || Wroot != w || Hroot != h)
-      {
-	 // the rootwindow has changed, adapt SnowWin
-	 P("Calling RestartDisplay\n");
-	 sleep(1); // sleep is needed to let the displays settle
-	 //           without it, snowing is done in wrong places, especially 
-	 //           when switching to 'mirror'
-	 R("Calling execve:\n");
-	 DetermineWindow();
-	 RestartDisplay();
-	 P("new geometry: %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
-      }
-#endif
+      XCloseDisplay(display);
    }
+#if 0
+   Window       root;
+   XGetGeometry(display,RootWindow,&root,
+	 &x, &y, &w, &h, &b, &d);
+   if(Xroot != x || Yroot != y || Wroot != w || Hroot != h)
+   {
+      // the rootwindow has changed, adapt SnowWin
+      P("Calling RestartDisplay\n");
+      sleep(1); // sleep is needed to let the displays settle
+      //           without it, snowing is done in wrong places, especially 
+      //           when switching to 'mirror'
+      R("Calling execve:\n");
+      DetermineWindow();
+      RestartDisplay();
+      P("new geometry: %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
+   }
+#endif
+}
+
+void do_event()
+{
    //if(UseAlpha) return; we are tempted, but if the event loop is escaped,
    // a memory leak appears
    XEvent ev;
@@ -2761,8 +2767,9 @@ void InitSantaPixmaps()
    int ok = 1;
    for (i=0; i<PIXINANIMATION; i++)
    {
+      path[i] = 0;
       f = HomeOpen(filenames[i],"r",&path[i]);
-      if(!f){ ok = 0; free(path[i]); break; }
+      if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
    }
    if (ok)
@@ -2865,6 +2872,7 @@ void InitTreePixmaps()
 	 exit(1);
       }
       fclose(f);
+      free(path);
    }
    else
    {
@@ -2881,7 +2889,6 @@ void InitTreePixmaps()
       }
       ReInitTree0();
    }
-   free(path);
    OnTrees = 0;
 }
 
@@ -2915,7 +2922,10 @@ void ReInitTree0()
 
 FILE *HomeOpen(char *file,char *mode, char**path)
 {
-   char *home = strdup(getenv("HOME"));
+   char *h = getenv("HOME");
+   if (h == 0)
+      return 0;
+   char *home = strdup(h);
    (*path) = malloc(strlen(home)+strlen(file)+2);
    strcpy(*path,home);
    strcat(*path,"/");
