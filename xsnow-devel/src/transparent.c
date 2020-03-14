@@ -106,6 +106,7 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    if (allworkspaces)
       gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
+
    usleep(200000);  // seems to be necessary with nvidia
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
