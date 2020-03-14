@@ -17,11 +17,13 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
- */
-#ifndef TRANSPARENT_H
-#define TRANSPARENT_H
-#include <gtk/gtk.h>
-#include <X11/Xlib.h>
-void create_transparent_window(int fullscreen, int below, int allworkspaces,
-      Window *w, char **name, GtkWidget **gtkwin,unsigned int width, unsigned int height);
+*/
+#ifndef DEBUG_H
+#define DEBUG_H
+#ifdef DEBUG
+#define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
+#else
+#define P(...)
+#endif
+#define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
 #endif

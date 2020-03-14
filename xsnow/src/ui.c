@@ -39,11 +39,7 @@
 #endif
 #undef DEBUG
 
-#ifdef DEBUG
-#define P(...) g_printf ("%s: %d: ",__FILE__,__LINE__);g_printf(__VA_ARGS__)
-#else
-#define P(...) 
-#endif
+#include "debug.h"
 
 #define PREFIX_SANTA   "santa-"
 #define PREFIX_TREE    "tree-"

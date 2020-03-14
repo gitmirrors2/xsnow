@@ -76,12 +76,7 @@
 #undef DEBUG
 #endif
 //#define DEBUG
-#ifdef DEBUG
-#define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
-#else
-#define P(...)
-#endif
-#define R(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
+#include "debug.h"
 
 // from flags.h
 FLAGS Flags;
@@ -120,6 +115,8 @@ static int        OnTrees = 0;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
+static int      Argc;
+static char**   Argv;
 
 // tree stuff
 static int      NTrees;                       // actual number of trees
@@ -178,14 +175,19 @@ enum{
 #undef ALARM
 
 // windows stuff
-static int     NWindows;
-static long    CWorkSpace = 0;
-static Window  RootWindow;
-static char    *SnowWinName = 0;
-static WinInfo *Windows = 0;
-static int     Exposures;
-static long    TransWorkSpace = -1;  // workspace on which transparent window is placed
-static int     UsingTrans     = 0;   // using transparent window or not
+static int          NWindows;
+static long         CWorkSpace = 0;
+static Window       RootWindow;
+static char         *SnowWinName = 0;
+static WinInfo      *Windows = 0;
+static int          Exposures;
+static long         TransWorkSpace = -1;  // workspace on which transparent window is placed
+static int          UsingTrans     = 0;   // using transparent window or not
+static int          Xroot;
+static int          Yroot;
+static unsigned int Wroot;
+static unsigned int Hroot;
+static int          DoRestart = 0;
 
 /* Wind stuff */
 // Wind = 0: no wind
@@ -279,6 +281,7 @@ static void   InitDisplayDimensions(void);
 static void   InitFallenSnow(void);
 static void   InitFlakesPerSecond(void);
 static void   ReInitTree0(void);
+static void   RestartDisplay(void);
 static void   InitFlake(Snow *flake);
 static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
@@ -287,6 +290,7 @@ static void   InitSnowColor(void);
 static void   InitStars(void);
 static void   InitTreePixmaps(void);
 static void   KDESetBG1(const char *color);
+static void   MicroSleep(long usec);
 static int    RandInt(int maxVal);
 static void   RedrawTrees(void);
 static Region RegionCreateRectangle(int x, int y, int w, int h);
@@ -302,7 +306,6 @@ static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 static void   UpdateSanta(void);
 static void   UpdateSnowFlake(Snow *flake);
 static void   UpdateWindows(void);
-static void   MicroSleep(long usec);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window XWinInfo(char **name);
 
@@ -314,12 +317,13 @@ static void Thanks(void)
 
 int main(int argc, char *argv[])
 {
+   Argc = argc;
+   Argv = argv;
    int i;
-   // Circumvent wayland problems:before starting gtk: make sure that the 
-   // gdk-x11 backend is used.
-   // I would prefer if this could be arranged in argc-argv, but 
-   // it seems that it cannot be done there.
-   setenv("GDK_BACKEND","x11",1);
+   for (i=0; i<Argc; i++)
+   {
+      P("flag%d: %s\n",i,Argv[i]);
+   }
    InitFlags();
    int rc = HandleFlags(argc, argv);
    switch(rc)
@@ -330,12 +334,21 @@ int main(int argc, char *argv[])
 	 return 1;
 	 break;
       case 1:    // manpage or help
-	 Thanks();
 	 return 0;
 	 break;
       default:
 	 PrintVersion();
 	 break;
+   }
+   // Circumvent wayland problems:before starting gtk: make sure that the 
+   // gdk-x11 backend is used.
+   // I would prefer if this could be arranged in argc-argv, but 
+   // it seems that it cannot be done there.
+
+   if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
+   {
+      printf("Detected Wayland desktop\n");
+      setenv("GDK_BACKEND","x11",1);
    }
    gtk_init(&argc, &argv);
    if (!Flags.NoConfig)
@@ -564,6 +577,7 @@ int main(int argc, char *argv[])
       if (Flags.StopAfter > 0 && TNow - TStart > Flags.StopAfter) Flags.Done = 1;
    }
 
+
    if(TreeXpm) XpmFree(TreeXpm);
    while (FirstFlake->next)
    {
@@ -600,11 +614,17 @@ int main(int argc, char *argv[])
       }
    }
 
-   Thanks();
    if(star) free(star);
    if(Tree) free(Tree);
+   if (DoRestart)
+   {
+      sleep(2);
+      extern char** environ;
+      execve(Argv[0],Argv,environ);
+   }
+   Thanks();
    return 0;
-}		/* End of the snow */
+}		/* End of snowing */
 /* ------------------------------------------------------------------ */ 
 /*
  * do nothing if current workspace is not to be updated
@@ -1218,6 +1238,47 @@ void do_usanta() {
    UpdateSanta(); 
 }
 
+void do_displaychanged()
+{
+   // if we are snowing in the desktop, we check if the size has changed,
+   // this can happen after changing of the displays settings
+   // If the size has been changed, we restart the program
+   if (!Isdesktop)
+      return;
+   {
+      unsigned int w,h;
+      Display* display = XOpenDisplay(Flags.DisplayName);
+      Screen* screen   = DefaultScreenOfDisplay(display);
+      w = WidthOfScreen(screen);
+      h = HeightOfScreen(screen);
+      P("width height: %d %d\n",w,h);
+      if(Wroot != w || Hroot != h)
+      {
+	 DoRestart = 1;
+	 Flags.Done = 1;
+	 printf("Restart due to change of display settings...\n");
+      }
+      XCloseDisplay(display);
+   }
+#if 0
+   Window       root;
+   XGetGeometry(display,RootWindow,&root,
+	 &x, &y, &w, &h, &b, &d);
+   if(Xroot != x || Yroot != y || Wroot != w || Hroot != h)
+   {
+      // the rootwindow has changed, adapt SnowWin
+      P("Calling RestartDisplay\n");
+      sleep(1); // sleep is needed to let the displays settle
+      //           without it, snowing is done in wrong places, especially 
+      //           when switching to 'mirror'
+      R("Calling execve:\n");
+      DetermineWindow();
+      RestartDisplay();
+      P("new geometry: %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
+   }
+#endif
+}
+
 void do_event()
 {
    //if(UseAlpha) return; we are tempted, but if the event loop is escaped,
@@ -1247,27 +1308,53 @@ void do_event()
 		      ev.xconfigure.height != SnowWinHeight))
 	       {
 		  //P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
-		  InitDisplayDimensions();
-		  InitFallenSnow();
-		  InitStars();
-		  if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
-		  {
+		  /*
+		     InitDisplayDimensions();
+		     InitFallenSnow();
+		     InitStars();
+		     if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
+		     {
 		     XDestroyRegion(SnowOnTreesRegion);
 		     SnowOnTreesRegion = XCreateRegion();
-		  }
-		  if(!Flags.NoTrees)
-		  {
+		     }
+		     if(!Flags.NoTrees)
+		     {
 		     XDestroyRegion(TreeRegion);
 		     TreeRegion = XCreateRegion();
 		     InitBaumKoordinaten();
-		  }
-		  NoSnowArea_static = TreeRegion;
-		  XClearArea(display, SnowWin, 0,0,0,0,Exposures);
+		     }
+		     NoSnowArea_static = TreeRegion;
+		     XClearArea(display, SnowWin, 0,0,0,0,Exposures);
+		     */
+		  P("Calling RestartDisplay\n");
+		  RestartDisplay();
 	       }
 	       break;
 	 } 
       }
    }  
+}
+
+void RestartDisplay()
+{
+   P("Calling InitDisplayDimensions\n");
+   InitDisplayDimensions();
+   InitFallenSnow();
+   InitStars();
+   if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
+   {
+      XDestroyRegion(SnowOnTreesRegion);
+      SnowOnTreesRegion = XCreateRegion();
+   }
+   if(!Flags.NoTrees)
+   {
+      XDestroyRegion(TreeRegion);
+      TreeRegion = XCreateRegion();
+      InitBaumKoordinaten();
+   }
+   NoSnowArea_static = TreeRegion;
+   XClearArea(display, SnowWin, 0,0,0,0,Exposures);
+
 }
 
 void do_genflakes()
@@ -2610,10 +2697,14 @@ void InitDisplayDimensions()
    Window root;
    XGetGeometry(display,RootWindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
-   // P("%d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
+   Xroot = xroot;
+   Yroot = yroot;
+   Wroot = wroot;
+   Hroot = hroot;
+   P("InitDisplayDimensions: %d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
    XGetGeometry(display,SnowWin,&root,
 	 &x, &y, &w, &h, &b, &d);
-   // P("%d %d %d %d %d %d\n",x,y,w,h,b,d);
+   P("InitDisplayDimensions: %d %d %d %d %d %d\n",x,y,w,h,b,d);
    SnowWinX           = x;
    SnowWinY           = y;
    SnowWinWidth       = w;
@@ -2676,8 +2767,9 @@ void InitSantaPixmaps()
    int ok = 1;
    for (i=0; i<PIXINANIMATION; i++)
    {
+      path[i] = 0;
       f = HomeOpen(filenames[i],"r",&path[i]);
-      if(!f){ ok = 0; free(path[i]); break; }
+      if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
    }
    if (ok)
@@ -2780,6 +2872,7 @@ void InitTreePixmaps()
 	 exit(1);
       }
       fclose(f);
+      free(path);
    }
    else
    {
@@ -2796,7 +2889,6 @@ void InitTreePixmaps()
       }
       ReInitTree0();
    }
-   free(path);
    OnTrees = 0;
 }
 
@@ -2830,7 +2922,10 @@ void ReInitTree0()
 
 FILE *HomeOpen(char *file,char *mode, char**path)
 {
-   char *home = strdup(getenv("HOME"));
+   char *h = getenv("HOME");
+   if (h == 0)
+      return 0;
+   char *home = strdup(h);
    (*path) = malloc(strlen(home)+strlen(file)+2);
    strcpy(*path,home);
    strcat(*path,"/");
@@ -3060,6 +3155,7 @@ int DetermineWindow()
 	    XGetGeometry(display,RootWindow,&root,
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
+
 	    if (GtkWin)
 	    {
 	       gtk_window_close(GTK_WINDOW(GtkWin));
@@ -3067,6 +3163,7 @@ int DetermineWindow()
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &SnowWin, &SnowWinName, &GtkWin,w,h);
+
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
 	    XGetGeometry(display,SnowWin,&root,

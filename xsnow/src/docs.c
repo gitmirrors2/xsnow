@@ -93,7 +93,7 @@ void docs_usage(int man)
    manout("-vintage"                  ,"Run xsnow in vintage settings.");
    manout("-defaults"                 ,"Do not read config file (see FILES).");
    manout("-noconfig"                 ,"Do not read or write config file (see FILES).");
-   manout("-nomenu"                   ,"Do not how interactive menu.");
+   manout("-nomenu"                   ,"Do not show interactive menu.");
    manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
@@ -265,23 +265,12 @@ void docs_usage(int man)
    manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
    manout(".","- Xsnow stresses the Xserver too much.");
    manout(".","- The -xwininfo and -id flags do not function properly.");
-   manout(".","- Xsnow generates race conditions, e.g.: sometimes fallen snow");
-   manout(" ","  is not removed when it should be.");
    manout(".","- Xsnow does run in Wayland, but will not snow on all windows.");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
-
-
-   if(doman)
-   {
-      printf(".PP\n"); printf(".SS \"SEE ALSO\n");
-      printf(".br\n");
-   }
-   else
-   {
-      printf("\n   SEE ALSO\n\n");
-   }
-   manout(" ","man xcolors(1)");
+   manout(".","- Xsnow tries to adapt its snowing window if the display");
+   manout(" ","  settings are changed while xsnow is running.");
+   manout(" ","  This does not function always well.");
 
    if(doman)
    {

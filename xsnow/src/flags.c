@@ -30,6 +30,7 @@
 #include "version.h"
 #include "doit.h"
 
+#include "debug.h"
 static void ReadFlags(void);
 static void SetDefaultFlags(void);
 
@@ -52,7 +53,8 @@ void PrintVersion()
 }
 
 
-char *FlagsFile = 0;
+static char *FlagsFile          = 0;
+static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
@@ -274,12 +276,19 @@ static xmlXPathObjectPtr getnodeset (xmlDocPtr doc, xmlChar *xpath){
 
 static void makeflagsfile()
 {
-   if (FlagsFile != 0) return;
-   FlagsFile = strdup(getenv("HOME"));
+   if (FlagsFile != 0 || FlagsFileAvailable == 0) return;
+   char *h = getenv("HOME");
+   if (h == 0)
+   {
+      FlagsFileAvailable = 0;
+      printf("Warning: cannot create or read $HOME/%s\n",FLAGSFILE);
+      return;
+   }
+   FlagsFile = strdup(h);
    FlagsFile = realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
    strcat(FlagsFile,"/");
    strcat(FlagsFile,FLAGSFILE);
-   //printf("%d: FlagsFile: %s\n",__LINE__,FlagsFile);
+   P("FlagsFile: %s\n",FlagsFile);
 }
 
 void ReadFlags()
@@ -290,6 +299,8 @@ void ReadFlags()
    long int intval;
    xmlDocPtr doc;
    makeflagsfile();
+   if (!FlagsFileAvailable)
+      return;
    doc = xmlParseFile(FlagsFile);
 #define DOIT_I(x) \
    /* printf("%d:DOIT_I:%s\n",__LINE__,#x); */ \
@@ -355,6 +366,8 @@ void WriteFlags()
 #undef DOIT_S
 
    makeflagsfile();
+   if (!FlagsFileAvailable) 
+      return;
    xmlSaveFormatFileEnc(FlagsFile , doc, "UTF-8", 1);
    xmlFreeDoc(doc);
 }

@@ -38,12 +38,8 @@
 #ifdef DEBUG
 #undef DEBUG
 #endif
-
-#ifdef DEBUG
-#define P(...) printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__)
-#else
-#define P(...)
-#endif
+//#define DEBUG
+#include "debug.h"
 
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
 static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
@@ -79,9 +75,9 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       return;
    }
 
+   gtk_widget_show_all(*gtkwin);
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));  // problems with dock
-   gtk_widget_show_all(*gtkwin);
 
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
    // keep xsnow visible after 'show desktop', and as a bonus, keep
@@ -103,13 +99,14 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window),
 	 cairo_region, 0,0);
    cairo_region_destroy(cairo_region);
+   if (fullscreen)
+      gtk_window_fullscreen(GTK_WINDOW(*gtkwin));
    gdk_window_show                 (GDK_WINDOW(gdk_window));
    // xsnow visible on all workspaces:
    if (allworkspaces)
       gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
-   if (fullscreen)
-      gtk_window_fullscreen(GTK_WINDOW(*gtkwin));
+
    usleep(200000);  // seems to be necessary with nvidia
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
