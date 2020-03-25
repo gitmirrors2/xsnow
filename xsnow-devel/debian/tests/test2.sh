@@ -20,7 +20,7 @@
 #-#
 
 XSNOW=xsnow
-if [ $(basename `pwd`) = "src" ]; then
+if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
 if [ "$DISPLAY" ] ; then
