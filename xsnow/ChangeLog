@@ -1,3 +1,5 @@
+version 2.0.19
+	debian/tests/control: removed test2.sh
 version 2.0.18
 	main.c: test if WAYLAND_DISPLAY is set before setting GDK_BACKEND
 	main.c: restart after changing display settings 

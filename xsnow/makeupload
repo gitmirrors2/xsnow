@@ -27,7 +27,7 @@ rm    xsnow_$oldversion-*.dsc
 rm    xsnow_$oldversion.orig.tar.gz
 rm -r xsnow-$newversion
 rm -r xsnow-$newversion.orig
-debsign *.changes
+debsign -k8D232D69D0889859B1E7732ADC4874F4A7D3496F *.changes
 echo to check: dput -s mentors $uploaddir/*.changes
 echo to upload: dput mentors $uploaddir/*.changes
 echo "$0 done"
