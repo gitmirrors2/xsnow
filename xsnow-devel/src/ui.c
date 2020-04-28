@@ -902,7 +902,7 @@ void button_gnome()
    human_interaction = h;
 }
 
-void ui (int *argc, char **argv[])
+void ui(int *argc, char **argv[])
 {
 
    // gtk_init(argc, argv);
@@ -914,10 +914,12 @@ void ui (int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
-
+#if 0
    double t0 = wallclock();
    while (wallclock() - t0 < 1.0)
       gtk_main_iteration_do(0);
+#endif
+   gtk_main();
 }
 
 void ui_loop()
