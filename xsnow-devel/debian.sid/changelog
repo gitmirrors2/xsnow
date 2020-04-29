@@ -1,8 +1,8 @@
-xsnow (1:2.0.20~pre1-1) unstable; urgency=low
+xsnow (1:2.0.20~pre2-1) unstable; urgency=low
 
   * New upstream release
 
- -- Willem Vermin <wvermin@gmail.com>  Sat, 04 Apr 2020 16:49:16 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Wed, 29 Apr 2020 10:30:31 +0200
 
 xsnow (1:2.0.19-1) unstable; urgency=low
 

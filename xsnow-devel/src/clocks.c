@@ -21,9 +21,10 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <gtk/gtk.h>
 #include "clocks.h"
 
-double wallclock() 
+double wallcl() 
 { 
 	struct timeval toot;
 	double r;
@@ -31,5 +32,10 @@ double wallclock()
 	gettimeofday(&toot,0);
 	r=toot.tv_sec+0.000001*(double)toot.tv_usec;
 	return(r);
+}
+
+double wallclock()
+{
+   return (double)g_get_monotonic_time()*1.0e-6;
 }
 

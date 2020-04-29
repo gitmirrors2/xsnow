@@ -112,7 +112,7 @@ static int        MaxScrSnowDepth = 0;
 static int        OnTrees = 0;
 
 // miscellaneous
-char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019 also by Willem Vermin\n";
+char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
 static int      Argc;
 static char**   Argv;
@@ -1457,6 +1457,8 @@ int do_genflakes()
 
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
 
+   // needs local TNow
+   
    static double prevtime;
    static double Prevtime;
    static double sumdt;

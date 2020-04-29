@@ -73,5 +73,6 @@ snowtree.xpm \
 star.xbm \
 tannenbaum.xpm \
 tree-1_100px.xpm \
+polarbear.xpm \
 tree.xpm \
 xsnow.xpm 
