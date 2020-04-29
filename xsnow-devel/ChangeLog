@@ -2,6 +2,7 @@ version 2.0.20
 	replace timing loop with g_timeout_add()
 	add polarbear
 	use g_get_monotonic_time() for wallclock
+	give every snowflake its own g_timeout_add()
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18

@@ -21,35 +21,7 @@
 #ifndef SNOWFLAKES_H
 #define SNOWFLAKES_H
 
-#include <X11/Xlib.h>
-typedef struct Snow {
-   int w;                   // width
-   int h;                   // height
-   float rx;                // x position
-   float ry;                // y position
-   float vx;                // speed in x-direction, pixels/second
-   float vy;                // speed in y-direction, pixels/second
-   float m;                 // mass of flake
-   float ivy;               // initial speed in y direction
-   float wsens;             // wind dependency factor
-   unsigned int cyclic : 1; // 0: flake is not cyclic 
-   int whatFlake;           // snowflake index
-   struct Snow *prev;       // pointer to previous snow flake
-   struct Snow *next;       // pointer to next snow flake 
-} Snow;
 
-// Add snow flake before flake.
-// afterwards, *flake will point to the new flake,
-// return value is also this *flake
-extern Snow *addFlake(Snow *flake);
 
-// Create a snow flake, prev and next pointers set to 0
-extern Snow *createFlake();
-
-// delete flake, return value is flake->next
-extern Snow *delFlake(Snow *flake);
-
-// prints flakes, starting with flake
-extern int countSnow(Snow *flake,int print);
 #endif
 
