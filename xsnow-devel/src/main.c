@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -160,12 +160,13 @@ static MeteoMap meteorite;
 
 // timing stuff
 //static unsigned int RunCounter = 0;
-static double       *Prevtime = 0;
+//static double       *Prevtime = 0;
 static double       TotSleepTime = 0;
 //static double       TNow;
 static double       TStart;
 static double       factor;
 
+#if 0
 // define unique numbers for alarms:
 #define ALARM(x,y) alarm_ ## x,
 enum{
@@ -173,6 +174,7 @@ enum{
       LastAlarm
 };
 #undef ALARM
+#endif
 
 // windows stuff
 static int          NWindows;
@@ -246,9 +248,9 @@ static Region SnowOnTreesRegion;
 
 /* Forward decls */
 // declare actions for alarms:
-#define ALARM(x,y) static void do_ ## x(void);
+//#define ALARM(x,y) static void do_ ## x(void);
 //ALARMALL
-#undef ALARM
+//#undef ALARM
 //double Delay[LastAlarm];
 static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
 static int    BlowOff(void);
@@ -304,7 +306,7 @@ static void   SigHandler(int signum);
 static void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
 static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 static int    UpdateSanta(void);
-static void   UpdateSnowFlake(Snow *flake);
+static int   UpdateSnowFlake(Snow *flake);
 static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window XWinInfo(char **name);
@@ -315,39 +317,38 @@ static void Thanks(void)
    printf("\nThank you for using xsnow\n");
 }
 
-
-
-int do_blowoff();
-int do_clean();
-int do_displaychanged();
-int do_emeteorite();
-int do_event();
-int do_fallen();
-int do_fuse();
-int do_genflakes();
-int do_meteorite();
-int do_newwind();
-int do_santa();
-int do_santa1();
-int do_sfallen();
-int do_snow_on_trees();
-int do_snowflakes();
-int do_stars();
-int do_testing();
-int do_tree();
-int do_ui_check();
-int do_usanta();
-int do_ustars();
-int do_wind();
-int do_wupdate();
+static int do_blowoff();
+static int do_clean();
+static int do_displaychanged();
+static int do_emeteorite();
+static int do_event();
+static int do_fallen();
+static int do_fuse();
+static int do_genflakes();
+static int do_meteorite();
+static int do_newwind();
+static int do_santa();
+static int do_santa1();
+//static int do_sfallen();
+static int do_snow_on_trees();
+static int do_snowflakes();
+static int do_stars();
+static int do_testing();
+static int do_tree();
+static int do_ui_check();
+static int do_usanta();
+static int do_ustars();
+static int do_wind();
+static int do_wupdate();
 
 static int hellocounter=0;
-int hello()
+int hello(void *aap)
 {
-   printf("hello %d\n",hellocounter++);
+   printf("hello %d %s\n",hellocounter++,(char*)aap);
    return hellocounter < 10;
 }
 
+#define add_to_mainloop(x,y,p) g_timeout_add((int)1000*(x),(GSourceFunc)y,p)
 
 int main(int argc, char *argv[])
 {
@@ -540,15 +541,15 @@ int main(int argc, char *argv[])
    //	    ExposureMask|SubstructureNotifyMask|StructureNotifyMask);
 
    //double Alarm[LastAlarm];
-   Prevtime = malloc(sizeof(*Prevtime)*LastAlarm);
+   //Prevtime = malloc(sizeof(*Prevtime)*LastAlarm);
    //unsigned int counter[LastAlarm];
    //for(i=0; i<LastAlarm; i++) counter[i] = 0;
    //char *names[LastAlarm];
 
    // define names for alarms:
-#define ALARM(x,y) names[alarm_ ## x] = #x;
-   ALARMALL;
-#undef ALARM
+//#define ALARM(x,y) names[alarm_ ## x] = #x;
+//   ALARMALL;
+//#undef ALARM
 
    CreateAlarmDelays();
    //
@@ -563,33 +564,32 @@ int main(int argc, char *argv[])
 
    TStart = wallclock();
    //TNow = wallclock();
-   for(i=0; i<LastAlarm; i++) Prevtime[i] = wallclock();
+   //for(i=0; i<LastAlarm; i++) Prevtime[i] = wallclock();
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
    //
 
-   g_timeout_add((int)1000*time_blowoff,       do_blowoff       ,0);
-   g_timeout_add((int)1000*time_clean,         do_clean         ,0);
-   g_timeout_add((int)1000*time_displaychanged,do_displaychanged,0);
-   g_timeout_add((int)1000*time_emeteorite,    do_emeteorite    ,0);
-   g_timeout_add((int)1000*time_event,         do_event         ,0);
-   g_timeout_add((int)1000*time_fallen,        do_fallen        ,0);
-   g_timeout_add((int)1000*time_fuse,          do_fuse          ,0);
-   g_timeout_add((int)1000*time_genflakes,     do_genflakes     ,0);
-   g_timeout_add((int)1000*time_meteorite,     do_meteorite     ,0);
-   g_timeout_add((int)1000*time_newwind,       do_newwind       ,0);
-   g_timeout_add((int)1000*time_santa,         do_santa         ,0);
-   g_timeout_add((int)1000*time_santa1,        do_santa1        ,0);
-   g_timeout_add((int)1000*time_snow_on_trees, do_snow_on_trees ,0);
-   g_timeout_add((int)1000*time_snowflakes,    do_snowflakes    ,0);
-   g_timeout_add((int)1000*time_stars,         do_stars         ,0);
-   g_timeout_add((int)1000*time_testing,       do_testing       ,0);
-   g_timeout_add((int)1000*time_tree,          do_tree          ,0);
-   g_timeout_add((int)1000*time_ui_check,      do_ui_check      ,0);
-   g_timeout_add((int)1000*time_usanta,        do_usanta        ,0);
-   g_timeout_add((int)1000*time_ustars,        do_ustars        ,0);
-   g_timeout_add((int)1000*time_wind,          do_wind          ,0);
-   g_timeout_add((int)1000*time_wupdate,       do_wupdate       ,0);
+   add_to_mainloop(time_blowoff,        do_blowoff        ,0);
+   add_to_mainloop(time_clean,          do_clean          ,0);
+   add_to_mainloop(time_displaychanged, do_displaychanged ,0);
+   add_to_mainloop(time_emeteorite,     do_emeteorite     ,0);
+   add_to_mainloop(time_event,          do_event          ,0);
+   add_to_mainloop(time_fallen,         do_fallen         ,0);
+   add_to_mainloop(time_fuse,           do_fuse           ,0);
+   add_to_mainloop(time_genflakes,      do_genflakes      ,0);
+   add_to_mainloop(time_meteorite,      do_meteorite      ,0);
+   add_to_mainloop(time_newwind,        do_newwind        ,0);
+   add_to_mainloop(time_santa,          do_santa          ,0);
+   add_to_mainloop(time_santa1,         do_santa1         ,0);
+   add_to_mainloop(time_snow_on_trees,  do_snow_on_trees  ,0);
+   add_to_mainloop(time_stars,          do_stars          ,0);
+   add_to_mainloop(time_testing,        do_testing        ,0);
+   add_to_mainloop(time_tree,           do_tree           ,0);
+   add_to_mainloop(time_ui_check,       do_ui_check       ,0);
+   add_to_mainloop(time_usanta,         do_usanta         ,0);
+   add_to_mainloop(time_ustars,         do_ustars         ,0);
+   add_to_mainloop(time_wind,           do_wind           ,0);
+   add_to_mainloop(time_wupdate,        do_wupdate        ,0);
 
    if(!Flags.NoMenu)
    {
@@ -653,7 +653,7 @@ int main(int argc, char *argv[])
    free(FirstFlake);
 
    if (SnowWinName) free(SnowWinName);
-   if (Prevtime) free(Prevtime);
+   //if (Prevtime) free(Prevtime);
 
    XClearArea(display, SnowWin, 0,0,0,0,True);
    XFlush(display);
@@ -670,6 +670,7 @@ int main(int argc, char *argv[])
       printf("Active:  %8.2f seconds = %6.2f%%\n",
 	    telapsed - TotSleepTime,100.0*(telapsed-TotSleepTime)/telapsed);
       printf("                   wakeups   freq    delay   target\n");
+#if 0
       for (i=0; i<LastAlarm; i++)
       {
 	 //double delaytime,frequency;
@@ -678,6 +679,7 @@ int main(int argc, char *argv[])
 	 //printf("%-15s %10d %6.2f %8.4f %8.4f",names[i],counter[i], frequency, delaytime,Delay[i]);
 	 //if (delaytime > 1.1*Delay[i]) printf("  *\n"); else printf("\n");
       }
+#endif
    }
 
    if(star) free(star);
@@ -1247,16 +1249,18 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    FirstFlake = addFlake(FirstFlake); FlakeCount++;
-	    InitFlake(FirstFlake);
-	    FirstFlake->rx     = fsnow->x + i;
-	    FirstFlake->ry     = fsnow->y - j;
+	    //FirstFlake = addFlake(FirstFlake); FlakeCount++;
+	    Snow* flake = malloc(sizeof(Snow)); FlakeCount++;
+	    InitFlake(flake);
+	    flake->rx     = fsnow->x + i;
+	    flake->ry     = fsnow->y - j;
 	    if (Flags.NoWind)
-	       FirstFlake->vx     = 0;
+	       flake->vx     = 0;
 	    else
-	       FirstFlake->vx     = NewWind/8;
-	    FirstFlake->vy     = vy;
-	    FirstFlake->cyclic = 0;
+	       flake->vx     = NewWind/8;
+	    flake->vy     = vy;
+	    flake->cyclic = 0;
+	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
 	 }
 	 //P("%f %f\n",FirstFlake->rx, FirstFlake->ry);
       }
@@ -1277,6 +1281,7 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
    }
 }
 
+#if 0
 // smooth fallen snow
 int do_sfallen()
 {
@@ -1323,6 +1328,7 @@ int do_sfallen()
    }
    return TRUE;
 }
+#endif
 
 int do_usanta() { 
    if (NOTACTIVE)
@@ -1458,7 +1464,7 @@ int do_genflakes()
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
 
    // needs local TNow
-   
+
    static double prevtime;
    static double Prevtime;
    static double sumdt;
@@ -1509,10 +1515,13 @@ int do_genflakes()
    if (FlakeCount + desflakes > Flags.FlakeCountMax)
       RETURN;
    int i;
+   R("desflakes: %d %d\n",desflakes,FlakeCount);
    for(i=0; i<desflakes; i++)
    {
-      FirstFlake = addFlake(FirstFlake); FlakeCount++;
-      InitFlake(FirstFlake);
+      //FirstFlake = addFlake(FirstFlake); FlakeCount++;
+      Snow* flake = malloc(sizeof(Snow)); FlakeCount++;
+      InitFlake(flake);
+	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
    }
    RETURN;
 #undef RETURN
@@ -1628,12 +1637,14 @@ void ConvertOnTreeToFlakes()
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    FirstFlake = addFlake(FirstFlake); FlakeCount++;
-	    InitFlake(FirstFlake);
-	    FirstFlake->rx = SnowOnTrees[i].x;
-	    FirstFlake->ry = SnowOnTrees[i].y-5*j;
-	    FirstFlake->vy = -10;
-	    FirstFlake->cyclic = 0;
+	    //FirstFlake = addFlake(FirstFlake); FlakeCount++;
+	    Snow *flake = malloc(sizeof(Snow)); FlakeCount++;
+	    InitFlake(flake);
+	    flake->rx = SnowOnTrees[i].x;
+	    flake->ry = SnowOnTrees[i].y-5*j;
+	    flake->vy = -10;
+	    flake->cyclic = 0;
+	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
 	 }
 	 //P("%d %d %d\n",FlakeCount, (int)FirstFlake->rx,(int)FirstFlake->ry);
       }
@@ -2053,12 +2064,14 @@ void InitFlake(Snow *flake)
 }
 
 
-void UpdateSnowFlake(Snow *flake)
+
+int UpdateSnowFlake(Snow *flake)
 {
    //
    // update speed in x Direction
    //
 
+   double FlakesDT = time_snowflakes;
    if (!Flags.NoWind)
    {
       flake->vx += FlakesDT*flake->wsens*(NewWind - flake->vx)/flake->m;
@@ -2084,8 +2097,9 @@ void UpdateSnowFlake(Snow *flake)
    {
       // not-cyclic flakes die when going left or right out of the window
       EraseSnowFlake(flake);
-      DeleteFlake(flake);
-      return;
+      //DeleteFlake(flake);
+      free(flake); FlakeCount--;
+      return FALSE;
    }
 
    // keep flakes y>0: 
@@ -2095,8 +2109,9 @@ void UpdateSnowFlake(Snow *flake)
    if (NewY >= SnowWinHeight)
    {
       EraseSnowFlake(flake);
-      DeleteFlake(flake);
-      return;
+      //DeleteFlake(flake);
+      free(flake); FlakeCount--;
+      return FALSE;
    }
 
    int nx = lrintf(NewX);
@@ -2142,8 +2157,9 @@ void UpdateSnowFlake(Snow *flake)
 			   flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
 			   DrawSnowFlake(flake);
 			}
-			DeleteFlake(flake);
-			return;
+			//DeleteFlake(flake);
+			free(flake); FlakeCount--;
+			return FALSE;
 		     }
 		     found = 1;
 		     break;
@@ -2159,7 +2175,7 @@ void UpdateSnowFlake(Snow *flake)
    int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
-   if(b) return;
+   if(b) return TRUE;
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -2169,8 +2185,9 @@ void UpdateSnowFlake(Snow *flake)
       if (in == RectanglePart || in == RectangleIn)
       {
 	 EraseSnowFlake(flake);
-	 DeleteFlake(flake);
-	 return;
+	 //DeleteFlake(flake);
+	 free(flake); FlakeCount--;
+	 return FALSE;
       }
 
       // check if flake is touching TreeRegion. If so: add snow to 
@@ -2222,8 +2239,9 @@ void UpdateSnowFlake(Snow *flake)
 	       }
 	    }
 	    EraseSnowFlake(flake);
-	    DeleteFlake(flake);
-	    return;
+	    //DeleteFlake(flake);
+	    free(flake); FlakeCount--;
+	    return FALSE;;
 	 }
       }
    }
@@ -2239,6 +2257,7 @@ void UpdateSnowFlake(Snow *flake)
    b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
    // if b: draw: no
    if(!b) DrawSnowFlake(flake);
+   return TRUE;
 }
 
 // Note: this function is only to be called in UpdateSnowFlake()
@@ -2550,13 +2569,15 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       FirstFlake = addFlake(FirstFlake); FlakeCount++;
-	       InitFlake(FirstFlake);
-	       FirstFlake->rx     = fsnow->x + i;
-	       FirstFlake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
-	       FirstFlake->vx     = NewWind/8;
-	       FirstFlake->vy     = -10;
-	       FirstFlake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
+	       //FirstFlake = addFlake(FirstFlake); FlakeCount++;
+	       Snow *flake = malloc(sizeof(Snow)); FlakeCount++;
+	       InitFlake(flake);
+	       flake->rx     = fsnow->x + i;
+	       flake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
+	       flake->vx     = NewWind/8;
+	       flake->vy     = -10;
+	       flake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
+	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
@@ -3129,9 +3150,9 @@ void CreateAlarmDelays()
    //P("%d %f\n",Flags.CpuLoad,factor);
    //
    // define delays for alarms:
-#define ALARM(x,y) Delay[alarm_ ## x] = y;
-   ALARMALL;
-#undef ALARM
+//#define ALARM(x,y) Delay[alarm_ ## x] = y;
+//   ALARMALL;
+//#undef ALARM
    if (!Exposures) // todo
    {
       //Delay[alarm_santa1] = 10*factor;
