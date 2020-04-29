@@ -27,7 +27,6 @@
    etc.
    */
 
-#define debug 0
 #define dosync 0  /* synchronise X-server. Change to 1 will detoriate the performance
 		     but allow for better analysis
 		     */
@@ -596,10 +595,10 @@ int main(int argc, char *argv[])
    {
       ui(&argc, &argv);
    }
-   exit(0);
 
    //
    // main loop
+   gtk_main();
 #if 0
    while (!Flags.Done)
    {
@@ -723,6 +722,9 @@ void do_ui_loop()
 
 int do_ui_check()
 {
+   if (Flags.Done)
+      gtk_main_quit();
+
    if (Flags.NoMenu)
       return TRUE;
    int changes = 0;
@@ -751,7 +753,7 @@ int do_ui_check()
    }
    if(strcmp(Flags.TreeType, OldFlags.TreeType))
    {
-      //P(%s %s\n",Flags.TreeType,OldFlags.TreeType);
+      P("Treetype %s %s\n",Flags.TreeType,OldFlags.TreeType);
       RedrawTrees();
       free(OldFlags.TreeType);
       OldFlags.TreeType = strdup(Flags.TreeType);
@@ -1073,10 +1075,11 @@ int do_snowflakes()
       RETURN; 
    }
    P("do_snow_flakes %f\n",FlakesDT);
-   int count = 0;
+   //int count = 0;
 
-   SnowRunning = 1;
-   while(flake && count++ < SNOWCHUNK)
+   SnowRunning = 1;  // not used todo
+   //while(flake && count++ < SNOWCHUNK)
+   while(flake)
    {
       Snow *next = flake->next;  // flake can disappear, so we have to save the 
       //                            pointer to the next flake
@@ -1644,7 +1647,6 @@ int do_stars()
 {
    if (NOTACTIVE)
       return TRUE;
-   printf("do_stars %d\n",NStars);
    int i;
    for (i=0; i<NStars; i++)
    {

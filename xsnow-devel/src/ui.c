@@ -47,7 +47,7 @@
 #define SANTA2(x) SANTA(x) SANTA(x ## r)
 #define SANTA_ALL SANTA2(0) SANTA2(1) SANTA2(2) SANTA2(3) SANTA2(4)
 
-#define TREE_ALL TREE(0) TREE(1) TREE(2) TREE(3) TREE(4) TREE(5) TREE(6)
+#define TREE_ALL TREE(0) TREE(1) TREE(2) TREE(3) TREE(4) TREE(5) TREE(6) TREE(7)
 
 
 #define HANDLE_RANGE(_name,_flag,_value) \
@@ -919,7 +919,6 @@ void ui(int *argc, char **argv[])
    while (wallclock() - t0 < 1.0)
       gtk_main_iteration_do(0);
 #endif
-   gtk_main();
 }
 
 void ui_loop()

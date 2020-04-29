@@ -71,7 +71,7 @@
 #define DEFAULT_StopAfter -1
 #define DEFAULT_TreeColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */
 #define DEFAULT_TreeFill 30
-#define DEFAULT_TreeType "1,2,3,4,5,6,"       // default treetype
+#define DEFAULT_TreeType "1,2,3,4,5,6,7,"       // default treetype
 #define DEFAULT_UseAlpha  SOMENUMBER
 #define DEFAULT_UseBG 0 
 #define DEFAULT_WhirlFactor 100
@@ -99,7 +99,7 @@
 #define MAXBLOWOFFFACTOR 10
 #define MAXSANTA	4    // santa types 0..4
 #define MAXTANNENPLACES 10   // number of trees
-#define MAXTREETYPE 6        // treetypes: 0..MAXTREETYPE
+#define MAXTREETYPE 7        // treetypes: 0..MAXTREETYPE
 #define MAXWSENS 0.2        // sensibility of flakes for wind
 #define MAXXSTEP 2             /* drift speed max */
 #define MAXYSTEP 10             /* falling speed max */
@@ -110,7 +110,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWCHUNK 3200        // handle this number of flakes at a time  // TODO
+#define SNOWCHUNK 2        // handle this number of flakes at a time  // TODO
 #define SNOWFLAKEMAXTYPE 6  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
