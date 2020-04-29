@@ -137,9 +137,10 @@ char ***Santas[MAXSANTA+1][2] =
 #include "Pixmaps/rendier.xpm"
 #include "Pixmaps/eland.xpm"
 #include "Pixmaps/snowtree.xpm"
+#include "Pixmaps/polarbear.xpm"
 
 char **xpmtrees[MAXTREETYPE+1] =
-{tannenbaum_xpm, tree_xpm, tree_1_100px, huis4_xpm, reindeer_xpm, eland_xpm, snowtree_xpm};
+{tannenbaum_xpm, tree_xpm, tree_1_100px, huis4_xpm, reindeer_xpm, eland_xpm, snowtree_xpm, polarbear_xpm};
 
 #include "Pixmaps/star.xbm"
 
