@@ -63,7 +63,6 @@
 #include "ixpm.h"
 #include "kdesetbg.h"
 #include "pixmaps.h"
-#include "snowflakes.h"
 #include "ui.h"
 #include "version.h"
 #include "windows.h"
@@ -96,8 +95,6 @@ int     IsCompiz;
 // locals
 // snow flakes stuff
 static float BlowOffFactor;
-static int   DoNotMakeSnow = 0;
-//static Snow  *FirstFlake = 0;
 static int   FlakeCount = 0;
 static float FlakesPerSecond;
 static int   MaxSnowFlakeHeight = 0;  /* Biggest flake */
@@ -300,7 +297,6 @@ static int do_displaychanged();
 static int do_emeteorite();
 static int do_event();
 static int do_fallen();
-static int do_fuse();
 static int do_genflakes();
 static int do_meteorite();
 static int do_newwind();
@@ -323,9 +319,9 @@ int hello(void *aap)
    return hellocounter < 10;
 }
 
-#define add_to_mainloop(x,y,p) g_timeout_add((int)1000*(x),(GSourceFunc)y,p)
-#define makeflake(f) Snow *f = malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake)
-#define delflake(f)  free(f); FlakeCount--
+#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
+#define add_flake_to_mainloop(f) add_to_mainloop(G_PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
+#define makeflake(f) do {f = malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
 int main(int argc, char *argv[])
 {
@@ -526,27 +522,26 @@ int main(int argc, char *argv[])
    ClearScreen();   // without this, no snow, scenery etc. in KDE
    //
 
-   add_to_mainloop(time_blowoff,        do_blowoff        ,0);
-   add_to_mainloop(time_clean,          do_clean          ,0);
-   add_to_mainloop(time_displaychanged, do_displaychanged ,0);
-   add_to_mainloop(time_emeteorite,     do_emeteorite     ,0);
-   add_to_mainloop(time_event,          do_event          ,0);
-   add_to_mainloop(time_fallen,         do_fallen         ,0);
-   add_to_mainloop(time_fuse,           do_fuse           ,0);
-   add_to_mainloop(time_genflakes,      do_genflakes      ,0);
-   add_to_mainloop(time_meteorite,      do_meteorite      ,0);
-   add_to_mainloop(time_newwind,        do_newwind        ,0);
-   add_to_mainloop(time_santa,          do_santa          ,0);
-   add_to_mainloop(time_santa1,         do_santa1         ,0);
-   add_to_mainloop(time_snow_on_trees,  do_snow_on_trees  ,0);
-   add_to_mainloop(time_stars,          do_stars          ,0);
-   add_to_mainloop(time_testing,        do_testing        ,0);
-   add_to_mainloop(time_tree,           do_tree           ,0);
-   add_to_mainloop(time_ui_check,       do_ui_check       ,0);
-   add_to_mainloop(time_usanta,         do_usanta         ,0);
-   add_to_mainloop(time_ustars,         do_ustars         ,0);
-   add_to_mainloop(time_wind,           do_wind           ,0);
-   add_to_mainloop(time_wupdate,        do_wupdate        ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_blowoff,        do_blowoff        ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_clean,          do_clean          ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_displaychanged, do_displaychanged ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite     ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_event,          do_event          ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen,         do_fallen         ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_meteorite,      do_meteorite      ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_newwind,        do_newwind        ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_stars,          do_stars          ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_tree,           do_tree           ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_ustars,         do_ustars         ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
 
    if(!Flags.NoMenu)
    {
@@ -1060,8 +1055,7 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
-   if (Flags.NoBlowSnow || Flags.NoWind || 
-	 FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if (Flags.NoBlowSnow || Flags.NoWind)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
@@ -1078,7 +1072,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    //Snow* flake = malloc(sizeof(Snow)); FlakeCount++;
+	    Snow *flake;
 	    makeflake(flake);
 	    flake->rx     = fsnow->x + i;
 	    flake->ry     = fsnow->y - j;
@@ -1088,7 +1082,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	       flake->vx     = NewWind/8;
 	    flake->vy     = vy;
 	    flake->cyclic = 0;
-	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
+	    add_flake_to_mainloop(flake);
 	 }
 	 //P("%f %f\n",FirstFlake->rx, FirstFlake->ry);
       }
@@ -1219,8 +1213,6 @@ int do_genflakes()
    double TNow = wallclock();
    if (NOTACTIVE)
       RETURN;
-   if (DoNotMakeSnow)
-      RETURN;
    if (first_run)
    {
       first_run = 0;
@@ -1239,7 +1231,7 @@ int do_genflakes()
    if (dt < 0 || dt > 10*time_genflakes)
       RETURN;
    int desflakes = lrint((dt+sumdt)*FlakesPerSecond);
-   R("desflakes: %lf %lf %d %lf %d\n",dt,sumdt,desflakes,FlakesPerSecond,FlakeCount);
+   P("desflakes: %lf %lf %d %lf %d\n",dt,sumdt,desflakes,FlakesPerSecond,FlakeCount);
    if(desflakes == 0)  // save dt for use next time: happens with low snowfall rate
       sumdt += dt; 
    else
@@ -1249,9 +1241,9 @@ int do_genflakes()
    int i;
    for(i=0; i<desflakes; i++)
    {
-      //Snow* flake = malloc(sizeof(Snow)); FlakeCount++;
+      Snow *flake;
       makeflake(flake);
-      add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
+      add_flake_to_mainloop(flake);
    }
    RETURN;
 #undef RETURN
@@ -1355,8 +1347,7 @@ int do_wind()
 // blow snow off trees
 void ConvertOnTreeToFlakes()
 {
-   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees ||
-	 FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
       return;
    int i;
    for (i=0; i<OnTrees; i++)
@@ -1367,13 +1358,13 @@ void ConvertOnTreeToFlakes()
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    //Snow *flake = malloc(sizeof(Snow)); FlakeCount++;
+	    Snow *flake;
 	    makeflake(flake);
 	    flake->rx = SnowOnTrees[i].x;
 	    flake->ry = SnowOnTrees[i].y-5*j;
 	    flake->vy = -10;
 	    flake->cyclic = 0;
-	    add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
+	    add_flake_to_mainloop(flake);
 	 }
 	 //P("%d %d %d\n",FlakeCount, (int)FirstFlake->rx,(int)FirstFlake->ry);
       }
@@ -1684,6 +1675,7 @@ void UpdateWindows()
 
 int do_testing()
 {
+   R("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
    return TRUE;
    static int first = 1;
    if(first)
@@ -1713,19 +1705,6 @@ int do_testing()
    return TRUE;
 }
 
-int do_fuse()
-{
-   if (FlakeCount >= Flags.FlakeCountMax)
-   {
-      if (!Flags.Quiet)
-	 fprintf(stderr,"fuse blown: remove snowflakes\n");
-
-      DoNotMakeSnow = 1;
-   }
-   else
-      DoNotMakeSnow = 0;
-   return TRUE;
-}
 
 /* ------------------------------------------------------------------ */ 
 void SigHandler(int signum)
@@ -1758,28 +1737,35 @@ void InitFlake(Snow *flake)
    flake->whatFlake = RandInt(SNOWFLAKEMAXTYPE+1);
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
-   flake->rx = drand48()*(SnowWinWidth - flake->w);
-   flake->ry = drand48()*(SnowWinHeight/10);
-   flake->cyclic = 1;
-   flake->m      = drand48()+0.1;
+   flake->rx        = drand48()*(SnowWinWidth - flake->w);
+   //flake->ry        = drand48()*(SnowWinHeight/10);
+   flake->ry        = -drand48()*(SnowWinHeight/10);
+   flake->cyclic    = 1;
+   flake->m         = drand48()+0.1;
    if(Flags.NoWind)
       flake->vx     = 0; 
    else
       flake->vx     = drand48()*NewWind/2; 
-   flake->ivy    = INITIALYSPEED * sqrt(flake->m);
-   flake->vy     = flake->ivy;
-   flake->wsens  = MAXWSENS*drand48();
+   flake->ivy       = INITIALYSPEED * sqrt(flake->m);
+   flake->vy        = flake->ivy;
+   flake->wsens     = MAXWSENS*drand48();
    //P("%f %f\n",flake->rx, flake->ry);
 }
 
 
 
+#define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
 int UpdateSnowFlake(Snow *flake)
 {
+   if (FlakeCount >= Flags.FlakeCountMax)
+   {
+      EraseSnowFlake(flake);
+      delflake(flake);
+   }
+
    //
    // update speed in x Direction
    //
-
    double FlakesDT = time_snowflakes;
    if (!Flags.NoWind)
    {
@@ -1807,18 +1793,16 @@ int UpdateSnowFlake(Snow *flake)
       // not-cyclic flakes die when going left or right out of the window
       EraseSnowFlake(flake);
       delflake(flake);
-      return FALSE;
    }
 
    // keep flakes y>0: 
-   if (NewY < 0) { NewY = 1; flake->vy = 0;}
+   //if (NewY < 0) { NewY = 1; flake->vy = 0;}
 
    // remove flake if it falls below bottom of screen:
    if (NewY >= SnowWinHeight)
    {
       EraseSnowFlake(flake);
       delflake(flake);
-      return FALSE;
    }
 
    int nx = lrintf(NewX);
@@ -1865,7 +1849,6 @@ int UpdateSnowFlake(Snow *flake)
 			   DrawSnowFlake(flake);
 			}
 			delflake(flake);
-			return FALSE;
 		     }
 		     found = 1;
 		     break;
@@ -1892,7 +1875,6 @@ int UpdateSnowFlake(Snow *flake)
       {
 	 EraseSnowFlake(flake);
 	 delflake(flake);
-	 return FALSE;
       }
 
       // check if flake is touching TreeRegion. If so: add snow to 
@@ -1945,7 +1927,6 @@ int UpdateSnowFlake(Snow *flake)
 	    }
 	    EraseSnowFlake(flake);
 	    delflake(flake);
-	    return FALSE;;
 	 }
       }
    }
@@ -1963,6 +1944,7 @@ int UpdateSnowFlake(Snow *flake)
    if(!b) DrawSnowFlake(flake);
    return TRUE;
 }
+#undef delflake
 
 
 void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
@@ -2241,7 +2223,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 // also add snowflakes
 void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
-   if(Flags.NoBlowSnow || FlakeCount > Flags.FlakeCountMax || DoNotMakeSnow)
+   if(Flags.NoBlowSnow)
       return;
    //P("%#lx\n",fsnow->id);
    int i;
@@ -2257,14 +2239,14 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
+	       Snow *flake;
 	       makeflake(flake);
-	       //Snow *flake = malloc(sizeof(Snow)); FlakeCount++;
 	       flake->rx     = fsnow->x + i;
 	       flake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
 	       flake->vx     = NewWind/8;
 	       flake->vy     = -10;
 	       flake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
-	       add_to_mainloop(time_snowflakes,UpdateSnowFlake,flake);
+	       add_flake_to_mainloop(flake);
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
@@ -2321,26 +2303,14 @@ void ResetSanta()
 
 int UpdateSanta()
 {
-#define RETURN do { Prevtime = TNow; return TRUE ; } while(0)
-   static int first_run = 1;
-   static double Prevtime;
-   if (first_run)
-   {
-      Prevtime = wallclock();
-      first_run = 0;
-   }
-   double TNow = wallclock();
+#define RETURN do { return TRUE ; } while(0)
    if(Flags.NoSanta)
       RETURN;
    int oldx = SantaX;
    int oldy = SantaY;
    static double dtt = 0;
-   //double dt = TNow - Prevtime[alarm_usanta];
-   double dt = TNow - Prevtime;
-   // after suspend or sleep dt could have a strange value
-   //if (dt < 0 || dt > 10*Delay[alarm_usanta])
-   if (dt < 0 || dt > 10*time_usanta)
-      RETURN;
+
+   double dt = time_usanta;
    ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
    if (ActualSantaSpeed>3*SantaSpeed)
       ActualSantaSpeed = 3*SantaSpeed;

@@ -104,11 +104,11 @@ PROGRAMS = $(games_PROGRAMS)
 am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
 	xsnow-wmctrl.$(OBJEXT) xsnow-docs.$(OBJEXT) \
-	xsnow-pixmaps.$(OBJEXT) xsnow-snowflakes.$(OBJEXT) \
-	xsnow-flags.$(OBJEXT) xsnow-gaussian.$(OBJEXT) \
-	xsnow-csvpos.$(OBJEXT) xsnow-dsimple.$(OBJEXT) \
-	xsnow-clientwin.$(OBJEXT) xsnow-ui.$(OBJEXT) \
-	xsnow-kdesetbg.$(OBJEXT) xsnow-transparent.$(OBJEXT)
+	xsnow-pixmaps.$(OBJEXT) xsnow-flags.$(OBJEXT) \
+	xsnow-gaussian.$(OBJEXT) xsnow-csvpos.$(OBJEXT) \
+	xsnow-dsimple.$(OBJEXT) xsnow-clientwin.$(OBJEXT) \
+	xsnow-ui.$(OBJEXT) xsnow-kdesetbg.$(OBJEXT) \
+	xsnow-transparent.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -135,9 +135,8 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-clientwin.Po \
 	./$(DEPDIR)/xsnow-fallensnow.Po ./$(DEPDIR)/xsnow-flags.Po \
 	./$(DEPDIR)/xsnow-gaussian.Po ./$(DEPDIR)/xsnow-ixpm.Po \
 	./$(DEPDIR)/xsnow-kdesetbg.Po ./$(DEPDIR)/xsnow-main.Po \
-	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-snowflakes.Po \
-	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-ui.Po \
-	./$(DEPDIR)/xsnow-wmctrl.Po
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-transparent.Po \
+	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -558,7 +557,7 @@ xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
-		snowflakes.c snowflakes.h flags.c flags.h \
+		flags.c flags.h \
 		gaussian.c gaussian.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
@@ -674,7 +673,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdesetbg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snowflakes.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transparent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wmctrl.Po@am__quote@ # am--include-marker
@@ -796,20 +794,6 @@ xsnow-pixmaps.obj: pixmaps.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pixmaps.c' object='xsnow-pixmaps.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-pixmaps.obj `if test -f 'pixmaps.c'; then $(CYGPATH_W) 'pixmaps.c'; else $(CYGPATH_W) '$(srcdir)/pixmaps.c'; fi`
-
-xsnow-snowflakes.o: snowflakes.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-snowflakes.o -MD -MP -MF $(DEPDIR)/xsnow-snowflakes.Tpo -c -o xsnow-snowflakes.o `test -f 'snowflakes.c' || echo '$(srcdir)/'`snowflakes.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-snowflakes.Tpo $(DEPDIR)/xsnow-snowflakes.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='snowflakes.c' object='xsnow-snowflakes.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-snowflakes.o `test -f 'snowflakes.c' || echo '$(srcdir)/'`snowflakes.c
-
-xsnow-snowflakes.obj: snowflakes.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-snowflakes.obj -MD -MP -MF $(DEPDIR)/xsnow-snowflakes.Tpo -c -o xsnow-snowflakes.obj `if test -f 'snowflakes.c'; then $(CYGPATH_W) 'snowflakes.c'; else $(CYGPATH_W) '$(srcdir)/snowflakes.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-snowflakes.Tpo $(DEPDIR)/xsnow-snowflakes.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='snowflakes.c' object='xsnow-snowflakes.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-snowflakes.obj `if test -f 'snowflakes.c'; then $(CYGPATH_W) 'snowflakes.c'; else $(CYGPATH_W) '$(srcdir)/snowflakes.c'; fi`
 
 xsnow-flags.o: flags.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-flags.o -MD -MP -MF $(DEPDIR)/xsnow-flags.Tpo -c -o xsnow-flags.o `test -f 'flags.c' || echo '$(srcdir)/'`flags.c
@@ -1389,7 +1373,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
-	-rm -f ./$(DEPDIR)/xsnow-snowflakes.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
@@ -1451,7 +1434,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
-	-rm -f ./$(DEPDIR)/xsnow-snowflakes.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po

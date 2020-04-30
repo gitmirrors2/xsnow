@@ -3,6 +3,11 @@ version 2.0.20
 	add polarbear
 	use g_get_monotonic_time() for wallclock
 	give every snowflake its own g_timeout_add()
+	give Santa highest priority (not that it matters much, it seems)
+	Change fuse algorithm: now Updatesnowflake kills flake when number
+	  of flakes is above threshold
+	Initsnowflake: start y above above window
+	updatesnowflake: do not force y >=0
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18
