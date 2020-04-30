@@ -648,6 +648,7 @@ static struct snow_buttons
    snow_button intensity;
    snow_button blowoff_intensity;
    snow_button speed;
+   snow_button countmax;
    snow_button color;
    snow_button windows;
    snow_button windows_show;
@@ -666,6 +667,7 @@ static void init_snow_buttons()
    HANDLE_INIT(snow_buttons.intensity.button             ,snow-intensity);
    HANDLE_INIT(snow_buttons.blowoff_intensity.button     ,snow-blowoff-intensity);
    HANDLE_INIT(snow_buttons.speed.button                 ,snow-speed);
+   HANDLE_INIT(snow_buttons.countmax.button              ,flake-count-max);
    HANDLE_INIT(snow_buttons.color.button                 ,snow-color);
    HANDLE_INIT(snow_buttons.windows.button               ,snow-windows);
    HANDLE_INIT(snow_buttons.windows_show.button          ,snow-windows-show);
@@ -689,6 +691,7 @@ static void set_snow_buttons()
    HANDLE_SET_RANGE(snow_buttons.intensity.button             ,SnowFlakesFactor ,self);
    HANDLE_SET_RANGE(snow_buttons.blowoff_intensity.button     ,BlowOffFactor    ,self);
    HANDLE_SET_RANGE(snow_buttons.speed.button                 ,SnowSpeedFactor  ,self);
+   HANDLE_SET_RANGE(snow_buttons.countmax.button              ,FlakeCountMax    ,self);
    HANDLE_SET_RANGE(snow_buttons.windows.button               ,MaxWinSnowDepth  ,self);
    HANDLE_SET_RANGE(snow_buttons.bottom.button                ,MaxScrSnowDepth  ,self);
    HANDLE_SET_RANGE(snow_buttons.trees.button                 ,MaxOnTrees       ,self);
@@ -709,6 +712,7 @@ HANDLE_COLOR(button_snow_color,SnowColor)
    HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value)
    HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value)
    HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value)
+   HANDLE_RANGE(button_flake_count_max          , FlakeCountMax    ,value)
    HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
    HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
 HANDLE_RANGE(button_snow_trees               , MaxOnTrees       ,value)
@@ -723,6 +727,7 @@ void snow_default(int vintage)
    free(Flags.SnowColor);
    Flags.SnowColor         = strdup(DEFAULT_SnowColor);
    Flags.SnowSpeedFactor   = DEFAULT_SnowSpeedFactor;
+   Flags.FlakeCountMax     = DEFAULT_FlakeCountMax;
    Flags.BlowOffFactor     = DEFAULT_BlowOffFactor;
    Flags.MaxWinSnowDepth   = DEFAULT_MaxWinSnowDepth;
    Flags.MaxScrSnowDepth   = DEFAULT_MaxScrSnowDepth;
@@ -914,16 +919,6 @@ void ui(int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
-#if 0
-   double t0 = wallclock();
-   while (wallclock() - t0 < 1.0)
-      gtk_main_iteration_do(0);
-#endif
-}
-
-void ui_loop()
-{
-   gtk_main_iteration_do(0);
 }
 
 // next function is not used, I leave it here as a template, who knows...

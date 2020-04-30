@@ -157,8 +157,6 @@ typedef struct Snow {
    float wsens;             // wind dependency factor
    unsigned int cyclic : 1; // 0: flake is not cyclic 
    int whatFlake;           // snowflake index
-   struct Snow *prev;       // pointer to previous snow flake
-   struct Snow *next;       // pointer to next snow flake 
 } Snow;
 
 typedef struct SnowMap {

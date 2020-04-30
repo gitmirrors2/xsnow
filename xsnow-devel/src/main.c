@@ -609,11 +609,6 @@ int do_santa1()
    return TRUE;
 }
 
-void do_ui_loop()
-{
-   ui_loop();
-}
-
 int do_ui_check()
 {
    if (Flags.Done)
@@ -717,6 +712,11 @@ int do_ui_check()
    {
       OldFlags.SnowSpeedFactor = Flags.SnowSpeedFactor;
       InitSnowSpeedFactor();
+      changes++;
+   }
+   if(Flags.FlakeCountMax != OldFlags.FlakeCountMax)
+   {
+      OldFlags.FlakeCountMax = Flags.FlakeCountMax;
       changes++;
    }
    if(Flags.BlowOffFactor != OldFlags.BlowOffFactor)
