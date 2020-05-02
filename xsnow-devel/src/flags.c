@@ -356,7 +356,6 @@ void WriteFlags()
    doc = xmlNewDoc(BAD_CAST "1.0");
    root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
    xmlDocSetRootElement(doc, root_node);
-   R("WriteFlags: FlakeCountMax:%d\n",Flags.FlakeCountMax);
 
 #define DOIT_I(x) myxmlNewChild(root_node,NULL,# x,Flags.x,"%d");
 #define DOIT_L(x) DOIT_I(x)
