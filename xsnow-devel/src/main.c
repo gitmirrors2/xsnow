@@ -114,6 +114,7 @@ static char**   Argv;
 
 // tree stuff
 static int      KillTrees = 0;  // 1: signal to trees to kill themselves
+static int      KillStars = 0;  // 1: signal to trees to kill themselves
 static int      NTrees    = 0;  // actual number of trees
 static int      NtreeTypes = 0;
 //static Treeinfo *Tree = 0;
@@ -266,7 +267,7 @@ static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
-static void   InitStars(void);
+static int    InitStars(void);
 static void   InitTreePixmaps(void);
 static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
@@ -305,12 +306,13 @@ static int do_newwind();
 static int do_santa();
 static int do_santa1();
 static int do_snow_on_trees();
+static int do_star(Skoordinaten *star);
 static int do_stars();
 static int do_testing();
 static int do_tree();
 static int do_ui_check();
 static int do_usanta();
-static int do_ustars();
+static int do_ustar();
 static int do_wind();
 static int do_wupdate();
 
@@ -460,7 +462,7 @@ int main(int argc, char *argv[])
    InitFlakesPerSecond();
    InitSantaPixmaps();
    InitFallenSnow();
-   InitStars();
+   //InitStars();
    InitTreePixmaps();  // can change value of Flags.NoMenu
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
@@ -536,13 +538,14 @@ int main(int argc, char *argv[])
    add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
    add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_stars,          do_stars          ,0);
+   //add_to_mainloop(G_PRIORITY_DEFAULT, time_stars,          do_stars          ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_initstars,      InitStars          ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
    //add_to_mainloop(G_PRIORITY_DEFAULT, time_tree,           do_tree           ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_initbaum,       do_initbaum ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
    add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_ustars,         do_ustars         ,0);
+   //add_to_mainloop(G_PRIORITY_DEFAULT, time_ustars,         do_ustar          ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
 
@@ -680,7 +683,7 @@ int do_ui_check()
    if(Flags.NStars != OldFlags.NStars)
    {
       EraseStars();
-      InitStars();
+      //InitStars();
       OldFlags.NStars = Flags.NStars;
       changes++;
    }
@@ -786,9 +789,10 @@ int do_ui_check()
       OldFlags.OffsetS = Flags.OffsetS;
       InitDisplayDimensions();
       InitFallenSnow();
-      InitStars();
-      RedrawTrees();
-      ClearScreen();
+      EraseStars();
+      //InitStars();
+      //RedrawTrees();
+      EraseTrees();
       changes++;
    }
    if(Flags.MaxWinSnowDepth != OldFlags.MaxWinSnowDepth)
@@ -860,9 +864,11 @@ int do_ui_check()
       OldFlags.FullScreen = Flags.FullScreen;
       DetermineWindow();
       InitFallenSnow();
-      InitStars();
-      RedrawTrees();
-      ClearScreen();
+      EraseStars();
+      //InitStars();
+      EraseTrees();
+      //RedrawTrees();
+      //ClearScreen();
       changes++;
    }
    if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
@@ -1187,7 +1193,8 @@ void RestartDisplay()    // todo
    P("Calling InitDisplayDimensions\n");
    InitDisplayDimensions();
    InitFallenSnow();
-   InitStars();
+   //InitStars();
+   EraseStars();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
       XDestroyRegion(SnowOnTreesRegion);
@@ -1402,14 +1409,34 @@ int do_stars()
    return TRUE;
 }
 
-int do_ustars()
+int do_star(Skoordinaten *star)
 {
+   if (KillStars)
+   {
+      NStars--;
+      return FALSE;
+   }
    if (NOTACTIVE)
       return TRUE;
-   int i;
-   for (i=0; i<NStars; i++)
-      if (drand48() > 0.7)
-	 star[i].color = RandInt(STARANIMATIONS);
+   int k = star->color;
+   int x = star->x;
+   int y = star->y;
+   int w = starPix.width;
+   int h = starPix.height;
+   XSetTSOrigin(display, StarGC[k],x+w, y+h);
+   XFillRectangle(display,SnowWin,StarGC[k],x,y,w,h);
+   XFlush(display);
+   return TRUE;
+}
+
+int do_ustar(Skoordinaten *star)
+{
+   if (KillStars)
+      return TRUE;
+   if (NOTACTIVE)
+      return TRUE;
+
+   star->color = RandInt(STARANIMATIONS);
    return TRUE;
 }
 
@@ -1987,7 +2014,7 @@ void EraseSnowFlake(Snow *flake)
 // fallen snow and trees must have been initialized 
 int do_initbaum()
 {
-   R("initbaum %d %d\n",NTrees, (int)wallclock());
+   P("initbaum %d %d\n",NTrees, (int)wallclock());
    if (Flags.NoTrees || NTrees != 0)
       return TRUE;
    int i,h,w;
@@ -2096,11 +2123,11 @@ int do_initbaum()
       int flop = (drand48()>0.5);
       //P("treesuc %4d %4d\n",x,y);
       /*
-      Tree[NTrees].x    = x;
-      Tree[NTrees].y    = y;
-      Tree[NTrees].type = tt;
-      Tree[NTrees].rev  = flop;
-      */
+	 Tree[NTrees].x    = x;
+	 Tree[NTrees].y    = y;
+	 Tree[NTrees].type = tt;
+	 Tree[NTrees].rev  = flop;
+	 */
 
       Treeinfo *tree = malloc(sizeof(Treeinfo));
       tree->x    = x;
@@ -2135,6 +2162,7 @@ int do_initbaum()
    return TRUE;
 }
 
+#if 0
 void InitStars()
 {
    int i;
@@ -2149,24 +2177,52 @@ void InitStars()
    for (i=0; i<NStars; i++)
       star[i].color = RandInt(STARANIMATIONS);
 }
+#endif
 
-void EraseStars()
+int InitStars()
 {
+   if (NStars != 0)
+      return TRUE;
+   NStars    = Flags.NStars;
+   KillStars = 0;
    int i;
    for (i=0; i<NStars; i++)
    {
-      int x = star[i].x; 
-      int y = star[i].y; 
-      int w = starPix.width;
-      int h = starPix.height;
-      if(UseAlpha|Flags.UseBG)
-	 XFillRectangle(display, SnowWin, ESantaGC, 
-	       x, y, w, h);
-      else
-	 XClearArea(display, SnowWin,
-	       x, y, w, h, Exposures);
+      Skoordinaten *star = malloc(sizeof(Skoordinaten));
+      star->x = RandInt(SnowWinWidth);
+      star->y = RandInt(SnowWinHeight/4);
+      star->color = RandInt(STARANIMATIONS);
+      add_to_mainloop(G_PRIORITY_DEFAULT, time_star,  do_star,  star);
+      add_to_mainloop(G_PRIORITY_DEFAULT, drand48()*time_ustar+0.5*time_ustar, do_ustar, star);
    }
+   return TRUE;
 }
+
+void EraseStars()
+{
+   KillStars = 1;
+   ClearScreen();
+}
+
+/*
+   void EraseStars()
+   {
+   int i;
+   for (i=0; i<NStars; i++)
+   {
+   int x = star[i].x; 
+   int y = star[i].y; 
+   int w = starPix.width;
+   int h = starPix.height;
+   if(UseAlpha|Flags.UseBG)
+   XFillRectangle(display, SnowWin, ESantaGC, 
+   x, y, w, h);
+   else
+   XClearArea(display, SnowWin,
+   x, y, w, h, Exposures);
+   }
+   }
+   */
 
 void InitFallenSnow()
 {
@@ -2441,23 +2497,23 @@ void EraseTrees()
 {
    KillTrees = 1;
    /*
-   int i;
-   int d = 3;
-   for (i=0; i<NTrees; i++)
-   {
+      int i;
+      int d = 3;
+      for (i=0; i<NTrees; i++)
+      {
       int x = Tree[i].x-d; 
       int y = Tree[i].y-d; 
       int t = Tree[i].type; 
       int w = TreeWidth[t]+d+d;
       int h = TreeHeight[t]+d+d;
       if(UseAlpha|Flags.UseBG)
-	 XFillRectangle(display, SnowWin, ESantaGC, 
-	       x, y, w, h);
+      XFillRectangle(display, SnowWin, ESantaGC, 
+      x, y, w, h);
       else
-	 XClearArea(display, SnowWin,
-	       x, y, w, h, Exposures);
-   }
-   */
+      XClearArea(display, SnowWin,
+      x, y, w, h, Exposures);
+      }
+      */
 
    XDestroyRegion(TreeRegion);
    TreeRegion = XCreateRegion();

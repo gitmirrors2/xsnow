@@ -10,6 +10,7 @@ version 2.0.20
 	updatesnowflake: do not force y >=0
 	add button for flake-count-max
 	put refresh of trees in g_timeout_add()
+	idem for stars
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18

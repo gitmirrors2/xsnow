@@ -134,14 +134,15 @@
 #define time_sfallen          2.30             /* time between smoothing of fallen snow      */
 #define time_snow_on_trees    0.50             /* time between redrawings of snow on trees   */
 #define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
-#define time_stars            0.50             /* time between drawing stars                 */ 
+#define time_star             0.50             /* time between drawing stars                 */ 
 #define time_testing          1.05             /* time between testing code                  */ 
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 //#define time_tree             (1.00 * factor)  /* time between redrawings of trees           */
 #define time_initbaum         1.00             /* time between check for (re)create trees    */
+#define time_initstars        1.00             /* time between check for (re)create stars    */
 #define time_ui_check         0.25             /* time between checking values from ui       */ 
 #define time_usanta           0.02             /* time between update of santa position      */
-#define time_ustars           2.00             /* time between updating stars                */ 
+#define time_ustar            2.00             /* time between updating stars                */ 
 #define time_wind             0.10             /* time between starting or ending wind       */
 #define time_wupdate          0.50             /* time between getting windows information   */ 
 
