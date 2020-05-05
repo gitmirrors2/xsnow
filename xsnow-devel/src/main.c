@@ -117,7 +117,6 @@ static int      KillTrees = 0;  // 1: signal to trees to kill themselves
 static int      KillStars = 0;  // 1: signal to trees to kill themselves
 static int      NTrees    = 0;  // actual number of trees
 static int      NtreeTypes = 0;
-//static Treeinfo *Tree = 0;
 static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
 static Pixmap   TreePixmap[MAXTREETYPE+1][2];
 static int      *TreeType;
@@ -126,18 +125,19 @@ static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static char     **TreeXpm = 0;
 
 // Santa stuff
+static Pixmap SantaMaskPixmap[PIXINANIMATION] = {0,0,0,0};
+static Pixmap SantaPixmap[PIXINANIMATION]     = {0,0,0,0};
 static float  ActualSantaSpeed;
+static float  SantaSpeed;  
+static float  SantaXr;
+static float  SantaYr;
 static int    CurrentSanta;
 static int    OldSantaX=0;  // the x value of Santa when he was last drawn
 static int    OldSantaY=0;  // the y value of Santa when he was last drawn
 static int    SantaHeight;   
-static Pixmap SantaMaskPixmap[PIXINANIMATION] = {0,0,0,0};
-static Pixmap SantaPixmap[PIXINANIMATION] = {0,0,0,0};
-static float  SantaSpeed;  
 static int    SantaWidth;
-static float  SantaXr;
 static int    SantaX;   // should always be lrintf(SantaXr)
-static int    SantaY;
+static int    SantaY;   // should always be lrintf(SantaYr)
 static int    SantaYStep;
 
 /* Speed for each Santa  in pixels/second*/
@@ -149,7 +149,6 @@ static float Speed[] = {SANTASPEED0,  /* Santa 0 */
 };
 
 // star stuff
-static Skoordinaten *star = 0;
 static int NStars;
 
 // meteorites stuff
@@ -243,8 +242,7 @@ static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSanta1(void);
 static void   DrawSanta(void);
 static void   DrawSnowFlake(Snow *flake);
-static void   DrawTree(int i);
-static int    DrawTree1(Treeinfo *tree);
+//static void   DrawTree(int i);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 static void   EraseStars(void);
 static void   EraseTrees(void);
@@ -267,7 +265,6 @@ static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
-static int    InitStars(void);
 static void   InitTreePixmaps(void);
 static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
@@ -282,7 +279,6 @@ static void   SetWindTimer(void);
 static void   SigHandler(int signum);
 static void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
 static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
-static int    UpdateSanta(void);
 static int    UpdateSnowFlake(Snow *flake);
 static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
@@ -300,6 +296,8 @@ static int do_displaychanged();
 static int do_emeteorite();
 static int do_event();
 static int do_fallen();
+static int do_initstars(void);
+static int do_drawtree(Treeinfo *tree);
 static int do_genflakes();
 static int do_meteorite();
 static int do_newwind();
@@ -307,9 +305,9 @@ static int do_santa();
 static int do_santa1();
 static int do_snow_on_trees();
 static int do_star(Skoordinaten *star);
-static int do_stars();
+//static int do_stars();
 static int do_testing();
-static int do_tree();
+//static int do_tree();
 static int do_ui_check();
 static int do_usanta();
 static int do_ustar();
@@ -387,8 +385,7 @@ int main(int argc, char *argv[])
    InitBlowOffFactor();
 
    SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
-   star = malloc(sizeof(*star)); // will be re-allocated in InitStars
-   //Tree = malloc(sizeof(*Tree)); // will be re-allocated in do_initbaum
+
    srand48((unsigned int)wallclock());
    SnowMap *rp;
    signal(SIGINT, SigHandler);
@@ -533,21 +530,19 @@ int main(int argc, char *argv[])
    add_to_mainloop(G_PRIORITY_DEFAULT, time_event,          do_event          ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen,         do_fallen         ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_initbaum,       do_initbaum       ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_initstars,      do_initstars      ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_meteorite,      do_meteorite      ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_newwind,        do_newwind        ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
-   //add_to_mainloop(G_PRIORITY_DEFAULT, time_stars,          do_stars          ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_initstars,      InitStars          ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
-   //add_to_mainloop(G_PRIORITY_DEFAULT, time_tree,           do_tree           ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_initbaum,       do_initbaum ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
-   //add_to_mainloop(G_PRIORITY_DEFAULT, time_ustars,         do_ustar          ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
+
+   add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
 
    if(!Flags.NoMenu)
    {
@@ -557,7 +552,6 @@ int main(int argc, char *argv[])
    //
    // main loop
    gtk_main();
-
 
    if(TreeXpm) XpmFree(TreeXpm);
 
@@ -580,8 +574,6 @@ int main(int argc, char *argv[])
       printf("                   wakeups   freq    delay   target\n");
    }
 
-   if(star) free(star);
-   //if(Tree) free(Tree);
    if (DoRestart)
    {
       sleep(2);
@@ -790,8 +782,6 @@ int do_ui_check()
       InitDisplayDimensions();
       InitFallenSnow();
       EraseStars();
-      //InitStars();
-      //RedrawTrees();
       EraseTrees();
       changes++;
    }
@@ -865,10 +855,7 @@ int do_ui_check()
       DetermineWindow();
       InitFallenSnow();
       EraseStars();
-      //InitStars();
       EraseTrees();
-      //RedrawTrees();
-      //ClearScreen();
       changes++;
    }
    if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
@@ -905,24 +892,8 @@ void ClearScreen()
 void RedrawTrees()
 {
    EraseTrees();
-   //do_initbaum();
    NoSnowArea_static = TreeRegion;
 }
-
-#if 0
-int do_tree()
-{
-   if (NOTACTIVE)
-      return TRUE;
-   if(!Flags.NoTrees)
-   {
-      int i;
-      for (i=0; i<NTrees; i++)
-	 DrawTree(i);
-   }
-   return TRUE;
-}
-#endif
 
 int do_snow_on_trees()
 {
@@ -1116,14 +1087,6 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
    }
 }
 
-
-int do_usanta() { 
-   if (NOTACTIVE)
-      return TRUE;
-   UpdateSanta(); 
-   return TRUE;
-}
-
 int do_displaychanged()
 {
    // if we are snowing in the desktop, we check if the size has changed,
@@ -1193,7 +1156,6 @@ void RestartDisplay()    // todo
    P("Calling InitDisplayDimensions\n");
    InitDisplayDimensions();
    InitFallenSnow();
-   //InitStars();
    EraseStars();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1204,7 +1166,6 @@ void RestartDisplay()    // todo
    {
       XDestroyRegion(TreeRegion);
       TreeRegion = XCreateRegion();
-      //do_initbaum();
    }
    NoSnowArea_static = TreeRegion;
    XClearArea(display, SnowWin, 0,0,0,0,Exposures);
@@ -1215,8 +1176,6 @@ int do_genflakes()
 {
 
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
-
-   // needs local TNow
 
    static double prevtime;
    static double Prevtime;
@@ -1390,25 +1349,6 @@ void ConvertOnTreeToFlakes()
    SnowOnTreesRegion = XCreateRegion();
 }
 
-int do_stars()
-{
-   if (NOTACTIVE)
-      return TRUE;
-   int i;
-   for (i=0; i<NStars; i++)
-   {
-      int k = star[i].color;
-      int x = star[i].x;
-      int y = star[i].y;
-      int w = starPix.width;
-      int h = starPix.height;
-      XSetTSOrigin(display, StarGC[k],x+w, y+h);
-      XFillRectangle(display,SnowWin,StarGC[k],x,y,w,h);
-   }
-   XFlush(display);
-   return TRUE;
-}
-
 int do_star(Skoordinaten *star)
 {
    if (KillStars)
@@ -1478,7 +1418,7 @@ int do_meteorite()
    return TRUE;
 }
 
-int do_emeteorite()  // todo: using g_timeout_add, there are cleaner solutions
+int do_emeteorite()
 {
    if (NOTACTIVE)
       return TRUE;
@@ -1750,8 +1690,6 @@ void SigHandler(int signum)
 int RandInt(int maxVal)
 {
    if (maxVal <= 0) maxVal = 1;
-   // return rand() % maxVal;   // Poor
-   //return rand() / (RAND_MAX / maxVal + 1);
    // see http://c-faq.com/lib/randrange.html
    return drand48()*maxVal;
 }
@@ -1772,7 +1710,6 @@ void InitFlake(Snow *flake)
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
    flake->rx        = drand48()*(SnowWinWidth - flake->w);
-   //flake->ry        = drand48()*(SnowWinHeight/10);
    flake->ry        = -drand48()*(SnowWinHeight/10);
    flake->cyclic    = 1;
    flake->m         = drand48()+0.1;
@@ -1828,9 +1765,6 @@ int UpdateSnowFlake(Snow *flake)
       EraseSnowFlake(flake);
       delflake(flake);
    }
-
-   // keep flakes y>0: 
-   //if (NewY < 0) { NewY = 1; flake->vy = 0;}
 
    // remove flake if it falls below bottom of screen:
    if (NewY >= SnowWinHeight)
@@ -2018,8 +1952,6 @@ int do_initbaum()
    if (Flags.NoTrees || NTrees != 0)
       return TRUE;
    int i,h,w;
-   //free(Tree);
-   //Tree = malloc(sizeof(*Tree)*Flags.DesiredNumberOfTrees);
 
    // determine which trees are to be used
    //
@@ -2122,12 +2054,6 @@ int do_initbaum()
 
       int flop = (drand48()>0.5);
       //P("treesuc %4d %4d\n",x,y);
-      /*
-	 Tree[NTrees].x    = x;
-	 Tree[NTrees].y    = y;
-	 Tree[NTrees].type = tt;
-	 Tree[NTrees].rev  = flop;
-	 */
 
       Treeinfo *tree = malloc(sizeof(Treeinfo));
       tree->x    = x;
@@ -2135,7 +2061,7 @@ int do_initbaum()
       tree->type = tt;
       tree->rev  = flop;
 
-      add_to_mainloop(G_PRIORITY_DEFAULT, time_tree, DrawTree1, tree);
+      add_to_mainloop(G_PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
 
       Region r;
 
@@ -2156,30 +2082,12 @@ int do_initbaum()
 
       NTrees++;
    }
-   //for(i=0; i<NTrees; i++)
-   //  P("%d\n",Tree[i].type);
    OnTrees = 0;
    return TRUE;
 }
 
-#if 0
-void InitStars()
-{
-   int i;
-   free(star);
-   NStars = Flags.NStars;
-   star = malloc(NStars*sizeof(*star));
-   for (i=0; i<NStars; i++)
-   {
-      star[i].x = RandInt(SnowWinWidth);
-      star[i].y = RandInt(SnowWinHeight/4);
-   }
-   for (i=0; i<NStars; i++)
-      star[i].color = RandInt(STARANIMATIONS);
-}
-#endif
 
-int InitStars()
+int do_initstars()
 {
    if (NStars != 0)
       return TRUE;
@@ -2205,6 +2113,7 @@ void EraseStars()
 }
 
 /*
+ // keep this in case I need the erasure code
    void EraseStars()
    {
    int i;
@@ -2368,6 +2277,7 @@ void ResetSanta()
    SantaX = -SantaWidth - ActualSantaSpeed;
    SantaXr = SantaX;
    SantaY = RandInt(SnowWinHeight / 3)+40;
+   SantaYr = SantaY;
    SantaYStep = 1;
    CurrentSanta = 0;
    XDestroyRegion(SantaRegion);
@@ -2377,16 +2287,23 @@ void ResetSanta()
    XDestroyRegion(SantaPlowRegion);
    SantaPlowRegion = RegionCreateRectangle(
 	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
+   R("SantaX: %d %d %f %f\n",SantaX,SantaY,SantaXr,SantaYr);
 }
 
-int UpdateSanta()
+int do_usanta()
 {
 #define RETURN do { return TRUE ; } while(0)
+   if (NOTACTIVE)
+      RETURN;
    if(Flags.NoSanta)
       RETURN;
+   double         yspeed;
+   static int yspeeddir  = 0;
+   static double sdt     = 0;
+   static double dtt     = 0;
+
    int oldx = SantaX;
    int oldy = SantaY;
-   static double dtt = 0;
 
    double dt = time_usanta;
    ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
@@ -2412,10 +2329,30 @@ int UpdateSanta()
       CurrentSanta++;
       if (CurrentSanta >= PIXINANIMATION) CurrentSanta = 0;
    }
-   if (RandInt(10) > 3) SantaY = SantaY + SantaYStep; 
-   if (SantaY < 0) SantaY = 0;
-   if (RandInt(100) > 80) SantaYStep = -SantaYStep;
 
+   yspeed = ActualSantaSpeed/4;
+   sdt += dt;
+   if (sdt > 2.0)
+   {
+      // time to change yspeed
+      sdt = 0;
+      yspeeddir = RandInt(3)-1;  //  -1, 0, 1
+      R("yspeeddir %d\n",yspeeddir);
+   }
+
+   R("SantaY 1 %d %f %f\n",SantaY,SantaYr,dt*yspeed*yspeeddir);
+   SantaYr += dt*yspeed*yspeeddir;
+   R("SantaYr 2 %f %d\n",SantaYr,SantaY);
+   SantaY = lrintf(SantaYr);
+   if (SantaY < 0) {
+      SantaY = 0;
+      SantaYr = 0;
+   }
+   if (SantaY > SnowWinHeight*0.67)
+   {
+      SantaY = SnowWinHeight*0.67;
+      R("SantaY: %d %d\n",SantaY,(int)(SnowWinHeight*0.67));
+   }
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
    XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
 
@@ -2462,20 +2399,8 @@ void EraseSanta(int x, int y)
 	    Exposures);
 }
 
-#if 0
-void DrawTree(int i) 
-{
-   int x = Tree[i].x; int y = Tree[i].y; int t = Tree[i].type; int r = Tree[i].rev;
-   //P("t = %d\n",t);
-   if (t<0) t=0;
-   XSetClipMask(display, TreeGC, TreeMaskPixmap[t][r]);
-   XSetClipOrigin(display, TreeGC, x, y);
-   XCopyArea(display, TreePixmap[t][r], SnowWin, TreeGC, 
-	 0,0,TreeWidth[t],TreeHeight[t], x, y);
-}
-#endif
 
-int DrawTree1(Treeinfo *tree) 
+int do_drawtree(Treeinfo *tree) 
 {
    if (KillTrees)
    {
@@ -2497,6 +2422,7 @@ void EraseTrees()
 {
    KillTrees = 1;
    /*
+      // keeping this code in case I need explicit erase of trees
       int i;
       int d = 3;
       for (i=0; i<NTrees; i++)
