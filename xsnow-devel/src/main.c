@@ -2287,7 +2287,6 @@ void ResetSanta()
    XDestroyRegion(SantaPlowRegion);
    SantaPlowRegion = RegionCreateRectangle(
 	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
-   R("SantaX: %d %d %f %f\n",SantaX,SantaY,SantaXr,SantaYr);
 }
 
 int do_usanta()
@@ -2337,12 +2336,9 @@ int do_usanta()
       // time to change yspeed
       sdt = 0;
       yspeeddir = RandInt(3)-1;  //  -1, 0, 1
-      R("yspeeddir %d\n",yspeeddir);
    }
 
-   R("SantaY 1 %d %f %f\n",SantaY,SantaYr,dt*yspeed*yspeeddir);
    SantaYr += dt*yspeed*yspeeddir;
-   R("SantaYr 2 %f %d\n",SantaYr,SantaY);
    SantaY = lrintf(SantaYr);
    if (SantaY < 0) {
       SantaY = 0;
