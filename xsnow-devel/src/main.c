@@ -113,9 +113,10 @@ static int      Argc;
 static char**   Argv;
 
 // tree stuff
-static int      KillTrees = 0;  // 1: signal to trees to kill themselves
-static int      KillStars = 0;  // 1: signal to trees to kill themselves
-static int      NTrees    = 0;  // actual number of trees
+static int      KillFlakes = 1;  // 1: signal to flakes to kill themselves, and do not genereate flakes
+static int      KillTrees  = 0;  // 1: signal to trees to kill themselves
+static int      KillStars  = 0;  // 1: signal to trees to kill themselves
+static int      NTrees     = 0;  // actual number of trees
 static int      NtreeTypes = 0;
 static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
 static Pixmap   TreePixmap[MAXTREETYPE+1][2];
@@ -157,7 +158,7 @@ static MeteoMap meteorite;
 // timing stuff
 static double       TotSleepTime = 0;
 static double       TStart;
-static double       factor;
+static double       factor = 1.0;
 
 // windows stuff
 static int          NWindows;
@@ -263,6 +264,7 @@ static void   RestartDisplay(void);
 static void   InitFlake(Snow *flake);
 static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
+static int    InitSnow(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
 static void   InitTreePixmaps(void);
@@ -293,21 +295,19 @@ static void Thanks(void)
 static int do_blowoff();
 static int do_clean();
 static int do_displaychanged();
+static int do_drawtree(Treeinfo *tree);
 static int do_emeteorite();
 static int do_event();
 static int do_fallen();
-static int do_initstars(void);
-static int do_drawtree(Treeinfo *tree);
 static int do_genflakes();
+static int do_initstars(void);
 static int do_meteorite();
 static int do_newwind();
 static int do_santa();
 static int do_santa1();
 static int do_snow_on_trees();
 static int do_star(Skoordinaten *star);
-//static int do_stars();
 static int do_testing();
-//static int do_tree();
 static int do_ui_check();
 static int do_usanta();
 static int do_ustar();
@@ -350,7 +350,6 @@ int main(int argc, char *argv[])
 	 PrintVersion();
 	 break;
    }
-   CreateAlarmDelays();
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
    // I would prefer if this could be arranged in argc-argv, but 
@@ -528,7 +527,6 @@ int main(int argc, char *argv[])
    add_to_mainloop(G_PRIORITY_DEFAULT, time_displaychanged, do_displaychanged ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite     ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_event,          do_event          ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen,         do_fallen         ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_initbaum,       do_initbaum       ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_initstars,      do_initstars      ,0);
@@ -537,12 +535,15 @@ int main(int argc, char *argv[])
    add_to_mainloop(G_PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
+   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
 
-   add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
+   add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen,         do_fallen         ,0);
+   //add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
+   //add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
+
+   CreateAlarmDelays();
 
    if(!Flags.NoMenu)
    {
@@ -731,6 +732,7 @@ int do_ui_check()
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
+      R("Flags.CpuLoad: %d\n",Flags.CpuLoad);
       CreateAlarmDelays();
       changes++;
    }
@@ -1182,8 +1184,11 @@ int do_genflakes()
    static double sumdt;
    static int    first_run = 1;
    static int    halted_by_snowrunning = 0;
-
    double TNow = wallclock();
+
+   if (KillFlakes)
+      RETURN;
+
    if (NOTACTIVE)
       RETURN;
    if (first_run)
@@ -1728,7 +1733,7 @@ void InitFlake(Snow *flake)
 #define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
 int UpdateSnowFlake(Snow *flake)
 {
-   if (FlakeCount >= Flags.FlakeCountMax)
+   if (FlakeCount >= Flags.FlakeCountMax || KillFlakes)
    {
       EraseSnowFlake(flake);
       delflake(flake);
@@ -2777,12 +2782,38 @@ void InitSnowOnTrees()
    SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 }
 
+int InitSnow()
+{
+   // first, kill all snowflakes
+   KillFlakes = 1;
+   // if FlakeCount != 0, there are still some flakes
+   if (FlakeCount > 0)
+      return TRUE;
+   // signal that flakes may be generated
+   KillFlakes = 0;
+   return FALSE;
+}
+
 void CreateAlarmDelays()
 {
+   static guint santa_id=0, santa1_id=0;
+   // re-add things whose timing is dependent on factor
    if (Flags.CpuLoad <= 0)
       factor = 1;
    else
       factor = 100.0/Flags.CpuLoad;
+
+   R("santa_id a: %d\n",santa_id);
+   if (santa_id)
+      g_source_remove(santa_id);
+   if (santa1_id)
+      g_source_remove(santa1_id);
+   santa_id  = add_to_mainloop(G_PRIORITY_HIGH, time_santa,  do_santa  ,0);
+   santa1_id = add_to_mainloop(G_PRIORITY_HIGH, time_santa1, do_santa1 ,0);
+   R("santa_id x: %d\n",santa_id);
+
+   add_to_mainloop(G_PRIORITY_DEFAULT, 0.2 , InitSnow, 0);
+
 
    //P("%d %f\n",Flags.CpuLoad,factor);
    //
