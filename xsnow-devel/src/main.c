@@ -222,7 +222,7 @@ static GC TreeGC;
 //static GC TreesGC[2];
 
 // region stuff
-//static Region NoSnowArea_dynamic;
+static Region NoSnowArea_dynamic;
 //static Region NoSnowArea_static;
 static Region TreeRegion;
 static Region SantaRegion;
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, UseAlpha,Exposures);
 
-   //NoSnowArea_dynamic   = XCreateRegion();
+   NoSnowArea_dynamic   = XCreateRegion();
    TreeRegion           = XCreateRegion();
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
@@ -1451,7 +1451,7 @@ int do_meteorite()
    points[4].y = meteorite.y1-1;
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-//   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
+   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
    meteorite.starttime = wallclock();
    XDrawLine(display, SnowWin, meteorite.gc, 
 	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
@@ -1469,7 +1469,7 @@ int do_emeteorite()
       {
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-//	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
+	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
 	 XDestroyRegion(meteorite.r);
 	 meteorite.active = 0;
       }
@@ -1869,8 +1869,8 @@ int UpdateSnowFlake(Snow *flake)
 
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-   //int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
-   //int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
+   int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
+   int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
    //if(b) return TRUE;
@@ -1940,8 +1940,8 @@ int UpdateSnowFlake(Snow *flake)
       }
    }
 
-   int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
-   int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
+   in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
+   b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
    // if(b): erase: no, move: yes
    // erase this flake 
    if(!b) EraseSnowFlake(flake);
