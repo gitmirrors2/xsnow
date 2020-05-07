@@ -433,7 +433,9 @@ int main(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, UseAlpha,Exposures);
 
-   NoSnowArea_dynamic   = XCreateRegion();
+   NoSnowArea_dynamic   = XCreateRegion();  // needed when drawing on background with xor.
+   //                                          unpleasant things happen when a snowflake
+   //                                          is in the trajectory of a meteorite
    TreeRegion           = XCreateRegion();
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();

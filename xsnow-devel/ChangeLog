@@ -13,6 +13,7 @@ version 2.0.20
 	idem for stars
 	Smooyth vertical movements of Santa
 	remove nosnowarea's. Replace nosnowarea_static by TreeRegion
+	reinstate nosnowarea_dynamic
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18
