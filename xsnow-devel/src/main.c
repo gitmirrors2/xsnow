@@ -222,8 +222,8 @@ static GC TreeGC;
 //static GC TreesGC[2];
 
 // region stuff
-static Region NoSnowArea_dynamic;
-static Region NoSnowArea_static;
+//static Region NoSnowArea_dynamic;
+//static Region NoSnowArea_static;
 static Region TreeRegion;
 static Region SantaRegion;
 static Region SantaPlowRegion;
@@ -236,9 +236,9 @@ static void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 static void   CleanFallen(Window id);
 static void   ClearScreen(void);
 static void   ConvertOnTreeToFlakes(void);
-static void   CreateAlarmDelays(void);
+static void   HandleFactor(void);
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
-static int    DetermineWindow();
+static int    DetermineWindow(void);
 static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSanta1(void);
 static void   DrawSanta(void);
@@ -254,7 +254,6 @@ static int    HandleFallenSnow(FallenSnow *fsnow);
 static void   HandleExposures(void);
 static FILE   *HomeOpen(char *file,char *mode,char **path);
 static Pixel  IAllocNamedColor(char *colorName, Pixel dfltPix);
-static int    do_initbaum(void);
 static void   InitBlowOffFactor(void);
 static void   InitDisplayDimensions(void);
 static void   InitFallenSnow(void);
@@ -264,7 +263,6 @@ static void   RestartDisplay(void);
 static void   InitFlake(Snow *flake);
 static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
-static int    InitSnow(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
 static void   InitTreePixmaps(void);
@@ -292,6 +290,7 @@ static void Thanks(void)
    printf("\nThank you for using xsnow\n");
 }
 
+// callbacks
 static int do_blowoff();
 static int do_clean();
 static int do_displaychanged();
@@ -300,6 +299,8 @@ static int do_emeteorite();
 static int do_event();
 static int do_fallen();
 static int do_genflakes();
+static int do_initbaum(void);
+static int do_initsnow(void);
 static int do_initstars(void);
 static int do_meteorite();
 static int do_newwind();
@@ -313,13 +314,6 @@ static int do_usanta();
 static int do_ustar();
 static int do_wind();
 static int do_wupdate();
-
-static int hellocounter=0;
-int hello(void *aap)
-{
-   printf("hello %d %s\n",hellocounter++,(char*)aap);
-   return hellocounter < 10;
-}
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(G_PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
@@ -439,11 +433,12 @@ int main(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, UseAlpha,Exposures);
 
-   NoSnowArea_dynamic   = XCreateRegion();
+   //NoSnowArea_dynamic   = XCreateRegion();
    TreeRegion           = XCreateRegion();
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
-   SnowOnTreesRegion = XCreateRegion();
+   SnowOnTreesRegion    = XCreateRegion();
+   //NoSnowArea_static    = XCreateRegion();
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
@@ -471,7 +466,7 @@ int main(int argc, char *argv[])
 
 
 
-   NoSnowArea_static = TreeRegion;
+   //NoSnowArea_static = TreeRegion;
    BlackPix = AllocNamedColor(BlackColor, Black);
    MeteoPix = IAllocNamedColor(MeteoColor, White);
    TreePix    = IAllocNamedColor(Flags.TreeColor,   Black);
@@ -539,11 +534,7 @@ int main(int argc, char *argv[])
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
    add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
 
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen,         do_fallen         ,0);
-   //add_to_mainloop(G_PRIORITY_HIGH,    time_santa,          do_santa          ,0);
-   //add_to_mainloop(G_PRIORITY_HIGH,    time_santa1,         do_santa1         ,0);
-
-   CreateAlarmDelays();
+   HandleFactor();
 
    if(!Flags.NoMenu)
    {
@@ -615,7 +606,9 @@ int do_ui_check()
 
    if (Flags.NoMenu)
       return TRUE;
+
    int changes = 0;
+
    if (Flags.SantaSize != OldFlags.SantaSize || 
 	 Flags.NoRudolf != OldFlags.NoRudolf)
    {
@@ -624,6 +617,7 @@ int do_ui_check()
       OldFlags.SantaSize = Flags.SantaSize;
       OldFlags.NoRudolf = Flags.NoRudolf;
       changes++;
+      P("changes: %d\n",changes);
    }
    if (Flags.NoSanta != OldFlags.NoSanta)
    {
@@ -632,12 +626,14 @@ int do_ui_check()
 	 EraseSanta(OldSantaX, OldSantaY);
       OldFlags.NoSanta = Flags.NoSanta;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.SantaSpeedFactor != OldFlags.SantaSpeedFactor)
    {
       SetSantaSpeed();
       OldFlags.SantaSpeedFactor = Flags.SantaSpeedFactor;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(strcmp(Flags.TreeType, OldFlags.TreeType))
    {
@@ -646,24 +642,28 @@ int do_ui_check()
       free(OldFlags.TreeType);
       OldFlags.TreeType = strdup(Flags.TreeType);
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.DesiredNumberOfTrees != OldFlags.DesiredNumberOfTrees)
    {
       RedrawTrees();
       OldFlags.DesiredNumberOfTrees = Flags.DesiredNumberOfTrees;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.TreeFill != OldFlags.TreeFill)
    {
       RedrawTrees();
       OldFlags.TreeFill = Flags.TreeFill;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoTrees != OldFlags.NoTrees)
    {
       RedrawTrees();
       OldFlags.NoTrees = Flags.NoTrees;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(strcmp(Flags.TreeColor, OldFlags.TreeColor))
    {
@@ -672,6 +672,7 @@ int do_ui_check()
       free(OldFlags.TreeColor);
       OldFlags.TreeColor = strdup(Flags.TreeColor);
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NStars != OldFlags.NStars)
    {
@@ -679,11 +680,13 @@ int do_ui_check()
       //InitStars();
       OldFlags.NStars = Flags.NStars;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoMeteorites != OldFlags.NoMeteorites)
    {
       OldFlags.NoMeteorites = Flags.NoMeteorites;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoSnowFlakes != OldFlags.NoSnowFlakes)
    {
@@ -691,12 +694,14 @@ int do_ui_check()
       if(Flags.NoSnowFlakes)
 	 ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.SnowFlakesFactor != OldFlags.SnowFlakesFactor)
    {
       OldFlags.SnowFlakesFactor = Flags.SnowFlakesFactor;
       InitFlakesPerSecond();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(strcmp(Flags.SnowColor, OldFlags.SnowColor))
    {
@@ -706,35 +711,41 @@ int do_ui_check()
       free(OldFlags.SnowColor);
       OldFlags.SnowColor = strdup(Flags.SnowColor);
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.SnowSpeedFactor != OldFlags.SnowSpeedFactor)
    {
       OldFlags.SnowSpeedFactor = Flags.SnowSpeedFactor;
       InitSnowSpeedFactor();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.FlakeCountMax != OldFlags.FlakeCountMax)
    {
       OldFlags.FlakeCountMax = Flags.FlakeCountMax;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.BlowOffFactor != OldFlags.BlowOffFactor)
    {
       OldFlags.BlowOffFactor = Flags.BlowOffFactor;
       InitBlowOffFactor();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoBlowSnow != OldFlags.NoBlowSnow)
    {
       OldFlags.NoBlowSnow = Flags.NoBlowSnow;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
-      R("Flags.CpuLoad: %d\n",Flags.CpuLoad);
-      CreateAlarmDelays();
+      P("cpuload: %d %d\n",OldFlags.CpuLoad,Flags.CpuLoad);
+      HandleFactor();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.UseBG != OldFlags.UseBG)
    {
@@ -742,6 +753,7 @@ int do_ui_check()
       SetGCFunctions();
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.KDEbg != OldFlags.KDEbg)
    {
@@ -751,6 +763,7 @@ int do_ui_check()
       else
 	 KDESetBG1(0);
       ClearScreen();
+      P("changes: %d\n",changes);
    }
    if(strcmp(Flags.BGColor,OldFlags.BGColor))
    {
@@ -761,22 +774,28 @@ int do_ui_check()
 	 KDESetBG1(Flags.BGColor);
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.UseAlpha != OldFlags.UseAlpha)
    {
+      P("changes: %d %d %d\n",changes,OldFlags.UseAlpha,Flags.UseAlpha);
       OldFlags.UseAlpha = Flags.UseAlpha;
       UseAlpha          = Flags.UseAlpha;
       SetGCFunctions();
       ClearScreen();
       changes++;
+      P("changes: %d %d %d\n",changes,OldFlags.UseAlpha,Flags.UseAlpha);
    }
    if(Flags.Exposures != OldFlags.Exposures)
    {
+      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
       OldFlags.Exposures = Flags.Exposures;
       HandleExposures();
-      CreateAlarmDelays();
+      HandleFactor();
       ClearScreen();
       changes++;
+      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
+      P("changes: %d\n",changes);
    }
    if(Flags.OffsetS != OldFlags.OffsetS)
    {
@@ -786,6 +805,7 @@ int do_ui_check()
       EraseStars();
       EraseTrees();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.MaxWinSnowDepth != OldFlags.MaxWinSnowDepth)
    {
@@ -793,6 +813,7 @@ int do_ui_check()
       InitFallenSnow();
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.MaxScrSnowDepth != OldFlags.MaxScrSnowDepth)
    {
@@ -801,24 +822,28 @@ int do_ui_check()
       InitFallenSnow();
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.MaxOnTrees != OldFlags.MaxOnTrees)
    {
       OldFlags.MaxOnTrees = Flags.MaxOnTrees;
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoFluffy != OldFlags.NoFluffy)
    {
       OldFlags.NoFluffy = Flags.NoFluffy;
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoKeepSnowOnTrees != OldFlags.NoKeepSnowOnTrees)
    {
       OldFlags.NoKeepSnowOnTrees = Flags.NoKeepSnowOnTrees;
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoKeepSBot != OldFlags.NoKeepSBot)
    {
@@ -826,6 +851,7 @@ int do_ui_check()
       InitFallenSnow();
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoKeepSWin != OldFlags.NoKeepSWin)
    {
@@ -833,23 +859,27 @@ int do_ui_check()
       InitFallenSnow();
       ClearScreen();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.NoWind != OldFlags.NoWind)
    {
       OldFlags.NoWind = Flags.NoWind;
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.WhirlFactor != OldFlags.WhirlFactor)
    {
       OldFlags.WhirlFactor = Flags.WhirlFactor;
       SetWhirl();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.WindTimer != OldFlags.WindTimer)
    {
       OldFlags.WindTimer = Flags.WindTimer;
       SetWindTimer();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
@@ -859,28 +889,34 @@ int do_ui_check()
       EraseStars();
       EraseTrees();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
    {
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;
       DetermineWindow();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
       DetermineWindow();
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.WindNow)
    {
       Flags.WindNow = 0;
       Wind = 2;
+      P("changes: %d\n",changes);
    }
 
    if (changes > 0)
    {
+      P("WriteFlags\n");
       WriteFlags();
+      P("-----------changes: %d\n",changes);
    }
    return TRUE;
 }
@@ -894,12 +930,12 @@ void ClearScreen()
 void RedrawTrees()
 {
    EraseTrees();
-   NoSnowArea_static = TreeRegion;
+   //NoSnowArea_static = TreeRegion;
 }
 
 int do_snow_on_trees()
 {
-   if (NOTACTIVE)
+   if (NOTACTIVE || KillTrees)
       return TRUE;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return TRUE;
@@ -1169,7 +1205,7 @@ void RestartDisplay()    // todo
       XDestroyRegion(TreeRegion);
       TreeRegion = XCreateRegion();
    }
-   NoSnowArea_static = TreeRegion;
+   //NoSnowArea_static = TreeRegion;
    XClearArea(display, SnowWin, 0,0,0,0,Exposures);
 
 }
@@ -1415,7 +1451,7 @@ int do_meteorite()
    points[4].y = meteorite.y1-1;
    // here sometimes: realloc(): invalid next size
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
+//   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
    meteorite.starttime = wallclock();
    XDrawLine(display, SnowWin, meteorite.gc, 
 	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
@@ -1433,7 +1469,7 @@ int do_emeteorite()
       {
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
+//	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
 	 XDestroyRegion(meteorite.r);
 	 meteorite.active = 0;
       }
@@ -1664,7 +1700,7 @@ int do_testing()
    }
    EraseTrees();
    do_initbaum();
-   NoSnowArea_static = TreeRegion;
+   //NoSnowArea_static = TreeRegion;
    //P("%d:\n",NTrees);
    return TRUE;
    Region region;
@@ -1833,17 +1869,17 @@ int UpdateSnowFlake(Snow *flake)
 
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-   int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
-   int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
+   //int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
+   //int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
-   if(b) return TRUE;
+   //if(b) return TRUE;
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
       // check if flake is touching or in SnowOnTreesRegion
       // if so: remove it
-      in = XRectInRegion(SnowOnTreesRegion,x,y,flake->w,flake->h);
+      int in = XRectInRegion(SnowOnTreesRegion,x,y,flake->w,flake->h);
       if (in == RectanglePart || in == RectangleIn)
       {
 	 EraseSnowFlake(flake);
@@ -1904,15 +1940,15 @@ int UpdateSnowFlake(Snow *flake)
       }
    }
 
-   in = XRectInRegion(NoSnowArea_static,x, y, flake ->w, flake->h);
-   b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
+   int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
+   int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
    // if(b): erase: no, move: yes
    // erase this flake 
    if(!b) EraseSnowFlake(flake);
    flake->rx = NewX;
    flake->ry = NewY;
-   in = XRectInRegion(NoSnowArea_static,nx, ny, flake ->w, flake->h);
-   b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_static
+   in = XRectInRegion(TreeRegion,nx, ny, flake ->w, flake->h);
+   b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
    // if b: draw: no
    if(!b) DrawSnowFlake(flake);
    return TRUE;
@@ -1957,6 +1993,12 @@ int do_initbaum()
    if (Flags.NoTrees || NTrees != 0)
       return TRUE;
    int i,h,w;
+
+   XDestroyRegion(SnowOnTreesRegion);
+   XDestroyRegion(TreeRegion);
+
+   SnowOnTreesRegion = XCreateRegion();
+   TreeRegion        = XCreateRegion();
 
    // determine which trees are to be used
    //
@@ -2088,6 +2130,7 @@ int do_initbaum()
       NTrees++;
    }
    OnTrees = 0;
+   //NoSnowArea_static = TreeRegion;
    return TRUE;
 }
 
@@ -2344,16 +2387,13 @@ int do_usanta()
    }
 
    SantaYr += dt*yspeed*yspeeddir;
-   SantaY = lrintf(SantaYr);
-   if (SantaY < 0) {
-      SantaY = 0;
+   if (SantaYr < 0)
       SantaYr = 0;
-   }
-   if (SantaY > SnowWinHeight*0.33)
-   {
-      SantaY = SnowWinHeight*0.33;
-      R("SantaY: %d %d\n",SantaY,(int)(SnowWinHeight*0.33));
-   }
+
+   if (SantaYr > SnowWinHeight*0.33)
+      SantaYr = SnowWinHeight*0.33;
+
+   SantaY = lrintf(SantaYr);
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
    XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
 
@@ -2442,10 +2482,6 @@ void EraseTrees()
       }
       */
 
-   XDestroyRegion(TreeRegion);
-   TreeRegion = XCreateRegion();
-   XDestroyRegion(SnowOnTreesRegion);
-   SnowOnTreesRegion = XCreateRegion();
    ClearScreen();
 }
 
@@ -2782,47 +2818,46 @@ void InitSnowOnTrees()
    SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 }
 
-int InitSnow()
+int do_initsnow()
 {
    // first, kill all snowflakes
    KillFlakes = 1;
+
    // if FlakeCount != 0, there are still some flakes
    if (FlakeCount > 0)
       return TRUE;
+
    // signal that flakes may be generated
    KillFlakes = 0;
-   return FALSE;
+
+   return FALSE;  // stop callback
 }
 
-void CreateAlarmDelays()
+// handle callbacks for things whose timings depend on factor
+void HandleFactor()
 {
-   static guint santa_id=0, santa1_id=0;
+   static guint santa_id=0, santa1_id=0, fallen_id=0;
    // re-add things whose timing is dependent on factor
    if (Flags.CpuLoad <= 0)
       factor = 1;
    else
       factor = 100.0/Flags.CpuLoad;
 
-   R("santa_id a: %d\n",santa_id);
+   EraseTrees();
+
    if (santa_id)
       g_source_remove(santa_id);
    if (santa1_id)
       g_source_remove(santa1_id);
-   santa_id  = add_to_mainloop(G_PRIORITY_HIGH, time_santa,  do_santa  ,0);
-   santa1_id = add_to_mainloop(G_PRIORITY_HIGH, time_santa1, do_santa1 ,0);
-   R("santa_id x: %d\n",santa_id);
+   if (fallen_id)
+      g_source_remove(fallen_id);
 
-   add_to_mainloop(G_PRIORITY_DEFAULT, 0.2 , InitSnow, 0);
+   santa_id  = add_to_mainloop(G_PRIORITY_HIGH,    time_santa,  do_santa,  0);
+   santa1_id = add_to_mainloop(G_PRIORITY_HIGH,    time_santa1, do_santa1, 0);
+   fallen_id = add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
 
+   add_to_mainloop(G_PRIORITY_DEFAULT, 0.2 , do_initsnow, 0);
 
-   //P("%d %f\n",Flags.CpuLoad,factor);
-   //
-   if (!Exposures) // todo
-   {
-      //Delay[alarm_santa1] = 10*factor;
-      //time_santa1 = 10*factor;
-      //
-   }
 }
 
 void SetGCFunctions()
@@ -3030,7 +3065,7 @@ int DetermineWindow()
    if (Flags.UseAlpha != SOMENUMBER)
       UseAlpha = Flags.UseAlpha;
 
-   Flags.UseAlpha = UseAlpha;   // we could run into trouble with this, let's see...
+   //Flags.UseAlpha = UseAlpha;   // we could run into trouble with this, let's see...
    if(Flags.KDEbg)
       KDESetBG1(Flags.BGColor);
    return 1;
@@ -3046,7 +3081,7 @@ void HandleExposures()
    else
       Exposures = Flags.Exposures;
 
-   Flags.Exposures = Exposures;   // trouble ?
+   //Flags.Exposures = Exposures;   // trouble ?
 }
 
 

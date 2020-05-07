@@ -30,6 +30,7 @@
 typedef struct flags {
    //unsigned long int WindowId;
    DOITALL
+      int dummy;
 }FLAGS;
 #undef DOIT_I
 #undef DOIT_L
