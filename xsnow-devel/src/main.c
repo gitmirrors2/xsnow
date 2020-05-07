@@ -2349,10 +2349,10 @@ int do_usanta()
       SantaY = 0;
       SantaYr = 0;
    }
-   if (SantaY > SnowWinHeight*0.67)
+   if (SantaY > SnowWinHeight*0.33)
    {
-      SantaY = SnowWinHeight*0.67;
-      R("SantaY: %d %d\n",SantaY,(int)(SnowWinHeight*0.67));
+      SantaY = SnowWinHeight*0.33;
+      R("SantaY: %d %d\n",SantaY,(int)(SnowWinHeight*0.33));
    }
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
    XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
