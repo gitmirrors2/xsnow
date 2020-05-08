@@ -2764,11 +2764,11 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Apply default values for the preferences in this tab.</property>
-                <property name="halign">end</property>
+                <property name="halign">start</property>
                 <signal name="clicked" handler="button_defaults_general" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">0</property>
+                <property name="left_attach">1</property>
                 <property name="top_attach">16</property>
               </packing>
             </child>
@@ -2779,7 +2779,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
-                <property name="halign">start</property>
+                <property name="halign">end</property>
                 <signal name="clicked" handler="button_vintage_general" swapped="no"/>
               </object>
               <packing>
@@ -2888,9 +2888,8 @@ maintainer of xsnow, here is a paypal link.</property>
                 <signal name="clicked" handler="button_iconify" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">0</property>
+                <property name="left_attach">1</property>
                 <property name="top_attach">17</property>
-                <property name="width">2</property>
               </packing>
             </child>
             <child>
@@ -3159,6 +3158,12 @@ desktops</property>
                 <property name="left_attach">2</property>
                 <property name="top_attach">4</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
