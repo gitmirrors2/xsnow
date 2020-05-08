@@ -156,7 +156,7 @@ static int NStars;
 static MeteoMap meteorite;
 
 // timing stuff
-static double       TotSleepTime = 0;
+//static double       TotSleepTime = 0;
 static double       TStart;
 static double       factor = 1.0;
 
@@ -243,7 +243,6 @@ static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSanta1(void);
 static void   DrawSanta(void);
 static void   DrawSnowFlake(Snow *flake);
-//static void   DrawTree(int i);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 static void   EraseStars(void);
 static void   EraseTrees(void);
@@ -440,7 +439,6 @@ int main(int argc, char *argv[])
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
    SnowOnTreesRegion    = XCreateRegion();
-   //NoSnowArea_static    = XCreateRegion();
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
@@ -455,7 +453,6 @@ int main(int argc, char *argv[])
    InitFlakesPerSecond();
    InitSantaPixmaps();
    InitFallenSnow();
-   //InitStars();
    InitTreePixmaps();  // can change value of Flags.NoMenu
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
@@ -467,8 +464,6 @@ int main(int argc, char *argv[])
 #undef DOIT_S
 
 
-
-   //NoSnowArea_static = TreeRegion;
    BlackPix = AllocNamedColor(BlackColor, Black);
    MeteoPix = IAllocNamedColor(MeteoColor, White);
    TreePix    = IAllocNamedColor(Flags.TreeColor,   Black);
@@ -495,7 +490,6 @@ int main(int argc, char *argv[])
 
    SetGCFunctions();
 
-   //do_initbaum();
    InitSnowColor();
 
    ResetSanta();   
@@ -517,7 +511,6 @@ int main(int argc, char *argv[])
    TStart = wallclock();
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
-   //
 
    add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff        ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean          ,0);
@@ -543,7 +536,6 @@ int main(int argc, char *argv[])
       ui(&argc, &argv);
    }
 
-   //
    // main loop
    gtk_main();
 
@@ -556,17 +548,6 @@ int main(int argc, char *argv[])
    XCloseDisplay(display); //also frees the GC's, pixmaps and other resources on display
    while(FsnowFirst)
       PopFallenSnow(&FsnowFirst);
-   double telapsed = wallclock() - TStart;
-
-   if(Flags.ShowStats)
-   {
-      printf("\nElapsed: %8.2f seconds\n",telapsed);
-      printf("Sleep:   %8.2f seconds = %6.2f%%\n",
-	    TotSleepTime,100.0*TotSleepTime/telapsed);
-      printf("Active:  %8.2f seconds = %6.2f%%\n",
-	    telapsed - TotSleepTime,100.0*(telapsed-TotSleepTime)/telapsed);
-      printf("                   wakeups   freq    delay   target\n");
-   }
 
    if (DoRestart)
    {
@@ -679,7 +660,6 @@ int do_ui_check()
    if(Flags.NStars != OldFlags.NStars)
    {
       EraseStars();
-      //InitStars();
       OldFlags.NStars = Flags.NStars;
       changes++;
       P("changes: %d\n",changes);
@@ -932,7 +912,6 @@ void ClearScreen()
 void RedrawTrees()
 {
    EraseTrees();
-   //NoSnowArea_static = TreeRegion;
 }
 
 int do_snow_on_trees()
@@ -971,8 +950,6 @@ int do_fallen()
       return TRUE;
 
    FallenSnow *fsnow = FsnowFirst;
-   //P("%d\n",RunCounter);
-   //PrintFallenSnow(FsnowFirst);
    while(fsnow)
    {
       if (HandleFallenSnow(fsnow)) 
@@ -1074,7 +1051,6 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
       XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
    if(xstart <= 0 && w >= fsnow->w)
       fsnow->clean = 1;
-   //R("fsnow->clean: %d\n",fsnow->clean);
 }
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
@@ -1108,7 +1084,6 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	    flake->cyclic = 0;
 	    add_flake_to_mainloop(flake);
 	 }
-	 //P("%f %f\n",FirstFlake->rx, FirstFlake->ry);
       }
    }
 }
@@ -1180,7 +1155,7 @@ int do_event()
 		     (ev.xconfigure.width != SnowWinWidth ||
 		      ev.xconfigure.height != SnowWinHeight))
 	       {
-		  //P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
+		  P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
 		  P("Calling RestartDisplay\n");
 		  RestartDisplay();
 	       }
@@ -1197,6 +1172,7 @@ void RestartDisplay()    // todo
    InitDisplayDimensions();
    InitFallenSnow();
    EraseStars();
+   EraseTrees();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
       XDestroyRegion(SnowOnTreesRegion);
@@ -1207,7 +1183,6 @@ void RestartDisplay()    // todo
       XDestroyRegion(TreeRegion);
       TreeRegion = XCreateRegion();
    }
-   //NoSnowArea_static = TreeRegion;
    XClearArea(display, SnowWin, 0,0,0,0,Exposures);
 
 }
@@ -1252,8 +1227,7 @@ int do_genflakes()
       sumdt += dt; 
    else
       sumdt = 0;
-   //if (FlakeCount + desflakes > Flags.FlakeCountMax)
-    //  RETURN;
+
    int i;
    for(i=0; i<desflakes; i++)
    {
@@ -1281,7 +1255,6 @@ int do_newwind()
       return TRUE;
    }
 
-   //P("oldwind: %f %f %d\n",NewWind,Whirl,Wind);
    float windmax = 100.0;
    float r;
    switch (Wind)
@@ -1294,15 +1267,12 @@ int do_newwind()
 	 if(NewWind < -windmax) NewWind = -windmax;
 	 break;
       case(1): 
-	 //NewWind = Direction*300;
 	 NewWind = Direction*0.6*Whirl;
 	 break;
       case(2):
-	 //NewWind = Direction*600;
 	 NewWind = Direction*1.2*Whirl;
 	 break;
    }
-   //P(" newwind: %f %f\n",NewWind,r);
    return TRUE;
 }
 
@@ -1382,10 +1352,7 @@ void ConvertOnTreeToFlakes()
 	    flake->cyclic = 0;
 	    add_flake_to_mainloop(flake);
 	 }
-	 //P("%d %d %d\n",FlakeCount, (int)FirstFlake->rx,(int)FirstFlake->ry);
       }
-      //if(FlakeCount > Flags.FlakeCountMax)
-//	 break;
    }
    OnTrees = 0;
    XDestroyRegion(SnowOnTreesRegion);
@@ -1489,7 +1456,6 @@ int do_clean()
    {
       if (wallclock() - TStart > 2.0)
       {
-	 //P("do_clean ClearScreen\n");
 	 ClearScreen();
 	 active        = 0;
 	 ActivateClean = 0;
@@ -1533,20 +1499,15 @@ int do_wupdate()
    WinInfo *winfo;
    winfo = FindWindow(Windows,NWindows,SnowWin);
 
-   //P("SnowWin: 0x%lx\n",SnowWin);
-   //P("current workspace: %d %d\n",CWorkSpace,RunCounter);
-   //printwindows(Windows, NWindows);
-   //P("ws:%d\n",winfo->ws);
-
    // check also on valid winfo: after toggling 'below'
    // winfo is nil sometimes
 
    if(UsingTrans && winfo)
    {
-      //P("winfo: %p\n",(void*)winfo);
       // in xfce and maybe others, workspace info is not to be found
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
+      
       if (winfo->ws)
       {
 	 TransWorkSpace = winfo->ws;
@@ -1661,10 +1622,8 @@ void UpdateWindows()
       {
 	 if (f->w == w->w+Flags.OffsetW) // width has not changed
 	 {
-	    //P("%#lx no change width %d %d %d %d %d %d\n",f->id,f->x,f->y,w->x,w->y,f->w,RunCounter);
 	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
 	    {
-	       //R("window moved %d\n",RunCounter);
 	       CleanFallenArea(f,0,f->w);
 	       f->x = w->x + Flags.OffsetX;
 	       f->y = w->y + Flags.OffsetY;
@@ -1674,7 +1633,6 @@ void UpdateWindows()
 	 }
 	 else
 	 {
-	    //P("%#lx change width\n",f->id);
 	    toremove[ntoremove++] = f->id;
 	 }
       }
@@ -1683,7 +1641,6 @@ void UpdateWindows()
 
    for (i=0; i<ntoremove; i++)
    {
-      //P("remove window %#lx\n",toremove[i]);
       CleanFallen(toremove[i]);
       RemoveFallenSnow(&FsnowFirst,toremove[i]);
    }
@@ -1702,16 +1659,9 @@ int do_testing()
    }
    EraseTrees();
    do_initbaum();
-   //NoSnowArea_static = TreeRegion;
-   //P("%d:\n",NTrees);
    return TRUE;
    Region region;
-   //region = SantaRegion;
-   //region = NoSnowArea_static;
    region = SnowOnTreesRegion;
-   //region = NoSnowArea_dynamic;
-   //region = SantaPlowRegion;
-   //region = TreeRegion;
 
    XSetFunction(display,   TestingGC, GXcopy);
    XSetForeground(display, TestingGC, BlackPix); 
@@ -1795,11 +1745,9 @@ int UpdateSnowFlake(Snow *flake)
       if(flake->vx < -speedxmax) flake->vx = -speedxmax;
    }
 
-   //P("vy: %f\n",flake->vy);
    flake->vy += INITIALYSPEED * (drand48()-0.4)*0.1 ;
    if (flake->vy > flake->ivy*1.5) flake->vy = flake->ivy*1.5;
 
-   //P("%f %f %f\n",flake->vx, NewWind, FlakesDT);
    float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
    if(flake->cyclic)
@@ -2077,10 +2025,6 @@ int do_initbaum()
       free(tmptreetype);
    }
 
-   //P("NtreeTypes: %d\n",NtreeTypes);
-   //for (i=0; i<NtreeTypes; i++)
-   //  P("%d\n",TreeType[i]);
-
    // determine placement of trees and NTrees:
 
    NTrees    = 0;
@@ -2091,7 +2035,6 @@ int do_initbaum()
 	 break;
 
       int tt = TreeType[RandInt(NtreeTypes)];
-      //P("%d %d\n",tt,NtreeTypes);
       h = TreeHeight[tt];
       w = TreeWidth[tt];
 
@@ -2102,13 +2045,11 @@ int do_initbaum()
       int x = RandInt(SnowWinWidth);
       int y = y1 - RandInt(y1-y2);
 
-      //P("treetry %4d %4d %4d %4d\n",x,y,y1,y2);
       int in = XRectInRegion(TreeRegion,x,y,w,h);
       if (in == RectangleIn || in == RectanglePart)
 	 continue;
 
       int flop = (drand48()>0.5);
-      //P("treesuc %4d %4d\n",x,y);
 
       Treeinfo *tree = malloc(sizeof(Treeinfo));
       tree->x    = x;
@@ -2123,11 +2064,9 @@ int do_initbaum()
       switch(tt)
       {
 	 case -SOMENUMBER:
-	    //r = regionfromxpm(TreeXpm,Tree[NTrees].rev);
 	    r = regionfromxpm(TreeXpm,tree->rev);
 	    break;
 	 default:
-	    //r = regionfromxpm(xpmtrees[tt],Tree[NTrees].rev);
 	    r = regionfromxpm(xpmtrees[tt],tree->rev);
 	    break;
       }
@@ -2138,7 +2077,6 @@ int do_initbaum()
       NTrees++;
    }
    OnTrees = 0;
-   //NoSnowArea_static = TreeRegion;
    return TRUE;
 }
 
@@ -2191,7 +2129,6 @@ void EraseStars()
 
 void InitFallenSnow()
 {
-   //P("%d\n",SnowWinHeight);
    while (FsnowFirst)
       PopFallenSnow(&FsnowFirst);
    PushFallenSnow(&FsnowFirst, 0, CWorkSpace, 0, 0, 
@@ -2200,7 +2137,6 @@ void InitFallenSnow()
 
 void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 {
-   //P("%#lx %d %d %d\n",fsnow ->id, x,w,fsnow->ws);
    if(!HandleFallenSnow(fsnow)) return;
    int imin = x;
    if(imin < 0) imin = 0;
@@ -2268,14 +2204,12 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
    if(Flags.NoBlowSnow)
       return;
-   //P("%#lx\n",fsnow->id);
    int i;
    int x = RandInt(fsnow->w - w);
    for(i=x; i<x+w; i++)
       if(fsnow->acth[i] > h)
       {
 	 // animation of blown off snow
-	 //if (!Flags.NoBlowSnow && abs(NewWind) > 100 && drand48() > 0.5)
 	 if (!Flags.NoWind && !Flags.NoBlowSnow && Wind != 0 && drand48() > 0.5)
 	 {
 	    int j, jmax = BlowOff();
@@ -2293,8 +2227,6 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
-	 //if(FlakeCount > Flags.FlakeCountMax)
-	  //  return;
       }
 }
 
@@ -2376,7 +2308,6 @@ int do_usanta()
    }
    if (SantaXr < -SantaWidth-ActualSantaSpeed) SantaXr = -SantaWidth - ActualSantaSpeed; 
    SantaX = lrintf(SantaXr);
-   //P("%f %f %f %f\n",dt,ActualSantaSpeed,SantaXr,NewWind);
    dtt += dt;
    if (dtt > 0.1 && fabs(ActualSantaSpeed) > 3)
    {
@@ -2563,8 +2494,6 @@ void InitDisplayDimensions()
       SnowWinHeight -= y;
    SnowWinBorderWidth = b;
    SnowWinDepth       = d;
-   //P("%d %d %d %d %d %d\n",SnowWinX,SnowWinY,SnowWinWidth,
-   //	 SnowWinHeight,SnowWinDepth,Flags.OffsetS);
 
    SetMaxScreenSnowDepth();
 }
@@ -2593,11 +2522,8 @@ void SetSantaSpeed()
 void InitSantaPixmaps()
 {
    XpmAttributes attributes;
-   //P("InitSantaPixmaps: SantaSize=%d NoRudolf=%d\n",Flags.SantaSize,Flags.NoRudolf);
-   //attributes.visual = DefaultVisual(display,DefaultScreen(display));
    attributes.valuemask = XpmDepth /*| XpmColorKey*/;
    attributes.depth = SnowWinDepth;
-   //attributes.color_key = XPM_COLOR;
 
    SetSantaSpeed();
 
@@ -2649,7 +2575,6 @@ void InitSantaPixmaps()
 	 }
 	 free(path[i]);
       }
-      //P("InitSantaPixmaps: SantaWidth: %d, SantaHeight: %d\n",SantaWidth,SantaHeight);
       return;
    }
 
@@ -2681,7 +2606,6 @@ void InitSantaPixmaps()
       }
    }
    if (wrong) exit(1);
-   //P("InitSantaPixmaps: SantaWidth: %d, SantaHeight: %d\n",SantaWidth,SantaHeight);
 }		
 
 void InitTreePixmaps()
@@ -2707,7 +2631,6 @@ void InitTreePixmaps()
 	    iXpmCreatePixmapFromData(display, SnowWin, TreeXpm, 
 		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
 	 sscanf(*TreeXpm,"%d %d", &TreeWidth[0],&TreeHeight[0]);
-	 //P("%d %d\n",TreeWidth[0],TreeHeight[0]);
 	 printf("using external tree: %s\n",path);
 	 if (!Flags.NoMenu)
 	    printf("Disabling menu.\n");
@@ -2785,7 +2708,6 @@ FILE *HomeOpen(char *file,char *mode, char**path)
 int BlowOff()
 {
    float g = gaussian(BlowOffFactor,0.5*BlowOffFactor,0.0,2.0*MAXBLOWOFFFACTOR);
-   //P("%f %f %f %ld\n",BlowOffFactor,2.0*MAXBLOWOFFFACTOR,g,lrint(g));
    return lrint(g);
 }
 
@@ -3073,7 +2995,6 @@ int DetermineWindow()
    if (Flags.UseAlpha != SOMENUMBER)
       UseAlpha = Flags.UseAlpha;
 
-   //Flags.UseAlpha = UseAlpha;   // we could run into trouble with this, let's see...
    if(Flags.KDEbg)
       KDESetBG1(Flags.BGColor);
    return 1;
@@ -3089,7 +3010,6 @@ void HandleExposures()
    else
       Exposures = Flags.Exposures;
 
-   //Flags.Exposures = Exposures;   // trouble ?
 }
 
 

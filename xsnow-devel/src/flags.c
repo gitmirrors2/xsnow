@@ -162,11 +162,6 @@ int HandleFlags(int argc, char*argv[])
 	 else if(strcmp(arg,"-kdebg") == 0) {
 	    Flags.KDEbg  = 1;
 	 }
-#if 0
-	 else if(strcmp(arg,"-kde") == 0) {
-	    KDEFLAGS;
-	 }
-#endif
 	 else if(strcmp(arg,"-fvwm") == 0) {
 	    FVWMFLAGS;
 	 }
@@ -221,7 +216,6 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nosnowflakes,NoSnowFlakes,1);
 	 handle_iv(-notrees,NoTrees,1);
 	 handle_iv(-nowind,NoWind,1);
-	 handle_iv(-showstats,ShowStats,1);
 	 handle_iv(-xwininfo,XWinInfoHandling,1);
 	 else {
 	    fprintf(stderr,"** unknown flag: '%s', exiting.\n",argv[ax]);

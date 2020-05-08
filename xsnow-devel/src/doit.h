@@ -36,7 +36,6 @@
    DOIT_I(Done)  \
    DOIT_I(WindNow)  \
    DOIT_I(XWinInfoHandling) \
-   DOIT_I(ShowStats) \
    DOIT_L(WindowId)  \
    DOIT
 

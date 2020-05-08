@@ -64,7 +64,6 @@
 #define DEFAULT_Quiet 1
 #define DEFAULT_SantaSize 3         // default santa size    
 #define DEFAULT_SantaSpeedFactor 100
-#define DEFAULT_ShowStats 0 
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
 #define DEFAULT_SnowSpeedFactor 100

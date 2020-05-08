@@ -121,7 +121,6 @@ void FreeFallenSnow(FallenSnow *fallen)
 {
    free(fallen->acth);
    free(fallen->desh);
-   //XDestroyRegion(fallen->region);
    free(fallen);
 }
 

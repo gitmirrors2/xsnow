@@ -17,6 +17,7 @@ version 2.0.20
 	fix issue with erasing flakes that are in a tree
 	if FlakeCount > max, high probabilty to remove blown-off flakes
 	all scales show now numerical value
+	removed -showstats option
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18
