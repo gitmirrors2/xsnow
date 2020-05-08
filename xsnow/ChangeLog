@@ -2,6 +2,22 @@ version 2.0.20
 	replace timing loop with g_timeout_add()
 	add polarbear
 	use g_get_monotonic_time() for wallclock
+	give every snowflake its own g_timeout_add()
+	give Santa highest priority (not that it matters much, it seems)
+	Change fuse algorithm: now Updatesnowflake kills flake when number
+	  of flakes is above threshold
+	Initsnowflake: start y above above window
+	updatesnowflake: do not force y >=0
+	add button for flake-count-max
+	put refresh of trees in g_timeout_add()
+	idem for stars
+	Smooyth vertical movements of Santa
+	remove nosnowarea's. Replace nosnowarea_static by TreeRegion
+	reinstate nosnowarea_dynamic
+	fix issue with erasing flakes that are in a tree
+	if FlakeCount > max, high probabilty to remove blown-off flakes
+	all scales show now numerical value
+	removed -showstats option
 version 2.0.19
 	debian/tests/control: removed test2.sh
 version 2.0.18

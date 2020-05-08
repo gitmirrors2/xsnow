@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@ xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
-		snowflakes.c snowflakes.h flags.c flags.h \
+		flags.c flags.h \
 		gaussian.c gaussian.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
-		doit.h ui.c ui.h ui.glade alarm.h \
+		doit.h ui.c ui.h ui.glade \
 		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h
 

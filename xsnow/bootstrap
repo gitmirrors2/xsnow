@@ -3,7 +3,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ sed -i "/^AC_INIT(\[xsnow]/s/^.*/AC_INIT([xsnow], [$version], [wvermin@gmail.com
 # the 'xsnow' line and the -- Willem line will be adapted to the
 # new version and date automatically
 
-for d in debian debian.eoan debian.stretch debian.sid debian.tara ; do
+for d in debian debian.eoan debian.focal debian.stretch debian.sid debian.tara ; do
    if [ -e $d/changelog ] ; then
       sed -i "1s/(.*)/(1:$version-1)/" $d/changelog       || exit 1
       sed -i "0,/^ --.*>/{/^ --.*>/s/>  .*/>  $date/}" $d/changelog || exit 1

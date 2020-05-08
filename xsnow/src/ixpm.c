@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -66,8 +66,6 @@ static void strrevert(char*s, size_t l)
    char *c = malloc(l*sizeof(*c));
    char *a = s;
    char *b = s+strlen(s)-l;
-   //printf("%d: %s\n",__LINE__,b);
-   //exit(0);
    for (i=0; i<n/2; i++)
    {
       strncpy(c,a,l);
@@ -121,7 +119,6 @@ Region regionfromxpm(char **data, int flop)
    Region r = XCreateRegion();
    // width, height, #colors, $chars to code color
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
-   //printf("%d: %d %d %d %d %ld\n",__LINE__,w,h,nc,n,strlen(*data));
    // find color "None":
    int i;
    char *code = "";
@@ -138,21 +135,18 @@ Region regionfromxpm(char **data, int flop)
 	 break;
       }
    }
-   //printf("%d: code [%s]\n",__LINE__,code);
    XRectangle rect;
    rect.width = 1;
    rect.height = 1;
    int y;
    for (y=0; y<h; y++)
    {
-      //printf("%d: %s\n",__LINE__,data[y+offset]);
       int x;
       char*s = strdup(data[y+offset]);
       if(flop)
 	 strrevert(s,n);
       for(x=0; x<w; x++)
       {
-	 //printf("%d: %d %d %d %d\n",__LINE__,x,y,offset,n);
 	 if (strncmp(s+n*x,code,n))
 	 {
 	    rect.x = x;

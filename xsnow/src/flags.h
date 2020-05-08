@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 typedef struct flags {
    //unsigned long int WindowId;
    DOITALL
+      int dummy;
 }FLAGS;
 #undef DOIT_I
 #undef DOIT_L
@@ -47,13 +48,6 @@ typedef struct flags {
       Flags.UseBG     = 0; \
       Flags.Exposures = 0; } while(0)
 
-#if 0
-#define KDEFLAGS \
-   do { \
-      Flags.UseAlpha  = 1; \
-      Flags.UseBG     = 0; \
-      Flags.Exposures = 0; } while(0)
-#endif
 
 extern FLAGS Flags;
 

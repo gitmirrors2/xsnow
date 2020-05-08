@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -162,11 +162,6 @@ int HandleFlags(int argc, char*argv[])
 	 else if(strcmp(arg,"-kdebg") == 0) {
 	    Flags.KDEbg  = 1;
 	 }
-#if 0
-	 else if(strcmp(arg,"-kde") == 0) {
-	    KDEFLAGS;
-	 }
-#endif
 	 else if(strcmp(arg,"-fvwm") == 0) {
 	    FVWMFLAGS;
 	 }
@@ -221,7 +216,6 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nosnowflakes,NoSnowFlakes,1);
 	 handle_iv(-notrees,NoTrees,1);
 	 handle_iv(-nowind,NoWind,1);
-	 handle_iv(-showstats,ShowStats,1);
 	 handle_iv(-xwininfo,XWinInfoHandling,1);
 	 else {
 	    fprintf(stderr,"** unknown flag: '%s', exiting.\n",argv[ax]);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <!-- -copyright-
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
   <object class="GtkApplicationWindow" id="error_x11_fenster">
     <property name="can_focus">False</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
-    <child>
+    <child type="titlebar">
       <placeholder/>
     </child>
     <child>
@@ -104,6 +104,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="flake-count-max-adjustment">
+    <property name="lower">10</property>
+    <property name="upper">4000</property>
+    <property name="value">1000</property>
+    <property name="step_increment">100</property>
+    <property name="page_increment">100</property>
   </object>
   <object class="GtkAdjustment" id="lift-window-adjustment">
     <property name="upper">100</property>
@@ -1056,7 +1063,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="adjustment">snow-intensity-adjustment</property>
                 <property name="show_fill_level">True</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_intensity" swapped="no"/>
               </object>
               <packing>
@@ -1072,7 +1079,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-speed-adjustment</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_speed" swapped="no"/>
               </object>
               <packing>
@@ -1088,7 +1095,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-blow-adjustment</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_blowoff_intensity" swapped="no"/>
               </object>
               <packing>
@@ -1103,7 +1110,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_windows" swapped="no"/>
               </object>
               <packing>
@@ -1118,7 +1125,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the bottom of the desktop.</property>
                 <property name="adjustment">snow-on-screen-adjustment</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_bottom" swapped="no"/>
               </object>
               <packing>
@@ -1133,7 +1140,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the trees.</property>
                 <property name="adjustment">snow-on-trees-adjustment</property>
                 <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="digits">0</property>
                 <signal name="value-changed" handler="button_snow_trees" swapped="no"/>
               </object>
               <packing>
@@ -1265,10 +1272,32 @@ maintainer of xsnow, here is a paypal link.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="flake-count-max">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Maximum amount of snowflakes.</property>
+                <property name="valign">center</property>
+                <property name="adjustment">flake-count-max-adjustment</property>
+                <property name="round_digits">1</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Max # flakes</property>
+                <property name="justify">right</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -1778,7 +1807,6 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="adjustment">santaspeedadjustment</property>
                 <property name="fill_level">3</property>
                 <property name="round_digits">2</property>
-                <property name="draw_value">False</property>
                 <signal name="value-changed" handler="button_santa_speed" swapped="no"/>
               </object>
               <packing>
@@ -2547,7 +2575,6 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="inverted">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
-                <property name="draw_value">False</property>
                 <property name="value_pos">left</property>
                 <signal name="value-changed" handler="button_wind_whirl" swapped="no"/>
               </object>

@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 #define DEFAULT_DisplayName ""
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
-#define DEFAULT_FlakeCountMax 10000     // more flakes leads to a broken fuse
+#define DEFAULT_FlakeCountMax 2000 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_KDEbg 0
 #define DEFAULT_MaxOnTrees 200
@@ -64,7 +64,6 @@
 #define DEFAULT_Quiet 1
 #define DEFAULT_SantaSize 3         // default santa size    
 #define DEFAULT_SantaSpeedFactor 100
-#define DEFAULT_ShowStats 0 
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
 #define DEFAULT_SnowSpeedFactor 100
@@ -110,7 +109,6 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWCHUNK 2        // handle this number of flakes at a time  // TODO
 #define SNOWFLAKEMAXTYPE 6  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
@@ -118,8 +116,52 @@
 #define WHIRL 150
 
 
+// timers
+
+#define time_blowoff          0.50             /* time between blow snow off windows         */
+#define time_clean            1.00             /* time between cleaning desktop              */
+#define time_displaychanged   1.00             /* time between checks if display has changed */
+#define time_emeteorite       0.20             /* time between meteorites erasures           */ 
+#define time_event            0.01             /* time between checking events               */
+#define time_fuse             1.00             /* time between testing on too much flakes    */
+#define time_genflakes        0.10             /* time between generation of flakes          */
+#define time_initbaum         1.00             /* time between check for (re)create trees    */
+#define time_initstars        1.00             /* time between check for (re)create stars    */
+#define time_meteorite        3.00             /* time between meteorites                    */
+#define time_newwind          1.00             /* time between changing wind                 */
+#define time_sfallen          2.30             /* time between smoothing of fallen snow      */
+#define time_snow_on_trees    0.50             /* time between redrawings of snow on trees   */
+#define time_star             0.50             /* time between drawing stars                 */ 
+#define time_testing          1.05             /* time between testing code                  */ 
+#define time_ui_check         0.25             /* time between checking values from ui       */ 
+#define time_usanta           0.02             /* time between update of santa position      */
+#define time_ustar            2.00             /* time between updating stars                */ 
+#define time_wind             0.10             /* time between starting or ending wind       */
+#define time_wupdate          0.50             /* time between getting windows information   */ 
+
+#define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
+#define time_santa            (0.02 * factor)  /* time between drawings of santa             */
+#define time_santa1           (0.01 * factor)  /* time between redrawings of santa           */
+#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
+#define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
+
+#define PRIORITY_DEFAULT   G_PRIORITY_LOW
+#define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
 
+typedef struct Snow {
+   int w;                   // width
+   int h;                   // height
+   float rx;                // x position
+   float ry;                // y position
+   float vx;                // speed in x-direction, pixels/second
+   float vy;                // speed in y-direction, pixels/second
+   float m;                 // mass of flake
+   float ivy;               // initial speed in y direction
+   float wsens;             // wind dependency factor
+   unsigned int cyclic : 1; // 0: flake is not cyclic 
+   int whatFlake;           // snowflake index
+} Snow;
 
 typedef struct SnowMap {
    char *snowBits;

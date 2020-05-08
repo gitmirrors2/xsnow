@@ -2,7 +2,7 @@
 #-#
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019 Willem Vermin
+#-#               2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -108,13 +108,9 @@ void docs_usage(int man)
    manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
    manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel.");
-#if 0
-   manout("-kde"                      ,"prepare for KDE: no background, -alpha 1, -noexposures .");
-#endif
    manout("-fvwm"                     ,"prepare for FVWM and the like: no background, -alpha 0, -noexposures .");
    manout("-gnome"                    ,"prepare for GNOME, KDE and the like: no background, -alpha 1, -noexposures .");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
-   manout("-showstats"                ,"Print some statistics about the various things that happen in xsnow.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
    if(doman)
    {
