@@ -316,7 +316,7 @@ static int do_wind();
 static int do_wupdate();
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
-#define add_flake_to_mainloop(f) add_to_mainloop(G_PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
+#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
 #define makeflake(f) do {f = malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
 int main(int argc, char *argv[])
@@ -519,22 +519,22 @@ int main(int argc, char *argv[])
    ClearScreen();   // without this, no snow, scenery etc. in KDE
    //
 
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_blowoff,        do_blowoff        ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_clean,          do_clean          ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_displaychanged, do_displaychanged ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite     ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_event,          do_event          ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_initbaum,       do_initbaum       ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_initstars,      do_initstars      ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_meteorite,      do_meteorite      ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_newwind,        do_newwind        ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
-   add_to_mainloop(G_PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
-   add_to_mainloop(G_PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum       ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
+   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
 
    HandleFactor();
 
@@ -1252,8 +1252,8 @@ int do_genflakes()
       sumdt += dt; 
    else
       sumdt = 0;
-   if (FlakeCount + desflakes > Flags.FlakeCountMax)
-      RETURN;
+   //if (FlakeCount + desflakes > Flags.FlakeCountMax)
+    //  RETURN;
    int i;
    for(i=0; i<desflakes; i++)
    {
@@ -1384,8 +1384,8 @@ void ConvertOnTreeToFlakes()
 	 }
 	 //P("%d %d %d\n",FlakeCount, (int)FirstFlake->rx,(int)FirstFlake->ry);
       }
-      if(FlakeCount > Flags.FlakeCountMax)
-	 break;
+      //if(FlakeCount > Flags.FlakeCountMax)
+//	 break;
    }
    OnTrees = 0;
    XDestroyRegion(SnowOnTreesRegion);
@@ -1771,7 +1771,7 @@ void InitFlake(Snow *flake)
 #define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
 int UpdateSnowFlake(Snow *flake)
 {
-   if (FlakeCount >= Flags.FlakeCountMax || KillFlakes)
+   if (KillFlakes || (FlakeCount >= Flags.FlakeCountMax && drand48() > 0.9))
    {
       EraseSnowFlake(flake);
       delflake(flake);
@@ -2110,7 +2110,7 @@ int do_initbaum()
       tree->type = tt;
       tree->rev  = flop;
 
-      add_to_mainloop(G_PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
+      add_to_mainloop(PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
 
       Region r;
 
@@ -2150,8 +2150,8 @@ int do_initstars()
       star->x = RandInt(SnowWinWidth);
       star->y = RandInt(SnowWinHeight/4);
       star->color = RandInt(STARANIMATIONS);
-      add_to_mainloop(G_PRIORITY_DEFAULT, time_star,  do_star,  star);
-      add_to_mainloop(G_PRIORITY_DEFAULT, drand48()*time_ustar+0.5*time_ustar, do_ustar, star);
+      add_to_mainloop(PRIORITY_DEFAULT, time_star,  do_star,  star);
+      add_to_mainloop(PRIORITY_DEFAULT, drand48()*time_ustar+0.5*time_ustar, do_ustar, star);
    }
    return TRUE;
 }
@@ -2287,8 +2287,8 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
-	 if(FlakeCount > Flags.FlakeCountMax)
-	    return;
+	 //if(FlakeCount > Flags.FlakeCountMax)
+	  //  return;
       }
 }
 
@@ -2854,11 +2854,11 @@ void HandleFactor()
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   santa_id  = add_to_mainloop(G_PRIORITY_HIGH,    time_santa,  do_santa,  0);
-   santa1_id = add_to_mainloop(G_PRIORITY_HIGH,    time_santa1, do_santa1, 0);
-   fallen_id = add_to_mainloop(G_PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
+   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa,  0);
+   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, 0);
+   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
 
-   add_to_mainloop(G_PRIORITY_DEFAULT, 0.2 , do_initsnow, 0);
+   add_to_mainloop(PRIORITY_DEFAULT, 0.2 , do_initsnow, 0);
 
 }
 

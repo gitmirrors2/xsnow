@@ -36,7 +36,7 @@
 #define DEFAULT_DisplayName ""
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
-#define DEFAULT_FlakeCountMax 1000 
+#define DEFAULT_FlakeCountMax 2000 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_KDEbg 0
 #define DEFAULT_MaxOnTrees 200
@@ -146,6 +146,8 @@
 #define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
+#define PRIORITY_DEFAULT   G_PRIORITY_LOW
+#define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
 
 typedef struct Snow {
