@@ -1936,7 +1936,7 @@ int UpdateSnowFlake(Snow *flake)
 		  break;
 	       }
 	    }
-	    EraseSnowFlake(flake);
+	    //EraseSnowFlake(flake);
 	    delflake(flake);
 	 }
       }
