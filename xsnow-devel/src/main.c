@@ -1692,7 +1692,7 @@ void UpdateWindows()
 
 int do_testing()
 {
-   //R("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
+   P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
    return TRUE;
    static int first = 1;
    if(first)
@@ -1771,7 +1771,12 @@ void InitFlake(Snow *flake)
 #define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
 int UpdateSnowFlake(Snow *flake)
 {
-   if (KillFlakes || (FlakeCount >= Flags.FlakeCountMax && drand48() > 0.9))
+   int fckill = FlakeCount >= Flags.FlakeCountMax;
+   if (
+	 KillFlakes ||                                     // merciless remove if KillFlakes
+	 (fckill && !flake->cyclic && drand48() > 0.5) ||  // high probability to remove blown-off flake
+	 (fckill && drand48() > 0.9)                       // low probability to remove other flakes
+      )
    {
       EraseSnowFlake(flake);
       delflake(flake);
@@ -1869,13 +1874,13 @@ int UpdateSnowFlake(Snow *flake)
       fsnow = fsnow->next;
    }
 
-   int x = lrintf(flake->rx);
-   int y = lrintf(flake->ry);
+   int x  = lrintf(flake->rx);
+   int y  = lrintf(flake->ry);
    int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
    int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
-   //if(b) return TRUE;
+   if(b) return TRUE;
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1936,6 +1941,7 @@ int UpdateSnowFlake(Snow *flake)
 		  break;
 	       }
 	    }
+	    // do not erase: this gives bad effects in fvwm-like desktops
 	    //EraseSnowFlake(flake);
 	    delflake(flake);
 	 }
