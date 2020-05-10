@@ -1525,7 +1525,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Santa using the train with one reindeer and Rudolf</property>
+                <property name="tooltip_text" translatable="yes">Santa using the train with one reindeer and Rudolph.</property>
                 <property name="halign">start</property>
                 <property name="margin_left">8</property>
                 <property name="draw_indicator">False</property>
@@ -1550,7 +1550,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Tiny Santa with two reindeers and Rudolf.</property>
+                <property name="tooltip_text" translatable="yes">Tiny Santa with two reindeers and Rudolph.</property>
                 <property name="halign">start</property>
                 <property name="margin_left">8</property>
                 <property name="always_show_image">True</property>
@@ -1577,7 +1577,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Small Santa with two reindeers and Rudolf.</property>
+                <property name="tooltip_text" translatable="yes">Small Santa with two reindeers and Rudolph.</property>
                 <property name="halign">start</property>
                 <property name="margin_left">8</property>
                 <property name="draw_indicator">False</property>
@@ -1602,7 +1602,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Santa with two reindeers and Rudolf.</property>
+                <property name="tooltip_text" translatable="yes">Santa with two reindeers and Rudolph.</property>
                 <property name="halign">start</property>
                 <property name="margin_left">8</property>
                 <property name="draw_indicator">False</property>
@@ -1627,7 +1627,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder,  Blixem and Rudolf.</property>
+                <property name="tooltip_text" translatable="yes">Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder,  Blixem and Rudolph.</property>
                 <property name="halign">start</property>
                 <property name="margin_left">8</property>
                 <property name="draw_indicator">False</property>
@@ -1654,7 +1654,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="margin_right">8</property>
-                <property name="label" translatable="yes">Without Rudolf</property>
+                <property name="label" translatable="yes">Without Rudolph</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -1668,7 +1668,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
                 <property name="margin_left">8</property>
-                <property name="label" translatable="yes">With Rudolf</property>
+                <property name="label" translatable="yes">With Rudolph</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -2482,6 +2482,12 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="top_attach">11</property>
                 <property name="width">4</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
