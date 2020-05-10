@@ -276,7 +276,7 @@ xsnow, created in 1993 by Rick Jansen.\n
         <property name="can_focus">False</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkStackSwitcher">
+          <object class="GtkStackSwitcher" id="tabs">
             <property name="width_request">-1</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -292,7 +292,7 @@ xsnow, created in 1993 by Rick Jansen.\n
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_welcome">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -832,7 +832,7 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_snow">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -1454,7 +1454,7 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_santa">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -2024,7 +2024,7 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_scenery">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -2683,7 +2683,7 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_wind">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -2979,7 +2979,7 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="grid_settings">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
