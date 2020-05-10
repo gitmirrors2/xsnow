@@ -848,7 +848,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -859,7 +859,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -875,18 +875,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Speed</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -897,7 +886,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -907,7 +896,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">8</property>
                 <property name="width">4</property>
               </packing>
             </child>
@@ -919,7 +908,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -930,7 +919,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -941,7 +930,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -957,7 +946,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -974,7 +963,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">7</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -990,7 +979,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">9</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1006,7 +995,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">10</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1022,7 +1011,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">11</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1039,7 +1028,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -1049,7 +1038,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">12</property>
                 <property name="width">4</property>
               </packing>
             </child>
@@ -1068,23 +1057,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="snow-speed">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Speed of the snowflakes.</property>
-                <property name="valign">center</property>
-                <property name="adjustment">snow-speed-adjustment</property>
-                <property name="round_digits">1</property>
-                <property name="digits">0</property>
-                <signal name="value-changed" handler="button_snow_speed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -1100,7 +1073,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -1115,7 +1088,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -1130,7 +1103,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -1145,7 +1118,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -1168,40 +1141,13 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="vexpand">True</property>
-                <property name="label" translatable="yes">     </property>
+                <property name="halign">start</property>
+                <property name="valign">start</property>
+                <property name="label" translatable="yes"> </property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="flake-count-max">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Maximum amount of snowflakes.</property>
-                <property name="valign">center</property>
-                <property name="adjustment">flake-count-max-adjustment</property>
-                <property name="round_digits">1</property>
-                <property name="digits">0</property>
-                <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Max # flakes</property>
-                <property name="justify">right</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -1246,7 +1192,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1273,7 +1219,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">15</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1319,7 +1265,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1346,9 +1292,135 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">15</property>
                 <property name="width">2</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkScale" id="snow-speed">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Speed of the snowflakes.</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">snow-speed-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <signal name="value-changed" handler="button_snow_speed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="flake-count-max">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Maximum amount of snowflakes.</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">flake-count-max-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="nflakes">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">label</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Speed</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Max # flakes</property>
+                    <property name="justify">right</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Actual # flakes</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
