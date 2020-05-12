@@ -118,6 +118,7 @@ static void set_tree_buttons(void);
 static void set_star_buttons(void);
 static void set_meteo_buttons(void);
 static int human_interaction = 1;
+GtkWidget *nflakeslabel;
 
 static GtkWidget *hauptfenster;
 
@@ -836,6 +837,7 @@ static void init_buttons()
    init_snow_buttons();
    init_general_buttons();
    init_wind_buttons();
+   nflakeslabel = GTK_WIDGET(gtk_builder_get_object(builder,"nflakes"));
 }
 
 static void set_buttons()
@@ -905,6 +907,13 @@ void button_gnome()
    GNOMEFLAGS;
    set_general_buttons();
    human_interaction = h;
+}
+
+void ui_show_nflakes(int n)
+{
+   char a[20];
+   sprintf(a,"%6d",n);
+   gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
 }
 
 void ui(int *argc, char **argv[])

@@ -123,6 +123,7 @@
 #define time_displaychanged   1.00             /* time between checks if display has changed */
 #define time_emeteorite       0.20             /* time between meteorites erasures           */ 
 #define time_event            0.01             /* time between checking events               */
+#define time_flakecount       1.00             /* time between updates of show flakecount    */
 #define time_fuse             1.00             /* time between testing on too much flakes    */
 #define time_genflakes        0.10             /* time between generation of flakes          */
 #define time_initbaum         1.00             /* time between check for (re)create trees    */

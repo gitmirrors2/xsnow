@@ -305,6 +305,7 @@ static int do_meteorite();
 static int do_newwind();
 static int do_santa();
 static int do_santa1();
+static int do_show_flakecount();
 static int do_snow_on_trees();
 static int do_star(Skoordinaten *star);
 static int do_testing();
@@ -512,22 +513,23 @@ int main(int argc, char *argv[])
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff        ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite     ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes      ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum       ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars      ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite      ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind        ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees  ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing        ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check       ,0);
-   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind           ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged  ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes       ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars       ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite       ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees   ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check        ,0);
+   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate         ,0);
 
    HandleFactor();
 
@@ -579,6 +581,12 @@ int do_santa1()
       return TRUE;
    if (!Flags.NoSanta)
       DrawSanta1();
+   return TRUE;
+}
+
+int do_show_flakecount()
+{
+   ui_show_nflakes(FlakeCount);
    return TRUE;
 }
 

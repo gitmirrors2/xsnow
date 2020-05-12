@@ -22,4 +22,5 @@
 #define UI_H
 void ui (int *argc, char **argv[]);
 void ui_error_x11(int *argc, char **argv[]);
+void ui_show_nflakes(int n);
 #endif

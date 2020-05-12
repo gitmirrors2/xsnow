@@ -155,7 +155,7 @@ void docs_usage(int man)
       printf("\n  Santa options:\n\n");
    }
    manout("-nosanta"                  ,"Do not display Santa running all over the screen.");
-   manout("-norudolf"                 ,"No Rudolf.");
+   manout("-norudolph"                ,"No Rudolph.");
    manout("-santa <n>"                ,"The minimum size of Santa is 0, the maximum size is " EQ(MAXSANTA) ". Default is " EQ(DEFAULT_SantaSize) ".");
    manout(" "                         ,"Thanks to Thomas Linder for the (big) Santa 2!");
    manout(" "                         ,"Santa 3 is derived from Santa 2, and shows the required eight reindeer.");

@@ -1,3 +1,9 @@
+version 2.0.21
+	attempt better layout of settings screen
+	Somewhat better layout for all menus
+	Rudolf -> Rudolph in displayable strings
+	Show number of flakes in 'snow' tab
+	Added some id's in ui.glade
 version 2.0.20
 	replace timing loop with g_timeout_add()
 	add polarbear
