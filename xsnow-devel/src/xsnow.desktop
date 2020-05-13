@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=xsnow
 Exec=xsnow
-Icon=xsnow.xpm
+Icon=xsnow
 Type=Application
 Categories=Game;
 Terminal=false
