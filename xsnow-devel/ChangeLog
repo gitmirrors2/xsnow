@@ -1,6 +1,7 @@
 version 2.0.22
 	xsnow.desktop: in xfce icon does not show in
 	  panel: change 'xsnow.xpm' into 'xsnow'
+	do not show flake count when option -nomenu is given
 version 2.0.21
 	attempt better layout of settings screen
 	Somewhat better layout for all menus
