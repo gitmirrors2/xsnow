@@ -2921,7 +2921,10 @@ int DetermineWindow()
 	 if (desktopsession)
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
+	 {
 	    printf("Could not determine desktop session\n");
+	    desktopsession = strdup("unknown_desktop_session");
+	 }
 
 	 if (DesktopSession)
 	    free(DesktopSession);
