@@ -2909,26 +2909,34 @@ int DetermineWindow()
       }
       else
       {
-	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 char *desktopsession;
-	 desktopsession = getenv("DESKTOP_SESSION");
-	 if (!desktopsession)
-	    desktopsession = getenv("XDG_SESSION_DESKTOP");
-	 if (!desktopsession)
-	    desktopsession = getenv("XDG_CURRENT_DESKTOP");
-	 if (!desktopsession)
-	    desktopsession = getenv("GDMSESSION");
+	 char *desktopsession = 0;
+	 char *desktops[] = {
+	    "DESKTOP_SESSION",
+	    "XDG_SESSION_DESKTOP",
+	    "XDG_CURRENT_DESKTOP",
+	    "GDMSESSION",
+	    0
+	 };
+
+	 int i;
+	 for (i=0; desktops[i]; i++)
+	 {
+	    desktopsession = getenv(desktops[i]);
+	    if (desktopsession)
+	       break;
+	 }
 	 if (desktopsession)
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
 	 {
 	    printf("Could not determine desktop session\n");
-	    desktopsession = strdup("unknown_desktop_session");
+	    desktopsession = "unknown_desktop_session";
 	 }
 
 	 if (DesktopSession)
 	    free(DesktopSession);
 	 DesktopSession = strdup(desktopsession);
+
 	 // convert DesktopSession to upper case
 	 char *a = DesktopSession;
 	 while (*a)
@@ -2938,6 +2946,7 @@ int DetermineWindow()
 	 }
 	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
 	 int lxdefound = 0;
+	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
 	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
