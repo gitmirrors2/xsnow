@@ -586,7 +586,8 @@ int do_santa1()
 
 int do_show_flakecount()
 {
-   ui_show_nflakes(FlakeCount);
+   if (!Flags.NoMenu)
+      ui_show_nflakes(FlakeCount);
    return TRUE;
 }
 
@@ -1515,7 +1516,7 @@ int do_wupdate()
       // in xfce and maybe others, workspace info is not to be found
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
-      
+
       if (winfo->ws)
       {
 	 TransWorkSpace = winfo->ws;
@@ -2115,25 +2116,25 @@ void EraseStars()
 }
 
 /*
- // keep this in case I need the erasure code
-   void EraseStars()
-   {
-   int i;
-   for (i=0; i<NStars; i++)
-   {
-   int x = star[i].x; 
-   int y = star[i].y; 
-   int w = starPix.width;
-   int h = starPix.height;
-   if(UseAlpha|Flags.UseBG)
-   XFillRectangle(display, SnowWin, ESantaGC, 
-   x, y, w, h);
-   else
-   XClearArea(display, SnowWin,
-   x, y, w, h, Exposures);
-   }
-   }
-   */
+// keep this in case I need the erasure code
+void EraseStars()
+{
+int i;
+for (i=0; i<NStars; i++)
+{
+int x = star[i].x; 
+int y = star[i].y; 
+int w = starPix.width;
+int h = starPix.height;
+if(UseAlpha|Flags.UseBG)
+XFillRectangle(display, SnowWin, ESantaGC, 
+x, y, w, h);
+else
+XClearArea(display, SnowWin,
+x, y, w, h, Exposures);
+}
+}
+*/
 
 void InitFallenSnow()
 {
@@ -2410,24 +2411,24 @@ void EraseTrees()
 {
    KillTrees = 1;
    /*
-      // keeping this code in case I need explicit erase of trees
-      int i;
-      int d = 3;
-      for (i=0; i<NTrees; i++)
-      {
-      int x = Tree[i].x-d; 
-      int y = Tree[i].y-d; 
-      int t = Tree[i].type; 
-      int w = TreeWidth[t]+d+d;
-      int h = TreeHeight[t]+d+d;
-      if(UseAlpha|Flags.UseBG)
-      XFillRectangle(display, SnowWin, ESantaGC, 
-      x, y, w, h);
-      else
-      XClearArea(display, SnowWin,
-      x, y, w, h, Exposures);
-      }
-      */
+   // keeping this code in case I need explicit erase of trees
+   int i;
+   int d = 3;
+   for (i=0; i<NTrees; i++)
+   {
+   int x = Tree[i].x-d; 
+   int y = Tree[i].y-d; 
+   int t = Tree[i].type; 
+   int w = TreeWidth[t]+d+d;
+   int h = TreeHeight[t]+d+d;
+   if(UseAlpha|Flags.UseBG)
+   XFillRectangle(display, SnowWin, ESantaGC, 
+   x, y, w, h);
+   else
+   XClearArea(display, SnowWin,
+   x, y, w, h, Exposures);
+   }
+   */
 
    ClearScreen();
 }
@@ -2908,23 +2909,34 @@ int DetermineWindow()
       }
       else
       {
-	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 char *desktopsession;
-	 desktopsession = getenv("DESKTOP_SESSION");
-	 if (!desktopsession)
-	    desktopsession = getenv("XDG_SESSION_DESKTOP");
-	 if (!desktopsession)
-	    desktopsession = getenv("XDG_CURRENT_DESKTOP");
-	 if (!desktopsession)
-	    desktopsession = getenv("GDMSESSION");
+	 char *desktopsession = 0;
+	 char *desktops[] = {
+	    "DESKTOP_SESSION",
+	    "XDG_SESSION_DESKTOP",
+	    "XDG_CURRENT_DESKTOP",
+	    "GDMSESSION",
+	    0
+	 };
+
+	 int i;
+	 for (i=0; desktops[i]; i++)
+	 {
+	    desktopsession = getenv(desktops[i]);
+	    if (desktopsession)
+	       break;
+	 }
 	 if (desktopsession)
 	    printf("Detected desktop session: %s\n",desktopsession);
 	 else
+	 {
 	    printf("Could not determine desktop session\n");
+	    desktopsession = "unknown_desktop_session";
+	 }
 
 	 if (DesktopSession)
 	    free(DesktopSession);
 	 DesktopSession = strdup(desktopsession);
+
 	 // convert DesktopSession to upper case
 	 char *a = DesktopSession;
 	 while (*a)
@@ -2934,6 +2946,7 @@ int DetermineWindow()
 	 }
 	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
 	 int lxdefound = 0;
+	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
 	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
