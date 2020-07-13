@@ -1,5 +1,5 @@
 version 2.0.23
-	use wallcl to initialize drand48, not wallclock
+	use wallcl()*1.0e6 to initialize drand48, not wallclock()
 version 2.0.22
 	xsnow.desktop: in xfce icon does not show in
 	  panel: change 'xsnow.xpm' into 'xsnow'
