@@ -21,4 +21,5 @@
 #ifndef CLOCKS_H
 #define CLOCKS_H
 extern double wallclock(void);
+extern double wallcl(void);
 #endif

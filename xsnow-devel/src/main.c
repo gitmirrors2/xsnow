@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
 
    SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
-   srand48((unsigned int)wallclock());
+   srand48((unsigned int)wallcl());
    SnowMap *rp;
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
