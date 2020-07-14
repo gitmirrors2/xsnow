@@ -32,7 +32,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		gaussian.c gaussian.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
-		doit.h ui.c ui.h ui.glade \
+		doit.h ui.c ui.h ui.xml \
 		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h
 
@@ -40,12 +40,12 @@ nodist_xsnow_SOURCES = ui_xml.h
 
 BUILT_SOURCES = ui_xml.h
 
-# create C code to get ui.glade in a string
+# create C code to get ui.xml in a string
 # ISO C stipulates that the length of a string constant should
 # not be larger than 4096, so we create a definition as in
 # char xsnow_xml[] = {60,63,120,109,108,32,118,101,0};
 #
-ui_xml.h: ui.glade
+ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
 	@echo "#ifndef UI_XML_H" > $@
 	@echo "#define UI_XML_H" >> $@

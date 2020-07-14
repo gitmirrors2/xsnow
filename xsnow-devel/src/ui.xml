@@ -269,6 +269,7 @@ xsnow, created in 1993 by Rick Jansen.\n
   </object>
   <object class="GtkApplicationWindow" id="hauptfenster">
     <property name="can_focus">False</property>
+    <property name="halign">start</property>
     <signal name="destroy" handler="button_quit" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar">
@@ -283,6 +284,9 @@ xsnow, created in 1993 by Rick Jansen.\n
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <property name="stack">stack</property>
+            <style>
+              <class name="wv"/>
+            </style>
           </object>
         </child>
       </object>
@@ -291,6 +295,9 @@ xsnow, created in 1993 by Rick Jansen.\n
       <object class="GtkStack" id="stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="transition_duration">400</property>
+        <property name="transition_type">crossfade</property>
         <child>
           <object class="GtkGrid" id="grid_welcome">
             <property name="visible">True</property>
@@ -2979,6 +2986,28 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
+          <object class="GtkGrid" id="grid_birds">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">birds!</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="name">page6</property>
+            <property name="title" translatable="yes">birds</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkGrid" id="grid_settings">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -3974,7 +4003,7 @@ windows</property>
           <packing>
             <property name="name">page3</property>
             <property name="title" translatable="yes">settings</property>
-            <property name="position">5</property>
+            <property name="position">6</property>
           </packing>
         </child>
       </object>

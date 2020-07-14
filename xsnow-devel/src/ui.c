@@ -120,6 +120,23 @@ static void set_meteo_buttons(void);
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
 
+// Set the style provider for the widgets
+static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
+{
+   P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
+   gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
+	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
+	 GTK_STYLE_PROVIDER_PRIORITY_USER );
+
+   // For container widgets, apply to every child widget on the container
+   if (GTK_IS_CONTAINER (widget))
+   {
+      gtk_container_forall( GTK_CONTAINER (widget),
+	    (GtkCallback)apply_css_provider ,
+	    cssstyleProvider);
+   }
+}
+
 static GtkWidget *hauptfenster;
 
    G_MODULE_EXPORT
@@ -928,6 +945,15 @@ void ui(int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
+
+   char *css = ".wv button.radio{min-width:40px;}";
+
+   GtkCssProvider *cssProvider  = gtk_css_provider_new();
+   gtk_css_provider_load_from_data (cssProvider,
+	 css,-1,NULL);
+
+   apply_css_provider(hauptfenster, cssProvider);
+   
 }
 
 // next function is not used, I leave it here as a template, who knows...
