@@ -20,7 +20,7 @@
 #-#
 */
 
-static char *BigSantaRudolf1[] = {
+const char *BigSantaRudolf1[] = {
 /* width height num_colors chars_per_pixel */
 "   177    34       18            1",
 /* colors */

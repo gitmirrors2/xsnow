@@ -31,6 +31,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 
 # Checks for libraries.
@@ -61,6 +62,7 @@ AC_CHECK_HEADER_STDBOOL
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
+AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile)

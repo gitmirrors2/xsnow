@@ -34,17 +34,17 @@ static void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 
 // insert a node at the start of the list 
 void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
-      int x, int y, unsigned int w, unsigned int h) 
+      int x, int y, int w, int h) 
 {
-   FallenSnow *p = malloc(sizeof(FallenSnow));
+   FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
    p->id         = window_id;
    p->x          = x;
    p->y          = y;
    p->w          = w;
    p->h          = h;
    p->w8         = ((w-1)/8+1)*8;
-   p->acth       = malloc(sizeof(*(p->acth))*w);
-   p->desh       = malloc(sizeof(*(p->desh))*w);
+   p->acth       = (short int *)malloc(sizeof(*(p->acth))*w);
+   p->desh       = (short int *)malloc(sizeof(*(p->desh))*w);
    p->ws         = ws;
    p->sticky     = sticky;
    p->hidden     = 0;
@@ -85,7 +85,7 @@ int PopFallenSnow(FallenSnow **list)
 }
 
 // remove by id
-int RemoveFallenSnow(FallenSnow **list, int id)
+int RemoveFallenSnow(FallenSnow **list, Window id)
 {
    if (*list == 0)
       return 0;

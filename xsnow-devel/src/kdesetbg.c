@@ -115,7 +115,7 @@ int kdesetbg(const char *color)
       "        d.writeConfig(\"Image\", \"file://%s\");\n"
       "}\n";
    char *cc;
-   cc  = malloc(strlen(c) + strlen(s) +1);
+   cc  = (char *)malloc(strlen(c) + strlen(s) +1);
    sprintf(cc,c,s);
    // printf("%d: %s\n",__LINE__,cc);
    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &cc);

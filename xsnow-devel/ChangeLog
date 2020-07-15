@@ -3,6 +3,7 @@ version 3.0.0
 	mv ui.glade ui.xml
 	add css to minimize ui.
 	add birds page, not functioning yet.
+	make xsnow compilable with g++
 version 2.0.22
 	xsnow.desktop: in xfce icon does not show in
 	  panel: change 'xsnow.xpm' into 'xsnow'

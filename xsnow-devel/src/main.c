@@ -41,6 +41,7 @@
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
+#include <alloca.h>
 #include <assert.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
@@ -196,9 +197,9 @@ static XPoint    *SnowOnTrees;
 static GtkWidget *GtkWin = NULL;
 
 /* Colo(u)rs */
-static char *BlackColor = "black";
-static char *MeteoColor = "orange";
-static char *StarColor[]  = { "gold", "gold1", "gold4", "orange" };
+static char *BlackColor = (char *)"black";
+static char *MeteoColor = (char *)"orange";
+static char *StarColor[]  = { (char *)"gold", (char *)"gold1", (char *)"gold4", (char *)"orange" };
 static Pixel BlackPix;
 static Pixel ErasePixel;
 static Pixel MeteoPix;
@@ -311,13 +312,13 @@ static int do_star(Skoordinaten *star);
 static int do_testing();
 static int do_ui_check();
 static int do_usanta();
-static int do_ustar();
+static int do_ustar(Skoordinaten *star);
 static int do_wind();
 static int do_wupdate();
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
-#define makeflake(f) do {f = malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
+#define makeflake(f) do {f = (Snow *)malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
 int main(int argc, char *argv[])
 {
@@ -367,17 +368,17 @@ int main(int argc, char *argv[])
 
    HandleExposures();
 
-   TreeType = malloc(sizeof(*TreeType)); // to make realloc() possible in do_initbaum
+   TreeType = (int *)malloc(sizeof(*TreeType)); // to make realloc() possible in do_initbaum
 
    InitSnowSpeedFactor();
    SetWhirl();
    SetWindTimer();
 
-   SnowOnTrees = malloc(sizeof(*SnowOnTrees));  // will be remallloced in InitSnowOnTrees
+   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees));  // will be remallloced in InitSnowOnTrees
    InitSnowOnTrees();
    InitBlowOffFactor();
 
-   SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
+   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
    srand48((unsigned int)(wallcl()*1.0e6));
    SnowMap *rp;
@@ -1577,7 +1578,7 @@ void UpdateWindows()
    }
    // remove fallensnow regions
    f = FsnowFirst; int nf = 0; while(f) { nf++; f = f->next; }
-   long int *toremove = malloc(sizeof(*toremove)*nf);
+   long int *toremove = (long int *)malloc(sizeof(*toremove)*nf);
    int ntoremove = 0;
    f = FsnowFirst;
    Atom wmState = XInternAtom(display, "_NET_WM_STATE", True);
@@ -1599,7 +1600,7 @@ void UpdateWindows()
 	 f->hidden = 0;
 	 if(format == 32)
 	 {
-	    int i;
+	    unsigned long i;
 	    for (i=0; i<n; i++)
 	    {
 	       char *s = 0;
@@ -1629,7 +1630,7 @@ void UpdateWindows()
       f = FindFallen(FsnowFirst,w->id);
       if (f)
       {
-	 if (f->w == w->w+Flags.OffsetW) // width has not changed
+	 if ((unsigned int)f->w == w->w+Flags.OffsetW) // width has not changed
 	 {
 	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
 	    {
@@ -1970,7 +1971,7 @@ int do_initbaum()
    int *tmptreetype, ntemp;
    if(TreeRead)
    {
-      TreeType = realloc(TreeType,1*sizeof(*TreeType));
+      TreeType = (int *)realloc(TreeType,1*sizeof(*TreeType));
       TreeType[0] = 0;
    }
    else
@@ -1979,7 +1980,7 @@ int do_initbaum()
 	 // user wants all treetypes
       {
 	 ntemp = 1+MAXTREETYPE;
-	 tmptreetype = malloc(sizeof(*tmptreetype)*ntemp);
+	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
 	 int i;
 	 for (i=0; i<ntemp; i++)
 	    tmptreetype[i] = i;
@@ -1988,7 +1989,7 @@ int do_initbaum()
 	 // default: use 1..MAXTREETYPE 
       {
 	 ntemp = MAXTREETYPE;
-	 tmptreetype = malloc(sizeof(*tmptreetype)*ntemp);
+	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
 	 int i;
 	 for (i=0; i<ntemp; i++)
 	    tmptreetype[i] = i+1;
@@ -2019,7 +2020,7 @@ int do_initbaum()
 	       }
 	    if (unique) 
 	    {
-	       TreeType = realloc(TreeType,(NtreeTypes+1)*sizeof(*TreeType));
+	       TreeType = (int *)realloc(TreeType,(NtreeTypes+1)*sizeof(*TreeType));
 	       TreeType[NtreeTypes] = tmptreetype[i];
 	       NtreeTypes++;
 	    }
@@ -2027,7 +2028,7 @@ int do_initbaum()
       }
       if(NtreeTypes == 0)
       {
-	 TreeType = realloc(TreeType,sizeof(*TreeType));
+	 TreeType = (int *)realloc(TreeType,sizeof(*TreeType));
 	 TreeType[0] = DEFAULTTREETYPE;
 	 NtreeTypes++;
       }
@@ -2060,7 +2061,7 @@ int do_initbaum()
 
       int flop = (drand48()>0.5);
 
-      Treeinfo *tree = malloc(sizeof(Treeinfo));
+      Treeinfo *tree = (Treeinfo *)malloc(sizeof(Treeinfo));
       tree->x    = x;
       tree->y    = y;
       tree->type = tt;
@@ -2099,7 +2100,7 @@ int do_initstars()
    int i;
    for (i=0; i<NStars; i++)
    {
-      Skoordinaten *star = malloc(sizeof(Skoordinaten));
+      Skoordinaten *star = (Skoordinaten *)malloc(sizeof(Skoordinaten));
       star->x = RandInt(SnowWinWidth);
       star->y = RandInt(SnowWinHeight/4);
       star->color = RandInt(STARANIMATIONS);
@@ -2155,7 +2156,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    k = 0;
    typeof(fsnow->acth[0]) *old;
    // old will contain the acth values, corresponding with x-1..x+w (including)
-   old = malloc(sizeof(*old)*(w+2));
+   old = (short int *)malloc(sizeof(*old)*(w+2));
    for (i=imin-1; i<=imax; i++) 
    {
       if (i < 0) 
@@ -2244,7 +2245,7 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
    // todo: takes too much cpu
    int j;
    int p = 0;
-   unsigned char bitmap[f->w8*f->h/8];
+   unsigned char *bitmap = (unsigned char *) alloca((f->w8*f->h/8)*sizeof(unsigned char));
 
    for (j=0; j<f->h; j++)
    {
@@ -2265,7 +2266,8 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 	 bitmap[p++] = b;
       }
    }
-   return XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
+   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
+   return pixmap;
 }
 
 
@@ -2539,10 +2541,10 @@ void InitSantaPixmaps()
    char *path[PIXINANIMATION];
    char *filenames[] = 
    {
-      "xsnow/pixmaps/santa1.xpm",
-      "xsnow/pixmaps/santa2.xpm",
-      "xsnow/pixmaps/santa3.xpm",
-      "xsnow/pixmaps/santa4.xpm",
+      (char *)"xsnow/pixmaps/santa1.xpm",
+      (char *)"xsnow/pixmaps/santa2.xpm",
+      (char *)"xsnow/pixmaps/santa3.xpm",
+      (char *)"xsnow/pixmaps/santa4.xpm",
    };
    FILE *f;
    int i;
@@ -2550,7 +2552,7 @@ void InitSantaPixmaps()
    for (i=0; i<PIXINANIMATION; i++)
    {
       path[i] = 0;
-      f = HomeOpen(filenames[i],"r",&path[i]);
+      f = HomeOpen(filenames[i],(char *)"r",&path[i]);
       if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
    }
@@ -2623,13 +2625,13 @@ void InitTreePixmaps()
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
    char *path;
-   FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
+   FILE *f = HomeOpen((char *)"xsnow/pixmaps/tree.xpm",(char *)"r",&path);
    if (f)
    {
       // there seems to be a local definition of tree
       // set TreeType to some number, so we can respond accordingly
       free(TreeType);
-      TreeType = malloc(sizeof(*TreeType));
+      TreeType = (int *)malloc(sizeof(*TreeType));
       NtreeTypes = 1;
       TreeRead = 1;
       int rc = XpmReadFileToData(path,&TreeXpm);
@@ -2679,12 +2681,13 @@ void ReInitTree0()
    attributes.depth     = SnowWinDepth;
    int i;
    int n = TreeHeight[0]+3;
-   char *xpmtmp[n];
+   //char *xpmtmp[n];
+   char **xpmtmp = (char **)alloca(n*sizeof(char *));
    int j;
    for (j=0; j<2; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
    xpmtmp[2] = strdup(". c ");
-   xpmtmp[2] = realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
+   xpmtmp[2] = (char *)realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
    strcat(xpmtmp[2],Flags.TreeColor);
    for(j=3; j<n; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
@@ -2705,7 +2708,7 @@ FILE *HomeOpen(char *file,char *mode, char**path)
    if (h == 0)
       return 0;
    char *home = strdup(h);
-   (*path) = malloc(strlen(home)+strlen(file)+2);
+   (*path) = (char*) malloc(strlen(home)+strlen(file)+2);
    strcpy(*path,home);
    strcat(*path,"/");
    strcat(*path,file);
@@ -2754,7 +2757,7 @@ void InitBlowOffFactor()
 void InitSnowOnTrees()
 {
    free(SnowOnTrees);
-   SnowOnTrees = malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
+   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 }
 
 int do_initsnow()
@@ -2911,10 +2914,10 @@ int DetermineWindow()
       {
 	 char *desktopsession = 0;
 	 char *desktops[] = {
-	    "DESKTOP_SESSION",
-	    "XDG_SESSION_DESKTOP",
-	    "XDG_CURRENT_DESKTOP",
-	    "GDMSESSION",
+	    (char *)"DESKTOP_SESSION",
+	    (char *)"XDG_SESSION_DESKTOP",
+	    (char *)"XDG_CURRENT_DESKTOP",
+	    (char *)"GDMSESSION",
 	    0
 	 };
 
@@ -2930,7 +2933,7 @@ int DetermineWindow()
 	 else
 	 {
 	    printf("Could not determine desktop session\n");
-	    desktopsession = "unknown_desktop_session";
+	    desktopsession = (char *)"unknown_desktop_session";
 	 }
 
 	 if (DesktopSession)
@@ -2949,7 +2952,7 @@ int DetermineWindow()
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
-	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
+	    lxdefound = FindWindowWithName((char *)"pcmanfm",&SnowWin,&SnowWinName);
 	    printf("LXDE session found, searching for window 'pcmanfm'\n");
 	 }
 	 if(lxdefound)
@@ -3037,11 +3040,20 @@ void HandleExposures()
 Region RegionCreateRectangle(int x, int y, int w, int h)
 {
    XPoint p[5];
-   p[0] = (XPoint){x  , y  };
-   p[1] = (XPoint){x+w, y  };
-   p[2] = (XPoint){x+w, y+h};
-   p[3] = (XPoint){x  , y+h}; 
-   p[4] = (XPoint){x  , y  };
+   //p[0] = (XPoint){x  ,        y  };
+   p[0].x =          x; p[0].y = y;
+
+   //p[1] = (XPoint){x+w,          y  };
+   p[1].x =          x+w; p[1].y = y;
+
+   //p[2] = (XPoint){x+w,          y+h};
+   p[2].x =          x+w; p[2].y = y+h;
+
+   //p[3] = (XPoint){x  ,        y+h}; 
+   p[3].x =          x; p[3].y = y+h;
+
+   //p[4] = (XPoint){x  ,        y  };
+   p[4].x =          x; p[4].y = y;
    return XPolygonRegion(p, 5, EvenOddRule);
 }
 

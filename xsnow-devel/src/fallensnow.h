@@ -23,10 +23,10 @@
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 typedef struct FallenSnow {
-   long int id;               // window id, 0 for snow at bottom
+   Window id;                 // window id, 0 for snow at bottom
    int x,y;                   // Coordinates of fallen snow, y for bottom
-   unsigned int w,h;          // width, max height of fallen snow
-   unsigned int w8;           // width rounded up to 8-fold
+   int w,h;                   // width, max height of fallen snow
+   int w8;                    // width rounded up to 8-fold
    short int *acth;           // actual height
    short int *desh;           // desired height
    short int ws;              // visible on workspace ws
@@ -38,13 +38,13 @@ typedef struct FallenSnow {
 
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
-      int x, int y, unsigned int w, unsigned int h);
+      int x, int y, int w, int h);
 
 // pop first element
 extern int PopFallenSnow(FallenSnow **list);
 
 // remove by id
-extern int RemoveFallenSnow(FallenSnow **list, int id);
+extern int RemoveFallenSnow(FallenSnow **list, Window id);
 
 // print list
 extern void PrintFallenSnow(FallenSnow *list);

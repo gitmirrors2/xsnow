@@ -1,5 +1,5 @@
 /* XPM */
-static char *polarbear_xpm[] = {
+const char *polarbear_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "56 36 111 2 ",
 "   c #797979",

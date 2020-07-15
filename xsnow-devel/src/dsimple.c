@@ -355,7 +355,7 @@ Window Window_With_Name(
    if (!XQueryTree(dpy, top, &dummy, &dummy, &children, &nchildren))
       return(0);
 
-   for (i=0; i<nchildren; i++) {
+   for (i=0; (unsigned int)i<nchildren; i++) {
       w = Window_With_Name(dpy, children[i], name);
       if (w)
 	 break;

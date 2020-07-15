@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-static char *eland_xpm[] = {
+const char *eland_xpm[] = {
 /* columns rows colors chars-per-pixel */
 /* had to make colums mutiple of 8, otherwise unitialised value */
 /* in xpmCreatePixmapFromImage (ixpm.c:23) detected by valgrind */

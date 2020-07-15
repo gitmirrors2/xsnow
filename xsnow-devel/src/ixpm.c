@@ -63,7 +63,7 @@ static void strrevert(char*s, size_t l)
 {
    size_t n = strlen(s)/l;
    size_t i;
-   char *c = malloc(l*sizeof(*c));
+   char *c = (char *)malloc(l*sizeof(*c));
    char *a = s;
    char *b = s+strlen(s)-l;
    for (i=0; i<n/2; i++)
@@ -90,7 +90,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 
    sscanf(data[0],"%*s %d %d %d", &height, &ncolors, &w);
    lines = height+ncolors+1;
-   idata = malloc(lines*sizeof(*idata));
+   idata = (char **)malloc(lines*sizeof(*idata));
    for (i=0; i<lines; i++)
       idata[i] = strdup(data[i]);
    if(flop)
@@ -121,7 +121,7 @@ Region regionfromxpm(char **data, int flop)
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    // find color "None":
    int i;
-   char *code = "";
+   char *code = (char *)"";
    int offset = nc + 1;
    for(i=1; i<=nc; i++)
    {

@@ -80,7 +80,11 @@ Window_Is_Viewable(Display * dpy, Window win)
 
     XGetWindowAttributes(dpy, win, &xwa);
 
+#ifdef __cplusplus
+    ok = (xwa.c_class == InputOutput) && (xwa.map_state == IsViewable);
+#else
     ok = (xwa.class == InputOutput) && (xwa.map_state == IsViewable);
+#endif
 
     return ok;
 }

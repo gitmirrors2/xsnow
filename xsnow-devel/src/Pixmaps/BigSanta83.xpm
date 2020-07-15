@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-static char *BigSanta83[] = {
+const char *BigSanta83[] = {
 /* width height num_colors chars_per_pixel */
 "   217    33       20            1",
 /* colors */

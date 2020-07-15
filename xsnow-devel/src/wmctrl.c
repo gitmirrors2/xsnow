@@ -101,13 +101,13 @@ int GetWindows(WinInfo **windows, int *nwin)
    //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
    (*nwin) = nitems;
    r = (long*)properties;
-   (*windows) = malloc(nitems*sizeof(WinInfo));
+   (*windows) = (WinInfo *)malloc(nitems*sizeof(WinInfo));
    int i;
    WinInfo *w = (*windows);
    static Atom net_atom = 0, gtk_atom = 0;
    if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
    if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
-   for (i=0; i<nitems; i++,w++)
+   for (i=0; (unsigned long)i<nitems; i++,w++)
    {
       Window root,child_return;
       int x0,y0;
@@ -149,7 +149,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if (type == XA_ATOM)
       {
 	 int i;
-	 for(i=0; i<nitems; i++)
+	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = 0;
 	    s = XGetAtomName(display,((Atom*)properties)[i]);

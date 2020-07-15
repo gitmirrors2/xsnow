@@ -279,7 +279,7 @@ static void makeflagsfile()
       return;
    }
    FlagsFile = strdup(h);
-   FlagsFile = realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
+   FlagsFile = (char *)realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
    strcat(FlagsFile,"/");
    strcat(FlagsFile,FLAGSFILE);
    P("FlagsFile: %s\n",FlagsFile);
@@ -351,7 +351,7 @@ void WriteFlags()
    root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
    xmlDocSetRootElement(doc, root_node);
 
-#define DOIT_I(x) myxmlNewChild(root_node,NULL,# x,Flags.x,"%d");
+#define DOIT_I(x) myxmlNewChild(root_node,NULL,(char *)# x,Flags.x,(char *)"%d");
 #define DOIT_L(x) DOIT_I(x)
 #define DOIT_S(x) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
    DOIT;

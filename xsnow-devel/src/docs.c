@@ -290,16 +290,16 @@ char *replace_all(const char *s, const char *needle, const char *rep)
    const char *haystack = s;          // startpoint to search for needle
    while(1)
    {
-      char *q = strstr(haystack,needle);
+      const char *q = strstr(haystack,needle);
       if (q == 0)  // no needle in haystack
       {            // cat haystack to result
-	 result = realloc(result,strlen(result)+strlen(haystack)+1);
+	 result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
 	 result = strcat(result,haystack);
 	 break;
       }
       else      // needle is in haystack
       {         // cat first part of haystack + rep to result
-	 result   = realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
+	 result   = (char *)realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
 	 result   = strncat(result, haystack, q-haystack);
 	 result   = strcat(result, rep);
 	 haystack = q+strlen(needle);

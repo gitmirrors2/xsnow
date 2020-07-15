@@ -30,7 +30,7 @@ void csvpos(char *s, int **k, int *n)
    char *p = s;
    char *q;
    (*n) = 0;
-   (*k) = malloc(sizeof(**k));
+   (*k) = (int *)malloc(sizeof(**k));
    while (p)
    {
       q = p;
@@ -40,7 +40,7 @@ void csvpos(char *s, int **k, int *n)
       if (i<0)
 	 i = 0;
       (*n)++;
-      (*k) = realloc(*k,sizeof(**k)*(*n));
+      (*k) = (int *)realloc(*k,sizeof(**k)*(*n));
       (*k)[(*n)-1] = i;
       p = strchr(p,','); 
       if(p) p++;
@@ -56,7 +56,7 @@ void vsc(char **s, int *k, int n)
    {
       sprintf(p,"%d,",k[i]);
       l += strlen(p);
-      *s = realloc(*s,l+1);
+      *s = (char *)realloc(*s,l+1);
       strcat(*s,p);
    }
 }

@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-static char * xsnow_xpm[] = {
+const char * xsnow_xpm[] = {
 "41 30 16 1",
 " 	c None",
 ".	c #CC0000",

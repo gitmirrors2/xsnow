@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-static char *AltSantaRudolf4[] = {
+const char *AltSantaRudolf4[] = {
 /* columns rows colors chars-per-pixel */
 "206 40 229 2 ",
 "   c #010003",

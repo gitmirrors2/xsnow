@@ -41,6 +41,13 @@
 
 #include "debug.h"
 
+#ifdef __cplusplus
+#define MODULE_EXPORT extern "C" G_MODULE_EXPORT
+#else
+#define MODULE_EXPORT G_MODULE_EXPORT
+#endif
+
+
 #define PREFIX_SANTA   "santa-"
 #define PREFIX_TREE    "tree-"
 
@@ -51,7 +58,7 @@
 
 
 #define HANDLE_RANGE(_name,_flag,_value) \
-   G_MODULE_EXPORT void _name(GtkWidget *w, gpointer d)\
+   MODULE_EXPORT void _name(GtkWidget *w, gpointer d)\
 {\
    if(!human_interaction) return;\
    gdouble value;\
@@ -61,7 +68,7 @@
 }
 
 #define HANDLE_TOGGLE(_name,_flag,_t,_f) \
-   G_MODULE_EXPORT \
+   MODULE_EXPORT \
    void _name(GtkWidget *w, gpointer d) \
 { \
    if(!human_interaction) return; \
@@ -74,7 +81,7 @@
 }
 
 #define HANDLE_COLOR(_name,_flag) \
-   G_MODULE_EXPORT \
+   MODULE_EXPORT \
    void _name(GtkWidget *w, gpointer d) \
 { \
    if(!human_interaction) return; \
@@ -139,7 +146,7 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
 
 static GtkWidget *hauptfenster;
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_iconify(GtkWidget *w, gpointer p)
 {
    P("button_iconify\n");
@@ -200,7 +207,7 @@ static void set_santa_buttons()
    HANDLE_SET_RANGE(santa_buttons.santa_speed.button,SantaSpeedFactor,log10);
 }
 
-   G_MODULE_EXPORT 
+   MODULE_EXPORT 
 void button_santa(GtkWidget *w, gpointer d)
 {
    if(!human_interaction) return;
@@ -234,14 +241,14 @@ void santa_default(int vintage)
    human_interaction      = h;
 }
 
-   G_MODULE_EXPORT 
+   MODULE_EXPORT 
 void button_defaults_santa(GtkWidget *w, gpointer d)
 {
    P("button_defaults_santa defaults\n");
    santa_default(0);
 }
 
-   G_MODULE_EXPORT 
+   MODULE_EXPORT 
 void button_vintage_santa(GtkWidget *w, gpointer d)
 {
    P("button_defaults_santa vintage\n");
@@ -293,7 +300,7 @@ static void report_tree_type(int p, gint active)
    csvpos(Flags.TreeType,&a,&n);
    if(active)
    {
-      a = realloc(a,sizeof(*a)*(n+1));
+      a = (int *)realloc(a,sizeof(*a)*(n+1));
       a[n] = p;
       n++;
    }
@@ -304,7 +311,7 @@ static void report_tree_type(int p, gint active)
 	 if(a[i] == p)
 	    a[i] = -1;
    }
-   int *b = malloc(sizeof(*b)*n);
+   int *b = (int *)malloc(sizeof(*b)*n);
    int i,m=0;
    for(i=0; i<n; i++)
    {
@@ -330,7 +337,7 @@ static void report_tree_type(int p, gint active)
    P("Tree_Type set to %s\n",Flags.TreeType);
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_tree(GtkWidget *w, gpointer d)
 {
    if(!human_interaction) return;
@@ -369,14 +376,14 @@ void scenery_default(int vintage)
    human_interaction = h;
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_defaults_scenery(GtkWidget *w, gpointer d)
 {
    P("button_defaults_scenery\n");
    scenery_default(0);
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_vintage_scenery(GtkWidget *w, gpointer d)
 {
    P("button_vintage_scenery\n");
@@ -403,7 +410,7 @@ static void init_tree_buttons()
 
 static void init_santa_pixmaps()
 {
-#define SANTA(x) santa_buttons.santa_ ## x.imid  = PREFIX_SANTA # x "-imid";
+#define SANTA(x) santa_buttons.santa_ ## x.imid  = (char *)PREFIX_SANTA # x "-imid";
    SANTA_ALL;
 #undef SANTA
 
@@ -464,7 +471,7 @@ HANDLE_TOGGLE(button_show_trees,NoTrees,0,1)
 
 static void rgba2color(GdkRGBA *c, char **s)
 {
-   *s = malloc(8);
+   *s = (char *)malloc(8);
    sprintf(*s,"#%02lx%02lx%02lx",lrint(c->red*255),lrint(c->green*255),lrint(c->blue*255));
 }
 
@@ -578,7 +585,7 @@ static void set_general_buttons()
       HANDLE_SET_TOGGLE_(general_buttons.exposures.button,0);
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_cpuload(GtkWidget *w, gpointer d)
 {
    if(!human_interaction) return;
@@ -591,7 +598,7 @@ void button_cpuload(GtkWidget *w, gpointer d)
    HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0)
 HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0)
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_bgcolor(GtkWidget *w, gpointer d)
 {
    if(!human_interaction) return;
@@ -609,7 +616,7 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    HANDLE_TOGGLE(button_allworkspaces, AllWorkspaces, 1,0)
 HANDLE_RANGE(button_lift, OffsetS, -value)
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_quit(GtkWidget *w, gpointer d)
 {
    Flags.Done = 1;
@@ -640,14 +647,14 @@ void general_default(int vintage)
 }
 
 
-   G_MODULE_EXPORT 
+   MODULE_EXPORT 
 void button_defaults_general(GtkWidget *w, gpointer d)
 {
    P("button_defaults_general\n");
    general_default(0);
 }
 
-   G_MODULE_EXPORT 
+   MODULE_EXPORT 
 void button_vintage_general(GtkWidget *w, gpointer d)
 {
    P("button_defaults_general vintage\n");
@@ -764,14 +771,14 @@ void snow_default(int vintage)
    human_interaction = h;
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_defaults_snow(GtkWidget *w, gpointer d)
 {
    P("button_defaults_snow\n");
    snow_default(0);
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_vintage_snow(GtkWidget *w, gpointer d)
 {
    P("button_vintage_snow\n");
@@ -810,7 +817,7 @@ static void set_wind_buttons()
    HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value)
 HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value)
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_wind_activate(GtkWidget *w, gpointer p)
 {
    P("button_wind_activate\n");
@@ -831,14 +838,14 @@ void wind_default(int vintage)
    human_interaction = h;
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_defaults_wind(GtkWidget *w, gpointer d)
 {
    P("button_defaults_wind\n");
    wind_default(0);
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_vintage_wind(GtkWidget *w, gpointer d)
 {
    P("button_vintage_wind\n");
@@ -878,13 +885,13 @@ void all_default(int vintage)
    snow_default(vintage);
    wind_default(vintage);
 }
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_all_defaults()
 {
    P("button_all_defaults\n");
    all_default(0);
 }
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_all_vintage()
 {
    P("button_all_vintage\n");
@@ -892,7 +899,7 @@ void button_all_vintage()
 }
 
 #if 0
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_kde()
 {
    int h = human_interaction;
@@ -904,7 +911,7 @@ void button_kde()
 }
 #endif
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_fvwm()
 {
    int h = human_interaction;
@@ -915,7 +922,7 @@ void button_fvwm()
    human_interaction = h;
 }
 
-   G_MODULE_EXPORT
+   MODULE_EXPORT
 void button_gnome()
 {
    int h = human_interaction;
@@ -940,19 +947,19 @@ void ui(int *argc, char **argv[])
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
    hauptfenster = GTK_WIDGET(gtk_builder_get_object (builder, "hauptfenster"));
-   gtk_widget_show_all (hauptfenster);
 
-   init_buttons();
-   init_pixmaps();
-   set_buttons();
-
-   char *css = ".wv button.radio{min-width:40px;}";
+   char *css = (char *)".wv button.radio{min-width:40px;}";
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();
    gtk_css_provider_load_from_data (cssProvider,
 	 css,-1,NULL);
 
    apply_css_provider(hauptfenster, cssProvider);
+   gtk_widget_show_all (hauptfenster);
+
+   init_buttons();
+   init_pixmaps();
+   set_buttons();
    
 }
 
