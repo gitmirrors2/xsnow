@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *snowtree_xpm[] = {
+XPM_TYPE *snowtree_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "55 79 203 2 ",
 "nn c None",

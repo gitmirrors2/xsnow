@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *tree_1_100px[] = {
+XPM_TYPE *tree_1_100px[] = {
 /* columns rows colors chars-per-pixel */
 "80 100 4 1 ",
 "  c None",

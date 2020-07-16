@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *MediumSanta4[] = {
+XPM_TYPE *MediumSanta4[] = {
 /* width height num_colors chars_per_pixel */
 "    88    17       18            1",
 /* colors */

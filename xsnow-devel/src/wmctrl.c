@@ -217,7 +217,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    return 1;
 }
 
-int FindWindowWithName(char *needle, Window *win, char **name)
+int FindWindowWithName(const char *needle, Window *win, char **name)
 {
    *win = Window_With_Name(display,DefaultRootWindow(display),needle);
    (*name) = strdup(needle);

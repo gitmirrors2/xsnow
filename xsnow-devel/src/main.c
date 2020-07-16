@@ -111,7 +111,7 @@ static int        OnTrees = 0;
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
 static int      Argc;
-static char**   Argv;
+static char     **Argv;
 
 // tree stuff
 static int      KillFlakes = 1;  // 1: signal to flakes to kill themselves, and do not genereate flakes
@@ -197,9 +197,10 @@ static XPoint    *SnowOnTrees;
 static GtkWidget *GtkWin = NULL;
 
 /* Colo(u)rs */
-static char *BlackColor = (char *)"black";
-static char *MeteoColor = (char *)"orange";
-static char *StarColor[]  = { (char *)"gold", (char *)"gold1", (char *)"gold4", (char *)"orange" };
+static const char *BlackColor  = "black";
+static const char *MeteoColor  = "orange";
+static const char *StarColor[] = { "gold", "gold1", "gold4", "orange" };
+
 static Pixel BlackPix;
 static Pixel ErasePixel;
 static Pixel MeteoPix;
@@ -231,7 +232,7 @@ static Region SantaPlowRegion;
 static Region SnowOnTreesRegion;
 
 /* Forward decls */
-static Pixel  AllocNamedColor(char *colorName, Pixel dfltPix);
+static Pixel  AllocNamedColor(const char *colorName, Pixel dfltPix);
 static int    BlowOff(void);
 static void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 static void   CleanFallen(Window id);
@@ -252,8 +253,8 @@ static void   EraseSnowFlake(Snow *flake);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static int    HandleFallenSnow(FallenSnow *fsnow);
 static void   HandleExposures(void);
-static FILE   *HomeOpen(char *file,char *mode,char **path);
-static Pixel  IAllocNamedColor(char *colorName, Pixel dfltPix);
+static FILE   *HomeOpen(const char *file,const char *mode,char **path);
+static Pixel  IAllocNamedColor(const char *colorName, Pixel dfltPix);
 static void   InitBlowOffFactor(void);
 static void   InitDisplayDimensions(void);
 static void   InitFallenSnow(void);
@@ -451,7 +452,7 @@ int main(int argc, char *argv[])
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
    }
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
-	 (char*)starPix.starBits, starPix.width, starPix.height);
+	 (char *)starPix.starBits, starPix.width, starPix.height);
    InitFlakesPerSecond();
    InitSantaPixmaps();
    InitFallenSnow();
@@ -555,7 +556,7 @@ int main(int argc, char *argv[])
    if (DoRestart)
    {
       sleep(2);
-      extern char** environ;
+      extern char **environ;
       execve(Argv[0],Argv,environ);
    }
    Thanks();
@@ -2266,7 +2267,7 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 	 bitmap[p++] = b;
       }
    }
-   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char*)bitmap, f->w, f->h);
+   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char *)bitmap, f->w, f->h);
    return pixmap;
 }
 
@@ -2446,7 +2447,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 }
 /* ------------------------------------------------------------------ */ 
 
-Pixel AllocNamedColor(char *colorName, Pixel dfltPix)
+Pixel AllocNamedColor(const char *colorName, Pixel dfltPix)
 {
    XColor scrncolor;
    XColor exactcolor;
@@ -2457,7 +2458,7 @@ Pixel AllocNamedColor(char *colorName, Pixel dfltPix)
       return dfltPix;
 }
 
-Pixel IAllocNamedColor(char *colorName, Pixel dfltPix)
+Pixel IAllocNamedColor(const char *colorName, Pixel dfltPix)
 {
    return AllocNamedColor(colorName, dfltPix) | 0xff000000;
 }
@@ -2472,7 +2473,7 @@ Window XWinInfo(char **name)
    if (!rc)
       (*name) = strdup("No Name");
    else
-      (*name) = strndup((char*)text_prop.value,text_prop.nitems);
+      (*name) = strndup((char *)text_prop.value,text_prop.nitems);
    XFree(text_prop.value);  // cannot find this in the docs, but otherwise memory leak
    return win;
 }
@@ -2539,12 +2540,12 @@ void InitSantaPixmaps()
    SetSantaSpeed();
 
    char *path[PIXINANIMATION];
-   char *filenames[] = 
+   const char *filenames[] = 
    {
-      (char *)"xsnow/pixmaps/santa1.xpm",
-      (char *)"xsnow/pixmaps/santa2.xpm",
-      (char *)"xsnow/pixmaps/santa3.xpm",
-      (char *)"xsnow/pixmaps/santa4.xpm",
+      "xsnow/pixmaps/santa1.xpm",
+      "xsnow/pixmaps/santa2.xpm",
+      "xsnow/pixmaps/santa3.xpm",
+      "xsnow/pixmaps/santa4.xpm",
    };
    FILE *f;
    int i;
@@ -2552,7 +2553,7 @@ void InitSantaPixmaps()
    for (i=0; i<PIXINANIMATION; i++)
    {
       path[i] = 0;
-      f = HomeOpen(filenames[i],(char *)"r",&path[i]);
+      f = HomeOpen(filenames[i],"r",&path[i]);
       if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
    }
@@ -2625,7 +2626,7 @@ void InitTreePixmaps()
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
    char *path;
-   FILE *f = HomeOpen((char *)"xsnow/pixmaps/tree.xpm",(char *)"r",&path);
+   FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
    if (f)
    {
       // there seems to be a local definition of tree
@@ -2702,13 +2703,13 @@ void ReInitTree0()
 }
 
 
-FILE *HomeOpen(char *file,char *mode, char**path)
+FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
    char *h = getenv("HOME");
    if (h == 0)
       return 0;
    char *home = strdup(h);
-   (*path) = (char*) malloc(strlen(home)+strlen(file)+2);
+   (*path) = (char *) malloc(strlen(home)+strlen(file)+2);
    strcpy(*path,home);
    strcat(*path,"/");
    strcat(*path,file);
@@ -2913,11 +2914,11 @@ int DetermineWindow()
       else
       {
 	 char *desktopsession = 0;
-	 char *desktops[] = {
-	    (char *)"DESKTOP_SESSION",
-	    (char *)"XDG_SESSION_DESKTOP",
-	    (char *)"XDG_CURRENT_DESKTOP",
-	    (char *)"GDMSESSION",
+	 const char *desktops[] = {
+	    "DESKTOP_SESSION",
+	    "XDG_SESSION_DESKTOP",
+	    "XDG_CURRENT_DESKTOP",
+	    "GDMSESSION",
 	    0
 	 };
 
@@ -2952,7 +2953,7 @@ int DetermineWindow()
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
-	    lxdefound = FindWindowWithName((char *)"pcmanfm",&SnowWin,&SnowWinName);
+	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
 	    printf("LXDE session found, searching for window 'pcmanfm'\n");
 	 }
 	 if(lxdefound)

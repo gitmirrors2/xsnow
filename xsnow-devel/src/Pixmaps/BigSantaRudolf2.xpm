@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *BigSantaRudolf2[] = {
+XPM_TYPE *BigSantaRudolf2[] = {
 /* width height num_colors chars_per_pixel */
 "   177    34       19            1",
 /* colors */

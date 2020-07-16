@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *reindeer_xpm[] = {
+XPM_TYPE *reindeer_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "70 57 107 2 ",
 "   c #2A3336",

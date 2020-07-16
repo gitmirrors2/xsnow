@@ -419,7 +419,7 @@ static void init_santa_pixmaps()
    GdkPixbuf *pixbuf;
    for (i=0; i<NBUTTONS; i++)
    {
-      pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)Santas[i/2][i%2][0]);
+      pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)Santas[i/2][i%2][0]);
       image = GTK_IMAGE(gtk_builder_get_object(builder,santa_barray[i]->imid));
       gtk_image_set_from_pixbuf(image,pixbuf);
       g_object_unref(pixbuf);
@@ -431,7 +431,7 @@ static void init_tree_pixmaps()
    GtkImage *image; 
    GdkPixbuf *pixbuf;
 #define TREE(x) \
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)xpmtrees[x]);\
+   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[x]);\
    image = GTK_IMAGE(gtk_builder_get_object(builder,"treeimage" # x));\
    gtk_image_set_from_pixbuf(image,pixbuf); \
    g_object_unref(pixbuf);
@@ -444,13 +444,13 @@ static void init_hello_pixmaps()
 {
    GtkImage *image; 
    GdkPixbuf *pixbuf;
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)xsnow_logo);
+   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image1"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image2"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    g_object_unref(pixbuf);
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)xpmtrees[0]);
+   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[0]);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image3"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    g_object_unref(pixbuf);
@@ -948,7 +948,7 @@ void ui(int *argc, char **argv[])
    gtk_builder_connect_signals (builder, builder);
    hauptfenster = GTK_WIDGET(gtk_builder_get_object (builder, "hauptfenster"));
 
-   char *css = (char *)".wv button.radio{min-width:40px;}";
+   const char *css = ".wv button.radio{min-width:40px;}";
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();
    gtk_css_provider_load_from_data (cssProvider,
@@ -977,7 +977,7 @@ void ui_error_x11(int *argc, char **argv[])
 
    GtkImage *image; 
    GdkPixbuf *pixbuf;
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**)xsnow_logo);
+   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image1"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image2"));

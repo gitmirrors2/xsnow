@@ -20,6 +20,7 @@
 */
 #ifndef PIXMAPS_H
 #define PIXMAPS_H
+#define XPM_TYPE const char
 #include "xsnow.h"
 extern SnowMap       snowPix[];
 extern StarMap       starPix;

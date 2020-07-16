@@ -19,7 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-const char *huis4_xpm[] = {
+XPM_TYPE *huis4_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "80 64 169 2 ",
 "   c #666666",
