@@ -86,6 +86,13 @@
    DOIT_S(DisplayName) \
    DOIT_S(SnowColor) \
    DOIT_S(TreeColor) \
-   DOIT_S(TreeType)   
+   DOIT_S(TreeType)   \
+   \
+   DOIT_I(Anarchy) \
+   DOIT_I(Neighbours) \
+   DOIT_I(Range) \
+   DOIT_I(Nbirds) \
+   DOIT_I(NoBirds)
+   
 
 #endif

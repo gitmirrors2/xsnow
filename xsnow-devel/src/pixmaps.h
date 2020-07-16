@@ -28,4 +28,5 @@ extern char          ***Santas[][2];
 extern char          **xpmtrees[];
 extern TannenbaumMap tannenbaumPix[];
 extern char          **xsnow_logo;
+extern const char    **birds_xpm[];
 #endif

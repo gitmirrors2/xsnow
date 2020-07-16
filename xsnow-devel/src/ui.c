@@ -724,6 +724,13 @@ static void set_snow_buttons()
    HANDLE_SET_COLOR(snow_buttons.color.button,SnowColor);
 }
 
+static void init_birds_buttons()
+{
+}
+static void set_birds_buttons()
+{
+}
+
 
    HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
    HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1)
@@ -768,6 +775,23 @@ void snow_default(int vintage)
       Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
    }
    set_snow_buttons();
+   human_interaction = h;
+}
+
+void birds_default(int vintage)
+{
+   int h = human_interaction;
+   human_interaction = 0;
+   Flags.NoBirds    = DEFAULT_NoBirds;
+   Flags.Nbirds     = DEFAULT_Nbirds;
+   Flags.Range      = DEFAULT_Range;
+   Flags.Neighbours = DEFAULT_Neighbours;
+   Flags.Anarchy    = DEFAULT_Anarchy;
+   if(vintage)
+   {
+      Flags.NoBirds = VINTAGE_NoBirds;
+   }
+   set_birds_buttons();
    human_interaction = h;
 }
 
@@ -859,6 +883,7 @@ static void init_buttons()
    init_star_buttons();
    init_meteo_buttons();
    init_snow_buttons();
+   init_birds_buttons();
    init_general_buttons();
    init_wind_buttons();
    nflakeslabel = GTK_WIDGET(gtk_builder_get_object(builder,"nflakes"));
@@ -872,6 +897,7 @@ static void set_buttons()
    set_star_buttons();
    set_meteo_buttons();
    set_snow_buttons();
+   set_birds_buttons();
    set_general_buttons();
    set_wind_buttons();
    human_interaction = 1;
@@ -884,6 +910,7 @@ void all_default(int vintage)
    scenery_default(vintage);
    snow_default(vintage);
    wind_default(vintage);
+   birds_default(vintage);
 }
    MODULE_EXPORT
 void button_all_defaults()

@@ -27,6 +27,12 @@
    etc.
    */
 
+/*
+ * contains main_c(), the actual main program, written in C.
+ * main_c() is to be called from main(), written in C++, 
+ * see mainstub.cpp and mainstub.h
+ */
+
 #define dosync 0  /* synchronise X-server. Change to 1 will detoriate the performance
 		     but allow for better analysis
 		     */
@@ -63,6 +69,7 @@
 #include "gaussian.h"
 #include "ixpm.h"
 #include "kdesetbg.h"
+#include "mainstub.h"
 #include "pixmaps.h"
 #include "ui.h"
 #include "version.h"
@@ -321,7 +328,7 @@ static int do_wupdate();
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
 #define makeflake(f) do {f = (Snow *)malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
-int main(int argc, char *argv[])
+int main_c(int argc, char *argv[])
 {
    Argc = argc;
    Argv = argv;

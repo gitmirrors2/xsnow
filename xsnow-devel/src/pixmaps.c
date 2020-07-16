@@ -151,3 +151,38 @@ StarMap starPix =
 #include "Pixmaps/xsnow.xpm"
 char **xsnow_logo = (char **)xsnow_xpm;
 
+/* front bird */
+#include "Pixmaps/bird1.xpm"
+#include "Pixmaps/bird2.xpm"
+#include "Pixmaps/bird3.xpm"
+#include "Pixmaps/bird4.xpm"
+#include "Pixmaps/bird5.xpm"
+#include "Pixmaps/bird6.xpm"
+#include "Pixmaps/bird7.xpm"
+#include "Pixmaps/bird8.xpm"
+
+/* side bird */
+#include "Pixmaps/birdl1.xpm"
+#include "Pixmaps/birdl2.xpm"
+#include "Pixmaps/birdl3.xpm"
+#include "Pixmaps/birdl4.xpm"
+#include "Pixmaps/birdl5.xpm"
+#include "Pixmaps/birdl6.xpm"
+#include "Pixmaps/birdl7.xpm"
+#include "Pixmaps/birdl8.xpm"
+
+/* oblique bird */
+#include "Pixmaps/birdd1.xpm"
+#include "Pixmaps/birdd2.xpm"
+#include "Pixmaps/birdd3.xpm"
+#include "Pixmaps/birdd4.xpm"
+#include "Pixmaps/birdd5.xpm"
+#include "Pixmaps/birdd6.xpm"
+#include "Pixmaps/birdd7.xpm"
+#include "Pixmaps/birdd8.xpm"
+
+const char **birds_xpm[] = 
+{bird1_xpm,bird2_xpm,bird3_xpm,bird4_xpm,bird5_xpm,bird6_xpm,bird7_xpm,bird8_xpm,
+   birdl1_xpm,birdl2_xpm,birdl3_xpm,birdl4_xpm,birdl5_xpm,birdl6_xpm,birdl7_xpm,birdl8_xpm,
+   birdd1_xpm,birdd2_xpm,birdd3_xpm,birdd4_xpm,birdd5_xpm,birdd6_xpm,birdd7_xpm,birdd8_xpm};
+

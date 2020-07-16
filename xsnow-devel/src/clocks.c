@@ -18,20 +18,12 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-#include <sys/times.h>
-#include <sys/time.h>
-#include <unistd.h>
 #include <gtk/gtk.h>
 #include "clocks.h"
 
 double wallcl() 
 { 
-	struct timeval toot;
-	double r;
-
-	gettimeofday(&toot,0);
-	r=toot.tv_sec+0.000001*(double)toot.tv_usec;
-	return(r);
+   return (double)g_get_real_time()*1.0e-6;
 }
 
 double wallclock()

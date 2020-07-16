@@ -81,6 +81,7 @@
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
+
 #define VINTAGE_DesiredNumberOfTrees 6
 #define VINTAGE_NoBlowSnow 1
 #define VINTAGE_NoKeepSnowOnTrees 1
@@ -115,6 +116,14 @@
 #define STARANIMATIONS 4
 #define WHIRL 150
 
+/* birds */
+#define DEFAULT_Anarchy 50    /*percent*/
+#define DEFAULT_Neighbours 7
+#define DEFAULT_Range 20      /*m*/
+#define DEFAULT_Nbirds 100
+#define DEFAULT_NoBirds 0
+
+#define VINTAGE_NoBirds 1
 
 // timers
 
