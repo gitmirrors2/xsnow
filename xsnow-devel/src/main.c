@@ -58,8 +58,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "birds.h"
 #include "clocks.h"
-#include "transparent.h"
 #include "csvpos.h"
 #include "docs.h"
 #include "doit.h"
@@ -71,6 +71,7 @@
 #include "kdesetbg.h"
 #include "mainstub.h"
 #include "pixmaps.h"
+#include "transparent.h"
 #include "ui.h"
 #include "version.h"
 #include "windows.h"
@@ -91,6 +92,7 @@ FLAGS OldFlags;
 Display *display;
 int     screen;
 Window  SnowWin;
+Window  BirdsWin;
 int     SnowWinBorderWidth;
 int     SnowWinDepth;
 int     SnowWinHeight;
@@ -201,7 +203,8 @@ static double WindTimerStart;
 static int       Isdesktop;
 static int       UseAlpha;
 static XPoint    *SnowOnTrees;
-static GtkWidget *GtkWin = NULL;
+static GtkWidget *GtkWin  = NULL;  // for snow etc
+static GtkWidget *GtkWinb = NULL;  // for birds
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -388,7 +391,7 @@ int main_c(int argc, char *argv[])
 
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
-   srand48((unsigned int)(wallcl()*1.0e6));
+   srand48((long int)(wallcl()*1.0e6));
    SnowMap *rp;
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
@@ -2985,8 +2988,10 @@ int DetermineWindow()
 	       gtk_window_close(GTK_WINDOW(GtkWin));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
+	       create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
+		     &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  &SnowWin, &SnowWinName, &GtkWin,w,h);
+		  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
 
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
@@ -2997,6 +3002,8 @@ int DetermineWindow()
 	    {
 	       TransWorkSpace = GetCurrentWorkspace();
 	       UsingTrans     = 1;
+
+	       main_birds(GtkWinb);
 	    }
 	    else
 	    {

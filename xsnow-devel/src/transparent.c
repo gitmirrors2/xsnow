@@ -51,7 +51,7 @@ static int is_below = 1;
 static GdkRectangle workarea;
 
 void create_transparent_window(int fullscreen, int below, int allworkspaces, 
-      Window *win, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
+      Window *win, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
 {
    workarea.width  = width;
    workarea.height = height;
@@ -59,7 +59,7 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    P("create_transparent_window\n");
    *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL); 
    gtk_window_set_position(GTK_WINDOW(*gtkwin), GTK_WIN_POS_CENTER);
-   *name = strdup("Xsnow-Window");
+   *name = strdup(prefname);
    gtk_window_set_title(GTK_WINDOW(*gtkwin), *name);
    gtk_widget_set_app_paintable(*gtkwin, TRUE);
    g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw), NULL);

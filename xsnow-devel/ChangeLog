@@ -5,6 +5,7 @@ version 3.0.0
 	add birds page, not functioning yet.
 	make xsnow compilable with g++
 	adding birds ....
+
 version 2.0.22
 	xsnow.desktop: in xfce icon does not show in
 	  panel: change 'xsnow.xpm' into 'xsnow'
