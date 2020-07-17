@@ -587,7 +587,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
-		birds.c kdtree.c kdtree.h globals.h doitb.h \
+		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
 		hashtable.cpp hashtable.h
 
 nodist_xsnow_SOURCES = ui_xml.h

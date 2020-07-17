@@ -124,6 +124,7 @@
 #define DEFAULT_NoBirds 0
 
 #define VINTAGE_NoBirds 1
+#define NBIRDS_MAX 1000
 
 // timers
 

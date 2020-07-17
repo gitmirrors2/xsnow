@@ -32,7 +32,6 @@ extern struct _globals {
    float prefdweight;           // dimensionless
    float meanspeed;             // [m/s]      preferred mean speed of birds
    float meanspeed_new;
-   int nbirds_max;              // max number of birds
    int neighbours_max;          // max number of neighbours to look at
    float range;                 // range wherein neighbours are to be found [m]
    float mean_distance;         // mean distance [m]

@@ -914,6 +914,24 @@ int do_ui_check()
       Wind = 2;
       P("changes: %d\n",changes);
    }
+   if(Flags.Neighbours != OldFlags.Neighbours)
+   {
+      OldFlags.Neighbours = Flags.Neighbours;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.Nbirds != OldFlags.Nbirds)
+   {
+      int start = OldFlags.Nbirds;
+      if (Flags.Nbirds <= 0)
+	 Flags.Nbirds = 1;
+      if (Flags.Nbirds > NBIRDS_MAX)
+	 Flags.Nbirds = NBIRDS_MAX;
+      OldFlags.Nbirds = Flags.Nbirds;
+      changes++;
+      P("changes: %d\n",changes);
+      init_birds(start);
+   }
 
    if (changes > 0)
    {

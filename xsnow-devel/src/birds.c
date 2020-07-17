@@ -56,6 +56,9 @@ static cairo_surface_t *globsurface = NULL;
 static GtkWidget       *drawing_area;
 static GdkPixbuf       *bird_pixbufs[NWINGS*3];
 
+static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
+//                  // Nbirds is changed outside init_birds
+
 // https://stackoverflow.com/questions/3908565/how-to-make-gtk-window-background-transparent
 // https://stackoverflow.com/questions/16832581/how-do-i-make-a-gtkwindow-background-transparent-on-linux]
 //static int supports_alpha = 1;
@@ -132,7 +135,6 @@ static int do_update_pos_birds(void);
 static int do_wings(void);
 static int do_draw_birds(void);
 static int do_update_speed_birds(void);
-static void init_birds(int start);
 
 static void background(cairo_t *cr);
 static void normalize_speed(BirdType *bird, float speed);
@@ -305,7 +307,7 @@ int do_update_speed_birds()
 
    int i;
 
-   for (i=0; i<Flags.Nbirds; i++)
+   for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       kd_insert3f(kd, bird->x, bird->y, bird->z, bird);
@@ -313,7 +315,7 @@ int do_update_speed_birds()
 
    int sumnum         = 0;
    float summeandist  = 0;
-   for (i=0; i<Flags.Nbirds; i++)
+   for (i=0; i<Nbirds; i++)
    {
       if (drand48() > globals.followers)
 	 continue;
@@ -419,15 +421,15 @@ int do_update_speed_birds()
 
       normalize_speed(bird,globals.meanspeed*(0.9+drand48()*0.2));
    }
-   float meannum = (float)sumnum/(float)Flags.Nbirds;
-   globals.mean_distance = summeandist/Flags.Nbirds;
+   float meannum = (float)sumnum/(float)Nbirds;
+   globals.mean_distance = summeandist/Nbirds;
    P("meannum %f %f\n",meannum,globals.range);
 
    if (meannum < globals.neighbours)
    {
       if (globals.range < 0.1)
 	 globals.range = 0.1;
-      if (meannum < Flags.Nbirds-1)
+      if (meannum < Nbirds-1)
 	 globals.range *=1.1;
       if (globals.range > globals.maxrange)
 	 globals.range /=1.1;
@@ -444,11 +446,11 @@ int do_update_pos_birds()
       return TRUE;
    if (Stopit)
       return FALSE;
-   P("do_update_pos_birds %d\n",Flags.Nbirds);
+   P("do_update_pos_birds %d\n",Nbirds);
    counter ++;
 
    int i;
-   for (i=0; i<Flags.Nbirds; i++)
+   for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
 
@@ -506,7 +508,7 @@ int do_draw_birds()
    //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
    int i;
-   for (i=0; i<Flags.Nbirds; i++)
+   for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
 
@@ -586,7 +588,7 @@ int do_draw_birds()
 	 if (!table_get(key))
 	 {
 	    table_counter++;
-	    R("%d %d %d %d\n",table_counter,iw,nw,offset);
+	    P("%d %d %d %d\n",table_counter,iw,nw,offset);
 	    pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
 	    table_put(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, window));
 	 }
@@ -626,7 +628,8 @@ void init_birds(int start)
    if (kd)
       kd_free(kd);
    kd = kd_create(3);
-   for (i=start; i<Flags.Nbirds; i++)
+   Nbirds = Flags.Nbirds;
+   for (i=start; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       bird->x = drand48()*globals.maxx;
@@ -678,7 +681,7 @@ static int do_wings()
    if(Stopit)
       return FALSE;
    int i;
-   for (i=0; i<Flags.Nbirds; i++)
+   for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       bird->wingstate++;
@@ -701,16 +704,16 @@ static int do_check_flags()
    }
    if (globals.nbirds_changed)
    {
-      R("nbirds changed %d %d\n",Flags.Nbirds,globals.nbirds_new);
+      R("nbirds changed %d %d\n",Nbirds,globals.nbirds_new);
       if (globals.nbirds_new <= 0)
 	 globals.nbirds_new = 1;
       if (globals.nbirds_new > globals.nbirds_max)
 	 globals.nbirds_new = globals.nbirds_max;
 
       R("TD: init_birds\n");
-      int start = Flags.Nbirds;
-      Flags.Nbirds = globals.nbirds_new;
-      sprintf(sbuffer,"%d",Flags.Nbirds);
+      int start = Nbirds;
+      Nbirds = globals.nbirds_new;
+      sprintf(sbuffer,"%d",Nbirds);
       nbirds_set_input_value(sbuffer);
       init_birds(start);
       globals.nbirds_changed = 0;
@@ -773,7 +776,6 @@ void main_birds (GtkWidget *window)
    P("%d\n",counter++);
    signal(SIGINT,stoppen);
 
-   globals.nbirds_max     = 10000;
    globals.neighbours     = 7;
    globals.neighbours_max = 100;
    globals.range          = 20;
@@ -879,7 +881,7 @@ void main_birds (GtkWidget *window)
 #ifdef FORREAL
    ui();
 
-   snprintf(sbuffer,sizeof(sbuffer),"%d",Flags.Nbirds);
+   snprintf(sbuffer,sizeof(sbuffer),"%d",Nbirds);
    R("%s\n",sbuffer);
    nbirds_set_input_value(sbuffer);
    snprintf(sbuffer,sizeof(sbuffer),"%d",globals.neighbours);

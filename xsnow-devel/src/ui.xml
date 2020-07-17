@@ -22,6 +22,18 @@
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="birds-nbirds-adjustment">
+    <property name="upper">1000</property>
+    <property name="value">50</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-neighbours-adjustment">
+    <property name="upper">100</property>
+    <property name="value">20</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="cpuload-adjustment">
     <property name="lower">20</property>
     <property name="upper">300</property>
@@ -2989,16 +3001,175 @@ maintainer of xsnow, here is a paypal link.</property>
           <object class="GtkGrid" id="grid_birds">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">8</property>
+            <property name="margin_bottom">8</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">birds!</property>
+                <property name="margin_bottom">8</property>
+                <property name="label" translatable="yes">Bird settings</property>
+                <attributes>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
+                <property name="width">4</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-nbirds">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Determine number of birds. If zero, no birds are shown.</property>
+                <property name="adjustment">birds-nbirds-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_nbirds" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Number of birds</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Neighbours</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-neighbours">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Determine the number of neighbours the birds should look at.</property>
+                <property name="adjustment">birds-neighbours-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>

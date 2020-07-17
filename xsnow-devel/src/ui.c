@@ -724,12 +724,6 @@ static void set_snow_buttons()
    HANDLE_SET_COLOR(snow_buttons.color.button,SnowColor);
 }
 
-static void init_birds_buttons()
-{
-}
-static void set_birds_buttons()
-{
-}
 
 
    HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
@@ -748,6 +742,7 @@ HANDLE_COLOR(button_snow_color,SnowColor)
    HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
    HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
 HANDLE_RANGE(button_snow_trees               , MaxOnTrees       ,value)
+
 
 void snow_default(int vintage)
 {
@@ -778,13 +773,38 @@ void snow_default(int vintage)
    human_interaction = h;
 }
 
+typedef struct _birds_button
+{
+   GtkWidget *button;
+} birds_button;
+
+static struct _birds_buttons
+{
+   birds_button nbirds;
+   birds_button neighbours;
+} birds_buttons;
+
+static void init_birds_buttons()
+{
+   HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
+   HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
+}
+
+static void set_birds_buttons()
+{
+   HANDLE_SET_RANGE(birds_buttons.nbirds.button       ,Nbirds     ,self);
+   HANDLE_SET_RANGE(birds_buttons.neighbours.button   ,Neighbours ,self);
+}
+
+   HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
+   HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
+
 void birds_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
    Flags.NoBirds    = DEFAULT_NoBirds;
    Flags.Nbirds     = DEFAULT_Nbirds;
-   Flags.Range      = DEFAULT_Range;
    Flags.Neighbours = DEFAULT_Neighbours;
    Flags.Anarchy    = DEFAULT_Anarchy;
    if(vintage)
@@ -987,7 +1007,7 @@ void ui(int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
-   
+
 }
 
 // next function is not used, I leave it here as a template, who knows...
