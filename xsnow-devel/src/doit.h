@@ -91,7 +91,7 @@
    DOIT_I(Anarchy) \
    DOIT_I(Neighbours) \
    DOIT_I(Nbirds) \
-   DOIT_I(NoBirds)
+   DOIT_I(ShowBirds)
    
 
 #endif

@@ -725,7 +725,6 @@ static void set_snow_buttons()
 }
 
 
-
    HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
    HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1)
    HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1)
@@ -773,48 +772,6 @@ void snow_default(int vintage)
    human_interaction = h;
 }
 
-typedef struct _birds_button
-{
-   GtkWidget *button;
-} birds_button;
-
-static struct _birds_buttons
-{
-   birds_button nbirds;
-   birds_button neighbours;
-} birds_buttons;
-
-static void init_birds_buttons()
-{
-   HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
-   HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
-}
-
-static void set_birds_buttons()
-{
-   HANDLE_SET_RANGE(birds_buttons.nbirds.button       ,Nbirds     ,self);
-   HANDLE_SET_RANGE(birds_buttons.neighbours.button   ,Neighbours ,self);
-}
-
-   HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
-   HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
-
-void birds_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction = 0;
-   Flags.NoBirds    = DEFAULT_NoBirds;
-   Flags.Nbirds     = DEFAULT_Nbirds;
-   Flags.Neighbours = DEFAULT_Neighbours;
-   Flags.Anarchy    = DEFAULT_Anarchy;
-   if(vintage)
-   {
-      Flags.NoBirds = VINTAGE_NoBirds;
-   }
-   set_birds_buttons();
-   human_interaction = h;
-}
-
    MODULE_EXPORT
 void button_defaults_snow(GtkWidget *w, gpointer d)
 {
@@ -827,6 +784,71 @@ void button_vintage_snow(GtkWidget *w, gpointer d)
 {
    P("button_vintage_snow\n");
    snow_default(1);
+}
+
+typedef struct _birds_button
+{
+   GtkWidget *button;
+} birds_button;
+
+static struct _birds_buttons
+{
+   birds_button show_birds;
+   birds_button nbirds;
+   birds_button neighbours;
+} birds_buttons;
+
+static void init_birds_buttons()
+{
+   HANDLE_INIT(birds_buttons.show_birds.button         ,birds-show);
+   HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
+   HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
+}
+
+static void set_birds_buttons()
+{
+   HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
+
+   HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds     ,self);
+   HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours ,self);
+}
+
+   HANDLE_TOGGLE(button_birds_show     ,ShowBirds       ,1,0)
+
+   HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
+HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
+
+void birds_default(int vintage)
+{
+   int h = human_interaction;
+   human_interaction = 0;
+   if(vintage)
+   {
+      Flags.ShowBirds = VINTAGE_ShowBirds;
+   }
+   else
+   {
+      Flags.ShowBirds  = DEFAULT_ShowBirds;
+      Flags.Nbirds     = DEFAULT_Nbirds;
+      Flags.Neighbours = DEFAULT_Neighbours;
+      Flags.Anarchy    = DEFAULT_Anarchy;
+   }
+   set_birds_buttons();
+   human_interaction = h;
+}
+
+   MODULE_EXPORT
+void button_defaults_birds(GtkWidget *w, gpointer d)
+{
+   P("button_defaults_birds\n");
+   birds_default(0);
+}
+
+   MODULE_EXPORT
+void button_vintage_birds(GtkWidget *w, gpointer d)
+{
+   P("button_vintage_birds\n");
+   birds_default(1);
 }
 
 

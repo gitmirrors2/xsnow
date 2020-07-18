@@ -302,7 +302,7 @@ static void Thanks(void)
 }
 
 // callbacks
-static int do_blowoff();
+static int do_blowoff(void);
 static int do_clean();
 static int do_displaychanged();
 static int do_drawtree(Treeinfo *tree);
@@ -581,6 +581,8 @@ int main_c(int argc, char *argv[])
 
 int do_santa()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    if (!Flags.NoSanta)
@@ -589,6 +591,8 @@ int do_santa()
 }
 int do_santa1()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    if (!Flags.NoSanta)
@@ -598,6 +602,8 @@ int do_santa1()
 
 int do_show_flakecount()
 {
+   if (Flags.Done)
+      return FALSE;
    if (!Flags.NoMenu)
       ui_show_nflakes(FlakeCount);
    return TRUE;
@@ -914,6 +920,13 @@ int do_ui_check()
       Wind = 2;
       P("changes: %d\n",changes);
    }
+   if(Flags.ShowBirds != OldFlags.ShowBirds)
+   {
+      R("ShowBirds: %d %d\n",Flags.ShowBirds, OldFlags.ShowBirds);
+      OldFlags.ShowBirds = Flags.ShowBirds;
+      changes++;
+      P("changes: %d\n",changes);
+   }
    if(Flags.Neighbours != OldFlags.Neighbours)
    {
       OldFlags.Neighbours = Flags.Neighbours;
@@ -955,6 +968,8 @@ void RedrawTrees()
 
 int do_snow_on_trees()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE || KillTrees)
       return TRUE;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
@@ -985,6 +1000,9 @@ int HandleFallenSnow(FallenSnow *fsnow)
 
 int do_fallen()
 {
+
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
 
@@ -1001,6 +1019,8 @@ int do_fallen()
 
 int do_blowoff()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    FallenSnow *fsnow = FsnowFirst;
@@ -1146,6 +1166,8 @@ int do_displaychanged()
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
    // If the size has been changed, we restart the program
+   if (Flags.Done)
+      return FALSE;
    if (!Isdesktop)
       return TRUE;
    {
@@ -1168,6 +1190,8 @@ int do_displaychanged()
 
 int do_event()
 {
+   if (Flags.Done)
+      return FALSE;
    //if(UseAlpha) return; we are tempted, but if the event loop is escaped,
    // a memory leak appears
    XEvent ev;
@@ -1228,6 +1252,8 @@ void RestartDisplay()    // todo
 
 int do_genflakes()
 {
+   if (Flags.Done)
+      return FALSE;
 
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
 
@@ -1280,6 +1306,8 @@ int do_genflakes()
 
 int do_newwind()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    //
@@ -1318,6 +1346,8 @@ int do_newwind()
 
 int do_wind()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    if(Flags.NoWind) return TRUE;
@@ -1400,6 +1430,8 @@ void ConvertOnTreeToFlakes()
 
 int do_star(Skoordinaten *star)
 {
+   if (Flags.Done)
+      return FALSE;
    if (KillStars)
    {
       NStars--;
@@ -1420,6 +1452,8 @@ int do_star(Skoordinaten *star)
 
 int do_ustar(Skoordinaten *star)
 {
+   if (Flags.Done)
+      return FALSE;
    if (KillStars)
       return TRUE;
    if (NOTACTIVE)
@@ -1431,6 +1465,8 @@ int do_ustar(Skoordinaten *star)
 
 int do_meteorite()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    if(Flags.NoMeteorites) return TRUE;
@@ -1469,6 +1505,8 @@ int do_meteorite()
 
 int do_emeteorite()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NOTACTIVE)
       return TRUE;
    if(Flags.NoMeteorites) return TRUE;
@@ -1489,6 +1527,8 @@ int do_emeteorite()
 // we have to wait a second or so and then clear the screen.
 int do_clean()
 {
+   if (Flags.Done)
+      return FALSE;
    static int active    = 0;
    static double TStart = 0.0;
    if (active)
@@ -1513,6 +1553,8 @@ int do_clean()
 
 int do_wupdate()
 {
+   if (Flags.Done)
+      return FALSE;
    if(!Isdesktop) return TRUE;
    if(Flags.NoKeepSWin) return TRUE;
    long r;
@@ -1593,11 +1635,11 @@ void UpdateWindows()
 	 if (!f)
 	 {
 	    // window found in Windows, nut not in list of fallensnow,
-	    // add it, but not if we are snowing in this window (Desktop for example)
+	    // add it, but not if we are snowing or birding in this window (Desktop for example)
 	    // and also not if this window has y == 0
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->y != 0)
+	    if (w->id != SnowWin && w->id != BirdsWin && w->y != 0)
 	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
@@ -1688,6 +1730,8 @@ void UpdateWindows()
 
 int do_testing()
 {
+   if (Flags.Done)
+      return FALSE;
    P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
    return TRUE;
    static int first = 1;
@@ -1984,6 +2028,8 @@ void EraseSnowFlake(Snow *flake)
 // fallen snow and trees must have been initialized 
 int do_initbaum()
 {
+   if (Flags.Done)
+      return FALSE;
    P("initbaum %d %d\n",NTrees, (int)wallclock());
    if (Flags.NoTrees || NTrees != 0)
       return TRUE;
@@ -2122,6 +2168,8 @@ int do_initbaum()
 
 int do_initstars()
 {
+   if (Flags.Done)
+      return FALSE;
    if (NStars != 0)
       return TRUE;
    NStars    = Flags.NStars;
@@ -2319,6 +2367,8 @@ void ResetSanta()
 
 int do_usanta()
 {
+   if (Flags.Done)
+      return FALSE;
 #define RETURN do { return TRUE ; } while(0)
    if (NOTACTIVE)
       RETURN;
@@ -2422,6 +2472,8 @@ void EraseSanta(int x, int y)
 
 int do_drawtree(Treeinfo *tree) 
 {
+   if (Flags.Done)
+      return FALSE;
    if (KillTrees)
    {
       free(tree);
@@ -2791,6 +2843,8 @@ void InitSnowOnTrees()
 
 int do_initsnow()
 {
+   if (Flags.Done)
+      return FALSE;
    // first, kill all snowflakes
    KillFlakes = 1;
 

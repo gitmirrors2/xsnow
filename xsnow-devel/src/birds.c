@@ -156,12 +156,8 @@ static float time_update_mean_distance = 0.5;
 
 static struct kdtree *kd = 0;
 
-static int Stopit = 0;
-
-
 static BirdType *birds = 0;
 static BirdType testbird;
-
 
 static void normalize_speed(BirdType *bird, float speed)
 {
@@ -195,7 +191,7 @@ static void r2i(BirdType *bird)
       //bird->ix = globals.ax*globals.attrx;
       //bird->iz = globals.ax*globals.attrz;
       P("%f %f %f %f %f %d %d %d\n",f,globals.attrx,globals.attrz,globals.ox,globals.oz,bird->ix,bird->iy,bird->iz);
-//#define CO_REAL
+      //#define CO_REAL
 #ifdef CO_REAL
       // classical camera obscura, inverted image:
       float x = f*(globals.xc-bird->x) + globals.xc;
@@ -296,10 +292,12 @@ void prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float 
 
 int do_update_speed_birds()
 {
+   if (Flags.Done)
+      return FALSE;
+   if (!Flags.ShowBirds)
+      return TRUE;
    if (globals.freeze)
       return TRUE;
-   if (Stopit)
-      return FALSE;
    P("do_update_speed_birds %d\n",counter);
 
    kd_free(kd);
@@ -442,10 +440,12 @@ int do_update_speed_birds()
 
 int do_update_pos_birds()
 {
+   if (Flags.Done)
+      return FALSE;
+   if (!Flags.ShowBirds)
+      return TRUE;
    if (globals.freeze)
       return TRUE;
-   if (Stopit)
-      return FALSE;
    P("do_update_pos_birds %d\n",Nbirds);
    counter ++;
 
@@ -465,6 +465,8 @@ int do_update_pos_birds()
 
 int do_draw_birds()
 {
+   if (Flags.Done)
+      return FALSE;
 #ifdef FORREAL
    static int first = 1;
 #define maxcache 10000 
@@ -479,8 +481,6 @@ int do_draw_birds()
 #endif
 
    P("do_draw_birds %d\n",counter);
-   if (Stopit)
-      return FALSE;
    counter++;
 
    GdkWindow *window           = gtk_widget_get_window(drawing_area);  
@@ -495,6 +495,13 @@ int do_draw_birds()
    //cairo_fill(cr);
    //cairo_set_source_rgba (cr, 1, 1, 1, 1);
    //#define USE_RECTANGLE
+   if (!Flags.ShowBirds)
+   {
+      background(cr);
+      gdk_window_end_draw_frame(window,drawingContext);
+      cairo_region_destroy(cairoRegion);
+      return TRUE;
+   }
 #define CLEARALL
 #ifdef CLEARALL
    background(cr);
@@ -664,7 +671,7 @@ void init_birds(int start)
 #ifdef FORREAL
 static int do_test()
 {
-   if (Stopit)
+   if (Flags.Done)
    {
       R("stop\n");
       return FALSE;
@@ -678,8 +685,10 @@ static int do_test()
 
 static int do_wings()
 {
-   if(Stopit)
+   if (Flags.Done)
       return FALSE;
+   if (!Flags.ShowBirds)
+      return TRUE;
    int i;
    for (i=0; i<Nbirds; i++)
    {
@@ -752,12 +761,6 @@ static int do_check_flags()
 }
 #endif
 
-void stoppen(int i)
-{
-   Stopit = 1;
-   gtk_main_quit();
-}
-
 void clear_flags()
 {
 #define DOITB(what,type) \
@@ -774,8 +777,6 @@ void main_birds (GtkWidget *window)
 {
    int i;
    P("%d\n",counter++);
-   signal(SIGINT,stoppen);
-
    globals.neighbours     = 7;
    globals.neighbours_max = 100;
    globals.range          = 20;

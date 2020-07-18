@@ -123,7 +123,7 @@ static double hyperrect_dist_sq(struct kdhyperrect *rect, const double *pos);
 static struct res_node *alloc_resnode(void);
 static void free_resnode(struct res_node*);
 #else
-#define alloc_resnode()		malloc(sizeof(struct res_node))
+#define alloc_resnode()		(res_node*) malloc(sizeof(struct res_node))
 #define free_resnode(n)		free(n)
 #endif
 
