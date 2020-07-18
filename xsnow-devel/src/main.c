@@ -290,7 +290,7 @@ static void   SetWindTimer(void);
 static void   SigHandler(int signum);
 static void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
 static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
-static int    UpdateSnowFlake(Snow *flake);
+static int    do_UpdateSnowFlake(Snow *flake);
 static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window XWinInfo(char **name);
@@ -303,32 +303,32 @@ static void Thanks(void)
 
 // callbacks
 static int do_blowoff(void);
-static int do_clean();
-static int do_displaychanged();
+static int do_clean(void);
+static int do_displaychanged(void);
 static int do_drawtree(Treeinfo *tree);
-static int do_emeteorite();
-static int do_event();
-static int do_fallen();
-static int do_genflakes();
+static int do_emeteorite(void);
+static int do_event(void);
+static int do_fallen(void);
+static int do_genflakes(void);
 static int do_initbaum(void);
 static int do_initsnow(void);
 static int do_initstars(void);
-static int do_meteorite();
-static int do_newwind();
-static int do_santa();
-static int do_santa1();
-static int do_show_flakecount();
-static int do_snow_on_trees();
+static int do_meteorite(void);
+static int do_newwind(void);
+static int do_santa(void);
+static int do_santa1(void);
+static int do_show_flakecount(void);
+static int do_snow_on_trees(void);
 static int do_star(Skoordinaten *star);
-static int do_testing();
-static int do_ui_check();
-static int do_usanta();
+static int do_testing(void);
+static int do_ui_check(void);
+static int do_usanta(void);
 static int do_ustar(Skoordinaten *star);
-static int do_wind();
-static int do_wupdate();
+static int do_wind(void);
+static int do_wupdate(void);
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
-#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,UpdateSnowFlake,f)
+#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
 #define makeflake(f) do {f = (Snow *)malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
 int main_c(int argc, char *argv[])
@@ -577,7 +577,7 @@ int main_c(int argc, char *argv[])
  * do nothing if current workspace is not to be updated
  */
 #define NOTACTIVE \
-   (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace))
+   (Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
 
 int do_santa()
 {
@@ -922,8 +922,15 @@ int do_ui_check()
    }
    if(Flags.ShowBirds != OldFlags.ShowBirds)
    {
-      R("ShowBirds: %d %d\n",Flags.ShowBirds, OldFlags.ShowBirds);
       OldFlags.ShowBirds = Flags.ShowBirds;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.BirdsOnly != OldFlags.BirdsOnly)
+   {
+      R("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
+      OldFlags.BirdsOnly = Flags.BirdsOnly;
+      ClearScreen();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -1802,8 +1809,10 @@ void InitFlake(Snow *flake)
 
 
 #define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
-int UpdateSnowFlake(Snow *flake)
+int do_UpdateSnowFlake(Snow *flake)
 {
+   if(NOTACTIVE)
+      return TRUE;
    int fckill = FlakeCount >= Flags.FlakeCountMax;
    if (
 	 KillFlakes ||                                     // merciless remove if KillFlakes
@@ -2474,6 +2483,8 @@ int do_drawtree(Treeinfo *tree)
 {
    if (Flags.Done)
       return FALSE;
+   if (NOTACTIVE)
+      return TRUE;
    if (KillTrees)
    {
       free(tree);

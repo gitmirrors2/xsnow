@@ -122,6 +122,7 @@
 #define DEFAULT_Range 20      /*m*/
 #define DEFAULT_Nbirds 100
 #define DEFAULT_ShowBirds 1
+#define DEFAULT_BirdsOnly 0
 
 #define VINTAGE_ShowBirds 0
 #define NBIRDS_MAX 1000

@@ -3241,7 +3241,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="tooltip_text" translatable="yes">If set: show only birds</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
-                <signal name="toggled" handler="button-birds-only" swapped="no"/>
+                <signal name="toggled" handler="button_birds_only" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>

@@ -794,6 +794,7 @@ typedef struct _birds_button
 static struct _birds_buttons
 {
    birds_button show_birds;
+   birds_button birds_only;
    birds_button nbirds;
    birds_button neighbours;
 } birds_buttons;
@@ -801,6 +802,7 @@ static struct _birds_buttons
 static void init_birds_buttons()
 {
    HANDLE_INIT(birds_buttons.show_birds.button         ,birds-show);
+   HANDLE_INIT(birds_buttons.birds_only.button         ,birds-only);
    HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
    HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
 }
@@ -808,12 +810,14 @@ static void init_birds_buttons()
 static void set_birds_buttons()
 {
    HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
+   HANDLE_SET_TOGGLE(birds_buttons.birds_only.button     ,BirdsOnly);
 
    HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds     ,self);
    HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours ,self);
 }
 
    HANDLE_TOGGLE(button_birds_show     ,ShowBirds       ,1,0)
+   HANDLE_TOGGLE(button_birds_only     ,BirdsOnly       ,1,0)
 
    HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
 HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
@@ -829,6 +833,7 @@ void birds_default(int vintage)
    else
    {
       Flags.ShowBirds  = DEFAULT_ShowBirds;
+      Flags.BirdsOnly  = DEFAULT_BirdsOnly;
       Flags.Nbirds     = DEFAULT_Nbirds;
       Flags.Neighbours = DEFAULT_Neighbours;
       Flags.Anarchy    = DEFAULT_Anarchy;
