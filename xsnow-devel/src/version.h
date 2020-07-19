@@ -20,5 +20,5 @@
 */
 #ifndef VERSION_H
 #define VERSION_H
-#define VERSION "3.0.0~pre3"
+#define VERSION "3.0.0~pre4"
 #endif

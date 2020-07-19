@@ -549,10 +549,7 @@ int main_c(int argc, char *argv[])
    {
       ui(&argc, &argv);
       if (!GtkWinb)
-      {
-	 ui_set_birds_header(
-	       "Your screen does not support alpha channel, no birds will fly.");
-      }
+	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
    }
 
    // main loop

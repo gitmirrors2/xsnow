@@ -118,7 +118,6 @@
 
 long int counter = 0;
 static GtkBuilder *builder;
-static GtkLabel *birds_header; 
 
 static void set_buttons(void);
 static void set_santa_buttons(void);
@@ -1017,11 +1016,8 @@ void ui_show_nflakes(int n)
 
 void ui_set_birds_header(const char *text)
 {
-   //GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
-   //
-   R("aap\n");
+   GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
    gtk_label_set_text(GTK_LABEL(birds_header),text);
-   R("noot\n");
 }
 
 void ui(int *argc, char **argv[])
@@ -1044,7 +1040,6 @@ void ui(int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
-   birds_header = GTK_LABEL(gtk_builder_get_object(builder, "birds-header")); 
 }
 
 // next function is not used, I leave it here as a template, who knows...
