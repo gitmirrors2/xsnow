@@ -23,4 +23,5 @@
 void ui (int *argc, char **argv[]);
 void ui_error_x11(int *argc, char **argv[]);
 void ui_show_nflakes(int n);
+void ui_set_birds_header(const char *text);
 #endif

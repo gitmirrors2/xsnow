@@ -3004,11 +3004,11 @@ maintainer of xsnow, here is a paypal link.</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="birds-header">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_bottom">8</property>
-                <property name="label" translatable="yes">Bird settings</property>
+                <property name="label" translatable="yes">Birds settings</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
                 </attributes>
@@ -3249,16 +3249,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton">
-                <property name="label" translatable="yes">togglebutton</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

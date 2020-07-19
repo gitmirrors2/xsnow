@@ -548,6 +548,11 @@ int main_c(int argc, char *argv[])
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
+      if (!GtkWinb)
+      {
+	 ui_set_birds_header(
+	       "Your screen does not support alpha channel, no birds will fly.");
+      }
    }
 
    // main loop
@@ -3071,8 +3076,12 @@ int DetermineWindow()
 	       gtk_window_close(GTK_WINDOW(GtkWin));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
-	       create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		     &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
+	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
+		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
+	    if (!GtkWinb)
+	    {
+	       printf("Your screen does not support alpha channel, no birds will fly.\n");
+	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
 

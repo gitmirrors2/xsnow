@@ -100,24 +100,25 @@
    } while(0)
 
 #define HANDLE_INIT(_button,_id) \
-   _button = GTK_WIDGET(gtk_builder_get_object(builder,#_id))
+   do {_button = GTK_WIDGET(gtk_builder_get_object(builder,#_id));} while(0)
 
 #define HANDLE_SET_RANGE(_button,_flag,_fun) \
-   gtk_range_set_value(GTK_RANGE(_button), _fun((gdouble)Flags._flag))
+   do {gtk_range_set_value(GTK_RANGE(_button), _fun((gdouble)Flags._flag));} while(0)
 
 #define HANDLE_SET_TOGGLE_(_button,_x) \
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),_x)
+   do {gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),_x);} while(0)
 
 #define HANDLE_SET_TOGGLE(_button,_flag)\
    HANDLE_SET_TOGGLE_(_button,Flags._flag)
 
 #define HANDLE_SET_TOGGLE_I(_button,_flag) \
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),!Flags._flag)
+   do {gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(_button),!Flags._flag); } while (0)
 
 #define self(x) (x)
 
 long int counter = 0;
-GtkBuilder *builder;
+static GtkBuilder *builder;
+static GtkLabel *birds_header; 
 
 static void set_buttons(void);
 static void set_santa_buttons(void);
@@ -817,7 +818,7 @@ static void set_birds_buttons()
 }
 
    HANDLE_TOGGLE(button_birds_show     ,ShowBirds       ,1,0)
-   HANDLE_TOGGLE(button_birds_only     ,BirdsOnly       ,1,0)
+HANDLE_TOGGLE(button_birds_only     ,BirdsOnly       ,1,0)
 
    HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
 HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
@@ -1014,6 +1015,15 @@ void ui_show_nflakes(int n)
    gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
 }
 
+void ui_set_birds_header(const char *text)
+{
+   //GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
+   //
+   R("aap\n");
+   gtk_label_set_text(GTK_LABEL(birds_header),text);
+   R("noot\n");
+}
+
 void ui(int *argc, char **argv[])
 {
 
@@ -1034,7 +1044,7 @@ void ui(int *argc, char **argv[])
    init_buttons();
    init_pixmaps();
    set_buttons();
-
+   birds_header = GTK_LABEL(gtk_builder_get_object(builder, "birds-header")); 
 }
 
 // next function is not used, I leave it here as a template, who knows...

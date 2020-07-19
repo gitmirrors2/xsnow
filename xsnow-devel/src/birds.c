@@ -18,7 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
 */
-// contains main_c(), the C main function to be called from
+// contains main_birds(), the C main function to be called from
 // the CXX main program
 //
 #include <gtk/gtk.h>
@@ -775,6 +775,8 @@ void clear_flags()
 
 void main_birds (GtkWidget *window)
 {
+   if (!window)
+      return;
    int i;
    P("%d\n",counter++);
    globals.neighbours     = 7;

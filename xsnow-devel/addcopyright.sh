@@ -18,6 +18,10 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-#
+crfile="copyright.inc"
+if [ ! -e "$crfile" ]; then
+   crfile="../$crfile"
+fi
 n=0
 while [ "$1" ] ; do
    f="$1"
@@ -31,7 +35,7 @@ while [ "$1" ] ; do
       echo "$f: no $txt"
       continue
    fi
-   sed -i "/^\s*#-#/d;/$txt/r copyright.inc" "$f"
+   sed -i "/^\s*#-#/d;/$txt/r $crfile" "$f"
    n=`expr $n + 1`
 done
 echo "$n files copyrighted"
