@@ -155,6 +155,7 @@
 #define time_wind             0.10             /* time between starting or ending wind       */
 #define time_wupdate          0.50             /* time between getting windows information   */ 
 #define time_show_range_etc   0.50             /* time between showing range etc.            */
+#define time_change_attr      60.0             /* time between changing attraction point     */
 
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */

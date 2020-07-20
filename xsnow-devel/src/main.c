@@ -327,6 +327,7 @@ static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
 static int do_show_range_etc(void);
+static int do_change_attr(void);
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
@@ -526,24 +527,25 @@ int main_c(int argc, char *argv[])
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean           ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged  ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite      ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event           ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes       ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum        ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars       ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite       ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees   ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check        ,0);
-   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc  ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean              ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check           ,0);
+   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_change_attr,    do_change_attr        ,0);
 
    HandleFactor();
 
@@ -1647,6 +1649,23 @@ int do_show_range_etc()
    if (NOTACTIVE)
       return TRUE;
    ui_show_range_etc();
+   return TRUE;
+}
+
+int do_change_attr()
+{
+   // move attraction point in the range
+   // x: 0.2 .. 0.8
+   // y: 0.4 .. 0.6
+   // z: 0.2 .. 0.8
+   if (Flags.Done)
+      return FALSE;
+   R("change attr\n");
+   birds_set_attraction_point_relative(
+	 0.2+drand48()*0.6, 
+	 0.4+drand48()*0.2, 
+	 0.2+drand48()*0.6
+	 );
    return TRUE;
 }
 

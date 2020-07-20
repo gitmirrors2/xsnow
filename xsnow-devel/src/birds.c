@@ -780,6 +780,16 @@ float birds_get_mean_dist()
    return globals.mean_distance;
 }
 
+void birds_set_attraction_point_relative(float x, float y, float z)
+{
+   globals.attrx = globals.maxx*x;
+   globals.attry = globals.maxy*y;
+   globals.attrz = globals.maxz*z;
+   testbird.x = globals.attrx;
+   testbird.y = globals.attry;
+   testbird.z = globals.attrz;
+}
+
 void clear_flags()
 {
 #define DOITB(what,type) \

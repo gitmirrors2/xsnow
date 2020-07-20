@@ -17,7 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #ifndef BIRDS_H
 #define BIRDS_H
 #include <gtk/gtk.h>
@@ -28,5 +28,6 @@ float MaxViewingDistance(void);
 float PreferredViewingDistance(void);
 float birds_get_range(void);
 float birds_get_mean_dist(void);
+void birds_set_attraction_point_relative(float x, float y, float z);
 
 #endif /* BIRDS_H */
