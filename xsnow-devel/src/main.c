@@ -326,6 +326,7 @@ static int do_usanta(void);
 static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
+static int do_show_range_etc(void);
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
@@ -542,6 +543,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate         ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc  ,0);
 
    HandleFactor();
 
@@ -970,7 +972,7 @@ int do_ui_check()
    {
       OldFlags.ViewingDistance = Flags.ViewingDistance;
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
    }
    if(Flags.Nbirds != OldFlags.Nbirds)
    {
@@ -1635,6 +1637,16 @@ int do_wupdate()
    }
 
    UpdateWindows();
+   return TRUE;
+}
+
+int do_show_range_etc()
+{
+   if (Flags.Done)
+      return FALSE;
+   if (NOTACTIVE)
+      return TRUE;
+   ui_show_range_etc();
    return TRUE;
 }
 

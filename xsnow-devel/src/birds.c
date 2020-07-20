@@ -184,15 +184,15 @@ float MaxViewingDistance()
 
 float PreferredViewingDistance()
 {
-   return 0.2*globals.maxy;
+   return 0.3*globals.maxy;
 }
 
 static void r2i(BirdType *bird)
 {
-   if(bird->y > globals.vd/8)
+   if(bird->y > Flags.ViewingDistance/8)
    {
       bird->drawable = 1;
-      float f  =  globals.vd/bird->y;
+      float f  =  Flags.ViewingDistance/bird->y;
       /*
 	 bird->ix = f*globals.ax*(bird->x - globals.maxx/2) + globals.ox;
 	 bird->iy =   globals.ay*bird->y + globals.oy;
@@ -541,7 +541,7 @@ int do_draw_birds()
       P("%d %f %f %f %d %d %d %d\n",i,bird->x,bird->y,bird->z,bird->ix,bird->iy,bird->iz,bird->drawable);
       if (bird->drawable)
       {
-	 float p = globals.vd/bird->y;
+	 float p = Flags.ViewingDistance/bird->y;
 
 #ifdef USE_RECTANGLE 
 	 bird->iw = 16*p;
@@ -770,6 +770,16 @@ static int do_check_flags()
 }
 #endif
 
+float birds_get_range()
+{
+   return globals.range;
+}
+
+float birds_get_mean_dist()
+{
+   return globals.mean_distance;
+}
+
 void clear_flags()
 {
 #define DOITB(what,type) \
@@ -849,7 +859,7 @@ void main_birds (GtkWidget *window)
 
    globals.maxz = globals.maxx*(float)globals.maxiz/(float)globals.maxix;
    globals.maxy = globals.maxx*(float)globals.maxiy/(float)globals.maxix;
-   globals.vd   = 0.2*globals.maxy;
+   //globals.vd   = 0.2*globals.maxy;
    globals.xc   = (globals.maxx-globals.ox)/2;
    globals.zc   = (globals.maxz-globals.oz)/2;
 

@@ -35,7 +35,7 @@ extern struct _globals {
    int neighbours_max;          // max number of neighbours to look at
    float range;                 // range wherein neighbours are to be found [m]
    float mean_distance;         // mean distance [m]
-   float vd;                    // viewing distance (camera obscura) [m]
+   //float vd;                    // viewing distance (camera obscura) [m]
    float xc, zc;                // coordinates of camera obscura lens
    unsigned int freeze :1;      // when true, system freezes
 

@@ -3093,6 +3093,7 @@ maintainer of xsnow, here is a paypal link.</property>
                     <property name="tooltip_text" translatable="yes">Use vintage values for all preferences (except settings).</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3103,7 +3104,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">11</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3129,7 +3130,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -3155,7 +3156,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -3200,7 +3201,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">11</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3331,7 +3332,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -3375,6 +3376,40 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">8</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="birds-mean-distance">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Actual mean distance from neighbours.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="birds-range">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Distance used to get the desired number of neighbours.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

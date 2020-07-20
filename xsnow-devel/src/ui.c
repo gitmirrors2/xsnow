@@ -122,6 +122,10 @@
 
 long int counter = 0;
 static GtkBuilder *builder;
+static GtkWidget *mean_distance;
+static GtkWidget *range;
+#define nsbuffer 512
+static char sbuffer[nsbuffer];
 
 static void set_buttons(void);
 static void set_santa_buttons(void);
@@ -1054,13 +1058,24 @@ void ui_set_vd_scale()
    R("%f\n",MaxViewingDistance());
 }
 
+void ui_show_range_etc()
+{
+   snprintf(sbuffer,nsbuffer,"Range: %d\n",(int)birds_get_range());
+   gtk_label_set_text(GTK_LABEL(range),sbuffer);
+   snprintf(sbuffer,nsbuffer,"Mean dist: %d\n",(int)birds_get_mean_dist());
+   gtk_label_set_text(GTK_LABEL(mean_distance),sbuffer);
+}
+
 void ui(int *argc, char **argv[])
 {
 
    // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
-   hauptfenster = GTK_WIDGET(gtk_builder_get_object (builder, "hauptfenster"));
+   hauptfenster  = GTK_WIDGET(gtk_builder_get_object(builder, "hauptfenster"));
+   mean_distance = GTK_WIDGET(gtk_builder_get_object(builder, "birds-mean-distance"));
+   range         = GTK_WIDGET(gtk_builder_get_object(builder, "birds-range"));
+
 
    const char *css = ".wv button.radio{min-width:40px;}";
 
