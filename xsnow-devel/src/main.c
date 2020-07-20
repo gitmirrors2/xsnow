@@ -1655,16 +1655,16 @@ int do_show_range_etc()
 int do_change_attr()
 {
    // move attraction point in the range
-   // x: 0.2 .. 0.8
+   // x: 0.3 .. 0.7
    // y: 0.4 .. 0.6
-   // z: 0.2 .. 0.8
+   // z: 0.3 .. 0.7
    if (Flags.Done)
       return FALSE;
-   R("change attr\n");
+   P("change attr\n");
    birds_set_attraction_point_relative(
-	 0.2+drand48()*0.6, 
+	 0.3+drand48()*0.4, 
 	 0.4+drand48()*0.2, 
-	 0.2+drand48()*0.6
+	 0.3+drand48()*0.4
 	 );
    return TRUE;
 }
