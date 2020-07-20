@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -57,6 +57,9 @@
 #define TREE_ALL TREE(0) TREE(1) TREE(2) TREE(3) TREE(4) TREE(5) TREE(6) TREE(7)
 
 
+// create function _name() to handle Flags._flag, handled by widget whose value 
+// can be accessed with gtk_range_get_value().
+// In general, the widget is a GtkScale.
 #define HANDLE_RANGE(_name,_flag,_value) \
    MODULE_EXPORT void _name(GtkWidget *w, gpointer d)\
 {\
@@ -65,7 +68,7 @@
    value = gtk_range_get_value(GTK_RANGE(w));\
    Flags._flag = lrint(_value);\
    P(#_name ": %d\n",Flags._flag);\
-}
+} typedef int dummytype // to request a ;
 
 #define HANDLE_TOGGLE(_name,_flag,_t,_f) \
    MODULE_EXPORT \
@@ -78,7 +81,7 @@
    else \
    Flags._flag = _f; \
    P(#_name ": %d\n",Flags._flag); \
-}
+} typedef int dummytype // to request a ;
 
 #define HANDLE_COLOR(_name,_flag) \
    MODULE_EXPORT \
@@ -90,7 +93,7 @@
    free(Flags._flag); \
    rgba2color(&color,&Flags._flag); \
    P(#_name ": %s\n",Flags._flag); \
-}
+} typedef int dummytype // to request a ;
 
 #define HANDLE_SET_COLOR(_button,_flag) \
    do { \
@@ -153,7 +156,7 @@ void button_iconify(GtkWidget *w, gpointer p)
    gtk_window_iconify(GTK_WINDOW(hauptfenster));
 }
 
-typedef struct santa_button
+typedef struct _santa_button
 {
    char *imid;
    GtkWidget *button;
@@ -163,7 +166,7 @@ typedef struct santa_button
 #define NBUTTONS (2*(MAXSANTA+1)) 
 // NBUTTONS is number of Santa's too choose from
 #define SANTA(x) santa_button santa_ ## x;
-static struct santa_buttons
+static struct _santa_buttons
 {
    SANTA_ALL
 
@@ -220,9 +223,9 @@ void button_santa(GtkWidget *w, gpointer d)
    Flags.NoRudolf  = !have_rudolf;
 }
 
-HANDLE_TOGGLE(button_santa_show, NoSanta, 1, 0)
+HANDLE_TOGGLE(button_santa_show, NoSanta, 1, 0);
 
-HANDLE_RANGE(button_santa_speed, SantaSpeedFactor, pow(10.0,value))
+HANDLE_RANGE(button_santa_speed, SantaSpeedFactor, pow(10.0,value));
 
 void santa_default(int vintage)
 {
@@ -255,13 +258,13 @@ void button_vintage_santa(GtkWidget *w, gpointer d)
    santa_default(1);
 }
 
-typedef struct tree_button
+typedef struct _tree_button
 {
    GtkWidget *button;
 }tree_button;
 
 #define TREE(x) tree_button tree_ ## x;
-static struct tree_buttons
+static struct _tree_buttons
 {
    TREE_ALL
 
@@ -272,22 +275,22 @@ static struct tree_buttons
 } tree_buttons;
 #undef TREE
 
-typedef struct star_button
+typedef struct _star_button
 {
    GtkWidget *button;
 } star_button;
 
-static struct star_buttons
+static struct _star_buttons
 {
    star_button nstars;
 } star_buttons;
 
-typedef struct meteo_button
+typedef struct _meteo_button
 {
    GtkWidget *button;
 } meteo_button;
 
-static struct meteo_buttons
+static struct _meteo_buttons
 {
    meteo_button show;
 } meteo_buttons;
@@ -463,11 +466,11 @@ static void init_pixmaps()
    init_hello_pixmaps();
 }
 
-HANDLE_RANGE(button_ntrees,DesiredNumberOfTrees,value)
+HANDLE_RANGE(button_ntrees,DesiredNumberOfTrees,value);
 
-HANDLE_RANGE(button_tree_fill, TreeFill, value)
+HANDLE_RANGE(button_tree_fill, TreeFill, value);
 
-HANDLE_TOGGLE(button_show_trees,NoTrees,0,1)
+HANDLE_TOGGLE(button_show_trees,NoTrees,0,1);
 
 static void rgba2color(GdkRGBA *c, char **s)
 {
@@ -476,7 +479,7 @@ static void rgba2color(GdkRGBA *c, char **s)
 }
 
 
-HANDLE_COLOR(button_tree_color,TreeColor)
+HANDLE_COLOR(button_tree_color,TreeColor);
 
 static void set_tree_buttons()
 {
@@ -504,13 +507,13 @@ static void set_tree_buttons()
    free(a);
    HANDLE_SET_RANGE(tree_buttons.desired_trees.button ,DesiredNumberOfTrees ,self);
    HANDLE_SET_RANGE(tree_buttons.tree_fill.button     ,TreeFill             ,self);
-   HANDLE_SET_TOGGLE_I(tree_buttons.show.button,NoTrees);
+   HANDLE_SET_TOGGLE_I(tree_buttons.show.button       ,NoTrees);
 
-   HANDLE_SET_COLOR(tree_buttons.color.button,TreeColor);
+   HANDLE_SET_COLOR(tree_buttons.color.button         ,TreeColor);
 }
 
 
-HANDLE_RANGE(button_star_nstars, NStars, value)
+HANDLE_RANGE(button_star_nstars, NStars, value);
 
 static void init_star_buttons()
 {
@@ -522,7 +525,7 @@ static void set_star_buttons()
    HANDLE_SET_RANGE(star_buttons.nstars.button,NStars,self);
 }
 
-HANDLE_TOGGLE(button_meteo_show, NoMeteorites, 0,1)
+HANDLE_TOGGLE(button_meteo_show, NoMeteorites, 0,1);
 
 static void init_meteo_buttons()
 {
@@ -534,12 +537,12 @@ static void set_meteo_buttons()
    HANDLE_SET_TOGGLE_I(meteo_buttons.show.button,NoMeteorites);
 }
 
-typedef struct general_button
+typedef struct _general_button
 {
    GtkWidget *button;
 }general_button;
 
-static struct general_buttons
+static struct _general_buttons
 {
    general_button cpuload;
    general_button usebg;
@@ -595,8 +598,8 @@ void button_cpuload(GtkWidget *w, gpointer d)
    P("button_cpuload: %d\n",Flags.cpuload);
 }
 
-   HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0)
-HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0)
+HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
+HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0);
 
    MODULE_EXPORT
 void button_bgcolor(GtkWidget *w, gpointer d)
@@ -609,12 +612,12 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    P("button_bgcolor: %s\n",Flags.BGColor);
 }
 
-   HANDLE_TOGGLE(button_alpha, UseAlpha, 1,0)
-   HANDLE_TOGGLE(button_exposures, Exposures, 1,0)
-   HANDLE_TOGGLE(button_fullscreen, FullScreen, 1,0)
-   HANDLE_TOGGLE(button_below, BelowAll, 1,0)
-   HANDLE_TOGGLE(button_allworkspaces, AllWorkspaces, 1,0)
-HANDLE_RANGE(button_lift, OffsetS, -value)
+HANDLE_TOGGLE(button_alpha, UseAlpha, 1,0);
+HANDLE_TOGGLE(button_exposures, Exposures, 1,0);
+HANDLE_TOGGLE(button_fullscreen, FullScreen, 1,0);
+HANDLE_TOGGLE(button_below, BelowAll, 1,0);
+HANDLE_TOGGLE(button_allworkspaces, AllWorkspaces, 1,0);
+HANDLE_RANGE(button_lift, OffsetS, -value);
 
    MODULE_EXPORT
 void button_quit(GtkWidget *w, gpointer d)
@@ -661,12 +664,12 @@ void button_vintage_general(GtkWidget *w, gpointer d)
    general_default(1);
 }
 
-typedef struct snow_button
+typedef struct _snow_button
 {
    GtkWidget *button;
 }snow_button;
 
-static struct snow_buttons
+static struct _snow_buttons
 {
    snow_button show_snow;
    snow_button show_snow_blowoff;
@@ -725,22 +728,22 @@ static void set_snow_buttons()
 }
 
 
-   HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1)
-   HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1)
-   HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1)
-   HANDLE_TOGGLE(button_snow_trees_show    ,NoKeepSnowOnTrees  ,0,1)
-   HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1)
-HANDLE_TOGGLE(button_snow_windows_show  ,NoKeepSWin         ,0,1)
+HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1);
+HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1);
+HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1);
+HANDLE_TOGGLE(button_snow_trees_show    ,NoKeepSnowOnTrees  ,0,1);
+HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1);
+HANDLE_TOGGLE(button_snow_windows_show  ,NoKeepSWin         ,0,1);
 
-HANDLE_COLOR(button_snow_color,SnowColor)
+HANDLE_COLOR(button_snow_color,SnowColor);
 
-   HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value)
-   HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value)
-   HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value)
-   HANDLE_RANGE(button_flake_count_max          , FlakeCountMax    ,value)
-   HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value)
-   HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value)
-HANDLE_RANGE(button_snow_trees               , MaxOnTrees       ,value)
+HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value);
+HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value);
+HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value);
+HANDLE_RANGE(button_flake_count_max          , FlakeCountMax    ,value);
+HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value);
+HANDLE_RANGE(button_snow_bottom              , MaxScrSnowDepth  ,value);
+HANDLE_RANGE(button_snow_trees               , MaxOnTrees       ,value);
 
 
 void snow_default(int vintage)
@@ -786,6 +789,12 @@ void button_vintage_snow(GtkWidget *w, gpointer d)
    snow_default(1);
 }
 
+void ui_set_birds_header(const char *text)
+{
+   GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
+   gtk_label_set_text(GTK_LABEL(birds_header),text);
+}
+
 typedef struct _birds_button
 {
    GtkWidget *button;
@@ -795,16 +804,22 @@ static struct _birds_buttons
 {
    birds_button show_birds;
    birds_button birds_only;
+
    birds_button nbirds;
    birds_button neighbours;
+   birds_button anarchy;
+   birds_button prefdistance;
 } birds_buttons;
 
 static void init_birds_buttons()
 {
    HANDLE_INIT(birds_buttons.show_birds.button         ,birds-show);
    HANDLE_INIT(birds_buttons.birds_only.button         ,birds-only);
+
    HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
    HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
+   HANDLE_INIT(birds_buttons.anarchy.button            ,birds-anarchy);
+   HANDLE_INIT(birds_buttons.prefdistance.button       ,birds-prefdistance);
 }
 
 static void set_birds_buttons()
@@ -812,15 +827,19 @@ static void set_birds_buttons()
    HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
    HANDLE_SET_TOGGLE(birds_buttons.birds_only.button     ,BirdsOnly);
 
-   HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds     ,self);
-   HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours ,self);
+   HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds       ,self);
+   HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours   ,self);
+   HANDLE_SET_RANGE(birds_buttons.anarchy.button           ,Anarchy      ,self);
+   HANDLE_SET_RANGE(birds_buttons.prefdistance.button      ,PrefDistance ,self);
 }
 
-   HANDLE_TOGGLE(button_birds_show     ,ShowBirds       ,1,0)
-HANDLE_TOGGLE(button_birds_only     ,BirdsOnly       ,1,0)
+HANDLE_TOGGLE(button_birds_show        ,ShowBirds     ,1  ,0);
+HANDLE_TOGGLE(button_birds_only        ,BirdsOnly     ,1  ,0);
 
-   HANDLE_RANGE(button_birds_nbirds             , Nbirds      ,value)
-HANDLE_RANGE(button_birds_neighbours         , Neighbours  ,value)
+HANDLE_RANGE(button_birds_nbirds       ,Nbirds        ,value);
+HANDLE_RANGE(button_birds_neighbours   ,Neighbours    ,value);
+HANDLE_RANGE(button_birds_anarchy      ,Anarchy       ,value);
+HANDLE_RANGE(button_birds_prefdistance ,PrefDistance  ,value);
 
 void birds_default(int vintage)
 {
@@ -832,11 +851,12 @@ void birds_default(int vintage)
    }
    else
    {
-      Flags.ShowBirds  = DEFAULT_ShowBirds;
-      Flags.BirdsOnly  = DEFAULT_BirdsOnly;
-      Flags.Nbirds     = DEFAULT_Nbirds;
-      Flags.Neighbours = DEFAULT_Neighbours;
-      Flags.Anarchy    = DEFAULT_Anarchy;
+      Flags.ShowBirds     = DEFAULT_ShowBirds;
+      Flags.BirdsOnly     = DEFAULT_BirdsOnly;
+      Flags.Nbirds        = DEFAULT_Nbirds;
+      Flags.Neighbours    = DEFAULT_Neighbours;
+      Flags.Anarchy       = DEFAULT_Anarchy;
+      Flags.PrefDistance  = DEFAULT_PrefDistance;
    }
    set_birds_buttons();
    human_interaction = h;
@@ -855,14 +875,20 @@ void button_vintage_birds(GtkWidget *w, gpointer d)
    P("button_vintage_birds\n");
    birds_default(1);
 }
+   MODULE_EXPORT
+void button_birds_restart(GtkWidget *w, gpointer p)
+{
+   P("button_birds_restart\n");
+   Flags.BirdsRestart = 1;
+}
 
 
-typedef struct wind_button
+typedef struct _wind_button
 {
    GtkWidget *button;
 }wind_button;
 
-static struct wind_buttons
+static struct _wind_buttons
 {
    wind_button windy;
    wind_button whirl;
@@ -884,9 +910,9 @@ static void set_wind_buttons()
    HANDLE_SET_RANGE(wind_buttons.timer.button        ,WindTimer   ,self);
 }
 
-   HANDLE_TOGGLE(button_wind_windy,NoWind   ,0,1)
-   HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value)
-HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value)
+HANDLE_TOGGLE(button_wind_windy,NoWind   ,0           ,1);
+HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value);
+HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value);
 
    MODULE_EXPORT
 void button_wind_activate(GtkWidget *w, gpointer p)
@@ -1012,12 +1038,6 @@ void ui_show_nflakes(int n)
    char a[20];
    sprintf(a,"%6d",n);
    gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
-}
-
-void ui_set_birds_header(const char *text)
-{
-   GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
-   gtk_label_set_text(GTK_LABEL(birds_header),text);
 }
 
 void ui(int *argc, char **argv[])

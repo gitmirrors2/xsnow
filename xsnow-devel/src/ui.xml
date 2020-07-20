@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.2 -->
 <!-- -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -10,7 +10,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,10 +18,15 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="birds-anarchy-adjustment">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="birds-nbirds-adjustment">
     <property name="upper">1000</property>
     <property name="value">50</property>
@@ -31,6 +36,11 @@
   <object class="GtkAdjustment" id="birds-neighbours-adjustment">
     <property name="upper">100</property>
     <property name="value">20</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-prefdistance-adjustment">
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -3040,39 +3050,12 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">end</property>
                 <property name="label" translatable="yes">Number of birds</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Neighbours</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-neighbours">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Determine the number of neighbours the birds should look at.</property>
-                <property name="adjustment">birds-neighbours-adjustment</property>
-                <property name="show_fill_level">True</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -3223,7 +3206,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set: show birds</property>
-                <property name="halign">start</property>
+                <property name="halign">center</property>
                 <property name="valign">center</property>
                 <signal name="toggled" handler="button_birds_show" swapped="no"/>
               </object>
@@ -3239,7 +3222,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set: show only birds</property>
-                <property name="halign">start</property>
+                <property name="halign">center</property>
                 <property name="valign">center</property>
                 <signal name="toggled" handler="button_birds_only" swapped="no"/>
               </object>
@@ -3249,22 +3232,117 @@ maintainer of xsnow, here is a paypal link.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Preferred distance</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="birds-prefdistance">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Preferred distance from other birds</property>
+                <property name="adjustment">birds-prefdistance-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_prefdistance" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">6</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="birds-anarchy">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Anarchy level: the hiher, the more anarchy</property>
+                <property name="adjustment">birds-anarchy-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_anarchy" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">6</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Anarchy</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">6</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="birds-neighbours">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Determine the number of neighbours the birds should look at.</property>
+                <property name="adjustment">birds-neighbours-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">8</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Neighbours</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">  </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="birds-restart">
+                <property name="label" translatable="yes">Restart</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="clicked" handler="button_birds_restart" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

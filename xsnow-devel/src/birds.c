@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 // contains main_birds(), the C main function to be called from
 // the CXX main program
@@ -315,7 +315,7 @@ int do_update_speed_birds()
    float summeandist  = 0;
    for (i=0; i<Nbirds; i++)
    {
-      if (drand48() > globals.followers)
+      if (drand48() < Flags.Anarchy*0.01)
 	 continue;
       BirdType *bird = &birds[i];
 
@@ -349,7 +349,7 @@ int do_update_speed_birds()
 	 float prefx=0, prefy=0, prefz=0;
 	 P("prefxyz %f\n",dist);
 	 if (dist > 1e-6)
-	    prefxyz(bird, dist, globals.prefdistance, x, y, z, &prefx, &prefy, &prefz);
+	    prefxyz(bird, dist, Flags.PrefDistance, x, y, z, &prefx, &prefy, &prefz);
 	 sumprefx += prefx;
 	 sumprefy += prefy;
 	 sumprefz += prefz;
@@ -423,7 +423,7 @@ int do_update_speed_birds()
    globals.mean_distance = summeandist/Nbirds;
    P("meannum %f %f\n",meannum,globals.range);
 
-   if (meannum < globals.neighbours)
+   if (meannum < Flags.Neighbours)
    {
       if (globals.range < 0.1)
 	 globals.range = 0.1;
@@ -700,7 +700,6 @@ static int do_wings()
    return TRUE;
 }
 
-
 #ifdef FORREAL
 static char sbuffer[1024];
 static int do_check_flags()
@@ -779,15 +778,14 @@ void main_birds (GtkWidget *window)
       return;
    int i;
    P("%d\n",counter++);
-   globals.neighbours     = 7;
+   //globals.neighbours     = 7;
    globals.neighbours_max = 100;
    globals.range          = 20;
    globals.freeze         = 0;
-   globals.followers      = 0.5;
+   //globals.followers      = 0.5;
    globals.maxx           = 1000;    // meters
    globals.bird_scale     = 32;
 
-   globals.prefdistance   = 20;
    globals.prefdweight    = 1;
 
    globals.maxix = gtk_widget_get_allocated_width(window);
