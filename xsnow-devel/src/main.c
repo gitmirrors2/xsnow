@@ -548,8 +548,14 @@ int main_c(int argc, char *argv[])
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
-      if (!GtkWinb)
+      if (GtkWinb)
+      {
+	 ui_set_vd_scale();
+      }
+      else
+      {
 	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
+      }
    }
 
    // main loop
@@ -959,6 +965,12 @@ int do_ui_check()
       Flags.BirdsRestart = 0;
       init_birds(0);
       P("changes: %d\n",changes);
+   }
+   if(Flags.ViewingDistance != OldFlags.ViewingDistance)
+   {
+      OldFlags.ViewingDistance = Flags.ViewingDistance;
+      changes++;
+      R("changes: %d\n",changes);
    }
    if(Flags.Nbirds != OldFlags.Nbirds)
    {

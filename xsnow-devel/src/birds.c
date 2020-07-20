@@ -177,6 +177,16 @@ static void background(cairo_t *cr)
    draw_cb(0,cr,0);
 }
 
+float MaxViewingDistance()
+{
+   return 2*globals.maxy;
+}
+
+float PreferredViewingDistance()
+{
+   return 0.2*globals.maxy;
+}
+
 static void r2i(BirdType *bird)
 {
    if(bird->y > globals.vd/8)

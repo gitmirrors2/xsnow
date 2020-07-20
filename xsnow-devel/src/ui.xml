@@ -44,6 +44,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="birds-vd-adjustment">
+    <property name="upper">1000000</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">100</property>
+  </object>
   <object class="GtkAdjustment" id="cpuload-adjustment">
     <property name="lower">20</property>
     <property name="upper">300</property>
@@ -3043,7 +3048,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3055,7 +3060,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3303,7 +3308,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3315,7 +3320,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3345,10 +3350,31 @@ maintainer of xsnow, here is a paypal link.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Viewing distance</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">8</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="birds-viewingdistance">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Viewing distance</property>
+                <property name="adjustment">birds-vd-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_viewingdistance" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">8</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

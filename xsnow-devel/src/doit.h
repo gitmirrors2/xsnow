@@ -94,6 +94,7 @@
    DOIT_I(ShowBirds) \
    DOIT_I(BirdsOnly) \
    DOIT_I(BirdsRestart)  \
+   DOIT_I(ViewingDistance)  \
    DOIT_I(PrefDistance)
 
 

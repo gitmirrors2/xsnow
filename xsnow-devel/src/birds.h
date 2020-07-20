@@ -24,5 +24,7 @@
 
 void main_birds (GtkWidget *window);
 void init_birds(int start);
+float MaxViewingDistance(void);
+float PreferredViewingDistance(void);
 
 #endif /* BIRDS_H */

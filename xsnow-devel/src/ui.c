@@ -33,6 +33,7 @@
 #include "csvpos.h"
 #include "pixmaps.h"
 #include "version.h"
+#include "birds.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -809,6 +810,7 @@ static struct _birds_buttons
    birds_button neighbours;
    birds_button anarchy;
    birds_button prefdistance;
+   birds_button viewingdistance;
 } birds_buttons;
 
 static void init_birds_buttons()
@@ -820,6 +822,7 @@ static void init_birds_buttons()
    HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
    HANDLE_INIT(birds_buttons.anarchy.button            ,birds-anarchy);
    HANDLE_INIT(birds_buttons.prefdistance.button       ,birds-prefdistance);
+   HANDLE_INIT(birds_buttons.viewingdistance.button    ,birds-viewingdistance);
 }
 
 static void set_birds_buttons()
@@ -827,19 +830,21 @@ static void set_birds_buttons()
    HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
    HANDLE_SET_TOGGLE(birds_buttons.birds_only.button     ,BirdsOnly);
 
-   HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds       ,self);
-   HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours   ,self);
-   HANDLE_SET_RANGE(birds_buttons.anarchy.button           ,Anarchy      ,self);
-   HANDLE_SET_RANGE(birds_buttons.prefdistance.button      ,PrefDistance ,self);
+   HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds          ,self);
+   HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours      ,self);
+   HANDLE_SET_RANGE(birds_buttons.anarchy.button           ,Anarchy         ,self);
+   HANDLE_SET_RANGE(birds_buttons.prefdistance.button      ,PrefDistance    ,self);
+   HANDLE_SET_RANGE(birds_buttons.viewingdistance.button   ,ViewingDistance ,self);
 }
 
 HANDLE_TOGGLE(button_birds_show        ,ShowBirds     ,1  ,0);
 HANDLE_TOGGLE(button_birds_only        ,BirdsOnly     ,1  ,0);
 
-HANDLE_RANGE(button_birds_nbirds       ,Nbirds        ,value);
-HANDLE_RANGE(button_birds_neighbours   ,Neighbours    ,value);
-HANDLE_RANGE(button_birds_anarchy      ,Anarchy       ,value);
-HANDLE_RANGE(button_birds_prefdistance ,PrefDistance  ,value);
+HANDLE_RANGE(button_birds_nbirds          ,Nbirds              ,value);
+HANDLE_RANGE(button_birds_neighbours      ,Neighbours          ,value);
+HANDLE_RANGE(button_birds_anarchy         ,Anarchy             ,value);
+HANDLE_RANGE(button_birds_prefdistance    ,PrefDistance        ,value);
+HANDLE_RANGE(button_birds_viewingdistance ,ViewingDistance     ,value);
 
 void birds_default(int vintage)
 {
@@ -851,12 +856,13 @@ void birds_default(int vintage)
    }
    else
    {
-      Flags.ShowBirds     = DEFAULT_ShowBirds;
-      Flags.BirdsOnly     = DEFAULT_BirdsOnly;
-      Flags.Nbirds        = DEFAULT_Nbirds;
-      Flags.Neighbours    = DEFAULT_Neighbours;
-      Flags.Anarchy       = DEFAULT_Anarchy;
-      Flags.PrefDistance  = DEFAULT_PrefDistance;
+      Flags.ShowBirds        = DEFAULT_ShowBirds;
+      Flags.BirdsOnly        = DEFAULT_BirdsOnly;
+      Flags.Nbirds           = DEFAULT_Nbirds;
+      Flags.Neighbours       = DEFAULT_Neighbours;
+      Flags.Anarchy          = DEFAULT_Anarchy;
+      Flags.PrefDistance     = DEFAULT_PrefDistance;
+      Flags.ViewingDistance  = DEFAULT_ViewingDistance;
    }
    set_birds_buttons();
    human_interaction = h;
@@ -1038,6 +1044,14 @@ void ui_show_nflakes(int n)
    char a[20];
    sprintf(a,"%6d",n);
    gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
+}
+
+void ui_set_vd_scale()
+{
+   GtkAdjustment *s = GTK_ADJUSTMENT(gtk_builder_get_object(builder,"birds-vd-adjustment")); 
+   gtk_adjustment_set_lower(s,0);
+   gtk_adjustment_set_upper(s,MaxViewingDistance());
+   R("%f\n",MaxViewingDistance());
 }
 
 void ui(int *argc, char **argv[])

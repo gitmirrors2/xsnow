@@ -29,6 +29,7 @@
 #include "docs.h"
 #include "version.h"
 #include "doit.h"
+#include "birds.h"
 
 #include "debug.h"
 static void ReadFlags(void);
