@@ -554,7 +554,7 @@ int main_c(int argc, char *argv[])
       ui(&argc, &argv);
       if (GtkWinb)
       {
-	 ui_set_vd_scale();
+	 //ui_set_vd_scale();
       }
       else
       {
@@ -1646,8 +1646,6 @@ int do_show_range_etc()
 {
    if (Flags.Done)
       return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
    ui_show_range_etc();
    return TRUE;
 }

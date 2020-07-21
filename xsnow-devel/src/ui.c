@@ -1050,13 +1050,13 @@ void ui_show_nflakes(int n)
    gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
 }
 
-void ui_set_vd_scale()
-{
-   GtkAdjustment *s = GTK_ADJUSTMENT(gtk_builder_get_object(builder,"birds-vd-adjustment")); 
-   gtk_adjustment_set_lower(s,0);
-   gtk_adjustment_set_upper(s,MaxViewingDistance());
-   R("%f\n",MaxViewingDistance());
-}
+//void ui_set_vd_scale()
+//{
+//   GtkAdjustment *s = GTK_ADJUSTMENT(gtk_builder_get_object(builder,"birds-vd-adjustment")); 
+//   gtk_adjustment_set_lower(s,0);
+//   gtk_adjustment_set_upper(s,MaxViewingDistance());
+//   R("%f\n",MaxViewingDistance());
+//}
 
 void ui_show_range_etc()
 {

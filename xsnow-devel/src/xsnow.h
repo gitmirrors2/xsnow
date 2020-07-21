@@ -125,8 +125,8 @@
 #define DEFAULT_BirdsOnly 0
 #define DEFAULT_PrefDistance 20
 #define DEFAULT_BirdsRestart 0
-#define DEFAULT_ViewingDistance PreferredViewingDistance()
-//#define DEFAULT_ViewingDistance 123
+//#define DEFAULT_ViewingDistance PreferredViewingDistance()
+#define DEFAULT_ViewingDistance 40
 
 #define VINTAGE_ShowBirds 0
 #define NBIRDS_MAX 1000

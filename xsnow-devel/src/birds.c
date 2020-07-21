@@ -182,9 +182,17 @@ float MaxViewingDistance()
    return 2*globals.maxy;
 }
 
-float PreferredViewingDistance()
+//float PreferredViewingDistance()
+//{
+//   return 0.3*globals.maxy;
+//}
+
+static float scale(float y)
 {
-   return 0.3*globals.maxy;
+   if (y != 0)
+      return 0.005*(100-Flags.ViewingDistance)*globals.maxy/y;
+   else
+      return 1.0e6;
 }
 
 static void r2i(BirdType *bird)
@@ -192,7 +200,11 @@ static void r2i(BirdType *bird)
    if(bird->y > Flags.ViewingDistance/8)
    {
       bird->drawable = 1;
-      float f  =  Flags.ViewingDistance/bird->y;
+      //float f  =  Flags.ViewingDistance/bird->y;
+      //float f = 0.5;
+      //float f = 0.01*20.0*globals.maxy/bird->y;
+      float f = scale(bird->y);
+      P("%f %d %f\n",globals.maxy,Flags.ViewingDistance,f);
       /*
 	 bird->ix = f*globals.ax*(bird->x - globals.maxx/2) + globals.ox;
 	 bird->iy =   globals.ay*bird->y + globals.oy;
@@ -541,7 +553,8 @@ int do_draw_birds()
       P("%d %f %f %f %d %d %d %d\n",i,bird->x,bird->y,bird->z,bird->ix,bird->iy,bird->iz,bird->drawable);
       if (bird->drawable)
       {
-	 float p = Flags.ViewingDistance/bird->y;
+	 //float p = Flags.ViewingDistance/bird->y;
+	 float p = scale(bird->y);
 
 #ifdef USE_RECTANGLE 
 	 bird->iw = 16*p;
@@ -595,6 +608,12 @@ int do_draw_birds()
 	 iw = p*globals.bird_scale;
 	 ih = p*globals.bird_scale*gdk_pixbuf_get_height(bird_pixbuf)/
 	    (float)gdk_pixbuf_get_width(bird_pixbuf);
+	 if (ih > globals.maxiz*0.25 || ih <=0)
+	 {
+	    P("ih: %d %d\n",ih,globals.maxiz);
+	    continue;
+	 }
+
 	 //int interpolation = GDK_INTERP_NEAREST;
 	 GdkInterpType interpolation = GDK_INTERP_BILINEAR;
 	 const int k = 4;   // the higher, the less surfaces are cached and the more jerk
