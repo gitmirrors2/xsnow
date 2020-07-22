@@ -976,6 +976,20 @@ int do_ui_check()
       changes++;
       P("changes: %d\n",changes);
    }
+   if(Flags.BirdsSpeed != OldFlags.BirdsSpeed)
+   {
+      OldFlags.BirdsSpeed = Flags.BirdsSpeed;
+      birds_set_speed(Flags.BirdsSpeed);
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.AttrFactor != OldFlags.AttrFactor)
+   {
+      OldFlags.AttrFactor = Flags.AttrFactor;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+
    if(Flags.Nbirds != OldFlags.Nbirds)
    {
       int start = OldFlags.Nbirds;
@@ -3155,8 +3169,8 @@ int DetermineWindow()
 	    {
 	       TransWorkSpace = GetCurrentWorkspace();
 	       UsingTrans     = 1;
-
 	       main_birds(GtkWinb);
+	       birds_set_speed(Flags.BirdsSpeed);
 	    }
 	    else
 	    {

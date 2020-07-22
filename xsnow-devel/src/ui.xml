@@ -27,8 +27,14 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="birds-attraction-adjustment">
+    <property name="upper">300</property>
+    <property name="value">100</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">20</property>
+  </object>
   <object class="GtkAdjustment" id="birds-nbirds-adjustment">
-    <property name="upper">1000</property>
+    <property name="upper">400</property>
     <property name="value">50</property>
     <property name="step_increment">10</property>
     <property name="page_increment">10</property>
@@ -43,6 +49,12 @@
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-speed-adjustment">
+    <property name="upper">300</property>
+    <property name="value">100</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">20</property>
   </object>
   <object class="GtkAdjustment" id="birds-vd-adjustment">
     <property name="upper">95</property>
@@ -1056,7 +1068,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fluff on fallen snow and trees.</property>
-                <property name="halign">end</property>
+                <property name="halign">start</property>
                 <property name="margin_right">8</property>
                 <signal name="toggled" handler="button_snow_fluff_show" swapped="no"/>
               </object>
@@ -3104,7 +3116,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3130,7 +3142,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3156,7 +3168,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3201,7 +3213,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3332,7 +3344,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -3354,6 +3366,7 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">end</property>
                 <property name="label" translatable="yes">Viewing distance</property>
               </object>
               <packing>
@@ -3388,7 +3401,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -3399,6 +3412,64 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Speed</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-speed">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Speed of birds in arbitrary units</property>
+                <property name="adjustment">birds-speed-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_speed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Focus to centre</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-attraction">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">How strongly are birds focused on common attraction point</property>
+                <property name="adjustment">birds-attraction-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_attraction" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>

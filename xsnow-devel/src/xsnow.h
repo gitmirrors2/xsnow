@@ -127,6 +127,8 @@
 #define DEFAULT_BirdsRestart 0
 //#define DEFAULT_ViewingDistance PreferredViewingDistance()
 #define DEFAULT_ViewingDistance 40
+#define DEFAULT_BirdsSpeed 100
+#define DEFAULT_AttrFactor 100
 
 #define VINTAGE_ShowBirds 0
 #define VINTAGE_BirdsOnly 0

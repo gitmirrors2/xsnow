@@ -29,5 +29,6 @@ float MaxViewingDistance(void);
 float birds_get_range(void);
 float birds_get_mean_dist(void);
 void birds_set_attraction_point_relative(float x, float y, float z);
+void birds_set_speed(int x);
 
 #endif /* BIRDS_H */

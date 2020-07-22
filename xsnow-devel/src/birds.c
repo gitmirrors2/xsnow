@@ -55,7 +55,7 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
 #if 0
 static cairo_surface_t *globsurface = NULL;
 #endif
-static GtkWidget       *drawing_area;
+static GtkWidget       *drawing_area = 0;
 static GdkPixbuf       *bird_pixbufs[NWINGS*3];
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
@@ -98,8 +98,8 @@ typedef struct _Birdtype
    float sx,sy,sz;     // velocity, m/sec
    int ix,iy,iz,iw,ih; // pixels
    // ix .. in pixels, used to store previous screen parameters
+   int wingstate, orient;      
    int drawable;       // is in drawable range
-   int wingstate;      
 } BirdType;
 
 struct _globals globals;
@@ -238,38 +238,6 @@ static void r2i(BirdType *bird)
    }
 }
 
-#if 0
-/* Create a new surface of the appropriate size to store our scribbles */
-static gboolean configure_event_cb (GtkWidget *widget,
-      GdkEventConfigure *event,
-      gpointer           data)
-{
-   P("%d %d %d\n",counter++,gtk_widget_get_allocated_width(widget),
-	 gtk_widget_get_allocated_height(widget));
-
-   if (globsurface)
-      cairo_surface_destroy (globsurface);
-
-   globals.maxix = gtk_widget_get_allocated_width (widget);
-   globals.maxiz = gtk_widget_get_allocated_height (widget);
-   globals.maxiy = (globals.maxix+globals.maxiz)/2;
-
-   P("window %p\n",gtk_widget_get_window(widget));
-
-   globsurface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
-	 CAIRO_CONTENT_COLOR, globals.maxix, globals.maxiz);
-
-
-   cairo_t *cr = cairo_create (globsurface);
-   P("globcr: %p\n",globcr);
-
-   /* Initialize the surface */
-   background(cr);
-   cairo_destroy(cr);
-
-   return TRUE;
-}
-#endif
 
 /* Redraw the screen from the surface. Note that the ::draw
  * signal receives a ready-to-be-used cairo_t that is already
@@ -422,7 +390,9 @@ int do_update_speed_birds()
       float dy = globals.attry - bird->y;
       float dz = globals.attrz - bird->z;
 
-      const float f = 0.05f;
+      //float f = 0.05f;
+      float f = Flags.AttrFactor*0.01f*0.05f;
+
       bird->sx += f*dx;
       bird->sy += f*dy;
       bird->sz += f*dz;
@@ -493,18 +463,6 @@ int do_draw_birds()
 {
    if (Flags.Done)
       return FALSE;
-#ifdef FORREAL
-   static int first = 1;
-#define maxcache 10000 
-   static void* cache[maxcache];
-   if (first)
-   {
-      int i;
-      for (i=0; i<maxcache; i++)
-	 cache[i] = 0;
-      first = 0;
-   }
-#endif
 
    P("do_draw_birds %d\n",counter);
    counter++;
@@ -513,9 +471,9 @@ int do_draw_birds()
    cairo_region_t *cairoRegion = cairo_region_create();
 
    GdkDrawingContext *drawingContext =
-      gdk_window_begin_draw_frame (window,cairoRegion);
+      gdk_window_begin_draw_frame(window,cairoRegion);
 
-   cairo_t *cr = gdk_drawing_context_get_cairo_context (drawingContext);
+   cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
    //cairo_set_source_rgba(cr,1.0,1.0,1.0,1.0);
    //cairo_rectangle(cr,0,0,globals.maxx,maxz);
    //cairo_fill(cr);
@@ -640,7 +598,7 @@ int do_draw_birds()
 	    static double cache = 0;
 	    table_counter++;
 	    cache += iw*ih;
-	    R("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
+	    P("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
 	    pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
 	    table_put(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, window));
 	 }
@@ -651,6 +609,12 @@ int do_draw_birds()
 	 g_clear_object(&pixbuf);
 #endif
 	 P("draw: %d %d\n",bird->ix,bird->iz);
+      }
+      else
+      {
+	 static int skipped = 0;
+	 skipped++;
+	 P("skipped: %d %d\n",skipped,bird->drawable);
       }
    }
    /*
@@ -839,70 +803,24 @@ void clear_flags()
 #undef DOITB
 }
 
-void main_birds (GtkWidget *window)
+void birds_set_speed(int x)
 {
-   if (!window)
-      return;
-   int i;
-   P("%d\n",counter++);
-   //globals.neighbours     = 7;
-   globals.neighbours_max = 100;
-   globals.range          = 20;
-   globals.freeze         = 0;
-   //globals.followers      = 0.5;
-   globals.maxx           = 1000;    // meters
-   globals.bird_scale     = 32;
+   globals.meanspeed = x*0.01*globals.maxx*0.05;
+   P("%f\n",globals.meanspeed);
+}
 
-   globals.prefdweight    = 1;
-
+static void main_window(GtkWidget *window)
+{
    globals.maxix = gtk_widget_get_allocated_width(window);
    globals.maxiz = gtk_widget_get_allocated_height(window);
    globals.maxiy = (globals.maxix+globals.maxiz)/2;
 
    R("%d %d %d\n",globals.maxix,globals.maxiy,globals.maxiz);
 
-   clear_flags();
-
-#if 0
-   srand48((long int)(wallcl()*1.0e6));
-   gtk_init(&argc,&argv);
-   GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-   gtk_window_set_default_size(GTK_WINDOW(window),1300,1000);
-   gtk_window_set_title(GTK_WINDOW(window), "xflock");
-   g_signal_connect (window, "destroy", G_CALLBACK (stoppen), NULL);
-
-   gtk_widget_set_app_paintable(window, TRUE);
-
-   g_signal_connect(G_OBJECT(window), "draw", G_CALLBACK (draw_cb), NULL);
-   g_signal_connect(G_OBJECT(window), "screen-changed", G_CALLBACK(screen_changed), NULL);
-#endif
-
    drawing_area = gtk_drawing_area_new();
    gtk_container_add(GTK_CONTAINER(window), drawing_area);
 
-#if 0
-   screen_changed(window, NULL, NULL);
-
-   g_signal_connect (drawing_area,"configure-event", G_CALLBACK (configure_event_cb), NULL);
-   gtk_widget_set_events (drawing_area, gtk_widget_get_events (drawing_area)
-	 | GDK_BUTTON_PRESS_MASK
-	 | GDK_POINTER_MOTION_MASK);
-#endif
-
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_update_pos_birds,     do_update_pos_birds,     0);
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_draw_birds,           do_draw_birds,           0);
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_wings,                do_wings,                0);
-#ifdef FORREAL
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_check_flags,          do_check_flags,          0);
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_test,                 do_test,                 0);
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_update_range,         do_update_range,         0); // ui.c
-   add_to_mainloop(G_PRIORITY_DEFAULT,time_update_mean_distance, do_update_mean_distance, 0); // ui.c
-#endif
-
    gtk_widget_show_all(window);
-
 
    globals.maxz = globals.maxx*(float)globals.maxiz/(float)globals.maxix;
    globals.maxy = globals.maxx*(float)globals.maxiy/(float)globals.maxix;
@@ -912,6 +830,49 @@ void main_birds (GtkWidget *window)
 
    R("drawing window: %d %d %d %f %f %f\n",
 	 globals.maxix, globals.maxiy, globals.maxiz, globals.maxx, globals.maxy,globals.maxz);
+   gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
+}
+
+void main_birds (GtkWidget *window)
+{
+   if (!window)
+      return;
+   static int running = 0;
+
+   if (running)
+   {
+      main_window(window);
+      return;
+   }
+   else
+   {
+      running = 1;
+      P("%d\n",counter++);
+      //globals.neighbours     = 7;
+      globals.neighbours_max = 100;
+      globals.range          = 20;
+      globals.freeze         = 0;
+      //globals.followers      = 0.5;
+      globals.maxx           = 1000;    // meters
+      globals.bird_scale     = 32;
+
+      globals.prefdweight    = 1;
+
+      clear_flags();
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_pos_birds,     do_update_pos_birds,     0);
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_draw_birds,           do_draw_birds,           0);
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_wings,                do_wings,                0);
+#ifdef FORREAL
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_check_flags,          do_check_flags,          0);
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_test,                 do_test,                 0);
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_range,         do_update_range,         0); // ui.c
+      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_mean_distance, do_update_mean_distance, 0); // ui.c
+#endif
+      main_window(window);
+   }
+
+   int i;
 
    globals.attrx = globals.maxx/2;
    globals.attry = globals.maxy/2;
@@ -924,7 +885,8 @@ void main_birds (GtkWidget *window)
 #endif
 
    //globals.meanspeed = globals.maxx/10;
-   globals.meanspeed = globals.maxx/20;
+   //globals.meanspeed = globals.maxx/20;
+   globals.meanspeed = 0;
 
    globals.ax = globals.maxix/globals.maxx;
    globals.ay = globals.maxiy/globals.maxy;
@@ -936,7 +898,6 @@ void main_birds (GtkWidget *window)
 
    globals.maxrange = globals.maxx-globals.ox+ globals.maxy-globals.oy+ globals.maxz-globals.oz;
 
-   //bird_pixbuf = gdk_pixbuf_new_from_file("bird.png",0);
 
    for (i=0; i<NWINGS; i++)
    {
@@ -944,10 +905,7 @@ void main_birds (GtkWidget *window)
       bird_pixbufs[i+NWINGS] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i+NWINGS]);
       bird_pixbufs[i+2*NWINGS] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i+2*NWINGS]);
    }
-   //bird_pixbuf = gdk_pixbuf_new_from_xpm_data(bird_xpm);
-   //cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,0);
 
-   gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
 
 #ifdef FORREAL
    ui();

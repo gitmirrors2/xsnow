@@ -95,6 +95,8 @@
    DOIT_I(BirdsOnly) \
    DOIT_I(BirdsRestart)  \
    DOIT_I(ViewingDistance)  \
+   DOIT_I(BirdsSpeed)  \
+   DOIT_I(AttrFactor)  \
    DOIT_I(PrefDistance)
 
 

@@ -815,6 +815,8 @@ static struct _birds_buttons
    birds_button anarchy;
    birds_button prefdistance;
    birds_button viewingdistance;
+   birds_button speed;
+   birds_button attraction;
 } birds_buttons;
 
 static void init_birds_buttons()
@@ -827,6 +829,8 @@ static void init_birds_buttons()
    HANDLE_INIT(birds_buttons.anarchy.button            ,birds-anarchy);
    HANDLE_INIT(birds_buttons.prefdistance.button       ,birds-prefdistance);
    HANDLE_INIT(birds_buttons.viewingdistance.button    ,birds-viewingdistance);
+   HANDLE_INIT(birds_buttons.speed.button              ,birds-speed);
+   HANDLE_INIT(birds_buttons.attraction.button         ,birds-attraction);
 }
 
 static void set_birds_buttons()
@@ -839,6 +843,8 @@ static void set_birds_buttons()
    HANDLE_SET_RANGE(birds_buttons.anarchy.button           ,Anarchy         ,self);
    HANDLE_SET_RANGE(birds_buttons.prefdistance.button      ,PrefDistance    ,self);
    HANDLE_SET_RANGE(birds_buttons.viewingdistance.button   ,ViewingDistance ,self);
+   HANDLE_SET_RANGE(birds_buttons.speed.button             ,BirdsSpeed      ,self);
+   HANDLE_SET_RANGE(birds_buttons.attraction.button        ,AttrFactor      ,self);
 }
 
 HANDLE_TOGGLE(button_birds_show        ,ShowBirds     ,1  ,0);
@@ -849,6 +855,8 @@ HANDLE_RANGE(button_birds_neighbours      ,Neighbours          ,value);
 HANDLE_RANGE(button_birds_anarchy         ,Anarchy             ,value);
 HANDLE_RANGE(button_birds_prefdistance    ,PrefDistance        ,value);
 HANDLE_RANGE(button_birds_viewingdistance ,ViewingDistance     ,value);
+HANDLE_RANGE(button_birds_speed           ,BirdsSpeed          ,value);
+HANDLE_RANGE(button_birds_attraction      ,AttrFactor          ,value);
 
 void birds_default(int vintage)
 {
@@ -868,6 +876,8 @@ void birds_default(int vintage)
       Flags.Anarchy          = DEFAULT_Anarchy;
       Flags.PrefDistance     = DEFAULT_PrefDistance;
       Flags.ViewingDistance  = DEFAULT_ViewingDistance;
+      Flags.BirdsSpeed       = DEFAULT_BirdsSpeed;
+      Flags.AttrFactor       = DEFAULT_AttrFactor;
    }
    set_birds_buttons();
    human_interaction = h;
