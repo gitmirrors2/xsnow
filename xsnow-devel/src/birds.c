@@ -40,6 +40,8 @@
 
 static int counter = 0;
 
+//#define SHOW_ATTRACTION_POINT
+
 #define NWINGS 8
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(guint)1000*(time),(GSourceFunc)func,datap,0)
@@ -157,7 +159,9 @@ static float time_update_mean_distance = 0.5;
 static struct kdtree *kd = 0;
 
 static BirdType *birds = 0;
+#ifdef SHOW_ATTRACTION_POINT
 static BirdType testbird;
+#endif
 
 static void normalize_speed(BirdType *bird, float speed)
 {
@@ -528,11 +532,13 @@ int do_draw_birds()
 #ifdef CLEARALL
    background(cr);
 #endif
+#ifdef SHOW_ATTRACTION_POINT
    r2i(&testbird);
    cairo_set_source_rgb(cr,1.0,0.0,0.0);
    cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
    cairo_fill(cr);
    cairo_set_source_rgb(cr,0.0,0.0,0.0);
+#endif
 
    //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
@@ -567,21 +573,21 @@ int do_draw_birds()
 	 int iw,ih,nw;
 	 nw = bird->wingstate;
 
-	 int offset = 0*NWINGS;
+	 int orient = 0*NWINGS;
 	 //if (fabsf(bird->sx) > fabsf(bird->sy))
-	 //	    offset = NWINGS;
+	 //	    orient = NWINGS;
 	 //float sxz = sq2(bird->sx,bird->sz);
 	 float sxz = fabsf(bird->sx);
 	 float sy = fabs(bird->sy);
 	 if (sxz > 1.73*sy)
-	    offset = 2*NWINGS; // 1*NWINGS
+	    orient = 2*NWINGS; // 1*NWINGS
 	 else if (sy > 1.73*sxz)
-	    offset = 0*NWINGS;
+	    orient = 0*NWINGS;
 	 else
-	    offset = 0*NWINGS;
+	    orient = 0*NWINGS;
 	 // canonical:
 	 // if (sxz > 1.73*sy)
-	 //    offset = 1*NWINGS;    
+	 //    orient = 1*NWINGS;    
 	 //                          aside
 	 //                            ***
 	 //                         *********
@@ -590,25 +596,27 @@ int do_draw_birds()
 	 //                            ***
 	 //
 	 // else if(sy > 1.73*sxz)    
-	 //    offset = 0*NWINGS
+	 //    orient = 0*NWINGS
 	 //                          front
 	 //                                 **
 	 //                        ********************
 	 //                                 **
 	 // else
-	 //    offset = 2*NWINGS
+	 //    orient = 2*NWINGS
 	 //                          oblique 
 	 //                             ***
 	 //                        *************
 	 //                             ***
 	 //
 
-	 P("%f %f %d\n",sxz,bird->sy,offset);
-	 GdkPixbuf *bird_pixbuf = bird_pixbufs[nw+offset];
+	 P("%f %f %d\n",sxz,bird->sy,orient);
+	 GdkPixbuf *bird_pixbuf = bird_pixbufs[nw+orient];
 	 iw = p*globals.bird_scale;
 	 ih = p*globals.bird_scale*gdk_pixbuf_get_height(bird_pixbuf)/
 	    (float)gdk_pixbuf_get_width(bird_pixbuf);
-	 if (ih > globals.maxiz*0.25 || ih <=0)
+	 // do not draw very large birds (would be bad for cache use)
+	 // and do not draw vanishing small birds
+	 if (ih > globals.maxiz*0.2 || ih <=0) // iw is always larger than ih, we don't have to check iw
 	 {
 	    P("ih: %d %d\n",ih,globals.maxiz);
 	    continue;
@@ -616,15 +624,23 @@ int do_draw_birds()
 
 	 //int interpolation = GDK_INTERP_NEAREST;
 	 GdkInterpType interpolation = GDK_INTERP_BILINEAR;
+#if CACHE_LINEAR
+	 // linear caching
 	 const int k = 4;   // the higher, the less surfaces are cached and the more jerk
-	 //                  // in general 1<=k<=16
-	 unsigned int key = ((iw/k)<<8)+nw+offset;
-	 //unsigned int key = bird->iy;
-	 static int table_counter = 0;
+	 // in general 1<=k<=16
+	 unsigned int key = ((iw/k)<<8)+nw+orient;
+#else
+	 // logarithmic caching
+	 const double k   = log(1.2); // should be log(1.05) ... log(1.5). The higher, the less cache will be used
+	 unsigned int key = ((unsigned int)(log(iw)/k)<<8) + nw + orient;
+#endif
 	 if (!table_get(key))
 	 {
+	    static int table_counter = 0;
+	    static double cache = 0;
 	    table_counter++;
-	    P("%d %d %d %d\n",table_counter,iw,nw,offset);
+	    cache += iw*ih;
+	    R("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
 	    pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
 	    table_put(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, window));
 	 }
@@ -659,7 +675,7 @@ void init_birds(int start)
    int i;
    //GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data(snow01_xpm);
    //cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,0);
-   R("nbirds: %d %d\n",start,Flags.Nbirds);
+   P("nbirds: %d %d\n",start,Flags.Nbirds);
    birds = (BirdType *)realloc(birds,sizeof(BirdType)*Flags.Nbirds);
    if (kd)
       kd_free(kd);
@@ -804,9 +820,11 @@ void birds_set_attraction_point_relative(float x, float y, float z)
    globals.attrx = globals.maxx*x;
    globals.attry = globals.maxy*y;
    globals.attrz = globals.maxz*z;
+#ifdef SHOW_ATTRACTION_POINT
    testbird.x = globals.attrx;
    testbird.y = globals.attry;
    testbird.z = globals.attrz;
+#endif
 }
 
 void clear_flags()
@@ -899,9 +917,11 @@ void main_birds (GtkWidget *window)
    globals.attry = globals.maxy/2;
    globals.attrz = globals.maxz/2;
 
+#ifdef SHOW_ATTRACTION_POINT
    testbird.x = globals.attrx;
    testbird.y = globals.attry;
    testbird.z = globals.attrz;
+#endif
 
    globals.meanspeed = globals.maxx/10;
 

@@ -940,7 +940,7 @@ int do_ui_check()
    }
    if(Flags.BirdsOnly != OldFlags.BirdsOnly)
    {
-      R("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
+      P("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
       OldFlags.BirdsOnly = Flags.BirdsOnly;
       ClearScreen();
       changes++;
