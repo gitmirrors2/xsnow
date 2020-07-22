@@ -923,7 +923,8 @@ void main_birds (GtkWidget *window)
    testbird.z = globals.attrz;
 #endif
 
-   globals.meanspeed = globals.maxx/10;
+   //globals.meanspeed = globals.maxx/10;
+   globals.meanspeed = globals.maxx/20;
 
    globals.ax = globals.maxix/globals.maxx;
    globals.ay = globals.maxiy/globals.maxy;

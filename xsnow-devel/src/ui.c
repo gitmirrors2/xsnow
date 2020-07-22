@@ -857,6 +857,7 @@ void birds_default(int vintage)
    if(vintage)
    {
       Flags.ShowBirds = VINTAGE_ShowBirds;
+      Flags.BirdsOnly = VINTAGE_BirdsOnly;
    }
    else
    {

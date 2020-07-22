@@ -129,6 +129,7 @@
 #define DEFAULT_ViewingDistance 40
 
 #define VINTAGE_ShowBirds 0
+#define VINTAGE_BirdsOnly 0
 #define NBIRDS_MAX 1000
 
 // timers

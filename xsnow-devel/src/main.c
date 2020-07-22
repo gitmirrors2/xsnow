@@ -3119,7 +3119,7 @@ int DetermineWindow()
 	 else
 	 {
 
-	    P("DetermineWindow\n");
+	    R("DetermineWindow\n");
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
@@ -3132,10 +3132,10 @@ int DetermineWindow()
 	       gtk_window_close(GTK_WINDOW(GtkWin));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
 	    }
-	    if (BirdsWin)
+	    if (GtkWinb)
 	    {
-	       gtk_window_close(GTK_WINDOW(BirdsWin));
-	       gtk_widget_destroy(GTK_WIDGET(BirdsWin));
+	       gtk_window_close(GTK_WINDOW(GtkWinb));
+	       gtk_widget_destroy(GTK_WIDGET(GtkWinb));
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
