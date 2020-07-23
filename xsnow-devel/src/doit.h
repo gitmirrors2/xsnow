@@ -97,7 +97,12 @@
    DOIT_I(ViewingDistance)  \
    DOIT_I(BirdsSpeed)  \
    DOIT_I(AttrFactor)  \
-   DOIT_I(PrefDistance)
+   DOIT_I(DisWeight)  \
+   DOIT_I(FollowWeight)  \
+   DOIT_I(PrefDistance) \
+   \
+   DOIT_S(BirdsColor)
+
 
 
 #endif

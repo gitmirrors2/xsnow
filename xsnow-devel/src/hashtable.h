@@ -25,6 +25,7 @@ extern "C" {
 #endif
 void table_put(unsigned int key,void *value);
 void *table_get(unsigned int key);
+void table_clear();
 #ifdef __cplusplus
 }
 #endif

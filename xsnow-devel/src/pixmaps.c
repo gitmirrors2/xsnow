@@ -182,7 +182,9 @@ char **xsnow_logo = (char **)xsnow_xpm;
 #include "Pixmaps/birdd8.xpm"
 
 const char **birds_xpm[] = 
-{bird1_xpm,bird2_xpm,bird3_xpm,bird4_xpm,bird5_xpm,bird6_xpm,bird7_xpm,bird8_xpm,
-   birdl1_xpm,birdl2_xpm,birdl3_xpm,birdl4_xpm,birdl5_xpm,birdl6_xpm,birdl7_xpm,birdl8_xpm,
-   birdd1_xpm,birdd2_xpm,birdd3_xpm,birdd4_xpm,birdd5_xpm,birdd6_xpm,birdd7_xpm,birdd8_xpm};
+{
+   bird1_xpm,  bird2_xpm,  bird3_xpm,  bird4_xpm,  bird5_xpm,  bird6_xpm,  bird7_xpm,  bird8_xpm,
+   birdl1_xpm, birdl2_xpm, birdl3_xpm, birdl4_xpm, birdl5_xpm, birdl6_xpm, birdl7_xpm, birdl8_xpm,
+   birdd1_xpm, birdd2_xpm, birdd3_xpm, birdd4_xpm, birdd5_xpm, birdd6_xpm, birdd7_xpm, birdd8_xpm
+};
 

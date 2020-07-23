@@ -28,15 +28,15 @@
 #include <string.h>
 #include "birds.h"
 #include "clocks.h"
-#include "kdtree.h"
-#include "ui.h"
-#include "globals.h"
-#include "doitb.h"
 #include "debug.h"
+#include "doitb.h"
+#include "flags.h"
+#include "globals.h"
 #include "hashtable.h"
+#include "kdtree.h"
 #include "mainstub.h"
 #include "pixmaps.h"
-#include "flags.h"
+#include "ui.h"
 
 static int counter = 0;
 
@@ -133,6 +133,7 @@ static float fsignf(float x)
 static int do_check_flags(void);
 static int do_test(void);
 #endif
+static void init_bird_pixbufs(const char *color);
 static int do_update_pos_birds(void); 
 static int do_wings(void);
 static int do_draw_birds(void);
@@ -368,15 +369,17 @@ int do_update_speed_birds()
       // adjust speed to other birds, p is weight for own speed
       if (num > 0)
       {
-	 const int p = 8;
+	 //int p = 8;
+	 int p = (100-Flags.FollowWeight)*0.1;
 	 bird->sx = (sumsx + p*bird->sx)/(p+1+num);
 	 bird->sy = (sumsy + p*bird->sy)/(p+1+num);
 	 bird->sz = (sumsz + p*bird->sz)/(p+1+num);
 	 //R("means %d %f %f %f\n",i,bird->sx,bird->sy,bird->sz);
       }
+      // adjust speed to obtain desired distance to other birds
       if (num > 0)
       {
-	 const float q = 4;
+	 float q = Flags.DisWeight*0.4;
 	 bird->sx += q*(meanprefx - bird->x);
 	 bird->sy += q*(meanprefy - bird->y);
 	 bird->sz += q*(meanprefz - bird->z);
@@ -637,8 +640,6 @@ int do_draw_birds()
 void init_birds(int start)
 {
    int i;
-   //GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data(snow01_xpm);
-   //cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,0);
    P("nbirds: %d %d\n",start,Flags.Nbirds);
    birds = (BirdType *)realloc(birds,sizeof(BirdType)*Flags.Nbirds);
    if (kd)
@@ -833,6 +834,44 @@ static void main_window(GtkWidget *window)
    gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
 }
 
+void birds_init_color(const char *color)
+{
+   init_bird_pixbufs(color);
+   table_clear(cairo_surface_destroy);
+}
+
+static void init_bird_pixbufs(const char *color)
+{
+   int i;
+   for (i=0; i<3*NWINGS; i++)
+   {
+      int n;
+      sscanf(birds_xpm[i][0],"%*d %d",&n);
+      P("n= %d\n",n);
+      char **x = (char**)malloc(sizeof(char *)*(n+3));
+      int j;
+      for (j=0; j<2; j++)
+	 x[j] = strdup(birds_xpm[i][j]);
+      x[2] = (char *)malloc(4+sizeof(color));
+      x[2][0] = 0;
+      strcat(x[2],". c ");
+      strcat(x[2],color);
+      P("c: [%s]\n",x[2]);
+
+      for (j=3; j<n+3; j++)
+      {
+	 x[j] = strdup(birds_xpm[i][j]);
+	 P("%d %s\n",j,x[j]);
+      }
+
+      //bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i]);
+      bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
+      for (j=0; j<n+3; j++)
+	 free(x[j]);
+      free(x);
+   }
+}
+
 void main_birds (GtkWidget *window)
 {
    if (!window)
@@ -872,7 +911,6 @@ void main_birds (GtkWidget *window)
       main_window(window);
    }
 
-   int i;
 
    globals.attrx = globals.maxx/2;
    globals.attry = globals.maxy/2;
@@ -899,12 +937,7 @@ void main_birds (GtkWidget *window)
    globals.maxrange = globals.maxx-globals.ox+ globals.maxy-globals.oy+ globals.maxz-globals.oz;
 
 
-   for (i=0; i<NWINGS; i++)
-   {
-      bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i]);
-      bird_pixbufs[i+NWINGS] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i+NWINGS]);
-      bird_pixbufs[i+2*NWINGS] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i+2*NWINGS]);
-   }
+   init_bird_pixbufs("black");
 
 
 #ifdef FORREAL

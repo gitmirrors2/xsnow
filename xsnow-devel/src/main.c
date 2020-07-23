@@ -271,6 +271,7 @@ static void   InitFallenSnow(void);
 static void   InitFlakesPerSecond(void);
 static void   ReInitTree0(void);
 static void   RestartDisplay(void);
+static void   InitBirdsColor(void);
 static void   InitFlake(Snow *flake);
 static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
@@ -506,6 +507,7 @@ int main_c(int argc, char *argv[])
    SetGCFunctions();
 
    InitSnowColor();
+   InitBirdsColor();
 
    ResetSanta();   
    // events
@@ -988,6 +990,28 @@ int do_ui_check()
       OldFlags.AttrFactor = Flags.AttrFactor;
       changes++;
       P("changes: %d\n",changes);
+   }
+   if(Flags.DisWeight != OldFlags.DisWeight)
+   {
+      OldFlags.DisWeight = Flags.DisWeight;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.FollowWeight != OldFlags.FollowWeight)
+   {
+      OldFlags.FollowWeight = Flags.FollowWeight;
+      changes++;
+      R("changes: %d\n",changes);
+   }
+   if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
+   {
+      R("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
+      InitBirdsColor();
+      ClearScreen();
+      free(OldFlags.BirdsColor);
+      OldFlags.BirdsColor = strdup(Flags.BirdsColor);
+      changes++;
+      R("changes: %d\n",changes);
    }
 
    if(Flags.Nbirds != OldFlags.Nbirds)
@@ -2903,6 +2927,11 @@ void InitSnowColor()
    SnowcPix = IAllocNamedColor(Flags.SnowColor, White);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], SnowcPix);
+}
+
+void InitBirdsColor()
+{
+   birds_init_color(Flags.BirdsColor);
 }
 
 void InitSnowSpeedFactor()

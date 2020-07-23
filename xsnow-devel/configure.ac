@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.0.0~pre10], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.0.0~pre11], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -47,9 +47,13 @@ AC_CHECK_LIB([m], [sin], [], [
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([stdlib.h string.h sys/time.h unistd.h math.h],[],AC_MSG_ERROR([Exiting]))
-AC_CHECK_HEADERS([signal.h stdlib.h assert.h],[],AC_MSG_ERROR([Exiting]))
-AC_CHECK_HEADERS([X11/Xlib.h X11/Intrinsic.h X11/Xutil.h X11/Xos.h X11/xpm.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([alloca.h assert.h ctype.h malloc.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h X11/cursorfont.h X11/Intrinsic.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([X11/Xatom.h X11/Xlib.h X11/Xos.h X11/xpm.h X11/Xutil.h],[],AC_MSG_ERROR([Exiting]))
+
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([unordered_map],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
+AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])

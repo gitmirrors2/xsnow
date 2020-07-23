@@ -129,6 +129,9 @@
 #define DEFAULT_ViewingDistance 40
 #define DEFAULT_BirdsSpeed 100
 #define DEFAULT_AttrFactor 100
+#define DEFAULT_DisWeight 20
+#define DEFAULT_FollowWeight 30
+#define DEFAULT_BirdsColor "black"
 
 #define VINTAGE_ShowBirds 0
 #define VINTAGE_BirdsOnly 0

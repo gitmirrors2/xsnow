@@ -1,2 +1,2 @@
 #!/bin/bash
-CFLAGS='-fno-common -O0 -Wall -Wpedantic -g' ./configure
+CC=gcc-10 CXX=g++-10 ./configure

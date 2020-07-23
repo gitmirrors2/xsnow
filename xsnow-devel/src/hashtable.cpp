@@ -17,8 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
-//http://www.cplusplus.com/reference/unordered_map/unordered_map/insert/
+*/
 #include <unordered_map>
 #include "hashtable.h"
 
@@ -41,21 +40,7 @@ extern "C" void *table_get(unsigned int key)
    }
    return v;
 }
-#if 0
-#include <iostream>
-#include <string>
-int main()
+extern "C" void table_clear()
 {
-   std::cout << "max size " << table.max_size() << std::endl;
-   int i,j;
-   void *v;
-   v = &i;
-   table_put(1,v);
-   std::cout << v << std::endl;
-   std::cout << table_get(1) << std::endl;
-   std::cout << table_get(2) << std::endl;
-   table_put(13,&j);
-   std::cout << &j << std::endl;
-   std::cout << table_get(13) << std::endl;
+   table.clear();
 }
-#endif
