@@ -201,6 +201,26 @@ void docs_usage(int man)
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");
 
+   if(doman)
+   {
+      printf(".PP\n"); printf(".SS \"Birds options:\n");
+   }
+   else
+   {
+      printf("\n  Birds options:\n\n");
+   }
+   manout("-anarchy <n>"           ,"Anarchy factor ( 0..100 default: " EQ(DEFAULT_Anarchy) ").");
+   manout("-birdscolor <c>  "      ,"Use the given string as color for the birds (default: " EQ(DEFAULT_BirdsColor) ").");
+   manout("-birdsonly <n>"         ,"Show only birds ( 0/1 default: " EQ(DEFAULT_BirdsOnly) ").");
+   manout("-birdsspeed <n>"        ,"Speed of birds ( 0..300 default: " EQ(DEFAULT_BirdsSpeed) ").");
+   manout("-disweight <n>"         ,"Eagerness to keep desired distance ( 0..100 default: " EQ(DEFAULT_DisWeight) ").");
+   manout("-focuscentre <n>"       ,"Eagerness to fly to the focus ( 0..300 default: " EQ(DEFAULT_AttrFactor) ").");
+   manout("-followneighbours <n>"  ,"Eagerness to follow neighbours ( 0..100 default: " EQ(DEFAULT_FollowWeight) ").");
+   manout("-nbirds <n>"            ,"Number of birds ( 0..400 default: " EQ(DEFAULT_Nbirds) ").");
+   manout("-neighbours <n>"        ,"Number of neighbours to watch ( 0..20 default: " EQ(DEFAULT_Neighbours) ").");
+   manout("-prefdistance <n>"      ,"Preferred distance to neighbours ( 0..100 default: " EQ(DEFAULT_PrefDistance) ").");
+   manout("-showbirds <n>"         ,"Show birds ( 0/1 default: " EQ(DEFAULT_ShowBirds) ").");
+   manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
    if(doman)
    {

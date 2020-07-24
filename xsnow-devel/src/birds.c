@@ -858,7 +858,7 @@ static void init_bird_pixbufs(const char *color)
       int j;
       for (j=0; j<2; j++)
 	 x[j] = strdup(birds_xpm[i][j]);
-      x[2] = (char *)malloc(4+sizeof(color));
+      x[2] = (char *)malloc(5+sizeof(color));
       x[2][0] = 0;
       strcat(x[2],". c ");
       strcat(x[2],color);
@@ -870,7 +870,6 @@ static void init_bird_pixbufs(const char *color)
 	 P("%d %s\n",j,x[j]);
       }
 
-      //bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data(birds_xpm[i]);
       bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
       for (j=0; j<n+3; j++)
 	 free(x[j]);
