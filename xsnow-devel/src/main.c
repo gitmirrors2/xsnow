@@ -1840,6 +1840,12 @@ int do_testing()
       return FALSE;
    P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
    return TRUE;
+   static int c=0;
+   if (c)
+      birds_init_color("black");
+   else
+      birds_init_color("yellow");
+   c = !c;
    static int first = 1;
    if(first)
    {

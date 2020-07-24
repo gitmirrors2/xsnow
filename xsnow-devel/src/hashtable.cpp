@@ -20,8 +20,9 @@
 */
 #include <unordered_map>
 #include "hashtable.h"
+#include "debug.h"
 
-static std::unordered_map<unsigned int,void*> table; 
+static std::unordered_map<unsigned int,void*> table(1000); 
 
 extern "C" void table_put(unsigned int key,void *value)
 {
@@ -40,7 +41,12 @@ extern "C" void *table_get(unsigned int key)
    }
    return v;
 }
-extern "C" void table_clear()
+extern "C" void table_clear(void(*destroy)(void *p))
 {
-   table.clear();
+   for ( auto it = table.begin(); it != table.end(); ++it )
+   {
+      P("%d %p\n",it->first,it->second);
+      destroy(it->second);
+      it->second = 0;
+   }
 }

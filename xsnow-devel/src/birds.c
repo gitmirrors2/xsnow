@@ -43,6 +43,7 @@ static int counter = 0;
 //#define SHOW_ATTRACTION_POINT
 
 #define NWINGS 8
+#define NBIRDPIXBUFS (3*NWINGS)
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(guint)1000*(time),(GSourceFunc)func,datap,0)
 
@@ -56,7 +57,7 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
 static cairo_surface_t *globsurface = NULL;
 #endif
 static GtkWidget       *drawing_area = 0;
-static GdkPixbuf       *bird_pixbufs[NWINGS*3];
+static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
@@ -836,14 +837,19 @@ static void main_window(GtkWidget *window)
 
 void birds_init_color(const char *color)
 {
+   int i;
+   for (i=0; i<NBIRDPIXBUFS; i++)
+   {
+      g_object_unref(bird_pixbufs[i]);
+   }
    init_bird_pixbufs(color);
-   table_clear(cairo_surface_destroy);
+   table_clear((void(*)(void *))cairo_surface_destroy);
 }
 
 static void init_bird_pixbufs(const char *color)
 {
    int i;
-   for (i=0; i<3*NWINGS; i++)
+   for (i=0; i<NBIRDPIXBUFS; i++)
    {
       int n;
       sscanf(birds_xpm[i][0],"%*d %d",&n);
