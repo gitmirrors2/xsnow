@@ -1596,9 +1596,7 @@ uninstall-man: uninstall-man6
 #
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
-	@echo "/* -0copyright-" | tr -d '0' > $@
-	@echo "*/" >> $@
-	@echo "/* This file is generated from $< by Makefile */" >> $@
+	@echo "/* This file is generated from $< by Makefile */" > $@
 	@echo "#ifndef UI_XML_H" >> $@
 	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
@@ -1608,7 +1606,6 @@ ui_xml.h: ui.xml
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
 	@echo "#endif" >> $@
-	$(top_srcdir)/addcopyright.sh $@
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 

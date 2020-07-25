@@ -1121,7 +1121,7 @@ void ui(int *argc, char **argv[])
 }
 
 // next function is not used, I leave it here as a template, who knows...
-// see also ui.glade
+// see also ui.xml
 void ui_error_x11(int *argc, char **argv[])
 {
    GtkWidget *errorfenster;

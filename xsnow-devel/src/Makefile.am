@@ -50,9 +50,7 @@ BUILT_SOURCES = ui_xml.h
 #
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
-	@echo "/* -0copyright-" | tr -d '0' > $@
-	@echo "*/" >> $@
-	@echo "/* This file is generated from $< by Makefile */" >> $@
+	@echo "/* This file is generated from $< by Makefile */" > $@
 	@echo "#ifndef UI_XML_H" >> $@
 	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
@@ -62,7 +60,6 @@ ui_xml.h: ui.xml
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
 	@echo "#endif" >> $@
-	$(top_srcdir)/addcopyright.sh $@
 
 TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
 
