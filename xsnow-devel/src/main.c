@@ -101,6 +101,7 @@ int     SnowWinX;
 int     SnowWinY; 
 char   *DesktopSession = 0;
 int     IsCompiz;
+int     IsWayland;
 
 // locals
 // snow flakes stuff
@@ -368,7 +369,10 @@ int main_c(int argc, char *argv[])
    {
       printf("Detected Wayland desktop\n");
       setenv("GDK_BACKEND","x11",1);
+      IsWayland = 1;
    }
+   else
+      IsWayland = 0;
    gtk_init(&argc, &argv);
    if (!Flags.NoConfig)
       WriteFlags();

@@ -37,17 +37,6 @@ long GetCurrentWorkspace()
    unsigned char *properties;
    long r;
 
-   static int firstcall = 1;
-
-   // a kludge: in Wayland, we have to wait a bit before we can go further
-   // To be sure: we wait always 0.1 second at the first call
-
-   if (firstcall)
-   {
-      usleep(100000);
-      firstcall = 0;
-   }
-
    if (IsCompiz)
    {
       properties = 0;
@@ -72,16 +61,29 @@ long GetCurrentWorkspace()
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      R("type: %ld %ld\n",type,XA_CARDINAL);
       if(type != XA_CARDINAL)
       {
-	 R("nog eens ...\n");
+	 R("nog eens %ld ...\n",type);
 	 if(properties) XFree(properties);
 	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
 	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
       }
       if(type != XA_CARDINAL)
+      {
+	 R("en nog eens %ld ...\n",type);
+	 if(properties) XFree(properties);
+	 atom = XInternAtom(display,"_NET_WM_DESKTOP",False);
+	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      }
+      if(type != XA_CARDINAL)
+      {
+	 if (IsWayland)
+	    return 0;
 	 r = -1;
+      }
       else
 	 r = *(long *)properties;
       if(properties) XFree(properties);

@@ -29,4 +29,5 @@ extern int SnowWinBorderWidth;
 extern int SnowWinDepth;
 extern char *DesktopSession;
 extern int IsCompiz;
+extern int IsWayland;
 #endif
