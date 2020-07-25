@@ -329,6 +329,7 @@ static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
 static int do_show_range_etc(void);
+static int do_show_desktop_type(void);
 static int do_change_attr(void);
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
@@ -551,6 +552,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_change_attr,    do_change_attr        ,0);
 
    HandleFactor();
@@ -1642,6 +1644,7 @@ int do_wupdate()
       return FALSE;
    if(!Isdesktop) return TRUE;
    if(Flags.NoKeepSWin) return TRUE;
+   // if (IsWayland) return TRUE;          // alas!
    long r;
    r = GetCurrentWorkspace();
    if(r>=0) 
@@ -1692,6 +1695,17 @@ int do_show_range_etc()
    return TRUE;
 }
 
+int do_show_desktop_type()
+{
+   if (IsWayland)
+      ui_show_desktop_type("Wayland (Expect some slugginess)");
+   else if (IsCompiz)
+      ui_show_desktop_type("Compiz");
+   else
+      ui_show_desktop_type("Probably X11");
+
+   return TRUE;
+}
 int do_change_attr()
 {
    // move attraction point in the range
@@ -2927,7 +2941,7 @@ int BlowOff()
 void InitFlakesPerSecond()
 {
    P("snowflakesfactor: %d\n",Flags.SnowFlakesFactor);
-   FlakesPerSecond = SnowWinWidth*0.01*Flags.SnowFlakesFactor*
+   FlakesPerSecond = SnowWinWidth*0.003*Flags.SnowFlakesFactor*
       0.001*FLAKES_PER_SEC_PER_PIXEL*SnowSpeedFactor;
 }
 

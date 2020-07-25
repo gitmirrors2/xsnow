@@ -1137,7 +1137,8 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkScale" id="snow-windows">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.</property>
+                <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.
+Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
@@ -3726,27 +3727,6 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">12</property>
-                <property name="width">11</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
                   <object class="GtkToggleButton" id="general-allworkspaces">
@@ -3944,7 +3924,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -3988,7 +3968,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">14</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4017,7 +3997,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">15</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4062,7 +4042,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">16</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4086,7 +4066,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">20</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -4109,7 +4089,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -4120,7 +4100,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
+                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -4132,7 +4112,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="height">6</property>
               </packing>
             </child>
@@ -4145,7 +4125,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">15</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="height">7</property>
               </packing>
             </child>
@@ -4156,7 +4136,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">17</property>
+                <property name="top_attach">18</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -4179,7 +4159,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">19</property>
               </packing>
             </child>
             <child>
@@ -4205,7 +4185,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">22</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4232,7 +4212,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">22</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4276,7 +4256,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">21</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4320,9 +4300,120 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">21</property>
                 <property name="width">8</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkLabel" id="settings-show-desktop-type">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="label" translatable="yes">label</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">11</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

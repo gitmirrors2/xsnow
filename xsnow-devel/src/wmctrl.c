@@ -61,10 +61,10 @@ long GetCurrentWorkspace()
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
-      R("type: %ld %ld\n",type,XA_CARDINAL);
+      P("type: %ld %ld\n",type,XA_CARDINAL);
       if(type != XA_CARDINAL)
       {
-	 R("nog eens %ld ...\n",type);
+	 P("nog eens %ld ...\n",type);
 	 if(properties) XFree(properties);
 	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
 	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
@@ -72,17 +72,14 @@ long GetCurrentWorkspace()
       }
       if(type != XA_CARDINAL)
       {
-	 R("en nog eens %ld ...\n",type);
-	 if(properties) XFree(properties);
-	 atom = XInternAtom(display,"_NET_WM_DESKTOP",False);
-	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
-	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
-      }
-      if(type != XA_CARDINAL)
-      {
 	 if (IsWayland)
-	    return 0;
-	 r = -1;
+	    // in Wayland, the actual number of current workspace can only
+	    // be obtained if user has done some workspace-switching
+	    // we return zero if the workspace number cannot be determined
+	    
+	    r = 0;
+	 else
+	    r = -1;
       }
       else
 	 r = *(long *)properties;
