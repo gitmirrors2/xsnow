@@ -27,6 +27,8 @@
 #include "wmctrl.h"
 #include "windows.h"
 #include "dsimple.h"
+#include "debug.h"
+
 long GetCurrentWorkspace()
 {
    Atom atom, type;
@@ -34,6 +36,17 @@ long GetCurrentWorkspace()
    unsigned long nitems,b;
    unsigned char *properties;
    long r;
+
+   static int firstcall = 1;
+
+   // a kludge: in Wayland, we have to wait a bit before we can go further
+   // To be sure: we wait always 0.1 second at the first call
+
+   if (firstcall)
+   {
+      usleep(100000);
+      firstcall = 0;
+   }
 
    if (IsCompiz)
    {
@@ -61,7 +74,7 @@ long GetCurrentWorkspace()
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if(type != XA_CARDINAL)
       {
-	 //printf("%d: nog eens ...\n",__LINE__);
+	 R("nog eens ...\n");
 	 if(properties) XFree(properties);
 	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
 	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
