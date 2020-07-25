@@ -3188,12 +3188,14 @@ int DetermineWindow()
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
+	    R("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
 	    if (!GtkWinb)
 	    {
 	       printf("Your screen does not support alpha channel, no birds will fly.\n");
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
+	    R("snow window %ld %p\n",SnowWin,(void *)GtkWin);
 
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
@@ -3220,12 +3222,14 @@ int DetermineWindow()
 	 }
       }
    }
+   R("hoppa\n");
    // override Isdesktop if user desires so:
    if (Flags.Desktop)
       Isdesktop = 1;
-   // P("Isdesktop: %d\n",Isdesktop);
+   R("Isdesktop: %d\n",Isdesktop);
    if(Isdesktop) 
       CWorkSpace = GetCurrentWorkspace();
+   R("CWorkSpace: %ld\n",CWorkSpace);
    if (CWorkSpace < 0)
       return 0;
    InitDisplayDimensions();
