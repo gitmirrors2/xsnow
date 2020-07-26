@@ -180,8 +180,8 @@ static void normalize_speed(BirdType *bird, float speed)
 
 static void background(cairo_t *cr)
 {
+   //cairo_set_source_rgb(cr,0.0,0.0,0.0);
    draw_cb(0,cr,0);
-   cairo_set_source_rgb(cr,0.0,0.0,0.0);
 }
 
 float MaxViewingDistance()
@@ -496,12 +496,20 @@ int do_draw_birds()
    background(cr);
 #endif
 #ifdef SHOW_ATTRACTION_POINT
+   /*
    r2i(&testbird);
    cairo_set_source_rgb(cr,1.0,0.0,0.0);
    cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
    cairo_fill(cr);
    cairo_set_source_rgb(cr,0.0,0.0,0.0);
+   */
 #endif
+   r2i(&testbird);
+   //cairo_set_source_rgba(cr,1.0,0.0,0.0,1.0);
+   //cairo_arc(cr,testbird.ix,testbird.iz,1,0,2*M_PI);
+   cairo_arc(cr,0,0,1,0,2*M_PI);
+   cairo_fill(cr);
+   //cairo_set_source_rgba(cr,0.0,0.0,0.0,1.0);
 
    //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
