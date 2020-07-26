@@ -3099,7 +3099,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3125,7 +3125,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">15</property>
               </packing>
             </child>
             <child>
@@ -3151,7 +3151,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">15</property>
               </packing>
             </child>
             <child>
@@ -3196,7 +3196,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3270,7 +3270,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3324,11 +3324,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="tooltip_text" translatable="yes">Actual mean distance from neighbours.</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
+                <property name="margin_top">8</property>
                 <property name="label" translatable="yes">label</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -3338,11 +3339,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="tooltip_text" translatable="yes">Distance used to get the desired number of neighbours.</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
+                <property name="margin_top">8</property>
                 <property name="label" translatable="yes">label</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -3381,7 +3383,8 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Focus to centre</property>
+                <property name="label" translatable="yes">Focus to attraction
+point</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3553,19 +3556,6 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Color</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">9</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkColorButton" id="birds-color">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3577,9 +3567,45 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <signal name="color-set" handler="button_birds_color" swapped="no"/>
               </object>
               <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Bird color</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="birds-show-attr">
+                <property name="label" translatable="yes">Show attraction point</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Show the point where the birds want to go.</property>
+                <signal name="toggled" handler="button_birds_attr" swapped="no"/>
+              </object>
+              <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">9</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

@@ -132,6 +132,7 @@
 #define DEFAULT_DisWeight 20
 #define DEFAULT_FollowWeight 30
 #define DEFAULT_BirdsColor "black"
+#define DEFAULT_ShowAttrPoint 0
 
 #define VINTAGE_ShowBirds 0
 #define VINTAGE_BirdsOnly 0

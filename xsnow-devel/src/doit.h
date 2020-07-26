@@ -100,6 +100,7 @@
    DOIT_I(DisWeight)  \
    DOIT_I(FollowWeight)  \
    DOIT_I(PrefDistance) \
+   DOIT_I(ShowAttrPoint) \
    \
    DOIT_S(BirdsColor)
 

@@ -1007,7 +1007,13 @@ int do_ui_check()
    {
       OldFlags.FollowWeight = Flags.FollowWeight;
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
+   }
+   if(Flags.ShowAttrPoint != OldFlags.ShowAttrPoint)
+   {
+      OldFlags.ShowAttrPoint = Flags.ShowAttrPoint;
+      changes++;
+      P("changes: %d\n",changes);
    }
    if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
    {
@@ -1017,7 +1023,7 @@ int do_ui_check()
       free(OldFlags.BirdsColor);
       OldFlags.BirdsColor = strdup(Flags.BirdsColor);
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
    }
 
    if(Flags.Nbirds != OldFlags.Nbirds)

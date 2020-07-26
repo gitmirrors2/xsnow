@@ -59,7 +59,7 @@ static cairo_surface_t *globsurface = NULL;
 static GtkWidget       *drawing_area = 0;
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static GdkWindow       *gdkwindow;
-static cairo_region_t  *cairoRegion;
+static cairo_region_t  *cairoRegion = 0;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
@@ -163,9 +163,9 @@ static float time_update_mean_distance = 0.5;
 static struct kdtree *kd = 0;
 
 static BirdType *birds = 0;
-#ifdef SHOW_ATTRACTION_POINT
+//#ifdef SHOW_ATTRACTION_POINT
 static BirdType testbird;
-#endif
+//#endif
 
 static void normalize_speed(BirdType *bird, float speed)
 {
@@ -182,7 +182,6 @@ static void normalize_speed(BirdType *bird, float speed)
 
 static void background(cairo_t *cr)
 {
-   //cairo_set_source_rgb(cr,0.0,0.0,0.0);
    draw_cb(0,cr,0);
 }
 
@@ -254,7 +253,7 @@ static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata)
    P("supports_alpha: %d\n",supports_alpha);
    if (supports_alpha)
    {
-      cairo_set_source_rgba (cr, 0.0, 1.0, 1.0, 0.0); /* transparent */
+      cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0); /* transparent */
    }
    else
    {
@@ -497,13 +496,16 @@ int do_draw_birds()
 #ifdef CLEARALL
    background(cr);
 #endif
-#ifdef SHOW_ATTRACTION_POINT
-   r2i(&testbird);
-   cairo_set_source_rgb(cr,1.0,0.0,0.0);
-   cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
-   cairo_fill(cr);
-   cairo_set_source_rgb(cr,0.0,0.0,0.0);
-#endif
+   //#ifdef SHOW_ATTRACTION_POINT
+   if(Flags.ShowAttrPoint)
+   {
+      r2i(&testbird);
+      cairo_set_source_rgb(cr,233.0/255,151.0/255,1.0/255);
+      cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
+      cairo_fill(cr);
+      cairo_set_source_rgb(cr,0.0,0.0,0.0);
+   }
+   //#endif
 
    //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
@@ -789,11 +791,11 @@ void birds_set_attraction_point_relative(float x, float y, float z)
    globals.attrx = globals.maxx*x;
    globals.attry = globals.maxy*y;
    globals.attrz = globals.maxz*z;
-#ifdef SHOW_ATTRACTION_POINT
+//#ifdef SHOW_ATTRACTION_POINT
    testbird.x = globals.attrx;
    testbird.y = globals.attry;
    testbird.z = globals.attrz;
-#endif
+//#endif
 }
 
 void clear_flags()
@@ -827,6 +829,8 @@ static void main_window(GtkWidget *window)
 
 
    gdkwindow   = gtk_widget_get_window(drawing_area);  
+   if (cairoRegion)
+      cairo_region_destroy(cairoRegion);
    cairoRegion = cairo_region_create();
 
 
@@ -929,11 +933,11 @@ void main_birds (GtkWidget *window)
    globals.attry = globals.maxy/2;
    globals.attrz = globals.maxz/2;
 
-#ifdef SHOW_ATTRACTION_POINT
+//#ifdef SHOW_ATTRACTION_POINT
    testbird.x = globals.attrx;
    testbird.y = globals.attry;
    testbird.z = globals.attrz;
-#endif
+//#endif
 
    //globals.meanspeed = globals.maxx/10;
    //globals.meanspeed = globals.maxx/20;
