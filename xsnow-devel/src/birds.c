@@ -40,7 +40,6 @@
 
 static int counter = 0;
 
-//#define SHOW_ATTRACTION_POINT
 
 #define NWINGS 8
 #define NBIRDPIXBUFS (3*NWINGS)
@@ -69,28 +68,6 @@ static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have
 //static int supports_alpha = 1;
 static gboolean supports_alpha = TRUE;
 
-#if 0
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata)
-{
-   /* To check if the display supports alpha channels, get the visual */
-   GdkScreen *screen = gtk_widget_get_screen(widget);
-   GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
-
-   if (!visual)
-   {
-      printf("YOUR SCREEN DOES NOT SUPPORT ALPHA CHANNELS!\n");
-      visual = gdk_screen_get_system_visual(screen);
-      supports_alpha = FALSE;
-   }
-   else
-   {
-      printf("YOUR SCREEN SUPPORTS ALPHA CHANNELS!\n");
-      supports_alpha = TRUE;
-   }
-
-   gtk_widget_set_visual(widget, visual);
-}
-#endif
 
 typedef struct _Birdtype
 {
@@ -107,12 +84,6 @@ typedef struct _Birdtype
 
 struct _globals globals;
 
-/*
-   static int sign(float x)
-   {
-   return x>=0?1:-1;
-   }
-   */
 static float sq3(float x, float y, float z)
 {
    return x*x + y*y + z*z;
@@ -132,10 +103,6 @@ static float fsignf(float x)
    return 0.0f;
 }
 
-#ifdef FORREAL
-static int do_check_flags(void);
-static int do_test(void);
-#endif
 static void init_bird_pixbufs(const char *color);
 static int do_update_pos_birds(void); 
 static int do_wings(void);
@@ -153,19 +120,11 @@ static float time_update_pos_birds     = 0.01;
 static float time_update_speed_birds   = 0.20;
 static float time_draw_birds           = 0.04;
 static float time_wings                = 0.1;
-#ifdef FORREAL
-static float time_check_flags          = 0.1;
-static float time_test                 = 0.5;
-static float time_update_range         = 0.5;
-static float time_update_mean_distance = 0.5;
-#endif
 
 static struct kdtree *kd = 0;
 
 static BirdType *birds = 0;
-//#ifdef SHOW_ATTRACTION_POINT
-static BirdType testbird;
-//#endif
+static BirdType attrbird;
 
 static void normalize_speed(BirdType *bird, float speed)
 {
@@ -176,8 +135,6 @@ static void normalize_speed(BirdType *bird, float speed)
    bird->sx *= a;
    bird->sy *= a;
    bird->sz *= a;
-   //if (fabsf(bird->sy) > 0.5*globals.meanspeed)
-   //  bird->sy *=0.9;
 }
 
 static void background(cairo_t *cr)
@@ -189,11 +146,6 @@ float MaxViewingDistance()
 {
    return 2*globals.maxy;
 }
-
-//float PreferredViewingDistance()
-//{
-//   return 0.3*globals.maxy;
-//}
 
 static float scale(float y)
 {
@@ -208,18 +160,8 @@ static void r2i(BirdType *bird)
    if(bird->y > Flags.ViewingDistance/8)
    {
       bird->drawable = 1;
-      //float f  =  Flags.ViewingDistance/bird->y;
-      //float f = 0.5;
-      //float f = 0.01*20.0*globals.maxy/bird->y;
       float f = scale(bird->y);
       P("%f %d %f\n",globals.maxy,Flags.ViewingDistance,f);
-      /*
-	 bird->ix = f*globals.ax*(bird->x - globals.maxx/2) + globals.ox;
-	 bird->iy =   globals.ay*bird->y + globals.oy;
-	 bird->iz = f*globals.az*(bird->z - globals.maxz/2) + globals.oz;
-	 */
-      //bird->ix = globals.ax*globals.attrx;
-      //bird->iz = globals.ax*globals.attrz;
       P("%f %f %f %f %f %d %d %d\n",f,globals.attrx,globals.attrz,globals.ox,globals.oz,bird->ix,bird->iy,bird->iz);
       //#define CO_REAL
 #ifdef CO_REAL
@@ -372,12 +314,10 @@ int do_update_speed_birds()
       // adjust speed to other birds, p is weight for own speed
       if (num > 0)
       {
-	 //int p = 8;
 	 int p = (100-Flags.FollowWeight)*0.1;
 	 bird->sx = (sumsx + p*bird->sx)/(p+1+num);
 	 bird->sy = (sumsy + p*bird->sy)/(p+1+num);
 	 bird->sz = (sumsz + p*bird->sz)/(p+1+num);
-	 //R("means %d %f %f %f\n",i,bird->sx,bird->sy,bird->sz);
       }
       // adjust speed to obtain desired distance to other birds
       if (num > 0)
@@ -396,7 +336,6 @@ int do_update_speed_birds()
       float dy = globals.attry - bird->y;
       float dz = globals.attrz - bird->z;
 
-      //float f = 0.05f;
       float f = Flags.AttrFactor*0.01f*0.05f;
 
       bird->sx += f*dx;
@@ -473,18 +412,10 @@ int do_draw_birds()
    P("do_draw_birds %d\n",counter);
    counter++;
 
-   //GdkWindow *gdkwindow           = gtk_widget_get_window(drawing_area);  
-   //cairo_region_t *cairoRegion = cairo_region_create();
-
    GdkDrawingContext *drawingContext =
       gdk_window_begin_draw_frame(gdkwindow,cairoRegion);
 
    cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
-   //cairo_set_source_rgba(cr,1.0,1.0,1.0,1.0);
-   //cairo_rectangle(cr,0,0,globals.maxx,maxz);
-   //cairo_fill(cr);
-   //cairo_set_source_rgba (cr, 1, 1, 1, 1);
-   //#define USE_RECTANGLE
    if (!Flags.ShowBirds)
    {
       background(cr);
@@ -492,33 +423,20 @@ int do_draw_birds()
       //cairo_region_destroy(cairoRegion);
       return TRUE;
    }
-#define CLEARALL
-#ifdef CLEARALL
    background(cr);
-#endif
-   //#ifdef SHOW_ATTRACTION_POINT
    if(Flags.ShowAttrPoint)
    {
-      r2i(&testbird);
+      r2i(&attrbird);
       cairo_set_source_rgb(cr,233.0/255,151.0/255,1.0/255);
-      cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
+      cairo_arc(cr,attrbird.ix,attrbird.iz,10,0,2*M_PI);
       cairo_fill(cr);
       cairo_set_source_rgb(cr,0.0,0.0,0.0);
    }
-   //#endif
-
-   //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
    int i;
    for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
-
-#ifndef CLEARALL
-      // erase:
-      cairo_rectangle(cr,bird->ix,bird->iz,bird->iw,bird->ih);
-      background(cr);
-#endif
 
       // draw:
 
@@ -529,21 +447,13 @@ int do_draw_birds()
 	 //float p = Flags.ViewingDistance/bird->y;
 	 float p = scale(bird->y);
 
-#ifdef USE_RECTANGLE 
-	 bird->iw = 16*p;
-	 bird->ih = 8*p;
-	 cairo_rectangle(cr,bird->ix,bird->iz,bird->iw,bird->ih);
-#else
-
 	 cairo_surface_t *surface;
 	 GdkPixbuf       *pixbuf = 0;
 	 int iw,ih,nw;
 	 nw = bird->wingstate;
 
 	 int orient = 0*NWINGS;
-	 //if (fabsf(bird->sx) > fabsf(bird->sy))
-	 //	    orient = NWINGS;
-	 //float sxz = sq2(bird->sx,bird->sz);
+
 	 float sxz = fabsf(bird->sx);
 	 float sy = fabs(bird->sy);
 	 if (sxz > 1.73*sy)
@@ -552,6 +462,7 @@ int do_draw_birds()
 	    orient = 0*NWINGS;
 	 else
 	    orient = 0*NWINGS;
+
 	 // canonical:
 	 // if (sxz > 1.73*sy)
 	 //    orient = 1*NWINGS;    
@@ -589,18 +500,14 @@ int do_draw_birds()
 	    continue;
 	 }
 
-	 //int interpolation = GDK_INTERP_NEAREST;
-	 GdkInterpType interpolation = GDK_INTERP_BILINEAR;
-#if CACHE_LINEAR
-	 // linear caching
-	 const int k = 4;   // the higher, the less surfaces are cached and the more jerk
-	 // in general 1<=k<=16
-	 unsigned int key = ((iw/k)<<8)+nw+orient;
-#else
+	 //const GdkInterpType interpolation = GDK_INTERP_BILINEAR;
+	 const GdkInterpType interpolation = GDK_INTERP_HYPER; 
+	 // since we are caching the surfaces, we go for the highest quality
+
 	 // logarithmic caching
 	 const double k   = log(1.2); // should be log(1.05) ... log(1.5). The higher, the less cache will be used
 	 unsigned int key = ((unsigned int)(log(iw)/k)<<8) + nw + orient;
-#endif
+
 	 if (!table_get(key))
 	 {
 	    static int table_counter = 0;
@@ -616,7 +523,6 @@ int do_draw_birds()
 	 cairo_set_source_surface (cr, surface, bird->ix, bird->iz);
 	 cairo_paint(cr);
 	 g_clear_object(&pixbuf);
-#endif
 	 P("draw: %d %d\n",bird->ix,bird->iz);
       }
       else
@@ -626,20 +532,7 @@ int do_draw_birds()
 	 P("skipped: %d %d\n",skipped,bird->drawable);
       }
    }
-   /*
-      cairo_surface_t *
-      gdk_cairo_surface_create_from_pixbuf (const GdkPixbuf *pixbuf,
-      int scale,
-      GdkWindow *for_window);
-      void
-      cairo_set_source_surface (cairo_t *cr,
-      cairo_surface_t *surface,
-      double x,
-      double y);
-      */
-   //cairo_fill(cr);
    gdk_window_end_draw_frame(gdkwindow,drawingContext);
-   //cairo_region_destroy(cairoRegion);
    return TRUE;
 }
 
@@ -664,13 +557,10 @@ void init_birds(int start)
       else
 	 bird->x -= globals.maxx;
 
-      //bird->picture = surface; 
       bird->iw = 1;
       bird->ih = 1;
       r2i(bird);
-      //bird->ix = globals.maxx*bird->x;
-      //bird->iy = globals.maxy*bird->y;
-      //bird->iz = globals.maxz*bird->z;
+
       bird->sx = (0.5-drand48());
       P("init %f\n",bird->sx);
       bird->sy = (0.5-drand48());
@@ -684,20 +574,6 @@ void init_birds(int start)
    }
 }
 
-#ifdef FORREAL
-static int do_test()
-{
-   if (Flags.Done)
-   {
-      R("stop\n");
-      return FALSE;
-   }
-   counter++;
-   P("attrxyz: %d %f %f %f\n",counter,globals.attrx,globals.attry,globals.attrz);
-   P("range: %f %f\n",globals.range,globals.maxrange);
-   return TRUE;
-}
-#endif
 
 static int do_wings()
 {
@@ -716,66 +592,6 @@ static int do_wings()
    return TRUE;
 }
 
-#ifdef FORREAL
-static char sbuffer[1024];
-static int do_check_flags()
-{
-   if (globals.restart_requested)
-   {
-      P("TD: init_birds\n");
-      init_birds(0);
-      globals.restart_requested = 0;
-   }
-   if (globals.nbirds_changed)
-   {
-      R("nbirds changed %d %d\n",Nbirds,globals.nbirds_new);
-      if (globals.nbirds_new <= 0)
-	 globals.nbirds_new = 1;
-      if (globals.nbirds_new > globals.nbirds_max)
-	 globals.nbirds_new = globals.nbirds_max;
-
-      R("TD: init_birds\n");
-      int start = Nbirds;
-      Nbirds = globals.nbirds_new;
-      sprintf(sbuffer,"%d",Nbirds);
-      nbirds_set_input_value(sbuffer);
-      init_birds(start);
-      globals.nbirds_changed = 0;
-   }
-   if (globals.neighbours_changed)
-   {
-      R("neighbours changed: %d %d\n",globals.neighbours,globals.neighbours_new);
-      globals.neighbours = globals.neighbours_new;
-      sprintf(sbuffer,"%d",globals.neighbours);
-      neighbours_set_input_value(sbuffer);
-      globals.neighbours_changed = 0;
-   }
-   if (globals.prefdistance_changed)
-   {
-      R("prefdistance changed: %.2f %.2f\n",globals.prefdistance,globals.prefdistance_new);
-      globals.prefdistance = globals.prefdistance_new;
-      sprintf(sbuffer,"%.2f",globals.prefdistance);
-      prefdistance_set_input_value(sbuffer);
-      globals.prefdistance_changed = 0;
-   }
-   if (globals.followers_changed)
-   {
-      R("followers changed: %.2f %.2f\n",globals.followers,globals.followers_new);
-      globals.followers = globals.followers_new;
-      sprintf(sbuffer,"%.2f",globals.followers);
-      followers_set_input_value(sbuffer);
-      globals.followers_changed = 0;
-   }
-   if (globals.freeze_requested)
-   {
-      R("freeze\n");
-      globals.freeze = ~globals.freeze;
-      globals.freeze_requested = 0;
-   }
-   return TRUE;
-}
-#endif
-
 float birds_get_range()
 {
    return globals.range;
@@ -791,11 +607,10 @@ void birds_set_attraction_point_relative(float x, float y, float z)
    globals.attrx = globals.maxx*x;
    globals.attry = globals.maxy*y;
    globals.attrz = globals.maxz*z;
-//#ifdef SHOW_ATTRACTION_POINT
-   testbird.x = globals.attrx;
-   testbird.y = globals.attry;
-   testbird.z = globals.attrz;
-//#endif
+
+   attrbird.x = globals.attrx;
+   attrbird.y = globals.attry;
+   attrbird.z = globals.attrz;
 }
 
 void clear_flags()
@@ -904,11 +719,9 @@ void main_birds (GtkWidget *window)
    {
       running = 1;
       P("%d\n",counter++);
-      //globals.neighbours     = 7;
       globals.neighbours_max = 100;
       globals.range          = 20;
       globals.freeze         = 0;
-      //globals.followers      = 0.5;
       globals.maxx           = 1000;    // meters
       globals.bird_scale     = 32;
 
@@ -919,12 +732,6 @@ void main_birds (GtkWidget *window)
       add_to_mainloop(G_PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
       add_to_mainloop(G_PRIORITY_DEFAULT,time_draw_birds,           do_draw_birds,           0);
       add_to_mainloop(G_PRIORITY_DEFAULT,time_wings,                do_wings,                0);
-#ifdef FORREAL
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_check_flags,          do_check_flags,          0);
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_test,                 do_test,                 0);
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_range,         do_update_range,         0); // ui.c
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_mean_distance, do_update_mean_distance, 0); // ui.c
-#endif
       main_window(window);
    }
 
@@ -933,14 +740,10 @@ void main_birds (GtkWidget *window)
    globals.attry = globals.maxy/2;
    globals.attrz = globals.maxz/2;
 
-//#ifdef SHOW_ATTRACTION_POINT
-   testbird.x = globals.attrx;
-   testbird.y = globals.attry;
-   testbird.z = globals.attrz;
-//#endif
+   attrbird.x = globals.attrx;
+   attrbird.y = globals.attry;
+   attrbird.z = globals.attrz;
 
-   //globals.meanspeed = globals.maxx/10;
-   //globals.meanspeed = globals.maxx/20;
    globals.meanspeed = 0;
 
    globals.ax = globals.maxix/globals.maxx;
@@ -953,32 +756,8 @@ void main_birds (GtkWidget *window)
 
    globals.maxrange = globals.maxx-globals.ox+ globals.maxy-globals.oy+ globals.maxz-globals.oz;
 
-
    init_bird_pixbufs("black");
 
-
-#ifdef FORREAL
-   ui();
-
-   snprintf(sbuffer,sizeof(sbuffer),"%d",Nbirds);
-   R("%s\n",sbuffer);
-   nbirds_set_input_value(sbuffer);
-   snprintf(sbuffer,sizeof(sbuffer),"%d",globals.neighbours);
-   neighbours_set_input_value(sbuffer);
-   snprintf(sbuffer,sizeof(sbuffer),"%.2f",globals.prefdistance);
-   prefdistance_set_input_value(sbuffer);
-   snprintf(sbuffer,sizeof(sbuffer),"%.2f",globals.followers);
-   followers_set_input_value(sbuffer);
-
    init_birds(0);
-   gtk_main();
-#endif
-
-   init_birds(0);
-
-#if 0
-   printf("\nThank you for using xflock\n");
-   return 0;
-#endif
 
 }

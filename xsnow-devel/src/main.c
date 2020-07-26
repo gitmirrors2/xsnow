@@ -522,14 +522,6 @@ int main_c(int argc, char *argv[])
       XSelectInput(display, SnowWin, 
 	    StructureNotifyMask);
 
-   //
-   // about alarm_santa1: if Exposures == True, Santa has to
-   // be redrawn in a high frequency because there seems
-   // to be no way to determine when XClearArea(...,True)
-   // is really finished. If alarm_santa1 is set to
-   // for example 0.05, and Exposures = True, changes
-   // are that Santa will not be visible.
-
    TStart = wallclock();
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
@@ -599,6 +591,7 @@ int main_c(int argc, char *argv[])
 #define NOTACTIVE \
    (Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
 
+
 int do_santa()
 {
    if (Flags.Done)
@@ -629,6 +622,11 @@ int do_show_flakecount()
    return TRUE;
 }
 
+// here we are handling the buttons in ui
+// Ok, this is a long list, and could be implemented more efficient.
+// But, do_ui_check is called not too frequently, so....
+// Note: if changes != 0, the settings will be written to .xsnowrc
+//
 int do_ui_check()
 {
    if (Flags.Done)
@@ -734,7 +732,6 @@ int do_ui_check()
    }
    if(strcmp(Flags.SnowColor, OldFlags.SnowColor))
    {
-      //P("%s %s\n",Flags.SnowColor,OldFlags.SnowColor);
       InitSnowColor();
       ClearScreen();
       free(OldFlags.SnowColor);
@@ -1017,7 +1014,7 @@ int do_ui_check()
    }
    if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
    {
-      R("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
+      P("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
       InitBirdsColor();
       ClearScreen();
       free(OldFlags.BirdsColor);
@@ -1050,7 +1047,7 @@ int do_ui_check()
 
 void ClearScreen()
 {
-   // remove all our drawings
+   // remove all our snow-related drawings
    XClearArea(display, SnowWin, 0,0,0,0,True);
 }
 
@@ -1576,6 +1573,7 @@ int do_meteorite()
    meteorite.active  = 1;
    const int npoints = 5;
    XPoint points[npoints];
+
    points[0].x = meteorite.x1+1;
    points[0].y = meteorite.y1-1;
    points[1].x = meteorite.x2+1;
@@ -1586,7 +1584,7 @@ int do_meteorite()
    points[3].y = meteorite.y1+1;
    points[4].x = meteorite.x1+1;
    points[4].y = meteorite.y1-1;
-   // here sometimes: realloc(): invalid next size
+
    meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
    XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
    meteorite.starttime = wallclock();
@@ -1650,7 +1648,6 @@ int do_wupdate()
       return FALSE;
    if(!Isdesktop) return TRUE;
    if(Flags.NoKeepSWin) return TRUE;
-   // if (IsWayland) return TRUE;          // alas!
    long r;
    r = GetCurrentWorkspace();
    if(r>=0) 
@@ -1712,6 +1709,7 @@ int do_show_desktop_type()
 
    return TRUE;
 }
+
 int do_change_attr()
 {
    // move attraction point in the range
@@ -1728,6 +1726,8 @@ int do_change_attr()
 	 );
    return TRUE;
 }
+
+// Have a look at the windows we are snowing on
 
 void UpdateWindows()
 {
@@ -2331,26 +2331,26 @@ void EraseStars()
    ClearScreen();
 }
 
-/*
+#if 0
 // keep this in case I need the erasure code
 void EraseStars()
 {
-int i;
-for (i=0; i<NStars; i++)
-{
-int x = star[i].x; 
-int y = star[i].y; 
-int w = starPix.width;
-int h = starPix.height;
-if(UseAlpha|Flags.UseBG)
-XFillRectangle(display, SnowWin, ESantaGC, 
-x, y, w, h);
-else
-XClearArea(display, SnowWin,
-x, y, w, h, Exposures);
+   int i;
+   for (i=0; i<NStars; i++)
+   {
+      int x = star[i].x; 
+      int y = star[i].y; 
+      int w = starPix.width;
+      int h = starPix.height;
+      if(UseAlpha|Flags.UseBG)
+	 XFillRectangle(display, SnowWin, ESantaGC, 
+	       x, y, w, h);
+      else
+	 XClearArea(display, SnowWin,
+	       x, y, w, h, Exposures);
+   }
 }
-}
-*/
+#endif
 
 void InitFallenSnow()
 {
@@ -2503,6 +2503,7 @@ void ResetSanta()
 	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
 }
 
+// update santa's coordinates and speed
 int do_usanta()
 {
    if (Flags.Done)
@@ -2633,25 +2634,25 @@ int do_drawtree(Treeinfo *tree)
 void EraseTrees()
 {
    KillTrees = 1;
-   /*
+#if 0
    // keeping this code in case I need explicit erase of trees
    int i;
    int d = 3;
    for (i=0; i<NTrees; i++)
    {
-   int x = Tree[i].x-d; 
-   int y = Tree[i].y-d; 
-   int t = Tree[i].type; 
-   int w = TreeWidth[t]+d+d;
-   int h = TreeHeight[t]+d+d;
-   if(UseAlpha|Flags.UseBG)
-   XFillRectangle(display, SnowWin, ESantaGC, 
-   x, y, w, h);
-   else
-   XClearArea(display, SnowWin,
-   x, y, w, h, Exposures);
+      int x = Tree[i].x-d; 
+      int y = Tree[i].y-d; 
+      int t = Tree[i].type; 
+      int w = TreeWidth[t]+d+d;
+      int h = TreeHeight[t]+d+d;
+      if(UseAlpha|Flags.UseBG)
+	 XFillRectangle(display, SnowWin, ESantaGC, 
+	       x, y, w, h);
+      else
+	 XClearArea(display, SnowWin,
+	       x, y, w, h, Exposures);
    }
-   */
+#endif
 
    ClearScreen();
 }
@@ -3192,7 +3193,7 @@ int DetermineWindow()
 	 else
 	 {
 
-	    R("DetermineWindow\n");
+	    P("DetermineWindow\n");
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
@@ -3212,14 +3213,14 @@ int DetermineWindow()
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
-	    R("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
+	    P("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
 	    if (!GtkWinb)
 	    {
 	       printf("Your screen does not support alpha channel, no birds will fly.\n");
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
-	    R("snow window %ld %p\n",SnowWin,(void *)GtkWin);
+	    P("snow window %ld %p\n",SnowWin,(void *)GtkWin);
 
 	    Isdesktop = 1;
 	    UseAlpha  = 1;
@@ -3246,14 +3247,13 @@ int DetermineWindow()
 	 }
       }
    }
-   R("hoppa\n");
    // override Isdesktop if user desires so:
    if (Flags.Desktop)
       Isdesktop = 1;
-   R("Isdesktop: %d\n",Isdesktop);
+   P("Isdesktop: %d\n",Isdesktop);
    if(Isdesktop) 
       CWorkSpace = GetCurrentWorkspace();
-   R("CWorkSpace: %ld\n",CWorkSpace);
+   P("CWorkSpace: %ld\n",CWorkSpace);
    if (CWorkSpace < 0)
       return 0;
    InitDisplayDimensions();

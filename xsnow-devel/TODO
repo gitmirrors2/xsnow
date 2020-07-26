@@ -1,4 +1,3 @@
-include polarbear
 santa: 
    - random time between re-appearance
    - also right to left
@@ -6,3 +5,7 @@ santa:
    - aurora!
 
 birds:
+   size of birds ?
+   button show attr point rechts van birds only
+   use birds1.xpm etc if present in ~/xsnow/
+   show attr point before and behind birds as appropriate
