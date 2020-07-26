@@ -40,7 +40,7 @@
 
 static int counter = 0;
 
-//#define SHOW_ATTRACTION_POINT
+#define SHOW_ATTRACTION_POINT
 
 #define NWINGS 8
 #define NBIRDPIXBUFS (3*NWINGS)
