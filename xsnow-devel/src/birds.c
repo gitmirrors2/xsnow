@@ -40,7 +40,7 @@
 
 static int counter = 0;
 
-#define SHOW_ATTRACTION_POINT
+//#define SHOW_ATTRACTION_POINT
 
 #define NWINGS 8
 #define NBIRDPIXBUFS (3*NWINGS)
@@ -58,6 +58,8 @@ static cairo_surface_t *globsurface = NULL;
 #endif
 static GtkWidget       *drawing_area = 0;
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
+static GdkWindow       *gdkwindow;
+static cairo_region_t  *cairoRegion;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
@@ -472,11 +474,11 @@ int do_draw_birds()
    P("do_draw_birds %d\n",counter);
    counter++;
 
-   GdkWindow *window           = gtk_widget_get_window(drawing_area);  
-   cairo_region_t *cairoRegion = cairo_region_create();
+   //GdkWindow *gdkwindow           = gtk_widget_get_window(drawing_area);  
+   //cairo_region_t *cairoRegion = cairo_region_create();
 
    GdkDrawingContext *drawingContext =
-      gdk_window_begin_draw_frame(window,cairoRegion);
+      gdk_window_begin_draw_frame(gdkwindow,cairoRegion);
 
    cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
    //cairo_set_source_rgba(cr,1.0,1.0,1.0,1.0);
@@ -487,8 +489,8 @@ int do_draw_birds()
    if (!Flags.ShowBirds)
    {
       background(cr);
-      gdk_window_end_draw_frame(window,drawingContext);
-      cairo_region_destroy(cairoRegion);
+      gdk_window_end_draw_frame(gdkwindow,drawingContext);
+      //cairo_region_destroy(cairoRegion);
       return TRUE;
    }
 #define CLEARALL
@@ -496,20 +498,12 @@ int do_draw_birds()
    background(cr);
 #endif
 #ifdef SHOW_ATTRACTION_POINT
-   /*
    r2i(&testbird);
    cairo_set_source_rgb(cr,1.0,0.0,0.0);
    cairo_arc(cr,testbird.ix,testbird.iz,10,0,2*M_PI);
    cairo_fill(cr);
    cairo_set_source_rgb(cr,0.0,0.0,0.0);
-   */
 #endif
-   r2i(&testbird);
-   //cairo_set_source_rgba(cr,1.0,0.0,0.0,1.0);
-   //cairo_arc(cr,testbird.ix,testbird.iz,1,0,2*M_PI);
-   cairo_arc(cr,0,0,1,0,2*M_PI);
-   cairo_fill(cr);
-   //cairo_set_source_rgba(cr,0.0,0.0,0.0,1.0);
 
    //GdkPixbuf *birdie = gdk_pixbuf_scale_simple(bird_pixbuf,16,8,GDK_INTERP_BILINEAR);
 
@@ -613,7 +607,7 @@ int do_draw_birds()
 	    cache += iw*ih;
 	    P("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
 	    pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
-	    table_put(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, window));
+	    table_put(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow));
 	 }
 	 surface = (cairo_surface_t*) table_get(key);
 
@@ -642,8 +636,8 @@ int do_draw_birds()
       double y);
       */
    //cairo_fill(cr);
-   gdk_window_end_draw_frame(window,drawingContext);
-   cairo_region_destroy(cairoRegion);
+   gdk_window_end_draw_frame(gdkwindow,drawingContext);
+   //cairo_region_destroy(cairoRegion);
    return TRUE;
 }
 
@@ -830,6 +824,11 @@ static void main_window(GtkWidget *window)
 
    drawing_area = gtk_drawing_area_new();
    gtk_container_add(GTK_CONTAINER(window), drawing_area);
+
+
+   gdkwindow   = gtk_widget_get_window(drawing_area);  
+   cairoRegion = cairo_region_create();
+
 
    gtk_widget_show_all(window);
 
