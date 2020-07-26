@@ -220,6 +220,7 @@ void docs_usage(int man)
    manout("-neighbours <n>"        ,"Number of neighbours to watch ( 0..20 default: " EQ(DEFAULT_Neighbours) ").");
    manout("-prefdistance <n>"      ,"Preferred distance to neighbours ( 0..100 default: " EQ(DEFAULT_PrefDistance) ").");
    manout("-showbirds <n>"         ,"Show birds ( 0/1 default: " EQ(DEFAULT_ShowBirds) ").");
+   manout("-showattr <n>"          ,"Show attraction point ( 0/1 default: " EQ(DEFAULT_ShowAttrPoint) ").");
    manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
    if(doman)

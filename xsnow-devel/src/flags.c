@@ -243,6 +243,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-neighbours          ,Neighbours                       );
 	 handle_ia(-prefdistance        ,PrefDistance                     );
 	 handle_ia(-showbirds           ,ShowBirds                        );
+	 handle_ia(-showattr            ,ShowAttrPoint                    );
 	 handle_ia(-viewingdistance     ,ViewingDistance                  );
 
 	 handle_is(-birdscolor          ,BirdsColor                       );
