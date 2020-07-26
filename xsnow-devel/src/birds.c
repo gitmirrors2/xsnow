@@ -181,6 +181,7 @@ static void normalize_speed(BirdType *bird, float speed)
 static void background(cairo_t *cr)
 {
    draw_cb(0,cr,0);
+   cairo_set_source_rgb(cr,0.0,0.0,0.0);
 }
 
 float MaxViewingDistance()
