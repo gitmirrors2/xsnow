@@ -41,13 +41,18 @@
  * Reals dealing with time are declared as double. 
  * Other reals as float
  */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <X11/Intrinsic.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
+#ifdef HAVE_ALLOCA_H
 #include <alloca.h>
+#endif
 #include <assert.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
@@ -2962,7 +2967,8 @@ void InitSnowColor()
 
 void InitBirdsColor()
 {
-   birds_init_color(Flags.BirdsColor);
+   if (GtkWinb)
+      birds_init_color(Flags.BirdsColor);
 }
 
 void InitSnowSpeedFactor()

@@ -47,12 +47,14 @@ AC_CHECK_LIB([m], [sin], [], [
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([alloca.h assert.h ctype.h malloc.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([alloca.h])
+AC_CHECK_HEADERS([assert.h ctype.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
 AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h X11/cursorfont.h X11/Intrinsic.h],[],AC_MSG_ERROR([Exiting]))
 AC_CHECK_HEADERS([X11/Xatom.h X11/Xlib.h X11/Xos.h X11/xpm.h X11/Xutil.h],[],AC_MSG_ERROR([Exiting]))
 
 AC_LANG_PUSH([C++])
-AC_CHECK_HEADERS([unordered_map],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
+AC_CHECK_HEADERS([iostream],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
+AC_CHECK_HEADERS([unordered_map])
 AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])

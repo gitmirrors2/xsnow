@@ -5249,7 +5249,19 @@ fi
 done
 
 
-for ac_header in alloca.h assert.h ctype.h malloc.h math.h pthread.h signal.h
+for ac_header in alloca.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "alloca.h" "ac_cv_header_alloca_h" "$ac_includes_default"
+if test "x$ac_cv_header_alloca_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_ALLOCA_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in assert.h ctype.h math.h pthread.h signal.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -5436,6 +5448,20 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
+for ac_header in iostream
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "iostream" "ac_cv_header_iostream" "$ac_includes_default"
+if test "x$ac_cv_header_iostream" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_IOSTREAM 1
+_ACEOF
+
+else
+  as_fn_error $? "Check your C++ compiler. Exiting" "$LINENO" 5
+fi
+
+done
+
 for ac_header in unordered_map
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "unordered_map" "ac_cv_header_unordered_map" "$ac_includes_default"
@@ -5444,8 +5470,6 @@ if test "x$ac_cv_header_unordered_map" = xyes; then :
 #define HAVE_UNORDERED_MAP 1
 _ACEOF
 
-else
-  as_fn_error $? "Check your C++ compiler. Exiting" "$LINENO" 5
 fi
 
 done

@@ -18,11 +18,22 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#ifdef HAVE_UNORDERED_MAP
 #include <unordered_map>
+#else
+#include <map>
+#endif
 #include "hashtable.h"
 #include "debug.h"
 
-static std::unordered_map<unsigned int,void*> table(1000); 
+#ifdef HAVE_UNORDERED_MAP
+static std::unordered_map<unsigned int,void*> table(500); 
+#else
+static std::map<unsigned int,void*> table; // ok, this is a binary tree
+#endif
 
 extern "C" void table_put(unsigned int key,void *value)
 {
