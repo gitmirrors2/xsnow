@@ -9,5 +9,4 @@ birds:
    button show attr point rechts van birds only
    use birds1.xpm etc if present in ~/xsnow/
    show attr point before and behind birds as appropriate
-   maak iets als HAVE_UNORDERED_MAP
-   unordered_map niet overal aanwezig. gebruik map?
+   scale birds and attr point, in relation to screen width

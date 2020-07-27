@@ -822,6 +822,7 @@ static struct _birds_buttons
    birds_button disweight;
    birds_button followweight;
    birds_button color;
+   birds_button scale;
 } birds_buttons;
 
 static void init_birds_buttons()
@@ -840,6 +841,7 @@ static void init_birds_buttons()
    HANDLE_INIT(birds_buttons.disweight.button          ,birds-disweight);
    HANDLE_INIT(birds_buttons.followweight.button       ,birds-followweight);
    HANDLE_INIT(birds_buttons.color.button              ,birds-color);
+   HANDLE_INIT(birds_buttons.scale.button              ,birds-scale);
 }
 
 static void set_birds_buttons()
@@ -857,6 +859,7 @@ static void set_birds_buttons()
    HANDLE_SET_RANGE(birds_buttons.attraction.button        ,AttrFactor      ,self);
    HANDLE_SET_RANGE(birds_buttons.disweight.button         ,DisWeight       ,self);
    HANDLE_SET_RANGE(birds_buttons.followweight.button      ,FollowWeight    ,self);
+   HANDLE_SET_RANGE(birds_buttons.scale.button             ,BirdsScale      ,self);
 
    HANDLE_SET_COLOR(birds_buttons.color.button,BirdsColor);
 }
@@ -876,6 +879,7 @@ HANDLE_RANGE(button_birds_speed           ,BirdsSpeed          ,value);
 HANDLE_RANGE(button_birds_attraction      ,AttrFactor          ,value);
 HANDLE_RANGE(button_birds_disweight       ,DisWeight           ,value);
 HANDLE_RANGE(button_birds_follow_weight   ,FollowWeight        ,value);
+HANDLE_RANGE(button_birds_scale           ,BirdsScale          ,value);
 
 void birds_default(int vintage)
 {
@@ -900,6 +904,7 @@ void birds_default(int vintage)
       Flags.DisWeight        = DEFAULT_DisWeight;
       Flags.FollowWeight     = DEFAULT_FollowWeight;
       Flags.ShowAttrPoint    = DEFAULT_ShowAttrPoint;
+      Flags.BirdsScale       = DEFAULT_BirdsScale;
       free(Flags.BirdsColor);
       Flags.BirdsColor       = strdup(DEFAULT_BirdsColor);
    }

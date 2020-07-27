@@ -1011,6 +1011,12 @@ int do_ui_check()
       changes++;
       P("changes: %d\n",changes);
    }
+   if(Flags.BirdsScale != OldFlags.BirdsScale)
+   {
+      OldFlags.BirdsScale = Flags.BirdsScale;
+      changes++;
+      P("changes: %d\n",changes);
+   }
    if(Flags.ShowAttrPoint != OldFlags.ShowAttrPoint)
    {
       OldFlags.ShowAttrPoint = Flags.ShowAttrPoint;
