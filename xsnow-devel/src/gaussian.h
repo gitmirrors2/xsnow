@@ -18,10 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef GAUSSIAN_H
-#define GAUSSIAN_H
+#pragma once
 // obtain normally distributed number. The number will be between min and max:
 double gaussian (double mean, double standard_deviation, double min, double max);
 // seed the random generator (alternatively, srand48() can be used):
 void sgaussian(long int seed);
-#endif

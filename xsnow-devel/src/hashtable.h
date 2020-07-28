@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef HASHTABLE_H
-#define HASHTABLE_H
+#pragma once
 #ifdef __cplusplus
 extern "C" { 
 #endif
@@ -28,5 +27,4 @@ void *table_get(unsigned int key);
 void table_clear(void(*destroy)(void *p));
 #ifdef __cplusplus
 }
-#endif
 #endif

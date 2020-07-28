@@ -18,9 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef MAINSTUB_H
-#define MAINSTUB_H
-
+#pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,5 +26,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* MAINSTUB_H */
 

@@ -18,8 +18,6 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef CVSPOS_H
-#define CVSPOS_H
+#pragma once
 void csvpos(char *s, int **k, int *n);
 void vsc(char **s, int *k, int n);
-#endif

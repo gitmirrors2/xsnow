@@ -18,12 +18,10 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef DOCS_H
-#define DOCS_H
+#pragma once
 
 extern void docs_usage(int man);
 
 #define Q(a) #a
 #define EQ(a) Q(a)
 
-#endif

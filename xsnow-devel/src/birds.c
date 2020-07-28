@@ -435,6 +435,18 @@ int do_draw_birds()
    int i;
    for (before=0; before<2; before++)
    {
+      if(before && Flags.ShowAttrPoint)
+      {
+	 r2i(&attrbird);
+	 cairo_set_source_rgba(cr,0.914,0.592,0.04,0.5);
+	 //cairo_arc(cr,attrbird.ix,attrbird.iz,15,0,2*M_PI);
+	 P("%d %d\n", attrbird.ix,attrbird.iz);
+	 cairo_arc(cr,attrbird.ix,attrbird.iz,
+	       scale(attrbird.y)*4.0e-6*globals.bird_scale*Flags.BirdsScale*globals.maxix,
+	       0,2*M_PI);
+	 cairo_fill(cr);
+	 cairo_set_source_rgba(cr,0.0,0.0,0.0,0.0);
+      }
       for (i=0; i<Nbirds; i++)
       {
 	 BirdType *bird = &birds[i];
@@ -547,18 +559,6 @@ int do_draw_birds()
 	    P("skipped: %d %d\n",skipped,bird->drawable);
 	 }
       }    // i-loop
-      if(!before && Flags.ShowAttrPoint)
-      {
-	 r2i(&attrbird);
-	 cairo_set_source_rgba(cr,0.914,0.592,0.04,0.5);
-	 //cairo_arc(cr,attrbird.ix,attrbird.iz,15,0,2*M_PI);
-	 P("%d %d\n", attrbird.ix,attrbird.iz);
-	 cairo_arc(cr,attrbird.ix,attrbird.iz,
-	       scale(attrbird.y)*4.0e-6*globals.bird_scale*Flags.BirdsScale*globals.maxix,
-	       0,2*M_PI);
-	 cairo_fill(cr);
-	 cairo_set_source_rgba(cr,0.0,0.0,0.0,0.0);
-      }
    }  // before-loop
    gdk_window_end_draw_frame(gdkwindow,drawingContext);
    return TRUE;
@@ -672,6 +672,7 @@ static void main_window(GtkWidget *window)
 
 
    gdkwindow   = gtk_widget_get_window(drawing_area);  
+   R("toplevel: %d\n",gtk_widget_is_toplevel(window));
    if (cairoRegion)
       cairo_region_destroy(cairoRegion);
    cairoRegion = cairo_region_create();

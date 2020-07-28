@@ -21,18 +21,16 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifdef HAVE_UNORDERED_MAP
-#include <unordered_map>
-#else
-#include <map>
-#endif
 #include "hashtable.h"
 #include "debug.h"
 
 #ifdef HAVE_UNORDERED_MAP
-static std::unordered_map<unsigned int,void*> table(500); 
+#include <unordered_map>
+static std::unordered_map<unsigned int,void*> table; 
 #else
-static std::map<unsigned int,void*> table; // ok, this is a binary tree
+#include <map>
+#pragma message(__FILE__ ":\nUsing map for the hash table, because unordered_map is not available.")
+static std::map<unsigned int,void*> table; // ok, this is a binary tree, not an hash table
 #endif
 
 extern "C" void table_put(unsigned int key,void *value)

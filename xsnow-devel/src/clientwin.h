@@ -40,11 +40,9 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-#ifndef _CLIENTWIN_H_
-#define _CLIENTWIN_H_
+#pragma once
 
 #include <X11/Xlib.h>
 
 extern Window Find_Client(Display * dpy, Window root, Window target_win);
 
-#endif

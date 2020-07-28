@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef FLAGS_H
-#define FLAGS_H
+#pragma once
 #include <X11/Xlib.h>
 #include "doit.h"
 
@@ -55,4 +54,3 @@ extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);
 extern void PrintVersion(void);
 extern void WriteFlags(void);
-#endif

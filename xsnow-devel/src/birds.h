@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef BIRDS_H
-#define BIRDS_H
+#pragma once
 #include <gtk/gtk.h>
 
 void main_birds (GtkWidget *window);
@@ -32,4 +31,3 @@ void birds_set_attraction_point_relative(float x, float y, float z);
 void birds_set_speed(int x);
 void birds_init_color(const char *color);
 
-#endif /* BIRDS_H */

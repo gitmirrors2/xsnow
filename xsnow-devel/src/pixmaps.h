@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef PIXMAPS_H
-#define PIXMAPS_H
+#pragma once
 #define XPM_TYPE const char
 #include "xsnow.h"
 extern SnowMap       snowPix[];
@@ -29,4 +28,3 @@ extern char          **xpmtrees[];
 extern TannenbaumMap tannenbaumPix[];
 extern char          **xsnow_logo;
 extern const char    **birds_xpm[];
-#endif

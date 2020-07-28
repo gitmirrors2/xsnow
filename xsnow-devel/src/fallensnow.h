@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef FALLENSNOW_H
-#define FALLENSNOW_H
+#pragma once
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 typedef struct FallenSnow {
@@ -55,4 +54,3 @@ extern void FreeFallenSnow(FallenSnow *fallen);
 // find fallensnow with id
 extern FallenSnow *FindFallen(FallenSnow *first, Window id);
 
-#endif

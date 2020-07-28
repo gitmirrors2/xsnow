@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef WMCTRL_H
-#define WMCTRL_H
+#pragma once
 #include <X11/Xlib.h>
 typedef struct WinInfo
 {
@@ -37,4 +36,3 @@ extern int FindWindowWithName(const char* needle, Window *win, char **name);
 extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);
 extern void printwindows(WinInfo *windows, int nwin);
 
-#endif

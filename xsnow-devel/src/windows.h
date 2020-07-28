@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef WINDOWS_H
-#define WINDOWS_H
+#pragma once
 extern Display *display;
 extern int screen;
 extern Window SnowWin;
@@ -30,4 +29,3 @@ extern int SnowWinDepth;
 extern char *DesktopSession;
 extern int IsCompiz;
 extern int IsWayland;
-#endif

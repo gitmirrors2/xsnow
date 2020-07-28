@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef DOIT_H
-#define DOIT_H
+#pragma once
 // calls macro's for elements of FLAGS
 // DOIT_I is for x that should be output as 1234
 // DOIT_S is for x that is a char*
@@ -105,6 +104,3 @@
    \
    DOIT_S(BirdsColor)
 
-
-
-#endif

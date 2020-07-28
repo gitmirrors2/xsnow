@@ -18,8 +18,6 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef CLOCKS_H
-#define CLOCKS_H
+#pragma once
 extern double wallclock(void);
 extern double wallcl(void);
-#endif

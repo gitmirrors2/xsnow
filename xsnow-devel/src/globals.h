@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#pragma once
 #include "doitb.h"
 extern struct _globals {
    int   maxix, maxiy, maxiz;   // [pixels]
@@ -58,4 +57,3 @@ extern struct _globals {
 
 } globals;
 
-#endif  /* GLOBALS_H */

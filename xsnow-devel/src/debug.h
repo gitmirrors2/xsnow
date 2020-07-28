@@ -18,13 +18,11 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#pragma once
 #include <stdio.h>
-#ifndef DEBUG_H
-#define DEBUG_H
 #ifdef DEBUG
 #define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
 #else
 #define P(...)
 #endif
 #define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
-#endif

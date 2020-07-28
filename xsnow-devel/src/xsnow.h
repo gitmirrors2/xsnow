@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef XSNOW_H
-#define XSNOW_H
+#pragma once
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -242,4 +241,3 @@ typedef struct Treeinfo {
 
 /* ------------------------------------------------------------------ */
 
-#endif

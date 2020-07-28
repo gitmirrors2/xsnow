@@ -18,7 +18,5 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef VERSION_H
-#define VERSION_H
+#pragma once
 #define VERSION "3.0.0~pre17"
-#endif

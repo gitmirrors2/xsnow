@@ -18,8 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef UI_H
-#define UI_H
+#pragma once
 void ui (int *argc, char **argv[]);
 void ui_error_x11(int *argc, char **argv[]);
 void ui_show_nflakes(int n);
@@ -27,4 +26,3 @@ void ui_set_birds_header(const char *text);
 //void ui_set_vd_scale(void);
 void ui_show_range_etc(void);
 void ui_show_desktop_type(const char *s);
-#endif

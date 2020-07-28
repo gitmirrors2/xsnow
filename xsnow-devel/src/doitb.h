@@ -18,9 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef DOITB_H
-#define DOITB_H
-
+#pragma once
 #define DOITALLB()  
    //DOITB(prefdistance ,float) /* [meter]          preferred distance */                    
 
@@ -32,4 +30,3 @@
    DOITB(restart) \
    DOITB(freeze)
 
-#endif  /* DOIT_H */

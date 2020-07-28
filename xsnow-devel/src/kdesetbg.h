@@ -18,7 +18,5 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef KDESETBG_H
-#define KDESETBG_H
+#pragma once
 int kdesetbg(const char *color);
-#endif

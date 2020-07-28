@@ -18,10 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#ifndef IXPM_H
-#define IXPM_H
+#pragma once
 #include <X11/xpm.h>
 extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
       char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
 extern Region regionfromxpm(char **data, int flop);
-#endif

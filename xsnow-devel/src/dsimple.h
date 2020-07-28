@@ -57,9 +57,7 @@ from The Open Group.
  *
  * Send bugs, etc. to chariot@athena.mit.edu.
  */
-#ifndef _DSIMPLE_H
-#define _DSIMPLE_H
-
+#pragma once
 
     /* Simple helper macros */
 #ifndef MAX
@@ -104,4 +102,3 @@ Window Select_Window(Display *, int descend);
 Window Window_With_Name(Display *, Window, const char *);
 
 void Fatal_Error(const char *, ...) _X_NORETURN _X_ATTRIBUTE_PRINTF(1,2);
-#endif

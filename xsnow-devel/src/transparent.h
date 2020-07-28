@@ -18,10 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#ifndef TRANSPARENT_H
-#define TRANSPARENT_H
+#pragma once
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 void create_transparent_window(int fullscreen, int below, int allworkspaces,
       Window *w, const char *prefname, char **name, GtkWidget **gtkwin,unsigned int width, unsigned int height);
-#endif

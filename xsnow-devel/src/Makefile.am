@@ -51,7 +51,7 @@ BUILT_SOURCES = ui_xml.h
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
 	@echo "/* This file is generated from $< by Makefile */" > $@
-	@echo "#ifndef UI_XML_H" >> $@
+	@echo "#pragma once" >> $@
 	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
 	@sed 's/^ *//' $< | awk -v FS="" \
@@ -59,7 +59,6 @@ ui_xml.h: ui.xml
 	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
-	@echo "#endif" >> $@
 
 TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
 
