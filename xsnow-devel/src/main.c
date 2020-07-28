@@ -1014,6 +1014,7 @@ int do_ui_check()
    if(Flags.BirdsScale != OldFlags.BirdsScale)
    {
       OldFlags.BirdsScale = Flags.BirdsScale;
+      birds_set_scale();
       changes++;
       P("changes: %d\n",changes);
    }

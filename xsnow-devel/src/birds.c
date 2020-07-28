@@ -59,6 +59,7 @@ static GtkWidget       *drawing_area = 0;
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static GdkWindow       *gdkwindow;
 static cairo_region_t  *cairoRegion = 0;
+static cairo_surface_t *attrsurface = 0;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
@@ -114,6 +115,7 @@ static void normalize_speed(BirdType *bird, float speed);
 static void r2i(BirdType *bird);
 static void clear_flags(void);
 static void prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float *prefx, float *prefy, float *prefz);
+static void attrbird2surface(void);
 
 
 static float time_update_pos_birds     = 0.01;
@@ -234,6 +236,29 @@ void prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float 
 	 x,y,z,
 	 *prefx, *prefy, *prefz
     );
+}
+
+// create a attraction point surface in attrsurface
+// is called when user changes drawing scale
+void attrbird2surface()
+{
+   if(attrsurface)
+      cairo_surface_destroy(attrsurface);
+   r2i(&attrbird);
+   float f = 
+      scale(attrbird.y)*4.0e-6*globals.bird_scale*Flags.BirdsScale*globals.maxix;
+   P("attrbird2surface %d %f\n",counter++,f);
+   attrsurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*f+2,2*f+2);
+   cairo_t *cr = cairo_create(attrsurface);
+   cairo_set_source_rgba(cr,0.914,0.592,0.04,0.6);
+   cairo_arc(cr,f+1,f+1,f,0,2*M_PI);
+   cairo_fill(cr);
+   cairo_destroy(cr);
+}
+
+void birds_set_scale()
+{
+   attrbird2surface();
 }
 
 int do_update_speed_birds()
@@ -437,15 +462,8 @@ int do_draw_birds()
    {
       if(before && Flags.ShowAttrPoint)
       {
-	 r2i(&attrbird);
-	 cairo_set_source_rgba(cr,0.914,0.592,0.04,0.5);
-	 //cairo_arc(cr,attrbird.ix,attrbird.iz,15,0,2*M_PI);
-	 P("%d %d\n", attrbird.ix,attrbird.iz);
-	 cairo_arc(cr,attrbird.ix,attrbird.iz,
-	       scale(attrbird.y)*4.0e-6*globals.bird_scale*Flags.BirdsScale*globals.maxix,
-	       0,2*M_PI);
-	 cairo_fill(cr);
-	 cairo_set_source_rgba(cr,0.0,0.0,0.0,0.0);
+	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz );
+	 cairo_paint(cr);
       }
       for (i=0; i<Nbirds; i++)
       {
@@ -788,5 +806,6 @@ void main_birds (GtkWidget *window)
    init_bird_pixbufs("black");
 
    init_birds(0);
+   attrbird2surface();
 
 }
