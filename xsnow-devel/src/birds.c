@@ -469,6 +469,8 @@ int do_draw_birds()
 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
+	    // show the three types of birds flying in the centre
+	    // useful at creating bird xpm's
 	    static BirdType testbird;
 	    testbird = birds[0];
 	    testbird.x = attrbird.x;
@@ -713,14 +715,13 @@ static void main_window(GtkWidget *window)
    globals.maxiz = gtk_widget_get_allocated_height(window);
    globals.maxiy = (globals.maxix+globals.maxiz)/2;
 
-   R("%d %d %d\n",globals.maxix,globals.maxiy,globals.maxiz);
+   P("%d %d %d\n",globals.maxix,globals.maxiy,globals.maxiz);
 
    drawing_area = gtk_drawing_area_new();
    gtk_container_add(GTK_CONTAINER(window), drawing_area);
 
 
    gdkwindow   = gtk_widget_get_window(drawing_area);  
-   R("toplevel: %d\n",gtk_widget_is_toplevel(window));
    if (cairoRegion)
       cairo_region_destroy(cairoRegion);
    cairoRegion = cairo_region_create();
@@ -734,7 +735,7 @@ static void main_window(GtkWidget *window)
    globals.xc   = (globals.maxx-globals.ox)/2;
    globals.zc   = (globals.maxz-globals.oz)/2;
 
-   R("drawing window: %d %d %d %f %f %f\n",
+   P("drawing window: %d %d %d %f %f %f\n",
 	 globals.maxix, globals.maxiy, globals.maxiz, globals.maxx, globals.maxy,globals.maxz);
    gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
 }

@@ -462,6 +462,8 @@ static void init_hello_pixmaps()
    pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[0]);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image3"));
    gtk_image_set_from_pixbuf(image,pixbuf);
+   image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image4"));
+   gtk_image_set_from_pixbuf(image,pixbuf);
    g_object_unref(pixbuf);
 }
 
@@ -1048,19 +1050,6 @@ void button_all_vintage()
    all_default(1);
 }
 
-#if 0
-   MODULE_EXPORT
-void button_kde()
-{
-   int h = human_interaction;
-   human_interaction      = 0;
-   P("button_kde\n");
-   KDEFLAGS;
-   set_general_buttons();
-   human_interaction = h;
-}
-#endif
-
    MODULE_EXPORT
 void button_fvwm()
 {
@@ -1089,14 +1078,6 @@ void ui_show_nflakes(int n)
    sprintf(a,"%6d",n);
    gtk_label_set_text(GTK_LABEL(nflakeslabel),a);
 }
-
-//void ui_set_vd_scale()
-//{
-//   GtkAdjustment *s = GTK_ADJUSTMENT(gtk_builder_get_object(builder,"birds-vd-adjustment")); 
-//   gtk_adjustment_set_lower(s,0);
-//   gtk_adjustment_set_upper(s,MaxViewingDistance());
-//   R("%f\n",MaxViewingDistance());
-//}
 
 void ui_show_range_etc()
 {
