@@ -240,6 +240,7 @@ void prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float 
 
 // create a attraction point surface in attrsurface
 // is called when user changes drawing scale
+// and when attraction point is changed
 void attrbird2surface()
 {
    if(attrsurface)
@@ -462,8 +463,37 @@ int do_draw_birds()
    {
       if(before && Flags.ShowAttrPoint)
       {
-	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz );
+	 r2i(&attrbird);
+	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz);
 	 cairo_paint(cr);
+//#define TESTBIRDS
+#ifdef TESTBIRDS
+	 {
+	    static BirdType testbird;
+	    testbird = birds[0];
+	    testbird.x = attrbird.x;
+	    testbird.y = attrbird.y;
+	    testbird.z = attrbird.z;
+	    int i;
+	    int centerbird = 0;
+	    for (i=0; i<3; i++)
+	    {
+	       GdkPixbuf *bird_pixbuf = bird_pixbufs[testbird.wingstate+i*NWINGS];
+	       int iw = 400;
+	       int ih = (float)iw*gdk_pixbuf_get_height(bird_pixbuf)/
+		  (float)gdk_pixbuf_get_width(bird_pixbuf);
+	       GdkPixbuf       *pixbuf = 0;
+	       const GdkInterpType interpolation = GDK_INTERP_HYPER; 
+	       pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
+	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+	       r2i(&testbird);
+	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
+	       cairo_paint(cr);
+	       g_clear_object(&pixbuf);
+	       cairo_surface_destroy(surface);
+	    }
+	 }
+#endif
       }
       for (i=0; i<Nbirds; i++)
       {
@@ -545,8 +575,8 @@ int do_draw_birds()
 	       continue;
 	    }
 
-	    //const GdkInterpType interpolation = GDK_INTERP_BILINEAR;
-	    const GdkInterpType interpolation = GDK_INTERP_HYPER; 
+	    const GdkInterpType interpolation = GDK_INTERP_BILINEAR;
+	    //const GdkInterpType interpolation = GDK_INTERP_HYPER; 
 	    // since we are caching the surfaces, we go for the highest quality
 
 	    // logarithmic caching
