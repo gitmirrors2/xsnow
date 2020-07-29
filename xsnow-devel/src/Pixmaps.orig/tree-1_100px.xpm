@@ -1,0 +1,130 @@
+/* XPM */
+/* -copyright-
+#-# 
+#-# xsnow: let it snow on your desktop
+#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#-#               2019,2020 Willem Vermin
+#-# 
+#-# This program is free software: you can redistribute it and/or modify
+#-# it under the terms of the GNU General Public License as published by
+#-# the Free Software Foundation, either version 3 of the License, or
+#-# (at your option) any later version.
+#-# 
+#-# This program is distributed in the hope that it will be useful,
+#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#-# GNU General Public License for more details.
+#-# 
+#-# You should have received a copy of the GNU General Public License
+#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#-# 
+*/
+XPM_TYPE *tree_1_100px[] = {
+/* columns rows colors chars-per-pixel */
+"80 100 4 1 ",
+"  c None",
+". c #00bb00",
+"b c #8b4513",
+"g c #006400",
+/* pixels */
+"                                     .                                          ",
+"                                     .                                          ",
+"                                     .      .                                   ",
+"                                     bb     .                                   ",
+"                                      g    ..                                   ",
+"                                   .  g    b.                                   ",
+"                                    . b.   b                                    ",
+"                                    .g g....   .                                ",
+"                                     gb ..    .                                 ",
+"                                    . . .     b                                 ",
+"                                    gg gb.   .                                  ",
+"                                     . gb   .b                                  ",
+"                                .    .  b. bb                                   ",
+"                                .    g   . b                                    ",
+"                                g. .bg   bgg                                    ",
+"                                 .. . .  bg                                     ",
+"                                 gbbg g  bg     b..                             ",
+"                                     g   g      .                               ",
+"                                     g.  g     bg.                              ",
+"                                      g bg     .                                ",
+"                                       ggg     g                                ",
+"                                        bg    gg                                ",
+"                                        gg.   .         .                       ",
+"                           .           gg .  b.         .                       ",
+"                            .          gb .  .        b..                       ",
+"                             .   .b   gggg  bg        gg                        ",
+"                             .   ..   gb .  .      gggg                         ",
+"                             b.   .   gbg. gg      g                            ",
+"                           ..gg.  g.    g. .       g                            ",
+"                               g.  .  ggg  .       g                            ",
+"                                g. ..  gb  .      bb                            ",
+"                                 gg g  b. .     gg                              ",
+"                                  g .   . .    gg                               ",
+"                                  ggb   b.  . bb      .     .                   ",
+"                                     .  b.  gg        .    .bb..                ",
+"                       .             .g .  gg         .   .g                    ",
+"                       .              g .  g          .  .g                     ",
+"                       .b            .g . gg          g .g                      ",
+"                        g.           g .. g      ..  .gg  .           .         ",
+"                        g..          g bbgg    ..bg ggg  ..          ..         ",
+"                         gg         .ggbgg    ..bg  ..ggg            g          ",
+"              .         .g            gbg     .bg   . g             .g          ",
+"              .b        g.            gbb.  ..bg   gg               gg .        ",
+"               .         g.      .   ggb.   .gg .  g               g g.g        ",
+"             . ..         g .. .ggb  g g    g   . g          .     ..   g.      ",
+"             .. .         g.b   . gb   gb  gg  .b.bb         b    .   ..        ",
+"              .g.           b....  gb  ggbg    ..            b   . gggb         ",
+"               ggb             ..   gb bbb. g gg.            b  .g.             ",
+"                .g    .         g.  gggb..  g gg            gb .                ",
+"                 g    .          g    g..   ggg             gggg                ",
+"   .             b..  g          gg    ..   ..     .       gg                   ",
+"   .b            b .  g           g  . b   ..     bb       g                    ",
+"    .              .g gbb         g  . b bgb      g       ggg..                 ",
+"    .               g bb          g. . b ggg    .g       .                      ",
+"    .               g b            g .bbg      .g  ..   .g                      ",
+"    b.    .         .gb             . b g     .g  ggg...g                    .  ",
+"    b.    ..         g              g b g    .gg gg  ..                     ggg.",
+"     .     .         g        .     g ..gg   g gg   gg  .                   b   ",
+"    g..    .         g.       .      . bbg  .g g   gg  .g              .    b   ",
+"g    g.    g          g.      g.   . . gb  gg .   gg  .gg              .    .   ",
+" g.b   gg  g           gg..b   .  .. g gbg g  g  g   .g               gg    .   ",
+"   g.   ggggb     .      ggbb. g   g gg bggg  g gbg..g                g    gg   ",
+"     g     gg     .          ggb.  ggggb.g     ggg                    g   gg    ",
+"  .b g.    gg.    ..          gg.   .g b     gg                      gg gg      ",
+"   .b g       g.   .          gg g  gggb  . gg                  .    gg.        ",
+"    . g.      ggg  .          g gg  ggb   gbbbb   .             .   .g          ",
+" .gb.g g.  .g  .gg .          g  g  ggb.b .   .   .             g .b.           ",
+"   .g.  g   ..g   .g             gg g  ....   .  .g            gb  gg           ",
+"      . gg    .g  .g              g.g ..b .   . gg         .   g   g            ",
+"      ..gbbbggggggbg                g   b g  .g g         .b.  g  gg            ",
+"                  gg.               g   ggg  ggg  .       b.    ggg             ",
+"                   gg .             g. bggg  gg g.g      .bg  gg        .       ",
+"                  .b.g.g            g  bgg  g gg        .b. gg          .       ",
+"                  .bbbggg          gg  .b gggg  g       gbgg            .       ",
+"                       .gg         g  .gb.  g  gg    . ggg              .       ",
+"                         g..      .g  ..b   g  .   ggggg                g  ..   ",
+"                         .gggg  .  g   gb  g  g   ....                  gggg.   ",
+"       .                  gbbb..b. gg ...  g .g g.gg                    gg      ",
+"      ..                   gggg b . g . b  b   g..                      gg      ",
+"    ...                        gb   g. bb  b  gg                        .       ",
+".     .g.              ...     g.  .g .g  . ggg                      b..g       ",
+"..    gg....             ..     g  g.g g. .. b                    bggg          ",
+" .. gg...                 ..     g  g  bg. g.                b....g             ",
+"  ..gggg.                  .     g  g  bg  gg               gggbbgg             ",
+"    ggbgg      ..          .g   . ggg bbg. g              .gg                   ",
+"      bbg       .          .g      g  .b     g.     .   .g           .          ",
+"        b.   .g .         .g       g   bg  g..     .  .gg          ..b          ",
+"         ...  gg..        .g     gggg  bgg..      . .g        gg.....           ",
+"           ggbgbb.         gggg     gggbgg       .gg  .       gbbggg            ",
+"             gggbb.           g       ggb       .g           gggbgg             ",
+"              gg..b.          gggggggggbb     .gg        . ggg g                ",
+"                gg..                  gbg   .gg          g  gggg                ",
+"                  gg                   bbgggg     g  g gggggggg                 ",
+"                    gg.    ...     .   bbg        g  gg                         ",
+"                      ..gggg ggg    ..gbbb        gggg                          ",
+"                               ..     gbbb     g. ggg.                          ",
+"                                .      bbb  ggggggg                             ",
+"                                g.gggggbbbbgg                                   ",
+"                                       bbbbb                                    ",
+"                                      bbbbb                                     "
+};
