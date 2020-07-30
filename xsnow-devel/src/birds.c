@@ -440,6 +440,14 @@ int do_draw_birds()
 {
    if (Flags.Done)
       return FALSE;
+   static int isclear = 0;
+   if (!Flags.ShowBirds && isclear)
+   {
+      P("no birds %d\n",counter++);
+      return TRUE;
+   }
+   else
+      isclear = 0;
 
    P("do_draw_birds %d\n",counter);
    counter++;
@@ -452,7 +460,7 @@ int do_draw_birds()
    {
       background(cr);
       gdk_window_end_draw_frame(gdkwindow,drawingContext);
-      //cairo_region_destroy(cairoRegion);
+      isclear = 1;
       return TRUE;
    }
    background(cr);
@@ -577,8 +585,8 @@ int do_draw_birds()
 	       continue;
 	    }
 
-	    const GdkInterpType interpolation = GDK_INTERP_BILINEAR;
-	    //const GdkInterpType interpolation = GDK_INTERP_HYPER; 
+	    //const GdkInterpType interpolation = GDK_INTERP_BILINEAR;
+	    const GdkInterpType interpolation = GDK_INTERP_HYPER; 
 	    // since we are caching the surfaces, we go for the highest quality
 
 	    // logarithmic caching
