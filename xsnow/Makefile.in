@@ -201,6 +201,7 @@ am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
+ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AUTOCONF = @AUTOCONF@
@@ -212,6 +213,10 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+CXXDEPMODE = @CXXDEPMODE@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -260,6 +265,7 @@ abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -300,7 +306,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 # -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -309,7 +315,7 @@ top_srcdir = @top_srcdir@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -317,11 +323,11 @@ top_srcdir = @top_srcdir@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src
 EXTRA_DIST = bootstrap Changes getversion README.md \
-	     copyright.inc addcopyright.sh prevent-remakes \
+	     addcopyright.sh prevent-remakes \
 	     pbuilderscript makeupload makedeb debian dependencies \
 	     maketar debian.eoan debian.stretch debian.sid debian.tara \
 	     debian.focal

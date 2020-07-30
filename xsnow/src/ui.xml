@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.2 -->
 <!-- -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -10,7 +10,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,10 +18,67 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="birds-anarchy-adjustment">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-attraction-adjustment">
+    <property name="upper">300</property>
+    <property name="value">100</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">20</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-distance-weight-adjustment">
+    <property name="upper">100</property>
+    <property name="value">50</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-follow-adjustment">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-nbirds-adjustment">
+    <property name="upper">400</property>
+    <property name="value">50</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-neighbours-adjustment">
+    <property name="upper">20</property>
+    <property name="value">7</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-prefdistance-adjustment">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-scale-adjustment">
+    <property name="lower">20</property>
+    <property name="upper">300</property>
+    <property name="value">100</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">20</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-speed-adjustment">
+    <property name="upper">300</property>
+    <property name="value">100</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">20</property>
+  </object>
+  <object class="GtkAdjustment" id="birds-vd-adjustment">
+    <property name="upper">95</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="cpuload-adjustment">
     <property name="lower">20</property>
     <property name="upper">300</property>
@@ -162,7 +219,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="snow-intensity-adjustment">
     <property name="lower">1</property>
-    <property name="upper">200</property>
+    <property name="upper">300</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -269,6 +326,7 @@ xsnow, created in 1993 by Rick Jansen.\n
   </object>
   <object class="GtkApplicationWindow" id="hauptfenster">
     <property name="can_focus">False</property>
+    <property name="halign">start</property>
     <signal name="destroy" handler="button_quit" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar">
@@ -283,6 +341,9 @@ xsnow, created in 1993 by Rick Jansen.\n
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <property name="stack">stack</property>
+            <style>
+              <class name="wv"/>
+            </style>
           </object>
         </child>
       </object>
@@ -291,6 +352,8 @@ xsnow, created in 1993 by Rick Jansen.\n
       <object class="GtkStack" id="stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="transition_duration">400</property>
+        <property name="transition_type">crossfade</property>
         <child>
           <object class="GtkGrid" id="grid_welcome">
             <property name="visible">True</property>
@@ -340,7 +403,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">20</property>
               </packing>
             </child>
             <child>
@@ -352,7 +415,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
+                <property name="top_attach">18</property>
               </packing>
             </child>
             <child>
@@ -360,9 +423,8 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">If everything is ok, it is now snowing on your desktop.</property>
+                <property name="label" translatable="yes">If everything is ok, it is now snowing on your desktop, and birds are flying.</property>
                 <property name="justify">fill</property>
-                <property name="wrap">True</property>
                 <property name="max_width_chars">50</property>
               </object>
               <packing>
@@ -377,7 +439,6 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">You are encouraged to define your own preferences using the tabs above.</property>
                 <property name="justify">fill</property>
-                <property name="wrap">True</property>
                 <property name="max_width_chars">50</property>
               </object>
               <packing>
@@ -390,14 +451,16 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">If xsnow is misbehaving on your desktop, use the 'settings' tab to see if you can correct this.</property>
+                <property name="label" translatable="yes">Use the &lt;b&gt;settings&lt;/b&gt; tab if xsnow is misbehaving.
+Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
+                <property name="use_markup">True</property>
                 <property name="justify">fill</property>
                 <property name="wrap">True</property>
                 <property name="max_width_chars">50</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -412,7 +475,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -423,7 +486,8 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Defaults: </property>
+                    <property name="label" translatable="yes">&lt;b&gt;Defaults &lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -447,7 +511,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -458,7 +522,8 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Vintage: </property>
+                    <property name="label" translatable="yes">&lt;b&gt;Vintage &lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -482,7 +547,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -493,7 +558,8 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">All defaults: </property>
+                    <property name="label" translatable="yes">&lt;b&gt;All defaults &lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -517,7 +583,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -528,7 +594,8 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">All vintage: </property>
+                    <property name="label" translatable="yes">&lt;b&gt;All vintage &lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -552,7 +619,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -574,7 +641,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -585,7 +652,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">14</property>
               </packing>
             </child>
             <child>
@@ -607,6 +674,7 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkImage" id="hello-image1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">60</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                   <packing>
@@ -619,7 +687,6 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">start</property>
                     <property name="margin_left">8</property>
                     <property name="margin_right">8</property>
                     <property name="label" translatable="yes">Welcome at xsnow!</property>
@@ -656,6 +723,18 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
+                  <object class="GtkImage" id="hello-image3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-missing-image</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -668,11 +747,11 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkImage" id="hello-image3">
+                  <object class="GtkImage" id="hello-image4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="stock">gtk-missing-image</property>
@@ -680,13 +759,13 @@ xsnow, created in 1993 by Rick Jansen.\n
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">16</property>
               </packing>
             </child>
             <child>
@@ -698,7 +777,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -743,7 +822,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">17</property>
+                <property name="top_attach">19</property>
               </packing>
             </child>
             <child>
@@ -759,8 +838,100 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">21</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -1022,7 +1193,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fluff on fallen snow and trees.</property>
-                <property name="halign">end</property>
+                <property name="halign">start</property>
                 <property name="margin_right">8</property>
                 <signal name="toggled" handler="button_snow_fluff_show" swapped="no"/>
               </object>
@@ -1080,7 +1251,8 @@ maintainer of xsnow, here is a paypal link.</property>
               <object class="GtkScale" id="snow-windows">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.</property>
+                <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.
+Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
@@ -2979,6 +3151,684 @@ maintainer of xsnow, here is a paypal link.</property>
           </packing>
         </child>
         <child>
+          <object class="GtkGrid" id="grid_birds">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">The range in use to get the desired number of neighbours.</property>
+            <property name="halign">center</property>
+            <property name="margin_top">8</property>
+            <property name="margin_bottom">8</property>
+            <child>
+              <object class="GtkLabel" id="birds-header">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_bottom">8</property>
+                <property name="label" translatable="yes">Birds settings</property>
+                <attributes>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">All defaults</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Apply defaults for all preferences (except settings).</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_defaults" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">All vintage</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use vintage values for all preferences (except settings).</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">14</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkButton" id="general-quit3">
+                    <property name="label" translatable="yes">Quit xsnow</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Quit xsnow.</property>
+                    <signal name="clicked" handler="button_quit" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">15</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Leave menu.</property>
+                    <signal name="clicked" handler="button_iconify" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">15</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Defaults</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Apply default values for the preferences in this tab.</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_defaults_birds" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Vintage</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_vintage_birds" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">14</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="birds-show">
+                <property name="label" translatable="yes">Show birds</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">If set: show birds.</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="toggled" handler="button_birds_show" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="birds-only">
+                <property name="label" translatable="yes">Birds only</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">If set: show no Santa, snow or scenery.</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="toggled" handler="button_birds_only" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Preferred distance</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-prefdistance">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Preferred distance from other birds</property>
+                <property name="adjustment">birds-prefdistance-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_prefdistance" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">  </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">13</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="birds-restart">
+                <property name="label" translatable="yes">Restart</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Restart birds.</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="clicked" handler="button_birds_restart" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Viewing distance</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-viewingdistance">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Viewing distance.</property>
+                <property name="adjustment">birds-vd-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_viewingdistance" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="birds-mean-distance">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Actual mean distance from neighbours.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin_top">8</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">12</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="birds-range">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Distance used to get the desired number of neighbours.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin_top">8</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">12</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Speed</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-speed">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Speed of birds in arbitrary units.</property>
+                <property name="adjustment">birds-speed-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_speed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Focus to attraction
+point</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-attraction">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Eagerness to concentrate on common attraction point</property>
+                <property name="adjustment">birds-attraction-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_attraction" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-disweight">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Eagerness to keep desired distance to neighbours.</property>
+                <property name="adjustment">birds-distance-weight-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_disweight" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Distance weight</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-nbirds">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Desired number of birds. If zero, no birds are shown.</property>
+                <property name="adjustment">birds-nbirds-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_nbirds" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Number of birds</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Anarchy</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-anarchy">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Anarchy level: the higher, the more anarchy</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="adjustment">birds-anarchy-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_anarchy" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-neighbours">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Number of nearest neighbours the birds should look at.</property>
+                <property name="adjustment">birds-neighbours-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Neighbours</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Follow neighbours</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-followweight">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Eagerness to adjust speed to neighbours.</property>
+                <property name="adjustment">birds-follow-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_follow_weight" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="birds-color">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Give the birds a fancy color.</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="rgba">rgb(0,0,0)</property>
+                <property name="show_editor">True</property>
+                <signal name="color-set" handler="button_birds_color" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Bird color</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="birds-show-attr">
+                <property name="label" translatable="yes">Show attraction point</property>
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Show the point where the birds want to go.</property>
+                <signal name="toggled" handler="button_birds_attr" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">9</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Drawing scale</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="birds-scale">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Influence the size of the birds.</property>
+                <property name="adjustment">birds-scale-adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <signal name="value-changed" handler="button_birds_scale" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">10</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="name">page6</property>
+            <property name="title" translatable="yes">birds</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkGrid" id="grid_settings">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -3039,27 +3889,6 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="left_attach">0</property>
                 <property name="top_attach">8</property>
                 <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">12</property>
-                <property name="width">11</property>
               </packing>
             </child>
             <child>
@@ -3263,7 +4092,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -3307,7 +4136,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">14</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -3336,7 +4165,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">15</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -3381,7 +4210,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">16</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -3405,7 +4234,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">20</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -3428,7 +4257,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3439,7 +4268,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
+                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -3451,7 +4280,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="height">6</property>
               </packing>
             </child>
@@ -3464,7 +4293,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">15</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="height">7</property>
               </packing>
             </child>
@@ -3475,7 +4304,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">17</property>
+                <property name="top_attach">18</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -3498,7 +4327,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">19</property>
               </packing>
             </child>
             <child>
@@ -3524,7 +4353,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">22</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -3551,7 +4380,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">22</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -3595,7 +4424,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">21</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -3639,9 +4468,120 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">21</property>
                 <property name="width">8</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkLabel" id="settings-show-desktop-type">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="label" translatable="yes">label</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">11</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3974,7 +4914,7 @@ windows</property>
           <packing>
             <property name="name">page3</property>
             <property name="title" translatable="yes">settings</property>
-            <property name="position">5</property>
+            <property name="position">6</property>
           </packing>
         </child>
       </object>

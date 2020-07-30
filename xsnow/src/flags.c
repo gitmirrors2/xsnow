@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <stdio.h>
 #include <string.h>
@@ -29,6 +29,7 @@
 #include "docs.h"
 #include "version.h"
 #include "doit.h"
+#include "birds.h"
 
 #include "debug.h"
 static void ReadFlags(void);
@@ -88,17 +89,21 @@ void InitFlags()
 
 #define handlestring(x) checkax; free(Flags.x); Flags.x = strdup(argv[++ax])
 
+// argument is positive long int, set Flags.y to argument
 #define handle_ia(x,y) else if (!strcmp(arg,# x)) \
    do { checkax; Flags.y=S2PosInt(argv[++ax]);} while(0)
 
+// argument is long int, set Flags.y to argument
 #define handle_im(x,y) else if (!strcmp(arg,# x)) \
    do { checkax; Flags.y=S2Int(argv[++ax]);} while(0)
 
-#define handle_iv(x,y,z) else if (!strcmp(arg,# x)) \
-   do { Flags.y = z; } while(0)
-
+// argument is char*, set Flags.y to argument
 #define handle_is(x,y) else if (!strcmp(arg, #x)) \
    do { handlestring(y);} while(0)
+
+// set Flags.y to z
+#define handle_iv(x,y,z) else if (!strcmp(arg,# x)) \
+   do { Flags.y = z; } while(0)
 
 int HandleFlags(int argc, char*argv[])
 {
@@ -114,21 +119,26 @@ int HandleFlags(int argc, char*argv[])
 	    break;
 	 ReadFlags();
       }
-      for (ax=1; ax<argc; ax++) {
+      for (ax=1; ax<argc; ax++) 
+      {
 	 arg = argv[ax];
-	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) {
+	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
+	 {
 	    docs_usage(0);
 	    return 1;
 	 }
-	 else if(!strcmp(arg, "-H") || !strcmp(arg, "-manpage")) {
+	 else if(!strcmp(arg, "-H") || !strcmp(arg, "-manpage")) 
+	 {
 	    docs_usage(1);
 	    return 1;
 	 }
-	 else if (strcmp(arg, "-version") == 0) {
+	 else if (strcmp(arg, "-version") == 0) 
+	 {
 	    PrintVersion();
 	    return 1;
 	 }
-	 else if (strcmp(arg, "-nokeepsnow") == 0) {
+	 else if (strcmp(arg, "-nokeepsnow") == 0) 
+	 {
 	    Flags.NoKeepSnow = 1;
 	    Flags.NoKeepSWin = 1;
 	    Flags.NoKeepSBot = 1;
@@ -138,13 +148,15 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
 	    Flags.NoBlowSnow               = VINTAGE_NoBlowSnow;
 	    Flags.NStars                   = VINTAGE_NStars;
-	    Flags.DesiredNumberOfTrees  = VINTAGE_DesiredNumberOfTrees;
+	    Flags.DesiredNumberOfTrees     = VINTAGE_DesiredNumberOfTrees;
 	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
 	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
 	    Flags.NoRudolf                 = VINTAGE_NoRudolf;
 	    Flags.SantaSize                = VINTAGE_SantaSize;
 	    free(Flags.TreeType);
 	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
+	    Flags.ShowBirds                = 0;
+	    Flags.BirdsOnly                = 0;
 	 }
 	 else if (strcmp(arg, "-bg") == 0) {
 	    handlestring(BGColor);
@@ -168,55 +180,74 @@ int HandleFlags(int argc, char*argv[])
 	 else if(strcmp(arg,"-gnome") == 0) {
 	    GNOMEFLAGS;
 	 }
-	 handle_ia(-blowofffactor,BlowOffFactor);
-	 handle_ia(-cpuload,CpuLoad);
-	 handle_ia(-flakecountmax,FlakeCountMax);
-	 handle_ia(-gnome,UseAlpha);
-	 handle_ia(-alpha,UseAlpha);
-	 handle_ia(-id,WindowId);
-	 handle_ia(-maxontrees,MaxOnTrees);
-	 handle_im(-offsets,OffsetS);
-	 handle_im(-offsetw,OffsetW);
-	 handle_im(-offsetx,OffsetX);
-	 handle_im(-offsety,OffsetY);
-	 handle_ia(-santa,SantaSize);
-	 handle_ia(-santaspeedfactor,SantaSpeedFactor);
-	 handle_ia(-snowflakes,SnowFlakesFactor);
-	 handle_ia(-snowspeedfactor,SnowSpeedFactor);
-	 handle_ia(-ssnowdepth,MaxScrSnowDepth);
-	 handle_ia(-stars,NStars);
-	 handle_ia(-stopafter,StopAfter);
-	 handle_ia(-treefill,TreeFill);
-	 handle_ia(-trees,DesiredNumberOfTrees);
-	 handle_ia(-whirlwactor,WhirlFactor);
-	 handle_ia(-windtimer,WindTimer);
-	 handle_ia(-allworkspaces,AllWorkspaces);
-	 handle_ia(-wsnowdepth,MaxWinSnowDepth);
+	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
+	 handle_ia(-cpuload             ,CpuLoad                          );
+	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
+	 handle_ia(-gnome               ,UseAlpha                         );
+	 handle_ia(-alpha               ,UseAlpha                         );
+	 handle_ia(-id                  ,WindowId                         );
+	 handle_ia(-maxontrees          ,MaxOnTrees                       );
+	 handle_im(-offsets             ,OffsetS                          );
+	 handle_im(-offsetw             ,OffsetW                          );
+	 handle_im(-offsetx             ,OffsetX                          );
+	 handle_im(-offsety             ,OffsetY                          );
+	 handle_ia(-santa               ,SantaSize                        );
+	 handle_ia(-santaspeedfactor    ,SantaSpeedFactor                 );
+	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
+	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
+	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
+	 handle_ia(-stars               ,NStars                           );
+	 handle_ia(-stopafter           ,StopAfter                        );
+	 handle_ia(-treefill            ,TreeFill                         );
+	 handle_ia(-trees               ,DesiredNumberOfTrees             );
+	 handle_ia(-whirlwactor         ,WhirlFactor                      );
+	 handle_ia(-windtimer           ,WindTimer                        );
+	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
+	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
 
-	 handle_is(-display,DisplayName);
-	 handle_is(-sc,SnowColor);
-	 handle_is(-tc,TreeColor);
-	 handle_is(-treetype,TreeType);
 
-	 handle_iv(-defaults,Defaults,1);
-	 handle_iv(-exposures,Exposures,True);
-	 handle_iv(-noblowsnow,NoBlowSnow,1);
-	 handle_iv(-noconfig,NoConfig,1);
-	 handle_iv(-noexposures,Exposures,False);
-	 handle_iv(-nofluffy,NoFluffy,1);
-	 handle_iv(-nokeepsnowonscreen,NoKeepSBot,1);
-	 handle_iv(-nokeepsnowontrees,NoKeepSnowOnTrees,1);
-	 handle_iv(-nokeepsnowontrees,NoKeepSnowOnTrees,1);
-	 handle_iv(-nokeepsnowonwindows,NoKeepSWin,1);
-	 handle_iv(-nomenu,NoMenu,1);
-	 handle_iv(-nometeorites,NoMeteorites,1);
-	 handle_iv(-noquiet,Quiet,0);
-	 handle_iv(-norudolf,NoRudolf,1);
-	 handle_iv(-nosanta,NoSanta,1);
-	 handle_iv(-nosnowflakes,NoSnowFlakes,1);
-	 handle_iv(-notrees,NoTrees,1);
-	 handle_iv(-nowind,NoWind,1);
-	 handle_iv(-xwininfo,XWinInfoHandling,1);
+	 handle_is(-display             ,DisplayName                      );
+	 handle_is(-sc                  ,SnowColor                        );
+	 handle_is(-tc                  ,TreeColor                        );
+	 handle_is(-treetype            ,TreeType                         );
+
+	 handle_iv(-defaults            ,Defaults                 ,1      );
+	 handle_iv(-exposures           ,Exposures                ,True   );
+	 handle_iv(-noblowsnow          ,NoBlowSnow               ,1      );
+	 handle_iv(-noconfig            ,NoConfig                 ,1      );
+	 handle_iv(-noexposures         ,Exposures                ,False  );
+	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
+	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
+	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
+	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
+	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
+	 handle_iv(-nomenu              ,NoMenu                   ,1      );
+	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
+	 handle_iv(-noquiet             ,Quiet                    ,0      );
+	 handle_iv(-norudolf            ,NoRudolf                 ,1      );
+	 handle_iv(-nosanta             ,NoSanta                  ,1      );
+	 handle_iv(-nosnowflakes        ,NoSnowFlakes             ,1      );
+	 handle_iv(-notrees             ,NoTrees                  ,1      );
+	 handle_iv(-nowind              ,NoWind                   ,1      );
+	 handle_iv(-xwininfo            ,XWinInfoHandling         ,1      );
+
+	 // birds:
+
+	 handle_ia(-anarchy             ,Anarchy                          );
+	 handle_ia(-birdsonly           ,BirdsOnly                        );
+	 handle_ia(-birdsspeed          ,BirdsSpeed                       );
+	 handle_ia(-disweight           ,DisWeight                        );
+	 handle_ia(-focuscentre         ,AttrFactor                       );
+	 handle_ia(-followneighbours    ,FollowWeight                     );
+	 handle_ia(-nbirds              ,Nbirds                           );
+	 handle_ia(-neighbours          ,Neighbours                       );
+	 handle_ia(-prefdistance        ,PrefDistance                     );
+	 handle_ia(-showbirds           ,ShowBirds                        );
+	 handle_ia(-showattr            ,ShowAttrPoint                    );
+	 handle_ia(-viewingdistance     ,ViewingDistance                  );
+
+	 handle_is(-birdscolor          ,BirdsColor                       );
+
 	 else {
 	    fprintf(stderr,"** unknown flag: '%s', exiting.\n",argv[ax]);
 	    fprintf(stderr," Try: xsnow -h\n");
@@ -279,7 +310,7 @@ static void makeflagsfile()
       return;
    }
    FlagsFile = strdup(h);
-   FlagsFile = realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
+   FlagsFile = (char *)realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
    strcat(FlagsFile,"/");
    strcat(FlagsFile,FLAGSFILE);
    P("FlagsFile: %s\n",FlagsFile);
@@ -351,7 +382,7 @@ void WriteFlags()
    root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
    xmlDocSetRootElement(doc, root_node);
 
-#define DOIT_I(x) myxmlNewChild(root_node,NULL,# x,Flags.x,"%d");
+#define DOIT_I(x) myxmlNewChild(root_node,NULL,(char *)# x,Flags.x,(char *)"%d");
 #define DOIT_L(x) DOIT_I(x)
 #define DOIT_S(x) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
    DOIT;

@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <stdio.h>
 #include <string.h>
@@ -201,6 +201,27 @@ void docs_usage(int man)
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");
 
+   if(doman)
+   {
+      printf(".PP\n"); printf(".SS \"Birds options:\n");
+   }
+   else
+   {
+      printf("\n  Birds options:\n\n");
+   }
+   manout("-anarchy <n>"           ,"Anarchy factor ( 0..100 default: " EQ(DEFAULT_Anarchy) ").");
+   manout("-birdscolor <c>  "      ,"Use the given string as color for the birds (default: " EQ(DEFAULT_BirdsColor) ").");
+   manout("-birdsonly <n>"         ,"Show only birds ( 0/1 default: " EQ(DEFAULT_BirdsOnly) ").");
+   manout("-birdsspeed <n>"        ,"Speed of birds ( 0..300 default: " EQ(DEFAULT_BirdsSpeed) ").");
+   manout("-disweight <n>"         ,"Eagerness to keep desired distance ( 0..100 default: " EQ(DEFAULT_DisWeight) ").");
+   manout("-focuscentre <n>"       ,"Eagerness to fly to the focus ( 0..300 default: " EQ(DEFAULT_AttrFactor) ").");
+   manout("-followneighbours <n>"  ,"Eagerness to follow neighbours ( 0..100 default: " EQ(DEFAULT_FollowWeight) ").");
+   manout("-nbirds <n>"            ,"Number of birds ( 0..400 default: " EQ(DEFAULT_Nbirds) ").");
+   manout("-neighbours <n>"        ,"Number of neighbours to watch ( 0..20 default: " EQ(DEFAULT_Neighbours) ").");
+   manout("-prefdistance <n>"      ,"Preferred distance to neighbours ( 0..100 default: " EQ(DEFAULT_PrefDistance) ").");
+   manout("-showbirds <n>"         ,"Show birds ( 0/1 default: " EQ(DEFAULT_ShowBirds) ").");
+   manout("-showattr <n>"          ,"Show attraction point ( 0/1 default: " EQ(DEFAULT_ShowAttrPoint) ").");
+   manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
    if(doman)
    {
@@ -290,16 +311,16 @@ char *replace_all(const char *s, const char *needle, const char *rep)
    const char *haystack = s;          // startpoint to search for needle
    while(1)
    {
-      char *q = strstr(haystack,needle);
+      const char *q = strstr(haystack,needle);
       if (q == 0)  // no needle in haystack
       {            // cat haystack to result
-	 result = realloc(result,strlen(result)+strlen(haystack)+1);
+	 result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
 	 result = strcat(result,haystack);
 	 break;
       }
       else      // needle is in haystack
       {         // cat first part of haystack + rep to result
-	 result   = realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
+	 result   = (char *)realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
 	 result   = strncat(result, haystack, q-haystack);
 	 result   = strcat(result, rep);
 	 haystack = q+strlen(needle);

@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +30,7 @@ void csvpos(char *s, int **k, int *n)
    char *p = s;
    char *q;
    (*n) = 0;
-   (*k) = malloc(sizeof(**k));
+   (*k) = (int *)malloc(sizeof(**k));
    while (p)
    {
       q = p;
@@ -40,7 +40,7 @@ void csvpos(char *s, int **k, int *n)
       if (i<0)
 	 i = 0;
       (*n)++;
-      (*k) = realloc(*k,sizeof(**k)*(*n));
+      (*k) = (int *)realloc(*k,sizeof(**k)*(*n));
       (*k)[(*n)-1] = i;
       p = strchr(p,','); 
       if(p) p++;
@@ -56,7 +56,7 @@ void vsc(char **s, int *k, int n)
    {
       sprintf(p,"%d,",k[i]);
       l += strlen(p);
-      *s = realloc(*s,l+1);
+      *s = (char *)realloc(*s,l+1);
       strcat(*s,p);
    }
 }

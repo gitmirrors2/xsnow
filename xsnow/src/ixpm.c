@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <stdio.h>
 #include <string.h>
@@ -63,7 +63,7 @@ static void strrevert(char*s, size_t l)
 {
    size_t n = strlen(s)/l;
    size_t i;
-   char *c = malloc(l*sizeof(*c));
+   char *c = (char *)malloc(l*sizeof(*c));
    char *a = s;
    char *b = s+strlen(s)-l;
    for (i=0; i<n/2; i++)
@@ -90,7 +90,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 
    sscanf(data[0],"%*s %d %d %d", &height, &ncolors, &w);
    lines = height+ncolors+1;
-   idata = malloc(lines*sizeof(*idata));
+   idata = (char **)malloc(lines*sizeof(*idata));
    for (i=0; i<lines; i++)
       idata[i] = strdup(data[i]);
    if(flop)
@@ -121,7 +121,7 @@ Region regionfromxpm(char **data, int flop)
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    // find color "None":
    int i;
-   char *code = "";
+   char *code = (char *)"";
    int offset = nc + 1;
    for(i=1; i<=nc; i++)
    {

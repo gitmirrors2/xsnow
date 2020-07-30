@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,10 +16,9 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
-#ifndef XSNOW_H
-#define XSNOW_H
+#pragma once
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -81,6 +80,7 @@
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
+
 #define VINTAGE_DesiredNumberOfTrees 6
 #define VINTAGE_NoBlowSnow 1
 #define VINTAGE_NoKeepSnowOnTrees 1
@@ -115,6 +115,28 @@
 #define STARANIMATIONS 4
 #define WHIRL 150
 
+/* birds */
+#define DEFAULT_Anarchy 50    /*percent*/
+#define DEFAULT_Neighbours 7
+//#define DEFAULT_Range 20      /*m*/
+#define DEFAULT_Nbirds 100
+#define DEFAULT_ShowBirds 1
+#define DEFAULT_BirdsOnly 0
+#define DEFAULT_PrefDistance 20
+#define DEFAULT_BirdsRestart 0
+//#define DEFAULT_ViewingDistance PreferredViewingDistance()
+#define DEFAULT_ViewingDistance 40
+#define DEFAULT_BirdsSpeed 100
+#define DEFAULT_AttrFactor 100
+#define DEFAULT_DisWeight 20
+#define DEFAULT_FollowWeight 30
+#define DEFAULT_BirdsColor "#D3D3D3"
+#define DEFAULT_ShowAttrPoint 0
+#define DEFAULT_BirdsScale 100
+
+#define VINTAGE_ShowBirds 0
+#define VINTAGE_BirdsOnly 0
+#define NBIRDS_MAX 1000
 
 // timers
 
@@ -133,12 +155,14 @@
 #define time_sfallen          2.30             /* time between smoothing of fallen snow      */
 #define time_snow_on_trees    0.50             /* time between redrawings of snow on trees   */
 #define time_star             0.50             /* time between drawing stars                 */ 
-#define time_testing          1.05             /* time between testing code                  */ 
+#define time_testing          1.10             /* time between testing code                  */ 
 #define time_ui_check         0.25             /* time between checking values from ui       */ 
 #define time_usanta           0.02             /* time between update of santa position      */
 #define time_ustar            2.00             /* time between updating stars                */ 
 #define time_wind             0.10             /* time between starting or ending wind       */
 #define time_wupdate          0.50             /* time between getting windows information   */ 
+#define time_show_range_etc   0.50             /* time between showing range etc.            */
+#define time_change_attr      60.0             /* time between changing attraction point     */
 
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */
@@ -217,4 +241,3 @@ typedef struct Treeinfo {
 
 /* ------------------------------------------------------------------ */
 
-#endif

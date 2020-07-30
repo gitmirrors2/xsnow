@@ -108,7 +108,9 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-gaussian.$(OBJEXT) xsnow-csvpos.$(OBJEXT) \
 	xsnow-dsimple.$(OBJEXT) xsnow-clientwin.$(OBJEXT) \
 	xsnow-ui.$(OBJEXT) xsnow-kdesetbg.$(OBJEXT) \
-	xsnow-transparent.$(OBJEXT)
+	xsnow-transparent.$(OBJEXT) xsnow-mainstub.$(OBJEXT) \
+	xsnow-birds.$(OBJEXT) xsnow-kdtree.$(OBJEXT) \
+	xsnow-hashtable.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -129,12 +131,14 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/xsnow-clientwin.Po \
-	./$(DEPDIR)/xsnow-clocks.Po ./$(DEPDIR)/xsnow-csvpos.Po \
-	./$(DEPDIR)/xsnow-docs.Po ./$(DEPDIR)/xsnow-dsimple.Po \
-	./$(DEPDIR)/xsnow-fallensnow.Po ./$(DEPDIR)/xsnow-flags.Po \
-	./$(DEPDIR)/xsnow-gaussian.Po ./$(DEPDIR)/xsnow-ixpm.Po \
-	./$(DEPDIR)/xsnow-kdesetbg.Po ./$(DEPDIR)/xsnow-main.Po \
+am__depfiles_remade = ./$(DEPDIR)/xsnow-birds.Po \
+	./$(DEPDIR)/xsnow-clientwin.Po ./$(DEPDIR)/xsnow-clocks.Po \
+	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
+	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
+	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-gaussian.Po \
+	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
+	./$(DEPDIR)/xsnow-kdesetbg.Po ./$(DEPDIR)/xsnow-kdtree.Po \
+	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
 	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-transparent.Po \
 	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
@@ -154,6 +158,19 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_@AM_V@)
+am__v_CXX_ = $(am__v_CXX_@AM_DEFAULT_V@)
+am__v_CXX_0 = @echo "  CXX     " $@;
+am__v_CXX_1 = 
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
+am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
+am__v_CXXLD_0 = @echo "  CXXLD   " $@;
+am__v_CXXLD_1 = 
 SOURCES = $(xsnow_SOURCES) $(nodist_xsnow_SOURCES)
 DIST_SOURCES = $(xsnow_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
@@ -433,6 +450,7 @@ am__relativize = \
   done; \
   reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
+ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AUTOCONF = @AUTOCONF@
@@ -444,6 +462,10 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+CXXDEPMODE = @CXXDEPMODE@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -492,6 +514,7 @@ abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -532,7 +555,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 # -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -541,7 +564,7 @@ top_srcdir = @top_srcdir@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -549,10 +572,10 @@ top_srcdir = @top_srcdir@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 SUBDIRS = Pixmaps
 gamesdir = $(exec_prefix)/games
-xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS)
+xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS) -DUSE_LIST_NODE_ALLOCATOR 
 xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
@@ -561,9 +584,12 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		gaussian.c gaussian.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
-		doit.h ui.c ui.h ui.glade \
+		doit.h ui.c ui.h ui.xml \
 		kdesetbg.c kdesetbg.h \
-		transparent.c transparent.h debug.h
+		transparent.c transparent.h debug.h \
+		mainstub.cpp mainstub.h \
+		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
+		hashtable.cpp hashtable.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 BUILT_SOURCES = ui_xml.h
@@ -578,7 +604,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .c .log .o .obj .test .test$(EXEEXT) .trs
+.SUFFIXES: .c .cpp .log .o .obj .test .test$(EXEEXT) .trs
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -653,7 +679,7 @@ clean-gamesPROGRAMS:
 
 xsnow$(EXEEXT): $(xsnow_OBJECTS) $(xsnow_DEPENDENCIES) $(EXTRA_xsnow_DEPENDENCIES) 
 	@rm -f xsnow$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(xsnow_OBJECTS) $(xsnow_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(xsnow_OBJECTS) $(xsnow_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -661,6 +687,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-birds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-clientwin.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-clocks.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-csvpos.Po@am__quote@ # am--include-marker
@@ -669,9 +696,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-fallensnow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-flags.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-gaussian.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-hashtable.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ixpm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdesetbg.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdtree.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-mainstub.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transparent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
@@ -906,6 +936,76 @@ xsnow-transparent.obj: transparent.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='transparent.c' object='xsnow-transparent.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-transparent.obj `if test -f 'transparent.c'; then $(CYGPATH_W) 'transparent.c'; else $(CYGPATH_W) '$(srcdir)/transparent.c'; fi`
+
+xsnow-birds.o: birds.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-birds.o -MD -MP -MF $(DEPDIR)/xsnow-birds.Tpo -c -o xsnow-birds.o `test -f 'birds.c' || echo '$(srcdir)/'`birds.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-birds.Tpo $(DEPDIR)/xsnow-birds.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='birds.c' object='xsnow-birds.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-birds.o `test -f 'birds.c' || echo '$(srcdir)/'`birds.c
+
+xsnow-birds.obj: birds.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-birds.obj -MD -MP -MF $(DEPDIR)/xsnow-birds.Tpo -c -o xsnow-birds.obj `if test -f 'birds.c'; then $(CYGPATH_W) 'birds.c'; else $(CYGPATH_W) '$(srcdir)/birds.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-birds.Tpo $(DEPDIR)/xsnow-birds.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='birds.c' object='xsnow-birds.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-birds.obj `if test -f 'birds.c'; then $(CYGPATH_W) 'birds.c'; else $(CYGPATH_W) '$(srcdir)/birds.c'; fi`
+
+xsnow-kdtree.o: kdtree.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-kdtree.o -MD -MP -MF $(DEPDIR)/xsnow-kdtree.Tpo -c -o xsnow-kdtree.o `test -f 'kdtree.c' || echo '$(srcdir)/'`kdtree.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-kdtree.Tpo $(DEPDIR)/xsnow-kdtree.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='kdtree.c' object='xsnow-kdtree.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-kdtree.o `test -f 'kdtree.c' || echo '$(srcdir)/'`kdtree.c
+
+xsnow-kdtree.obj: kdtree.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-kdtree.obj -MD -MP -MF $(DEPDIR)/xsnow-kdtree.Tpo -c -o xsnow-kdtree.obj `if test -f 'kdtree.c'; then $(CYGPATH_W) 'kdtree.c'; else $(CYGPATH_W) '$(srcdir)/kdtree.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-kdtree.Tpo $(DEPDIR)/xsnow-kdtree.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='kdtree.c' object='xsnow-kdtree.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-kdtree.obj `if test -f 'kdtree.c'; then $(CYGPATH_W) 'kdtree.c'; else $(CYGPATH_W) '$(srcdir)/kdtree.c'; fi`
+
+.cpp.o:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
+
+.cpp.obj:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+xsnow-mainstub.o: mainstub.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-mainstub.o -MD -MP -MF $(DEPDIR)/xsnow-mainstub.Tpo -c -o xsnow-mainstub.o `test -f 'mainstub.cpp' || echo '$(srcdir)/'`mainstub.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-mainstub.Tpo $(DEPDIR)/xsnow-mainstub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mainstub.cpp' object='xsnow-mainstub.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-mainstub.o `test -f 'mainstub.cpp' || echo '$(srcdir)/'`mainstub.cpp
+
+xsnow-mainstub.obj: mainstub.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-mainstub.obj -MD -MP -MF $(DEPDIR)/xsnow-mainstub.Tpo -c -o xsnow-mainstub.obj `if test -f 'mainstub.cpp'; then $(CYGPATH_W) 'mainstub.cpp'; else $(CYGPATH_W) '$(srcdir)/mainstub.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-mainstub.Tpo $(DEPDIR)/xsnow-mainstub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mainstub.cpp' object='xsnow-mainstub.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-mainstub.obj `if test -f 'mainstub.cpp'; then $(CYGPATH_W) 'mainstub.cpp'; else $(CYGPATH_W) '$(srcdir)/mainstub.cpp'; fi`
+
+xsnow-hashtable.o: hashtable.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-hashtable.o -MD -MP -MF $(DEPDIR)/xsnow-hashtable.Tpo -c -o xsnow-hashtable.o `test -f 'hashtable.cpp' || echo '$(srcdir)/'`hashtable.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-hashtable.Tpo $(DEPDIR)/xsnow-hashtable.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='hashtable.cpp' object='xsnow-hashtable.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-hashtable.o `test -f 'hashtable.cpp' || echo '$(srcdir)/'`hashtable.cpp
+
+xsnow-hashtable.obj: hashtable.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-hashtable.obj -MD -MP -MF $(DEPDIR)/xsnow-hashtable.Tpo -c -o xsnow-hashtable.obj `if test -f 'hashtable.cpp'; then $(CYGPATH_W) 'hashtable.cpp'; else $(CYGPATH_W) '$(srcdir)/hashtable.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-hashtable.Tpo $(DEPDIR)/xsnow-hashtable.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='hashtable.cpp' object='xsnow-hashtable.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-hashtable.obj `if test -f 'hashtable.cpp'; then $(CYGPATH_W) 'hashtable.cpp'; else $(CYGPATH_W) '$(srcdir)/hashtable.cpp'; fi`
 install-man6: $(man6_MANS)
 	@$(NORMAL_INSTALL)
 	@list1='$(man6_MANS)'; \
@@ -1361,7 +1461,8 @@ clean: clean-recursive
 clean-am: clean-gamesPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-recursive
-		-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
+		-rm -f ./$(DEPDIR)/xsnow-birds.Po
+	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
 	-rm -f ./$(DEPDIR)/xsnow-clocks.Po
 	-rm -f ./$(DEPDIR)/xsnow-csvpos.Po
 	-rm -f ./$(DEPDIR)/xsnow-docs.Po
@@ -1369,9 +1470,12 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-fallensnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
 	-rm -f ./$(DEPDIR)/xsnow-gaussian.Po
+	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
+	-rm -f ./$(DEPDIR)/xsnow-kdtree.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
+	-rm -f ./$(DEPDIR)/xsnow-mainstub.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
@@ -1422,7 +1526,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-		-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
+		-rm -f ./$(DEPDIR)/xsnow-birds.Po
+	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
 	-rm -f ./$(DEPDIR)/xsnow-clocks.Po
 	-rm -f ./$(DEPDIR)/xsnow-csvpos.Po
 	-rm -f ./$(DEPDIR)/xsnow-docs.Po
@@ -1430,9 +1535,12 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-fallensnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
 	-rm -f ./$(DEPDIR)/xsnow-gaussian.Po
+	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
+	-rm -f ./$(DEPDIR)/xsnow-kdtree.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
+	-rm -f ./$(DEPDIR)/xsnow-mainstub.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
@@ -1481,14 +1589,15 @@ uninstall-man: uninstall-man6
 .PRECIOUS: Makefile
 
 
-# create C code to get ui.glade in a string
+# create C code to get ui.xml in a string
 # ISO C stipulates that the length of a string constant should
 # not be larger than 4096, so we create a definition as in
 # char xsnow_xml[] = {60,63,120,109,108,32,118,101,0};
 #
-ui_xml.h: ui.glade
+ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
-	@echo "#ifndef UI_XML_H" > $@
+	@echo "/* This file is generated from $< by Makefile */" > $@
+	@echo "#pragma once" >> $@
 	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
 	@sed 's/^ *//' $< | awk -v FS="" \
@@ -1496,7 +1605,6 @@ ui_xml.h: ui.glade
 	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
-	@echo "#endif" >> $@
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 

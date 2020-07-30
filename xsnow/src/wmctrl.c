@@ -1,5 +1,5 @@
 /* -copyright-
-#-#
+#-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #-#               2019,2020 Willem Vermin
@@ -8,7 +8,7 @@
 #-# it under the terms of the GNU General Public License as published by
 #-# the Free Software Foundation, either version 3 of the License, or
 #-# (at your option) any later version.
-#-#
+#-# 
 #-# This program is distributed in the hope that it will be useful,
 #-# but WITHOUT ANY WARRANTY; without even the implied warranty of
 #-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,7 +16,7 @@
 #-# 
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-#
+#-# 
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,8 @@
 #include "wmctrl.h"
 #include "windows.h"
 #include "dsimple.h"
+#include "debug.h"
+
 long GetCurrentWorkspace()
 {
    Atom atom, type;
@@ -59,16 +61,26 @@ long GetCurrentWorkspace()
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      P("type: %ld %ld\n",type,XA_CARDINAL);
       if(type != XA_CARDINAL)
       {
-	 //printf("%d: nog eens ...\n",__LINE__);
+	 P("nog eens %ld ...\n",type);
 	 if(properties) XFree(properties);
 	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
 	 XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
       }
       if(type != XA_CARDINAL)
-	 r = -1;
+      {
+	 if (IsWayland)
+	    // in Wayland, the actual number of current workspace can only
+	    // be obtained if user has done some workspace-switching
+	    // we return zero if the workspace number cannot be determined
+	    
+	    r = 0;
+	 else
+	    r = -1;
+      }
       else
 	 r = *(long *)properties;
       if(properties) XFree(properties);
@@ -101,13 +113,13 @@ int GetWindows(WinInfo **windows, int *nwin)
    //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
    (*nwin) = nitems;
    r = (long*)properties;
-   (*windows) = malloc(nitems*sizeof(WinInfo));
+   (*windows) = (WinInfo *)malloc(nitems*sizeof(WinInfo));
    int i;
    WinInfo *w = (*windows);
    static Atom net_atom = 0, gtk_atom = 0;
    if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
    if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
-   for (i=0; i<nitems; i++,w++)
+   for (i=0; (unsigned long)i<nitems; i++,w++)
    {
       Window root,child_return;
       int x0,y0;
@@ -149,7 +161,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if (type == XA_ATOM)
       {
 	 int i;
-	 for(i=0; i<nitems; i++)
+	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = 0;
 	    s = XGetAtomName(display,((Atom*)properties)[i]);
@@ -217,7 +229,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    return 1;
 }
 
-int FindWindowWithName(char *needle, Window *win, char **name)
+int FindWindowWithName(const char *needle, Window *win, char **name)
 {
    *win = Window_With_Name(display,DefaultRootWindow(display),needle);
    (*name) = strdup(needle);
