@@ -26,3 +26,4 @@ void ui_set_birds_header(const char *text);
 //void ui_set_vd_scale(void);
 void ui_show_range_etc(void);
 void ui_show_desktop_type(const char *s);
+void ui_set_sticky(int x);

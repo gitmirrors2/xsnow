@@ -566,6 +566,7 @@ int main_c(int argc, char *argv[])
 	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
       }
    }
+   ui_set_sticky(Flags.AllWorkspaces);
 
    // main loop
    gtk_main();
@@ -926,6 +927,7 @@ int do_ui_check()
    {
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;
       DetermineWindow();
+      ui_set_sticky(Flags.AllWorkspaces);
       changes++;
       P("changes: %d\n",changes);
    }

@@ -1093,6 +1093,14 @@ void ui_show_desktop_type(const char *s)
    gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
 }
 
+void ui_set_sticky(int x)
+{
+   if (x)
+      gtk_window_stick(GTK_WINDOW(hauptfenster));
+   else
+      gtk_window_unstick(GTK_WINDOW(hauptfenster));
+}
+
 void ui(int *argc, char **argv[])
 {
 
@@ -1103,7 +1111,6 @@ void ui(int *argc, char **argv[])
    mean_distance = GTK_WIDGET(gtk_builder_get_object(builder, "birds-mean-distance"));
    range         = GTK_WIDGET(gtk_builder_get_object(builder, "birds-range"));
    desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
-
 
    const char *css = ".wv button.radio{min-width:40px;}";
 
