@@ -1,3 +1,5 @@
+version 3.0.1
+
 version 3.0.0
 	use wallcl()*1.0e6 to initialize drand48, not wallclock()
 	mv ui.glade ui.xml

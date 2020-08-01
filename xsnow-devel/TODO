@@ -5,8 +5,5 @@ santa:
    - aurora!
 
 birds:
-   size of birds ?
-   button show attr point rechts van birds only
    use birds1.xpm etc if present in ~/xsnow/
-   show attr point before and behind birds as appropriate
-   scale birds and attr point, in relation to screen width
+   if show on all desktops, do ui on all desktops
