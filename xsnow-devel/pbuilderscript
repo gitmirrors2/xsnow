@@ -34,7 +34,7 @@ echo | mk-build-deps -i -r debian/control || exit 1
 # caused by the files *-build-deps*.buildinfo and *-build-deps*.changes
 # created by mk-build-deps
 # hence the following:
-if false ; then
+if true ; then
    # this seems to be the recommended way
    mkdir -p debian/source
    (
