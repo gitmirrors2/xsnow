@@ -10,6 +10,7 @@ uploaddir=$curdir/../upload/upload-$newversion
 #rm -rf src/tags src/.deps
 ./configure
 make distcheck || exit 1
+
 echo removing $uploaddir ...
 mkdir -p $uploaddir
 sudo chown -R willem.willem $uploaddir

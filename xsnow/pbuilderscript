@@ -53,6 +53,6 @@ echo "-------------- dpkg-buildpackage ------------"
 dpkg-buildpackage -us -uc || exit 1
 cd ..
 echo "running lintian ..."
-lintian -i -I --show-overrides xsnow_$newversion-1_amd64.changes
+lintian -i -I --show-overrides --no-tag-display-limit xsnow_$newversion-1_amd64.changes
 echo "end lintian"
 echo $0 done

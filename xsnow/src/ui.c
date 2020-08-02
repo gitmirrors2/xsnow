@@ -1093,6 +1093,14 @@ void ui_show_desktop_type(const char *s)
    gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
 }
 
+void ui_set_sticky(int x)
+{
+   if (x)
+      gtk_window_stick(GTK_WINDOW(hauptfenster));
+   else
+      gtk_window_unstick(GTK_WINDOW(hauptfenster));
+}
+
 void ui(int *argc, char **argv[])
 {
 
