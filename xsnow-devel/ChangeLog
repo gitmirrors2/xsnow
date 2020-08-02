@@ -1,5 +1,6 @@
 version 3.0.2
-	if birds not on active workspace, do not updte and paint them
+	If birds not on active workspace, do not updte and paint them
+	Add 'extern' to all function prototypes for consistency.
 
 version 3.0.1
 	make ui stickiness same as snow and birds windows

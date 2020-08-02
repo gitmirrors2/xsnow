@@ -29,4 +29,4 @@ extern int SnowWinDepth;
 extern char *DesktopSession;
 extern int IsCompiz;
 extern int IsWayland;
-int WorkspaceActive(void);  // defined in main.c
+extern int WorkspaceActive(void);  // defined in main.c

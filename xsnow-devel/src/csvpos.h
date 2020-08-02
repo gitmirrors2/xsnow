@@ -19,5 +19,5 @@
 #-# 
 */
 #pragma once
-void csvpos(char *s, int **k, int *n);
-void vsc(char **s, int *k, int n);
+extern void csvpos(char *s, int **k, int *n);
+extern void vsc(char **s, int *k, int n);
