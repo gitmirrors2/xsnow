@@ -34,7 +34,7 @@ echo | mk-build-deps -i -r debian/control || exit 1
 # caused by the files *-build-deps*.buildinfo and *-build-deps*.changes
 # created by mk-build-deps
 # hence the following:
-if true ; then
+if false ; then
    # this seems to be the recommended way
    mkdir -p debian/source
    (
@@ -53,6 +53,6 @@ echo "-------------- dpkg-buildpackage ------------"
 dpkg-buildpackage -us -uc || exit 1
 cd ..
 echo "running lintian ..."
-lintian -i -I --show-overrides xsnow_$newversion-1_amd64.changes
+lintian -i -I --show-overrides --no-tag-display-limit xsnow_$newversion-1_amd64.changes
 echo "end lintian"
 echo $0 done

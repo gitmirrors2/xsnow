@@ -1112,6 +1112,7 @@ void ui(int *argc, char **argv[])
    range         = GTK_WIDGET(gtk_builder_get_object(builder, "birds-range"));
    desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
 
+
    const char *css = ".wv button.radio{min-width:40px;}";
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();

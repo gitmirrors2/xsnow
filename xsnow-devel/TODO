@@ -1,9 +1,0 @@
-santa: 
-   - random time between re-appearance
-   - also right to left
-   - switch between different visuals
-   - aurora!
-
-birds:
-   use birds1.xpm etc if present in ~/xsnow/
-   if show on all desktops, do ui on all desktops

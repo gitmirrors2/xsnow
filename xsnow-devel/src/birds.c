@@ -456,6 +456,7 @@ int do_draw_birds()
       gdk_window_begin_draw_frame(gdkwindow,cairoRegion);
 
    cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
+   // cairo_set_antialias(cr,CAIRO_ANTIALIAS_BEST); // does nothing
    if (!Flags.ShowBirds)
    {
       background(cr);
