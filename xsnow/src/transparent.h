@@ -21,5 +21,5 @@
 #pragma once
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
-void create_transparent_window(int fullscreen, int below, int allworkspaces,
+extern void create_transparent_window(int fullscreen, int below, int allworkspaces,
       Window *w, const char *prefname, char **name, GtkWidget **gtkwin,unsigned int width, unsigned int height);

@@ -590,13 +590,26 @@ int main_c(int argc, char *argv[])
    Thanks();
    return 0;
 }		/* End of snowing */
+
+int WorkspaceActive()
+{
+   P("UsingTrans etc %d %d %d %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace == TransWorkSpace,
+	 Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace);
+   // ah, so difficult ...
+   return Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace;
+}
+
 /* ------------------------------------------------------------------ */ 
 /*
  * do nothing if current workspace is not to be updated
  */
+/*
 #define NOTACTIVE \
    (Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
+   */
 
+#define NOTACTIVE \
+   (Flags.BirdsOnly || !WorkspaceActive())
 
 int do_santa()
 {

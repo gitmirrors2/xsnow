@@ -37,6 +37,7 @@
 #include "mainstub.h"
 #include "pixmaps.h"
 #include "ui.h"
+#include "windows.h"
 
 static int counter = 0;
 
@@ -45,6 +46,9 @@ static int counter = 0;
 #define NBIRDPIXBUFS (3*NWINGS)
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(guint)1000*(time),(GSourceFunc)func,datap,0)
+
+#define LEAVE_IF_INACTIVE\
+   if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
 
 static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
@@ -266,10 +270,7 @@ int do_update_speed_birds()
 {
    if (Flags.Done)
       return FALSE;
-   if (!Flags.ShowBirds)
-      return TRUE;
-   if (globals.freeze)
-      return TRUE;
+   LEAVE_IF_INACTIVE;
    P("do_update_speed_birds %d\n",counter);
 
    kd_free(kd);
@@ -415,10 +416,7 @@ int do_update_pos_birds()
 {
    if (Flags.Done)
       return FALSE;
-   if (!Flags.ShowBirds)
-      return TRUE;
-   if (globals.freeze)
-      return TRUE;
+   LEAVE_IF_INACTIVE;
    P("do_update_pos_birds %d\n",Nbirds);
    counter ++;
 
@@ -440,6 +438,8 @@ int do_draw_birds()
 {
    if (Flags.Done)
       return FALSE;
+   if (!WorkspaceActive())
+      return TRUE;
    static int isclear = 0;
    if (!Flags.ShowBirds && isclear)
    {
@@ -666,8 +666,7 @@ static int do_wings()
 {
    if (Flags.Done)
       return FALSE;
-   if (!Flags.ShowBirds)
-      return TRUE;
+   LEAVE_IF_INACTIVE;
    int i;
    for (i=0; i<Nbirds; i++)
    {

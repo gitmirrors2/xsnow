@@ -19,4 +19,4 @@
 #-# 
 */
 #pragma once
-int kdesetbg(const char *color);
+extern int kdesetbg(const char *color);

@@ -15,7 +15,7 @@ Files:  src/* Changes
 Copyright: 1993-2001 Rick Jansen, 2019-2020 Willem Vermin <wvermin@gmail.com>
 License: GPL-3+
 
-Files:  ChangeLog INSTALL Makefile.am Makefile.in NEWS README README.md  
+Files:  ChangeLog INSTALL Makefile.am Makefile.in NEWS README README.md 
 	aclocal.m4 addcopyright.sh bootstrap compile config.h.in configure configure.ac
 	depcomp dependencies getversion install-sh makedeb maketar makeupload missing
 	pbuilderscript prevent-remakes test-driver AUTHORS

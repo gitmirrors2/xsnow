@@ -21,14 +21,14 @@
 #pragma once
 #include <gtk/gtk.h>
 
-void main_birds (GtkWidget *window);
-void init_birds(int start);
-float MaxViewingDistance(void);
-//float PreferredViewingDistance(void);
-float birds_get_range(void);
-float birds_get_mean_dist(void);
-void birds_set_attraction_point_relative(float x, float y, float z);
-void birds_set_speed(int x);
-void birds_set_scale(void);
-void birds_init_color(const char *color);
+extern void main_birds (GtkWidget *window);
+extern void init_birds(int start);
+extern float MaxViewingDistance(void);
+//extern float PreferredViewingDistance(void);
+extern float birds_get_range(void);
+extern float birds_get_mean_dist(void);
+extern void birds_set_attraction_point_relative(float x, float y, float z);
+extern void birds_set_speed(int x);
+extern void birds_set_scale(void);
+extern void birds_init_color(const char *color);
 
