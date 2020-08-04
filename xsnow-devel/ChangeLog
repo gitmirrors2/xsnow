@@ -1,6 +1,7 @@
 version 3.0.2
 	If birds not on active workspace, do not updte and paint them
 	Add 'extern' to all function prototypes for consistency.
+	Diversify debian/copyright
 
 version 3.0.1
 	make ui stickiness same as snow and birds windows
