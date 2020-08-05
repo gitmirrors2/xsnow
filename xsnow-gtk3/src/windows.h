@@ -19,6 +19,7 @@
 #-# 
 */
 #pragma once
+#include <gtk/gtk.h>
 extern Display *display;
 extern int screen;
 extern Window SnowWin;
@@ -30,3 +31,5 @@ extern char *DesktopSession;
 extern int IsCompiz;
 extern int IsWayland;
 extern int WorkspaceActive(void);  // defined in main.c
+extern GtkWidget       *drawing_area;
+extern GdkWindow       *gdkwindow;

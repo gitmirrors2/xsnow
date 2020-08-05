@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.0.3], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.0.3-gtk-0.1], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

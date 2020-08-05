@@ -63,6 +63,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
 #include "csvpos.h"
@@ -107,6 +108,9 @@ int     SnowWinY;
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
+
+GtkWidget       *drawing_area = 0;
+GdkWindow       *gdkwindow = 0;
 
 // locals
 // snow flakes stuff
@@ -190,6 +194,7 @@ static int          Yroot;
 static unsigned int Wroot;
 static unsigned int Hroot;
 static int          DoRestart = 0;
+static cairo_region_t  *cairoRegion = 0;
 
 /* Wind stuff */
 // Wind = 0: no wind
@@ -310,8 +315,10 @@ static void Thanks(void)
 
 // callbacks
 static int do_blowoff(void);
+static int do_change_attr(void);
 static int do_clean(void);
 static int do_displaychanged(void);
+static int do_draw_all(void);
 static int do_drawtree(Treeinfo *tree);
 static int do_emeteorite(void);
 static int do_event(void);
@@ -324,7 +331,9 @@ static int do_meteorite(void);
 static int do_newwind(void);
 static int do_santa(void);
 static int do_santa1(void);
+static int do_show_desktop_type(void);
 static int do_show_flakecount(void);
+static int do_show_range_etc(void);
 static int do_snow_on_trees(void);
 static int do_star(Skoordinaten *star);
 static int do_testing(void);
@@ -333,9 +342,6 @@ static int do_usanta(void);
 static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
-static int do_show_range_etc(void);
-static int do_show_desktop_type(void);
-static int do_change_attr(void);
 
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
@@ -402,6 +408,8 @@ int main_c(int argc, char *argv[])
    InitSnowOnTrees();
    InitBlowOffFactor();
 
+   Santa_init();
+
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
    srand48((long int)(wallcl()*1.0e6));
@@ -446,6 +454,7 @@ int main_c(int argc, char *argv[])
    //     which severely stresses plasma shell (or nautilus-desktop in Gnome, 
    //     but we do not use XClearArea in Gnome).
    //
+
 
    RootWindow = DefaultRootWindow(display);
 
@@ -551,6 +560,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_change_attr,    do_change_attr        ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_draw_all,       do_draw_all           ,0);
 
    HandleFactor();
 
@@ -605,8 +615,8 @@ int WorkspaceActive()
  */
 /*
 #define NOTACTIVE \
-   (Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
-   */
+(Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
+*/
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -3015,6 +3025,33 @@ void InitSnowOnTrees()
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 }
 
+int do_draw_all()
+{
+   if (Flags.Done)
+      return FALSE;
+   GdkDrawingContext *drawingContext =
+      gdk_window_begin_draw_frame(gdkwindow,cairoRegion);
+
+   cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
+
+   // clear window:
+   cairo_save (cr);
+   P("supports_alpha: %d\n",supports_alpha);
+   cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0); /* transparent */
+
+   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+   cairo_paint (cr);
+
+   cairo_restore (cr);
+
+   birds_draw(cr);
+
+   Santa_draw(cr);
+
+   gdk_window_end_draw_frame(gdkwindow,drawingContext);
+   return TRUE;
+}
+
 int do_initsnow()
 {
    if (Flags.Done)
@@ -3259,6 +3296,15 @@ int DetermineWindow()
 	    {
 	       TransWorkSpace = GetCurrentWorkspace();
 	       UsingTrans     = 1;
+
+	       drawing_area = gtk_drawing_area_new();
+	       gtk_container_add(GTK_CONTAINER(GtkWinb), drawing_area);
+	       gdkwindow   = gtk_widget_get_window(drawing_area);  
+
+	       if (cairoRegion)
+		  cairo_region_destroy(cairoRegion);
+	       cairoRegion = cairo_region_create();
+
 	       main_birds(GtkWinb);
 	       birds_set_speed(Flags.BirdsSpeed);
 	    }

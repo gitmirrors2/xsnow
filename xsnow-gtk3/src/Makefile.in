@@ -110,7 +110,7 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-ui.$(OBJEXT) xsnow-kdesetbg.$(OBJEXT) \
 	xsnow-transparent.$(OBJEXT) xsnow-mainstub.$(OBJEXT) \
 	xsnow-birds.$(OBJEXT) xsnow-kdtree.$(OBJEXT) \
-	xsnow-hashtable.$(OBJEXT)
+	xsnow-hashtable.$(OBJEXT) xsnow-Santa.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -131,16 +131,17 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/xsnow-birds.Po \
-	./$(DEPDIR)/xsnow-clientwin.Po ./$(DEPDIR)/xsnow-clocks.Po \
-	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
-	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
-	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-gaussian.Po \
-	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
-	./$(DEPDIR)/xsnow-kdesetbg.Po ./$(DEPDIR)/xsnow-kdtree.Po \
-	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
-	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-transparent.Po \
-	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-wmctrl.Po
+am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
+	./$(DEPDIR)/xsnow-birds.Po ./$(DEPDIR)/xsnow-clientwin.Po \
+	./$(DEPDIR)/xsnow-clocks.Po ./$(DEPDIR)/xsnow-csvpos.Po \
+	./$(DEPDIR)/xsnow-docs.Po ./$(DEPDIR)/xsnow-dsimple.Po \
+	./$(DEPDIR)/xsnow-fallensnow.Po ./$(DEPDIR)/xsnow-flags.Po \
+	./$(DEPDIR)/xsnow-gaussian.Po ./$(DEPDIR)/xsnow-hashtable.Po \
+	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdesetbg.Po \
+	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-main.Po \
+	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
+	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-ui.Po \
+	./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -589,7 +590,8 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
-		hashtable.cpp hashtable.h
+		hashtable.cpp hashtable.h\
+		Santa.c Santa.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 BUILT_SOURCES = ui_xml.h
@@ -599,7 +601,7 @@ desktop_DATA = xsnow.desktop
 appicondir = $(datadir)/pixmaps
 appicon_DATA = Pixmaps/xsnow.xpm
 man6_MANS = xsnow.6
-CLEANFILES = xsnow.6 ui_xml.h
+CLEANFILES = xsnow.6 ui_xml.h 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -687,6 +689,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-Santa.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-birds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-clientwin.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-clocks.Po@am__quote@ # am--include-marker
@@ -964,6 +967,20 @@ xsnow-kdtree.obj: kdtree.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='kdtree.c' object='xsnow-kdtree.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-kdtree.obj `if test -f 'kdtree.c'; then $(CYGPATH_W) 'kdtree.c'; else $(CYGPATH_W) '$(srcdir)/kdtree.c'; fi`
+
+xsnow-Santa.o: Santa.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-Santa.o -MD -MP -MF $(DEPDIR)/xsnow-Santa.Tpo -c -o xsnow-Santa.o `test -f 'Santa.c' || echo '$(srcdir)/'`Santa.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-Santa.Tpo $(DEPDIR)/xsnow-Santa.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='Santa.c' object='xsnow-Santa.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-Santa.o `test -f 'Santa.c' || echo '$(srcdir)/'`Santa.c
+
+xsnow-Santa.obj: Santa.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-Santa.obj -MD -MP -MF $(DEPDIR)/xsnow-Santa.Tpo -c -o xsnow-Santa.obj `if test -f 'Santa.c'; then $(CYGPATH_W) 'Santa.c'; else $(CYGPATH_W) '$(srcdir)/Santa.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-Santa.Tpo $(DEPDIR)/xsnow-Santa.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='Santa.c' object='xsnow-Santa.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-Santa.obj `if test -f 'Santa.c'; then $(CYGPATH_W) 'Santa.c'; else $(CYGPATH_W) '$(srcdir)/Santa.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1456,12 +1473,11 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-clean: clean-recursive
-
 clean-am: clean-gamesPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-recursive
-		-rm -f ./$(DEPDIR)/xsnow-birds.Po
+		-rm -f ./$(DEPDIR)/xsnow-Santa.Po
+	-rm -f ./$(DEPDIR)/xsnow-birds.Po
 	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
 	-rm -f ./$(DEPDIR)/xsnow-clocks.Po
 	-rm -f ./$(DEPDIR)/xsnow-csvpos.Po
@@ -1526,7 +1542,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-		-rm -f ./$(DEPDIR)/xsnow-birds.Po
+		-rm -f ./$(DEPDIR)/xsnow-Santa.Po
+	-rm -f ./$(DEPDIR)/xsnow-birds.Po
 	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
 	-rm -f ./$(DEPDIR)/xsnow-clocks.Po
 	-rm -f ./$(DEPDIR)/xsnow-csvpos.Po
@@ -1607,6 +1624,9 @@ ui_xml.h: ui.xml
 	@echo "0};" >> $@
 xsnow.6: xsnow
 	./xsnow -manpage > $@
+
+clean::
+	rm -rf .deps
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

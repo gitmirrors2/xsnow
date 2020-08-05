@@ -170,6 +170,8 @@
 #define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
+#define time_draw_all         0.04
+
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
