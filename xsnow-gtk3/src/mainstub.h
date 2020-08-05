@@ -19,4 +19,11 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#ifdef __cplusplus
+extern "C" {
+#endif
+   extern int main_c(int argc, char *argv[]);
+#ifdef __cplusplus
+}
+#endif
+

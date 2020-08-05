@@ -19,4 +19,5 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+extern double wallclock(void);
+extern double wallcl(void);

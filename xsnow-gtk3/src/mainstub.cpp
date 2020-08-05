@@ -18,5 +18,9 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
-#define VERSION "3.0.4~pre1"
+#include "mainstub.h"
+int main(int argc, char *argv[])
+{
+   return main_c(argc,argv);
+}
+

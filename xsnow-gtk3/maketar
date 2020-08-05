@@ -1,0 +1,14 @@
+#!/bin/bash
+curdir=`pwd`                                                || exit 1
+version=`./getversion`                                      || exit 1
+echo "version = $version"
+./configure                                                 || exit 1
+make -j4 distcheck                                          || exit 1
+if [ -x /usr/games/xsnow ] ; then
+   rm -rf ./autopkgtest-dir
+   autopkgtest --output-dir ./autopkgtest-dir -B  . -- null || exit 1
+fi
+mkdir -p ../versions                                        || exit 1
+mv xsnow*.tar.gz ../versions                                || exit 1
+make distclean
+echo "$0 done"

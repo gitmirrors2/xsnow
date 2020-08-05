@@ -1,0 +1,59 @@
+#!/bin/bash
+# -copyright-
+#-# 
+#-# xsnow: let it snow on your desktop
+#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#-#               2019,2020 Willem Vermin
+#-# 
+#-# This program is free software: you can redistribute it and/or modify
+#-# it under the terms of the GNU General Public License as published by
+#-# the Free Software Foundation, either version 3 of the License, or
+#-# (at your option) any later version.
+#-# 
+#-# This program is distributed in the hope that it will be useful,
+#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#-# GNU General Public License for more details.
+#-# 
+#-# You should have received a copy of the GNU General Public License
+#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#-# 
+./addcopyright.sh Makefile.am addcopyright.sh bootstrap configure.ac getversion README
+find src \( -name '*.c' -o -name '*.h' -o -name '*.am' -o -name '*.xpm' -o -name '*.xbm' \
+   -o -name '*.xml' -o -name '*.sh' -o -name '*.cpp' \) -print0 | xargs -0 ./addcopyright.sh
+
+version=`./getversion` || exit 1
+date=`date -R`
+echo "version = $version"
+sed -i "/^AC_INIT(\[xsnow]/s/^.*/AC_INIT([xsnow], [$version], [wvermin@gmail.com])/" configure.ac    || exit 1
+
+# take care that debian*/changelog is ok: contains changelog from
+# previous debian version and a first lines like:
+# xsnow (1:2.0.9-1) unstable; urgency=low
+#
+#  * New upstream release
+#
+# -- Willem Vermin <wvermin@gmail.com>  Fri, 19 Jul 2019 14:59:21 +0200
+#
+# the 'xsnow' line and the -- Willem line will be adapted to the
+# new version and date automatically
+
+for d in debian debian.eoan debian.focal debian.stretch debian.sid debian.tara ; do
+   if [ -e $d/changelog ] ; then
+      sed -i "1s/(.*)/(1:$version-1)/" $d/changelog       || exit 1
+      sed -i "0,/^ --.*>/{/^ --.*>/s/>  .*/>  $date/}" $d/changelog || exit 1
+   fi
+done
+
+cp debian.sid/* debian
+
+mkdir -p debian/tests
+for t in src/test*.sh ; do
+   cp $t debian/tests
+done
+
+autoreconf -fvi || exit 1
+
+echo "## Do not modify this file, it is generated from README by bootstrap ##">README.md
+cat README >> README.md
+echo "$0 done"

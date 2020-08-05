@@ -17,6 +17,9 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#include <gtk/gtk.h>
+#include <X11/Xlib.h>
+extern void create_transparent_window(int fullscreen, int below, int allworkspaces,
+      Window *w, const char *prefname, char **name, GtkWidget **gtkwin,unsigned int width, unsigned int height);

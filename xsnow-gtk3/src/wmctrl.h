@@ -19,4 +19,20 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#include <X11/Xlib.h>
+typedef struct WinInfo
+{
+   Window id;
+   long ws;               // workspace
+   int x,y;               // x,y coordinates
+   unsigned int w,h;      // width, height
+   unsigned int sticky:1; // visible on all workspaces
+
+} WinInfo;
+
+extern long GetCurrentWorkspace();
+extern int GetWindows(WinInfo **w, int *nw);
+extern int FindWindowWithName(const char* needle, Window *win, char **name);
+extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);
+extern void printwindows(WinInfo *windows, int nwin);
+

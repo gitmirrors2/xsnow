@@ -17,6 +17,16 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#define DOITALLB()  
+   //DOITB(prefdistance ,float) /* [meter]          preferred distance */                    
+
+   //DOITB(nbirds       ,int)   /* number of birds */ 
+   //DOITB(neighbours   ,int)   /* number of neighbours to consider */ 
+   //DOITB(followers    ,float) /* fraction of birds that follow the computations 0=<x<=1 */
+   
+#define BUTTONALL() \
+   DOITB(restart) \
+   DOITB(freeze)
+

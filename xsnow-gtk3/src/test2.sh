@@ -1,4 +1,5 @@
-/* -copyright-
+#!/bin/sh
+# -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -17,6 +18,16 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-#define VERSION "3.0.4~pre1"
+
+XSNOW=xsnow
+if [ -x ./xsnow ]; then
+   XSNOW=./xsnow
+fi
+if [ "$DISPLAY" ] ; then
+   $XSNOW -stopafter 3
+   if [ "$?" -ne 0 ]; then
+      exit 77
+   fi
+else
+   exit 0
+fi

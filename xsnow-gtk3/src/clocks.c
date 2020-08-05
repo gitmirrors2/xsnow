@@ -18,5 +18,16 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
-#define VERSION "3.0.4~pre1"
+#include <gtk/gtk.h>
+#include "clocks.h"
+
+double wallcl() 
+{ 
+   return (double)g_get_real_time()*1.0e-6;
+}
+
+double wallclock()
+{
+   return (double)g_get_monotonic_time()*1.0e-6;
+}
+

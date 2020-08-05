@@ -1,4 +1,4 @@
-/* -copyright-
+# -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -17,6 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-#define VERSION "3.0.4~pre1"
+AUTOMAKE_OPTIONS = gnu
+SUBDIRS = src
+
+EXTRA_DIST = bootstrap Changes getversion README.md \
+	     addcopyright.sh prevent-remakes \
+	     pbuilderscript makeupload makedeb debian dependencies \
+	     maketar debian.eoan debian.stretch debian.sid debian.tara \
+	     debian.focal

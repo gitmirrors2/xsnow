@@ -1,0 +1,211 @@
+version 3.0.3
+	birds.c: use actual time to compute bird positions instead of callback
+	time
+	birds.c: make speed adjustment of birds dependent on time elapsed
+	previous line: not a good idea, removed corresponding code
+	birds.c: more dramatic (re)start
+
+version 3.0.2
+	If birds not on active workspace, do not updte and paint them
+	Add 'extern' to all function prototypes for consistency.
+	Diversify debian/copyright
+
+version 3.0.1
+	make ui stickiness same as snow and birds windows
+	resolve some debian copyright issues in debian/copyright
+
+version 3.0.0
+	use wallcl()*1.0e6 to initialize drand48, not wallclock()
+	mv ui.glade ui.xml
+	add css to minimize ui.
+	add birds page, not functioning yet.
+	make xsnow compilable with g++
+	adding birds ....
+
+version 2.0.22
+	xsnow.desktop: in xfce icon does not show in
+	  panel: change 'xsnow.xpm' into 'xsnow'
+	do not show flake count when option -nomenu is given
+	fixed bug: when no desktop session can be determined
+	  from environment: make it 'unknown_desktop_session'
+	   - Thanks to Xose Vazquez Perez
+version 2.0.21
+	attempt better layout of settings screen
+	Somewhat better layout for all menus
+	Rudolf -> Rudolph in displayable strings
+	Show number of flakes in 'snow' tab
+	Added some id's in ui.glade
+version 2.0.20
+	replace timing loop with g_timeout_add()
+	add polarbear
+	use g_get_monotonic_time() for wallclock
+	give every snowflake its own g_timeout_add()
+	give Santa highest priority (not that it matters much, it seems)
+	Change fuse algorithm: now Updatesnowflake kills flake when number
+	  of flakes is above threshold
+	Initsnowflake: start y above above window
+	updatesnowflake: do not force y >=0
+	add button for flake-count-max
+	put refresh of trees in g_timeout_add()
+	idem for stars
+	Smooyth vertical movements of Santa
+	remove nosnowarea's. Replace nosnowarea_static by TreeRegion
+	reinstate nosnowarea_dynamic
+	fix issue with erasing flakes that are in a tree
+	if FlakeCount > max, high probabilty to remove blown-off flakes
+	all scales show now numerical value
+	removed -showstats option
+version 2.0.19
+	debian/tests/control: removed test2.sh
+version 2.0.18
+	main.c: test if WAYLAND_DISPLAY is set before setting GDK_BACKEND
+	main.c: restart after changing display settings 
+	main.c: no Thanks after man page or help
+	docs.c: minor adjustments
+	debug.h: added
+	main.c, flags.c: do not assume getenv("HOME") works as expected.
+version 2.0.17
+	main.c: The output of PrintVersion() appeared in the top of the man page.
+	   Corrected this.
+	main.c: CleanFallenArea() marked the fallensnow region always as clean,
+	   but this must be done only when whole x-range is cleared.
+version 2.0.16
+	dsimple.c: int screen = 0; -> static int screen = 0;
+	   and move to the top of the file. Ticket 1: gcc-10 related
+	transparent.c:
+	  keep xsnow visible after 'show desktop', and show xsnow on all 
+	  desktops
+	wmctrl.c: special care for compiz
+version 2.0.15
+	ui.glade: added 'Donate' button
+version 2.0.14
+	src/Makefile.am: use exec_prefix in stead of prefix for gamesdir
+	transparent.c: simplify creation of transparent window
+	main.c: removed use of SigHupHandler 
+	docs.c: corrected misspelled default values
+	test1.sh: check 'xsnow -h' if default values are subtituted
+	main.c, ui.glade: better algorithm to determine number of flakes
+	    to generate
+version 2.0.13
+	main.c: do_genflakes(): take into account that do_genflakes()
+	   can be disabled by SnowRunning
+	flags.c: add forgotten -alpha flag
+version 2.0.12
+	pixmaps.c: corrected width and height for snow.
+	main.c: simplified create rectangular region
+	debian/copyright: corrected
+	main.c: remove flakes that fall below bottom of screen, also if
+	   no fallensnow on bottom
+	main.c: corrected bug which coaused no snow at all with -nomenu
+	Lower default snowspeed (SNOWSPEED in xsnow.h)
+	update snowflakes in chunks, so that other animations run at
+	   desired speed.
+	remove option -kde: settings are the same as for -gnome
+	do not add or delete flakes when updating snowflakes
+	   is running (test on SnowRunning)
+	for updatesanta, gensnowflakes, snowflakes: after a suspend
+	   or sleep the elapsed time can have a strange
+	   value. Take care of that.
+
+version 2.0.10
+	prepare for running in wayland by setting environment
+	  variable GDK_BACKEND=x11 (main.c)
+	fix some typo's in docs.c
+
+version 2.0.9
+	some debian adjustments
+	fix xfce problems: the workspace of the transparent
+	  snow window is not available in xfce
+	  some windows have both the _NET_FRAME_EXTENTS and
+	  _GTK_FRAME_EXTENTS. Priority is given to the latter.
+	Snowflakes that touch fallen snow are not erased any more:
+	  erasure caused bad looking effects.
+	Removed 'showstats' from config
+version 2.0.8
+	some more debian stuff
+	add support for xfce desktop
+version 2.0.7
+	added some debian stuff
+version 2.05
+	Fixed issues when trees are not shown: snow was still
+	collecting on trees, snow was not visible after not-shown
+	tree. 
+
+version 2.04
+	Fixed bug in main.c: check for valid return value of 
+	FindWindow() in do_wupdate().
+
+Version 2.03
+	Fixed bug in main.c: only set transworkspace if usingtrans.
+
+Version 2.02
+	Snowing halted when a workspade before the snow workspace was
+	removed. Fixed by checking the workspace of SnowWin in do_wupdate().
+
+Solved in 2.01
+	tree-xpm's are mirrored randomly
+	flag -treeregion implemented
+	fluff on bottom in snow window when nokeepsnowonscreen
+	parametrize MAXONTREES
+	implement vintage
+	in fvwm: after minimize window, no snow is shown on the
+	  window when it is restored. 
+	Handle window that is visible on all workspaces
+	implement no snow when window disappears
+	implement nowplow
+	Try to snow on trees
+	plowing should be partial: only take snow away where Santa was: Won't
+	fix
+	stars are competing with fallen snow: let snow win: Won't fix
+	Create precise region from bitmap vintage tree
+	Implement nokeepsnowonwindows etc
+	when wind: make generated flakes at bottom cyclic
+	Solved strange behaviour with system monitor window
+	  and others: gedit, nautilus etc. on gnome desktop
+	  no problem on fvwm desktop
+	find automatically desired offsets
+	  determine size of decoration from a partial screendump ?
+	  use xwininfo to point to a gauge window ?
+	no rounding of edges of fallen snow at the bottom
+	automatically determine tree regions
+	create 'fuse': remove nearly all flakes when number is really too high
+	for testing purposes: color a region see do_testing()
+	read tree.xpm from ~/xsnow/pixmaps/tree.xpm if present
+	let Santa plough through fallensnow: do not redraw fallen snow
+	   if overlap with Santa
+	faster update of fallen snow after move of window
+	animation of blown fallen  snow
+	extra snow not cyclic
+	get rid of flake.x and y, use only rx and ry
+	animation of snow fallen from disappeared windows
+	gracefully exit when window where is snowing in, disappears
+	let trees not overlap
+	fallensnow surfaces often too jerky
+	round snow at the edges
+	animation of do_clean
+	let Santa be affected by strong wind
+	replace old wind by storm now and then
+	offsets for windows & bottom
+	wind is changing continuously
+	cyclic disappear, appear of flakes
+	Solve floating point exception when starting in too small
+	  window (oclock) (div by 0 in RandInt)
+	move to other workspace of a window: bad behaviour:
+	  snow stays on original workspace, window does no
+	  receive snow any more: see put correct workspace in fallensnow areas
+	  in xsnow.c
+	snow on windows: implemented
+	ctrl-c sometimes causes: cannot parse output of wmctrl: solved by
+	  letting wmctrl return -1 in case of problems
+
+2019-01
+	A few minor changes after 1.42:
+	changed timing loop
+	find Desktop in Gnome and KDE
+	can run in user-pointed window (-xwininfo)
+	added another kind of tree
+	added starts
+	added meteorite
+	changed algorithm for fallen snow
+	nosnowarea's
+	and some more ...

@@ -19,4 +19,7 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#include <X11/xpm.h>
+extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
+      char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
+extern Region regionfromxpm(char **data, int flop);

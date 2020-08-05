@@ -17,6 +17,14 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#ifdef __cplusplus
+extern "C" { 
+#endif
+extern void table_put(unsigned int key,void *value);
+extern void *table_get(unsigned int key);
+extern void table_clear(void(*destroy)(void *p));
+#ifdef __cplusplus
+}
+#endif

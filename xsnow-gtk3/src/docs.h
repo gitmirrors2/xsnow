@@ -17,6 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define VERSION "3.0.4~pre1"
+
+extern void docs_usage(int man);
+
+#define Q(a) #a
+#define EQ(a) Q(a)
+

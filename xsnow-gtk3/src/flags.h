@@ -19,4 +19,38 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#include <X11/Xlib.h>
+#include "doit.h"
+
+#define DOIT_I(x) int x; 
+#define DOIT_L(x) unsigned long int x;
+#define DOIT_S(x) char *x;
+
+typedef struct flags {
+   //unsigned long int WindowId;
+   DOITALL
+      int dummy;
+}FLAGS;
+#undef DOIT_I
+#undef DOIT_L
+#undef DOIT_S
+
+#define FVWMFLAGS \
+   do { \
+      Flags.UseAlpha  = 0; \
+      Flags.UseBG     = 0; \
+      Flags.Exposures = 0; } while(0)
+
+#define GNOMEFLAGS \
+   do { \
+      Flags.UseAlpha  = 1; \
+      Flags.UseBG     = 0; \
+      Flags.Exposures = 0; } while(0)
+
+
+extern FLAGS Flags;
+
+extern int  HandleFlags(int argc, char*argv[]);
+extern void InitFlags(void);
+extern void PrintVersion(void);
+extern void WriteFlags(void);

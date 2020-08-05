@@ -19,4 +19,10 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#include <stdio.h>
+#ifdef DEBUG
+#define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
+#else
+#define P(...)
+#endif
+#define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)

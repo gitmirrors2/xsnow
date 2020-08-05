@@ -19,4 +19,5 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+extern void csvpos(char *s, int **k, int *n);
+extern void vsc(char **s, int *k, int n);

@@ -19,4 +19,14 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+extern Display *display;
+extern int screen;
+extern Window SnowWin;
+extern int SnowWinWidth; 
+extern int SnowWinHeight;
+extern int SnowWinBorderWidth;
+extern int SnowWinDepth;
+extern char *DesktopSession;
+extern int IsCompiz;
+extern int IsWayland;
+extern int WorkspaceActive(void);  // defined in main.c

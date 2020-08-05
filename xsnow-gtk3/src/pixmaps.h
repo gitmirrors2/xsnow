@@ -19,4 +19,12 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+#define XPM_TYPE const char
+#include "xsnow.h"
+extern SnowMap       snowPix[];
+extern StarMap       starPix;
+extern char          ***Santas[][2];
+extern char          **xpmtrees[];
+extern TannenbaumMap tannenbaumPix[];
+extern char          **xsnow_logo;
+extern const char    **birds_xpm[];

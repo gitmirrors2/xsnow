@@ -1,0 +1,6 @@
+libx11-dev
+libxpm-dev
+libxt-dev
+pkg-config
+libxml2-dev
+libgtk-3-dev

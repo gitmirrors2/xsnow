@@ -19,4 +19,11 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.4~pre1"
+extern void ui (int *argc, char **argv[]);
+extern void ui_error_x11(int *argc, char **argv[]);
+extern void ui_show_nflakes(int n);
+extern void ui_set_birds_header(const char *text);
+//extern void ui_set_vd_scale(void);
+extern void ui_show_range_etc(void);
+extern void ui_show_desktop_type(const char *s);
+extern void ui_set_sticky(int x);
