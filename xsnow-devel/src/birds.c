@@ -273,24 +273,6 @@ int do_update_speed_birds()
    LEAVE_IF_INACTIVE;
    P("do_update_speed_birds %d\n",counter);
 
-   static int firstcall = 1;
-   static double tprev;
-   double tnow = wallclock();
-   double dt;
-
-   if (firstcall)
-   {
-      dt = time_update_speed_birds;
-      firstcall = 0;
-   }
-   else
-      dt = tnow - tprev;
-
-   tprev = tnow;
-
-   float timefactor = dt/0.2;
-   P("%f\n",timefactor);
-
    kd_free(kd);
    kd = kd_create(3);
 
@@ -366,14 +348,14 @@ int do_update_speed_birds()
       if (num > 0)
       {
 	 int p = (100-Flags.FollowWeight)*0.1;
-	 bird->sx = timefactor*(sumsx + p*bird->sx)/(p+1+num);
-	 bird->sy = timefactor*(sumsy + p*bird->sy)/(p+1+num);
-	 bird->sz = timefactor*(sumsz + p*bird->sz)/(p+1+num);
+	 bird->sx = (sumsx + p*bird->sx)/(p+1+num);
+	 bird->sy = (sumsy + p*bird->sy)/(p+1+num);
+	 bird->sz = (sumsz + p*bird->sz)/(p+1+num);
       }
       // adjust speed to obtain desired distance to other birds
       if (num > 0)
       {
-	 float q = timefactor*Flags.DisWeight*0.4;
+	 float q = Flags.DisWeight*0.4;
 	 bird->sx += q*(meanprefx - bird->x);
 	 bird->sy += q*(meanprefy - bird->y);
 	 bird->sz += q*(meanprefz - bird->z);
@@ -387,7 +369,7 @@ int do_update_speed_birds()
       float dy = globals.attry - bird->y;
       float dz = globals.attrz - bird->z;
 
-      float f = timefactor*Flags.AttrFactor*0.01f*0.05f;
+      float f = Flags.AttrFactor*0.01f*0.05f;
 
       bird->sx += f*dx;
       bird->sy += f*dy;
@@ -403,13 +385,6 @@ int do_update_speed_birds()
       // randomize:
       {
 	 const float p  = 0.4;  //  0<=p<=1 the higher the more random
-	 // multiply by timefactor?
-	 /*
-	 const float p1 = 1.0f-0.5*p;
-	 bird->sx *= (p1+p*drand48());
-	 bird->sy *= (p1+p*drand48());
-	 bird->sz *= (p1+p*drand48());
-	 */
 	 bird->sx += bird->sx*p*drand48();
 	 bird->sy += bird->sy*p*drand48();
 	 bird->sz += bird->sz*p*drand48();
@@ -677,10 +652,15 @@ void init_birds(int start)
       bird->y = drand48()*globals.maxy;
       bird->z = drand48()*globals.maxz;
 
-      if (drand48() > 0.5)
+      double r = drand48();
+      if (r > 0.75)
 	 bird->x += globals.maxx;
-      else
+      else if (r > 0.50)
 	 bird->x -= globals.maxx;
+      else if (r > 0.25)
+	 bird->y += globals.maxy;
+      else 
+	 bird->y -= globals.maxy;
 
       bird->iw = 1;
       bird->ih = 1;
