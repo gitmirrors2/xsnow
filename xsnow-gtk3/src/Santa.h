@@ -19,5 +19,24 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-int Santa_draw(cairo_t *cr);
-void Santa_init(void);
+#include "xsnow.h"
+extern int Santa_draw(cairo_t *cr);
+extern void Santa_init(void);
+extern int SantaX;
+extern int SantaY;
+extern float  ActualSantaSpeed;
+extern float  SantaSpeed;  
+extern float  SantaXr;
+extern float  SantaYr;
+extern void   ResetSanta(void);
+extern int    SantaWidth;
+extern int    CurrentSanta;
+extern Region SantaPlowRegion;
+extern int    SantaHeight;   
+extern void   Santa_HandleFactor(void);
+extern int    OldSantaX;  // the x value of Santa when he was last drawn
+extern int    OldSantaY;  // the y value of Santa when he was last drawn
+extern void   EraseSanta(int x, int y);
+extern void   Santa_set_gc(void);
+extern Pixmap SantaMaskPixmap[PIXINANIMATION];
+extern Pixmap SantaPixmap[PIXINANIMATION];

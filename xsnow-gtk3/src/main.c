@@ -83,6 +83,7 @@
 #include "windows.h"
 #include "wmctrl.h"
 #include "xsnow.h"
+#include "wind.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -108,6 +109,16 @@ int     SnowWinY;
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
+int     UseAlpha;
+Pixel   ErasePixel;
+int     Exposures;
+Pixel   BlackPix;
+// Santa stuff
+Pixmap SantaMaskPixmap[PIXINANIMATION] = {0,0,0,0};
+Pixmap SantaPixmap[PIXINANIMATION]     = {0,0,0,0};
+
+double  factor = 1.0;
+float   NewWind = 0;
 
 GtkWidget       *drawing_area = 0;
 GdkWindow       *gdkwindow = 0;
@@ -145,21 +156,6 @@ static int      TreeRead = 0;
 static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static char     **TreeXpm = 0;
 
-// Santa stuff
-static Pixmap SantaMaskPixmap[PIXINANIMATION] = {0,0,0,0};
-static Pixmap SantaPixmap[PIXINANIMATION]     = {0,0,0,0};
-static float  ActualSantaSpeed;
-static float  SantaSpeed;  
-static float  SantaXr;
-static float  SantaYr;
-static int    CurrentSanta;
-static int    OldSantaX=0;  // the x value of Santa when he was last drawn
-static int    OldSantaY=0;  // the y value of Santa when he was last drawn
-static int    SantaHeight;   
-static int    SantaWidth;
-static int    SantaX;   // should always be lrintf(SantaXr)
-static int    SantaY;   // should always be lrintf(SantaYr)
-static int    SantaYStep;
 
 /* Speed for each Santa  in pixels/second*/
 static float Speed[] = {SANTASPEED0,  /* Santa 0 */
@@ -178,7 +174,6 @@ static MeteoMap meteorite;
 // timing stuff
 //static double       TotSleepTime = 0;
 static double       TStart;
-static double       factor = 1.0;
 
 // windows stuff
 static int          NWindows;
@@ -186,7 +181,6 @@ static long         CWorkSpace = 0;
 static Window       RootWindow;
 static char         *SnowWinName = 0;
 static WinInfo      *Windows = 0;
-static int          Exposures;
 static long         TransWorkSpace = -1;  // workspace on which transparent window is placed
 static int          UsingTrans     = 0;   // using transparent window or not
 static int          Xroot;
@@ -204,7 +198,6 @@ static cairo_region_t  *cairoRegion = 0;
 // Direction =  1: wind from left to right
 // Direction = -1: wind from right to left
 static int    Direction = 0;
-static float  NewWind = 0;
 static float  Whirl;
 static int    Wind = 0;
 static double WindTimer;
@@ -212,7 +205,6 @@ static double WindTimerStart;
 
 // desktop stuff
 static int       Isdesktop;
-static int       UseAlpha;
 static XPoint    *SnowOnTrees;
 static GtkWidget *GtkWin  = NULL;  // for snow etc
 static GtkWidget *GtkWinb = NULL;  // for birds
@@ -222,8 +214,6 @@ static const char *BlackColor  = "black";
 static const char *MeteoColor  = "orange";
 static const char *StarColor[] = { "gold", "gold1", "gold4", "orange" };
 
-static Pixel BlackPix;
-static Pixel ErasePixel;
 static Pixel MeteoPix;
 static Pixel SnowcPix;
 static Pixel StarcPix[STARANIMATIONS];
@@ -233,10 +223,8 @@ static Pixel Black, White;
 /* GC's */
 static GC CleanGC;
 static GC EFallenGC;
-static GC ESantaGC;
 static GC ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC FallenGC;
-static GC SantaGC;
 static GC SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC SnowOnTreesGC;
 static GC StarGC[STARANIMATIONS];
@@ -248,8 +236,6 @@ static GC TreeGC;
 static Region NoSnowArea_dynamic;
 //static Region NoSnowArea_static;
 static Region TreeRegion;
-static Region SantaRegion;
-static Region SantaPlowRegion;
 static Region SnowOnTreesRegion;
 
 /* Forward decls */
@@ -263,13 +249,10 @@ static void   HandleFactor(void);
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 static int    DetermineWindow(void);
 static void   DrawFallen(FallenSnow *fsnow);
-static void   DrawSanta1(void);
-static void   DrawSanta(void);
 static void   DrawSnowFlake(Snow *flake);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 static void   EraseStars(void);
 static void   EraseTrees(void);
-static void   EraseSanta(int x, int y);
 static void   EraseSnowFlake(Snow *flake);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static int    HandleFallenSnow(FallenSnow *fsnow);
@@ -292,8 +275,6 @@ static void   InitTreePixmaps(void);
 static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
 static void   RedrawTrees(void);
-static Region RegionCreateRectangle(int x, int y, int w, int h);
-static void   ResetSanta(void);
 static void   SetGCFunctions(void);
 static void   SetMaxScreenSnowDepth(void);
 static void   SetSantaSpeed(void);
@@ -329,8 +310,6 @@ static int do_initsnow(void);
 static int do_initstars(void);
 static int do_meteorite(void);
 static int do_newwind(void);
-static int do_santa(void);
-static int do_santa1(void);
 static int do_show_desktop_type(void);
 static int do_show_flakecount(void);
 static int do_show_range_etc(void);
@@ -338,7 +317,6 @@ static int do_snow_on_trees(void);
 static int do_star(Skoordinaten *star);
 static int do_testing(void);
 static int do_ui_check(void);
-static int do_usanta(void);
 static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
@@ -471,8 +449,6 @@ int main_c(int argc, char *argv[])
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
    TreeRegion           = XCreateRegion();
-   SantaRegion          = XCreateRegion();
-   SantaPlowRegion      = XCreateRegion();
    SnowOnTreesRegion    = XCreateRegion();
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
@@ -505,9 +481,7 @@ int main_c(int argc, char *argv[])
    for(i=0; i<STARANIMATIONS; i++)
       StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
 
-   SantaGC       = XCreateGC(display, SnowWin, 0, 0);
    TestingGC     = XCreateGC(display, RootWindow, 0,0);
-   ESantaGC      = XCreateGC(display, SnowWin, 0, 0);
    TreeGC        = XCreateGC(display, SnowWin, 0, 0);
    SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
    CleanGC       = XCreateGC(display,SnowWin,0,0);
@@ -554,13 +528,13 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check           ,0);
-   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_change_attr,    do_change_attr        ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_draw_all,       do_draw_all           ,0);
+   if (GtkWinb)
+      add_to_mainloop(PRIORITY_DEFAULT, time_draw_all,       do_draw_all           ,0);
 
    HandleFactor();
 
@@ -621,26 +595,6 @@ int WorkspaceActive()
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-int do_santa()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if (!Flags.NoSanta)
-      DrawSanta();
-   return TRUE;
-}
-int do_santa1()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if (!Flags.NoSanta)
-      DrawSanta1();
-   return TRUE;
-}
 
 int do_show_flakecount()
 {
@@ -2523,127 +2477,9 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 }
 
 
-void ResetSanta()      
-{
-   SantaX = -SantaWidth - ActualSantaSpeed;
-   SantaXr = SantaX;
-   SantaY = RandInt(SnowWinHeight / 3)+40;
-   SantaYr = SantaY;
-   SantaYStep = 1;
-   CurrentSanta = 0;
-   XDestroyRegion(SantaRegion);
-   SantaRegion = RegionCreateRectangle(
-	 SantaX,SantaY,SantaHeight,SantaWidth);
 
-   XDestroyRegion(SantaPlowRegion);
-   SantaPlowRegion = RegionCreateRectangle(
-	 SantaX + SantaWidth, SantaY, 1, SantaHeight);
-}
 
-// update santa's coordinates and speed
-int do_usanta()
-{
-   if (Flags.Done)
-      return FALSE;
-#define RETURN do { return TRUE ; } while(0)
-   if (NOTACTIVE)
-      RETURN;
-   if(Flags.NoSanta)
-      RETURN;
-   double         yspeed;
-   static int yspeeddir  = 0;
-   static double sdt     = 0;
-   static double dtt     = 0;
 
-   int oldx = SantaX;
-   int oldy = SantaY;
-
-   double dt = time_usanta;
-   ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
-   if (ActualSantaSpeed>3*SantaSpeed)
-      ActualSantaSpeed = 3*SantaSpeed;
-   else if (ActualSantaSpeed < -2*SantaSpeed)
-      ActualSantaSpeed = -2*SantaSpeed;
-
-   SantaXr += dt*ActualSantaSpeed;
-   if (SantaXr >= SnowWinWidth) 
-   {
-      ResetSanta(); 
-      oldx = SantaX;
-      oldy = SantaY;
-   }
-   if (SantaXr < -SantaWidth-ActualSantaSpeed) SantaXr = -SantaWidth - ActualSantaSpeed; 
-   SantaX = lrintf(SantaXr);
-   dtt += dt;
-   if (dtt > 0.1 && fabs(ActualSantaSpeed) > 3)
-   {
-      dtt = 0;
-      CurrentSanta++;
-      if (CurrentSanta >= PIXINANIMATION) CurrentSanta = 0;
-   }
-
-   yspeed = ActualSantaSpeed/4;
-   sdt += dt;
-   if (sdt > 2.0)
-   {
-      // time to change yspeed
-      sdt = 0;
-      yspeeddir = RandInt(3)-1;  //  -1, 0, 1
-   }
-
-   SantaYr += dt*yspeed*yspeeddir;
-   if (SantaYr < 0)
-      SantaYr = 0;
-
-   if (SantaYr > SnowWinHeight*0.33)
-      SantaYr = SnowWinHeight*0.33;
-
-   SantaY = lrintf(SantaYr);
-   XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
-   XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
-
-   RETURN;
-}
-
-void DrawSanta() 
-{
-   if(OldSantaX != SantaX || OldSantaY != SantaY)
-      EraseSanta(OldSantaX,OldSantaY);
-   DrawSanta1();
-   OldSantaX = SantaX;
-   OldSantaY = SantaY;
-   /* Note: the fur in his hat is *imitation* White-seal fur, of course. */
-   /* Santa is a big supporter of Greenpeace.                            */
-}
-
-void DrawSanta1()
-{
-   XSetClipMask(display,
-	 SantaGC,
-	 SantaMaskPixmap[CurrentSanta]);
-   XSetClipOrigin(display,
-	 SantaGC,
-	 SantaX,SantaY);
-   XCopyArea(display,
-	 SantaPixmap[CurrentSanta],
-	 SnowWin,
-	 SantaGC,
-	 0,0,SantaWidth,SantaHeight,
-	 SantaX,SantaY);
-}
-
-void EraseSanta(int x, int y)
-{
-   if(UseAlpha|Flags.UseBG)
-      XFillRectangle(display, SnowWin, ESantaGC, x,y,SantaWidth+1,SantaHeight);
-   // probably due to rounding errors in computing SantaX, one pixel in front 
-   // is not erased when leaving out the +1
-   else
-      XClearArea(display, SnowWin,
-	    x , y,     
-	    SantaWidth+1,SantaHeight,
-	    Exposures);
-}
 
 
 int do_drawtree(Treeinfo *tree) 
@@ -3072,7 +2908,7 @@ int do_initsnow()
 // handle callbacks for things whose timings depend on factor
 void HandleFactor()
 {
-   static guint santa_id=0, santa1_id=0, fallen_id=0;
+   static guint fallen_id=0;
    // re-add things whose timing is dependent on factor
    if (Flags.CpuLoad <= 0)
       factor = 1;
@@ -3081,15 +2917,12 @@ void HandleFactor()
 
    EraseTrees();
 
-   if (santa_id)
-      g_source_remove(santa_id);
-   if (santa1_id)
-      g_source_remove(santa1_id);
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa,  0);
-   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, 0);
+   if(!GtkWin)
+      Santa_HandleFactor();
+
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
 
    add_to_mainloop(PRIORITY_DEFAULT, 0.2 , do_initsnow, 0);
@@ -3103,13 +2936,13 @@ void SetGCFunctions()
       ErasePixel = AllocNamedColor(Flags.BGColor,Black) | 0xff000000;
    else
       ErasePixel = 0;
-   XSetFunction(display,   SantaGC, GXcopy);
-   XSetForeground(display, SantaGC, BlackPix);
-   XSetFillStyle(display,  SantaGC, FillStippled);
 
+   Santa_set_gc();
+   /*
    XSetFunction(display,   ESantaGC, GXcopy);
    XSetFillStyle(display,  ESantaGC, FillSolid);
    XSetForeground(display, ESantaGC, ErasePixel);
+   */
 
    XSetFunction(display,   TreeGC, GXcopy);
    XSetForeground(display, TreeGC, BlackPix);
@@ -3356,23 +3189,4 @@ void HandleExposures()
 }
 
 
-Region RegionCreateRectangle(int x, int y, int w, int h)
-{
-   XPoint p[5];
-   //p[0] = (XPoint){x  ,        y  };
-   p[0].x =          x; p[0].y = y;
-
-   //p[1] = (XPoint){x+w,          y  };
-   p[1].x =          x+w; p[1].y = y;
-
-   //p[2] = (XPoint){x+w,          y+h};
-   p[2].x =          x+w; p[2].y = y+h;
-
-   //p[3] = (XPoint){x  ,        y+h}; 
-   p[3].x =          x; p[3].y = y+h;
-
-   //p[4] = (XPoint){x  ,        y  };
-   p[4].x =          x; p[4].y = y;
-   return XPolygonRegion(p, 5, EvenOddRule);
-}
 

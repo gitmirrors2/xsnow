@@ -20,6 +20,7 @@
 */
 #pragma once
 #include <gtk/gtk.h>
+#include <X11/Intrinsic.h>
 extern Display *display;
 extern int screen;
 extern Window SnowWin;
@@ -33,3 +34,7 @@ extern int IsWayland;
 extern int WorkspaceActive(void);  // defined in main.c
 extern GtkWidget       *drawing_area;
 extern GdkWindow       *gdkwindow;
+extern int       UseAlpha;
+extern Pixel   ErasePixel;
+extern int          Exposures;
+extern Pixel   BlackPix;

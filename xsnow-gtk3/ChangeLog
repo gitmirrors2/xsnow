@@ -1,3 +1,5 @@
+version 3.0.3-gtk-0.1
+	Santa runs in gtk
 version 3.0.3
 	birds.c: use actual time to compute bird positions instead of callback
 	time
