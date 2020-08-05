@@ -418,16 +418,29 @@ int do_update_pos_birds()
       return FALSE;
    LEAVE_IF_INACTIVE;
    P("do_update_pos_birds %d\n",Nbirds);
-   counter ++;
+   static int firstcall = 1;
+   static double tprev = 0;
+   double dt;
+   double tnow = wallclock();
+   if (firstcall)
+   {
+      dt = time_update_pos_birds;
+      firstcall = 0;
+   }
+   else
+      dt = tnow-tprev;
+   tprev = tnow;
+
+   P("%f\n",dt-time_update_pos_birds);
 
    int i;
    for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
 
-      bird->x += time_update_pos_birds*bird->sx;
-      bird->y += time_update_pos_birds*bird->sy;
-      bird->z += time_update_pos_birds*bird->sz;
+      bird->x += dt*bird->sx;
+      bird->y += dt*bird->sy;
+      bird->z += dt*bird->sz;
       P("update: %f %f %f\n",bird->x,bird->z,bird->sx);
 
    }
@@ -475,7 +488,7 @@ int do_draw_birds()
 	 r2i(&attrbird);
 	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz);
 	 cairo_paint(cr);
-//#define TESTBIRDS
+	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
 	    // show the three types of birds flying in the centre
