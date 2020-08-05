@@ -125,7 +125,7 @@ static void attrbird2surface(void);
 static float time_update_pos_birds     = 0.01;
 static float time_update_speed_birds   = 0.20;
 static float time_draw_birds           = 0.04;
-static float time_wings                = 0.1;
+static float time_wings                = 0.10;
 
 static struct kdtree *kd = 0;
 
@@ -385,10 +385,9 @@ int do_update_speed_birds()
       // randomize:
       {
 	 const float p  = 0.4;  //  0<=p<=1 the higher the more random
-	 const float p1 = 1.0f-0.5*p;
-	 bird->sx *= (p1+p*drand48());
-	 bird->sy *= (p1+p*drand48());
-	 bird->sz *= (p1+p*drand48());
+	 bird->sx += bird->sx*p*drand48();
+	 bird->sy += bird->sy*p*drand48();
+	 bird->sz += bird->sz*p*drand48();
       }
 
       normalize_speed(bird,globals.meanspeed*(0.9+drand48()*0.2));
@@ -418,16 +417,30 @@ int do_update_pos_birds()
       return FALSE;
    LEAVE_IF_INACTIVE;
    P("do_update_pos_birds %d\n",Nbirds);
-   counter ++;
+   static int firstcall = 1;
+   static double tprev = 0;
+   double dt;
+   double tnow = wallclock();
+   if (firstcall)
+   {
+      dt = time_update_pos_birds;
+      firstcall = 0;
+   }
+   else
+      dt = tnow-tprev;
+
+   tprev = tnow;
+
+   P("%f\n",dt);
 
    int i;
    for (i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
 
-      bird->x += time_update_pos_birds*bird->sx;
-      bird->y += time_update_pos_birds*bird->sy;
-      bird->z += time_update_pos_birds*bird->sz;
+      bird->x += dt*bird->sx;
+      bird->y += dt*bird->sy;
+      bird->z += dt*bird->sz;
       P("update: %f %f %f\n",bird->x,bird->z,bird->sx);
 
    }
@@ -475,7 +488,7 @@ int do_draw_birds()
 	 r2i(&attrbird);
 	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz);
 	 cairo_paint(cr);
-//#define TESTBIRDS
+	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
 	    // show the three types of birds flying in the centre
@@ -639,10 +652,15 @@ void init_birds(int start)
       bird->y = drand48()*globals.maxy;
       bird->z = drand48()*globals.maxz;
 
-      if (drand48() > 0.5)
+      double r = drand48();
+      if (r > 0.75)
 	 bird->x += globals.maxx;
-      else
+      else if (r > 0.50)
 	 bird->x -= globals.maxx;
+      else if (r > 0.25)
+	 bird->y += globals.maxy;
+      else 
+	 bird->y -= globals.maxy;
 
       bird->iw = 1;
       bird->ih = 1;
