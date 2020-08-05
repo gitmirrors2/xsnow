@@ -125,7 +125,7 @@ static void attrbird2surface(void);
 static float time_update_pos_birds     = 0.01;
 static float time_update_speed_birds   = 0.20;
 static float time_draw_birds           = 0.04;
-static float time_wings                = 0.1;
+static float time_wings                = 0.10;
 
 static struct kdtree *kd = 0;
 
@@ -273,6 +273,24 @@ int do_update_speed_birds()
    LEAVE_IF_INACTIVE;
    P("do_update_speed_birds %d\n",counter);
 
+   static int firstcall = 1;
+   static double tprev;
+   double tnow = wallclock();
+   double dt;
+
+   if (firstcall)
+   {
+      dt = time_update_speed_birds;
+      firstcall = 0;
+   }
+   else
+      dt = tnow - tprev;
+
+   tprev = tnow;
+
+   float timefactor = dt/0.2;
+   P("%f\n",timefactor);
+
    kd_free(kd);
    kd = kd_create(3);
 
@@ -348,14 +366,14 @@ int do_update_speed_birds()
       if (num > 0)
       {
 	 int p = (100-Flags.FollowWeight)*0.1;
-	 bird->sx = (sumsx + p*bird->sx)/(p+1+num);
-	 bird->sy = (sumsy + p*bird->sy)/(p+1+num);
-	 bird->sz = (sumsz + p*bird->sz)/(p+1+num);
+	 bird->sx = timefactor*(sumsx + p*bird->sx)/(p+1+num);
+	 bird->sy = timefactor*(sumsy + p*bird->sy)/(p+1+num);
+	 bird->sz = timefactor*(sumsz + p*bird->sz)/(p+1+num);
       }
       // adjust speed to obtain desired distance to other birds
       if (num > 0)
       {
-	 float q = Flags.DisWeight*0.4;
+	 float q = timefactor*Flags.DisWeight*0.4;
 	 bird->sx += q*(meanprefx - bird->x);
 	 bird->sy += q*(meanprefy - bird->y);
 	 bird->sz += q*(meanprefz - bird->z);
@@ -369,7 +387,7 @@ int do_update_speed_birds()
       float dy = globals.attry - bird->y;
       float dz = globals.attrz - bird->z;
 
-      float f = Flags.AttrFactor*0.01f*0.05f;
+      float f = timefactor*Flags.AttrFactor*0.01f*0.05f;
 
       bird->sx += f*dx;
       bird->sy += f*dy;
@@ -385,10 +403,16 @@ int do_update_speed_birds()
       // randomize:
       {
 	 const float p  = 0.4;  //  0<=p<=1 the higher the more random
+	 // multiply by timefactor?
+	 /*
 	 const float p1 = 1.0f-0.5*p;
 	 bird->sx *= (p1+p*drand48());
 	 bird->sy *= (p1+p*drand48());
 	 bird->sz *= (p1+p*drand48());
+	 */
+	 bird->sx += bird->sx*p*drand48();
+	 bird->sy += bird->sy*p*drand48();
+	 bird->sz += bird->sz*p*drand48();
       }
 
       normalize_speed(bird,globals.meanspeed*(0.9+drand48()*0.2));
@@ -429,9 +453,10 @@ int do_update_pos_birds()
    }
    else
       dt = tnow-tprev;
+
    tprev = tnow;
 
-   P("%f\n",dt-time_update_pos_birds);
+   P("%f\n",dt);
 
    int i;
    for (i=0; i<Nbirds; i++)

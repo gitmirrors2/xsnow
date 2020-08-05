@@ -1,6 +1,7 @@
 version 3.0.3
 	birds.c: use actual time to compute bird positions instead of callback
 	time
+	birds.c: make speed adjustment of birds dependent on time elapsed
 
 version 3.0.2
 	If birds not on active workspace, do not updte and paint them
