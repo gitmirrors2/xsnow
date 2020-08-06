@@ -27,7 +27,7 @@ cp debian.$codename/* debian || exit
 echo xxxxxxxxx dh_make
 dh_make --yes -s --createorig
 cd ..
-echo xxxxxxxxx dpkg-source
+echo xxxxxxxxx "dpkg-source -b $dir"
 dpkg-source -b $dir || exit 1
 cd -
 #debuild -us -uc --lintian-opts --profile debian || exit
