@@ -19,16 +19,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#include "xsnow.h"
-extern int    Santa_draw(cairo_t *cr);
-extern void   Santa_HandleFactor(void);
-extern void   Santa_init(void);
-extern void   Santa_set_gc(void);
-extern int    Santa_ui(void);
 
-extern float  ActualSantaSpeed;
-extern Region SantaPlowRegion;
-extern int    SantaWidth;
-extern int    SantaX;
-extern int    SantaY;
+#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 
+extern FILE   *HomeOpen(const char *file,const char *mode,char **path);

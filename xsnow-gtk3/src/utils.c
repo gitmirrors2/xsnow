@@ -1,4 +1,3 @@
-#pragma once
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -19,16 +18,22 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#include "xsnow.h"
-extern int    Santa_draw(cairo_t *cr);
-extern void   Santa_HandleFactor(void);
-extern void   Santa_init(void);
-extern void   Santa_set_gc(void);
-extern int    Santa_ui(void);
+#include <stdio.h>
+#include <utils.h>
+#include <string.h>
+#include <stdlib.h>
 
-extern float  ActualSantaSpeed;
-extern Region SantaPlowRegion;
-extern int    SantaWidth;
-extern int    SantaX;
-extern int    SantaY;
-
+FILE *HomeOpen(const char *file,const char *mode, char **path)
+{
+   char *h = getenv("HOME");
+   if (h == 0)
+      return 0;
+   char *home = strdup(h);
+   (*path) = (char *) malloc(strlen(home)+strlen(file)+2);
+   strcpy(*path,home);
+   strcat(*path,"/");
+   strcat(*path,file);
+   FILE *f = fopen(*path,mode);
+   free(home);
+   return f;
+}

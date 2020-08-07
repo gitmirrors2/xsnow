@@ -23,46 +23,97 @@
 #include <gtk/gtk.h>
 #include <math.h>
 #include <X11/Intrinsic.h>
+#include <X11/xpm.h>
 #include "Santa.h"
 #include "pixmaps.h"
 #include "debug.h"
 #include "windows.h"
 #include "flags.h"
+#include "utils.h"
 #include "wind.h"
+#include "ixpm.h"
 
-#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
-static void init_Santa_surfaces(void);
-static int do_usanta(void);
-static Region RegionCreateRectangle(int x, int y, int w, int h);
-static int    SantaYStep;
-static Region SantaRegion;
 static int    do_santa(void);
 static int    do_santa1(void);
-static void   DrawSanta1(void);
+static int    do_usanta(void);
+static void   EraseSanta(int x, int y);
 static void   DrawSanta(void);
+static void   DrawSanta1(void);
+static void   InitSantaPixmaps(void);
+static void   init_Santa_surfaces(void);
+static Region RegionCreateRectangle(int x, int y, int w, int h);
+static void   ResetSanta(void);
+static void   SetSantaSpeed(void);
+
+static int    CurrentSanta;
 static GC     ESantaGC;
+static int    OldSantaX = 0;  // the x value of Santa when he was last drawn
+static int    OldSantaY = 0;  // the y value of Santa when he was last drawn
 static GC     SantaGC;
+static int    SantaHeight;   
+static Pixmap SantaMaskPixmap[PIXINANIMATION];
+static Pixmap SantaPixmap[PIXINANIMATION];
+static Region SantaRegion;
+static float  SantaSpeed;  
+static float  SantaXr;
+static float  SantaYr;
+static int    SantaYStep;
 
-cairo_surface_t *Santa_surfaces[MAXSANTA+1][2][PIXINANIMATION];
-
+float  ActualSantaSpeed;
+Region SantaPlowRegion;
+int    SantaWidth;
 int    SantaX;   // should always be lrintf(SantaYr)
 int    SantaY;   // should always be lrintf(SantaYr)
-float  ActualSantaSpeed;
-float  SantaSpeed;  
-float  SantaXr;
-float  SantaYr;
-int    SantaHeight;   
-int    SantaWidth;
-int    CurrentSanta;
-Region SantaPlowRegion;
-int    OldSantaX = 0;  // the x value of Santa when he was last drawn
-int    OldSantaY = 0;  // the y value of Santa when he was last drawn
 
+static cairo_surface_t *Santa_surfaces[MAXSANTA+1][2][PIXINANIMATION];
+
+/* Speed for each Santa  in pixels/second*/
+static float Speed[] = {SANTASPEED0,  /* Santa 0 */
+   SANTASPEED1,  /* Santa 1 */
+   SANTASPEED2,  /* Santa 2 */
+   SANTASPEED3,  /* Santa 3 */
+   SANTASPEED4,  /* Santa 4 */
+};
+
+int Santa_ui()
+{
+   int changes  = 0;
+   if (Flags.SantaSize != OldFlags.SantaSize || 
+	 Flags.NoRudolf != OldFlags.NoRudolf)
+   {
+      EraseSanta(OldSantaX,OldSantaY);
+      InitSantaPixmaps();
+      OldFlags.SantaSize = Flags.SantaSize;
+      OldFlags.NoRudolf = Flags.NoRudolf;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if (Flags.NoSanta != OldFlags.NoSanta)
+   {
+      //P("do_ui_check\n");
+      if (Flags.NoSanta)
+	 EraseSanta(OldSantaX, OldSantaY);
+      OldFlags.NoSanta = Flags.NoSanta;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.SantaSpeedFactor != OldFlags.SantaSpeedFactor)
+   {
+      SetSantaSpeed();
+      OldFlags.SantaSpeedFactor = Flags.SantaSpeedFactor;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+
+   return changes;
+}
 
 int Santa_draw(cairo_t *cr)
 {
+   if (Flags.NoSanta)
+      return TRUE;
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);
@@ -74,10 +125,12 @@ void Santa_init()
 {
    ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
    SantaGC              = XCreateGC(display, SnowWin, 0, 0);
+   InitSantaPixmaps();
 
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
    init_Santa_surfaces();
+   ResetSanta();   
    add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
 }
 
@@ -100,21 +153,116 @@ void init_Santa_surfaces()
       for (j=0; j<2; j++)
 	 for (k=0; k<PIXINANIMATION; k++)
 	 {
-	    R("%d %d %d\n",i,j,k);
+	    P("%d %d %d\n",i,j,k);
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)Santas[i][j][k]);
 	    Santa_surfaces[i][j][k] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	    g_clear_object(&pixbuf);
 	 }
 }
 
+void SetSantaSpeed()
+{
+   SantaSpeed = Speed[Flags.SantaSize];
+   if (Flags.SantaSpeedFactor < 10)
+      SantaSpeed = 0.1*SantaSpeed;
+   else
+      SantaSpeed = 0.01*Flags.SantaSpeedFactor*SantaSpeed;
+   ActualSantaSpeed               = SantaSpeed;
+}
+
+/* ------------------------------------------------------------------ */ 
+void InitSantaPixmaps()
+{
+   XpmAttributes attributes;
+   attributes.valuemask = XpmDepth /*| XpmColorKey*/;
+   attributes.depth = SnowWinDepth;
+
+   SetSantaSpeed();
+
+   char *path[PIXINANIMATION];
+   const char *filenames[] = 
+   {
+      "xsnow/pixmaps/santa1.xpm",
+      "xsnow/pixmaps/santa2.xpm",
+      "xsnow/pixmaps/santa3.xpm",
+      "xsnow/pixmaps/santa4.xpm",
+   };
+   FILE *f;
+   int i;
+   int ok = 1;
+   for (i=0; i<PIXINANIMATION; i++)
+   {
+      path[i] = 0;
+      f = HomeOpen(filenames[i],"r",&path[i]);
+      if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
+      fclose(f);
+   }
+   if (ok)
+   {
+      printf("Using external Santa: %s.\n",path[0]);
+      if (!Flags.NoMenu)
+	 printf("Disabling menu.\n");
+      Flags.NoMenu = 1;
+      int rc,i;
+      char **santaxpm;
+      for (i=0; i<PIXINANIMATION; i++)
+      {
+	 if(SantaPixmap[i]) 
+	    XFreePixmap(display,SantaPixmap[i]);
+	 if(SantaMaskPixmap[i]) 
+	    XFreePixmap(display,SantaMaskPixmap[i]);
+	 rc = XpmReadFileToData(path[i],&santaxpm);
+	 if(rc == XpmSuccess)
+	 {
+	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
+		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
+
+	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
+	    XpmFree(santaxpm);
+	 }
+	 else
+	 {
+	    printf("Invalid external xpm for Santa given: %s\n",path[i]);
+	    exit(1);
+	 }
+	 free(path[i]);
+      }
+      return;
+   }
+
+
+   int rc[PIXINANIMATION];
+   int withRudolf;
+   withRudolf = !Flags.NoRudolf;
+
+   for(i=0; i<PIXINANIMATION; i++)
+   {
+      if(SantaPixmap[i]) 
+	 XFreePixmap(display,SantaPixmap[i]);
+      if(SantaMaskPixmap[i]) 
+	 XFreePixmap(display,SantaMaskPixmap[i]);
+      rc[i] = iXpmCreatePixmapFromData(display, SnowWin, 
+	    Santas[Flags.SantaSize][withRudolf][i], 
+	    &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
+      sscanf(Santas[Flags.SantaSize][withRudolf][0][0],"%d %d", 
+	    &SantaWidth,&SantaHeight);
+   }
+
+   int wrong = 0;
+   for (i=0; i<PIXINANIMATION; i++)
+   {
+      if (rc[i])
+      {
+	 printf("Something wrong reading Santa's xpm nr %d: errorstring %s\n",rc[i],XpmGetErrorString(rc[i]));
+	 wrong = 1;
+      }
+   }
+   if (wrong) exit(1);
+}		
+
 void Santa_HandleFactor()
 {
    static guint santa_id=0, santa1_id=0;
-   // re-add things whose timing is dependent on factor
-   if (Flags.CpuLoad <= 0)
-      factor = 1;
-   else
-      factor = 100.0/Flags.CpuLoad;
 
    if (santa_id)
       g_source_remove(santa_id);
@@ -135,6 +283,7 @@ int do_santa()
       DrawSanta();
    return TRUE;
 }
+
 int do_santa1()
 {
    if (Flags.Done)
@@ -145,6 +294,7 @@ int do_santa1()
       DrawSanta1();
    return TRUE;
 }
+
 void DrawSanta() 
 {
    if(OldSantaX != SantaX || OldSantaY != SantaY)
@@ -184,6 +334,7 @@ void DrawSanta1()
 	 0,0,SantaWidth,SantaHeight,
 	 SantaX,SantaY);
 }
+
 // update santa's coordinates and speed
 int do_usanta()
 {

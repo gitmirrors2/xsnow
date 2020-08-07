@@ -38,7 +38,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
 		hashtable.cpp hashtable.h\
-		Santa.c Santa.h wind.h
+		Santa.c Santa.h wind.h utils.c utils.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 
@@ -73,7 +73,5 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h 
+CLEANFILES = xsnow.6 ui_xml.h .deps/* 
 
-clean::
-	rm -rf .deps

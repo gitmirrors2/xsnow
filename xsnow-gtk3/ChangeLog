@@ -1,3 +1,6 @@
+version 3.0.3.01
+	All santa stuff moved from main.c to Santa.c
+	Added utils.c utils.h
 version 3.0.3-gtk-0.1
 	Santa runs in gtk
 version 3.0.3

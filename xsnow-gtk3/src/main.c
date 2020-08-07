@@ -79,6 +79,7 @@
 #include "pixmaps.h"
 #include "transparent.h"
 #include "ui.h"
+#include "utils.h"
 #include "version.h"
 #include "windows.h"
 #include "wmctrl.h"
@@ -113,9 +114,6 @@ int     UseAlpha;
 Pixel   ErasePixel;
 int     Exposures;
 Pixel   BlackPix;
-// Santa stuff
-Pixmap SantaMaskPixmap[PIXINANIMATION] = {0,0,0,0};
-Pixmap SantaPixmap[PIXINANIMATION]     = {0,0,0,0};
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -157,13 +155,6 @@ static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static char     **TreeXpm = 0;
 
 
-/* Speed for each Santa  in pixels/second*/
-static float Speed[] = {SANTASPEED0,  /* Santa 0 */
-   SANTASPEED1,  /* Santa 1 */
-   SANTASPEED2,  /* Santa 2 */
-   SANTASPEED3,  /* Santa 3 */
-   SANTASPEED4,  /* Santa 4 */
-};
 
 // star stuff
 static int NStars;
@@ -257,7 +248,6 @@ static void   EraseSnowFlake(Snow *flake);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static int    HandleFallenSnow(FallenSnow *fsnow);
 static void   HandleExposures(void);
-static FILE   *HomeOpen(const char *file,const char *mode,char **path);
 static Pixel  IAllocNamedColor(const char *colorName, Pixel dfltPix);
 static void   InitBlowOffFactor(void);
 static void   InitDisplayDimensions(void);
@@ -267,7 +257,6 @@ static void   ReInitTree0(void);
 static void   RestartDisplay(void);
 static void   InitBirdsColor(void);
 static void   InitFlake(Snow *flake);
-static void   InitSantaPixmaps(void);
 static void   InitSnowOnTrees(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
@@ -277,7 +266,6 @@ static int    RandInt(int maxVal);
 static void   RedrawTrees(void);
 static void   SetGCFunctions(void);
 static void   SetMaxScreenSnowDepth(void);
-static void   SetSantaSpeed(void);
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
 static void   SigHandler(int signum);
@@ -321,7 +309,6 @@ static int do_ustar(Skoordinaten *star);
 static int do_wind(void);
 static int do_wupdate(void);
 
-#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
 #define makeflake(f) do {f = (Snow *)malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
 
@@ -386,7 +373,6 @@ int main_c(int argc, char *argv[])
    InitSnowOnTrees();
    InitBlowOffFactor();
 
-   Santa_init();
 
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
@@ -445,6 +431,8 @@ int main_c(int argc, char *argv[])
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, UseAlpha,Exposures);
 
+   Santa_init();
+
    NoSnowArea_dynamic   = XCreateRegion();  // needed when drawing on background with xor.
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
@@ -462,7 +450,6 @@ int main_c(int argc, char *argv[])
    starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	 (char *)starPix.starBits, starPix.width, starPix.height);
    InitFlakesPerSecond();
-   InitSantaPixmaps();
    InitFallenSnow();
    InitTreePixmaps();  // can change value of Flags.NoMenu
 
@@ -502,7 +489,6 @@ int main_c(int argc, char *argv[])
    InitSnowColor();
    InitBirdsColor();
 
-   ResetSanta();   
    // events
    if(Isdesktop)
       XSelectInput(display, SnowWin, 0);
@@ -619,33 +605,8 @@ int do_ui_check()
       return TRUE;
 
    int changes = 0;
+   changes += Santa_ui();
 
-   if (Flags.SantaSize != OldFlags.SantaSize || 
-	 Flags.NoRudolf != OldFlags.NoRudolf)
-   {
-      EraseSanta(OldSantaX,OldSantaY);
-      InitSantaPixmaps();
-      OldFlags.SantaSize = Flags.SantaSize;
-      OldFlags.NoRudolf = Flags.NoRudolf;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if (Flags.NoSanta != OldFlags.NoSanta)
-   {
-      //P("do_ui_check\n");
-      if (Flags.NoSanta)
-	 EraseSanta(OldSantaX, OldSantaY);
-      OldFlags.NoSanta = Flags.NoSanta;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.SantaSpeedFactor != OldFlags.SantaSpeedFactor)
-   {
-      SetSantaSpeed();
-      OldFlags.SantaSpeedFactor = Flags.SantaSpeedFactor;
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(strcmp(Flags.TreeType, OldFlags.TreeType))
    {
       P("Treetype %s %s\n",Flags.TreeType,OldFlags.TreeType);
@@ -2614,105 +2575,7 @@ void SetMaxScreenSnowDepth()
 }
 
 
-void SetSantaSpeed()
-{
-   SantaSpeed = Speed[Flags.SantaSize];
-   if (Flags.SantaSpeedFactor < 10)
-      SantaSpeed = 0.1*SantaSpeed;
-   else
-      SantaSpeed = 0.01*Flags.SantaSpeedFactor*SantaSpeed;
-   ActualSantaSpeed               = SantaSpeed;
-}
 
-/* ------------------------------------------------------------------ */ 
-void InitSantaPixmaps()
-{
-   XpmAttributes attributes;
-   attributes.valuemask = XpmDepth /*| XpmColorKey*/;
-   attributes.depth = SnowWinDepth;
-
-   SetSantaSpeed();
-
-   char *path[PIXINANIMATION];
-   const char *filenames[] = 
-   {
-      "xsnow/pixmaps/santa1.xpm",
-      "xsnow/pixmaps/santa2.xpm",
-      "xsnow/pixmaps/santa3.xpm",
-      "xsnow/pixmaps/santa4.xpm",
-   };
-   FILE *f;
-   int i;
-   int ok = 1;
-   for (i=0; i<PIXINANIMATION; i++)
-   {
-      path[i] = 0;
-      f = HomeOpen(filenames[i],"r",&path[i]);
-      if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
-      fclose(f);
-   }
-   if (ok)
-   {
-      printf("Using external Santa: %s.\n",path[0]);
-      if (!Flags.NoMenu)
-	 printf("Disabling menu.\n");
-      Flags.NoMenu = 1;
-      int rc,i;
-      char **santaxpm;
-      for (i=0; i<PIXINANIMATION; i++)
-      {
-	 if(SantaPixmap[i]) 
-	    XFreePixmap(display,SantaPixmap[i]);
-	 if(SantaMaskPixmap[i]) 
-	    XFreePixmap(display,SantaMaskPixmap[i]);
-	 rc = XpmReadFileToData(path[i],&santaxpm);
-	 if(rc == XpmSuccess)
-	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
-		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
-
-	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
-	    XpmFree(santaxpm);
-	 }
-	 else
-	 {
-	    printf("Invalid external xpm for Santa given: %s\n",path[i]);
-	    exit(1);
-	 }
-	 free(path[i]);
-      }
-      return;
-   }
-
-
-   int rc[PIXINANIMATION];
-   int withRudolf;
-   withRudolf = !Flags.NoRudolf;
-
-   for(i=0; i<PIXINANIMATION; i++)
-   {
-      if(SantaPixmap[i]) 
-	 XFreePixmap(display,SantaPixmap[i]);
-      if(SantaMaskPixmap[i]) 
-	 XFreePixmap(display,SantaMaskPixmap[i]);
-      rc[i] = iXpmCreatePixmapFromData(display, SnowWin, 
-	    Santas[Flags.SantaSize][withRudolf][i], 
-	    &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
-      sscanf(Santas[Flags.SantaSize][withRudolf][0][0],"%d %d", 
-	    &SantaWidth,&SantaHeight);
-   }
-
-   int wrong = 0;
-   for (i=0; i<PIXINANIMATION; i++)
-   {
-      if (rc[i])
-      {
-	 printf("Something wrong reading Santa's xpm nr %d: errorstring %s\n",rc[i],XpmGetErrorString(rc[i]));
-	 wrong = 1;
-      }
-   }
-   if (wrong) exit(1);
-}		
 
 void InitTreePixmaps()
 {
@@ -2797,20 +2660,6 @@ void ReInitTree0()
 }
 
 
-FILE *HomeOpen(const char *file,const char *mode, char **path)
-{
-   char *h = getenv("HOME");
-   if (h == 0)
-      return 0;
-   char *home = strdup(h);
-   (*path) = (char *) malloc(strlen(home)+strlen(file)+2);
-   strcpy(*path,home);
-   strcat(*path,"/");
-   strcat(*path,file);
-   FILE *f = fopen(*path,mode);
-   free(home);
-   return f;
-}
 
 int BlowOff()
 {
@@ -2939,10 +2788,10 @@ void SetGCFunctions()
 
    Santa_set_gc();
    /*
-   XSetFunction(display,   ESantaGC, GXcopy);
-   XSetFillStyle(display,  ESantaGC, FillSolid);
-   XSetForeground(display, ESantaGC, ErasePixel);
-   */
+      XSetFunction(display,   ESantaGC, GXcopy);
+      XSetFillStyle(display,  ESantaGC, FillSolid);
+      XSetForeground(display, ESantaGC, ErasePixel);
+      */
 
    XSetFunction(display,   TreeGC, GXcopy);
    XSetForeground(display, TreeGC, BlackPix);

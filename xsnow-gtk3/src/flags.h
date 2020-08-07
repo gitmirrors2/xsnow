@@ -49,6 +49,7 @@ typedef struct flags {
 
 
 extern FLAGS Flags;
+extern FLAGS OldFlags;
 
 extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);
