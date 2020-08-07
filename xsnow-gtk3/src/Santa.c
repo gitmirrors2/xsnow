@@ -158,6 +158,61 @@ void init_Santa_surfaces()
 	    Santa_surfaces[i][j][k] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	    g_clear_object(&pixbuf);
 	 }
+   int ok = 1;
+   char *path[PIXINANIMATION];
+   const char *filenames[] = 
+   {
+      "xsnow/pixmaps/santa1.xpm",
+      "xsnow/pixmaps/santa2.xpm",
+      "xsnow/pixmaps/santa3.xpm",
+      "xsnow/pixmaps/santa4.xpm",
+   };
+   for (i=0; i<PIXINANIMATION; i++)
+   {
+      path[i] = 0;
+      FILE *f = HomeOpen(filenames[i],"r",&path[i]);
+      if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
+      fclose(f);
+   }
+   if (ok)
+   {
+      printf("Using external Santa: %s.\n",path[0]);
+      if (!Flags.NoMenu)
+	 printf("Disabling menu.\n");
+      Flags.NoMenu = 1;
+      int rc,i;
+      char **santaxpm;
+      for (i=0; i<PIXINANIMATION; i++)
+      {
+	 /*
+	 if(SantaPixmap[i]) 
+	    XFreePixmap(display,SantaPixmap[i]);
+	 if(SantaMaskPixmap[i]) 
+	    XFreePixmap(display,SantaMaskPixmap[i]);
+	    */
+	 rc = XpmReadFileToData(path[i],&santaxpm);
+	 if(rc == XpmSuccess)
+	 {
+	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
+	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,gdkwindow);
+	    /*
+	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
+		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
+
+	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
+	    */
+	    XpmFree(santaxpm);
+	    g_clear_object(&pixbuf);
+	 }
+	 else
+	 {
+	    printf("Invalid external xpm for Santa given: %s\n",path[i]);
+	    exit(1);
+	 }
+	 free(path[i]);
+      }
+      Flags.SantaSize = 0;
+   }
 }
 
 void SetSantaSpeed()

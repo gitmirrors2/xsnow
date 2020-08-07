@@ -1,3 +1,6 @@
+version 3.0.4.01
+	Santa.c: handle usage of user-defined Santa
+	if Flags.NoMenu: do not write to ui labels or make ui sticky/unsticky
 version 3.0.3.01
 	All santa stuff moved from main.c to Santa.c
 	Added utils.c utils.h
