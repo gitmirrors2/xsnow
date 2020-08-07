@@ -1,3 +1,6 @@
+version 3.0.4
+	check on Flags.NoMenu before writing to ui label or
+	make the ui window sticky.
 version 3.0.3
 	birds.c: use actual time to compute bird positions instead of callback
 	time

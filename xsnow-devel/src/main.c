@@ -566,7 +566,8 @@ int main_c(int argc, char *argv[])
 	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
       }
    }
-   ui_set_sticky(Flags.AllWorkspaces);
+   if (!Flags.NoMenu)
+      ui_set_sticky(Flags.AllWorkspaces);
 
    // main loop
    gtk_main();
@@ -605,8 +606,8 @@ int WorkspaceActive()
  */
 /*
 #define NOTACTIVE \
-   (Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
-   */
+(Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
+*/
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -1721,12 +1722,16 @@ int do_show_range_etc()
 {
    if (Flags.Done)
       return FALSE;
+   if (Flags.NoMenu)
+      return TRUE;
    ui_show_range_etc();
    return TRUE;
 }
 
 int do_show_desktop_type()
 {
+   if (Flags.NoMenu)
+      return TRUE;
    if (IsWayland)
       ui_show_desktop_type("Wayland (Expect some slugginess)");
    else if (IsCompiz)
