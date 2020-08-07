@@ -77,6 +77,7 @@
 #include "kdesetbg.h"
 #include "mainstub.h"
 #include "pixmaps.h"
+#include "scenery.h"
 #include "transparent.h"
 #include "ui.h"
 #include "utils.h"
@@ -107,6 +108,7 @@ int     SnowWinHeight;
 int     SnowWinWidth; 
 int     SnowWinX; 
 int     SnowWinY; 
+int    *TreeType;
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
@@ -114,6 +116,17 @@ int     UseAlpha;
 Pixel   ErasePixel;
 int     Exposures;
 Pixel   BlackPix;
+int     NtreeTypes = 0;
+int     TreeRead   = 0;
+char    **TreeXpm = 0;
+Pixmap   TreePixmap[MAXTREETYPE+1][2];
+Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
+int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
+int        OnTrees = 0;
+int      KillTrees  = 0;  // 1: signal to trees to kill themselves
+int      NTrees     = 0;  // actual number of trees
+GC       TreeGC;
+Treeinfo *Trees = 0;
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -133,7 +146,6 @@ static float SnowSpeedFactor;
 // fallen snow stuff
 static FallenSnow *FsnowFirst = 0;
 static int        MaxScrSnowDepth = 0;
-static int        OnTrees = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
@@ -143,16 +155,7 @@ static char     **Argv;
 
 // tree stuff
 static int      KillFlakes = 1;  // 1: signal to flakes to kill themselves, and do not genereate flakes
-static int      KillTrees  = 0;  // 1: signal to trees to kill themselves
 static int      KillStars  = 0;  // 1: signal to trees to kill themselves
-static int      NTrees     = 0;  // actual number of trees
-static int      NtreeTypes = 0;
-static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
-static Pixmap   TreePixmap[MAXTREETYPE+1][2];
-static int      *TreeType;
-static int      TreeRead = 0;
-static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-static char     **TreeXpm = 0;
 
 
 
@@ -220,7 +223,6 @@ static GC SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC SnowOnTreesGC;
 static GC StarGC[STARANIMATIONS];
 static GC TestingGC;
-static GC TreeGC;
 //static GC TreesGC[2];
 
 // region stuff
@@ -253,14 +255,12 @@ static void   InitBlowOffFactor(void);
 static void   InitDisplayDimensions(void);
 static void   InitFallenSnow(void);
 static void   InitFlakesPerSecond(void);
-static void   ReInitTree0(void);
 static void   RestartDisplay(void);
 static void   InitBirdsColor(void);
 static void   InitFlake(Snow *flake);
 static void   InitSnowOnTrees(void);
 static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
-static void   InitTreePixmaps(void);
 static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
 static void   RedrawTrees(void);
@@ -288,7 +288,6 @@ static int do_change_attr(void);
 static int do_clean(void);
 static int do_displaychanged(void);
 static int do_draw_all(void);
-static int do_drawtree(Treeinfo *tree);
 static int do_emeteorite(void);
 static int do_event(void);
 static int do_fallen(void);
@@ -451,7 +450,8 @@ int main_c(int argc, char *argv[])
 	 (char *)starPix.starBits, starPix.width, starPix.height);
    InitFlakesPerSecond();
    InitFallenSnow();
-   InitTreePixmaps();  // can change value of Flags.NoMenu
+   //InitTreePixmaps();  // can change value of Flags.NoMenu
+   scenery_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -2122,6 +2122,8 @@ void EraseSnowFlake(Snow *flake)
 }
 
 // fallen snow and trees must have been initialized 
+// tree coordinates and so are recalculated here, in anticipation
+// of a changed window size
 int do_initbaum()
 {
    if (Flags.Done)
@@ -2237,6 +2239,7 @@ int do_initbaum()
       tree->y    = y;
       tree->type = tt;
       tree->rev  = flop;
+      P("tree: %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev);
 
       add_to_mainloop(PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
 
@@ -2256,6 +2259,8 @@ int do_initbaum()
       XDestroyRegion(r);
 
       NTrees++;
+      Trees = realloc(Trees,NTrees*sizeof(Treeinfo));
+      Trees[NTrees-1] = *tree;
    }
    OnTrees = 0;
    return TRUE;
@@ -2445,32 +2450,6 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 
 
 
-
-
-
-
-int do_drawtree(Treeinfo *tree) 
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if (KillTrees)
-   {
-      free(tree);
-      NTrees--;
-      return FALSE;
-   }
-   int x = tree->x; int y = tree->y; int t = tree->type; int r = tree->rev;
-   P("t = %d %d\n",t,(int)wallclock());
-   if (t<0) t=0;
-   XSetClipMask(display, TreeGC, TreeMaskPixmap[t][r]);
-   XSetClipOrigin(display, TreeGC, x, y);
-   XCopyArea(display, TreePixmap[t][r], SnowWin, TreeGC, 
-	 0,0,TreeWidth[t],TreeHeight[t], x, y);
-   return TRUE;
-}
-
 void EraseTrees()
 {
    KillTrees = 1;
@@ -2583,87 +2562,7 @@ void SetMaxScreenSnowDepth()
 
 
 
-void InitTreePixmaps()
-{
-   XpmAttributes attributes;
-   attributes.valuemask = XpmDepth;
-   attributes.depth     = SnowWinDepth;
-   char *path;
-   FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
-   if (f)
-   {
-      // there seems to be a local definition of tree
-      // set TreeType to some number, so we can respond accordingly
-      free(TreeType);
-      TreeType = (int *)malloc(sizeof(*TreeType));
-      NtreeTypes = 1;
-      TreeRead = 1;
-      int rc = XpmReadFileToData(path,&TreeXpm);
-      if(rc == XpmSuccess)
-      {
-	 int i;
-	 for(i=0; i<2; i++)
-	    iXpmCreatePixmapFromData(display, SnowWin, TreeXpm, 
-		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
-	 sscanf(*TreeXpm,"%d %d", &TreeWidth[0],&TreeHeight[0]);
-	 printf("using external tree: %s\n",path);
-	 if (!Flags.NoMenu)
-	    printf("Disabling menu.\n");
-	 Flags.NoMenu = 1;
-      }
-      else
-      {
-	 printf("Invalid external xpm for tree given: %s\n",path);
-	 exit(1);
-      }
-      fclose(f);
-      free(path);
-   }
-   else
-   {
-      int i;
-      for(i=0; i<2; i++)
-      {
-	 int tt;
-	 for (tt=0; tt<=MAXTREETYPE; tt++)
-	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
-		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
-	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
-	 }
-      }
-      ReInitTree0();
-   }
-   OnTrees = 0;
-}
 
-// apply TreeColor to xpmtree[0] and xpmtree[1]
-void ReInitTree0()
-{
-   XpmAttributes attributes;
-   attributes.valuemask = XpmDepth;
-   attributes.depth     = SnowWinDepth;
-   int i;
-   int n = TreeHeight[0]+3;
-   //char *xpmtmp[n];
-   char **xpmtmp = (char **)alloca(n*sizeof(char *));
-   int j;
-   for (j=0; j<2; j++)
-      xpmtmp[j] = strdup(xpmtrees[0][j]);
-   xpmtmp[2] = strdup(". c ");
-   xpmtmp[2] = (char *)realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
-   strcat(xpmtmp[2],Flags.TreeColor);
-   for(j=3; j<n; j++)
-      xpmtmp[j] = strdup(xpmtrees[0][j]);
-   for(i=0; i<2; i++)
-   {
-      XFreePixmap(display,TreePixmap[0][i]);
-      iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
-	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
-   }
-   for (j=0; j<n; j++)
-      free(xpmtmp[j]);
-}
 
 
 
@@ -2734,6 +2633,8 @@ int do_draw_all()
    cairo_paint (cr);
 
    cairo_restore (cr);
+
+   scenery_draw(cr);
 
    birds_draw(cr);
 

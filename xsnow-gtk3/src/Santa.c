@@ -194,6 +194,7 @@ void init_Santa_surfaces()
 	 if(rc == XpmSuccess)
 	 {
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
+	    cairo_surface_destroy( Santa_surfaces[0][0][i]);
 	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,gdkwindow);
 	    /*
 	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
@@ -212,6 +213,7 @@ void init_Santa_surfaces()
 	 free(path[i]);
       }
       Flags.SantaSize = 0;
+      Flags.NoRudolf  = 1;
    }
 }
 
