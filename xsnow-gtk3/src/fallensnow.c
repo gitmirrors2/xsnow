@@ -24,6 +24,9 @@
 #include <math.h>
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
+
+int        MaxScrSnowDepth = 0;
+
 static void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 {
    int i;

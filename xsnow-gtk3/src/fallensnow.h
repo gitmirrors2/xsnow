@@ -54,3 +54,4 @@ extern void FreeFallenSnow(FallenSnow *fallen);
 // find fallensnow with id
 extern FallenSnow *FindFallen(FallenSnow *first, Window id);
 
+extern int        MaxScrSnowDepth;

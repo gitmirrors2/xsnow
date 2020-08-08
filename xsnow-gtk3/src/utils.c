@@ -17,11 +17,13 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #include <stdio.h>
 #include <utils.h>
 #include <string.h>
 #include <stdlib.h>
+#include <X11/Intrinsic.h>
+#include "windows.h"
 
 FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
@@ -37,3 +39,11 @@ FILE *HomeOpen(const char *file,const char *mode, char **path)
    free(home);
    return f;
 }
+
+void ClearScreen()
+{
+   // remove all our snow-related drawings
+   if (!GtkWinb)
+      XClearArea(display, SnowWin, 0,0,0,0,True);
+}
+

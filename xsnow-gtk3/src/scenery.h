@@ -21,20 +21,13 @@
  */
 
 #include "xsnow.h"
-void scenery_init(void);
-extern int      *TreeType;
-extern int      NtreeTypes;
-extern int      TreeRead;
-extern char     **TreeXpm;
-extern Pixmap   TreePixmap[MAXTREETYPE+1][2];
-extern Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
-extern int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-extern void     ReInitTree0(void);
+extern void scenery_init(void);
+extern int      scenery_ui(void);
+extern void     EraseTrees(void);
+extern void     scenery_set_gc(void);
 extern int      OnTrees;
 extern int      scenery_draw(cairo_t *cr);
-extern int      do_drawtree(Treeinfo *tree);
 extern int      KillTrees;  // 1: signal to trees to kill themselves
-extern int      NTrees;  // actual number of trees
-extern GC       TreeGC;
-extern Treeinfo *Trees;
+extern Region SnowOnTreesRegion;
+extern Region TreeRegion;
 

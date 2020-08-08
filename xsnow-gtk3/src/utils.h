@@ -23,3 +23,4 @@
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);
+extern void ClearScreen(void);

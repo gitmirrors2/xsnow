@@ -108,7 +108,6 @@ int     SnowWinHeight;
 int     SnowWinWidth; 
 int     SnowWinX; 
 int     SnowWinY; 
-int    *TreeType;
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
@@ -116,17 +115,7 @@ int     UseAlpha;
 Pixel   ErasePixel;
 int     Exposures;
 Pixel   BlackPix;
-int     NtreeTypes = 0;
-int     TreeRead   = 0;
-char    **TreeXpm = 0;
-Pixmap   TreePixmap[MAXTREETYPE+1][2];
-Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
-int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 int        OnTrees = 0;
-int      KillTrees  = 0;  // 1: signal to trees to kill themselves
-int      NTrees     = 0;  // actual number of trees
-GC       TreeGC;
-Treeinfo *Trees = 0;
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -135,6 +124,7 @@ GtkWidget       *drawing_area = 0;
 GdkWindow       *gdkwindow = 0;
 
 // locals
+static int counter = 0;
 // snow flakes stuff
 static float BlowOffFactor;
 static int   FlakeCount = 0;
@@ -145,7 +135,6 @@ static float SnowSpeedFactor;
 
 // fallen snow stuff
 static FallenSnow *FsnowFirst = 0;
-static int        MaxScrSnowDepth = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
@@ -201,7 +190,7 @@ static double WindTimerStart;
 static int       Isdesktop;
 static XPoint    *SnowOnTrees;
 static GtkWidget *GtkWin  = NULL;  // for snow etc
-static GtkWidget *GtkWinb = NULL;  // for birds
+GtkWidget *GtkWinb = NULL;  // for birds
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -211,7 +200,6 @@ static const char *StarColor[] = { "gold", "gold1", "gold4", "orange" };
 static Pixel MeteoPix;
 static Pixel SnowcPix;
 static Pixel StarcPix[STARANIMATIONS];
-static Pixel TreePix;
 static Pixel Black, White;
 
 /* GC's */
@@ -228,15 +216,12 @@ static GC TestingGC;
 // region stuff
 static Region NoSnowArea_dynamic;
 //static Region NoSnowArea_static;
-static Region TreeRegion;
-static Region SnowOnTreesRegion;
 
 /* Forward decls */
 static Pixel  AllocNamedColor(const char *colorName, Pixel dfltPix);
 static int    BlowOff(void);
 static void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 static void   CleanFallen(Window id);
-static void   ClearScreen(void);
 static void   ConvertOnTreeToFlakes(void);
 static void   HandleFactor(void);
 static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
@@ -245,7 +230,6 @@ static void   DrawFallen(FallenSnow *fsnow);
 static void   DrawSnowFlake(Snow *flake);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 static void   EraseStars(void);
-static void   EraseTrees(void);
 static void   EraseSnowFlake(Snow *flake);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static int    HandleFallenSnow(FallenSnow *fsnow);
@@ -263,7 +247,6 @@ static void   InitSnowSpeedFactor(void);
 static void   InitSnowColor(void);
 static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
-static void   RedrawTrees(void);
 static void   SetGCFunctions(void);
 static void   SetMaxScreenSnowDepth(void);
 static void   SetWhirl(void);
@@ -292,7 +275,6 @@ static int do_emeteorite(void);
 static int do_event(void);
 static int do_fallen(void);
 static int do_genflakes(void);
-static int do_initbaum(void);
 static int do_initsnow(void);
 static int do_initstars(void);
 static int do_meteorite(void);
@@ -361,8 +343,6 @@ int main_c(int argc, char *argv[])
    White = WhitePixel(display, screen);
 
    HandleExposures();
-
-   TreeType = (int *)malloc(sizeof(*TreeType)); // to make realloc() possible in do_initbaum
 
    InitSnowSpeedFactor();
    SetWhirl();
@@ -450,7 +430,6 @@ int main_c(int argc, char *argv[])
 	 (char *)starPix.starBits, starPix.width, starPix.height);
    InitFlakesPerSecond();
    InitFallenSnow();
-   //InitTreePixmaps();  // can change value of Flags.NoMenu
    scenery_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
@@ -464,12 +443,10 @@ int main_c(int argc, char *argv[])
 
    BlackPix = AllocNamedColor(BlackColor, Black);
    MeteoPix = IAllocNamedColor(MeteoColor, White);
-   TreePix    = IAllocNamedColor(Flags.TreeColor,   Black);
    for(i=0; i<STARANIMATIONS; i++)
       StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
 
    TestingGC     = XCreateGC(display, RootWindow, 0,0);
-   TreeGC        = XCreateGC(display, SnowWin, 0, 0);
    SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
    CleanGC       = XCreateGC(display,SnowWin,0,0);
    FallenGC      = XCreateGC(display, SnowWin, 0, 0);
@@ -507,7 +484,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum           ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum           ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
@@ -542,7 +519,6 @@ int main_c(int argc, char *argv[])
    // main loop
    gtk_main();
 
-   if(TreeXpm) XpmFree(TreeXpm);
 
    if (SnowWinName) free(SnowWinName);
 
@@ -607,46 +583,8 @@ int do_ui_check()
 
    int changes = 0;
    changes += Santa_ui();
+   changes += scenery_ui();
 
-   if(strcmp(Flags.TreeType, OldFlags.TreeType))
-   {
-      P("Treetype %s %s\n",Flags.TreeType,OldFlags.TreeType);
-      RedrawTrees();
-      free(OldFlags.TreeType);
-      OldFlags.TreeType = strdup(Flags.TreeType);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.DesiredNumberOfTrees != OldFlags.DesiredNumberOfTrees)
-   {
-      RedrawTrees();
-      OldFlags.DesiredNumberOfTrees = Flags.DesiredNumberOfTrees;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.TreeFill != OldFlags.TreeFill)
-   {
-      RedrawTrees();
-      OldFlags.TreeFill = Flags.TreeFill;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoTrees != OldFlags.NoTrees)
-   {
-      RedrawTrees();
-      OldFlags.NoTrees = Flags.NoTrees;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.TreeColor, OldFlags.TreeColor))
-   {
-      //P("%s %s\n",Flags.TreeColor,OldFlags.TreeColor);
-      ReInitTree0();
-      free(OldFlags.TreeColor);
-      OldFlags.TreeColor = strdup(Flags.TreeColor);
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(Flags.NStars != OldFlags.NStars)
    {
       EraseStars();
@@ -998,16 +936,6 @@ int do_ui_check()
    return TRUE;
 }
 
-void ClearScreen()
-{
-   // remove all our snow-related drawings
-   XClearArea(display, SnowWin, 0,0,0,0,True);
-}
-
-void RedrawTrees()
-{
-   EraseTrees();
-}
 
 int do_snow_on_trees()
 {
@@ -1818,6 +1746,7 @@ void UpdateWindows()
 
 int do_testing()
 {
+   counter++;
    if (Flags.Done)
       return FALSE;
    P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
@@ -1835,7 +1764,6 @@ int do_testing()
       return TRUE;
    }
    EraseTrees();
-   do_initbaum();
    return TRUE;
    Region region;
    region = SnowOnTreesRegion;
@@ -2121,150 +2049,6 @@ void EraseSnowFlake(Snow *flake)
 	    Exposures);
 }
 
-// fallen snow and trees must have been initialized 
-// tree coordinates and so are recalculated here, in anticipation
-// of a changed window size
-int do_initbaum()
-{
-   if (Flags.Done)
-      return FALSE;
-   P("initbaum %d %d\n",NTrees, (int)wallclock());
-   if (Flags.NoTrees || NTrees != 0)
-      return TRUE;
-   int i,h,w;
-
-   XDestroyRegion(SnowOnTreesRegion);
-   XDestroyRegion(TreeRegion);
-
-   SnowOnTreesRegion = XCreateRegion();
-   TreeRegion        = XCreateRegion();
-
-   // determine which trees are to be used
-   //
-   int *tmptreetype, ntemp;
-   if(TreeRead)
-   {
-      TreeType = (int *)realloc(TreeType,1*sizeof(*TreeType));
-      TreeType[0] = 0;
-   }
-   else
-   {
-      if (!strcmp("all",Flags.TreeType))
-	 // user wants all treetypes
-      {
-	 ntemp = 1+MAXTREETYPE;
-	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
-	 int i;
-	 for (i=0; i<ntemp; i++)
-	    tmptreetype[i] = i;
-      }
-      else if (strlen(Flags.TreeType) == 0) 
-	 // default: use 1..MAXTREETYPE 
-      {
-	 ntemp = MAXTREETYPE;
-	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
-	 int i;
-	 for (i=0; i<ntemp; i++)
-	    tmptreetype[i] = i+1;
-      }
-      else
-      {
-	 // decode string like "1,1,3,2,4"
-	 csvpos(Flags.TreeType,&tmptreetype,&ntemp);
-      }
-
-      NtreeTypes = 0;
-      for (i=0; i<ntemp; i++)
-      {
-	 if (tmptreetype[i] >=0 && tmptreetype[i]<=MAXTREETYPE)
-	 {
-	    int j;
-	    int unique = 1;
-	    // investigate if this is already contained in TreeType.
-	    // if so, do not use it. Note that this algorithm is not
-	    // good scalable, when ntemp is large (100 ...) one should
-	    // consider an algorithm involving qsort()
-	    //
-	    for (j=0; j<NtreeTypes; j++)
-	       if (tmptreetype[i] == TreeType[j])
-	       {
-		  unique = 0;
-		  break;
-	       }
-	    if (unique) 
-	    {
-	       TreeType = (int *)realloc(TreeType,(NtreeTypes+1)*sizeof(*TreeType));
-	       TreeType[NtreeTypes] = tmptreetype[i];
-	       NtreeTypes++;
-	    }
-	 }
-      }
-      if(NtreeTypes == 0)
-      {
-	 TreeType = (int *)realloc(TreeType,sizeof(*TreeType));
-	 TreeType[0] = DEFAULTTREETYPE;
-	 NtreeTypes++;
-      }
-      free(tmptreetype);
-   }
-
-   // determine placement of trees and NTrees:
-
-   NTrees    = 0;
-   KillTrees = 0;
-   for (i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted
-   {
-      if (NTrees >= Flags.DesiredNumberOfTrees)
-	 break;
-
-      int tt = TreeType[RandInt(NtreeTypes)];
-      h = TreeHeight[tt];
-      w = TreeWidth[tt];
-
-      int y1 = SnowWinHeight - MaxScrSnowDepth - h;
-      int y2 = SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
-      if (y2>y1) y1=y2+1;
-
-      int x = RandInt(SnowWinWidth);
-      int y = y1 - RandInt(y1-y2);
-
-      int in = XRectInRegion(TreeRegion,x,y,w,h);
-      if (in == RectangleIn || in == RectanglePart)
-	 continue;
-
-      int flop = (drand48()>0.5);
-
-      Treeinfo *tree = (Treeinfo *)malloc(sizeof(Treeinfo));
-      tree->x    = x;
-      tree->y    = y;
-      tree->type = tt;
-      tree->rev  = flop;
-      P("tree: %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev);
-
-      add_to_mainloop(PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
-
-      Region r;
-
-      switch(tt)
-      {
-	 case -SOMENUMBER:
-	    r = regionfromxpm(TreeXpm,tree->rev);
-	    break;
-	 default:
-	    r = regionfromxpm(xpmtrees[tt],tree->rev);
-	    break;
-      }
-      XOffsetRegion(r,x,y);
-      XUnionRegion(r,TreeRegion,TreeRegion);
-      XDestroyRegion(r);
-
-      NTrees++;
-      Trees = realloc(Trees,NTrees*sizeof(Treeinfo));
-      Trees[NTrees-1] = *tree;
-   }
-   OnTrees = 0;
-   return TRUE;
-}
 
 
 int do_initstars()
@@ -2450,31 +2234,6 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 
 
 
-void EraseTrees()
-{
-   KillTrees = 1;
-#if 0
-   // keeping this code in case I need explicit erase of trees
-   int i;
-   int d = 3;
-   for (i=0; i<NTrees; i++)
-   {
-      int x = Tree[i].x-d; 
-      int y = Tree[i].y-d; 
-      int t = Tree[i].type; 
-      int w = TreeWidth[t]+d+d;
-      int h = TreeHeight[t]+d+d;
-      if(UseAlpha|Flags.UseBG)
-	 XFillRectangle(display, SnowWin, ESantaGC, 
-	       x, y, w, h);
-      else
-	 XClearArea(display, SnowWin,
-	       x, y, w, h, Exposures);
-   }
-#endif
-
-   ClearScreen();
-}
 
 /* ------------------------------------------------------------------ */ 
 int XsnowErrors(Display *dpy, XErrorEvent *err)
@@ -2700,9 +2459,12 @@ void SetGCFunctions()
       XSetForeground(display, ESantaGC, ErasePixel);
       */
 
+   scenery_set_gc();
+   /*
    XSetFunction(display,   TreeGC, GXcopy);
    XSetForeground(display, TreeGC, BlackPix);
    XSetFillStyle(display,  TreeGC, FillStippled);
+   */
 
    XSetFunction(display, SnowOnTreesGC, GXcopy);
 
