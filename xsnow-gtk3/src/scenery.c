@@ -22,6 +22,7 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
 #include <gtk/gtk.h>
