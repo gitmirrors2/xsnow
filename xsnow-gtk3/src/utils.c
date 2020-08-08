@@ -47,3 +47,22 @@ void ClearScreen()
    XClearArea(display, SnowWin, 0,0,0,0,True);
 }
 
+float sq3(float x, float y, float z)
+{
+   return x*x + y*y + z*z;
+}
+
+float sq2(float x, float y)
+{
+   return x*x + y*y;
+}
+
+float fsignf(float x)
+{
+   if (x>0)
+      return 1.0f;
+   if (x<0)
+      return -1.0f;
+   return 0.0f;
+}
+

@@ -1,5 +1,8 @@
+version 3.0.4.03
+	put birds in 'standard form'
 version 3.0.4.02
 	gtk-scenery working
+	use timeout time at computing birds position (contrary to 3.0.3)
 version 3.0.4.01
 	Santa.c: handle usage of user-defined Santa
 	if Flags.NoMenu: do not write to ui labels or make ui sticky/unsticky

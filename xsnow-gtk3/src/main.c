@@ -240,7 +240,6 @@ static void   InitDisplayDimensions(void);
 static void   InitFallenSnow(void);
 static void   InitFlakesPerSecond(void);
 static void   RestartDisplay(void);
-static void   InitBirdsColor(void);
 static void   InitFlake(Snow *flake);
 static void   InitSnowOnTrees(void);
 static void   InitSnowSpeedFactor(void);
@@ -267,7 +266,6 @@ static void Thanks(void)
 
 // callbacks
 static int do_blowoff(void);
-static int do_change_attr(void);
 static int do_clean(void);
 static int do_displaychanged(void);
 static int do_draw_all(void);
@@ -464,7 +462,6 @@ int main_c(int argc, char *argv[])
    SetGCFunctions();
 
    InitSnowColor();
-   InitBirdsColor();
 
    // events
    if(Isdesktop)
@@ -495,7 +492,6 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_change_attr,    do_change_attr        ,0);
    if (GtkWinb)
       add_to_mainloop(PRIORITY_DEFAULT, time_draw_all,       do_draw_all           ,0);
 
@@ -506,15 +502,14 @@ int main_c(int argc, char *argv[])
       ui(&argc, &argv);
       if (GtkWinb)
       {
-	 //ui_set_vd_scale();
+	 gtk_widget_show_all(GtkWinb);
       }
       else
       {
 	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
       }
-   }
-   if (!Flags.NoMenu)
       ui_set_sticky(Flags.AllWorkspaces);
+   }
 
    // main loop
    gtk_main();
@@ -584,6 +579,7 @@ int do_ui_check()
    int changes = 0;
    changes += Santa_ui();
    changes += scenery_ui();
+   changes += birds_ui();
 
    if(Flags.NStars != OldFlags.NStars)
    {
@@ -820,111 +816,6 @@ int do_ui_check()
       Flags.WindNow = 0;
       Wind = 2;
       P("changes: %d\n",changes);
-   }
-   if(Flags.ShowBirds != OldFlags.ShowBirds)
-   {
-      OldFlags.ShowBirds = Flags.ShowBirds;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsOnly != OldFlags.BirdsOnly)
-   {
-      P("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
-      OldFlags.BirdsOnly = Flags.BirdsOnly;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Neighbours != OldFlags.Neighbours)
-   {
-      OldFlags.Neighbours = Flags.Neighbours;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Anarchy != OldFlags.Anarchy)
-   {
-      OldFlags.Anarchy = Flags.Anarchy;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.PrefDistance != OldFlags.PrefDistance)
-   {
-      OldFlags.PrefDistance = Flags.PrefDistance;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsRestart)
-   {
-      Flags.BirdsRestart = 0;
-      init_birds(0);
-      P("changes: %d\n",changes);
-   }
-   if(Flags.ViewingDistance != OldFlags.ViewingDistance)
-   {
-      OldFlags.ViewingDistance = Flags.ViewingDistance;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsSpeed != OldFlags.BirdsSpeed)
-   {
-      OldFlags.BirdsSpeed = Flags.BirdsSpeed;
-      birds_set_speed(Flags.BirdsSpeed);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.AttrFactor != OldFlags.AttrFactor)
-   {
-      OldFlags.AttrFactor = Flags.AttrFactor;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.DisWeight != OldFlags.DisWeight)
-   {
-      OldFlags.DisWeight = Flags.DisWeight;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.FollowWeight != OldFlags.FollowWeight)
-   {
-      OldFlags.FollowWeight = Flags.FollowWeight;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsScale != OldFlags.BirdsScale)
-   {
-      OldFlags.BirdsScale = Flags.BirdsScale;
-      birds_set_scale();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.ShowAttrPoint != OldFlags.ShowAttrPoint)
-   {
-      OldFlags.ShowAttrPoint = Flags.ShowAttrPoint;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
-   {
-      P("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
-      InitBirdsColor();
-      ClearScreen();
-      free(OldFlags.BirdsColor);
-      OldFlags.BirdsColor = strdup(Flags.BirdsColor);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-
-   if(Flags.Nbirds != OldFlags.Nbirds)
-   {
-      int start = OldFlags.Nbirds;
-      if (Flags.Nbirds <= 0)
-	 Flags.Nbirds = 1;
-      if (Flags.Nbirds > NBIRDS_MAX)
-	 Flags.Nbirds = NBIRDS_MAX;
-      OldFlags.Nbirds = Flags.Nbirds;
-      changes++;
-      P("changes: %d\n",changes);
-      init_birds(start);
    }
 
    if (changes > 0)
@@ -1596,22 +1487,6 @@ int do_show_desktop_type()
    return TRUE;
 }
 
-int do_change_attr()
-{
-   // move attraction point in the range
-   // x: 0.3 .. 0.7
-   // y: 0.4 .. 0.6
-   // z: 0.3 .. 0.7
-   if (Flags.Done)
-      return FALSE;
-   P("change attr\n");
-   birds_set_attraction_point_relative(
-	 0.3+drand48()*0.4, 
-	 0.4+drand48()*0.2, 
-	 0.3+drand48()*0.4
-	 );
-   return TRUE;
-}
 
 // Have a look at the windows we are snowing on
 
@@ -1751,12 +1626,6 @@ int do_testing()
       return FALSE;
    P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
    return TRUE;
-   static int c=0;
-   if (c)
-      birds_init_color("black");
-   else
-      birds_init_color("yellow");
-   c = !c;
    static int first = 1;
    if(first)
    {
@@ -2346,11 +2215,6 @@ void InitSnowColor()
       XSetForeground(display, SnowGC[i], SnowcPix);
 }
 
-void InitBirdsColor()
-{
-   if (GtkWinb)
-      birds_init_color(Flags.BirdsColor);
-}
 
 void InitSnowSpeedFactor()
 {
@@ -2461,10 +2325,10 @@ void SetGCFunctions()
 
    scenery_set_gc();
    /*
-   XSetFunction(display,   TreeGC, GXcopy);
-   XSetForeground(display, TreeGC, BlackPix);
-   XSetFillStyle(display,  TreeGC, FillStippled);
-   */
+      XSetFunction(display,   TreeGC, GXcopy);
+      XSetForeground(display, TreeGC, BlackPix);
+      XSetFillStyle(display,  TreeGC, FillStippled);
+      */
 
    XSetFunction(display, SnowOnTreesGC, GXcopy);
 
@@ -2656,8 +2520,7 @@ int DetermineWindow()
 		  cairo_region_destroy(cairoRegion);
 	       cairoRegion = cairo_region_create();
 
-	       main_birds(GtkWinb);
-	       birds_set_speed(Flags.BirdsSpeed);
+	       birds_init();
 	    }
 	    else
 	    {

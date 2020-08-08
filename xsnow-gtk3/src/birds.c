@@ -18,8 +18,6 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-// contains main_birds(), the C main function to be called from
-// the CXX main program
 //
 #include <gtk/gtk.h>
 #include <math.h>
@@ -37,6 +35,7 @@
 #include "mainstub.h"
 #include "pixmaps.h"
 #include "ui.h"
+#include "utils.h"
 #include "windows.h"
 
 static int counter = 0;
@@ -45,12 +44,11 @@ static int counter = 0;
 #define NWINGS 8
 #define NBIRDPIXBUFS (3*NWINGS)
 
-#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(guint)1000*(time),(GSourceFunc)func,datap,0)
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
 
-static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
+//static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata);
 #endif
@@ -68,7 +66,7 @@ static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have
 // https://stackoverflow.com/questions/3908565/how-to-make-gtk-window-background-transparent
 // https://stackoverflow.com/questions/16832581/how-do-i-make-a-gtkwindow-background-transparent-on-linux]
 //static int supports_alpha = 1;
-static gboolean supports_alpha = TRUE;
+//static gboolean supports_alpha = TRUE;
 
 
 typedef struct _Birdtype
@@ -86,47 +84,146 @@ typedef struct _Birdtype
 
 struct _globals globals;
 
-static float sq3(float x, float y, float z)
-{
-   return x*x + y*y + z*z;
-}
 
-static float sq2(float x, float y)
-{
-   return x*x + y*y;
-}
-
-static float fsignf(float x)
-{
-   if (x>0)
-      return 1.0f;
-   if (x<0)
-      return -1.0f;
-   return 0.0f;
-}
-
-static void init_bird_pixbufs(const char *color);
-static int do_update_pos_birds(void); 
-static int do_wings(void);
-static int do_update_speed_birds(void);
-
-static void background(cairo_t *cr);
-static void normalize_speed(BirdType *bird, float speed);
-static void r2i(BirdType *bird);
-static void clear_flags(void);
-static void prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float *prefx, float *prefy, float *prefz);
-static void attrbird2surface(void);
+static void     attrbird2surface(void);
+static void     birds_init_color(void);
+static void     birds_set_attraction_point_relative(float x, float y, float z);
+static void     birds_set_scale(void);
+static void     birds_set_speed(void);
+static void     clear_flags(void);
+static int      do_change_attr(void);
+static int      do_update_pos_birds(void); 
+static int      do_wings(void);
+static int      do_update_speed_birds(void);
+static void     init_birds(int start);
+static void     init_bird_pixbufs(const char *color);
+static void     main_window(void);
+static void     normalize_speed(BirdType *bird, float speed);
+static void     prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float *prefx, float *prefy, float *prefz);
+static void     r2i(BirdType *bird);
 
 
 static float time_update_pos_birds     = 0.01;
 static float time_update_speed_birds   = 0.20;
-//static float time_draw_birds           = 0.04;
 static float time_wings                = 0.10;
 
 static struct kdtree *kd = 0;
 
 static BirdType *birds = 0;
 static BirdType attrbird;
+
+
+int birds_ui()
+{
+   int changes = 0;
+
+   if(Flags.ShowBirds != OldFlags.ShowBirds)
+   {
+      OldFlags.ShowBirds = Flags.ShowBirds;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.BirdsOnly != OldFlags.BirdsOnly)
+   {
+      P("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
+      OldFlags.BirdsOnly = Flags.BirdsOnly;
+      ClearScreen();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.Neighbours != OldFlags.Neighbours)
+   {
+      OldFlags.Neighbours = Flags.Neighbours;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.Anarchy != OldFlags.Anarchy)
+   {
+      OldFlags.Anarchy = Flags.Anarchy;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.PrefDistance != OldFlags.PrefDistance)
+   {
+      OldFlags.PrefDistance = Flags.PrefDistance;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.BirdsRestart)
+   {
+      Flags.BirdsRestart = 0;
+      init_birds(0);
+      P("changes: %d\n",changes);
+   }
+   if(Flags.ViewingDistance != OldFlags.ViewingDistance)
+   {
+      OldFlags.ViewingDistance = Flags.ViewingDistance;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.BirdsSpeed != OldFlags.BirdsSpeed)
+   {
+      OldFlags.BirdsSpeed = Flags.BirdsSpeed;
+      birds_set_speed();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.AttrFactor != OldFlags.AttrFactor)
+   {
+      OldFlags.AttrFactor = Flags.AttrFactor;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.DisWeight != OldFlags.DisWeight)
+   {
+      OldFlags.DisWeight = Flags.DisWeight;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.FollowWeight != OldFlags.FollowWeight)
+   {
+      OldFlags.FollowWeight = Flags.FollowWeight;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.BirdsScale != OldFlags.BirdsScale)
+   {
+      OldFlags.BirdsScale = Flags.BirdsScale;
+      birds_set_scale();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.ShowAttrPoint != OldFlags.ShowAttrPoint)
+   {
+      OldFlags.ShowAttrPoint = Flags.ShowAttrPoint;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
+   {
+      P("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
+      birds_init_color();
+      ClearScreen();
+      free(OldFlags.BirdsColor);
+      OldFlags.BirdsColor = strdup(Flags.BirdsColor);
+      changes++;
+      P("changes: %d\n",changes);
+   }
+
+   if(Flags.Nbirds != OldFlags.Nbirds)
+   {
+      int start = OldFlags.Nbirds;
+      if (Flags.Nbirds <= 0)
+	 Flags.Nbirds = 1;
+      if (Flags.Nbirds > NBIRDS_MAX)
+	 Flags.Nbirds = NBIRDS_MAX;
+      OldFlags.Nbirds = Flags.Nbirds;
+      changes++;
+      P("changes: %d\n",changes);
+      init_birds(start);
+   }
+   return changes;
+}
 
 static void normalize_speed(BirdType *bird, float speed)
 {
@@ -139,15 +236,6 @@ static void normalize_speed(BirdType *bird, float speed)
    bird->sz *= a;
 }
 
-static void background(cairo_t *cr)
-{
-   draw_cb(0,cr,0);
-}
-
-float MaxViewingDistance()
-{
-   return 2*globals.maxy;
-}
 
 static float scale(float y)
 {
@@ -192,32 +280,6 @@ static void r2i(BirdType *bird)
    }
 }
 
-
-/* Redraw the screen from the surface. Note that the ::draw
- * signal receives a ready-to-be-used cairo_t that is already
- * clipped to only draw the exposed areas of the widget
- */
-static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata)
-{
-   cairo_save (cr);
-   P("supports_alpha: %d\n",supports_alpha);
-   if (supports_alpha)
-   {
-      cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0); /* transparent */
-   }
-   else
-   {
-      cairo_set_source_rgb (cr, 0.0, 1.0, 1.0); /* opaque blueish */
-   }
-
-   /* draw the background */
-   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-   cairo_paint (cr);
-
-   cairo_restore (cr);
-
-   return FALSE;
-}
 
 // given:
 // bird
@@ -412,20 +474,9 @@ int do_update_pos_birds()
    if (Flags.Done)
       return FALSE;
    LEAVE_IF_INACTIVE;
-   P("do_update_pos_birds %d\n",Nbirds);
-   static int firstcall = 1;
-   static double tprev = 0;
+   P("do_update_pos_birds %d %d\n",Nbirds,counter++);
    double dt;
-   double tnow = wallclock();
-   if (firstcall)
-   {
-      dt = time_update_pos_birds;
-      firstcall = 0;
-   }
-   else
-      dt = tnow-tprev;
-
-   tprev = tnow;
+   dt = time_update_pos_birds;
 
    P("%f\n",dt);
 
@@ -447,28 +498,7 @@ int birds_draw(cairo_t *cr)
 {
    if (Flags.Done)
       return FALSE;
-   if (!WorkspaceActive())
-      return TRUE;
-   static int isclear = 0;
-   if (!Flags.ShowBirds && isclear)
-   {
-      P("no birds %d\n",counter++);
-      return TRUE;
-   }
-   else
-      isclear = 0;
-
-   P("birds_draw %d\n",counter);
-   counter++;
-
-   // cairo_set_antialias(cr,CAIRO_ANTIALIAS_BEST); // does nothing
-   if (!Flags.ShowBirds)     //TODO
-   {
-      background(cr);
-      //gdk_window_end_draw_frame(gdkwindow,drawingContext);
-      isclear = 1;
-      return TRUE;
-   }
+   LEAVE_IF_INACTIVE;
 
    int before;
    int i;
@@ -719,23 +749,21 @@ void clear_flags()
 #undef DOITB
 }
 
-void birds_set_speed(int x)
+void birds_set_speed()
 {
-   globals.meanspeed = x*0.01*globals.maxx*0.05;
+   globals.meanspeed = Flags.BirdsSpeed*0.01*globals.maxx*0.05;
    P("%f\n",globals.meanspeed);
 }
 
-static void main_window(GtkWidget *window)
+static void main_window()
 {
+   counter++;
+   GtkWidget *window = GtkWinb;
    globals.maxix = gtk_widget_get_allocated_width(window);
    globals.maxiz = gtk_widget_get_allocated_height(window);
    globals.maxiy = (globals.maxix+globals.maxiz)/2;
 
    P("%d %d %d\n",globals.maxix,globals.maxiy,globals.maxiz);
-
-
-
-   gtk_widget_show_all(window);
 
    globals.maxz = globals.maxx*(float)globals.maxiz/(float)globals.maxix;
    globals.maxy = globals.maxx*(float)globals.maxiy/(float)globals.maxix;
@@ -748,14 +776,14 @@ static void main_window(GtkWidget *window)
    gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
 }
 
-void birds_init_color(const char *color)
+void birds_init_color()
 {
    int i;
    for (i=0; i<NBIRDPIXBUFS; i++)
    {
       g_object_unref(bird_pixbufs[i]);
    }
-   init_bird_pixbufs(color);
+   init_bird_pixbufs(Flags.BirdsColor);
    table_clear((void(*)(void *))cairo_surface_destroy);
 }
 
@@ -790,15 +818,31 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
-void main_birds (GtkWidget *window)
+int do_change_attr()
 {
-   if (!window)
-      return;
+   // move attraction point in the range
+   // x: 0.3 .. 0.7
+   // y: 0.4 .. 0.6
+   // z: 0.3 .. 0.7
+   if (Flags.Done)
+      return FALSE;
+   P("change attr\n");
+   birds_set_attraction_point_relative(
+	 0.3+drand48()*0.4, 
+	 0.4+drand48()*0.2, 
+	 0.3+drand48()*0.4
+	 );
+   return TRUE;
+}
+void birds_init ()
+{
+   init_bird_pixbufs("black"); // just to have pixbufs we can throw away
+   birds_init_color();
    static int running = 0;
 
    if (running)
    {
-      main_window(window);
+      main_window();
       return;
    }
    else
@@ -814,11 +858,11 @@ void main_birds (GtkWidget *window)
       globals.prefdweight    = 1;
 
       clear_flags();
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_pos_birds,     do_update_pos_birds,     0);
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
-      //add_to_mainloop(G_PRIORITY_DEFAULT,time_draw_birds,           birds_draw,              0);
-      add_to_mainloop(G_PRIORITY_DEFAULT,time_wings,                do_wings,                0);
-      main_window(window);
+      add_to_mainloop(PRIORITY_DEFAULT,time_update_pos_birds,     do_update_pos_birds,     0);
+      add_to_mainloop(PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
+      add_to_mainloop(PRIORITY_DEFAULT,time_wings,                do_wings,                0);
+      add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,          do_change_attr,          0);
+      main_window();
    }
 
 
@@ -842,9 +886,9 @@ void main_birds (GtkWidget *window)
 
    globals.maxrange = globals.maxx-globals.ox+ globals.maxy-globals.oy+ globals.maxz-globals.oz;
 
-   init_bird_pixbufs("black");
-
    init_birds(0);
+   birds_set_speed();
+
    attrbird2surface();
 
 }
