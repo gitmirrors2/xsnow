@@ -2395,9 +2395,9 @@ int do_draw_all()
 
    scenery_draw(cr);
 
-   birds_draw(cr);
-
    Santa_draw(cr);
+
+   birds_draw(cr);
 
    gdk_window_end_draw_frame(gdkwindow,drawingContext);
    return TRUE;
