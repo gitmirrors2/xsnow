@@ -177,17 +177,20 @@
 /* ------------------------------------------------------------------ */
 
 typedef struct Snow {
-   int w;                   // width
-   int h;                   // height
-   float rx;                // x position
-   float ry;                // y position
-   float vx;                // speed in x-direction, pixels/second
-   float vy;                // speed in y-direction, pixels/second
-   float m;                 // mass of flake
-   float ivy;               // initial speed in y direction
-   float wsens;             // wind dependency factor
-   unsigned int cyclic : 1; // 0: flake is not cyclic 
-   int whatFlake;           // snowflake index
+   int w;                       // width
+   int h;                       // height
+   float rx;                    // x position
+   float ry;                    // y position
+   float vx;                    // speed in x-direction, pixels/second
+   float vy;                    // speed in y-direction, pixels/second
+   float m;                     // mass of flake
+   float ivy;                   // initial speed in y direction
+   float wsens;                 // wind dependency factor
+   unsigned int whatFlake : 8;  // snowflake index
+   unsigned int cyclic : 1;     // 0: flake is not cyclic 
+   unsigned int draw   : 1;     // 0: do not draw this flake
+   unsigned int erase  : 1;     // 0: do not erase this flake
+   unsigned int del    : 1;     // 1: delete this flake
 } Snow;
 
 typedef struct SnowMap {

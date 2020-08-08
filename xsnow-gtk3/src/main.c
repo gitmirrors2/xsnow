@@ -481,7 +481,6 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum           ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
@@ -1697,6 +1696,8 @@ int do_UpdateSnowFlake(Snow *flake)
 {
    if(NOTACTIVE)
       return TRUE;
+   flake->erase = 1;
+   flake->draw  = 1;
    int fckill = FlakeCount >= Flags.FlakeCountMax;
    if (
 	 KillFlakes ||                                     // merciless remove if KillFlakes
@@ -1804,7 +1805,12 @@ int do_UpdateSnowFlake(Snow *flake)
    int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
    //
    // if (b): no erase, no draw, no move
-   if(b) return TRUE;
+   if(b) 
+   {
+      flake->draw  = 0;
+      flake->erase = 0;
+      return TRUE;
+   }
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1876,13 +1882,27 @@ int do_UpdateSnowFlake(Snow *flake)
    b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
    // if(b): erase: no, move: yes
    // erase this flake 
-   if(!b) EraseSnowFlake(flake);
+   if(b) 
+   {
+      flake->erase = 0;
+   }
+   else
+   {
+      EraseSnowFlake(flake);
+   }
    flake->rx = NewX;
    flake->ry = NewY;
    in = XRectInRegion(TreeRegion,nx, ny, flake ->w, flake->h);
    b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
    // if b: draw: no
-   if(!b) DrawSnowFlake(flake);
+   if (b)
+   {
+      flake->draw = 0;
+   }
+   else
+   {
+      DrawSnowFlake(flake);
+   }
    return TRUE;
 }
 #undef delflake
