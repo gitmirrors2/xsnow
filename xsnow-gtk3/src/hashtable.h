@@ -22,14 +22,16 @@
 #ifdef __cplusplus
 extern "C" { 
 #endif
-   extern void    table_insert(unsigned int key,void *value);
-   extern void   *table_get(unsigned int key);
-   extern void    table_clear(void(*destroy)(void *p));
-   extern void    set_insert(void *key);
-   extern int     set_count(void *key);
-   extern void    set_clear();
-   extern void    set_begin();
-   extern void   *set_next();
+   extern void          table_insert(unsigned int key,void *value);
+   extern void         *table_get(unsigned int key);
+   extern void          table_clear(void(*destroy)(void *p));
+   extern void          set_insert(void *key);
+   extern void          set_erase(void *key);
+   extern int           set_count(void *key);
+   extern void          set_clear(void);
+   extern void          set_begin(void);
+   extern void         *set_next(void);
+   extern unsigned int  set_size(void);
 #ifdef __cplusplus
 }
 #endif

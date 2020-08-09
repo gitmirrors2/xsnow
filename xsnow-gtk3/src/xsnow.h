@@ -188,9 +188,6 @@ typedef struct Snow {
    float wsens;                 // wind dependency factor
    unsigned int whatFlake : 8;  // snowflake index
    unsigned int cyclic : 1;     // 0: flake is not cyclic 
-   unsigned int draw   : 1;     // 0: do not draw this flake
-   unsigned int erase  : 1;     // 0: do not erase this flake
-   unsigned int del    : 1;     // 1: delete this flake
 } Snow;
 
 typedef struct SnowMap {

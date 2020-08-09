@@ -87,6 +87,8 @@
 #include "xsnow.h"
 #include "wind.h"
 
+#include "hashtable.h"
+
 #ifdef DEBUG
 #undef DEBUG
 #endif
@@ -132,6 +134,8 @@ static float FlakesPerSecond;
 static int   MaxSnowFlakeHeight = 0;  /* Biggest flake */
 static int   MaxSnowFlakeWidth = 0;   /* Biggest flake */
 static float SnowSpeedFactor;
+static Snow *MakeFlake(void);
+static void  DelFlake(Snow *flake);
 
 // fallen snow stuff
 static FallenSnow *FsnowFirst = 0;
@@ -289,10 +293,67 @@ static int do_wind(void);
 static int do_wupdate(void);
 
 #define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
-#define makeflake(f) do {f = (Snow *)malloc(sizeof(Snow)); FlakeCount++; InitFlake(flake);} while(0)
+
+static Snow *MakeFlake()
+{
+   Snow *flake = (Snow *)malloc(sizeof(Snow)); 
+   set_insert(flake); 
+   FlakeCount++; 
+   InitFlake(flake);
+   return flake;
+}
+
+
+#if 0
+static void testje()
+{
+   const int n=10;
+   int a[n];
+   int i;
+   for (i=0; i<n; i++)
+      a[i]=i*i;
+
+   for (i=0; i<n; i++)
+   {
+      printf("%d %p %d\n",i,(void *)&a[i],a[i]);
+      set_insert(&a[i]);
+   }
+   printf("---\n");
+
+   for (i=0; i<n; i++)
+   {
+      printf("%d %d %d\n",i,set_count(&a[i]),set_count(&a[i]+4));
+   }
+   printf("--- erase test\n");
+
+   set_erase(&a[1]);
+   for (i=0; i<n; i++)
+   {
+      printf("%d %d\n",i,set_count(&a[i]));
+   }
+   printf("--- begin, next\n");
+   set_begin();
+   int *p;
+   while ( (p = set_next()) )
+   {
+      printf("%p %i\n",(void *)p,*p);
+   }
+
+   printf("--- clear\n");
+
+   set_clear();
+   for (i=0; i<n; i++)
+   {
+      printf("%d %d %d\n",i,set_count(&a[i]),set_count(&a[i]+1));
+   }
+
+   exit(0);
+}
+#endif
 
 int main_c(int argc, char *argv[])
 {
+   //testje();
    Argc = argc;
    Argv = argv;
    int i;
@@ -992,8 +1053,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    Snow *flake;
-	    makeflake(flake);
+	    Snow *flake   = MakeFlake();
 	    flake->rx     = fsnow->x + i;
 	    flake->ry     = fsnow->y - j;
 	    if (Flags.NoWind)
@@ -1157,8 +1217,7 @@ int do_genflakes()
    int i;
    for(i=0; i<desflakes; i++)
    {
-      Snow *flake;
-      makeflake(flake);
+      Snow *flake = MakeFlake();
       add_flake_to_mainloop(flake);
    }
    RETURN;
@@ -1274,11 +1333,10 @@ void ConvertOnTreeToFlakes()
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    Snow *flake;
-	    makeflake(flake);
-	    flake->rx = SnowOnTrees[i].x;
-	    flake->ry = SnowOnTrees[i].y-5*j;
-	    flake->vy = -10;
+	    Snow *flake   = MakeFlake();
+	    flake->rx     = SnowOnTrees[i].x;
+	    flake->ry     = SnowOnTrees[i].y-5*j;
+	    flake->vy     = -10;
 	    flake->cyclic = 0;
 	    add_flake_to_mainloop(flake);
 	 }
@@ -1623,7 +1681,7 @@ int do_testing()
    counter++;
    if (Flags.Done)
       return FALSE;
-   P("FlakeCount FlakeCountMax: %d %d\n",FlakeCount,Flags.FlakeCountMax);
+   R("FlakeCount set_size FlakeCountMax: %d %d %d\n",FlakeCount,set_size(),Flags.FlakeCountMax);
    return TRUE;
    static int first = 1;
    if(first)
@@ -1690,14 +1748,17 @@ void InitFlake(Snow *flake)
 }
 
 
+static void DelFlake(Snow *flake)
+{
+   set_erase(flake);
+   free(flake);
+   FlakeCount--;
+}
 
-#define delflake(f)  do {free(f); FlakeCount--; return FALSE;} while(0)
 int do_UpdateSnowFlake(Snow *flake)
 {
    if(NOTACTIVE)
       return TRUE;
-   flake->erase = 1;
-   flake->draw  = 1;
    int fckill = FlakeCount >= Flags.FlakeCountMax;
    if (
 	 KillFlakes ||                                     // merciless remove if KillFlakes
@@ -1706,7 +1767,8 @@ int do_UpdateSnowFlake(Snow *flake)
       )
    {
       EraseSnowFlake(flake);
-      delflake(flake);
+      DelFlake(flake);
+      return FALSE;
    }
 
    //
@@ -1736,14 +1798,16 @@ int do_UpdateSnowFlake(Snow *flake)
    {
       // not-cyclic flakes die when going left or right out of the window
       EraseSnowFlake(flake);
-      delflake(flake);
+      DelFlake(flake);
+      return FALSE;
    }
 
    // remove flake if it falls below bottom of screen:
    if (NewY >= SnowWinHeight)
    {
       EraseSnowFlake(flake);
-      delflake(flake);
+      DelFlake(flake);
+      return FALSE;
    }
 
    int nx = lrintf(NewX);
@@ -1789,7 +1853,8 @@ int do_UpdateSnowFlake(Snow *flake)
 			   flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
 			   DrawSnowFlake(flake);
 			}
-			delflake(flake);
+			DelFlake(flake);
+			return FALSE;
 		     }
 		     found = 1;
 		     break;
@@ -1806,11 +1871,7 @@ int do_UpdateSnowFlake(Snow *flake)
    //
    // if (b): no erase, no draw, no move
    if(b) 
-   {
-      flake->draw  = 0;
-      flake->erase = 0;
       return TRUE;
-   }
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1820,7 +1881,8 @@ int do_UpdateSnowFlake(Snow *flake)
       if (in == RectanglePart || in == RectangleIn)
       {
 	 EraseSnowFlake(flake);
-	 delflake(flake);
+	 DelFlake(flake);
+	 return FALSE;
       }
 
       // check if flake is touching TreeRegion. If so: add snow to 
@@ -1873,7 +1935,8 @@ int do_UpdateSnowFlake(Snow *flake)
 	    }
 	    // do not erase: this gives bad effects in fvwm-like desktops
 	    //EraseSnowFlake(flake);
-	    delflake(flake);
+	    DelFlake(flake);
+	    return FALSE;
 	 }
       }
    }
@@ -1884,7 +1947,6 @@ int do_UpdateSnowFlake(Snow *flake)
    // erase this flake 
    if(b) 
    {
-      flake->erase = 0;
    }
    else
    {
@@ -1897,7 +1959,6 @@ int do_UpdateSnowFlake(Snow *flake)
    // if b: draw: no
    if (b)
    {
-      flake->draw = 0;
    }
    else
    {
@@ -1905,12 +1966,17 @@ int do_UpdateSnowFlake(Snow *flake)
    }
    return TRUE;
 }
-#undef delflake
+//#undef delflake
 
 
 void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(Flags.NoSnowFlakes) return;
+   if (GtkWinb)
+   {
+      set_insert(flake);
+      //return;
+   }
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
    XSetTSOrigin(display, SnowGC[flake->whatFlake], 
@@ -2077,8 +2143,7 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       Snow *flake;
-	       makeflake(flake);
+	       Snow *flake   = MakeFlake();
 	       flake->rx     = fsnow->x + i;
 	       flake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
 	       flake->vx     = NewWind/8;

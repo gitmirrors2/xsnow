@@ -1,6 +1,7 @@
 version 3.0.4.05
 	start with snow in standard form.
 	hashtable.{cpp,h}: added set functions
+	turned macro's delflake and makeflake into functions
 version 3.0.4.03/4
 	put birds in 'standard form'
 version 3.0.4.02

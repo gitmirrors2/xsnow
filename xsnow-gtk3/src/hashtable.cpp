@@ -83,6 +83,10 @@ extern "C"
    {
       myset.insert(key);
    }
+   void set_erase(void *key)
+   {
+      myset.erase(key);
+   }
    int set_count(void *key)
    {
       return myset.count(key);
@@ -110,6 +114,10 @@ extern "C"
       void *v = *myset_iter;
       myset_iter++;
       return v;
+   }
+   unsigned int set_size()
+   {
+      return myset.size();
    }
 }
 
