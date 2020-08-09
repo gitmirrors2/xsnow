@@ -274,7 +274,7 @@ void InitSantaPixmaps()
 	 rc = XpmReadFileToData(path[i],&santaxpm);
 	 if(rc == XpmSuccess)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
+	    iXpmCreatePixmapFromData(display, SnowWin, (const char **)santaxpm, 
 		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
 
 	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
@@ -302,7 +302,7 @@ void InitSantaPixmaps()
       if(SantaMaskPixmap[i]) 
 	 XFreePixmap(display,SantaMaskPixmap[i]);
       rc[i] = iXpmCreatePixmapFromData(display, SnowWin, 
-	    Santas[Flags.SantaSize][withRudolf][i], 
+	    (const char **)Santas[Flags.SantaSize][withRudolf][i], 
 	    &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
       sscanf(Santas[Flags.SantaSize][withRudolf][0][0],"%d %d", 
 	    &SantaWidth,&SantaHeight);

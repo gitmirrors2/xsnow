@@ -20,4 +20,6 @@
  */
 #pragma once
 
-void snow_init(void);
+extern void snow_init(void);
+extern int snow_draw(cairo_t *cr);
+extern void init_snow_surfaces();

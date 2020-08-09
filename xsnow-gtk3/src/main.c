@@ -78,6 +78,7 @@
 #include "mainstub.h"
 #include "pixmaps.h"
 #include "scenery.h"
+#include "snow.h"
 #include "transparent.h"
 #include "ui.h"
 #include "utils.h"
@@ -490,6 +491,7 @@ int main_c(int argc, char *argv[])
    InitFlakesPerSecond();
    InitFallenSnow();
    scenery_init();
+   snow_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -1975,7 +1977,7 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    if (GtkWinb)
    {
       set_insert(flake);
-      //return;
+      return;
    }
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
@@ -2298,6 +2300,7 @@ void InitSnowColor()
    SnowcPix = IAllocNamedColor(Flags.SnowColor, White);   
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
       XSetForeground(display, SnowGC[i], SnowcPix);
+   init_snow_surfaces();
 }
 
 
@@ -2347,6 +2350,8 @@ int do_draw_all()
    Santa_draw(cr);
 
    birds_draw(cr);
+
+   snow_draw(cr);
 
    gdk_window_end_draw_frame(gdkwindow,drawingContext);
    return TRUE;

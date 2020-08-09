@@ -1,3 +1,4 @@
+/* XPM */
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -18,13 +19,18 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
-#define XPM_TYPE const char
-#include "xsnow.h"
-extern SnowMap       snowPix[];
-extern StarMap       starPix;
-extern const char    ***Santas[][2];
-extern const char    **xpmtrees[];
-extern const char    **xsnow_logo;
-extern const char    **birds_xpm[];
-extern const char    **snow_xpm[];
+XPM_TYPE *snow01_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"8 8 2 1 ",
+"  c none",
+". c black",
+/* pixels */
+" .   .  ",
+".. . .. ",
+"  . .   ",
+" . . .  ",
+"  . .   ",
+".. . .. ",
+" .   .  ",
+"        "
+};

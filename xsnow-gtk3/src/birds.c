@@ -31,6 +31,7 @@
 #include "flags.h"
 #include "globals.h"
 #include "hashtable.h"
+#include "ixpm.h"
 #include "kdtree.h"
 #include "mainstub.h"
 #include "pixmaps.h"
@@ -792,6 +793,7 @@ static void init_bird_pixbufs(const char *color)
    int i;
    for (i=0; i<NBIRDPIXBUFS; i++)
    {
+#if 0
       int n;
       sscanf(birds_xpm[i][0],"%*d %d",&n);
       P("n= %d\n",n);
@@ -815,6 +817,13 @@ static void init_bird_pixbufs(const char *color)
       for (j=0; j<n+3; j++)
 	 free(x[j]);
       free(x);
+#else
+      char **x;
+      int lines;
+      xpm_set_color(birds_xpm[i], &x, &lines, color);
+      bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
+      xpm_destroy(x,lines);
+#endif
    }
 }
 

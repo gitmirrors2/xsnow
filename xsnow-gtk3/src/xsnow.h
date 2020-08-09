@@ -109,7 +109,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWFLAKEMAXTYPE 6  
+#define SNOWFLAKEMAXTYPE 6  // type is 0..SNOWFLAKEMAXTYPE  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define STARANIMATIONS 4
@@ -167,7 +167,8 @@
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */
 #define time_santa1           (0.01 * factor)  /* time between redrawings of santa           */
-#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
+//#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
+#define time_snowflakes       (GtkWinb?0.02 * factor:0.05*factor)  /* time between redrawings of snow on trees   */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
 #define time_draw_all         0.04

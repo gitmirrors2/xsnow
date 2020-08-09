@@ -39,16 +39,16 @@
 static int      do_drawtree(Treeinfo *tree);
 static int      do_initbaum(void);
 static void     ReInitTree0(void);
-static void   InitTreePixmaps(void);
-static void   RedrawTrees(void);
-static void create_tree_surface(int tt,int flip, const char **xpm);
+static void     InitTreePixmaps(void);
+static void     RedrawTrees(void);
+static void     create_tree_surface(int tt,int flip, const char **xpm);
 static int      NtreeTypes = 0;
 static int      TreeRead = 0;
 static char     **TreeXpm = 0;
 static Pixmap   TreePixmap[MAXTREETYPE+1][2];
 static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
 static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-static int    *TreeType = 0;
+static int     *TreeType = 0;
 static int      NTrees     = 0;  // actual number of trees
 static GC       TreeGC;
 static Treeinfo *Trees = 0;
@@ -319,7 +319,7 @@ int do_initbaum()
       switch(tt)
       {
 	 case -SOMENUMBER:
-	    r = regionfromxpm(TreeXpm,tree->rev);
+	    r = regionfromxpm((const char **)TreeXpm,tree->rev);
 	    break;
 	 default:
 	    r = regionfromxpm(xpmtrees[tt],tree->rev);
@@ -357,7 +357,7 @@ void InitTreePixmaps()
 	 int i;
 	 for(i=0; i<2; i++)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, TreeXpm, 
+	    iXpmCreatePixmapFromData(display, SnowWin, (const char **)TreeXpm, 
 		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
 	    create_tree_surface(0,i,(const char **)TreeXpm);
 	 }
@@ -417,7 +417,7 @@ void ReInitTree0()
    for(i=0; i<2; i++)
    {
       XFreePixmap(display,TreePixmap[0][i]);
-      iXpmCreatePixmapFromData(display, SnowWin, xpmtmp,
+      iXpmCreatePixmapFromData(display, SnowWin, (const char **)xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
       cairo_surface_destroy(tree_surfaces[0][i]);
       create_tree_surface(0,i,(const char **)xpmtmp);

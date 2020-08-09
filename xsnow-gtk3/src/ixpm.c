@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ixpm.h"
+#include "debug.h"
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
       Display	*display,
@@ -83,7 +84,7 @@ static void strrevert(char*s, size_t l)
 //  Extra: 0xff000000 is added to the pixmap data
 //
 int iXpmCreatePixmapFromData(Display *display, Drawable d, 
-      char *data[], Pixmap *p, Pixmap *s, XpmAttributes *attr, int flop)
+      const char *data[], Pixmap *p, Pixmap *s, XpmAttributes *attr, int flop)
 {
    int rc, lines, i, ncolors, height, w;
    char **idata;
@@ -113,7 +114,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 }
 
 // given xpmdata **data, add the non-transparent pixels to Region r
-Region regionfromxpm(char **data, int flop)
+Region regionfromxpm(const char **data, int flop)
 {
    int w,h,nc,n;
    Region r = XCreateRegion();
@@ -159,3 +160,50 @@ Region regionfromxpm(char **data, int flop)
    free(code);
    return r;
 }
+
+// given color and xmpdata **data of a monocolored picture like:
+// 
+//XPM_TYPE *snow06_xpm[] = {
+///* columns rows colors chars-per-pixel */
+//"3 3 2 1 ",
+//"  c none",
+//". c black",
+///* pixels */
+//". .",
+//" . ",
+//". ."
+//};
+// change the second color to color and put the result in out.
+// lines will become the number of lines in out, comes in handy
+// when wanteing to free out.
+void xpm_set_color(const char **data, char ***out, int *lines, const char *color)
+{
+   int n;  
+   sscanf(data[0],"%*d %d",&n);
+   *out = (char**)malloc(sizeof(char *)*(n+3));
+   char **x = *out;
+   int j;
+   for (j=0; j<2; j++)
+      x[j] = strdup(data[j]);
+   x[2] = (char *)malloc(5+sizeof(color));
+   x[2][0] = 0;
+   strcat(x[2],". c ");
+   strcat(x[2],color);
+   P("c: [%s]\n",x[2]);
+
+   for (j=3; j<n+3; j++)
+   {
+      x[j] = strdup(data[j]);
+      P("%d %s\n",j,x[j]);
+   }
+   *lines = n+3;
+}
+
+void xpm_destroy(char **data, int lines)
+{
+   int i;
+   for (i=0; i<lines; i++)
+      free(data[i]);
+   free(data);
+}
+
