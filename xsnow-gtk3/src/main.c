@@ -1990,6 +1990,8 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 void EraseSnowFlake(Snow *flake)
 {
    if(Flags.NoSnowFlakes) return;
+   if(GtkWinb)
+      return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
    if(UseAlpha|Flags.UseBG)
