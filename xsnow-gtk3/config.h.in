@@ -107,6 +107,9 @@
 /* Define to 1 if you have the <unordered_map> header file. */
 #undef HAVE_UNORDERED_MAP
 
+/* Define to 1 if you have the <unordered_set> header file. */
+#undef HAVE_UNORDERED_SET
+
 /* Define to 1 if you have the <X11/cursorfont.h> header file. */
 #undef HAVE_X11_CURSORFONT_H
 

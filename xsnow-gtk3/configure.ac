@@ -55,6 +55,7 @@ AC_CHECK_HEADERS([X11/Xatom.h X11/Xlib.h X11/Xos.h X11/xpm.h X11/Xutil.h],[],AC_
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([iostream],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
 AC_CHECK_HEADERS([unordered_map])
+AC_CHECK_HEADERS([unordered_set])
 AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])

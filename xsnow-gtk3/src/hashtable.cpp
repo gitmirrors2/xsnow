@@ -26,36 +26,91 @@
 
 #ifdef HAVE_UNORDERED_MAP
 #include <unordered_map>
-static std::unordered_map<unsigned int,void*> table; 
+#define MAP std::unordered_map
 #else
 #include <map>
+#define MAP std::map
 #pragma message(__FILE__ ":\nUsing map for the hash table, because unordered_map is not available.")
-static std::map<unsigned int,void*> table; // ok, this is a binary tree, not an hash table
 #endif
 
-extern "C" void table_put(unsigned int key,void *value)
+static MAP<unsigned int,void*> table;
+
+extern "C" 
 {
-   table[key] = value;
+   void table_insert(unsigned int key,void *value)
+   {
+      table[key] = value;
+   }
+   void *table_get(unsigned int key)
+   {
+      void *v;
+      try
+      {
+	 v = table[key];
+      }
+      catch(...)
+      {
+	 v = 0;
+      }
+      return v;
+   }
+   void table_clear(void(*destroy)(void *p))
+   {
+      for ( auto it = table.begin(); it != table.end(); ++it )
+      {
+	 P("%d %p\n",it->first,it->second);
+	 destroy(it->second);
+	 it->second = 0;
+      }
+   }
 }
-extern "C" void *table_get(unsigned int key)
+
+#ifdef HAVE_UNORDERED_SET
+#include <unordered_set>
+#define SET std::unordered_set
+#else
+#include <set>
+#pragma message(__FILE__ ":\nUsing set, because unordered_set is not available.")
+#define SET std::set
+#endif
+
+static SET<void*> myset;
+static SET<void*>::iterator myset_iter;
+
+extern "C" 
 {
-   void *v;
-   try
+   void set_insert(void *key)
    {
-      v = table[key];
+      myset.insert(key);
    }
-   catch(...)
+   int set_count(void *key)
    {
-      v = 0;
+      return myset.count(key);
    }
-   return v;
+   void set_clear()
+   {
+      myset.clear();
+   }
+   /* example:
+    *    set_begin();
+    *    void *p;
+    *    while ( (p = set_next()) )
+    *    {
+    *       printf("p=%p\n",p);
+    *    }
+    */
+   void set_begin()
+   {
+      myset_iter = myset.begin();
+   }
+   void *set_next()
+   {
+      if (myset_iter == myset.end())
+	 return 0;
+      void *v = *myset_iter;
+      myset_iter++;
+      return v;
+   }
 }
-extern "C" void table_clear(void(*destroy)(void *p))
-{
-   for ( auto it = table.begin(); it != table.end(); ++it )
-   {
-      P("%d %p\n",it->first,it->second);
-      destroy(it->second);
-      it->second = 0;
-   }
-}
+
+

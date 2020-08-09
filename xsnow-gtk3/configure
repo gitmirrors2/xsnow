@@ -5474,6 +5474,18 @@ fi
 
 done
 
+for ac_header in unordered_set
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "unordered_set" "ac_cv_header_unordered_set" "$ac_includes_default"
+if test "x$ac_cv_header_unordered_set" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_UNORDERED_SET 1
+_ACEOF
+
+fi
+
+done
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
