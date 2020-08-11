@@ -5,6 +5,7 @@ version 3.0.4.05
 	stratified declarations of xpm's (pixmap.(c,h}
 	added snow xpm's (it seems there is no standard function to convert
 	   bitmap to GdkPixbuf)
+	implemented canonical update of sreen, using gtk_widget_queue_draw()
 version 3.0.4.03/4
 	put birds in 'standard form'
 version 3.0.4.02

@@ -262,6 +262,8 @@ static int    do_UpdateSnowFlake(Snow *flake);
 static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window XWinInfo(char **name);
+static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+static void drawit(cairo_t *cr);
 
 
 static void Thanks(void)
@@ -273,7 +275,7 @@ static void Thanks(void)
 static int do_blowoff(void);
 static int do_clean(void);
 static int do_displaychanged(void);
-static int do_draw_all(void);
+static int do_draw_all(gpointer widget);
 static int do_emeteorite(void);
 static int do_event(void);
 static int do_fallen(void);
@@ -509,7 +511,7 @@ int main_c(int argc, char *argv[])
 
    TestingGC     = XCreateGC(display, RootWindow, 0,0);
    SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
-   CleanGC       = XCreateGC(display,SnowWin,0,0);
+   CleanGC       = XCreateGC(display, SnowWin,0,0);
    FallenGC      = XCreateGC(display, SnowWin, 0, 0);
    EFallenGC     = XCreateGC(display, SnowWin, 0, 0);  // used to erase fallen snow
    meteorite.gc  = XCreateGC(display, SnowWin, 0, 0);
@@ -555,7 +557,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
    if (GtkWinb)
-      add_to_mainloop(PRIORITY_DEFAULT, time_draw_all,       do_draw_all           ,0);
+      add_to_mainloop(PRIORITY_HIGH, time_draw_all,       do_draw_all           ,GtkWinb);
 
    HandleFactor();
 
@@ -1683,7 +1685,7 @@ int do_testing()
    counter++;
    if (Flags.Done)
       return FALSE;
-   R("FlakeCount set_size FlakeCountMax: %d %d %d\n",FlakeCount,set_size(),Flags.FlakeCountMax);
+   P("FlakeCount set_size FlakeCountMax: %d %d %d\n",FlakeCount,set_size(),Flags.FlakeCountMax);
    return TRUE;
    static int first = 1;
    if(first)
@@ -2328,25 +2330,16 @@ void InitSnowOnTrees()
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 }
 
-int do_draw_all()
+// the draw callback
+gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
-   if (Flags.Done)
-      return FALSE;
-   GdkDrawingContext *drawingContext =
-      gdk_window_begin_draw_frame(gdkwindow,cairoRegion);
+   P("Just to check if this is darea: %p\n",(void *)widget);
+   drawit(cr);
+   return FALSE;
+}
 
-   cairo_t *cr = gdk_drawing_context_get_cairo_context(drawingContext);
-
-   // clear window:
-   cairo_save (cr);
-   P("supports_alpha: %d\n",supports_alpha);
-   cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0); /* transparent */
-
-   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-   cairo_paint (cr);
-
-   cairo_restore (cr);
-
+void drawit(cairo_t *cr)
+{
    scenery_draw(cr);
 
    Santa_draw(cr);
@@ -2354,8 +2347,21 @@ int do_draw_all()
    birds_draw(cr);
 
    snow_draw(cr);
+}
 
-   gdk_window_end_draw_frame(gdkwindow,drawingContext);
+int do_draw_all(gpointer widget)
+{
+   if (Flags.Done)
+      return FALSE;
+   static double tprev = 0;
+   static int count = 0;
+   double tnow = wallcl();
+   count++;
+   if(tnow-tprev > 1.2*time_draw_all)
+      R(" %d %f\n",count,tnow-tprev);
+   tprev = tnow;
+
+   gtk_widget_queue_draw(widget);
    return TRUE;
 }
 
@@ -2586,7 +2592,11 @@ int DetermineWindow()
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
 	    P("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
-	    if (!GtkWinb)
+	    if (GtkWinb)
+	    {
+
+	    }
+	    else
 	    {
 	       printf("Your screen does not support alpha channel, no birds will fly.\n");
 	    }
@@ -2601,12 +2611,64 @@ int DetermineWindow()
 	    P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
 	    if(SnowWin)
 	    {
+	       //>------------------------------
+#if 0
+	       {
+		  GdkWindowAttr attr;
+		  attr.title = "aap";
+		  attr.window_type = GDK_WINDOW_TOPLEVEL;
+		  attr.x = 0;
+		  attr.y = 0;
+		  attr.width = 1000;
+		  attr.height = 1000;
+		  attr.wclass = GDK_INPUT_OUTPUT;
+		  // !!
+		  attr.visual = gdk_screen_get_rgba_visual(gdk_screen_get_default());
+		  //attr.visual = gdk_screen_get_system_visual(gdk_screen_get_default());
+		  GdkWindow *gw = gdk_window_new(NULL,&attr,GDK_WA_TITLE|GDK_WA_X|GDK_WA_Y|GDK_WA_VISUAL);
+		  R("gw %d %s\n",gdk_window_get_window_type(gw),gdk_window_get_window_type(gw)==GDK_WINDOW_TOPLEVEL?"toplevel":"NO toplevel");
+		  //gdk_window_hide(gw);
+		  gdk_window_set_opaque_region(gw,0);
+		  gdk_window_set_pass_through(gw,TRUE);
+		  cairo_rectangle_int_t empty_rect;
+		  memset(&empty_rect, 0, sizeof(empty_rect));
+		  cairo_region_t *input_region = cairo_region_create_rectangle(&empty_rect);
+		  gdk_window_input_shape_combine_region(gw, input_region, 0, 0);
+		  cairo_region_destroy(input_region);
+
+		  gdk_window_set_opacity(gw,TRUE);
+		  //gdk_window_fullscreen(gw);
+		  gdk_window_set_accept_focus(gw,FALSE);
+		  gdk_window_stick(gw);
+		  gdk_window_set_keep_above(gw,TRUE);
+		  R("native: %d\n",gdk_window_ensure_native(gw));
+		  gdk_window_show(gw);
+		  R("passthr: %d\n",gdk_window_get_pass_through(gw));
+
+	       }
+#endif
+	       //<------------------------------
+
 	       TransWorkSpace = GetCurrentWorkspace();
 	       UsingTrans     = 1;
 
 	       drawing_area = gtk_drawing_area_new();
 	       gtk_container_add(GTK_CONTAINER(GtkWinb), drawing_area);
-	       gdkwindow   = gtk_widget_get_window(drawing_area);  
+	       //gdkwindow   = gtk_widget_get_window(drawing_area);  
+	       g_signal_connect(drawing_area, "draw", G_CALLBACK(on_draw_event), NULL);
+
+
+	       //>------------------------------
+#if 0
+	       {
+		  GdkWindow *gp = gdk_window_get_parent(gdkwindow);
+		  R("gp: %d\n",gdk_window_get_window_type(gp));
+	       }
+#endif
+
+	       //<------------------------------
+
+	       R("gdkwindow %d %s\n",gdk_window_get_window_type(gdkwindow),gdk_window_get_window_type(gdkwindow)==GDK_WINDOW_TOPLEVEL?"toplevel":"NO toplevel");
 
 	       if (cairoRegion)
 		  cairo_region_destroy(cairoRegion);
