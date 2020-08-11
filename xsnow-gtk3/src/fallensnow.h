@@ -35,6 +35,11 @@ typedef struct FallenSnow {
    struct FallenSnow *next;   // pointer to next item
 } FallenSnow;
 
+extern FallenSnow *FsnowFirst;
+extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
+extern int    HandleFallenSnow(FallenSnow *fsnow);
+extern float BlowOffFactor;
+
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
       int x, int y, int w, int h);

@@ -17,9 +17,19 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #pragma once
 
-extern void snow_init(void);
-extern int snow_draw(cairo_t *cr);
-extern void init_snow_surfaces();
+#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,do_UpdateSnowFlake,f)
+
+extern Region     NoSnowArea_dynamic;
+extern XPoint    *SnowOnTrees;
+extern Pixel      SnowcPix;
+
+extern int        do_initsnow(void);
+extern int        do_UpdateSnowFlake(Snow *flake);
+extern Snow      *MakeFlake(void);
+extern int        snow_draw(cairo_t *cr);
+extern void       snow_init(void);
+extern void       snow_set_gc(void);
+extern int        snow_ui();

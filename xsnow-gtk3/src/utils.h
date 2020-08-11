@@ -20,6 +20,7 @@
  */
 #pragma once
 
+#include <X11/Intrinsic.h>
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 
 extern void    ClearScreen(void);
@@ -27,3 +28,6 @@ extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);
 extern float   sq2(float x, float y);
 extern float   sq3(float x, float y, float z);
+extern Pixel  IAllocNamedColor(const char *colorName, Pixel dfltPix);
+extern Pixel  AllocNamedColor(const char *colorName, Pixel dfltPix);
+extern Pixel Black, White;

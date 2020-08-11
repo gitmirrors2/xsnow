@@ -21,3 +21,4 @@
  */
 
 extern float NewWind;
+extern int    Wind;

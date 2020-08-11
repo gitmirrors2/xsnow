@@ -25,6 +25,9 @@
 #include <X11/Intrinsic.h>
 #include "windows.h"
 
+
+Pixel Black, White;
+
 FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
    char *h = getenv("HOME");
@@ -64,5 +67,21 @@ float fsignf(float x)
    if (x<0)
       return -1.0f;
    return 0.0f;
+}
+
+Pixel AllocNamedColor(const char *colorName, Pixel dfltPix)
+{
+   XColor scrncolor;
+   XColor exactcolor;
+   if (XAllocNamedColor(display, DefaultColormap(display, screen),
+	    colorName, &scrncolor, &exactcolor)) 
+      return scrncolor.pixel;
+   else
+      return dfltPix;
+}
+
+Pixel IAllocNamedColor(const char *colorName, Pixel dfltPix)
+{
+   return AllocNamedColor(colorName, dfltPix) | 0xff000000;
 }
 

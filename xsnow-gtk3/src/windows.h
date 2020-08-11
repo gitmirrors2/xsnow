@@ -39,3 +39,4 @@ extern Pixel   ErasePixel;
 extern int          Exposures;
 extern Pixel   BlackPix;
 extern GtkWidget *GtkWinb;  // for birds
+extern long         CWorkSpace;
