@@ -20,5 +20,7 @@
 #-# 
  */
 
-extern float NewWind;
+extern float  NewWind;
 extern int    Wind;
+extern void wind_init(void);
+extern int wind_ui(void);

@@ -21,8 +21,8 @@
 #pragma once
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include "utils.h"
 
-#define SOMENUMBER 42
 
 #define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
@@ -177,26 +177,6 @@
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
 
-typedef struct Snow {
-   int w;                       // width
-   int h;                       // height
-   float rx;                    // x position
-   float ry;                    // y position
-   float vx;                    // speed in x-direction, pixels/second
-   float vy;                    // speed in y-direction, pixels/second
-   float m;                     // mass of flake
-   float ivy;                   // initial speed in y direction
-   float wsens;                 // wind dependency factor
-   unsigned int whatFlake : 8;  // snowflake index
-   unsigned int cyclic : 1;     // 0: flake is not cyclic 
-} Snow;
-
-typedef struct SnowMap {
-   char *snowBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} SnowMap;
 
 
 // star stuff
@@ -215,14 +195,7 @@ typedef struct Skoordinaten {
    int color; 
 } Skoordinaten;
 
-// meteorites stuff
 
-typedef struct MeteoMap {
-   int x1,x2,y1,y2,active;
-   double starttime;
-   GC gc,egc;
-   Region r;
-} MeteoMap;
 
 /* ------------------------------------------------------------------ */
 

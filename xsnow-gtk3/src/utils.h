@@ -22,7 +22,9 @@
 
 #include <X11/Intrinsic.h>
 #define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
+#define SOMENUMBER 42
 
+#include <stdio.h>
 extern void    ClearScreen(void);
 extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);

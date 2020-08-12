@@ -38,8 +38,9 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
 		hashtable.cpp hashtable.h\
-		Santa.c Santa.h wind.h utils.c utils.h\
-		scenery.c scenery.h snow.c snow.h
+		Santa.c Santa.h utils.c utils.h\
+		scenery.c scenery.h snow.c snow.h\
+		meteo.c meteo.h wind.c wind.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 

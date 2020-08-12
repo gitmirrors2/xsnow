@@ -19,6 +19,7 @@
 #-# 
 */
 #include "xsnow.h"
+#include "snow.h"
 #include "pixmaps.h"
 
 #include "Pixmaps/snow00.xbm"

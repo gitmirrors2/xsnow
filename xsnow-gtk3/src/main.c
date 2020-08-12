@@ -76,6 +76,7 @@
 #include "ixpm.h"
 #include "kdesetbg.h"
 #include "mainstub.h"
+#include "meteo.h"
 #include "pixmaps.h"
 #include "scenery.h"
 #include "snow.h"
@@ -150,8 +151,6 @@ static int      KillStars  = 0;  // 1: signal to trees to kill themselves
 // star stuff
 static int NStars;
 
-// meteorites stuff
-static MeteoMap meteorite;
 
 // timing stuff
 //static double       TotSleepTime = 0;
@@ -192,10 +191,8 @@ GtkWidget *GtkWinb = NULL;  // for birds
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
-static const char *MeteoColor  = "orange";
 static const char *StarColor[] = { "gold", "gold1", "gold4", "orange" };
 
-static Pixel MeteoPix;
 static Pixel StarcPix[STARANIMATIONS];
 
 /* GC's */
@@ -252,11 +249,9 @@ static int do_blowoff(void);
 static int do_clean(void);
 static int do_displaychanged(void);
 static int do_draw_all(gpointer widget);
-static int do_emeteorite(void);
 static int do_event(void);
 static int do_fallen(void);
 static int do_initstars(void);
-static int do_meteorite(void);
 static int do_newwind(void);
 static int do_show_desktop_type(void);
 static int do_show_range_etc(void);
@@ -456,6 +451,7 @@ int main_c(int argc, char *argv[])
    InitFallenSnow();
    scenery_init();
    snow_init();
+   meteo_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -467,7 +463,6 @@ int main_c(int argc, char *argv[])
 
 
    BlackPix = AllocNamedColor(BlackColor, Black);
-   MeteoPix = IAllocNamedColor(MeteoColor, White);
    for(i=0; i<STARANIMATIONS; i++)
       StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
 
@@ -476,8 +471,6 @@ int main_c(int argc, char *argv[])
    CleanGC       = XCreateGC(display, SnowWin,0,0);
    FallenGC      = XCreateGC(display, SnowWin, 0, 0);
    EFallenGC     = XCreateGC(display, SnowWin, 0, 0);  // used to erase fallen snow
-   meteorite.gc  = XCreateGC(display, SnowWin, 0, 0);
-   meteorite.egc = XCreateGC(display, SnowWin, 0, 0);
    for (i=0; i<STARANIMATIONS; i++)
       StarGC[i]  = XCreateGC(display,SnowWin,0,0);
 
@@ -499,12 +492,12 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
@@ -593,17 +586,12 @@ int do_ui_check()
    changes += scenery_ui();
    changes += birds_ui();
    changes += snow_ui();
+   changes += meteo_ui();
 
    if(Flags.NStars != OldFlags.NStars)
    {
       EraseStars();
       OldFlags.NStars = Flags.NStars;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoMeteorites != OldFlags.NoMeteorites)
-   {
-      OldFlags.NoMeteorites = Flags.NoMeteorites;
       changes++;
       P("changes: %d\n",changes);
    }
@@ -1233,66 +1221,7 @@ int do_ustar(Skoordinaten *star)
    return TRUE;
 }
 
-int do_meteorite()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if(Flags.NoMeteorites) return TRUE;
-   if (meteorite.active) return TRUE;
-   if (RandInt(1000) > 200) return TRUE;
-   meteorite.x1 = RandInt(SnowWinWidth);
-   meteorite.y1 = RandInt(SnowWinHeight/4);
-   meteorite.x2 = meteorite.x1 + SnowWinWidth/10 - RandInt(SnowWinWidth/5);
-   if (meteorite.x2 == meteorite.x1)
-      meteorite.x2 +=5;
-   meteorite.y2 = meteorite.y1 + SnowWinHeight/5 - RandInt(SnowWinHeight/5);
-   if (meteorite.y2 == meteorite.y1)
-      meteorite.y2 +=5;
-   meteorite.active  = 1;
-   const int npoints = 5;
-   XPoint points[npoints];
 
-   points[0].x = meteorite.x1+1;
-   points[0].y = meteorite.y1-1;
-   points[1].x = meteorite.x2+1;
-   points[1].y = meteorite.y2-1;
-   points[2].x = meteorite.x2-1;
-   points[2].y = meteorite.y2+1;
-   points[3].x = meteorite.x1-1;
-   points[3].y = meteorite.y1+1;
-   points[4].x = meteorite.x1+1;
-   points[4].y = meteorite.y1-1;
-
-   meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-   XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
-   meteorite.starttime = wallclock();
-   XDrawLine(display, SnowWin, meteorite.gc, 
-	 meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-   XFlush(display);
-   return TRUE;
-}
-
-int do_emeteorite()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if(Flags.NoMeteorites) return TRUE;
-   if (meteorite.active)
-      if (wallclock() - meteorite.starttime > 0.3)
-      {
-	 XDrawLine(display, SnowWin, meteorite.egc,  
-	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
-	 XDestroyRegion(meteorite.r);
-	 meteorite.active = 0;
-      }
-   XFlush(display);
-   return TRUE;
-}
 
 // used after kdesetbg: it appears that after kdesetbg 
 // we have to wait a second or so and then clear the screen.
@@ -1856,6 +1785,8 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
 void drawit(cairo_t *cr)
 {
+   meteo_draw(cr);
+
    scenery_draw(cr);
 
    Santa_draw(cr);
@@ -1963,22 +1894,6 @@ void SetGCFunctions()
    XSetFunction(  display, EFallenGC, GXcopy);
    XSetForeground(display, EFallenGC, ErasePixel);
 
-   XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
-   XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
-   if(UseAlpha)
-   {
-      XSetFunction(display,   meteorite.gc,  GXcopy);
-      XSetForeground(display, meteorite.gc,  MeteoPix);
-      XSetFunction(display,   meteorite.egc, GXcopy);
-      XSetForeground(display, meteorite.egc, ErasePixel);
-   }
-   else
-   {
-      XSetFunction(display,   meteorite.gc,  GXxor);
-      XSetForeground(display, meteorite.gc,  MeteoPix);
-      XSetFunction(display,   meteorite.egc, GXxor);
-      XSetForeground(display, meteorite.egc, MeteoPix);
-   }
 }
 
 void SetWhirl()
