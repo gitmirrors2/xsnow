@@ -1,4 +1,3 @@
-#pragma once
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -19,8 +18,23 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
+#pragma once
 
-extern float  NewWind;
 extern int    Wind;
+// Wind = 0: no wind
+// Wind = 1: wind only affecting snow
+// Wind = 2: wind affecting snow and santa
+// Direction =  0: no wind direction I guess
+// Direction =  1: wind from left to right
+// Direction = -1: wind from right to left
+extern int    Direction;
+extern float  Whirl;
+extern double WindTimer;
+extern double WindTimerStart;
+extern float  NewWind;
+
+
 extern void wind_init(void);
 extern int wind_ui(void);
+extern int do_newwind(void);
+extern int do_wind(void);

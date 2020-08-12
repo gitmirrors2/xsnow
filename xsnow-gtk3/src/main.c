@@ -63,7 +63,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
 #include "csvpos.h"
@@ -73,23 +72,21 @@
 #include "fallensnow.h"
 #include "flags.h"
 #include "gaussian.h"
-#include "ixpm.h"
 #include "kdesetbg.h"
 #include "mainstub.h"
 #include "meteo.h"
 #include "pixmaps.h"
+#include "Santa.h"
 #include "scenery.h"
 #include "snow.h"
 #include "transparent.h"
 #include "ui.h"
 #include "utils.h"
 #include "version.h"
+#include "wind.h"
 #include "windows.h"
 #include "wmctrl.h"
 #include "xsnow.h"
-#include "wind.h"
-
-#include "hashtable.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -171,18 +168,6 @@ static unsigned int Hroot;
 static int          DoRestart = 0;
 static cairo_region_t  *cairoRegion = 0;
 
-/* Wind stuff */
-int Wind = 0;
-// Wind = 0: no wind
-// Wind = 1: wind only affecting snow
-// Wind = 2: wind affecting snow and santa
-// Direction =  0: no wind direction I guess
-// Direction =  1: wind from left to right
-// Direction = -1: wind from right to left
-static int    Direction = 0;
-static float  Whirl;
-static double WindTimer;
-static double WindTimerStart;
 
 // desktop stuff
 static int       Isdesktop;
@@ -228,8 +213,6 @@ static void   KDESetBG1(const char *color);
 static int    RandInt(int maxVal);
 static void   SetGCFunctions(void);
 static void   SetMaxScreenSnowDepth(void);
-static void   SetWhirl(void);
-static void   SetWindTimer(void);
 static void   SigHandler(int signum);
 static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 static void   UpdateWindows(void);
@@ -252,7 +235,6 @@ static int do_draw_all(gpointer widget);
 static int do_event(void);
 static int do_fallen(void);
 static int do_initstars(void);
-static int do_newwind(void);
 static int do_show_desktop_type(void);
 static int do_show_range_etc(void);
 static int do_snow_on_trees(void);
@@ -260,7 +242,6 @@ static int do_star(Skoordinaten *star);
 static int do_testing(void);
 static int do_ui_check(void);
 static int do_ustar(Skoordinaten *star);
-static int do_wind(void);
 static int do_wupdate(void);
 
 
@@ -366,8 +347,8 @@ int main_c(int argc, char *argv[])
    HandleExposures();
 
    //InitSnowSpeedFactor();
-   SetWhirl();
-   SetWindTimer();
+   //SetWhirl();
+   //SetWindTimer();
 
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees));  // will be remallloced in InitSnowOnTrees
    InitSnowOnTrees();
@@ -452,6 +433,7 @@ int main_c(int argc, char *argv[])
    scenery_init();
    snow_init();
    meteo_init();
+   wind_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -498,11 +480,11 @@ int main_c(int argc, char *argv[])
    //add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check           ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
@@ -587,6 +569,7 @@ int do_ui_check()
    changes += birds_ui();
    changes += snow_ui();
    changes += meteo_ui();
+   changes += wind_ui();
 
    if(Flags.NStars != OldFlags.NStars)
    {
@@ -717,26 +700,6 @@ int do_ui_check()
       changes++;
       P("changes: %d\n",changes);
    }
-   if(Flags.NoWind != OldFlags.NoWind)
-   {
-      OldFlags.NoWind = Flags.NoWind;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.WhirlFactor != OldFlags.WhirlFactor)
-   {
-      OldFlags.WhirlFactor = Flags.WhirlFactor;
-      SetWhirl();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.WindTimer != OldFlags.WindTimer)
-   {
-      OldFlags.WindTimer = Flags.WindTimer;
-      SetWindTimer();
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;
@@ -760,12 +723,6 @@ int do_ui_check()
       OldFlags.BelowAll = Flags.BelowAll;
       DetermineWindow();
       changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.WindNow)
-   {
-      Flags.WindNow = 0;
-      Wind = 2;
       P("changes: %d\n",changes);
    }
 
@@ -1063,100 +1020,8 @@ void RestartDisplay()    // todo
 }
 
 
-int do_newwind()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   //
-   // the speed of newwind is pixels/second
-   // at steady Wind, eventually all flakes get this speed.
-   //
-   if(Flags.NoWind) return TRUE;
-   static double t0 = -1;
-   if (t0<0)
-   {
-      t0 = wallclock();
-      return TRUE;
-   }
-
-   float windmax = 100.0;
-   float r;
-   switch (Wind)
-   {
-      case(0): 
-      default:
-	 r = drand48()*Whirl;
-	 NewWind += r - Whirl/2;
-	 if(NewWind > windmax) NewWind = windmax;
-	 if(NewWind < -windmax) NewWind = -windmax;
-	 break;
-      case(1): 
-	 NewWind = Direction*0.6*Whirl;
-	 break;
-      case(2):
-	 NewWind = Direction*1.2*Whirl;
-	 break;
-   }
-   return TRUE;
-}
 
 
-int do_wind()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if(Flags.NoWind) return TRUE;
-   static int first = 1;
-   static double prevtime;
-
-   double TNow = wallclock();
-   if (first)
-   {
-      prevtime = TNow;;
-      first    = 0;
-   }
-
-   // on the average, this function will do something
-   // after WindTimer secs
-
-   if ((TNow - prevtime) < 2*WindTimer*drand48()) return TRUE;
-
-   prevtime = TNow;
-
-   if(RandInt(100) > 65)  // Now for some of Rick's magic:
-   {
-      if(RandInt(10) > 4)
-	 Direction = 1;
-      else
-	 Direction = -1;
-      Wind = 2;
-      WindTimer = 5;
-      //               next time, this function will be active 
-      //               after on average 5 secs
-   }
-   else
-   {
-      if(Wind == 2)
-      {
-	 Wind = 1;
-	 WindTimer = 3;
-	 //                   next time, this function will be active 
-	 //                   after on average 3 secs
-      }
-      else
-      {
-	 Wind = 0;
-	 WindTimer = WindTimerStart;
-	 //                   next time, this function will be active 
-	 //                   after on average WindTimerStart secs
-      }
-   }
-   return TRUE;
-}
 
 // blow snow off trees
 void ConvertOnTreeToFlakes()
@@ -1896,17 +1761,6 @@ void SetGCFunctions()
 
 }
 
-void SetWhirl()
-{
-   Whirl = 0.01*Flags.WhirlFactor*WHIRL;
-}
-void SetWindTimer()
-{
-   WindTimerStart           = Flags.WindTimer;
-   if (WindTimerStart < 3) 
-      WindTimerStart = 3;
-   WindTimer                = WindTimerStart;
-}
 void KDESetBG1(const char *color)
 {
    kdesetbg(color);
