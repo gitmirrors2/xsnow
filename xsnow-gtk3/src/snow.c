@@ -189,9 +189,7 @@ int snow_draw(cairo_t *cr)
    Snow *flake;
    while( (flake = set_next()) )
    {
-      cairo_surface_t *surface;
-      surface = snow_surfaces[flake->whatFlake];
-      cairo_set_source_surface (cr, surface, flake->rx, flake->ry);
+      cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
       cairo_paint(cr);
    }
    return TRUE;
@@ -204,11 +202,9 @@ int do_genflakes()
 
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
 
-   static double prevtime;
    static double Prevtime;
    static double sumdt;
    static int    first_run = 1;
-   static int    halted_by_snowrunning = 0;
    double TNow = wallclock();
 
    if (KillFlakes)
@@ -216,6 +212,7 @@ int do_genflakes()
 
    if (NOTACTIVE)
       RETURN;
+
    if (first_run)
    {
       first_run = 0;
@@ -223,12 +220,7 @@ int do_genflakes()
       sumdt    = 0;
    }
 
-   double dt;
-   if(halted_by_snowrunning)
-      dt = TNow - prevtime;
-   else
-      dt = TNow - Prevtime;
-   halted_by_snowrunning = 0;
+   double dt = TNow - Prevtime;
 
    // after suspend or sleep dt could have a strange value
    if (dt < 0 || dt > 10*time_genflakes)
@@ -361,12 +353,17 @@ int do_UpdateSnowFlake(Snow *flake)
 
    int x  = lrintf(flake->rx);
    int y  = lrintf(flake->ry);
-   int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
-   int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
-   //
-   // if (b): no erase, no draw, no move
-   if(b) 
-      return TRUE;
+
+   // check if flake is in nowsnowarea
+   if (!GtkWinb)  // we can skip this when using gtk
+   {
+      int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
+      int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
+      //
+      // if (b): no erase, no draw, no move
+      if(b) 
+	 return TRUE;
+   }
 
    if(Wind !=2  && !Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -436,28 +433,34 @@ int do_UpdateSnowFlake(Snow *flake)
       }
    }
 
-   in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
-   b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
-   // if(b): erase: no, move: yes
-   // erase this flake 
-   if(b) 
+   // prevent snow erase on a tree
+   // we can skip this when using gtk
+   if (!GtkWinb)
    {
-   }
-   else
-   {
-      EraseSnowFlake(flake);
+      int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
+      int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
+      // if(b): erase: no, move: yes
+      // erase this flake 
+      if(!b) 
+      {
+	 EraseSnowFlake(flake);
+      }
    }
    flake->rx = NewX;
    flake->ry = NewY;
-   in = XRectInRegion(TreeRegion,nx, ny, flake ->w, flake->h);
-   b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
-   // if b: draw: no
-   if (b)
-   {
-   }
+   // prevent drawing a flake on a tree
+   // we can skip this when using gtk
+   if (GtkWinb)
+      DrawSnowFlake(flake);
    else
    {
-      DrawSnowFlake(flake);
+      int in = XRectInRegion(TreeRegion,nx, ny, flake ->w, flake->h);
+      int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
+      // if b: draw: no
+      if (!b)
+      {
+	 DrawSnowFlake(flake);
+      }
    }
    return TRUE;
 }
@@ -473,8 +476,7 @@ Snow *MakeFlake()
 
 void EraseSnowFlake(Snow *flake)
 {
-   if(Flags.NoSnowFlakes) return;
-   if(GtkWinb)
+   if(GtkWinb || Flags.NoSnowFlakes)
       return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
@@ -492,6 +494,8 @@ void EraseSnowFlake(Snow *flake)
 	    Exposures);
 }
 
+// a call to this function must be followed by 'return FALSE' to remove this
+// flake from the g_timeout_full stack
 void DelFlake(Snow *flake)
 {
    set_erase(flake);
@@ -505,7 +509,7 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    if(Flags.NoSnowFlakes) return;
    if (GtkWinb)
    {
-      set_insert(flake);
+      set_insert(flake); // will be picked up by snow_draw()
       return;
    }
    int x = lrintf(flake->rx);
