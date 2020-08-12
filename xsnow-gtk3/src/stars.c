@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
+#include <stdlib.h>
 #include "stars.h"
 #include "debug.h"
 #include "flags.h"

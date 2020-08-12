@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include "wind.h"
 #include "debug.h"
 #include "flags.h"

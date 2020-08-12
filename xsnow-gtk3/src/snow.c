@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <math.h>
+#include <stdlib.h>
 #include "debug.h"
 #include "xsnow.h"
 #include "pixmaps.h"
