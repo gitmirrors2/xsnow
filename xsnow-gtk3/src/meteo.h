@@ -17,6 +17,18 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define VERSION "3.0.4.11"
+
+typedef struct _MeteoMap {
+   int x1,x2,y1,y2,active;
+   double starttime;
+   GC gc,egc;
+   Region r;
+} MeteoMap;
+
+
+void meteo_init(void);
+int meteo_ui(void);
+extern void meteo_draw(cairo_t *cr);
+
