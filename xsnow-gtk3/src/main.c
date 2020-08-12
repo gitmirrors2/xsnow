@@ -141,9 +141,6 @@ static int      ActivateClean = 0;  // trigger for do_clean
 static int      Argc;
 static char     **Argv;
 
-// tree stuff
-//static int      KillStars  = 0;  // 1: signal to trees to kill themselves
-
 
 // timing stuff
 //static double       TotSleepTime = 0;
@@ -173,7 +170,6 @@ GtkWidget *GtkWinb = NULL;  // for birds
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
 
-static Pixel StarcPix[STARANIMATIONS];
 
 /* GC's */
 static GC CleanGC;
@@ -196,7 +192,6 @@ static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 static int    DetermineWindow(void);
 static void   DrawFallen(FallenSnow *fsnow);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
-//static void   EraseStars(void);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static void   HandleExposures(void);
 static void   InitDisplayDimensions(void);
@@ -418,8 +413,6 @@ int main_c(int argc, char *argv[])
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
    }
-   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
-	 (char *)starPix.starBits, starPix.width, starPix.height);
    InitFallenSnow();
    scenery_init();
    snow_init();
@@ -437,16 +430,12 @@ int main_c(int argc, char *argv[])
 
 
    BlackPix = AllocNamedColor(BlackColor, Black);
-   for(i=0; i<STARANIMATIONS; i++)
-      StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
 
    TestingGC     = XCreateGC(display, RootWindow, 0,0);
    SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
    CleanGC       = XCreateGC(display, SnowWin,0,0);
    FallenGC      = XCreateGC(display, SnowWin, 0, 0);
    EFallenGC     = XCreateGC(display, SnowWin, 0, 0);  // used to erase fallen snow
-   for (i=0; i<STARANIMATIONS; i++)
-      StarGC[i]  = XCreateGC(display,SnowWin,0,0);
 
    SetGCFunctions();
 
@@ -563,15 +552,8 @@ int do_ui_check()
    changes += snow_ui();
    changes += meteo_ui();
    changes += wind_ui();
+   changes += stars_ui();
 
-   if(Flags.NStars != OldFlags.NStars)
-   {
-      OldFlags.NStars = Flags.NStars;
-      initstars();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
@@ -635,7 +617,7 @@ int do_ui_check()
       OldFlags.OffsetS = Flags.OffsetS;
       InitDisplayDimensions();
       InitFallenSnow();
-      initstars();
+      init_stars();
       EraseTrees();
       ClearScreen();
       changes++;
@@ -700,7 +682,7 @@ int do_ui_check()
       OldFlags.FullScreen = Flags.FullScreen;
       DetermineWindow();
       InitFallenSnow();
-      initstars();
+      init_stars();
       EraseTrees();
       ClearScreen();
       changes++;
@@ -999,7 +981,7 @@ void RestartDisplay()    // todo
    P("Calling InitDisplayDimensions\n");
    InitDisplayDimensions();
    InitFallenSnow();
-   initstars();
+   init_stars();
    EraseTrees();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1047,21 +1029,6 @@ void ConvertOnTreeToFlakes()
    SnowOnTreesRegion = XCreateRegion();
 }
 
-
-#if 0
-int do_ustar(Skoordinaten *star)
-{
-   if (Flags.Done)
-      return FALSE;
-   if (KillStars)
-      return TRUE;
-   if (NOTACTIVE)
-      return TRUE;
-
-   star->color = RandInt(STARANIMATIONS);
-   return TRUE;
-}
-#endif
 
 
 
@@ -1618,13 +1585,16 @@ int do_draw_all(gpointer widget)
 {
    if (Flags.Done)
       return FALSE;
-   static double tprev = 0;
-   static int count = 0;
-   double tnow = wallcl();
-   count++;
-   if(tnow-tprev > 1.2*time_draw_all)
-      R(" %d %f\n",count,tnow-tprev);
-   tprev = tnow;
+   if(1)
+   {
+      double tnow = wallcl();
+      static int count = 0;
+      static double tprev = 0;
+      count++;
+      if(tnow-tprev > 1.2*time_draw_all)
+	 R(" %d %f\n",count,tnow-tprev);
+      tprev = tnow;
+   }
 
    gtk_widget_queue_draw(widget);
    return TRUE;
@@ -1657,7 +1627,6 @@ void HandleFactor()
 
 void SetGCFunctions()
 {
-   int i;
    if (Flags.UseBG)
       ErasePixel = AllocNamedColor(Flags.BGColor,Black) | 0xff000000;
    else
@@ -1695,6 +1664,8 @@ void SetGCFunctions()
       }
       */
 
+   stars_set_gc();
+   /*
    for (i=0; i<STARANIMATIONS; i++)
    {
       XSetFunction(   display,StarGC[i],GXcopy);
@@ -1702,6 +1673,7 @@ void SetGCFunctions()
       XSetForeground( display,StarGC[i],StarcPix[i]);
       XSetFillStyle(  display,StarGC[i],FillStippled);
    }
+   */
 
    XSetFunction(display,CleanGC, GXcopy);
    XSetForeground(display,CleanGC,BlackPix);

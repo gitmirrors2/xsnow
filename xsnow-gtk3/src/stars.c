@@ -26,51 +26,68 @@
 #include "flags.h"
 #include "windows.h"
 #include "pixmaps.h"
+#include "utils.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-Skoordinaten *Stars = 0;
-GC StarGC[STARANIMATIONS];
-char *StarColor[STARANIMATIONS] = { "gold", "gold1", "gold4", "orange" };
+
+static int              NStars;  // is copied from Flags.NStars in init_stars. We cannot have that
+//                               // NStars is changed outside init_stars
+static Pixel            StarcPix[STARANIMATIONS];
+static GC               StarGC[STARANIMATIONS];
+static Skoordinaten    *Stars = 0;
+static char            *StarColor[STARANIMATIONS] = { "gold", "gold1", "gold4", "orange" };
+static int              do_stars(void);
+static int              do_ustars(void);
 
 void stars_init()
 {
-   initstars();
+   int i;
+   init_stars();
+   for (i=0; i<STARANIMATIONS; i++)
+      StarGC[i]  = XCreateGC(display,SnowWin,0,0);
+   for(i=0; i<STARANIMATIONS; i++)
+      StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
+   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
+	 (char *)starPix.starBits, starPix.width, starPix.height);
    if (!GtkWinb)
       add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
 }
 
-void initstars()
+void init_stars()
 {
    int i;
-   R("initstars %d\n",Flags.NStars);
-   Stars = (Skoordinaten *) realloc(Stars,Flags.NStars*sizeof(Skoordinaten));
-   for (i=0; i<Flags.NStars; i++)
+   NStars = Flags.NStars;
+   P("initstars %d\n",NStars);
+   Stars = (Skoordinaten *) realloc(Stars,NStars*sizeof(Skoordinaten));
+   //for (i=0; i<Flags.NStars; i++)
+   for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
       star->x     = drand48()*SnowWinWidth;
       star->y     = drand48()*(SnowWinHeight/4);
       star->color = drand48()*STARANIMATIONS;
-      gdk_rgba_parse(&Stars[i].gcolor,StarColor[star->color]);
+      gdk_rgba_parse(&(star->gcolor),StarColor[star->color]);
       P("stars_init %d %d %d\n",star->x,star->y,star->color);
    }
 }
 
 void stars_draw(cairo_t *cr)
 {
+   if (Flags.Done)
+      return;
    if (!GtkWinb)
       return;
    int i;
-   static int counter = 0;
    cairo_save(cr);
    cairo_set_line_width(cr,1);
    cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
    cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
-   for (i=0; i<Flags.NStars; i++)
+   for (i=0; i<NStars; i++)
    {
-      R("stars_draw i: %d %d %d\n",i,Flags.NStars,counter++);
+      P("stars_draw i: %d %d %d\n",i,NStars,counter++);
       Skoordinaten *star = &Stars[i];
       int x = star->x;
       int y = star->y;
@@ -92,6 +109,14 @@ void stars_draw(cairo_t *cr)
 int stars_ui()
 {
    int changes = 0;
+   if(Flags.NStars != OldFlags.NStars)
+   {
+      OldFlags.NStars = Flags.NStars;
+      init_stars();
+      ClearScreen();
+      changes++;
+      P("changes NStars: %d %d %d\n",changes,OldFlags.NStars,Flags.NStars);
+   }
    return changes;
 }
 
@@ -103,7 +128,7 @@ int do_stars()
    if (NOTACTIVE)
       return TRUE;
    int i;
-   for (i=0; i<Flags.NStars; i++)
+   for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
       int x = star->x;
@@ -111,7 +136,7 @@ int do_stars()
       int k = star->color;
       int w = starPix.width;
       int h = starPix.height;
-      P("dostars %d %d %d %d %d %d\n",Flags.NStars,x,y,k,w,h);
+      P("dostars %d %d %d %d %d %d\n",NStars,x,y,k,w,h);
       XSetTSOrigin(display, StarGC[k],x+w, y+h);
       XFillRectangle(display,SnowWin,StarGC[k],x,y,w,h);
    }
@@ -126,7 +151,7 @@ int do_ustars()
    if (NOTACTIVE)
       return TRUE;
    int i;
-   for (i=0; i<Flags.NStars; i++)
+   for (i=0; i<NStars; i++)
    {
       if (drand48() > 0.8)
       {
@@ -137,3 +162,16 @@ int do_ustars()
    }
    return TRUE;
 }
+
+void stars_set_gc()
+{
+   int i;
+   for (i=0; i<STARANIMATIONS; i++)
+   {
+      XSetFunction(   display,StarGC[i],GXcopy);
+      XSetStipple(    display,StarGC[i],starPix.pixmap);
+      XSetForeground( display,StarGC[i],StarcPix[i]);
+      XSetFillStyle(  display,StarGC[i],FillStippled);
+   }
+}
+

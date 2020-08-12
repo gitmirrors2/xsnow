@@ -17,7 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #pragma once
 
 #include <X11/Intrinsic.h>
@@ -38,13 +38,9 @@ typedef struct _Skoordinaten {
    GdkRGBA gcolor;
 } Skoordinaten;
 
-extern void stars_init(void);
-extern void stars_draw(cairo_t *cr);
-extern int stars_ui(void);
-extern int do_stars(void);
-extern int do_ustars(void);
-extern void initstars(void);
+extern void    init_stars(void);
+extern void    stars_draw(cairo_t *cr);
+extern void    stars_init(void);
+extern void    stars_set_gc(void);
+extern int     stars_ui(void);
 
-extern Skoordinaten *Stars;
-extern GC StarGC[STARANIMATIONS];
-extern char *StarColor[STARANIMATIONS];
