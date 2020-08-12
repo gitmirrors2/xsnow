@@ -112,7 +112,6 @@
 #define SNOWFLAKEMAXTYPE 6  // type is 0..SNOWFLAKEMAXTYPE  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
-#define STARANIMATIONS 4
 #define WHIRL 150
 
 /* birds */
@@ -175,28 +174,6 @@
 
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
-/* ------------------------------------------------------------------ */
-
-
-
-// star stuff
-
-
-typedef struct StarMap {
-   unsigned char *starBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} StarMap;
-
-typedef struct Skoordinaten {
-   int x; 
-   int y; 
-   int color; 
-} Skoordinaten;
-
-
-
 /* ------------------------------------------------------------------ */
 
 

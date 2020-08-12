@@ -113,7 +113,7 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-hashtable.$(OBJEXT) xsnow-Santa.$(OBJEXT) \
 	xsnow-utils.$(OBJEXT) xsnow-scenery.$(OBJEXT) \
 	xsnow-snow.$(OBJEXT) xsnow-meteo.$(OBJEXT) \
-	xsnow-wind.$(OBJEXT)
+	xsnow-wind.$(OBJEXT) xsnow-stars.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -144,9 +144,10 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-main.Po \
 	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteo.Po \
 	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-scenery.Po \
-	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-transparent.Po \
-	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-utils.Po \
-	./$(DEPDIR)/xsnow-wind.Po ./$(DEPDIR)/xsnow-wmctrl.Po
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-stars.Po \
+	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-ui.Po \
+	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
+	./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -595,10 +596,11 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
-		hashtable.cpp hashtable.h\
-		Santa.c Santa.h utils.c utils.h\
-		scenery.c scenery.h snow.c snow.h\
-		meteo.c meteo.h wind.c wind.h
+		hashtable.cpp hashtable.h \
+		Santa.c Santa.h utils.c utils.h \
+		scenery.c scenery.h snow.c snow.h \
+		meteo.c meteo.h wind.c wind.h \
+		stars.c stars.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 BUILT_SOURCES = ui_xml.h
@@ -716,6 +718,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scenery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snow.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-stars.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transparent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-utils.Po@am__quote@ # am--include-marker
@@ -1063,6 +1066,20 @@ xsnow-wind.obj: wind.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wind.c' object='xsnow-wind.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-wind.obj `if test -f 'wind.c'; then $(CYGPATH_W) 'wind.c'; else $(CYGPATH_W) '$(srcdir)/wind.c'; fi`
+
+xsnow-stars.o: stars.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-stars.o -MD -MP -MF $(DEPDIR)/xsnow-stars.Tpo -c -o xsnow-stars.o `test -f 'stars.c' || echo '$(srcdir)/'`stars.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-stars.Tpo $(DEPDIR)/xsnow-stars.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stars.c' object='xsnow-stars.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-stars.o `test -f 'stars.c' || echo '$(srcdir)/'`stars.c
+
+xsnow-stars.obj: stars.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-stars.obj -MD -MP -MF $(DEPDIR)/xsnow-stars.Tpo -c -o xsnow-stars.obj `if test -f 'stars.c'; then $(CYGPATH_W) 'stars.c'; else $(CYGPATH_W) '$(srcdir)/stars.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-stars.Tpo $(DEPDIR)/xsnow-stars.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='stars.c' object='xsnow-stars.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-stars.obj `if test -f 'stars.c'; then $(CYGPATH_W) 'stars.c'; else $(CYGPATH_W) '$(srcdir)/stars.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1580,6 +1597,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
+	-rm -f ./$(DEPDIR)/xsnow-stars.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po
@@ -1651,6 +1669,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
+	-rm -f ./$(DEPDIR)/xsnow-stars.Po
 	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po

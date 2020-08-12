@@ -17,18 +17,34 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define XPM_TYPE const char
 
-#include "xsnow.h"
-#include "snow.h"
-#include "stars.h"
+#include <X11/Intrinsic.h>
 
-extern SnowMap       snowPix[];
-extern StarMap       starPix;
-extern const char    ***Santas[][2];
-extern const char    **xpmtrees[];
-extern const char    **xsnow_logo;
-extern const char    **birds_xpm[];
-extern const char    **snow_xpm[];
+#define STARANIMATIONS 4
+
+typedef struct _StarMap {
+   unsigned char *starBits;
+   Pixmap pixmap;
+   int width;
+   int height;
+} StarMap;
+
+typedef struct _Skoordinaten {
+   int x; 
+   int y; 
+   int color; 
+   GdkRGBA gcolor;
+} Skoordinaten;
+
+extern void stars_init(void);
+extern void stars_draw(cairo_t *cr);
+extern int stars_ui(void);
+extern int do_stars(void);
+extern int do_ustars(void);
+extern void initstars(void);
+
+extern Skoordinaten *Stars;
+extern GC StarGC[STARANIMATIONS];
+extern char *StarColor[STARANIMATIONS];

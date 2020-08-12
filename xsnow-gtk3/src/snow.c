@@ -165,7 +165,7 @@ void init_snow_surfaces()
    int i;
    for(i=0; i<SNOWFLAKEMAXTYPE+1; i++)
    {
-      R("%d\n",i);
+      P("%d\n",i);
       char **x;
       int lines;
       xpm_set_color(snow_xpm[i], &x, &lines, Flags.SnowColor);

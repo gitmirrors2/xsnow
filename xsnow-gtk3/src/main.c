@@ -87,6 +87,7 @@
 #include "windows.h"
 #include "wmctrl.h"
 #include "xsnow.h"
+#include "stars.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -141,12 +142,7 @@ static int      Argc;
 static char     **Argv;
 
 // tree stuff
-static int      KillStars  = 0;  // 1: signal to trees to kill themselves
-
-
-
-// star stuff
-static int NStars;
+//static int      KillStars  = 0;  // 1: signal to trees to kill themselves
 
 
 // timing stuff
@@ -176,7 +172,6 @@ GtkWidget *GtkWinb = NULL;  // for birds
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
-static const char *StarColor[] = { "gold", "gold1", "gold4", "orange" };
 
 static Pixel StarcPix[STARANIMATIONS];
 
@@ -185,7 +180,6 @@ static GC CleanGC;
 static GC EFallenGC;
 static GC FallenGC;
 static GC SnowOnTreesGC;
-static GC StarGC[STARANIMATIONS];
 static GC TestingGC;
 //static GC TreesGC[2];
 
@@ -202,7 +196,7 @@ static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 static int    DetermineWindow(void);
 static void   DrawFallen(FallenSnow *fsnow);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
-static void   EraseStars(void);
+//static void   EraseStars(void);
 static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static void   HandleExposures(void);
 static void   InitDisplayDimensions(void);
@@ -234,14 +228,11 @@ static int do_displaychanged(void);
 static int do_draw_all(gpointer widget);
 static int do_event(void);
 static int do_fallen(void);
-static int do_initstars(void);
 static int do_show_desktop_type(void);
 static int do_show_range_etc(void);
 static int do_snow_on_trees(void);
-static int do_star(Skoordinaten *star);
 static int do_testing(void);
 static int do_ui_check(void);
-static int do_ustar(Skoordinaten *star);
 static int do_wupdate(void);
 
 
@@ -434,6 +425,7 @@ int main_c(int argc, char *argv[])
    snow_init();
    meteo_init();
    wind_init();
+   stars_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -478,7 +470,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
@@ -490,6 +482,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
    if (GtkWinb)
       add_to_mainloop(PRIORITY_HIGH, time_draw_all,       do_draw_all           ,GtkWinb);
+
 
    HandleFactor();
 
@@ -573,8 +566,9 @@ int do_ui_check()
 
    if(Flags.NStars != OldFlags.NStars)
    {
-      EraseStars();
       OldFlags.NStars = Flags.NStars;
+      initstars();
+      ClearScreen();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -641,8 +635,9 @@ int do_ui_check()
       OldFlags.OffsetS = Flags.OffsetS;
       InitDisplayDimensions();
       InitFallenSnow();
-      EraseStars();
+      initstars();
       EraseTrees();
+      ClearScreen();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -705,8 +700,9 @@ int do_ui_check()
       OldFlags.FullScreen = Flags.FullScreen;
       DetermineWindow();
       InitFallenSnow();
-      EraseStars();
+      initstars();
       EraseTrees();
+      ClearScreen();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -1003,7 +999,7 @@ void RestartDisplay()    // todo
    P("Calling InitDisplayDimensions\n");
    InitDisplayDimensions();
    InitFallenSnow();
-   EraseStars();
+   initstars();
    EraseTrees();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
@@ -1051,28 +1047,8 @@ void ConvertOnTreeToFlakes()
    SnowOnTreesRegion = XCreateRegion();
 }
 
-int do_star(Skoordinaten *star)
-{
-   if (Flags.Done)
-      return FALSE;
-   if (KillStars)
-   {
-      NStars--;
-      return FALSE;
-   }
-   if (NOTACTIVE)
-      return TRUE;
-   int k = star->color;
-   int x = star->x;
-   int y = star->y;
-   int w = starPix.width;
-   int h = starPix.height;
-   XSetTSOrigin(display, StarGC[k],x+w, y+h);
-   XFillRectangle(display,SnowWin,StarGC[k],x,y,w,h);
-   XFlush(display);
-   return TRUE;
-}
 
+#if 0
 int do_ustar(Skoordinaten *star)
 {
    if (Flags.Done)
@@ -1085,6 +1061,7 @@ int do_ustar(Skoordinaten *star)
    star->color = RandInt(STARANIMATIONS);
    return TRUE;
 }
+#endif
 
 
 
@@ -1375,33 +1352,6 @@ int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
 
 
 
-int do_initstars()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NStars != 0)
-      return TRUE;
-   NStars    = Flags.NStars;
-   KillStars = 0;
-   int i;
-   for (i=0; i<NStars; i++)
-   {
-      Skoordinaten *star = (Skoordinaten *)malloc(sizeof(Skoordinaten));
-      star->x = RandInt(SnowWinWidth);
-      star->y = RandInt(SnowWinHeight/4);
-      star->color = RandInt(STARANIMATIONS);
-      add_to_mainloop(PRIORITY_DEFAULT, time_star,  do_star,  star);
-      add_to_mainloop(PRIORITY_DEFAULT, drand48()*time_ustar+0.5*time_ustar, do_ustar, star);
-   }
-   return TRUE;
-}
-
-void EraseStars()
-{
-   KillStars = 1;
-   ClearScreen();
-}
-
 #if 0
 // keep this in case I need the erasure code
 void EraseStars()
@@ -1650,6 +1600,8 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
 void drawit(cairo_t *cr)
 {
+   stars_draw(cr);
+
    meteo_draw(cr);
 
    scenery_draw(cr);
@@ -1659,6 +1611,7 @@ void drawit(cairo_t *cr)
    birds_draw(cr);
 
    snow_draw(cr);
+
 }
 
 int do_draw_all(gpointer widget)
@@ -1729,8 +1682,8 @@ void SetGCFunctions()
 
    snow_set_gc();
    /*
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
-   {
+      for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+      {
       XSetFunction(   display, SnowGC[i], GXcopy);
       XSetStipple(    display, SnowGC[i], snowPix[i].pixmap);
       XSetFillStyle(  display, SnowGC[i], FillStippled);
@@ -1739,8 +1692,8 @@ void SetGCFunctions()
       XSetStipple(    display, ESnowGC[i], snowPix[i].pixmap);
       XSetForeground( display, ESnowGC[i], ErasePixel);
       XSetFillStyle(  display, ESnowGC[i], FillStippled);
-   }
-   */
+      }
+      */
 
    for (i=0; i<STARANIMATIONS; i++)
    {
