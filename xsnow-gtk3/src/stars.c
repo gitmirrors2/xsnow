@@ -48,35 +48,42 @@ void stars_init()
 {
    int i;
    init_stars();
-   for(i=0; i<STARANIMATIONS; i++)
+   if (GtkWinb)
    {
-      surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,9,9);
-      cairo_t *cr = cairo_create(surfaces[i]);
-      cairo_set_line_width(cr,1);
-      cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
-      GdkRGBA color;
-      gdk_rgba_parse(&color,StarColor[i]);
-      cairo_set_source_rgb(cr,color.red, color.green, color.blue);
-      cairo_move_to(cr, 0, 0 );
-      cairo_line_to(cr, 9, 9 );
-      cairo_move_to(cr, 0, 9 );
-      cairo_line_to(cr, 9, 0 );
-      cairo_move_to(cr, 1, 5 );
-      cairo_line_to(cr, 8, 5 );
-      cairo_move_to(cr, 5, 1 );
-      cairo_line_to(cr, 5, 8 );
-      cairo_stroke(cr);
+      for(i=0; i<STARANIMATIONS; i++)
+      {
+	 surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,9,9);
+	 cairo_t *cr = cairo_create(surfaces[i]);
+	 cairo_set_line_width(cr,1);
+	 //cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+	 GdkRGBA color;
+	 gdk_rgba_parse(&color,StarColor[i]);
+	 cairo_set_source_rgba(cr,color.red, color.green, color.blue,color.alpha);
+	 cairo_move_to(cr, 0, 0 );
+	 cairo_line_to(cr, 9, 9 );
+	 cairo_move_to(cr, 0, 9 );
+	 cairo_line_to(cr, 9, 0 );
+	 cairo_move_to(cr, 1, 5 );
+	 cairo_line_to(cr, 8, 5 );
+	 cairo_move_to(cr, 5, 1 );
+	 cairo_line_to(cr, 5, 8 );
+	 cairo_stroke(cr);
 
-      cairo_destroy(cr);
+	 cairo_destroy(cr);
+      }
    }
-   for (i=0; i<STARANIMATIONS; i++)
-      StarGC[i]  = XCreateGC(display,SnowWin,0,0);
-   for(i=0; i<STARANIMATIONS; i++)
-      StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
-   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
-	 (char *)starPix.starBits, starPix.width, starPix.height);
-   if (!GtkWinb)
-      add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
+   else
+   {
+      for (i=0; i<STARANIMATIONS; i++)
+      {
+	 StarGC[i]  = XCreateGC(display,SnowWin,0,0);
+	 StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
+      }
+      starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
+	    (char *)starPix.starBits, starPix.width, starPix.height);
+      if (!GtkWinb)
+	 add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
+   }
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
 }
 
@@ -93,7 +100,6 @@ void init_stars()
       star->x     = drand48()*SnowWinWidth;
       star->y     = drand48()*(SnowWinHeight/4);
       star->color = drand48()*STARANIMATIONS;
-      gdk_rgba_parse(&(star->gcolor),StarColor[star->color]);
       P("stars_init %d %d %d\n",star->x,star->y,star->color);
    }
 }
@@ -117,26 +123,8 @@ void stars_draw(cairo_t *cr)
       int x = star->x;
       int y = star->y;
       int color = star->color;
-      if (1)
-      {
-	    cairo_set_source_surface (cr, surfaces[color], x, y);
-	    cairo_paint(cr);
-      }
-      else
-      {
-	 GdkRGBA color = star->gcolor;
-	 cairo_set_source_rgb(cr,color.red, color.green, color.blue);
-	 cairo_move_to(cr,x  ,y);
-	 cairo_line_to(cr,x+9,y+9);
-	 cairo_move_to(cr,x  ,y+9);
-	 cairo_line_to(cr,x+9,y  );
-
-	 cairo_move_to(cr,x+1,y+5);
-	 cairo_line_to(cr,x+8,y+5);
-	 cairo_move_to(cr,x+5,y+1);
-	 cairo_line_to(cr,x+5,y+8);
-	 cairo_stroke(cr);
-      }
+      cairo_set_source_surface (cr, surfaces[color], x, y);
+      cairo_paint(cr);
    }
    cairo_restore(cr);
 }
@@ -187,14 +175,8 @@ int do_ustars()
       return TRUE;
    int i;
    for (i=0; i<NStars; i++)
-   {
       if (drand48() > 0.8)
-      {
-	 int k = drand48()*STARANIMATIONS;
-	 Stars[i].color = k;
-	 gdk_rgba_parse(&Stars[i].gcolor,StarColor[k]);
-      }
-   }
+	 Stars[i].color = drand48()*STARANIMATIONS;
    return TRUE;
 }
 

@@ -35,7 +35,6 @@ typedef struct _Skoordinaten {
    int x; 
    int y; 
    int color; 
-   GdkRGBA gcolor;
 } Skoordinaten;
 
 extern void    init_stars(void);

@@ -1627,6 +1627,8 @@ void HandleFactor()
 
 void SetGCFunctions()
 {
+   if(GtkWinb)
+      return;
    if (Flags.UseBG)
       ErasePixel = AllocNamedColor(Flags.BGColor,Black) | 0xff000000;
    else
