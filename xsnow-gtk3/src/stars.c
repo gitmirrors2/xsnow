@@ -42,10 +42,33 @@ static char            *StarColor[STARANIMATIONS] = { "gold", "gold1", "gold4", 
 static int              do_stars(void);
 static int              do_ustars(void);
 
+static cairo_surface_t *surfaces[STARANIMATIONS];
+
 void stars_init()
 {
    int i;
    init_stars();
+   for(i=0; i<STARANIMATIONS; i++)
+   {
+      surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,9,9);
+      cairo_t *cr = cairo_create(surfaces[i]);
+      cairo_set_line_width(cr,1);
+      cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+      GdkRGBA color;
+      gdk_rgba_parse(&color,StarColor[i]);
+      cairo_set_source_rgb(cr,color.red, color.green, color.blue);
+      cairo_move_to(cr, 0, 0 );
+      cairo_line_to(cr, 9, 9 );
+      cairo_move_to(cr, 0, 9 );
+      cairo_line_to(cr, 9, 0 );
+      cairo_move_to(cr, 1, 5 );
+      cairo_line_to(cr, 8, 5 );
+      cairo_move_to(cr, 5, 1 );
+      cairo_line_to(cr, 5, 8 );
+      cairo_stroke(cr);
+
+      cairo_destroy(cr);
+   }
    for (i=0; i<STARANIMATIONS; i++)
       StarGC[i]  = XCreateGC(display,SnowWin,0,0);
    for(i=0; i<STARANIMATIONS; i++)
@@ -84,25 +107,36 @@ void stars_draw(cairo_t *cr)
    int i;
    cairo_save(cr);
    cairo_set_line_width(cr,1);
-   cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
-   cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
+   //cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
+   cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+   //cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
    for (i=0; i<NStars; i++)
    {
       P("stars_draw i: %d %d %d\n",i,NStars,counter++);
       Skoordinaten *star = &Stars[i];
       int x = star->x;
       int y = star->y;
-      GdkRGBA color = star->gcolor;
-      cairo_set_source_rgb(cr,color.red, color.green, color.blue);
-      cairo_move_to(cr,x  ,y);
-      cairo_line_to(cr,x+8,y+8);
-      cairo_move_to(cr,x  ,y+8);
-      cairo_line_to(cr,x+8,y  );
-      cairo_move_to(cr,x+1,y+4);
-      cairo_line_to(cr,x+7,y+4);
-      cairo_move_to(cr,x+4,y+1);
-      cairo_line_to(cr,x+4,y+7);
-      cairo_stroke(cr);
+      int color = star->color;
+      if (1)
+      {
+	    cairo_set_source_surface (cr, surfaces[color], x, y);
+	    cairo_paint(cr);
+      }
+      else
+      {
+	 GdkRGBA color = star->gcolor;
+	 cairo_set_source_rgb(cr,color.red, color.green, color.blue);
+	 cairo_move_to(cr,x  ,y);
+	 cairo_line_to(cr,x+9,y+9);
+	 cairo_move_to(cr,x  ,y+9);
+	 cairo_line_to(cr,x+9,y  );
+
+	 cairo_move_to(cr,x+1,y+5);
+	 cairo_line_to(cr,x+8,y+5);
+	 cairo_move_to(cr,x+5,y+1);
+	 cairo_line_to(cr,x+5,y+8);
+	 cairo_stroke(cr);
+      }
    }
    cairo_restore(cr);
 }
