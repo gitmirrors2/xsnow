@@ -19,12 +19,13 @@
 #-# 
 */
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <math.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdlib.h>
+
 #include "clocks.h"
 #include "ui.h"
 #include "ui_xml.h"

@@ -49,6 +49,8 @@ typedef struct _SnowMap {
 extern Region     NoSnowArea_dynamic;
 extern XPoint    *SnowOnTrees;
 extern Pixel      SnowcPix;
+extern int        MaxSnowFlakeHeight;  /* Biggest flake */
+extern int        MaxSnowFlakeWidth;   /* Biggest flake */
 
 extern int        do_initsnow(void);
 extern int        do_UpdateSnowFlake(Snow *flake);

@@ -85,3 +85,9 @@ Pixel IAllocNamedColor(const char *colorName, Pixel dfltPix)
    return AllocNamedColor(colorName, dfltPix) | 0xff000000;
 }
 
+int randint(int m)
+{
+   if (m <=0 )
+      return 0;
+   return drand48()*m;
+}

@@ -20,8 +20,8 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <math.h>
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
@@ -443,7 +443,7 @@ int do_usanta()
    {
       // time to change yspeed
       sdt = 0;
-      yspeeddir = drand48()*3-1;  //  -1, 0, 1
+      yspeeddir = randint(3)-1;  //  -1, 0, 1
    }
 
    SantaYr += dt*yspeed*yspeeddir;
@@ -464,7 +464,7 @@ void ResetSanta()
 {
    SantaX  = -SantaWidth - ActualSantaSpeed;
    SantaXr = SantaX;
-   SantaY  = drand48()*(SnowWinHeight / 3)+40;
+   SantaY  = randint(SnowWinHeight / 3)+40;
    SantaYr = SantaY;
    SantaYStep = 1;
    CurrentSanta = 0;

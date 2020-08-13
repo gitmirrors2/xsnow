@@ -20,8 +20,8 @@
 */
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include <X11/Intrinsic.h>
 #include <stdlib.h>
+#include <X11/Intrinsic.h>
 #include "stars.h"
 #include "debug.h"
 #include "flags.h"
@@ -97,9 +97,9 @@ void init_stars()
    for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
-      star->x     = drand48()*SnowWinWidth;
-      star->y     = drand48()*(SnowWinHeight/4);
-      star->color = drand48()*STARANIMATIONS;
+      star->x     = randint(SnowWinWidth);
+      star->y     = randint(SnowWinHeight/4);
+      star->color = randint(STARANIMATIONS);
       P("stars_init %d %d %d\n",star->x,star->y,star->color);
    }
 }
@@ -176,7 +176,7 @@ int do_ustars()
    int i;
    for (i=0; i<NStars; i++)
       if (drand48() > 0.8)
-	 Stars[i].color = drand48()*STARANIMATIONS;
+	 Stars[i].color = randint(STARANIMATIONS);
    return TRUE;
 }
 

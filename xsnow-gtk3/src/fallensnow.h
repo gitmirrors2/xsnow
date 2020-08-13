@@ -21,6 +21,7 @@
 #pragma once
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
+
 typedef struct FallenSnow {
    Window id;                 // window id, 0 for snow at bottom
    int x,y;                   // Coordinates of fallen snow, y for bottom
@@ -39,6 +40,25 @@ extern FallenSnow *FsnowFirst;
 extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
 extern int    HandleFallenSnow(FallenSnow *fsnow);
 extern float BlowOffFactor;
+extern GC EFallenGC;
+extern GC FallenGC;
+
+
+extern void fallensnow_init(void);
+extern void fallensnow_draw(cairo_t *cr);
+extern int fallensnow_ui(void);
+extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
+extern void   CleanFallen(Window id);
+extern Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
+extern void   DrawFallen(FallenSnow *fsnow);
+extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
+extern void   EraseFallenPixel(FallenSnow *fsnow,int x);
+extern void   InitFallenSnow(void);
+extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
+extern int do_fallen(void);
+extern void   SetMaxScreenSnowDepth(void);
+
+
 
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,

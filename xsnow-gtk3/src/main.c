@@ -88,6 +88,7 @@
 #include "wmctrl.h"
 #include "xsnow.h"
 #include "stars.h"
+#include "blowoff.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -129,11 +130,7 @@ GdkWindow       *gdkwindow = 0;
 static int counter = 0;
 // snow flakes stuff
 float BlowOffFactor;
-static int   MaxSnowFlakeHeight = 0;  /* Biggest flake */
-static int   MaxSnowFlakeWidth = 0;   /* Biggest flake */
 
-// fallen snow stuff
-FallenSnow *FsnowFirst = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
@@ -148,7 +145,7 @@ static double       TStart;
 
 // windows stuff
 static int          NWindows;
-long         CWorkSpace = 0;
+long                CWorkSpace = 0;
 static Window       RootWindow;
 static char         *SnowWinName = 0;
 static WinInfo      *Windows = 0;
@@ -173,8 +170,6 @@ static const char *BlackColor  = "black";
 
 /* GC's */
 static GC CleanGC;
-static GC EFallenGC;
-static GC FallenGC;
 static GC SnowOnTreesGC;
 static GC TestingGC;
 //static GC TreesGC[2];
@@ -183,27 +178,16 @@ static GC TestingGC;
 //static Region NoSnowArea_static;
 
 /* Forward decls */
-static int    BlowOff(void);
-static void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
-static void   CleanFallen(Window id);
 static void   ConvertOnTreeToFlakes(void);
 static void   HandleFactor(void);
-static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 static int    DetermineWindow(void);
-static void   DrawFallen(FallenSnow *fsnow);
-static void   EraseFallenPixel(FallenSnow *fsnow,int x);
-static void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 static void   HandleExposures(void);
 static void   InitDisplayDimensions(void);
-static void   InitFallenSnow(void);
 static void   RestartDisplay(void);
 static void   InitSnowOnTrees(void);
 static void   KDESetBG1(const char *color);
-static int    RandInt(int maxVal);
 static void   SetGCFunctions(void);
-static void   SetMaxScreenSnowDepth(void);
 static void   SigHandler(int signum);
-static void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static Window XWinInfo(char **name);
@@ -222,7 +206,6 @@ static int do_clean(void);
 static int do_displaychanged(void);
 static int do_draw_all(gpointer widget);
 static int do_event(void);
-static int do_fallen(void);
 static int do_show_desktop_type(void);
 static int do_show_range_etc(void);
 static int do_snow_on_trees(void);
@@ -343,7 +326,6 @@ int main_c(int argc, char *argv[])
    SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
 
    srand48((long int)(wallcl()*1.0e6));
-   SnowMap *rp;
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP, SigHandler);
@@ -404,21 +386,12 @@ int main_c(int argc, char *argv[])
    //                                          is in the trajectory of a meteorite
    TreeRegion           = XCreateRegion();
    SnowOnTreesRegion    = XCreateRegion();
-   int flake;
-   for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
-   {
-      rp = &snowPix[flake];
-      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
-	    rp->snowBits, rp->width, rp->height);
-      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
-      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
-   }
-   InitFallenSnow();
    scenery_init();
    snow_init();
    meteo_init();
    wind_init();
    stars_init();
+   fallensnow_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -553,6 +526,7 @@ int do_ui_check()
    changes += meteo_ui();
    changes += wind_ui();
    changes += stars_ui();
+   changes += fallensnow_ui();
 
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -623,23 +597,6 @@ int do_ui_check()
       changes++;
       P("changes: %d\n",changes);
    }
-   if(Flags.MaxWinSnowDepth != OldFlags.MaxWinSnowDepth)
-   {
-      OldFlags.MaxWinSnowDepth = Flags.MaxWinSnowDepth;
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.MaxScrSnowDepth != OldFlags.MaxScrSnowDepth)
-   {
-      OldFlags.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
-      SetMaxScreenSnowDepth();
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(Flags.MaxOnTrees != OldFlags.MaxOnTrees)
    {
       OldFlags.MaxOnTrees = Flags.MaxOnTrees;
@@ -657,22 +614,6 @@ int do_ui_check()
    if(Flags.NoKeepSnowOnTrees != OldFlags.NoKeepSnowOnTrees)
    {
       OldFlags.NoKeepSnowOnTrees = Flags.NoKeepSnowOnTrees;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSBot != OldFlags.NoKeepSBot)
-   {
-      OldFlags.NoKeepSBot = Flags.NoKeepSBot;
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSWin != OldFlags.NoKeepSWin)
-   {
-      OldFlags.NoKeepSWin = Flags.NoKeepSWin;
-      InitFallenSnow();
       ClearScreen();
       changes++;
       P("changes: %d\n",changes);
@@ -739,30 +680,14 @@ int do_snow_on_trees()
 }
 
 
+// determine if fallensnow should be handled for fsnow
 int HandleFallenSnow(FallenSnow *fsnow)
 {
-   // soo complicated to determine if a fallensnow should be handled, therefore
-   // we isolate this question in this function for further use
-   return !((fsnow->id == 0 && Flags.NoKeepSBot)||(fsnow->id != 0 && Flags.NoKeepSWin)); 
-}
-
-int do_fallen()
-{
-
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-
-   FallenSnow *fsnow = FsnowFirst;
-   while(fsnow)
-   {
-      if (HandleFallenSnow(fsnow)) 
-	 DrawFallen(fsnow);
-      fsnow = fsnow->next;
-   }
-   XFlush(display);
-   return TRUE;
+   if (fsnow->ws < 0)
+      return 0;
+   if (fsnow->id)
+      return !Flags.NoKeepSWin;
+   return !Flags.NoKeepSBot;
 }
 
 int do_blowoff()
@@ -774,6 +699,7 @@ int do_blowoff()
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
+      P("blowoff ...\n");
       if (HandleFallenSnow(fsnow)) 
 	 if(fsnow->id == 0 || (!fsnow->hidden &&
 		  (fsnow->ws == CWorkSpace || fsnow->sticky)))
@@ -783,130 +709,6 @@ int do_blowoff()
    return TRUE;
 }
 
-void DrawFallen(FallenSnow *fsnow)
-{
-   if(!fsnow->clean)
-      if(fsnow->id == 0 || (!fsnow->hidden &&
-	       (fsnow->ws == CWorkSpace || fsnow->sticky)))
-      {
-	 // do not interfere with Santa
-	 if(!Flags.NoSanta)
-	 {
-	    int in = XRectInRegion(SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
-		  fsnow->w, fsnow->h);
-	    if (in == RectangleIn || in == RectanglePart)
-	    {
-	       // determine front of Santa in fsnow
-	       int xfront = SantaX+SantaWidth - fsnow->x;
-	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
-	       int xback = xfront - SantaWidth;
-	       const int clearing = 10;
-	       float vy = -1.5*ActualSantaSpeed; 
-	       if(vy > 0) vy = -vy;
-	       if (vy > -100.0)
-		  vy = -100;
-	       if (ActualSantaSpeed > 0)
-		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
-	       CleanFallenArea(fsnow,xback-clearing,SantaWidth+2*clearing);
-	       int i;
-	       for (i=0; i<fsnow->w; i++)
-		  if (i < xfront+clearing && i>=xback-clearing)
-		     fsnow->acth[i] = 0;
-	       XFlush(display);
-	    }
-	 }
-
-	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
-	 XSetStipple(display, FallenGC, pixmap);
-	 XFreePixmap(display,pixmap);
-	 int x = fsnow->x;
-	 int y = fsnow->y - fsnow->h;
-	 XSetFillStyle( display, FallenGC, FillStippled);
-	 XSetFunction(  display, FallenGC, GXcopy);
-	 XSetForeground(display, FallenGC, SnowcPix);
-	 XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
-	 XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
-      }
-}
-
-// clean area for fallensnow with id
-void CleanFallen(Window id)
-{
-   FallenSnow *fsnow = FsnowFirst;
-   // search the id
-   while(fsnow)
-   {
-      if(fsnow->id == id)
-      {
-	 CleanFallenArea(fsnow,0,fsnow->w);
-	 break;
-      }
-      fsnow = fsnow->next;
-   }
-}
-
-void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
-{
-   if(fsnow->clean) 
-      return;
-   int x = fsnow->x;
-   int y = fsnow->y - fsnow->h;
-   if(UseAlpha|Flags.UseBG)
-      XFillRectangle(display, SnowWin,  EFallenGC, x+xstart,y,
-	    w, fsnow->h+MaxSnowFlakeHeight);
-   else
-      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
-   if(xstart <= 0 && w >= fsnow->w)
-      fsnow->clean = 1;
-}
-
-void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
-{
-   if (Flags.NoBlowSnow || Flags.NoWind)
-      return;
-   // animation of fallen fallen snow
-   // x-values x..x+w are transformed in flakes, vertical speed vy
-   int i;
-   int ifirst = x; if (ifirst < 0) ifirst = 0;
-   if (ifirst > fsnow->w) ifirst = fsnow->w;
-   int ilast  = x+w; if(ilast < 0) ilast = 0;
-   if (ilast > fsnow->w) ilast = fsnow->w;
-   for (i=ifirst; i<ilast; i+=MaxSnowFlakeWidth)
-   {
-      int j;
-      for(j=0; j<fsnow->acth[i]; j++)
-      {
-	 int k, kmax = BlowOff();
-	 for(k=0; k<kmax; k++)
-	 {
-	    Snow *flake   = MakeFlake();
-	    flake->rx     = fsnow->x + i;
-	    flake->ry     = fsnow->y - j;
-	    if (Flags.NoWind)
-	       flake->vx     = 0;
-	    else
-	       flake->vx     = NewWind/8;
-	    flake->vy     = vy;
-	    flake->cyclic = 0;
-	    add_flake_to_mainloop(flake);
-	 }
-      }
-   }
-}
-
-void EraseFallenPixel(FallenSnow *fsnow, int x)
-{
-   if(fsnow->acth[x] > 0)
-   {
-      int x1 = fsnow->x + x;
-      int y1 = fsnow->y - fsnow->acth[x];
-      if(UseAlpha|Flags.UseBG)
-	 XDrawPoint(display, SnowWin, EFallenGC, x1, y1);
-      else
-	 XClearArea(display, SnowWin, x1 , y1, 1, 1, Exposures);     
-      fsnow->acth[x]--;
-   }
-}
 
 int do_displaychanged()
 {
@@ -1270,24 +1072,8 @@ int do_testing()
    counter++;
    if (Flags.Done)
       return FALSE;
-   return TRUE;
-   static int first = 1;
-   if(first)
-   {
-      first = 0;
-      return TRUE;
-   }
-   EraseTrees();
-   return TRUE;
-   Region region;
-   region = SnowOnTreesRegion;
-
-   XSetFunction(display,   TestingGC, GXcopy);
-   XSetForeground(display, TestingGC, BlackPix); 
-   XFillRectangle(display, SnowWin, TestingGC, 0,0,SnowWinWidth,SnowWinHeight);
-   XSetRegion(display,     TestingGC, region);
-   XSetForeground(display, TestingGC, BlackPix); 
-   XFillRectangle(display, SnowWin, TestingGC, 0,0,SnowWinWidth,SnowWinHeight);
+   R("%d cw %#lx\n",counter, CWorkSpace);
+   PrintFallenSnow(FsnowFirst);
    return TRUE;
 }
 
@@ -1296,14 +1082,6 @@ int do_testing()
 void SigHandler(int signum)
 {
    Flags.Done = 1;
-}
-/* ------------------------------------------------------------------ */ 
-
-int RandInt(int maxVal)
-{
-   if (maxVal <= 0) maxVal = 1;
-   // see http://c-faq.com/lib/randrange.html
-   return drand48()*maxVal;
 }
 /* ------------------------------------------------------------------ */ 
 
@@ -1340,16 +1118,12 @@ void EraseStars()
 }
 #endif
 
-void InitFallenSnow()
-{
-   while (FsnowFirst)
-      PopFallenSnow(&FsnowFirst);
-   PushFallenSnow(&FsnowFirst, 0, CWorkSpace, 0, 0, 
-	 SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
-}
 
 void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 {
+   if (NOTACTIVE)
+      return;
+   P("update ...\n");
    if(!HandleFallenSnow(fsnow)) return;
    int imin = x;
    if(imin < 0) imin = 0;
@@ -1410,68 +1184,6 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    free(old);
    fsnow->clean = 0;
 }
-
-// removes some fallen snow from fsnow, w pixels. If fallensnowheight < h: no removal
-// also add snowflakes
-void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
-{
-   if(Flags.NoBlowSnow)
-      return;
-   int i;
-   int x = RandInt(fsnow->w - w);
-   for(i=x; i<x+w; i++)
-      if(fsnow->acth[i] > h)
-      {
-	 // animation of blown off snow
-	 if (!Flags.NoWind && !Flags.NoBlowSnow && Wind != 0 && drand48() > 0.5)
-	 {
-	    int j, jmax = BlowOff();
-	    //P("%d\n",jmax);
-	    for (j=0; j< jmax; j++)
-	    {
-	       Snow *flake   = MakeFlake();
-	       flake->rx     = fsnow->x + i;
-	       flake->ry     = fsnow->y - fsnow->acth[i] - drand48()*2*MaxSnowFlakeWidth;
-	       flake->vx     = NewWind/8;
-	       flake->vy     = -10;
-	       flake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
-	       add_flake_to_mainloop(flake);
-	    }
-	    EraseFallenPixel(fsnow,i);
-	 }
-      }
-}
-
-Pixmap CreatePixmapFromFallen(FallenSnow *f)
-{
-   // todo: takes too much cpu
-   int j;
-   int p = 0;
-   unsigned char *bitmap = (unsigned char *) alloca((f->w8*f->h/8)*sizeof(unsigned char));
-
-   for (j=0; j<f->h; j++)
-   {
-      int i;
-      for (i=0; i<f->w8; i+=8)
-      {
-	 int b = 0;
-	 int m = 1;
-	 int k;
-	 int kmax = i+8;
-	 if (kmax > f->w) kmax = f->w;
-	 for (k=i; k<kmax; k++)
-	 {
-	    if(f->acth[k] >= f->h-j)
-	       b |= m;
-	    m <<= 1;
-	 }
-	 bitmap[p++] = b;
-      }
-   }
-   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char *)bitmap, f->w, f->h);
-   return pixmap;
-}
-
 
 
 
@@ -1534,15 +1246,6 @@ void InitDisplayDimensions()
    SetMaxScreenSnowDepth();
 }
 
-void SetMaxScreenSnowDepth()
-{
-   MaxScrSnowDepth = Flags.MaxScrSnowDepth;
-   if (MaxScrSnowDepth> (SnowWinHeight-SNOWFREE)) {
-      printf("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
-      MaxScrSnowDepth = SnowWinHeight-SNOWFREE;
-   }
-}
-
 
 int BlowOff()
 {
@@ -1579,6 +1282,8 @@ void drawit(cairo_t *cr)
 
    snow_draw(cr);
 
+   fallensnow_draw(cr);
+
 }
 
 int do_draw_all(gpointer widget)
@@ -1596,7 +1301,7 @@ int do_draw_all(gpointer widget)
       tprev = tnow;
    }
 
-   gtk_widget_queue_draw(widget);
+   gtk_widget_queue_draw(GTK_WIDGET(widget));
    return TRUE;
 }
 
@@ -1668,14 +1373,14 @@ void SetGCFunctions()
 
    stars_set_gc();
    /*
-   for (i=0; i<STARANIMATIONS; i++)
-   {
+      for (i=0; i<STARANIMATIONS; i++)
+      {
       XSetFunction(   display,StarGC[i],GXcopy);
       XSetStipple(    display,StarGC[i],starPix.pixmap);
       XSetForeground( display,StarGC[i],StarcPix[i]);
       XSetFillStyle(  display,StarGC[i],FillStippled);
-   }
-   */
+      }
+      */
 
    XSetFunction(display,CleanGC, GXcopy);
    XSetForeground(display,CleanGC,BlackPix);

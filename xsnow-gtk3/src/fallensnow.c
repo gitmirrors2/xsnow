@@ -19,15 +19,80 @@
 #-# 
 */
 #include <stdio.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
-#include "fallensnow.h"
 #include <math.h>
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
+#include "fallensnow.h"
+#include "windows.h"
+#include "flags.h"
+#include "snow.h"
+#include "Santa.h"
+#include "blowoff.h"
+#include "wind.h"
+#include "debug.h"
+
+#define NOTACTIVE \
+   (Flags.BirdsOnly || !WorkspaceActive())
 
 int        MaxScrSnowDepth = 0;
+FallenSnow *FsnowFirst = 0;
+GC EFallenGC;
+GC FallenGC;
 
-static void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
+static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
+
+void fallensnow_init()
+{
+   InitFallenSnow();
+   PrintFallenSnow(FsnowFirst);
+}
+
+void fallensnow_draw(cairo_t *cr)
+{
+}
+
+int fallensnow_ui()
+{
+   int changes = 0;
+   if(Flags.MaxWinSnowDepth != OldFlags.MaxWinSnowDepth)
+   {
+      OldFlags.MaxWinSnowDepth = Flags.MaxWinSnowDepth;
+      InitFallenSnow();
+      ClearScreen();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.MaxScrSnowDepth != OldFlags.MaxScrSnowDepth)
+   {
+      OldFlags.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
+      SetMaxScreenSnowDepth();
+      InitFallenSnow();
+      ClearScreen();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.NoKeepSBot != OldFlags.NoKeepSBot)
+   {
+      OldFlags.NoKeepSBot = Flags.NoKeepSBot;
+      InitFallenSnow();
+      ClearScreen();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.NoKeepSWin != OldFlags.NoKeepSWin)
+   {
+      OldFlags.NoKeepSWin = Flags.NoKeepSWin;
+      InitFallenSnow();
+      ClearScreen();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   return changes;
+}
+
+void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 {
    int i;
    float n2 = n*n;
@@ -148,9 +213,235 @@ void PrintFallenSnow(FallenSnow *list)
       int i;
       for(i=0; i<fallen->w; i++)
 	 sumact += fallen->acth[i];
-      printf("%#lx ws:%d x:%d y:%d w:%d c:%d s:%d\n", fallen->id, fallen->ws,
+      printf("id:%#lx ws:%d x:%d y:%d w:%d c:%d s:%d\n", fallen->id, fallen->ws,
 	    fallen->x, fallen->y, fallen->w, fallen->clean, sumact);
       fallen = fallen->next;
+   }
+}
+
+void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
+{
+   if(fsnow->clean) 
+      return;
+   int x = fsnow->x;
+   int y = fsnow->y - fsnow->h;
+   if(UseAlpha|Flags.UseBG)
+      XFillRectangle(display, SnowWin,  EFallenGC, x+xstart,y,
+	    w, fsnow->h+MaxSnowFlakeHeight);
+   else
+      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
+   if(xstart <= 0 && w >= fsnow->w)
+      fsnow->clean = 1;
+}
+
+// clean area for fallensnow with id
+void CleanFallen(Window id)
+{
+   FallenSnow *fsnow = FsnowFirst;
+   // search the id
+   while(fsnow)
+   {
+      if(fsnow->id == id)
+      {
+	 CleanFallenArea(fsnow,0,fsnow->w);
+	 break;
+      }
+      fsnow = fsnow->next;
+   }
+}
+
+Pixmap CreatePixmapFromFallen(FallenSnow *f)
+{
+   // todo: takes too much cpu
+   int j;
+   int p = 0;
+   unsigned char *bitmap = (unsigned char *) alloca((f->w8*f->h/8)*sizeof(unsigned char));
+
+   for (j=0; j<f->h; j++)
+   {
+      int i;
+      for (i=0; i<f->w8; i+=8)
+      {
+	 int b = 0;
+	 int m = 1;
+	 int k;
+	 int kmax = i+8;
+	 if (kmax > f->w) kmax = f->w;
+	 for (k=i; k<kmax; k++)
+	 {
+	    if(f->acth[k] >= f->h-j)
+	       b |= m;
+	    m <<= 1;
+	 }
+	 bitmap[p++] = b;
+      }
+   }
+   Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char *)bitmap, f->w, f->h);
+   return pixmap;
+}
+
+
+void DrawFallen(FallenSnow *fsnow)
+{
+   if(!fsnow->clean)
+      if(fsnow->id == 0 || (!fsnow->hidden &&
+	       (fsnow->ws == CWorkSpace || fsnow->sticky)))
+      {
+	 // do not interfere with Santa
+	 if(!Flags.NoSanta)
+	 {
+	    int in = XRectInRegion(SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
+		  fsnow->w, fsnow->h);
+	    if (in == RectangleIn || in == RectanglePart)
+	    {
+	       // determine front of Santa in fsnow
+	       int xfront = SantaX+SantaWidth - fsnow->x;
+	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
+	       int xback = xfront - SantaWidth;
+	       const int clearing = 10;
+	       float vy = -1.5*ActualSantaSpeed; 
+	       if(vy > 0) vy = -vy;
+	       if (vy > -100.0)
+		  vy = -100;
+	       if (ActualSantaSpeed > 0)
+		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
+	       CleanFallenArea(fsnow,xback-clearing,SantaWidth+2*clearing);
+	       int i;
+	       for (i=0; i<fsnow->w; i++)
+		  if (i < xfront+clearing && i>=xback-clearing)
+		     fsnow->acth[i] = 0;
+	       XFlush(display);
+	    }
+	 }
+
+	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
+	 XSetStipple(display, FallenGC, pixmap);
+	 XFreePixmap(display,pixmap);
+	 int x = fsnow->x;
+	 int y = fsnow->y - fsnow->h;
+	 XSetFillStyle( display, FallenGC, FillStippled);
+	 XSetFunction(  display, FallenGC, GXcopy);
+	 XSetForeground(display, FallenGC, SnowcPix);
+	 XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
+	 XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+      }
+}
+
+void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
+{
+   if (Flags.NoBlowSnow || Flags.NoWind)
+      return;
+   // animation of fallen fallen snow
+   // x-values x..x+w are transformed in flakes, vertical speed vy
+   int i;
+   int ifirst = x; if (ifirst < 0) ifirst = 0;
+   if (ifirst > fsnow->w) ifirst = fsnow->w;
+   int ilast  = x+w; if(ilast < 0) ilast = 0;
+   if (ilast > fsnow->w) ilast = fsnow->w;
+   for (i=ifirst; i<ilast; i+=MaxSnowFlakeWidth)
+   {
+      int j;
+      for(j=0; j<fsnow->acth[i]; j++)
+      {
+	 int k, kmax = BlowOff();
+	 for(k=0; k<kmax; k++)
+	 {
+	    Snow *flake   = MakeFlake();
+	    flake->rx     = fsnow->x + i;
+	    flake->ry     = fsnow->y - j;
+	    if (Flags.NoWind)
+	       flake->vx     = 0;
+	    else
+	       flake->vx     = NewWind/8;
+	    flake->vy     = vy;
+	    flake->cyclic = 0;
+	    add_flake_to_mainloop(flake);
+	 }
+      }
+   }
+}
+
+void EraseFallenPixel(FallenSnow *fsnow, int x)
+{
+   if(fsnow->acth[x] > 0)
+   {
+      int x1 = fsnow->x + x;
+      int y1 = fsnow->y - fsnow->acth[x];
+      if(UseAlpha|Flags.UseBG)
+	 XDrawPoint(display, SnowWin, EFallenGC, x1, y1);
+      else
+	 XClearArea(display, SnowWin, x1 , y1, 1, 1, Exposures);     
+      fsnow->acth[x]--;
+   }
+}
+
+void InitFallenSnow()
+{
+   while (FsnowFirst)
+      PopFallenSnow(&FsnowFirst);
+   // create fallensnow on bottom of screen:
+   PushFallenSnow(&FsnowFirst, 0, CWorkSpace, 0, 0, 
+	 SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
+}
+
+// removes some fallen snow from fsnow, w pixels. If fallensnowheight < h: no removal
+// also add snowflakes
+void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
+{
+   if(Flags.NoBlowSnow)
+      return;
+   int i;
+   int x = randint(fsnow->w - w);
+   for(i=x; i<x+w; i++)
+      if(fsnow->acth[i] > h)
+      {
+	 // animation of blown off snow
+	 if (!Flags.NoWind && !Flags.NoBlowSnow && Wind != 0 && drand48() > 0.5)
+	 {
+	    int j, jmax = BlowOff();
+	    //P("%d\n",jmax);
+	    for (j=0; j< jmax; j++)
+	    {
+	       Snow *flake   = MakeFlake();
+	       flake->rx     = fsnow->x + i;
+	       flake->ry     = fsnow->y - fsnow->acth[i] - randint(2*MaxSnowFlakeWidth);
+	       flake->vx     = NewWind/8;
+	       flake->vy     = -10;
+	       flake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
+	       add_flake_to_mainloop(flake);
+	    }
+	    EraseFallenPixel(fsnow,i);
+	 }
+      }
+}
+
+
+int do_fallen()
+{
+
+   if (Flags.Done)
+      return FALSE;
+   if (NOTACTIVE)
+      return TRUE;
+
+   FallenSnow *fsnow = FsnowFirst;
+   while(fsnow)
+   {
+      P("do_fallen...\n");
+      if (HandleFallenSnow(fsnow)) 
+	 DrawFallen(fsnow);
+      fsnow = fsnow->next;
+   }
+   XFlush(display);
+   return TRUE;
+}
+
+void SetMaxScreenSnowDepth()
+{
+   MaxScrSnowDepth = Flags.MaxScrSnowDepth;
+   if (MaxScrSnowDepth> (SnowWinHeight-SNOWFREE)) {
+      printf("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
+      MaxScrSnowDepth = SnowWinHeight-SNOWFREE;
    }
 }
 

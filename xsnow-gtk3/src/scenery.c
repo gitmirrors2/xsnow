@@ -22,10 +22,10 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 #include <stdio.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
-#include <gtk/gtk.h>
 #include "debug.h"
 #include "scenery.h"
 #include "windows.h"
@@ -287,7 +287,7 @@ int do_initbaum()
       if (NTrees >= Flags.DesiredNumberOfTrees)
 	 break;
 
-      int tt = TreeType[(int)(drand48()*NtreeTypes)];
+      int tt = TreeType[randint(NtreeTypes)];
       h = TreeHeight[tt];
       w = TreeWidth[tt];
 
@@ -295,8 +295,8 @@ int do_initbaum()
       int y2 = SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
       if (y2>y1) y1=y2+1;
 
-      int x = drand48()*SnowWinWidth;
-      int y = y1 - drand48()*(y1-y2);
+      int x = randint(SnowWinWidth);
+      int y = y1 - randint(y1-y2);
 
       int in = XRectInRegion(TreeRegion,x,y,w,h);
       if (in == RectangleIn || in == RectanglePart)

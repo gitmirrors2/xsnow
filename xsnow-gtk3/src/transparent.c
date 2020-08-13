@@ -29,10 +29,11 @@
 // and
 // https://github.com/anko/hudkit
 
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <gdk/gdkx.h>
+#include <string.h>
+
 #include "transparent.h"
 
 #ifdef DEBUG

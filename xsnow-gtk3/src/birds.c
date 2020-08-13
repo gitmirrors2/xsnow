@@ -20,8 +20,8 @@
 */
 //
 #include <gtk/gtk.h>
-#include <math.h>
 #include <stdlib.h>
+#include <math.h>
 #include <signal.h>
 #include <string.h>
 #include "birds.h"

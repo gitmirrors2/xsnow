@@ -19,8 +19,8 @@
 #-# 
 */
 
-#include <stdio.h>
 #include <gtk/gtk.h>
+#include <stdio.h>
 #include <X11/Intrinsic.h>
 #include <stdlib.h>
 #include "debug.h"
@@ -138,12 +138,12 @@ int do_meteorite()
    if(Flags.NoMeteorites) return TRUE;
    if (drand48() > 0.2) return TRUE;
 
-   meteorite.x1 = drand48()*SnowWinWidth;
-   meteorite.y1 = drand48()*(SnowWinHeight/4);
-   meteorite.x2 = meteorite.x1 + SnowWinWidth/10 - drand48()*(SnowWinWidth/5);
+   meteorite.x1 = randint(SnowWinWidth);
+   meteorite.y1 = randint(SnowWinHeight/4);
+   meteorite.x2 = meteorite.x1 + SnowWinWidth/10 - randint(SnowWinWidth/5);
    if (meteorite.x2 == meteorite.x1)
       meteorite.x2 +=5;
-   meteorite.y2 = meteorite.y1 + SnowWinHeight/5 - drand48()*(SnowWinHeight/5);
+   meteorite.y2 = meteorite.y1 + SnowWinHeight/5 - randint(SnowWinHeight/5);
    if (meteorite.y2 == meteorite.y1)
       meteorite.y2 +=5;
    meteorite.active  = 1;

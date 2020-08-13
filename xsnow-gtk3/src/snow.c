@@ -21,8 +21,8 @@
 
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include <math.h>
 #include <stdlib.h>
+#include <math.h>
 #include "debug.h"
 #include "xsnow.h"
 #include "pixmaps.h"
@@ -65,6 +65,8 @@ static void   DrawSnowFlake(Snow *flake);
 XPoint    *SnowOnTrees;
 Region     NoSnowArea_dynamic;
 Pixel      SnowcPix;
+int        MaxSnowFlakeHeight = 0;  /* Biggest flake */
+int        MaxSnowFlakeWidth = 0;   /* Biggest flake */
 
 void snow_init()
 {
@@ -84,6 +86,15 @@ void snow_init()
    InitBlowOffFactor();
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
+   int flake;
+   for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
+   {
+      SnowMap *rp = &snowPix[flake];
+      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
+	    rp->snowBits, rp->width, rp->height);
+      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
+      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+   }
 }
 
 void snow_set_gc()
@@ -188,7 +199,7 @@ int snow_draw(cairo_t *cr)
 
    set_begin();
    Snow *flake;
-   while( (flake = set_next()) )
+   while( (flake = (Snow *)set_next()) )
    {
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
       cairo_paint(cr);
@@ -411,7 +422,7 @@ int do_UpdateSnowFlake(Snow *flake)
 		  found = 1;
 		  XRectangle rec;
 		  rec.x = xbot;
-		  int p = drand48()*4;
+		  int p = randint(4);
 		  rec.y = j-p+1;
 		  rec.width = p;
 		  rec.height = p;
@@ -523,20 +534,20 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 
 void InitFlake(Snow *flake)
 {
-   flake->whatFlake = drand48()*(SNOWFLAKEMAXTYPE+1);
+   flake->whatFlake = randint(SNOWFLAKEMAXTYPE+1);
    flake->w         = snowPix[flake->whatFlake].width;
    flake->h         = snowPix[flake->whatFlake].height;
-   flake->rx        = drand48()*(SnowWinWidth - flake->w);
-   flake->ry        = -drand48()*(SnowWinHeight/10);
+   flake->rx        = randint(SnowWinWidth - flake->w);
+   flake->ry        = -randint(SnowWinHeight/10);
    flake->cyclic    = 1;
    flake->m         = drand48()+0.1;
    if(Flags.NoWind)
       flake->vx     = 0; 
    else
-      flake->vx     = drand48()*NewWind/2; 
+      flake->vx     = randint(NewWind)/2; 
    flake->ivy       = INITIALYSPEED * sqrt(flake->m);
    flake->vy        = flake->ivy;
-   flake->wsens     = MAXWSENS*drand48();
+   flake->wsens     = randint(MAXWSENS);
    //P("%f %f\n",flake->rx, flake->ry);
 }
 

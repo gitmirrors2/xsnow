@@ -17,18 +17,9 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#include <gtk/gtk.h>
-#include <stdlib.h>
-#include "clocks.h"
+ */
 
-double wallcl() 
-{ 
-   return (double)g_get_real_time()*1.0e-6;
-}
 
-double wallclock()
+void blowoff_init()
 {
-   return (double)g_get_monotonic_time()*1.0e-6;
 }
-
