@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "wind.h"
+#include "utils.h"
 #include "debug.h"
 #include "flags.h"
 #include "windows.h"
@@ -41,6 +42,8 @@ float  Whirl;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
+static int    do_wind(gpointer data);
+static int    do_newwind(gpointer data);
 
 void wind_init()
 {
@@ -87,7 +90,7 @@ void draw_wind()
    // Nothing to draw
 }
 
-int do_newwind()
+int do_newwind(gpointer data)
 {
    P("newwind\n");
    if (Flags.Done)
@@ -127,7 +130,7 @@ int do_newwind()
    return TRUE;
 }
 
-int do_wind()
+int do_wind(gpointer data)
 {
    P("wind\n");
    if (Flags.Done)

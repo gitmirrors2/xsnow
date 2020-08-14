@@ -63,7 +63,7 @@ void scenery_init()
 {
    TreeGC        = XCreateGC(display, SnowWin, 0, 0);
    InitTreePixmaps();
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       do_initbaum           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,0);
 }
 
 void scenery_set_gc()
@@ -312,7 +312,7 @@ int do_initbaum()
       P("tree: %d %d %d %d %p %d\n",tree->x, tree->y, tree->type, tree->rev, (void *)GtkWinb, NTrees);
 
       if (!GtkWinb)
-	 add_to_mainloop(PRIORITY_DEFAULT, time_tree, do_drawtree, tree);
+	 add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
 

@@ -36,5 +36,3 @@ extern float  NewWind;
 
 extern void wind_init(void);
 extern int wind_ui(void);
-extern int do_newwind(void);
-extern int do_wind(void);

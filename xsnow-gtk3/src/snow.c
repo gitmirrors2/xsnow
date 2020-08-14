@@ -50,13 +50,12 @@ static int      FlakeCount = 0;
 static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC       SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 
-static int    do_genflakes(void);
+static int    do_genflakes(gpointer data);
 static void   InitFlake(Snow *flake);
 static void   InitFlakesPerSecond(void);
 static void   InitSnowColor(void);
 static void   InitSnowSpeedFactor(void);
-static void   InitBlowOffFactor(void);
-static int    do_show_flakecount(void);
+static int    do_show_flakecount(gpointer data);
 static void   init_snow_surfaces(void);
 static void   EraseSnowFlake(Snow *flake);
 static void   DelFlake(Snow *flake);
@@ -155,19 +154,6 @@ int snow_ui()
       changes++;
       P("changes: %d\n",changes);
    }
-   if(Flags.BlowOffFactor != OldFlags.BlowOffFactor)
-   {
-      OldFlags.BlowOffFactor = Flags.BlowOffFactor;
-      InitBlowOffFactor();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoBlowSnow != OldFlags.NoBlowSnow)
-   {
-      OldFlags.NoBlowSnow = Flags.NoBlowSnow;
-      changes++;
-      P("changes: %d\n",changes);
-   }
 
    return changes;
 }
@@ -208,7 +194,7 @@ int snow_draw(cairo_t *cr)
    return TRUE;
 }
 
-int do_genflakes()
+int do_genflakes(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -581,14 +567,7 @@ void InitSnowSpeedFactor()
 }
 
 
-void InitBlowOffFactor()
-{
-   BlowOffFactor = 0.01*Flags.BlowOffFactor;
-   if (BlowOffFactor > MAXBLOWOFFFACTOR)
-      BlowOffFactor = MAXBLOWOFFFACTOR;
-}
-
-int do_initsnow()
+int do_initsnow(gpointer data)
 {
    P("initsnow\n");
    if (Flags.Done)
@@ -605,7 +584,7 @@ int do_initsnow()
 
    return FALSE;  // stop callback
 }
-int do_show_flakecount()
+int do_show_flakecount(gpointer data)
 {
    if (Flags.Done)
       return FALSE;

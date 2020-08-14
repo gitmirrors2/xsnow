@@ -21,15 +21,80 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "gaussian.h"
+#include <gtk/gtk.h>
+#include <stdlib.h>
+#include "blowoff.h"
+#include "utils.h"
 #include "xsnow.h"
+#include "flags.h"
+#include "debug.h"
+#include "windows.h"
+#include "fallensnow.h"
 
-float BlowOffFactor;
+#define NOTACTIVE \
+   (Flags.BirdsOnly || !WorkspaceActive())
+
+static float BlowOffFactor;
+
 void blowoff_init()
 {
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
 }
+
+int blowoff_ui()
+{
+   int changes = 0;
+   if(Flags.BlowOffFactor != OldFlags.BlowOffFactor)
+   {
+      OldFlags.BlowOffFactor = Flags.BlowOffFactor;
+      InitBlowOffFactor();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.NoBlowSnow != OldFlags.NoBlowSnow)
+   {
+      OldFlags.NoBlowSnow = Flags.NoBlowSnow;
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   return changes;
+}
+
+void blowoff_draw(cairo_t *cr)
+{
+   // nothing to draw here
+}
+
 int BlowOff()
 {
    float g = gaussian(BlowOffFactor,0.5*BlowOffFactor,0.0,2.0*MAXBLOWOFFFACTOR);
    return lrint(g);
 }
+
+void InitBlowOffFactor()
+{
+   BlowOffFactor = 0.01*Flags.BlowOffFactor;
+   if (BlowOffFactor > MAXBLOWOFFFACTOR)
+      BlowOffFactor = MAXBLOWOFFFACTOR;
+}
+
+// determine if fallensnow should be handled for fsnow
+int do_blowoff(gpointer data)
+{
+   if (Flags.Done)
+      return FALSE;
+   if (NOTACTIVE)
+      return TRUE;
+   FallenSnow *fsnow = FsnowFirst;
+   while(fsnow)
+   {
+      P("blowoff ...\n");
+      if (HandleFallenSnow(fsnow)) 
+	 if(fsnow->id == 0 || (!fsnow->hidden &&
+		  (fsnow->ws == CWorkSpace || fsnow->sticky)))
+	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
+      fsnow = fsnow->next;
+   }
+   return TRUE;
+}
+

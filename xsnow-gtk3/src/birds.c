@@ -91,10 +91,10 @@ static void     birds_set_attraction_point_relative(float x, float y, float z);
 static void     birds_set_scale(void);
 static void     birds_set_speed(void);
 static void     clear_flags(void);
-static int      do_change_attr(void);
-static int      do_update_pos_birds(void); 
-static int      do_wings(void);
-static int      do_update_speed_birds(void);
+static int      do_change_attr(gpointer data);
+static int      do_update_pos_birds(gpointer data); 
+static int      do_wings(gpointer data);
+static int      do_update_speed_birds(gpointer data);
 static void     init_birds(int start);
 static void     init_bird_pixbufs(const char *color);
 static void     main_window(void);
@@ -324,7 +324,7 @@ void birds_set_scale()
    attrbird2surface();
 }
 
-int do_update_speed_birds()
+int do_update_speed_birds(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -469,7 +469,7 @@ int do_update_speed_birds()
    return TRUE;
 }
 
-int do_update_pos_birds()
+int do_update_pos_birds(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -700,7 +700,7 @@ void init_birds(int start)
 }
 
 
-static int do_wings()
+static int do_wings(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -826,7 +826,7 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
-int do_change_attr()
+int do_change_attr(gpointer data)
 {
    // move attraction point in the range
    // x: 0.3 .. 0.7

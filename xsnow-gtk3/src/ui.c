@@ -26,8 +26,9 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "clocks.h"
 #include "ui.h"
+#include "utils.h"
+#include "clocks.h"
 #include "ui_xml.h"
 #include "xsnow.h"
 #include "flags.h"

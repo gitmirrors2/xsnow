@@ -21,7 +21,6 @@
 #pragma once
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "utils.h"
 
 
 #define DEFAULT_AllWorkspaces 1

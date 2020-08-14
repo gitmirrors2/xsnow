@@ -35,8 +35,8 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-static int do_emeteorite(void);
-static int do_meteorite(void);
+static int do_emeteorite(gpointer data);
+static int do_meteorite(gpointer data);
 
 static GdkRGBA       color;
 static const char   *MeteoColor  = "orange";
@@ -107,7 +107,7 @@ void meteo_draw(cairo_t *cr)
    cairo_restore(cr);
 }
 
-int do_emeteorite()
+int do_emeteorite(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -128,7 +128,7 @@ int do_emeteorite()
    return TRUE;
 }
 
-int do_meteorite()
+int do_meteorite(gpointer data)
 {
    if (Flags.Done)
       return FALSE;

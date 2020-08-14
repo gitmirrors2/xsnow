@@ -36,9 +36,9 @@
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
-static int    do_santa(void);
-static int    do_santa1(void);
-static int    do_usanta(void);
+static int    do_santa(gpointer data);
+static int    do_santa1(gpointer data);
+static int    do_usanta(gpointer data);
 static void   EraseSanta(int x, int y);
 static void   DrawSanta(void);
 static void   DrawSanta1(void);
@@ -333,7 +333,7 @@ void Santa_HandleFactor()
    santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, 0);
 }
 
-int do_santa()
+int do_santa(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -344,7 +344,7 @@ int do_santa()
    return TRUE;
 }
 
-int do_santa1()
+int do_santa1(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -396,7 +396,7 @@ void DrawSanta1()
 }
 
 // update santa's coordinates and speed
-int do_usanta()
+int do_usanta(gpointer data)
 {
    if (Flags.Done)
       return FALSE;

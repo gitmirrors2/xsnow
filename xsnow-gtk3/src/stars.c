@@ -39,8 +39,8 @@ static Pixel            StarcPix[STARANIMATIONS];
 static GC               StarGC[STARANIMATIONS];
 static Skoordinaten    *Stars = 0;
 static char            *StarColor[STARANIMATIONS] = { "gold", "gold1", "gold4", "orange" };
-static int              do_stars(void);
-static int              do_ustars(void);
+static int              do_stars(gpointer data);
+static int              do_ustars(gpointer data);
 
 static cairo_surface_t *surfaces[STARANIMATIONS];
 
@@ -144,7 +144,7 @@ int stars_ui()
 }
 
 
-int do_stars()
+int do_stars(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -167,7 +167,7 @@ int do_stars()
    return TRUE;
 }
 
-int do_ustars()
+int do_ustars(gpointer data)
 {
    if (Flags.Done)
       return FALSE;

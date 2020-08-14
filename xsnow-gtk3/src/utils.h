@@ -20,17 +20,29 @@
  */
 #pragma once
 
-#include <X11/Intrinsic.h>
-#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
+//#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
+
 #define SOMENUMBER 42
 
 #include <stdio.h>
+#include <X11/Intrinsic.h>
+#include <gtk/gtk.h>
+#include <stdlib.h>
+#include <math.h>
+
+extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap);
 extern void    ClearScreen(void);
 extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);
 extern float   sq2(float x, float y);
 extern float   sq3(float x, float y, float z);
-extern Pixel  IAllocNamedColor(const char *colorName, Pixel dfltPix);
-extern Pixel  AllocNamedColor(const char *colorName, Pixel dfltPix);
-extern int randint(int m);
-extern Pixel Black, White;
+extern Pixel   IAllocNamedColor(const char *colorName, Pixel dfltPix);
+extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
+extern int     randint(int m);
+
+// obtain normally distributed number. The number will be between min and max:
+extern double gaussian (double mean, double standard_deviation, double min, double max);
+// seed the random generator (alternatively, srand48() can be used):
+extern void sgaussian(long int seed);
+
+extern Pixel   Black, White;

@@ -25,6 +25,7 @@
 #include <libxml/xpath.h>
 #include <libxml/tree.h>
 #include "flags.h"
+#include "utils.h"
 #include "xsnow.h"
 #include "docs.h"
 #include "version.h"

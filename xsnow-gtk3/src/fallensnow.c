@@ -25,6 +25,7 @@
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include "fallensnow.h"
+#include "utils.h"
 #include "windows.h"
 #include "flags.h"
 #include "snow.h"
@@ -126,7 +127,7 @@ int fallensnow_ui()
    return changes;
 }
 
-int do_fallen()
+int do_fallen(gpointer data)
 {
 
    if (Flags.Done)

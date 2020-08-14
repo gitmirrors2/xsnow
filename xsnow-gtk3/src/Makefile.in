@@ -105,16 +105,15 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
 	xsnow-wmctrl.$(OBJEXT) xsnow-docs.$(OBJEXT) \
 	xsnow-pixmaps.$(OBJEXT) xsnow-flags.$(OBJEXT) \
-	xsnow-gaussian.$(OBJEXT) xsnow-csvpos.$(OBJEXT) \
-	xsnow-dsimple.$(OBJEXT) xsnow-clientwin.$(OBJEXT) \
-	xsnow-ui.$(OBJEXT) xsnow-kdesetbg.$(OBJEXT) \
-	xsnow-transparent.$(OBJEXT) xsnow-mainstub.$(OBJEXT) \
-	xsnow-birds.$(OBJEXT) xsnow-kdtree.$(OBJEXT) \
-	xsnow-hashtable.$(OBJEXT) xsnow-Santa.$(OBJEXT) \
-	xsnow-utils.$(OBJEXT) xsnow-scenery.$(OBJEXT) \
-	xsnow-snow.$(OBJEXT) xsnow-meteo.$(OBJEXT) \
-	xsnow-wind.$(OBJEXT) xsnow-stars.$(OBJEXT) \
-	xsnow-blowoff.$(OBJEXT)
+	xsnow-csvpos.$(OBJEXT) xsnow-dsimple.$(OBJEXT) \
+	xsnow-clientwin.$(OBJEXT) xsnow-ui.$(OBJEXT) \
+	xsnow-kdesetbg.$(OBJEXT) xsnow-transparent.$(OBJEXT) \
+	xsnow-mainstub.$(OBJEXT) xsnow-birds.$(OBJEXT) \
+	xsnow-kdtree.$(OBJEXT) xsnow-hashtable.$(OBJEXT) \
+	xsnow-Santa.$(OBJEXT) xsnow-utils.$(OBJEXT) \
+	xsnow-scenery.$(OBJEXT) xsnow-snow.$(OBJEXT) \
+	xsnow-meteo.$(OBJEXT) xsnow-wind.$(OBJEXT) \
+	xsnow-stars.$(OBJEXT) xsnow-blowoff.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -140,15 +139,15 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-clientwin.Po ./$(DEPDIR)/xsnow-clocks.Po \
 	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
 	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
-	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-gaussian.Po \
-	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
-	./$(DEPDIR)/xsnow-kdesetbg.Po ./$(DEPDIR)/xsnow-kdtree.Po \
-	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
-	./$(DEPDIR)/xsnow-meteo.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
-	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-snow.Po \
-	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transparent.Po \
-	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-utils.Po \
-	./$(DEPDIR)/xsnow-wind.Po ./$(DEPDIR)/xsnow-wmctrl.Po
+	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-hashtable.Po \
+	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdesetbg.Po \
+	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-main.Po \
+	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteo.Po \
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-scenery.Po \
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-stars.Po \
+	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-ui.Po \
+	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
+	./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -588,8 +587,7 @@ xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
-		flags.c flags.h \
-		gaussian.c gaussian.h csvpos.c csvpos.h \
+		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
@@ -709,7 +707,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-dsimple.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-fallensnow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-flags.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-gaussian.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-hashtable.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ixpm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdesetbg.Po@am__quote@ # am--include-marker
@@ -858,20 +855,6 @@ xsnow-flags.obj: flags.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='flags.c' object='xsnow-flags.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-flags.obj `if test -f 'flags.c'; then $(CYGPATH_W) 'flags.c'; else $(CYGPATH_W) '$(srcdir)/flags.c'; fi`
-
-xsnow-gaussian.o: gaussian.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-gaussian.o -MD -MP -MF $(DEPDIR)/xsnow-gaussian.Tpo -c -o xsnow-gaussian.o `test -f 'gaussian.c' || echo '$(srcdir)/'`gaussian.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-gaussian.Tpo $(DEPDIR)/xsnow-gaussian.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gaussian.c' object='xsnow-gaussian.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-gaussian.o `test -f 'gaussian.c' || echo '$(srcdir)/'`gaussian.c
-
-xsnow-gaussian.obj: gaussian.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-gaussian.obj -MD -MP -MF $(DEPDIR)/xsnow-gaussian.Tpo -c -o xsnow-gaussian.obj `if test -f 'gaussian.c'; then $(CYGPATH_W) 'gaussian.c'; else $(CYGPATH_W) '$(srcdir)/gaussian.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-gaussian.Tpo $(DEPDIR)/xsnow-gaussian.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gaussian.c' object='xsnow-gaussian.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-gaussian.obj `if test -f 'gaussian.c'; then $(CYGPATH_W) 'gaussian.c'; else $(CYGPATH_W) '$(srcdir)/gaussian.c'; fi`
 
 xsnow-csvpos.o: csvpos.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-csvpos.o -MD -MP -MF $(DEPDIR)/xsnow-csvpos.Tpo -c -o xsnow-csvpos.o `test -f 'csvpos.c' || echo '$(srcdir)/'`csvpos.c
@@ -1603,7 +1586,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-dsimple.Po
 	-rm -f ./$(DEPDIR)/xsnow-fallensnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
-	-rm -f ./$(DEPDIR)/xsnow-gaussian.Po
 	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
@@ -1676,7 +1658,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-dsimple.Po
 	-rm -f ./$(DEPDIR)/xsnow-fallensnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
-	-rm -f ./$(DEPDIR)/xsnow-gaussian.Po
 	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po

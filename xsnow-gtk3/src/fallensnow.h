@@ -54,7 +54,7 @@ extern void   DrawFallen(FallenSnow *fsnow);
 extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
-extern int    do_fallen(void);
+extern int    do_fallen(gpointer data);
 extern void   SetMaxScreenSnowDepth(void);
 extern void   fallensnow_set_gc(void);
 

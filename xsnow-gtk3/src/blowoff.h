@@ -20,5 +20,10 @@
  */
 #pragma once
 extern void   blowoff_init(void);
+extern void   blowoff_draw(cairo_t *cr);
+extern int    blowoff_ui(void);
 extern int    BlowOff(void);
-extern float BlowOffFactor;
+extern void   InitBlowOffFactor(void);
+extern int    do_blowoff(gpointer data);
+
+

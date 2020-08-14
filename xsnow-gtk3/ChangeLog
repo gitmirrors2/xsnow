@@ -1,3 +1,6 @@
+version 3.0.4.15
+	blowoff in standard
+	made timeout callbacks conform doc
 version 3.0.4.14
 	fallensnow in standard
 version 3.0.4.13

@@ -28,7 +28,7 @@ typedef struct _MeteoMap {
 } MeteoMap;
 
 
-void meteo_init(void);
-int meteo_ui(void);
+extern void meteo_init(void);
+extern int  meteo_ui(void);
 extern void meteo_draw(cairo_t *cr);
 

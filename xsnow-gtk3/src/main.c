@@ -45,37 +45,25 @@
 #include <config.h>
 #endif
 #include <X11/Intrinsic.h>
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <X11/Xos.h>
-#include <X11/Xutil.h>
-#include <X11/xpm.h>
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
-#include <assert.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
-#include <math.h>
+#include <stdlib.h>
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "birds.h"
 #include "clocks.h"
-#include "csvpos.h"
-#include "docs.h"
-#include "doit.h"
 #include "dsimple.h"
 #include "fallensnow.h"
 #include "flags.h"
-#include "gaussian.h"
 #include "kdesetbg.h"
 #include "mainstub.h"
 #include "meteo.h"
-#include "pixmaps.h"
 #include "Santa.h"
 #include "scenery.h"
 #include "snow.h"
@@ -89,12 +77,12 @@
 #include "xsnow.h"
 #include "stars.h"
 #include "blowoff.h"
+#include "debug.h"
 
 #ifdef DEBUG
 #undef DEBUG
 #endif
 //#define DEBUG
-#include "debug.h"
 
 // from flags.h
 FLAGS Flags;
@@ -199,17 +187,16 @@ static void Thanks(void)
 }
 
 // callbacks
-static int do_blowoff(void);
-static int do_clean(void);
-static int do_displaychanged(void);
+static int do_clean(gpointer data);
+static int do_displaychanged(gpointer data);
 static int do_draw_all(gpointer widget);
-static int do_event(void);
-static int do_show_desktop_type(void);
-static int do_show_range_etc(void);
-static int do_snow_on_trees(void);
-static int do_testing(void);
-static int do_ui_check(void);
-static int do_wupdate(void);
+static int do_event(gpointer data);
+static int do_show_desktop_type(gpointer data);
+static int do_show_range_etc(gpointer data);
+static int do_snow_on_trees(gpointer data);
+static int do_testing(gpointer data);
+static int do_ui_check(gpointer data);
+static int do_wupdate(gpointer data);
 
 
 
@@ -390,6 +377,7 @@ int main_c(int argc, char *argv[])
    wind_init();
    stars_init();
    fallensnow_init();
+   blowoff_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -425,7 +413,7 @@ int main_c(int argc, char *argv[])
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
@@ -508,7 +496,7 @@ int WorkspaceActive()
 // But, do_ui_check is called not too frequently, so....
 // Note: if changes != 0, the settings will be written to .xsnowrc
 //
-int do_ui_check()
+int do_ui_check(gpointer data)
 {
    if (Flags.Done)
       gtk_main_quit();
@@ -525,6 +513,7 @@ int do_ui_check()
    changes += wind_ui();
    changes += stars_ui();
    changes += fallensnow_ui();
+   changes += blowoff_ui();
 
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -698,7 +687,7 @@ int do_ui_check()
 }
 
 
-int do_snow_on_trees()
+int do_snow_on_trees(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -723,28 +712,8 @@ int do_snow_on_trees()
 }
 
 
-// determine if fallensnow should be handled for fsnow
-int do_blowoff()
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   FallenSnow *fsnow = FsnowFirst;
-   while(fsnow)
-   {
-      P("blowoff ...\n");
-      if (HandleFallenSnow(fsnow)) 
-	 if(fsnow->id == 0 || (!fsnow->hidden &&
-		  (fsnow->ws == CWorkSpace || fsnow->sticky)))
-	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
-      fsnow = fsnow->next;
-   }
-   return TRUE;
-}
 
-
-int do_displaychanged()
+int do_displaychanged(gpointer data)
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
@@ -771,7 +740,7 @@ int do_displaychanged()
    }
 }
 
-int do_event()
+int do_event(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -870,7 +839,7 @@ void ConvertOnTreeToFlakes()
 
 // used after kdesetbg: it appears that after kdesetbg 
 // we have to wait a second or so and then clear the screen.
-int do_clean()
+int do_clean(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -896,7 +865,7 @@ int do_clean()
    return TRUE;
 }
 
-int do_wupdate()
+int do_wupdate(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -947,7 +916,7 @@ int do_wupdate()
    return TRUE;
 }
 
-int do_show_range_etc()
+int do_show_range_etc(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -958,7 +927,7 @@ int do_show_range_etc()
    return TRUE;
 }
 
-int do_show_desktop_type()
+int do_show_desktop_type(gpointer data)
 {
    if (Flags.NoMenu)
       return TRUE;
@@ -1105,7 +1074,7 @@ void UpdateWindows()
    free(toremove);
 }
 
-int do_testing()
+int do_testing(gpointer data)
 {
    counter++;
    if (Flags.Done)
@@ -1124,6 +1093,7 @@ void SigHandler(int signum)
 }
 /* ------------------------------------------------------------------ */ 
 
+/*
 int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
 {
    if (snx < recx) return 0;
@@ -1132,6 +1102,7 @@ int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
    if (sny > (recy + height)) return 0;
    return 1;
 }
+*/
 
 
 
