@@ -118,7 +118,8 @@ int     UseAlpha;
 Pixel   ErasePixel;
 int     Exposures;
 Pixel   BlackPix;
-int        OnTrees = 0;
+int     OnTrees = 0;
+int     counter = 0;
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -126,10 +127,6 @@ float   NewWind = 0;
 GtkWidget       *drawing_area = 0;
 GdkWindow       *gdkwindow = 0;
 
-// locals
-static int counter = 0;
-// snow flakes stuff
-float BlowOffFactor;
 
 
 // miscellaneous
@@ -408,8 +405,10 @@ int main_c(int argc, char *argv[])
    TestingGC     = XCreateGC(display, RootWindow, 0, 0);
    SnowOnTreesGC = XCreateGC(display, SnowWin,    0, 0);
    CleanGC       = XCreateGC(display, SnowWin,    0, 0);
+   /*
    FallenGC      = XCreateGC(display, SnowWin,    0, 0);
    EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+   */
 
    SetGCFunctions();
 
@@ -472,8 +471,6 @@ int main_c(int argc, char *argv[])
    XClearArea(display, SnowWin, 0,0,0,0,True);
    XFlush(display);
    XCloseDisplay(display); //also frees the GC's, pixmaps and other resources on display
-   while(FsnowFirst)
-      PopFallenSnow(&FsnowFirst);
 
    if (DoRestart)
    {
@@ -727,19 +724,6 @@ int do_snow_on_trees()
 
 
 // determine if fallensnow should be handled for fsnow
-int HandleFallenSnow(FallenSnow *fsnow)
-{
-   //if (fsnow->ws < 0)
-   //  return 0;
-   if (fsnow->y <= 0)
-      return 0;
-   if (fsnow->ws != CWorkSpace)
-      return 0;
-   if (fsnow->id)
-      return !Flags.NoKeepSWin;
-   return !Flags.NoKeepSBot;
-}
-
 int do_blowoff()
 {
    if (Flags.Done)
@@ -1028,10 +1012,11 @@ void UpdateWindows()
 	 {
 	    // window found in Windows, nut not in list of fallensnow,
 	    // add it, but not if we are snowing or birding in this window (Desktop for example)
-	    // and also not if this window has y == 0
+	    // and also not if this window has y <= 0
+	    // and also not if it is a very wide window, probably this is a panel then
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->id != BirdsWin && w->y != 0)
+	    if (w->id != SnowWin && w->id != BirdsWin && w->y > 0 && w->w < SnowWinWidth -100)
 	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
@@ -1235,12 +1220,6 @@ void InitDisplayDimensions()
 }
 
 
-int BlowOff()
-{
-   float g = gaussian(BlowOffFactor,0.5*BlowOffFactor,0.0,2.0*MAXBLOWOFFFACTOR);
-   return lrint(g);
-}
-
 
 void InitSnowOnTrees()
 {
@@ -1375,11 +1354,16 @@ void SetGCFunctions()
    XSetFunction(display,CleanGC, GXcopy);
    XSetForeground(display,CleanGC,BlackPix);
 
+   /*
    XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
+   */
 
+   fallensnow_set_gc();
+   /*
    XSetFillStyle( display, EFallenGC, FillSolid);
    XSetFunction(  display, EFallenGC, GXcopy);
    XSetForeground(display, EFallenGC, ErasePixel);
+   */
 
 }
 

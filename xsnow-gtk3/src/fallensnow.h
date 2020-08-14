@@ -17,7 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #pragma once
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
@@ -40,27 +40,23 @@ typedef struct FallenSnow {
 } FallenSnow;
 
 extern FallenSnow *FsnowFirst;
-extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w);
+
+extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w); // used in snow.c
 extern int    HandleFallenSnow(FallenSnow *fsnow);
-extern float BlowOffFactor;
-extern GC EFallenGC;
-extern GC FallenGC;
 
 
-extern void fallensnow_init(void);
-extern void fallensnow_draw(cairo_t *cr);
-extern int fallensnow_ui(void);
+extern void   fallensnow_init(void);
+extern void   fallensnow_draw(cairo_t *cr);
+extern int    fallensnow_ui(void);
 extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 extern void   CleanFallen(Window id);
-extern Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
 extern void   DrawFallen(FallenSnow *fsnow);
 extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
-extern void   EraseFallenPixel(FallenSnow *fsnow,int x);
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 extern int    do_fallen(void);
 extern void   SetMaxScreenSnowDepth(void);
-extern int    do_fallen();
+extern void   fallensnow_set_gc(void);
 
 
 

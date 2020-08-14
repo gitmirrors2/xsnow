@@ -38,17 +38,31 @@
 
 int        MaxScrSnowDepth = 0;
 FallenSnow *FsnowFirst = 0;
-GC EFallenGC;
-GC FallenGC;
+
+static GC EFallenGC;
+static GC FallenGC;
 
 static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
 static void CreateSurfaceFromFallen(FallenSnow *f);
+static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
+static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 
 void fallensnow_init()
 {
    InitFallenSnow();
    P(" ");
    //PrintFallenSnow(FsnowFirst);
+   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
+   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+}
+
+
+extern void   fallensnow_set_gc()
+{
+   XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
+   XSetFillStyle( display, EFallenGC, FillSolid);
+   XSetFunction(  display, EFallenGC, GXcopy);
+   XSetForeground(display, EFallenGC, ErasePixel);
 }
 
 void fallensnow_draw(cairo_t *cr)
@@ -334,7 +348,7 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 void CreateSurfaceFromFallen(FallenSnow *f)
 {
    //if (f->w >2500)
-   P("createsurface %#lx %d %d %d %d\n",f->id,f->w,f->h,
+   P("createsurface %#10lx %d %d %d %d %d %d\n",f->id,f->x,f->y,f->w,f->h,
 	 cairo_image_surface_get_width(f->surface),
 	 cairo_image_surface_get_height(f->surface));
    int i;
@@ -453,12 +467,15 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 {
    if(fsnow->acth[x] > 0)
    {
-      int x1 = fsnow->x + x;
-      int y1 = fsnow->y - fsnow->acth[x];
-      if(UseAlpha|Flags.UseBG)
-	 XDrawPoint(display, SnowWin, EFallenGC, x1, y1);
-      else
-	 XClearArea(display, SnowWin, x1 , y1, 1, 1, Exposures);     
+      if(!GtkWinb)
+      {
+	 int x1 = fsnow->x + x;
+	 int y1 = fsnow->y - fsnow->acth[x];
+	 if(UseAlpha|Flags.UseBG)
+	    XDrawPoint(display, SnowWin, EFallenGC, x1, y1);
+	 else
+	    XClearArea(display, SnowWin, x1 , y1, 1, 1, Exposures);     
+      }
       fsnow->acth[x]--;
    }
 }
@@ -580,3 +597,21 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    free(old);
    fsnow->clean = 0;
 }
+
+int HandleFallenSnow(FallenSnow *fsnow)
+{
+   //if (fsnow->ws < 0)
+   //  return 0;
+   if (fsnow->id == 0)
+      return 1;
+   if (!fsnow->sticky)
+   {
+      if (fsnow->ws != CWorkSpace)
+	 return 0;
+   }
+   if (fsnow->id)
+      return !Flags.NoKeepSWin;
+   return !Flags.NoKeepSBot;
+}
+
+

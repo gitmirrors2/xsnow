@@ -1,3 +1,5 @@
+version 3.0.4.14
+	fallensnow in standard
 version 3.0.4.13
 	place gtk_init before handling the flags
 	changed code for 'on all workspaces' (settings)

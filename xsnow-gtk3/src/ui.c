@@ -121,7 +121,6 @@
 
 #define self(x) (x)
 
-long int counter = 0;
 static GtkBuilder *builder;
 static GtkWidget *mean_distance;
 static GtkWidget *range;

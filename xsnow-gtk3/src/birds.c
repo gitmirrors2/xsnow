@@ -39,7 +39,6 @@
 #include "utils.h"
 #include "windows.h"
 
-static int counter = 0;
 
 
 #define NWINGS 8

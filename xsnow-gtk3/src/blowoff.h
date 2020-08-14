@@ -21,3 +21,4 @@
 #pragma once
 extern void   blowoff_init(void);
 extern int    BlowOff(void);
+extern float BlowOffFactor;

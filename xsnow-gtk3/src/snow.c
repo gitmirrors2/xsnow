@@ -37,6 +37,7 @@
 #include "fallensnow.h"
 #include "scenery.h"
 #include "ui.h"
+#include "blowoff.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())

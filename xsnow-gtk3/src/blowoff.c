@@ -19,7 +19,17 @@
 #-# 
  */
 
+#include <stdio.h>
+#include <math.h>
+#include "gaussian.h"
+#include "xsnow.h"
 
+float BlowOffFactor;
 void blowoff_init()
 {
+}
+int BlowOff()
+{
+   float g = gaussian(BlowOffFactor,0.5*BlowOffFactor,0.0,2.0*MAXBLOWOFFFACTOR);
+   return lrint(g);
 }
