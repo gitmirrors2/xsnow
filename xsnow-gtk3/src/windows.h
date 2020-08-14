@@ -40,3 +40,4 @@ extern int          Exposures;
 extern Pixel   BlackPix;
 extern GtkWidget *GtkWinb;  // for birds
 extern long         CWorkSpace;
+extern long         TransWorkSpace;  // workspace on which transparent window is placed

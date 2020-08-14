@@ -547,7 +547,8 @@ void InitFlake(Snow *flake)
       flake->vx     = randint(NewWind)/2; 
    flake->ivy       = INITIALYSPEED * sqrt(flake->m);
    flake->vy        = flake->ivy;
-   flake->wsens     = randint(MAXWSENS);
+   flake->wsens     = drand48()*MAXWSENS;
+   P("wsens: %f\n",flake->wsens);
    //P("%f %f\n",flake->rx, flake->ry);
 }
 

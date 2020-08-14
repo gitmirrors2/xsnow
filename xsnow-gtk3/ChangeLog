@@ -1,8 +1,9 @@
 version 3.0.4.13
-	place gtk_init before hanling the flags
+	place gtk_init before handling the flags
 	changed code for 'on all workspaces' (settings)
 	do not collect snow if y <= 0
-	
+	implemented part of standard form for fallensnow
+	  todo: snow disappears now from windows that show on all workspaces
 version 3.0.4.12
 	draw stars using surfaces
 version 3.0.4.11

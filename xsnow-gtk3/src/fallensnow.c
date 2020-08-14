@@ -42,16 +42,35 @@ GC EFallenGC;
 GC FallenGC;
 
 static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
+static void CreateSurfaceFromFallen(FallenSnow *f);
 
 void fallensnow_init()
 {
    InitFallenSnow();
-   R("");
-   PrintFallenSnow(FsnowFirst);
+   P(" ");
+   //PrintFallenSnow(FsnowFirst);
 }
 
 void fallensnow_draw(cairo_t *cr)
 {
+
+   if (Flags.Done)
+      return;
+   P("cworkspace %#lx %#lx\n",CWorkSpace,TransWorkSpace);
+
+   FallenSnow *fsnow = FsnowFirst;
+   while(fsnow)
+   {
+      if (HandleFallenSnow(fsnow)) 
+      {
+	 P("fallensnow_draw %d\n",
+	       cairo_image_surface_get_width(fsnow->surface));
+	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h+1);
+	 cairo_paint(cr);
+      }
+      fsnow = fsnow->next;
+   }
+   XFlush(display);
 }
 
 int fallensnow_ui()
@@ -93,6 +112,25 @@ int fallensnow_ui()
    return changes;
 }
 
+int do_fallen()
+{
+
+   if (Flags.Done)
+      return FALSE;
+   if (NOTACTIVE)
+      return TRUE;
+
+   FallenSnow *fsnow = FsnowFirst;
+   while(fsnow)
+   {
+      if (HandleFallenSnow(fsnow)) 
+	 DrawFallen(fsnow);
+      fsnow = fsnow->next;
+   }
+   XFlush(display);
+   return TRUE;
+}
+
 void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 {
    int i;
@@ -117,7 +155,15 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
    p->ws         = ws;
    p->sticky     = sticky;
    p->hidden     = 0;
-   p->clean      = 0;
+   p->clean      = 0;  
+   p->surface    = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
+
+   cairo_t *cr = cairo_create(p->surface);
+   cairo_set_source_rgba(cr,1,0,0,0.0);
+   cairo_rectangle(cr,0,0,w,h);
+   cairo_fill(cr);
+   cairo_destroy(cr);
+
    int l = 0,i;
    for (i=0; i<w; i++)
    {
@@ -127,6 +173,7 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
       if (l > h)
 	 l = 0;
    }
+
 
    if (w > h && window_id != 0)
    {
@@ -190,6 +237,7 @@ void FreeFallenSnow(FallenSnow *fallen)
 {
    free(fallen->acth);
    free(fallen->desh);
+   cairo_surface_destroy(fallen->surface);
    free(fallen);
 }
 
@@ -222,6 +270,8 @@ void PrintFallenSnow(FallenSnow *list)
 
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
+   if(GtkWinb)
+      return;
    if(fsnow->clean) 
       return;
    int x = fsnow->x;
@@ -281,6 +331,36 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
    return pixmap;
 }
 
+void CreateSurfaceFromFallen(FallenSnow *f)
+{
+   //if (f->w >2500)
+   P("createsurface %#lx %d %d %d %d\n",f->id,f->w,f->h,
+	 cairo_image_surface_get_width(f->surface),
+	 cairo_image_surface_get_height(f->surface));
+   int i;
+   GdkRGBA color;
+
+   // clear the surface (NB: CAIRO_OPERATOR_SOURCE)
+   cairo_t *cr = cairo_create(f->surface);
+   cairo_set_source_rgba(cr,0,0,0,0);
+   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+   cairo_rectangle(cr,0,0,f->w,f->h);
+   cairo_fill(cr);
+   cairo_set_line_width(cr,1);
+   cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+   gdk_rgba_parse(&color,Flags.SnowColor);
+   cairo_set_source_rgb(cr,color.red, color.green, color.blue);
+   int h = f->h;
+   short int *acth = f->acth;
+
+   for (i=0; i<f->w; i++)
+   {
+      cairo_move_to(cr,i,h-1);
+      cairo_line_to(cr,i,h-1-acth[i]);
+   }
+   cairo_stroke(cr);
+   cairo_destroy(cr);
+}
 
 void DrawFallen(FallenSnow *fsnow)
 {
@@ -314,17 +394,24 @@ void DrawFallen(FallenSnow *fsnow)
 	       XFlush(display);
 	    }
 	 }
-
-	 Pixmap pixmap = CreatePixmapFromFallen(fsnow);
-	 XSetStipple(display, FallenGC, pixmap);
-	 XFreePixmap(display,pixmap);
-	 int x = fsnow->x;
-	 int y = fsnow->y - fsnow->h;
-	 XSetFillStyle( display, FallenGC, FillStippled);
-	 XSetFunction(  display, FallenGC, GXcopy);
-	 XSetForeground(display, FallenGC, SnowcPix);
-	 XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
-	 XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+	 if(GtkWinb)
+	 {
+	    CreateSurfaceFromFallen(fsnow);
+	    // drawing is handled in fallensnow-draw
+	 }
+	 else
+	 {
+	    Pixmap pixmap = CreatePixmapFromFallen(fsnow);
+	    XSetStipple(display, FallenGC, pixmap);
+	    XFreePixmap(display,pixmap);
+	    int x = fsnow->x;
+	    int y = fsnow->y - fsnow->h;
+	    XSetFillStyle( display, FallenGC, FillStippled);
+	    XSetFunction(  display, FallenGC, GXcopy);
+	    XSetForeground(display, FallenGC, SnowcPix);
+	    XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
+	    XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+	 }
       }
 }
 
@@ -417,32 +504,79 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 }
 
 
-int do_fallen()
-{
-
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-
-   FallenSnow *fsnow = FsnowFirst;
-   while(fsnow)
-   {
-      P("do_fallen...\n");
-      if (HandleFallenSnow(fsnow)) 
-	 DrawFallen(fsnow);
-      fsnow = fsnow->next;
-   }
-   XFlush(display);
-   return TRUE;
-}
 
 void SetMaxScreenSnowDepth()
 {
    MaxScrSnowDepth = Flags.MaxScrSnowDepth;
    if (MaxScrSnowDepth> (SnowWinHeight-SNOWFREE)) {
-      printf("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
+      R("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
       MaxScrSnowDepth = SnowWinHeight-SNOWFREE;
    }
 }
 
+
+void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
+{
+   if (NOTACTIVE)
+      return;
+   P("update ...\n");
+   if(!HandleFallenSnow(fsnow)) return;
+   int imin = x;
+   if(imin < 0) imin = 0;
+   int imax = x + w;
+   if (imax > fsnow->w) imax = fsnow->w;
+   int i, k;
+   k = 0;
+   typeof(fsnow->acth[0]) *old;
+   // old will contain the acth values, corresponding with x-1..x+w (including)
+   old = (short int *)malloc(sizeof(*old)*(w+2));
+   for (i=imin-1; i<=imax; i++) 
+   {
+      if (i < 0) 
+	 old[k++] = fsnow->acth[0];
+      else if (i>=fsnow->w)
+	 old[k++] = fsnow->acth[fsnow->w-1];
+      else
+	 old[k++] = fsnow->acth[i];
+   }
+
+   int add;
+   if (fsnow->acth[imin] < fsnow->desh[imin]/4)
+      add = 4;
+   else if(fsnow->acth[imin] < fsnow->desh[imin]/2)
+      add = 2;
+   else
+      add = 1;
+   k = 1;  // old[1] corresponds with acth[0]
+   for (i=imin; i<imax; i++)
+   {
+      if ((fsnow->desh[i] > old[k]) &&
+	    (old[k-1] >= old[k] || old[k+1] >= old[k]))
+	 fsnow->acth[i] = add + (old[k-1] + old[k+1])/2;
+      k++;
+   }
+   // old will contain the new acth values, corresponding with x-1..x+w (including)
+   k = 0;
+   for (i=imin-1; i<=imax; i++) 
+   {
+      if (i < 0) 
+	 old[k++] = fsnow->acth[0];
+      else if (i>=fsnow->w)
+	 old[k++] = fsnow->acth[fsnow->w-1];
+      else
+	 old[k++] = fsnow->acth[i];
+   }
+   // and now some smoothing
+   k = 1;
+   for (i=imin; i<imax; i++)
+   {
+      int j;
+      int sum=0;
+      for (j=k-1; j<=k+1; j++)
+	 sum += old[j];
+      fsnow->acth[i] = sum/3;
+      k++;
+   }
+   free(old);
+   fsnow->clean = 0;
+}

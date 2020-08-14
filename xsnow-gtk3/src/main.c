@@ -147,10 +147,10 @@ static double       TStart;
 // windows stuff
 static int          NWindows;
 long                CWorkSpace = 0;
+long                TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 static Window       RootWindow;
 static char         *SnowWinName = 0;
 static WinInfo      *Windows = 0;
-static long         TransWorkSpace = -1;  // workspace on which transparent window is placed
 static int          UsingTrans     = 0;   // using transparent window or not
 static int          Xroot;
 static int          Yroot;
@@ -733,6 +733,8 @@ int HandleFallenSnow(FallenSnow *fsnow)
    //  return 0;
    if (fsnow->y <= 0)
       return 0;
+   if (fsnow->ws != CWorkSpace)
+      return 0;
    if (fsnow->id)
       return !Flags.NoKeepSWin;
    return !Flags.NoKeepSBot;
@@ -933,6 +935,7 @@ int do_wupdate()
       Flags.Done = 1;
       return TRUE;
    };
+   //printwindows(Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
@@ -948,11 +951,13 @@ int do_wupdate()
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
 
-      if (winfo->ws)
+      if ((int)winfo->ws > 0)
       {
 	 TransWorkSpace = winfo->ws;
       }
+      P("TransWorkSpace %#lx %#lx %#lx %#lx\n",TransWorkSpace,winfo->ws,SnowWin,GetCurrentWorkspace());
    }
+
 
    UpdateWindows();
    return TRUE;
@@ -1117,12 +1122,12 @@ void UpdateWindows()
 
 int do_testing()
 {
-   return TRUE;
    counter++;
    if (Flags.Done)
       return FALSE;
-   R("%d cw %#lx\n",counter, CWorkSpace);
-   PrintFallenSnow(FsnowFirst);
+   P("Wind: %d %f\n",Wind,NewWind);
+   P("%d cw %#lx\n",counter, CWorkSpace);
+   //PrintFallenSnow(FsnowFirst);
    return TRUE;
 }
 
@@ -1167,72 +1172,6 @@ void EraseStars()
 }
 #endif
 
-
-void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
-{
-   if (NOTACTIVE)
-      return;
-   P("update ...\n");
-   if(!HandleFallenSnow(fsnow)) return;
-   int imin = x;
-   if(imin < 0) imin = 0;
-   int imax = x + w;
-   if (imax > fsnow->w) imax = fsnow->w;
-   int i, k;
-   k = 0;
-   typeof(fsnow->acth[0]) *old;
-   // old will contain the acth values, corresponding with x-1..x+w (including)
-   old = (short int *)malloc(sizeof(*old)*(w+2));
-   for (i=imin-1; i<=imax; i++) 
-   {
-      if (i < 0) 
-	 old[k++] = fsnow->acth[0];
-      else if (i>=fsnow->w)
-	 old[k++] = fsnow->acth[fsnow->w-1];
-      else
-	 old[k++] = fsnow->acth[i];
-   }
-
-   int add;
-   if (fsnow->acth[imin] < fsnow->desh[imin]/4)
-      add = 4;
-   else if(fsnow->acth[imin] < fsnow->desh[imin]/2)
-      add = 2;
-   else
-      add = 1;
-   k = 1;  // old[1] corresponds with acth[0]
-   for (i=imin; i<imax; i++)
-   {
-      if ((fsnow->desh[i] > old[k]) &&
-	    (old[k-1] >= old[k] || old[k+1] >= old[k]))
-	 fsnow->acth[i] = add + (old[k-1] + old[k+1])/2;
-      k++;
-   }
-   // old will contain the new acth values, corresponding with x-1..x+w (including)
-   k = 0;
-   for (i=imin-1; i<=imax; i++) 
-   {
-      if (i < 0) 
-	 old[k++] = fsnow->acth[0];
-      else if (i>=fsnow->w)
-	 old[k++] = fsnow->acth[fsnow->w-1];
-      else
-	 old[k++] = fsnow->acth[i];
-   }
-   // and now some smoothing
-   k = 1;
-   for (i=imin; i<imax; i++)
-   {
-      int j;
-      int sum=0;
-      for (j=k-1; j<=k+1; j++)
-	 sum += old[j];
-      fsnow->acth[i] = sum/3;
-      k++;
-   }
-   free(old);
-   fsnow->clean = 0;
-}
 
 
 

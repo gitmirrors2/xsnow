@@ -89,7 +89,7 @@ void draw_wind()
 
 int do_newwind()
 {
-   R("newwind\n");
+   P("newwind\n");
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
@@ -129,7 +129,7 @@ int do_newwind()
 
 int do_wind()
 {
-   R("wind\n");
+   P("wind\n");
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
