@@ -34,13 +34,16 @@ static void printdescription(void);
 
 void printdescription()
 {
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id .\n");
-      printf("(These options only work satisfactorily in an X11 environment.)\n");
-      printf("Xsnow depends on an X11 environment. This is forced by setting the\n");
-      printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
-      printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
-      printf("for some time.\n");
+   printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
+   printf("Xsnow can also run in one or more windows, see options -xwininfo, -id .\n");
+   printf("(These options only work satisfactorily in an X11 environment.)\n");
+   printf("Xsnow depends on an X11 environment. This is forced by setting the\n");
+   printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
+   printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
+   printf("for some time.\n");
+   if(doman)
+      printf(".PP\n");
+   printf("If xsnow is misbehaving, try to remove the file $HOME/.xsnowrc.\n");
 }
 
 void docs_usage(int man)

@@ -1,3 +1,8 @@
+version 3.0.4.16
+	produce output with -h, -help, -H, -manpage, -v, -version without
+	    calling gtk_init()
+	made parsing of flags conformant with the docs: added -v
+	place test for wayland before gtk_init()
 version 3.0.4.15
 	blowoff in standard
 	made timeout callbacks conform doc

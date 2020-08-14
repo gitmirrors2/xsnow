@@ -133,7 +133,7 @@ int HandleFlags(int argc, char*argv[])
 	    docs_usage(1);
 	    return 1;
 	 }
-	 else if (strcmp(arg, "-version") == 0) 
+	 else if (!strcmp(arg, "-v") || !strcmp(arg, "-version")) 
 	 {
 	    PrintVersion();
 	    return 1;

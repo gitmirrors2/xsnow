@@ -58,6 +58,7 @@
 
 #include "birds.h"
 #include "clocks.h"
+#include "docs.h"
 #include "dsimple.h"
 #include "fallensnow.h"
 #include "flags.h"
@@ -120,8 +121,8 @@ GdkWindow       *gdkwindow = 0;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
-static int      Argc;
-static char   **Argv;
+//static int      Argc;
+//static char   **Argv;
 static guint    draw_all_id = 0;
 
 
@@ -251,13 +252,44 @@ static void testje()
 int main_c(int argc, char *argv[])
 {
    //testje();
-   Argc = argc;
-   Argv = argv;
+   // we search for flags that only produce output to stdout,
+   // to enable to run in a non-X environment, in which case 
+   // gtk_init() would fail.
    int i;
-   for (i=0; i<Argc; i++)
+   for (i=0; i<argc; i++)
    {
-      P("flag%d: %s\n",i,Argv[i]);
+      char *arg = argv[i];
+	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
+	 {
+	    docs_usage(0);
+	    return 0;
+	 }
+	 if(!strcmp(arg, "-H") || !strcmp(arg, "-manpage")) 
+	 {
+	    docs_usage(1);
+	    return 0;
+	 }
+	 if (!strcmp(arg, "-v") || !strcmp(arg, "-version")) 
+	 {
+	    PrintVersion();
+	    return 0;
+	 }
    }
+
+   // Circumvent wayland problems:before starting gtk: make sure that the 
+   // gdk-x11 backend is used.
+   // I would prefer if this could be arranged in argc-argv, but 
+   // it seems that it cannot be done there.
+
+   if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
+   {
+      printf("Detected Wayland desktop\n");
+      setenv("GDK_BACKEND","x11",1);
+      IsWayland = 1;
+   }
+   else
+      IsWayland = 0;
+
    gtk_init(&argc, &argv);
    InitFlags();
    int rc = HandleFlags(argc, argv);
@@ -275,19 +307,6 @@ int main_c(int argc, char *argv[])
 	 PrintVersion();
 	 break;
    }
-   // Circumvent wayland problems:before starting gtk: make sure that the 
-   // gdk-x11 backend is used.
-   // I would prefer if this could be arranged in argc-argv, but 
-   // it seems that it cannot be done there.
-
-   if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
-   {
-      printf("Detected Wayland desktop\n");
-      setenv("GDK_BACKEND","x11",1);
-      IsWayland = 1;
-   }
-   else
-      IsWayland = 0;
    if (!Flags.NoConfig)
       WriteFlags();
 
@@ -464,7 +483,7 @@ int main_c(int argc, char *argv[])
    {
       sleep(2);
       extern char **environ;
-      execve(Argv[0],Argv,environ);
+      execve(argv[0],argv,environ);
    }
    Thanks();
    return 0;
