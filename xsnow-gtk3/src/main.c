@@ -278,8 +278,6 @@ int main_c(int argc, char *argv[])
 
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
-   // I would prefer if this could be arranged in argc-argv, but 
-   // it seems that it cannot be done there.
 
    if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
    {
@@ -301,9 +299,10 @@ int main_c(int argc, char *argv[])
 	 return 1;
 	 break;
       case 1:    // manpage or help
+	 //         Ok, this cannot happen, is already caught above
 	 return 0;
 	 break;
-      default:
+      default:  // ditto
 	 PrintVersion();
 	 break;
    }
