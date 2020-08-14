@@ -136,7 +136,8 @@ float BlowOffFactor;
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int      ActivateClean = 0;  // trigger for do_clean
 static int      Argc;
-static char     **Argv;
+static char   **Argv;
+static guint    draw_all_id = 0;
 
 
 // timing stuff
@@ -273,6 +274,7 @@ int main_c(int argc, char *argv[])
    {
       P("flag%d: %s\n",i,Argv[i]);
    }
+   gtk_init(&argc, &argv);
    InitFlags();
    int rc = HandleFlags(argc, argv);
    switch(rc)
@@ -302,7 +304,6 @@ int main_c(int argc, char *argv[])
    }
    else
       IsWayland = 0;
-   gtk_init(&argc, &argv);
    if (!Flags.NoConfig)
       WriteFlags();
 
@@ -404,11 +405,11 @@ int main_c(int argc, char *argv[])
 
    BlackPix = AllocNamedColor(BlackColor, Black);
 
-   TestingGC     = XCreateGC(display, RootWindow, 0,0);
-   SnowOnTreesGC = XCreateGC(display, SnowWin, 0, 0);
-   CleanGC       = XCreateGC(display, SnowWin,0,0);
-   FallenGC      = XCreateGC(display, SnowWin, 0, 0);
-   EFallenGC     = XCreateGC(display, SnowWin, 0, 0);  // used to erase fallen snow
+   TestingGC     = XCreateGC(display, RootWindow, 0, 0);
+   SnowOnTreesGC = XCreateGC(display, SnowWin,    0, 0);
+   CleanGC       = XCreateGC(display, SnowWin,    0, 0);
+   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
+   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
 
    SetGCFunctions();
 
@@ -442,8 +443,8 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
-   if (GtkWinb)
-      add_to_mainloop(PRIORITY_HIGH, time_draw_all,       do_draw_all           ,GtkWinb);
+   //if (GtkWinb)
+   //  draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all,       do_draw_all           ,GtkWinb);
 
 
    HandleFactor();
@@ -631,8 +632,30 @@ int do_ui_check()
    }
    if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
    {
+      if(0)
+      {
+	 DetermineWindow();
+      }
+      else
+      {
+	 if(Flags.AllWorkspaces)
+	 {
+	    P("stick\n");
+	    if (GtkWinb)
+	       gtk_window_stick(GTK_WINDOW(GtkWinb));
+	    if (GtkWin)
+	       gtk_window_stick(GTK_WINDOW(GtkWin));
+	 }
+	 else
+	 {
+	    P("unstick\n");
+	    if (GtkWinb)
+	       gtk_window_unstick(GTK_WINDOW(GtkWinb));
+	    if (GtkWin)
+	       gtk_window_unstick(GTK_WINDOW(GtkWin));
+	 }
+      }
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;
-      DetermineWindow();
       ui_set_sticky(Flags.AllWorkspaces);
       changes++;
       P("changes: %d\n",changes);
@@ -640,7 +663,30 @@ int do_ui_check()
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
-      DetermineWindow();
+      if(1)
+	 DetermineWindow();
+      else   // this does not work:
+      {
+	 if(GtkWinb)
+	 {
+	    if(Flags.BelowAll)
+	    {
+	       R("below\n");
+	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), FALSE);
+	       gtk_window_set_keep_above(GTK_WINDOW(GtkWin ), FALSE);
+	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), TRUE);
+	       gtk_window_set_keep_below(GTK_WINDOW(GtkWin ), TRUE);
+	    }
+	    else
+	    {
+	       R("above\n");
+	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), FALSE);
+	       gtk_window_set_keep_below(GTK_WINDOW(GtkWin ), FALSE);
+	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), TRUE);
+	       gtk_window_set_keep_above(GTK_WINDOW(GtkWin ), TRUE);
+	    }
+	 }
+      }
       changes++;
       P("changes: %d\n",changes);
    }
@@ -683,7 +729,9 @@ int do_snow_on_trees()
 // determine if fallensnow should be handled for fsnow
 int HandleFallenSnow(FallenSnow *fsnow)
 {
-   if (fsnow->ws < 0)
+   //if (fsnow->ws < 0)
+   //  return 0;
+   if (fsnow->y <= 0)
       return 0;
    if (fsnow->id)
       return !Flags.NoKeepSWin;
@@ -1069,6 +1117,7 @@ void UpdateWindows()
 
 int do_testing()
 {
+   return TRUE;
    counter++;
    if (Flags.Done)
       return FALSE;
@@ -1270,6 +1319,7 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
 void drawit(cairo_t *cr)
 {
+   P("drawit %d\n",counter++);
    stars_draw(cr);
 
    meteo_draw(cr);
@@ -1290,7 +1340,7 @@ int do_draw_all(gpointer widget)
 {
    if (Flags.Done)
       return FALSE;
-   if(1)
+   if(0)
    {
       double tnow = wallcl();
       static int count = 0;
@@ -1300,6 +1350,7 @@ int do_draw_all(gpointer widget)
 	 R(" %d %f\n",count,tnow-tprev);
       tprev = tnow;
    }
+   P("do_draw_all %d %p\n",counter++,(void *)widget);
 
    gtk_widget_queue_draw(GTK_WIDGET(widget));
    return TRUE;
@@ -1401,7 +1452,7 @@ void KDESetBG1(const char *color)
 
 int DetermineWindow()
 {
-   P("DetermineWindow\n");
+   R("DetermineWindow\n");
    if (Flags.WindowId)
    {
       SnowWin = Flags.WindowId;
@@ -1475,7 +1526,7 @@ int DetermineWindow()
 	 else
 	 {
 
-	    P("DetermineWindow\n");
+	    R("DetermineWindow\n");
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
@@ -1495,10 +1546,9 @@ int DetermineWindow()
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
-	    P("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
+	    R("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
 	    if (GtkWinb)
 	    {
-
 	    }
 	    else
 	    {
@@ -1521,9 +1571,14 @@ int DetermineWindow()
 
 	       drawing_area = gtk_drawing_area_new();
 	       gtk_container_add(GTK_CONTAINER(GtkWinb), drawing_area);
-	       //gdkwindow   = gtk_widget_get_window(drawing_area);  
-	       g_signal_connect(drawing_area, "draw", G_CALLBACK(on_draw_event), NULL);
 
+	       g_signal_connect(GtkWinb, "draw", G_CALLBACK(on_draw_event), NULL);
+
+	       // restart do_draw_all timeout
+	       R("restart draw loop %d\n",draw_all_id);
+	       if (draw_all_id)
+		  g_source_remove(draw_all_id);
+	       draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
 
 	       if (cairoRegion)
 		  cairo_region_destroy(cairoRegion);

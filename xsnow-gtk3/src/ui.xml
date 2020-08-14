@@ -3833,7 +3833,7 @@ point</property>
                 <child>
                   <object class="GtkToggleButton" id="general-allworkspaces">
                     <property name="label" translatable="yes">On all
-desktops</property>
+workspaces</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

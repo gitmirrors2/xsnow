@@ -23,6 +23,6 @@
 #ifdef DEBUG
 #define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
 #else
-#define P(...)
+#define P(...) {}
 #endif
 #define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)

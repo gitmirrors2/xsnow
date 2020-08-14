@@ -46,6 +46,7 @@ static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
 void fallensnow_init()
 {
    InitFallenSnow();
+   R("");
    PrintFallenSnow(FsnowFirst);
 }
 
@@ -213,8 +214,8 @@ void PrintFallenSnow(FallenSnow *list)
       int i;
       for(i=0; i<fallen->w; i++)
 	 sumact += fallen->acth[i];
-      printf("id:%#lx ws:%d x:%d y:%d w:%d c:%d s:%d\n", fallen->id, fallen->ws,
-	    fallen->x, fallen->y, fallen->w, fallen->clean, sumact);
+      printf("id:%#10lx ws:%4d x:%6d y:%6d w:%6d cln:%2d sty:%2d sum:%8d\n", fallen->id, fallen->ws,
+	    fallen->x, fallen->y, fallen->w, fallen->clean, fallen->sticky, sumact);
       fallen = fallen->next;
    }
 }
