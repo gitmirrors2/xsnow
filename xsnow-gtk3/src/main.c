@@ -1279,7 +1279,7 @@ void HandleFactor()
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   if(!GtkWin)
+   if(!GtkWinb)
       Santa_HandleFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);

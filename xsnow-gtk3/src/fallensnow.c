@@ -605,6 +605,8 @@ int HandleFallenSnow(FallenSnow *fsnow)
    //  return 0;
    if (fsnow->id == 0)
       return 1;
+   if (fsnow->hidden)
+      return 0;
    if (!fsnow->sticky)
    {
       if (fsnow->ws != CWorkSpace)

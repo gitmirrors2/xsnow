@@ -3,6 +3,7 @@ version 3.0.4.16
 	    calling gtk_init()
 	made parsing of flags conformant with the docs: added -v
 	place test for wayland before gtk_init()
+	do not draw fallensnow when window is hidden (iconized)
 version 3.0.4.15
 	blowoff in standard
 	made timeout callbacks conform doc
