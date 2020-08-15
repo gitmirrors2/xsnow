@@ -46,7 +46,6 @@ FILE *HomeOpen(const char *file,const char *mode, char **path)
 void ClearScreen()
 {
    // remove all our snow-related drawings
-   //if (!GtkWinb)
    XClearArea(display, SnowWin, 0,0,0,0,True);
 }
 

@@ -79,6 +79,7 @@
 #include "stars.h"
 #include "blowoff.h"
 #include "debug.h"
+#include "treesnow.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -93,7 +94,6 @@ FLAGS OldFlags;
 Display *display;
 int     screen;
 Window  SnowWin;
-Window  BirdsWin;
 int     SnowWinBorderWidth;
 int     SnowWinDepth;
 int     SnowWinHeight;
@@ -109,6 +109,8 @@ int     Exposures;
 Pixel   BlackPix;
 int     OnTrees = 0;
 int     counter = 0;
+int     UseGtk;
+GtkWidget *GtkWinb = NULL; 
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -148,8 +150,6 @@ static cairo_region_t  *cairoRegion = 0;
 
 // desktop stuff
 static int       Isdesktop;
-static GtkWidget *GtkWin  = NULL;  // for snow etc
-GtkWidget *GtkWinb = NULL;  // for birds
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -259,21 +259,21 @@ int main_c(int argc, char *argv[])
    for (i=0; i<argc; i++)
    {
       char *arg = argv[i];
-	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
-	 {
-	    docs_usage(0);
-	    return 0;
-	 }
-	 if(!strcmp(arg, "-H") || !strcmp(arg, "-manpage")) 
-	 {
-	    docs_usage(1);
-	    return 0;
-	 }
-	 if (!strcmp(arg, "-v") || !strcmp(arg, "-version")) 
-	 {
-	    PrintVersion();
-	    return 0;
-	 }
+      if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
+      {
+	 docs_usage(0);
+	 return 0;
+      }
+      if(!strcmp(arg, "-H") || !strcmp(arg, "-manpage")) 
+      {
+	 docs_usage(1);
+	 return 0;
+      }
+      if (!strcmp(arg, "-v") || !strcmp(arg, "-version")) 
+      {
+	 PrintVersion();
+	 return 0;
+      }
    }
 
    // Circumvent wayland problems:before starting gtk: make sure that the 
@@ -389,6 +389,7 @@ int main_c(int argc, char *argv[])
    //                                          is in the trajectory of a meteorite
    TreeRegion           = XCreateRegion();
    SnowOnTreesRegion    = XCreateRegion();
+   gSnowOnTreesRegion   = cairo_region_create();
    scenery_init();
    snow_init();
    meteo_init();
@@ -412,9 +413,9 @@ int main_c(int argc, char *argv[])
    SnowOnTreesGC = XCreateGC(display, SnowWin,    0, 0);
    CleanGC       = XCreateGC(display, SnowWin,    0, 0);
    /*
-   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
-   */
+      FallenGC      = XCreateGC(display, SnowWin,    0, 0);
+      EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+      */
 
    SetGCFunctions();
 
@@ -448,8 +449,6 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
-   //if (GtkWinb)
-   //  draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all,       do_draw_all           ,GtkWinb);
 
 
    HandleFactor();
@@ -457,7 +456,7 @@ int main_c(int argc, char *argv[])
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
-      if (GtkWinb)
+      if (UseGtk)
       {
 	 gtk_widget_show_all(GtkWinb);
       }
@@ -645,18 +644,14 @@ int do_ui_check(gpointer data)
 	 if(Flags.AllWorkspaces)
 	 {
 	    P("stick\n");
-	    if (GtkWinb)
+	    if (UseGtk)
 	       gtk_window_stick(GTK_WINDOW(GtkWinb));
-	    if (GtkWin)
-	       gtk_window_stick(GTK_WINDOW(GtkWin));
 	 }
 	 else
 	 {
 	    P("unstick\n");
-	    if (GtkWinb)
+	    if (UseGtk)
 	       gtk_window_unstick(GTK_WINDOW(GtkWinb));
-	    if (GtkWin)
-	       gtk_window_unstick(GTK_WINDOW(GtkWin));
 	 }
       }
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;
@@ -671,23 +666,19 @@ int do_ui_check(gpointer data)
 	 DetermineWindow();
       else   // this does not work:
       {
-	 if(GtkWinb)
+	 if(UseGtk)
 	 {
 	    if(Flags.BelowAll)
 	    {
 	       R("below\n");
 	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), FALSE);
-	       gtk_window_set_keep_above(GTK_WINDOW(GtkWin ), FALSE);
 	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), TRUE);
-	       gtk_window_set_keep_below(GTK_WINDOW(GtkWin ), TRUE);
 	    }
 	    else
 	    {
 	       R("above\n");
 	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), FALSE);
-	       gtk_window_set_keep_below(GTK_WINDOW(GtkWin ), FALSE);
 	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), TRUE);
-	       gtk_window_set_keep_above(GTK_WINDOW(GtkWin ), TRUE);
 	    }
 	 }
       }
@@ -717,15 +708,21 @@ int do_snow_on_trees(gpointer data)
       ConvertOnTreeToFlakes();
    static int second = 0;
 
-   if (second)
+   if (UseGtk)
    {
-      second = 1;
-      XSetForeground(display, SnowOnTreesGC, ~BlackPix); 
+   // for gtk, drawing is done in treesnow_draw()
+   }
+   {
+      if (second)
+      {
+	 second = 1;
+	 XSetForeground(display, SnowOnTreesGC, ~BlackPix); 
+	 XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
+      }
+      XSetRegion(display, SnowOnTreesGC, SnowOnTreesRegion);
+      XSetForeground(display, SnowOnTreesGC, SnowcPix); 
       XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
    }
-   XSetRegion(display, SnowOnTreesGC, SnowOnTreesRegion);
-   XSetForeground(display, SnowOnTreesGC, SnowcPix); 
-   XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
    return TRUE;
 }
 
@@ -808,6 +805,9 @@ void RestartDisplay()    // todo
    EraseTrees();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
+      cairo_region_destroy(gSnowOnTreesRegion);
+      gSnowOnTreesRegion = cairo_region_create();
+
       XDestroyRegion(SnowOnTreesRegion);
       SnowOnTreesRegion = XCreateRegion();
    }
@@ -850,6 +850,8 @@ void ConvertOnTreeToFlakes()
    OnTrees = 0;
    XDestroyRegion(SnowOnTreesRegion);
    SnowOnTreesRegion = XCreateRegion();
+   cairo_region_destroy(gSnowOnTreesRegion);
+   gSnowOnTreesRegion = cairo_region_create();
 }
 
 
@@ -1003,7 +1005,7 @@ void UpdateWindows()
 	    // and also not if it is a very wide window, probably this is a panel then
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->id != BirdsWin && w->y > 0 && w->w < SnowWinWidth -100)
+	    if (w->id != SnowWin && w->y > 0 && w->w < SnowWinWidth -100)
 	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
@@ -1112,15 +1114,15 @@ void SigHandler(int signum)
 /* ------------------------------------------------------------------ */ 
 
 /*
-int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
-{
+   int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
+   {
    if (snx < recx) return 0;
    if (snx > (recx + width)) return 0;
    if (sny < recy) return 0;
    if (sny > (recy + height)) return 0;
    return 1;
-}
-*/
+   }
+   */
 
 
 
@@ -1241,6 +1243,8 @@ void drawit(cairo_t *cr)
 
    fallensnow_draw(cr);
 
+   treesnow_draw(cr);
+
 }
 
 int do_draw_all(gpointer widget)
@@ -1279,7 +1283,7 @@ void HandleFactor()
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   if(!GtkWinb)
+   if(!UseGtk)
       Santa_HandleFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
@@ -1290,7 +1294,7 @@ void HandleFactor()
 
 void SetGCFunctions()
 {
-   if(GtkWinb)
+   if(UseGtk)
       return;
    if (Flags.UseBG)
       ErasePixel = AllocNamedColor(Flags.BGColor,Black) | 0xff000000;
@@ -1344,15 +1348,15 @@ void SetGCFunctions()
    XSetForeground(display,CleanGC,BlackPix);
 
    /*
-   XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
-   */
+      XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
+      */
 
    fallensnow_set_gc();
    /*
-   XSetFillStyle( display, EFallenGC, FillSolid);
-   XSetFunction(  display, EFallenGC, GXcopy);
-   XSetForeground(display, EFallenGC, ErasePixel);
-   */
+      XSetFillStyle( display, EFallenGC, FillSolid);
+      XSetFunction(  display, EFallenGC, GXcopy);
+      XSetForeground(display, EFallenGC, ErasePixel);
+      */
 
 }
 
@@ -1446,29 +1450,26 @@ int DetermineWindow()
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
 
-	    if (GtkWin)
-	    {
-	       gtk_window_close(GTK_WINDOW(GtkWin));
-	       gtk_widget_destroy(GTK_WIDGET(GtkWin));
-	    }
 	    if (GtkWinb)
 	    {
 	       gtk_window_close(GTK_WINDOW(GtkWinb));
 	       gtk_widget_destroy(GTK_WIDGET(GtkWinb));
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  &BirdsWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
-	    R("birds window %ld %p\n",BirdsWin,(void *)GtkWinb);
+		  &SnowWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
+	    R("birds window %ld %p\n",SnowWin,(void *)GtkWinb);
 	    if (GtkWinb)
 	    {
+	       UseGtk = 1;
 	    }
 	    else
 	    {
+	       UseGtk = 0;
 	       printf("Your screen does not support alpha channel, no birds will fly.\n");
 	    }
-	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
-	    P("snow window %ld %p\n",SnowWin,(void *)GtkWin);
+	    //create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
+	    //	  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
+	    //   P("snow window %ld %p\n",SnowWin,(void *)GtkWin);
 
 	    Isdesktop = 1;
 	    UseAlpha  = 1;

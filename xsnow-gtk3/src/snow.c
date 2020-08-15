@@ -38,6 +38,7 @@
 #include "scenery.h"
 #include "ui.h"
 #include "blowoff.h"
+#include "treesnow.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -354,7 +355,7 @@ int do_UpdateSnowFlake(Snow *flake)
    int y  = lrintf(flake->ry);
 
    // check if flake is in nowsnowarea
-   if (!GtkWinb)  // we can skip this when using gtk
+   if (!UseGtk)  // we can skip this when using gtk
    {
       int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
@@ -414,6 +415,13 @@ int do_UpdateSnowFlake(Snow *flake)
 		  rec.width = p;
 		  rec.height = p;
 		  XUnionRectWithRegion(&rec, SnowOnTreesRegion, SnowOnTreesRegion);
+		  cairo_rectangle_int_t grec;
+		  grec.x = rec.x;
+		  grec.y = rec.y;
+		  grec.width = rec.width;
+		  grec.height = rec.height;
+		  cairo_region_union_rectangle(gSnowOnTreesRegion,&grec);
+
 		  if(!Flags.NoBlowSnow && OnTrees < Flags.MaxOnTrees)
 		  {
 		     SnowOnTrees[OnTrees].x = rec.x;
@@ -434,7 +442,7 @@ int do_UpdateSnowFlake(Snow *flake)
 
    // prevent snow erase on a tree
    // we can skip this when using gtk
-   if (!GtkWinb)
+   if (!UseGtk)
    {
       int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
@@ -449,7 +457,7 @@ int do_UpdateSnowFlake(Snow *flake)
    flake->ry = NewY;
    // prevent drawing a flake on a tree
    // we can skip this when using gtk
-   if (GtkWinb)
+   if (UseGtk)
       DrawSnowFlake(flake);
    else
    {
@@ -475,7 +483,7 @@ Snow *MakeFlake()
 
 void EraseSnowFlake(Snow *flake)
 {
-   if(GtkWinb || Flags.NoSnowFlakes)
+   if(UseGtk || Flags.NoSnowFlakes)
       return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
@@ -506,7 +514,7 @@ void DelFlake(Snow *flake)
 void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(Flags.NoSnowFlakes) return;
-   if (GtkWinb)
+   if (UseGtk)
    {
       set_insert(flake); // will be picked up by snow_draw()
       return;

@@ -1,4 +1,4 @@
-/* -copyright-
+ /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -17,28 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-#include <gtk/gtk.h>
-#include <X11/Intrinsic.h>
-extern Display *display;
-extern int screen;
-extern Window SnowWin;
-extern int SnowWinWidth; 
-extern int SnowWinHeight;
-extern int SnowWinBorderWidth;
-extern int SnowWinDepth;
-extern char *DesktopSession;
-extern int IsCompiz;
-extern int IsWayland;
-extern int WorkspaceActive(void);  // defined in main.c
-extern GtkWidget       *drawing_area;
-extern GdkWindow       *gdkwindow;
-extern int       UseAlpha;
-extern Pixel   ErasePixel;
-extern int          Exposures;
-extern Pixel   BlackPix;
-extern GtkWidget *GtkWinb;  
-extern long         CWorkSpace;
-extern long         TransWorkSpace;  // workspace on which transparent window is placed
-extern int UseGtk;
+  */
+
+extern Region         SnowOnTreesRegion;
+extern cairo_region_t *gSnowOnTreesRegion;
+
+void treesnow_init(void);
+void treesnow_draw(cairo_t *cr);
+void treesnow_ui(void);

@@ -35,6 +35,7 @@
 #include "pixmaps.h"
 #include "fallensnow.h"
 #include "csvpos.h"
+#include "treesnow.h"
 
 static int      do_drawtree(Treeinfo *tree);
 static int      do_initbaum(void);
@@ -54,7 +55,6 @@ static GC       TreeGC;
 static Treeinfo *Trees = 0;
 
 Region TreeRegion;
-Region SnowOnTreesRegion;
 int      KillTrees  = 0;  // 1: signal to trees to kill themselves
 
 static cairo_surface_t *tree_surfaces[MAXTREETYPE+1][2];
@@ -204,9 +204,11 @@ int do_initbaum()
    int i,h,w;
 
    XDestroyRegion(SnowOnTreesRegion);
+   cairo_region_destroy(gSnowOnTreesRegion);
    XDestroyRegion(TreeRegion);
 
    SnowOnTreesRegion = XCreateRegion();
+   gSnowOnTreesRegion = cairo_region_create();
    TreeRegion        = XCreateRegion();
 
    // determine which trees are to be used
@@ -309,9 +311,9 @@ int do_initbaum()
       tree->y    = y;
       tree->type = tt;
       tree->rev  = flop;
-      P("tree: %d %d %d %d %p %d\n",tree->x, tree->y, tree->type, tree->rev, (void *)GtkWinb, NTrees);
+      P("tree: %d %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev, NTrees);
 
-      if (!GtkWinb)
+      if (!UseGtk)
 	 add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;

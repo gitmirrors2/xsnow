@@ -45,7 +45,7 @@ static MeteoMap      meteorite;
 
 void meteo_init()
 {
-   if (GtkWinb)
+   if (UseGtk)
    {
       if (!gdk_rgba_parse(&color, MeteoColor))
 	 gdk_rgba_parse(&color,"rgb(255,165,0)");
@@ -90,7 +90,7 @@ int meteo_ui()
 
 void meteo_draw(cairo_t *cr)
 {
-   if(!GtkWinb)
+   if(!UseGtk)
       return;
    if (!meteorite.active)
       return;
@@ -115,7 +115,7 @@ int do_emeteorite(gpointer data)
       return TRUE;
    if (wallclock() - meteorite.starttime > 0.3)
    {
-      if (!GtkWinb)
+      if (!UseGtk)
       {
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
@@ -147,7 +147,7 @@ int do_meteorite(gpointer data)
    if (meteorite.y2 == meteorite.y1)
       meteorite.y2 +=5;
    meteorite.active  = 1;
-   if(!GtkWinb)
+   if(!UseGtk)
    {
       const int npoints = 5;
       XPoint points[npoints];

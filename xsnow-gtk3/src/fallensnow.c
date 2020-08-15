@@ -285,7 +285,7 @@ void PrintFallenSnow(FallenSnow *list)
 
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
-   if(GtkWinb)
+   if(UseGtk)
       return;
    if(fsnow->clean) 
       return;
@@ -409,7 +409,7 @@ void DrawFallen(FallenSnow *fsnow)
 	       XFlush(display);
 	    }
 	 }
-	 if(GtkWinb)
+	 if(UseGtk)
 	 {
 	    CreateSurfaceFromFallen(fsnow);
 	    // drawing is handled in fallensnow-draw
@@ -468,7 +468,7 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 {
    if(fsnow->acth[x] > 0)
    {
-      if(!GtkWinb)
+      if(!UseGtk)
       {
 	 int x1 = fsnow->x + x;
 	 int y1 = fsnow->y - fsnow->acth[x];

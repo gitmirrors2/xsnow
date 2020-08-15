@@ -18,27 +18,48 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
+
+#include <stdio.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <X11/Intrinsic.h>
-extern Display *display;
-extern int screen;
-extern Window SnowWin;
-extern int SnowWinWidth; 
-extern int SnowWinHeight;
-extern int SnowWinBorderWidth;
-extern int SnowWinDepth;
-extern char *DesktopSession;
-extern int IsCompiz;
-extern int IsWayland;
-extern int WorkspaceActive(void);  // defined in main.c
-extern GtkWidget       *drawing_area;
-extern GdkWindow       *gdkwindow;
-extern int       UseAlpha;
-extern Pixel   ErasePixel;
-extern int          Exposures;
-extern Pixel   BlackPix;
-extern GtkWidget *GtkWinb;  
-extern long         CWorkSpace;
-extern long         TransWorkSpace;  // workspace on which transparent window is placed
-extern int UseGtk;
+#include "debug.h"
+#include "flags.h"
+
+cairo_region_t *gSnowOnTreesRegion;
+Region SnowOnTreesRegion;
+
+void treesnow_init()
+{
+}
+
+void treesnow_draw(cairo_t *cr)
+{
+#define testj
+#ifdef testje
+   cairo_region_t *region = cairo_region_create();
+   cairo_rectangle_int_t rect;
+   int i;
+   for (i=0; i<5; i++)
+   {
+      rect.x=1000+100*i;
+      rect.y=500+100*i;
+      rect.width = 100+10*i;
+      rect.height = 20+10*i;
+      cairo_region_union_rectangle(region,&rect);
+   }
+   gdk_cairo_region(cr,region);
+   cairo_set_source_rgba(cr,1,0,1,0.5);
+   cairo_fill(cr);
+   cairo_region_destroy(region);
+#endif
+   gdk_cairo_region(cr,gSnowOnTreesRegion);
+   GdkRGBA color;
+   gdk_rgba_parse(&color,Flags.SnowColor);
+   cairo_set_source_rgb(cr,color.red,color.green,color.blue);
+   cairo_fill(cr);
+}
+
+void treesnow_ui()
+{
+}
