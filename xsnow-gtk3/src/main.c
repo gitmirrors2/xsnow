@@ -80,6 +80,7 @@
 #include "blowoff.h"
 #include "debug.h"
 #include "treesnow.h"
+#include "loadmeasure.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -386,6 +387,7 @@ int main_c(int argc, char *argv[])
    fallensnow_init();
    blowoff_init();
    treesnow_init();
+   loadmeasure_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -437,6 +439,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
+
 
 
    HandleFactor();
@@ -1117,7 +1120,6 @@ void InitDisplayDimensions()
 
 
 
-
 // the draw callback
 gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
@@ -1151,16 +1153,6 @@ int do_draw_all(gpointer widget)
 {
    if (Flags.Done)
       return FALSE;
-   if(1)
-   {
-      double tnow = wallcl();
-      static int count = 0;
-      static double tprev = 0;
-      count++;
-      if(tnow-tprev > 1.2*time_draw_all)
-	 R(" %d %f %f\n",count,time_draw_all,tnow-tprev);
-      tprev = tnow;
-   }
    P("do_draw_all %d %p\n",counter++,(void *)widget);
 
    gtk_widget_queue_draw(GTK_WIDGET(widget));
@@ -1193,9 +1185,12 @@ void HandleFactor()
    if (factor > oldfactor) // user wants a smaller cpu load
       add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
 
-   if (draw_all_id)
-      g_source_remove(draw_all_id);
-   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
+   if (UseGtk)
+   {
+      if (draw_all_id)
+	 g_source_remove(draw_all_id);
+      draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
+   }
 
 }
 

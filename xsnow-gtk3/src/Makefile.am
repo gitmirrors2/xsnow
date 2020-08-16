@@ -41,7 +41,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		scenery.c scenery.h snow.c snow.h \
 		meteo.c meteo.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
-		treesnow.c treesnow.h
+		treesnow.c treesnow.h loadmeasure.c loadmeasure.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 

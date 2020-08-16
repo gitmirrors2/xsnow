@@ -161,6 +161,7 @@
 #define time_wupdate          0.50             /* time between getting windows information   */ 
 #define time_show_range_etc   0.50             /* time between showing range etc.            */
 #define time_change_attr      60.0             /* time between changing attraction point     */
+#define time_measure          0.1
 
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */
@@ -169,7 +170,7 @@
 #define time_snowflakes       (UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snow on trees   */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
-#define time_draw_all         0.04 * factor    /* time between update of screen */
+#define time_draw_all         (0.04 * factor)    /* time between update of screen */
 
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT

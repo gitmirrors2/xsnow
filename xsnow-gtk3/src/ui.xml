@@ -403,7 +403,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">22</property>
               </packing>
             </child>
             <child>
@@ -415,7 +415,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">20</property>
               </packing>
             </child>
             <child>
@@ -652,7 +652,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">16</property>
               </packing>
             </child>
             <child>
@@ -765,7 +765,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
+                <property name="top_attach">18</property>
               </packing>
             </child>
             <child>
@@ -777,7 +777,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">17</property>
+                <property name="top_attach">19</property>
               </packing>
             </child>
             <child>
@@ -822,7 +822,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">21</property>
               </packing>
             </child>
             <child>
@@ -838,7 +838,7 @@ maintainer of xsnow, here is a paypal link.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">23</property>
               </packing>
             </child>
             <child>
@@ -860,6 +860,35 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">9</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">If the system is too busy, this window becomes pink. 
+You could adapt some things in "snow", "birds" or "settings".</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">15</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">14</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -4851,6 +4880,9 @@ windows</property>
             <property name="position">6</property>
           </packing>
         </child>
+        <style>
+          <class name="mybg"/>
+        </style>
       </object>
     </child>
   </object>

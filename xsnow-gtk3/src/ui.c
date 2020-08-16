@@ -141,6 +141,7 @@ GtkWidget *nflakeslabel;
 static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
 {
    P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
+
    gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
 	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
 	 GTK_STYLE_PROVIDER_PRIORITY_USER );
@@ -1114,18 +1115,38 @@ void ui(int *argc, char **argv[])
    desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
 
 
-   const char *css = ".wv button.radio{min-width:40px;}";
+   const char *css     = ".wv button.radio{min-width:40px;}";
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();
-   gtk_css_provider_load_from_data (cssProvider,
-	 css,-1,NULL);
+   gtk_css_provider_load_from_data (cssProvider, css,-1,NULL);
 
    apply_css_provider(hauptfenster, cssProvider);
+   ui_background(0);
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();
    init_pixmaps();
    set_buttons();
+}
+
+void ui_background(int m)
+{
+   const char *colorbg = ".mybg{background-color: pink}";
+   const char *whitebg = ".mybg{background-color: white}";
+   static GtkCssProvider *cssProvidercolor = 0;
+   static GtkCssProvider *cssProviderwhite = 0;
+   if (!cssProvidercolor)
+   {
+      cssProvidercolor  = gtk_css_provider_new();
+      gtk_css_provider_load_from_data (cssProvidercolor, colorbg,-1,NULL);
+      cssProviderwhite  = gtk_css_provider_new();
+      gtk_css_provider_load_from_data (cssProviderwhite, whitebg,-1,NULL);
+   }
+
+   if (m==0)
+      apply_css_provider(hauptfenster,cssProviderwhite);
+   else
+      apply_css_provider(hauptfenster,cssProvidercolor);
 }
 
 // next function is not used, I leave it here as a template, who knows...

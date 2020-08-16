@@ -17,6 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-#define VERSION "3.0.4.18"
+ */
+
+#include <gtk/gtk.h>
+#include <stdlib.h>
+
+extern int loadmeasure_ui(void);
+extern void loadmeasure_draw(cairo_t *cr);
+extern void loadmeasure_init(void);

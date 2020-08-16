@@ -27,3 +27,4 @@ extern void ui_set_birds_header(const char *text);
 extern void ui_show_range_etc(void);
 extern void ui_show_desktop_type(const char *s);
 extern void ui_set_sticky(int x);
+extern void ui_background(int m);
