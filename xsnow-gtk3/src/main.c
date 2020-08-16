@@ -107,7 +107,6 @@ int     UseAlpha;
 Pixel   ErasePixel;
 int     Exposures;
 Pixel   BlackPix;
-int     OnTrees = 0;
 int     counter = 0;
 int     UseGtk;
 GtkWidget *GtkWinb = NULL; 
@@ -157,7 +156,6 @@ static const char *BlackColor  = "black";
 
 /* GC's */
 static GC CleanGC;
-static GC SnowOnTreesGC;
 static GC TestingGC;
 //static GC TreesGC[2];
 
@@ -165,13 +163,11 @@ static GC TestingGC;
 //static Region NoSnowArea_static;
 
 /* Forward decls */
-static void   ConvertOnTreeToFlakes(void);
 static void   HandleFactor(void);
 static int    DetermineWindow(void);
 static void   HandleExposures(void);
 static void   InitDisplayDimensions(void);
 static void   RestartDisplay(void);
-static void   InitSnowOnTrees(void);
 static void   KDESetBG1(const char *color);
 static void   SetGCFunctions(void);
 static void   SigHandler(int signum);
@@ -194,7 +190,6 @@ static int do_draw_all(gpointer widget);
 static int do_event(gpointer data);
 static int do_show_desktop_type(gpointer data);
 static int do_show_range_etc(gpointer data);
-static int do_snow_on_trees(gpointer data);
 static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_wupdate(gpointer data);
@@ -251,6 +246,10 @@ static void testje()
 
 int main_c(int argc, char *argv[])
 {
+   signal(SIGINT, SigHandler);
+   signal(SIGTERM, SigHandler);
+   signal(SIGHUP, SigHandler);
+   srand48((long int)(wallcl()*1.0e6));
    //testje();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
@@ -322,16 +321,8 @@ int main_c(int argc, char *argv[])
    //SetWhirl();
    //SetWindTimer();
 
-   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees));  // will be remallloced in InitSnowOnTrees
    InitSnowOnTrees();
 
-
-   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
-
-   srand48((long int)(wallcl()*1.0e6));
-   signal(SIGINT, SigHandler);
-   signal(SIGTERM, SigHandler);
-   signal(SIGHUP, SigHandler);
    if (display == NULL) {
       if (Flags.DisplayName == NULL) Flags.DisplayName = getenv("DISPLAY");
       (void) fprintf(stderr, "%s: cannot connect to X server %s\n", argv[0],
@@ -387,9 +378,6 @@ int main_c(int argc, char *argv[])
    NoSnowArea_dynamic   = XCreateRegion();  // needed when drawing on background with xor.
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
-   TreeRegion           = XCreateRegion();
-   SnowOnTreesRegion    = XCreateRegion();
-   gSnowOnTreesRegion   = cairo_region_create();
    scenery_init();
    snow_init();
    meteo_init();
@@ -397,6 +385,7 @@ int main_c(int argc, char *argv[])
    stars_init();
    fallensnow_init();
    blowoff_init();
+   treesnow_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -410,7 +399,6 @@ int main_c(int argc, char *argv[])
    BlackPix = AllocNamedColor(BlackColor, Black);
 
    TestingGC     = XCreateGC(display, RootWindow, 0, 0);
-   SnowOnTreesGC = XCreateGC(display, SnowWin,    0, 0);
    CleanGC       = XCreateGC(display, SnowWin,    0, 0);
    /*
       FallenGC      = XCreateGC(display, SnowWin,    0, 0);
@@ -442,7 +430,7 @@ int main_c(int argc, char *argv[])
    //add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check           ,0);
    //add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
@@ -531,6 +519,7 @@ int do_ui_check(gpointer data)
    changes += stars_ui();
    changes += fallensnow_ui();
    changes += blowoff_ui();
+   changes += treesnow_ui();
 
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -601,23 +590,9 @@ int do_ui_check(gpointer data)
       changes++;
       P("changes: %d\n",changes);
    }
-   if(Flags.MaxOnTrees != OldFlags.MaxOnTrees)
-   {
-      OldFlags.MaxOnTrees = Flags.MaxOnTrees;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
    if(Flags.NoFluffy != OldFlags.NoFluffy)
    {
       OldFlags.NoFluffy = Flags.NoFluffy;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSnowOnTrees != OldFlags.NoKeepSnowOnTrees)
-   {
-      OldFlags.NoKeepSnowOnTrees = Flags.NoKeepSnowOnTrees;
       ClearScreen();
       changes++;
       P("changes: %d\n",changes);
@@ -695,36 +670,6 @@ int do_ui_check(gpointer data)
    return TRUE;
 }
 
-
-int do_snow_on_trees(gpointer data)
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE || KillTrees)
-      return TRUE;
-   if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
-      return TRUE;
-   if (Wind == 2)
-      ConvertOnTreeToFlakes();
-   static int second = 0;
-
-   if (UseGtk)
-   {
-   // for gtk, drawing is done in treesnow_draw()
-   }
-   {
-      if (second)
-      {
-	 second = 1;
-	 XSetForeground(display, SnowOnTreesGC, ~BlackPix); 
-	 XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
-      }
-      XSetRegion(display, SnowOnTreesGC, SnowOnTreesRegion);
-      XSetForeground(display, SnowOnTreesGC, SnowcPix); 
-      XFillRectangle(display, SnowWin, SnowOnTreesGC, 0,0,SnowWinWidth,SnowWinHeight);
-   }
-   return TRUE;
-}
 
 
 
@@ -805,11 +750,7 @@ void RestartDisplay()    // todo
    EraseTrees();
    if(!Flags.NoKeepSnowOnTrees && !Flags.NoTrees)
    {
-      cairo_region_destroy(gSnowOnTreesRegion);
-      gSnowOnTreesRegion = cairo_region_create();
-
-      XDestroyRegion(SnowOnTreesRegion);
-      SnowOnTreesRegion = XCreateRegion();
+      reinit_treesnow_region();
    }
    if(!Flags.NoTrees)
    {
@@ -817,43 +758,7 @@ void RestartDisplay()    // todo
       TreeRegion = XCreateRegion();
    }
    XClearArea(display, SnowWin, 0,0,0,0,Exposures);
-
 }
-
-
-
-
-
-// blow snow off trees
-void ConvertOnTreeToFlakes()
-{
-   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
-      return;
-   int i;
-   for (i=0; i<OnTrees; i++)
-   {
-      int j;
-      for (j=0; j<3; j++)
-      {
-	 int k, kmax = BlowOff();
-	 for (k=0; k<kmax; k++)
-	 {
-	    Snow *flake   = MakeFlake();
-	    flake->rx     = SnowOnTrees[i].x;
-	    flake->ry     = SnowOnTrees[i].y-5*j;
-	    flake->vy     = -10;
-	    flake->cyclic = 0;
-	    add_flake_to_mainloop(flake);
-	 }
-      }
-   }
-   OnTrees = 0;
-   XDestroyRegion(SnowOnTreesRegion);
-   SnowOnTreesRegion = XCreateRegion();
-   cairo_region_destroy(gSnowOnTreesRegion);
-   gSnowOnTreesRegion = cairo_region_create();
-}
-
 
 
 
@@ -1212,11 +1117,6 @@ void InitDisplayDimensions()
 
 
 
-void InitSnowOnTrees()
-{
-   free(SnowOnTrees);
-   SnowOnTrees = (XPoint *)malloc(sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
-}
 
 // the draw callback
 gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
@@ -1251,14 +1151,14 @@ int do_draw_all(gpointer widget)
 {
    if (Flags.Done)
       return FALSE;
-   if(0)
+   if(1)
    {
       double tnow = wallcl();
       static int count = 0;
       static double tprev = 0;
       count++;
       if(tnow-tprev > 1.2*time_draw_all)
-	 R(" %d %f\n",count,tnow-tprev);
+	 R(" %d %f %f\n",count,time_draw_all,tnow-tprev);
       tprev = tnow;
    }
    P("do_draw_all %d %p\n",counter++,(void *)widget);
@@ -1272,13 +1172,15 @@ int do_draw_all(gpointer widget)
 void HandleFactor()
 {
    static guint fallen_id=0;
+
+   float oldfactor = factor;
    // re-add things whose timing is dependent on factor
    if (Flags.CpuLoad <= 0)
       factor = 1;
    else
       factor = 100.0/Flags.CpuLoad;
 
-   EraseTrees();
+   //EraseTrees();
 
    if (fallen_id)
       g_source_remove(fallen_id);
@@ -1287,8 +1189,13 @@ void HandleFactor()
       Santa_HandleFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
+   P("handlefactor %f %f %d\n",oldfactor,factor,counter++);
+   if (factor > oldfactor) // user wants a smaller cpu load
+      add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
 
-   add_to_mainloop(PRIORITY_DEFAULT, 0.2 , do_initsnow, 0);
+   if (draw_all_id)
+      g_source_remove(draw_all_id);
+   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
 
 }
 
@@ -1315,7 +1222,8 @@ void SetGCFunctions()
       XSetFillStyle(display,  TreeGC, FillStippled);
       */
 
-   XSetFunction(display, SnowOnTreesGC, GXcopy);
+   treesnow_set_gc();
+   // XSetFunction(display, SnowOnTreesGC, GXcopy);
 
 
    snow_set_gc();
@@ -1487,11 +1395,13 @@ int DetermineWindow()
 
 	       g_signal_connect(GtkWinb, "draw", G_CALLBACK(on_draw_event), NULL);
 
+#if 0
 	       // restart do_draw_all timeout
 	       R("restart draw loop %d\n",draw_all_id);
 	       if (draw_all_id)
 		  g_source_remove(draw_all_id);
 	       draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
+#endif
 
 	       if (cairoRegion)
 		  cairo_region_destroy(cairoRegion);

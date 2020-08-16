@@ -25,7 +25,6 @@ extern void scenery_init(void);
 extern int      scenery_ui(void);
 extern void     EraseTrees(void);
 extern void     scenery_set_gc(void);
-extern int      OnTrees;
 extern int      scenery_draw(cairo_t *cr);
 extern int      KillTrees;  // 1: signal to trees to kill themselves
 extern Region TreeRegion;

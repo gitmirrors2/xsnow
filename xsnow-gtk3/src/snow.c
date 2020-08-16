@@ -45,7 +45,7 @@
 
 static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
 static float    FlakesPerSecond;
-static int      KillFlakes = 1;  // 1: signal to flakes to kill themselves, and do not genereate flakes
+static int      KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
 static float    SnowSpeedFactor;
 static int      FlakeCount = 0;
 static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
@@ -63,7 +63,6 @@ static void   DelFlake(Snow *flake);
 static void   DrawSnowFlake(Snow *flake);
 
 
-XPoint    *SnowOnTrees;
 Region     NoSnowArea_dynamic;
 Pixel      SnowcPix;
 int        MaxSnowFlakeHeight = 0;  /* Biggest flake */
@@ -475,7 +474,6 @@ int do_UpdateSnowFlake(Snow *flake)
 Snow *MakeFlake()
 {
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
-   set_insert(flake); 
    FlakeCount++; 
    InitFlake(flake);
    return flake;
@@ -577,7 +575,7 @@ void InitSnowSpeedFactor()
 
 int do_initsnow(gpointer data)
 {
-   P("initsnow\n");
+   P("initsnow %d %d\n",FlakeCount,counter++);
    if (Flags.Done)
       return FALSE;
    // first, kill all snowflakes
@@ -592,6 +590,7 @@ int do_initsnow(gpointer data)
 
    return FALSE;  // stop callback
 }
+
 int do_show_flakecount(gpointer data)
 {
    if (Flags.Done)

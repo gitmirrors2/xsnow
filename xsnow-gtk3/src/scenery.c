@@ -62,6 +62,7 @@ static cairo_surface_t *tree_surfaces[MAXTREETYPE+1][2];
 void scenery_init()
 {
    TreeGC        = XCreateGC(display, SnowWin, 0, 0);
+   TreeRegion    = XCreateRegion();
    InitTreePixmaps();
    add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,0);
 }

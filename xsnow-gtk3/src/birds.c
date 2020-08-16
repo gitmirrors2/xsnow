@@ -866,10 +866,10 @@ void birds_init ()
       globals.prefdweight    = 1;
 
       clear_flags();
-      add_to_mainloop(PRIORITY_DEFAULT,time_update_pos_birds,     do_update_pos_birds,     0);
-      add_to_mainloop(PRIORITY_DEFAULT,time_update_speed_birds,   do_update_speed_birds,   0);
-      add_to_mainloop(PRIORITY_DEFAULT,time_wings,                do_wings,                0);
-      add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,          do_change_attr,          0);
+      add_to_mainloop(PRIORITY_HIGH,time_update_pos_birds,     do_update_pos_birds,     0);
+      add_to_mainloop(PRIORITY_HIGH,time_update_speed_birds,   do_update_speed_birds,   0);
+      add_to_mainloop(PRIORITY_HIGH,time_wings,                do_wings,                0);
+      add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,       do_change_attr,          0);
       main_window();
    }
 

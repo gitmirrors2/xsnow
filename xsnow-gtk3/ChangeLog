@@ -1,5 +1,5 @@
 version 3.0.4.17
-	starting to convert snow_on_trees
+	convert snow_on_tree done, together with some other minor adjustments
 version 3.0.4.16
 	produce output with -h, -help, -H, -manpage, -v, -version without
 	    calling gtk_init()

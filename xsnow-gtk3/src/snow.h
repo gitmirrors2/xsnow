@@ -20,7 +20,7 @@
 */
 #pragma once
 
-#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_DEFAULT,time_snowflakes,(GSourceFunc)do_UpdateSnowFlake,f)
+#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_HIGH,time_snowflakes,(GSourceFunc)do_UpdateSnowFlake,f)
 
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
@@ -47,7 +47,6 @@ typedef struct _SnowMap {
 } SnowMap;
 
 extern Region     NoSnowArea_dynamic;
-extern XPoint    *SnowOnTrees;
 extern Pixel      SnowcPix;
 extern int        MaxSnowFlakeHeight;  /* Biggest flake */
 extern int        MaxSnowFlakeWidth;   /* Biggest flake */

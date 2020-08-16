@@ -169,7 +169,7 @@
 #define time_snowflakes       (UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snow on trees   */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
-#define time_draw_all         0.04
+#define time_draw_all         0.04 * factor    /* time between update of screen */
 
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT

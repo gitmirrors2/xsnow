@@ -19,9 +19,14 @@
 #-# 
   */
 
-extern Region         SnowOnTreesRegion;
+extern Region          SnowOnTreesRegion;
 extern cairo_region_t *gSnowOnTreesRegion;
+extern XPoint         *SnowOnTrees;
+extern int             OnTrees;
 
-void treesnow_init(void);
-void treesnow_draw(cairo_t *cr);
-void treesnow_ui(void);
+extern void            treesnow_set_gc(void);
+extern void            reinit_treesnow_region(void);
+extern void            InitSnowOnTrees(void);
+extern void            treesnow_init(void);
+extern void            treesnow_draw(cairo_t *cr);
+extern int             treesnow_ui(void);
