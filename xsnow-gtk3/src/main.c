@@ -62,7 +62,6 @@
 #include "dsimple.h"
 #include "fallensnow.h"
 #include "flags.h"
-#include "kdesetbg.h"
 #include "mainstub.h"
 #include "meteo.h"
 #include "Santa.h"
@@ -99,8 +98,6 @@ int     SnowWinBorderWidth;
 int     SnowWinDepth;
 int     SnowWinHeight;
 int     SnowWinWidth; 
-int     SnowWinX; 
-int     SnowWinY; 
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
@@ -122,10 +119,6 @@ GdkWindow       *gdkwindow = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
-static int      ActivateClean = 0;  // trigger for do_clean
-//static int      Argc;
-//static char   **Argv;
-static guint    draw_all_id = 0;
 
 
 // timing stuff
@@ -133,23 +126,11 @@ static guint    draw_all_id = 0;
 static double       TStart;
 
 // windows stuff
-static int          NWindows;
 long                CWorkSpace = 0;
 long                TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
-static Window       RootWindow;
-static char         *SnowWinName = 0;
-static WinInfo      *Windows = 0;
-static int          UsingTrans     = 0;   // using transparent window or not
-static int          Xroot;
-static int          Yroot;
-static unsigned int Wroot;
-static unsigned int Hroot;
 static int          DoRestart = 0;
-static cairo_region_t  *cairoRegion = 0;
 
 
-// desktop stuff
-static int       Isdesktop;
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -165,18 +146,13 @@ static GC TestingGC;
 
 /* Forward decls */
 static void   HandleFactor(void);
-static int    DetermineWindow(void);
 static void   HandleExposures(void);
-static void   InitDisplayDimensions(void);
 static void   RestartDisplay(void);
-static void   KDESetBG1(const char *color);
 static void   SetGCFunctions(void);
 static void   SigHandler(int signum);
-static void   UpdateWindows(void);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
-static Window XWinInfo(char **name);
-static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-static void drawit(cairo_t *cr);
+static void   drawit(cairo_t *cr);
+static void   show_desktop_type(void);
 
 
 static void Thanks(void)
@@ -185,19 +161,13 @@ static void Thanks(void)
 }
 
 // callbacks
-static int do_clean(gpointer data);
 static int do_displaychanged(gpointer data);
 static int do_draw_all(gpointer widget);
 static int do_event(gpointer data);
-static int do_show_desktop_type(gpointer data);
 static int do_show_range_etc(gpointer data);
 static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
-static int do_wupdate(gpointer data);
-
 static int do_stopafter(gpointer data);
-
-
 
 
 #if 0
@@ -389,6 +359,7 @@ int main_c(int argc, char *argv[])
    fallensnow_init();
    blowoff_init();
    treesnow_init();
+   windows_init();
    loadmeasure_init();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
@@ -424,28 +395,16 @@ int main_c(int argc, char *argv[])
    Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
 
-   //add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_clean,          do_clean              ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_initstars,      do_initstars          ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_ui_check,       do_ui_check           ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
+   add_to_mainloop(PRIORITY_HIGH, time_ui_check,       do_ui_check           ,0);
+   //   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
+   //add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
 
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
-
-
 
    HandleFactor();
 
@@ -461,6 +420,7 @@ int main_c(int argc, char *argv[])
 	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
+      show_desktop_type();
    }
 
    // main loop
@@ -483,13 +443,6 @@ int main_c(int argc, char *argv[])
    return 0;
 }		/* End of snowing */
 
-int WorkspaceActive()
-{
-   P("UsingTrans etc %d %d %d %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace == TransWorkSpace,
-	 Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace);
-   // ah, so difficult ...
-   return Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace;
-}
 
 /* ------------------------------------------------------------------ */ 
 /*
@@ -541,27 +494,6 @@ int do_ui_check(gpointer data)
    {
       OldFlags.UseBG = Flags.UseBG;
       SetGCFunctions();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.KDEbg != OldFlags.KDEbg)
-   {
-      OldFlags.KDEbg = Flags.KDEbg;
-      if (Flags.KDEbg)
-	 KDESetBG1(Flags.BGColor);
-      else
-	 KDESetBG1(0);
-      ClearScreen();
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.BGColor,OldFlags.BGColor))
-   {
-      free(OldFlags.BGColor);
-      OldFlags.BGColor = strdup(Flags.BGColor);
-      SetGCFunctions();
-      if(Flags.KDEbg)
-	 KDESetBG1(Flags.BGColor);
       ClearScreen();
       changes++;
       P("changes: %d\n",changes);
@@ -626,13 +558,13 @@ int do_ui_check(gpointer data)
       {
 	 if(Flags.AllWorkspaces)
 	 {
-	    P("stick\n");
+	    R("stick\n");
 	    if (UseGtk)
 	       gtk_window_stick(GTK_WINDOW(GtkWinb));
 	 }
 	 else
 	 {
-	    P("unstick\n");
+	    R("unstick\n");
 	    if (UseGtk)
 	       gtk_window_unstick(GTK_WINDOW(GtkWinb));
 	 }
@@ -770,85 +702,6 @@ void RestartDisplay()    // todo
 
 
 
-// used after kdesetbg: it appears that after kdesetbg 
-// we have to wait a second or so and then clear the screen.
-int do_clean(gpointer data)
-{
-   if (Flags.Done)
-      return FALSE;
-   static int active    = 0;
-   static double TStart = 0.0;
-   if (active)
-   {
-      if (wallclock() - TStart > 2.0)
-      {
-	 ClearScreen();
-	 active        = 0;
-	 ActivateClean = 0;
-      }
-   }
-   else
-   {
-      if (ActivateClean)
-      {
-	 active = 1;
-	 TStart = wallclock();
-      }
-   }
-   return TRUE;
-}
-
-int do_wupdate(gpointer data)
-{
-   if (Flags.Done)
-      return FALSE;
-   if(!Isdesktop) return TRUE;
-   if(Flags.NoKeepSWin) return TRUE;
-   long r;
-   r = GetCurrentWorkspace();
-   if(r>=0) 
-      CWorkSpace = r;
-   else
-   {
-      Flags.Done = 1;
-      return TRUE;
-   }
-
-   if(Windows) free(Windows);
-
-   if (GetWindows(&Windows, &NWindows)<0)
-   {
-      Flags.Done = 1;
-      return TRUE;
-   };
-   //printwindows(Windows,NWindows);
-   // Take care of the situation that the transparent window changes from workspace, 
-   // which can happen if in a dynamic number of workspaces environment
-   // a workspace is emptied.
-   WinInfo *winfo;
-   winfo = FindWindow(Windows,NWindows,SnowWin);
-
-   // check also on valid winfo: after toggling 'below'
-   // winfo is nil sometimes
-
-   if(UsingTrans && winfo)
-   {
-      // in xfce and maybe others, workspace info is not to be found
-      // in our transparent window. winfo->ws will be 0, and we keep
-      // the same value for TransWorkSpace.
-
-      if ((int)winfo->ws > 0)
-      {
-	 TransWorkSpace = winfo->ws;
-      }
-      P("TransWorkSpace %#lx %#lx %#lx %#lx\n",TransWorkSpace,winfo->ws,SnowWin,GetCurrentWorkspace());
-   }
-
-
-   UpdateWindows();
-   return TRUE;
-}
-
 int do_show_range_etc(gpointer data)
 {
    if (Flags.Done)
@@ -860,152 +713,19 @@ int do_show_range_etc(gpointer data)
    return TRUE;
 }
 
-int do_show_desktop_type(gpointer data)
+void show_desktop_type()
 {
    if (Flags.NoMenu)
-      return TRUE;
+      return;
    if (IsWayland)
       ui_show_desktop_type("Wayland (Expect some slugginess)");
    else if (IsCompiz)
       ui_show_desktop_type("Compiz");
    else
       ui_show_desktop_type("Probably X11");
-
-   return TRUE;
 }
 
 
-// Have a look at the windows we are snowing on
-
-void UpdateWindows()
-{
-   typeof(Windows) w;
-   typeof(FsnowFirst) f;
-   int i;
-   // put correct workspace in fallensnow areas
-   w = Windows;
-   for(i=0; i<NWindows; i++)
-   {
-      f = FsnowFirst;
-      while(f)
-      {
-	 if(w->id == f->id)
-	 {
-	    f->ws     = w->ws;
-	    f->sticky = w->sticky;
-	 }
-	 f = f->next;
-      }
-      w++;
-   }
-   // add fallensnow regions:
-   w = Windows;
-   for (i=0; i<NWindows; i++)
-   {
-      //P("%d %#lx\n",i,w->id);
-      {
-	 f = FindFallen(FsnowFirst,w->id);
-	 if(f)
-	 {
-	    if ((!f->sticky) && f->ws != CWorkSpace)
-	       CleanFallenArea(f,0,f->w);
-	 }
-	 if (!f)
-	 {
-	    // window found in Windows, nut not in list of fallensnow,
-	    // add it, but not if we are snowing or birding in this window (Desktop for example)
-	    // and also not if this window has y <= 0
-	    // and also not if it is a very wide window, probably this is a panel then
-	    //P("add %#lx %d\n",w->id, RunCounter);
-	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->y > 0 && w->w < SnowWinWidth -100)
-	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
-		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
-		     Flags.MaxWinSnowDepth); 
-	 }
-      }
-      w++;
-   }
-   // remove fallensnow regions
-   f = FsnowFirst; int nf = 0; while(f) { nf++; f = f->next; }
-   long int *toremove = (long int *)malloc(sizeof(*toremove)*nf);
-   int ntoremove = 0;
-   f = FsnowFirst;
-   Atom wmState = XInternAtom(display, "_NET_WM_STATE", True);
-   while(f)
-   {
-      if (f->id != 0)  // f->id=0: this is the snow at the bottom
-      {
-	 w = FindWindow(Windows,NWindows,f->id);
-	 if(!w)   // this window is gone
-	 {
-	    GenerateFlakesFromFallen(f,0,f->w,-10.0);
-	    toremove[ntoremove++] = f->id;
-	 }
-
-	 // test if f->id is hidden. If so: clear the area and notify in f
-	 Atom type; int format; unsigned long n, b; unsigned char *properties = 0;
-	 XGetWindowProperty(display, f->id, wmState, 0, (~0L), False, AnyPropertyType, 
-	       &type, &format, &n, &b, &properties);
-	 f->hidden = 0;
-	 if(format == 32)
-	 {
-	    unsigned long i;
-	    for (i=0; i<n; i++)
-	    {
-	       char *s = 0;
-	       s = XGetAtomName(display,((Atom*)properties)[i]);
-	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
-	       { 
-		  //P("%#lx is hidden %d\n",f->id, RunCounter);
-		  f->hidden = 1;
-		  CleanFallenArea(f,0,f->w);
-		  if(s) XFree(s);
-		  break;
-	       }
-	       if(s) XFree(s);
-	    }
-	 }
-	 if(properties) XFree(properties);
-      }
-      f = f->next;
-   }
-
-   // test if window has been moved or resized
-   // moved: move fallen area accordingly
-   // resized: remove fallen area: add it to toremove
-   w = Windows;
-   for(i=0; i<NWindows; i++)
-   {
-      f = FindFallen(FsnowFirst,w->id);
-      if (f)
-      {
-	 if ((unsigned int)f->w == w->w+Flags.OffsetW) // width has not changed
-	 {
-	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
-	    {
-	       CleanFallenArea(f,0,f->w);
-	       f->x = w->x + Flags.OffsetX;
-	       f->y = w->y + Flags.OffsetY;
-	       DrawFallen(f);
-	       XFlush(display);
-	    }
-	 }
-	 else
-	 {
-	    toremove[ntoremove++] = f->id;
-	 }
-      }
-      w++;
-   }
-
-   for (i=0; i<ntoremove; i++)
-   {
-      CleanFallen(toremove[i]);
-      RemoveFallenSnow(&FsnowFirst,toremove[i]);
-   }
-   free(toremove);
-}
 
 int do_testing(gpointer data)
 {
@@ -1078,57 +798,12 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 /* ------------------------------------------------------------------ */ 
 
 
-Window XWinInfo(char **name)
-{
-   Window win = Select_Window(display,1);
-   XTextProperty text_prop;
-   int rc = XGetWMName(display,win,&text_prop);
-   if (!rc)
-      (*name) = strdup("No Name");
-   else
-      (*name) = strndup((char *)text_prop.value,text_prop.nitems);
-   XFree(text_prop.value);  // cannot find this in the docs, but otherwise memory leak
-   return win;
-}
-
-void InitDisplayDimensions()
-{
-   unsigned int w,h,b,d;
-   int x,y;
-   unsigned int wroot,hroot,broot,droot;
-   int xroot,yroot;
-   Window root;
-   XGetGeometry(display,RootWindow,&root,
-	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
-   Xroot = xroot;
-   Yroot = yroot;
-   Wroot = wroot;
-   Hroot = hroot;
-   P("InitDisplayDimensions: %d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
-   XGetGeometry(display,SnowWin,&root,
-	 &x, &y, &w, &h, &b, &d);
-   P("InitDisplayDimensions: %d %d %d %d %d %d\n",x,y,w,h,b,d);
-   SnowWinX           = x;
-   SnowWinY           = y;
-   SnowWinWidth       = w;
-   if(UsingTrans)
-      SnowWinHeight      = hroot + Flags.OffsetS;
-   else
-      SnowWinHeight      = h + Flags.OffsetS;
-   if(!Flags.FullScreen && UsingTrans)
-      SnowWinHeight -= y;
-   SnowWinBorderWidth = b;
-   SnowWinDepth       = d;
-
-   SetMaxScreenSnowDepth();
-}
-
 
 
 // the draw callback
 gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
-   P("Just to check if this is darea: %p\n",(void *)widget);
+   P("Just to check who this is: %p %p\n",(void *)widget,(void *)GtkWinb);
    drawit(cr);
    return FALSE;
 }
@@ -1190,14 +865,19 @@ void HandleFactor()
    if (factor > oldfactor) // user wants a smaller cpu load
       add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
 
-   if (UseGtk)
-   {
-      if (draw_all_id)
-	 g_source_remove(draw_all_id);
-      draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
-   }
-
+   restart_do_draw_all();
 }
+
+void restart_do_draw_all()
+{
+   static guint draw_all_id = 0;
+   if (!UseGtk)
+      return;
+   if (draw_all_id)
+      g_source_remove(draw_all_id);
+   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
+}
+
 
 void SetGCFunctions()
 {
@@ -1268,181 +948,6 @@ void SetGCFunctions()
 
 }
 
-void KDESetBG1(const char *color)
-{
-   kdesetbg(color);
-   ActivateClean = 1;
-}
-
-int DetermineWindow()
-{
-   R("DetermineWindow\n");
-   if (Flags.WindowId)
-   {
-      SnowWin = Flags.WindowId;
-      Isdesktop = 0;
-      UseAlpha  = 0;
-   }
-   else
-   {
-      if (Flags.XWinInfoHandling)
-      {
-	 SnowWin = XWinInfo(&SnowWinName);
-	 if (SnowWin == 0)
-	 {
-	    fprintf(stderr,"XWinInfo failed\n");
-	    exit(1);
-	 }
-	 Isdesktop = 0;
-	 UseAlpha  = 0;
-      }
-      else
-      {
-	 char *desktopsession = 0;
-	 const char *desktops[] = {
-	    "DESKTOP_SESSION",
-	    "XDG_SESSION_DESKTOP",
-	    "XDG_CURRENT_DESKTOP",
-	    "GDMSESSION",
-	    0
-	 };
-
-	 int i;
-	 for (i=0; desktops[i]; i++)
-	 {
-	    desktopsession = getenv(desktops[i]);
-	    if (desktopsession)
-	       break;
-	 }
-	 if (desktopsession)
-	    printf("Detected desktop session: %s\n",desktopsession);
-	 else
-	 {
-	    printf("Could not determine desktop session\n");
-	    desktopsession = (char *)"unknown_desktop_session";
-	 }
-
-	 if (DesktopSession)
-	    free(DesktopSession);
-	 DesktopSession = strdup(desktopsession);
-
-	 // convert DesktopSession to upper case
-	 char *a = DesktopSession;
-	 while (*a)
-	 {
-	    *a = toupper(*a);
-	    a++;
-	 }
-	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
-	 int lxdefound = 0;
-	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
-	 {
-	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
-	    printf("LXDE session found, searching for window 'pcmanfm'\n");
-	 }
-	 if(lxdefound)
-	 {
-	    UseAlpha  = 0;
-	    Isdesktop = 1;
-	    Exposures = 0;
-	 }
-	 else
-	 {
-
-	    R("DetermineWindow\n");
-	    int x,y;
-	    unsigned int w,h,b,depth;
-	    Window root;
-	    XGetGeometry(display,RootWindow,&root,
-		  &x, &y, &w, &h, &b, &depth);
-	    if(SnowWinName) free(SnowWinName);
-
-	    if (GtkWinb)
-	    {
-	       gtk_window_close(GTK_WINDOW(GtkWinb));
-	       gtk_widget_destroy(GTK_WIDGET(GtkWinb));
-	    }
-	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  &SnowWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
-	    R("birds window %ld %p\n",SnowWin,(void *)GtkWinb);
-	    if (GtkWinb)
-	    {
-	       UseGtk = 1;
-	    }
-	    else
-	    {
-	       UseGtk = 0;
-	       printf("Your screen does not support alpha channel, no birds will fly.\n");
-	    }
-	    //create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-	    //	  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
-	    //   P("snow window %ld %p\n",SnowWin,(void *)GtkWin);
-
-	    Isdesktop = 1;
-	    UseAlpha  = 1;
-	    XGetGeometry(display,SnowWin,&root,
-		  &x, &y, &w, &h, &b, &depth);
-	    P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
-	    if(SnowWin)
-	    {
-
-	       TransWorkSpace = GetCurrentWorkspace();
-	       UsingTrans     = 1;
-
-	       drawing_area = gtk_drawing_area_new();
-	       gtk_container_add(GTK_CONTAINER(GtkWinb), drawing_area);
-
-	       g_signal_connect(GtkWinb, "draw", G_CALLBACK(on_draw_event), NULL);
-
-#if 0
-	       // restart do_draw_all timeout
-	       R("restart draw loop %d\n",draw_all_id);
-	       if (draw_all_id)
-		  g_source_remove(draw_all_id);
-	       draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
-#endif
-
-	       if (cairoRegion)
-		  cairo_region_destroy(cairoRegion);
-	       cairoRegion = cairo_region_create();
-
-	       birds_init();
-	    }
-	    else
-	    {
-	       // snow in root window:
-	       P("snow in root window\n");
-	       Isdesktop = 1;
-	       UseAlpha  = 0;
-	       if(SnowWinName) free(SnowWinName);
-	       SnowWin     = DefaultRootWindow(display);
-	       SnowWinName = strdup("No Name");
-	    }
-	 }
-      }
-   }
-   // override Isdesktop if user desires so:
-   if (Flags.Desktop)
-      Isdesktop = 1;
-   P("Isdesktop: %d\n",Isdesktop);
-   if(Isdesktop) 
-      CWorkSpace = GetCurrentWorkspace();
-   P("CWorkSpace: %ld\n",CWorkSpace);
-   if (CWorkSpace < 0)
-      return 0;
-   InitDisplayDimensions();
-   // if depth != 32, we assume that the desktop is not gnome-like TODO
-   if (Isdesktop && SnowWinDepth != 32)
-      UseAlpha = 0;
-   // override UseAlpha if user desires so:
-   if (Flags.UseAlpha != SOMENUMBER)
-      UseAlpha = Flags.UseAlpha;
-
-   if(Flags.KDEbg)
-      KDESetBG1(Flags.BGColor);
-   return 1;
-}
 
 void HandleExposures()
 {

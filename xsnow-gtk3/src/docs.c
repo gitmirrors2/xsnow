@@ -106,7 +106,6 @@ void docs_usage(int man)
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
    manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
-   manout("-kdebg"                    ,"sets the KDE desktop background color to the value given at '-bg'.");
    manout("-exposures"                ,"Force XClearArea(...,exposures=True) when erasing.");
    manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");

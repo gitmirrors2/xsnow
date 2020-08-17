@@ -36,7 +36,6 @@
 #define DEFAULT_Exposures -SOMENUMBER
 #define DEFAULT_FlakeCountMax 2000 
 #define DEFAULT_FullScreen 0
-#define DEFAULT_KDEbg 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
@@ -195,4 +194,5 @@ typedef struct Treeinfo {
 /* ------------------------------------------------------------------ */
 
 extern double factor;
+extern void   restart_do_draw_all(void);
 

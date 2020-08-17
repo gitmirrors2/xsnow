@@ -27,12 +27,11 @@ xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
+		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
-		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \

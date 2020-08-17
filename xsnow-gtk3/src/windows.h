@@ -21,24 +21,41 @@
 #pragma once
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
-extern Display *display;
-extern int screen;
-extern Window SnowWin;
-extern int SnowWinWidth; 
-extern int SnowWinHeight;
-extern int SnowWinBorderWidth;
-extern int SnowWinDepth;
-extern char *DesktopSession;
-extern int IsCompiz;
-extern int IsWayland;
-extern int WorkspaceActive(void);  // defined in main.c
-extern GtkWidget       *drawing_area;
-extern GdkWindow       *gdkwindow;
-extern int       UseAlpha;
-extern Pixel   ErasePixel;
+extern Display    *display;
+extern int         screen;
+extern Window      SnowWin;
+extern int         SnowWinWidth; 
+extern int         SnowWinHeight;
+extern int         SnowWinBorderWidth;
+extern int         SnowWinDepth;
+extern char       *DesktopSession;
+extern int         IsCompiz;
+extern int         IsWayland;
+extern GtkWidget  *drawing_area;
+extern GdkWindow  *gdkwindow;
+extern int          UseAlpha;
+extern Pixel        ErasePixel;
 extern int          Exposures;
-extern Pixel   BlackPix;
-extern GtkWidget *GtkWinb;  
+extern Pixel        BlackPix;
+extern GtkWidget   *GtkWinb;  
 extern long         CWorkSpace;
 extern long         TransWorkSpace;  // workspace on which transparent window is placed
-extern int UseGtk;
+extern int          UseGtk;
+extern int          UsingTrans;   // using transparent window or not
+extern int          Isdesktop;
+extern char        *SnowWinName;
+extern Window       RootWindow;
+extern int          Xroot;
+extern int          Yroot;
+extern unsigned int Wroot;
+extern unsigned int Hroot;
+extern int     SnowWinX; 
+extern int     SnowWinY; 
+
+extern int     windows_ui(void);
+extern void    windows_draw(cairo_t *cr);
+extern void    windows_init(void);
+extern int     WorkspaceActive(void);  // defined in main.c
+extern int     DetermineWindow(void);
+extern gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+extern void   InitDisplayDimensions(void);

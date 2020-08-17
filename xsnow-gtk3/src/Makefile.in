@@ -104,10 +104,10 @@ PROGRAMS = $(games_PROGRAMS)
 am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
 	xsnow-wmctrl.$(OBJEXT) xsnow-docs.$(OBJEXT) \
-	xsnow-pixmaps.$(OBJEXT) xsnow-flags.$(OBJEXT) \
-	xsnow-csvpos.$(OBJEXT) xsnow-dsimple.$(OBJEXT) \
-	xsnow-clientwin.$(OBJEXT) xsnow-ui.$(OBJEXT) \
-	xsnow-kdesetbg.$(OBJEXT) xsnow-transparent.$(OBJEXT) \
+	xsnow-pixmaps.$(OBJEXT) xsnow-windows.$(OBJEXT) \
+	xsnow-flags.$(OBJEXT) xsnow-csvpos.$(OBJEXT) \
+	xsnow-dsimple.$(OBJEXT) xsnow-clientwin.$(OBJEXT) \
+	xsnow-ui.$(OBJEXT) xsnow-transparent.$(OBJEXT) \
 	xsnow-mainstub.$(OBJEXT) xsnow-birds.$(OBJEXT) \
 	xsnow-kdtree.$(OBJEXT) xsnow-hashtable.$(OBJEXT) \
 	xsnow-Santa.$(OBJEXT) xsnow-utils.$(OBJEXT) \
@@ -141,14 +141,14 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
 	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
 	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-hashtable.Po \
-	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdesetbg.Po \
-	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-loadmeasure.Po \
-	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
-	./$(DEPDIR)/xsnow-meteo.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
-	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-snow.Po \
-	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transparent.Po \
-	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
-	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
+	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdtree.Po \
+	./$(DEPDIR)/xsnow-loadmeasure.Po ./$(DEPDIR)/xsnow-main.Po \
+	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteo.Po \
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-scenery.Po \
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-stars.Po \
+	./$(DEPDIR)/xsnow-transparent.Po ./$(DEPDIR)/xsnow-treesnow.Po \
+	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-utils.Po \
+	./$(DEPDIR)/xsnow-wind.Po ./$(DEPDIR)/xsnow-windows.Po \
 	./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -588,12 +588,11 @@ xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS) -DUSE_LIST_NODE_ALLO
 xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
+		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
-		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
@@ -712,7 +711,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-flags.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-hashtable.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ixpm.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdesetbg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-kdtree.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-loadmeasure.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-main.Po@am__quote@ # am--include-marker
@@ -727,6 +725,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-utils.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wind.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-windows.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wmctrl.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -847,6 +846,20 @@ xsnow-pixmaps.obj: pixmaps.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-pixmaps.obj `if test -f 'pixmaps.c'; then $(CYGPATH_W) 'pixmaps.c'; else $(CYGPATH_W) '$(srcdir)/pixmaps.c'; fi`
 
+xsnow-windows.o: windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-windows.o -MD -MP -MF $(DEPDIR)/xsnow-windows.Tpo -c -o xsnow-windows.o `test -f 'windows.c' || echo '$(srcdir)/'`windows.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-windows.Tpo $(DEPDIR)/xsnow-windows.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='windows.c' object='xsnow-windows.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-windows.o `test -f 'windows.c' || echo '$(srcdir)/'`windows.c
+
+xsnow-windows.obj: windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-windows.obj -MD -MP -MF $(DEPDIR)/xsnow-windows.Tpo -c -o xsnow-windows.obj `if test -f 'windows.c'; then $(CYGPATH_W) 'windows.c'; else $(CYGPATH_W) '$(srcdir)/windows.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-windows.Tpo $(DEPDIR)/xsnow-windows.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='windows.c' object='xsnow-windows.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-windows.obj `if test -f 'windows.c'; then $(CYGPATH_W) 'windows.c'; else $(CYGPATH_W) '$(srcdir)/windows.c'; fi`
+
 xsnow-flags.o: flags.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-flags.o -MD -MP -MF $(DEPDIR)/xsnow-flags.Tpo -c -o xsnow-flags.o `test -f 'flags.c' || echo '$(srcdir)/'`flags.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-flags.Tpo $(DEPDIR)/xsnow-flags.Po
@@ -916,20 +929,6 @@ xsnow-ui.obj: ui.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ui.c' object='xsnow-ui.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-ui.obj `if test -f 'ui.c'; then $(CYGPATH_W) 'ui.c'; else $(CYGPATH_W) '$(srcdir)/ui.c'; fi`
-
-xsnow-kdesetbg.o: kdesetbg.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-kdesetbg.o -MD -MP -MF $(DEPDIR)/xsnow-kdesetbg.Tpo -c -o xsnow-kdesetbg.o `test -f 'kdesetbg.c' || echo '$(srcdir)/'`kdesetbg.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-kdesetbg.Tpo $(DEPDIR)/xsnow-kdesetbg.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='kdesetbg.c' object='xsnow-kdesetbg.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-kdesetbg.o `test -f 'kdesetbg.c' || echo '$(srcdir)/'`kdesetbg.c
-
-xsnow-kdesetbg.obj: kdesetbg.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-kdesetbg.obj -MD -MP -MF $(DEPDIR)/xsnow-kdesetbg.Tpo -c -o xsnow-kdesetbg.obj `if test -f 'kdesetbg.c'; then $(CYGPATH_W) 'kdesetbg.c'; else $(CYGPATH_W) '$(srcdir)/kdesetbg.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-kdesetbg.Tpo $(DEPDIR)/xsnow-kdesetbg.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='kdesetbg.c' object='xsnow-kdesetbg.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-kdesetbg.obj `if test -f 'kdesetbg.c'; then $(CYGPATH_W) 'kdesetbg.c'; else $(CYGPATH_W) '$(srcdir)/kdesetbg.c'; fi`
 
 xsnow-transparent.o: transparent.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-transparent.o -MD -MP -MF $(DEPDIR)/xsnow-transparent.Tpo -c -o xsnow-transparent.o `test -f 'transparent.c' || echo '$(srcdir)/'`transparent.c
@@ -1621,7 +1620,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
 	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
-	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdtree.Po
 	-rm -f ./$(DEPDIR)/xsnow-loadmeasure.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
@@ -1636,6 +1634,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po
 	-rm -f ./$(DEPDIR)/xsnow-wind.Po
+	-rm -f ./$(DEPDIR)/xsnow-windows.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -1695,7 +1694,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-flags.Po
 	-rm -f ./$(DEPDIR)/xsnow-hashtable.Po
 	-rm -f ./$(DEPDIR)/xsnow-ixpm.Po
-	-rm -f ./$(DEPDIR)/xsnow-kdesetbg.Po
 	-rm -f ./$(DEPDIR)/xsnow-kdtree.Po
 	-rm -f ./$(DEPDIR)/xsnow-loadmeasure.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
@@ -1710,6 +1708,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po
 	-rm -f ./$(DEPDIR)/xsnow-wind.Po
+	-rm -f ./$(DEPDIR)/xsnow-windows.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

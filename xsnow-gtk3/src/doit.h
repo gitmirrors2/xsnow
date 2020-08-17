@@ -49,7 +49,6 @@
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
    DOIT_I(FullScreen) \
-   DOIT_I(KDEbg) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \

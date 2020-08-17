@@ -1,3 +1,11 @@
+version 3.0.4.21
+	transparent.c: remove sticky hint for gdkwindow: this is ierreversible
+	made do_wupdate conform. Created windows.c. This is a mess, have to
+	look into it.
+version 3.0.4.20
+	ui: colors, and slight layout improvements
+	corrected error after going to full screen of behind windows
+	removed setting of kde background (kdesetbg)
 version 3.0.4.19
 	re-instated the stopafter functionality
 	ui: set colors

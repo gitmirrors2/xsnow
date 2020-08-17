@@ -587,7 +587,6 @@ static void set_general_buttons()
    HANDLE_SET_TOGGLE(general_buttons.usebg.button,UseBG);
    HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
    HANDLE_SET_TOGGLE(general_buttons.alpha.button,UseAlpha);
-   HANDLE_SET_TOGGLE(general_buttons.kdebg.button,KDEbg);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
    HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,FullScreen);
    HANDLE_SET_TOGGLE(general_buttons.below.button,BelowAll);
@@ -609,7 +608,6 @@ void button_cpuload(GtkWidget *w, gpointer d)
 }
 
 HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
-HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0);
 
    MODULE_EXPORT
 void button_bgcolor(GtkWidget *w, gpointer d)
@@ -648,7 +646,6 @@ void general_default(int vintage)
    Flags.UseAlpha      = DEFAULT_UseAlpha;
    Flags.Exposures     = DEFAULT_Exposures;
    Flags.OffsetS       = DEFAULT_OffsetS;
-   Flags.KDEbg         = DEFAULT_KDEbg;
    Flags.FullScreen    = DEFAULT_FullScreen;
    Flags.BelowAll      = DEFAULT_BelowAll;
    Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
@@ -1116,13 +1113,14 @@ void ui(int *argc, char **argv[])
 
 
    const char *css     = "button.radio{min-width:10px;}"
-      "radiobutton,         button        { background: azure;}"
-      "radiobutton:active,  button:active { background: chartreuse1;}"
-      "radiobutton:checked, button:checked{ background: palegreen1;}"
-      "headerbar                          { background: palegreen1;}"
-      "scale slider                       { background: azure;}"
-      "scale trough                       { background: white;}"
-      "*                                  { color:      darkgreen;}"
+      "button,              button.radio   { background: #CCF0D8;}"
+      "radiobutton,         button.toggle  { background: #E2FDEC;}"
+      "radiobutton:active,  button:active  { background: #0DAB44;}"
+      "radiobutton:checked, button:checked { background: #6AF69B;}"
+      "headerbar                           { background: #B3F4CA;}"
+      "scale slider                        { background: #D4EDDD;}"
+      "scale trough                        { background: #F0FEF5;}"
+      "*                                   { color:      #065522;}"
       ;
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();
@@ -1139,8 +1137,8 @@ void ui(int *argc, char **argv[])
 
 void ui_background(int m)
 {
-   const char *colorbg = "stack{background-color: pink;}";
-   const char *whitebg = "stack{background-color: aliceblue;}";
+   const char *colorbg = "stack{background-color: #FFC0CB;}";
+   const char *whitebg = "stack{background-color: #EAFBF0;}";
    static GtkCssProvider *cssProvidercolor = 0;
    static GtkCssProvider *cssProviderwhite = 0;
    if (!cssProvidercolor)

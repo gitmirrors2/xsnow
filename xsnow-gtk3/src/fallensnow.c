@@ -71,7 +71,8 @@ void fallensnow_draw(cairo_t *cr)
 
    if (Flags.Done)
       return;
-   P("cworkspace %#lx %#lx\n",CWorkSpace,TransWorkSpace);
+   if (Flags.BirdsOnly)
+      return;
 
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
@@ -85,7 +86,6 @@ void fallensnow_draw(cairo_t *cr)
       }
       fsnow = fsnow->next;
    }
-   XFlush(display);
 }
 
 int fallensnow_ui()

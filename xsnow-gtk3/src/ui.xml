@@ -368,7 +368,7 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -403,7 +403,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">22</property>
+                <property name="top_attach">23</property>
               </packing>
             </child>
             <child>
@@ -822,23 +822,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">21</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLinkButton" id="donate-button">
-                <property name="label" translatable="yes">Donate</property>
-                <property name="name">donate</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
-maintainer of xsnow, here is a paypal link.</property>
-                <property name="uri">https://paypal.me/wvermin</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">23</property>
+                <property name="top_attach">22</property>
               </packing>
             </child>
             <child>
@@ -882,6 +866,22 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLinkButton" id="donate-button">
+                <property name="label" translatable="yes">Donate</property>
+                <property name="name">donate</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
+maintainer of xsnow, here is a paypal link.</property>
+                <property name="uri">https://paypal.me/wvermin</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">21</property>
               </packing>
             </child>
             <child>
@@ -1117,7 +1117,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If set, show fluff on fallen snow and trees.</property>
+                <property name="tooltip_text" translatable="yes">If set, try to show fluff on fallen snow and trees.</property>
                 <property name="halign">start</property>
                 <property name="margin_right">8</property>
                 <signal name="toggled" handler="button_snow_fluff_show" swapped="no"/>
@@ -1286,7 +1286,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1552,7 +1552,16 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="vexpand">True</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">12</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -2026,7 +2035,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -2593,7 +2602,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3042,7 +3051,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3212,7 +3221,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3343,6 +3352,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="vexpand">True</property>
                 <property name="label" translatable="yes">  </property>
               </object>
               <packing>
@@ -4110,21 +4120,7 @@ windows</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-kde-background">
-                    <property name="label" translatable="yes">Set KDE background color</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Set background color for KDE. Use this in conjunction with 'Use color to erase' if the wallpaper in KDE gets cluttered. But first try 'Desktop: GNOME/KDE.</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <signal name="toggled" handler="button_kde_background" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -4244,7 +4240,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">10</property>
                 <property name="height">6</property>
               </packing>
             </child>
@@ -4257,7 +4253,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">15</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">10</property>
                 <property name="height">7</property>
               </packing>
             </child>
@@ -4287,6 +4283,7 @@ windows</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="vexpand">True</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
@@ -4301,7 +4298,7 @@ windows</property>
                 <property name="halign">end</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quit menu</property>
+                    <property name="label" translatable="yes">Hide menu</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -4468,9 +4465,6 @@ windows</property>
                 <property name="left_attach">2</property>
                 <property name="top_attach">11</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <placeholder/>

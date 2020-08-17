@@ -172,9 +172,6 @@ int HandleFlags(int argc, char*argv[])
 	 else if (strcmp(arg, "-above") == 0) {
 	    Flags.BelowAll = 0;
 	 }
-	 else if(strcmp(arg,"-kdebg") == 0) {
-	    Flags.KDEbg  = 1;
-	 }
 	 else if(strcmp(arg,"-fvwm") == 0) {
 	    FVWMFLAGS;
 	 }
