@@ -329,7 +329,7 @@ xsnow, created in 1993 by Rick Jansen.\n
     <property name="halign">start</property>
     <signal name="destroy" handler="button_quit" swapped="no"/>
     <child type="titlebar">
-      <object class="GtkHeaderBar">
+      <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="show_close_button">True</property>
@@ -978,49 +978,11 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Intensity</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Color</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkColorButton" id="snow-color">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">The color of the snow.</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="show_editor">True</property>
-                <signal name="color-set" handler="button_snow_color" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Blow off </property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -1030,7 +992,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
                 <property name="width">4</property>
               </packing>
             </child>
@@ -1042,7 +1004,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -1053,7 +1015,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -1064,7 +1026,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -1097,7 +1059,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">6</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1113,7 +1075,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">8</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1129,7 +1091,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">9</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1145,7 +1107,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">10</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1172,26 +1134,8 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">11</property>
                 <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="snow-intensity">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">The higher, the more snowflakes.</property>
-                <property name="valign">center</property>
-                <property name="adjustment">snow-intensity-adjustment</property>
-                <property name="show_fill_level">True</property>
-                <property name="round_digits">1</property>
-                <property name="digits">0</property>
-                <signal name="value-changed" handler="button_snow_intensity" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -1203,11 +1147,12 @@ You could adapt some things in "snow", "birds" or "settings".</property>
                 <property name="adjustment">snow-blow-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_snow_blowoff_intensity" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -1219,11 +1164,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_snow_windows" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -1234,11 +1180,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">snow-on-screen-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_snow_bottom" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -1249,11 +1196,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">snow-on-trees-adjustment</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_snow_trees" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -1282,7 +1230,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">12</property>
               </packing>
             </child>
             <child>
@@ -1327,7 +1275,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">13</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1354,7 +1302,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1400,7 +1348,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">13</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1427,7 +1375,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">14</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1446,6 +1394,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="adjustment">snow-speed-adjustment</property>
                     <property name="round_digits">0</property>
                     <property name="digits">0</property>
+                    <property name="has_origin">False</property>
                     <signal name="value-changed" handler="button_snow_speed" swapped="no"/>
                   </object>
                   <packing>
@@ -1464,6 +1413,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="adjustment">flake-count-max-adjustment</property>
                     <property name="round_digits">0</property>
                     <property name="digits">0</property>
+                    <property name="has_origin">False</property>
                     <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
                   </object>
                   <packing>
@@ -1546,16 +1496,60 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="snow-intensity">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">The higher, the more snowflakes.</property>
+                <property name="valign">center</property>
+                <property name="adjustment">snow-intensity-adjustment</property>
+                <property name="round_digits">1</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <signal name="value-changed" handler="button_snow_intensity" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">4</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Intensity</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">4</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Color</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkColorButton" id="snow-color">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">The color of the snow.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="show_editor">True</property>
+                <signal name="color-set" handler="button_snow_color" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">5</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -1934,7 +1928,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">end</property>
                 <property name="margin_right">8</property>
                 <property name="active">True</property>
-                <property name="draw_indicator">True</property>
+                <property name="draw_indicator">False</property>
                 <property name="group">santa-0</property>
                 <signal name="toggled" handler="button_santa_show" swapped="no"/>
               </object>
@@ -1971,6 +1965,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="adjustment">santaspeedadjustment</property>
                 <property name="fill_level">3</property>
                 <property name="round_digits">2</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_santa_speed" swapped="no"/>
               </object>
               <packing>
@@ -2191,10 +2186,10 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="orientation">vertical</property>
                 <property name="adjustment">ntreesadjustment</property>
                 <property name="inverted">True</property>
-                <property name="show_fill_level">True</property>
                 <property name="fill_level">100</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <property name="value_pos">right</property>
                 <signal name="value-changed" handler="button_ntrees" swapped="no"/>
               </object>
@@ -2224,10 +2219,10 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="orientation">vertical</property>
                 <property name="adjustment">treewindowfilladjustment</property>
                 <property name="inverted">True</property>
-                <property name="show_fill_level">True</property>
                 <property name="fill_level">100</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <property name="value_pos">left</property>
                 <signal name="value-changed" handler="button_tree_fill" swapped="no"/>
               </object>
@@ -2430,6 +2425,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="show_fill_level">True</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_star_nstars" swapped="no"/>
               </object>
               <packing>
@@ -2867,6 +2863,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="inverted">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <property name="value_pos">left</property>
                 <signal name="value-changed" handler="button_wind_whirl" swapped="no"/>
               </object>
@@ -2898,6 +2895,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="inverted">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <property name="value_pos">right</property>
                 <signal name="value-changed" handler="button_wind_timer" swapped="no"/>
               </object>
@@ -3331,9 +3329,9 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Preferred distance from other birds</property>
                 <property name="adjustment">birds-prefdistance-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_prefdistance" swapped="no"/>
               </object>
               <packing>
@@ -3387,9 +3385,9 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Viewing distance.</property>
                 <property name="adjustment">birds-vd-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_viewingdistance" swapped="no"/>
               </object>
               <packing>
@@ -3447,9 +3445,9 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Speed of birds in arbitrary units.</property>
                 <property name="adjustment">birds-speed-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_speed" swapped="no"/>
               </object>
               <packing>
@@ -3477,9 +3475,9 @@ point</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Eagerness to concentrate on common attraction point</property>
                 <property name="adjustment">birds-attraction-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_attraction" swapped="no"/>
               </object>
               <packing>
@@ -3494,9 +3492,9 @@ point</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Eagerness to keep desired distance to neighbours.</property>
                 <property name="adjustment">birds-distance-weight-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_disweight" swapped="no"/>
               </object>
               <packing>
@@ -3524,9 +3522,9 @@ point</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Desired number of birds. If zero, no birds are shown.</property>
                 <property name="adjustment">birds-nbirds-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_nbirds" swapped="no"/>
               </object>
               <packing>
@@ -3569,9 +3567,9 @@ point</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
                 <property name="adjustment">birds-anarchy-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_anarchy" swapped="no"/>
               </object>
               <packing>
@@ -3586,9 +3584,9 @@ point</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Number of nearest neighbours the birds should look at.</property>
                 <property name="adjustment">birds-neighbours-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
               </object>
               <packing>
@@ -3629,6 +3627,7 @@ point</property>
                 <property name="adjustment">birds-follow-adjustment</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_follow_weight" swapped="no"/>
               </object>
               <packing>
@@ -3702,9 +3701,9 @@ point</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Influence the size of the birds.</property>
                 <property name="adjustment">birds-scale-adjustment</property>
-                <property name="show_fill_level">True</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
+                <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_scale" swapped="no"/>
               </object>
               <packing>
@@ -3939,6 +3938,7 @@ windows</property>
                     <property name="adjustment">cpuload-adjustment</property>
                     <property name="round_digits">0</property>
                     <property name="digits">0</property>
+                    <property name="has_origin">False</property>
                     <signal name="value-changed" handler="button_cpuload" swapped="no"/>
                   </object>
                   <packing>
@@ -3987,6 +3987,7 @@ windows</property>
                     <property name="restrict_to_fill_level">False</property>
                     <property name="round_digits">0</property>
                     <property name="digits">0</property>
+                    <property name="has_origin">False</property>
                     <property name="value_pos">right</property>
                     <signal name="value-changed" handler="button_lift" swapped="no"/>
                   </object>

@@ -1115,7 +1115,15 @@ void ui(int *argc, char **argv[])
    desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
 
 
-   const char *css     = ".wv button.radio{min-width:40px;}";
+   const char *css     = "button.radio{min-width:10px;}"
+      "radiobutton,         button        { background: azure;}"
+      "radiobutton:active,  button:active { background: chartreuse1;}"
+      "radiobutton:checked, button:checked{ background: palegreen1;}"
+      "headerbar                          { background: palegreen1;}"
+      "scale slider                       { background: azure;}"
+      "scale trough                       { background: white;}"
+      "*                                  { color:      darkgreen;}"
+      ;
 
    GtkCssProvider *cssProvider  = gtk_css_provider_new();
    gtk_css_provider_load_from_data (cssProvider, css,-1,NULL);
@@ -1131,8 +1139,8 @@ void ui(int *argc, char **argv[])
 
 void ui_background(int m)
 {
-   const char *colorbg = ".mybg{background-color: pink}";
-   const char *whitebg = ".mybg{background-color: white}";
+   const char *colorbg = "stack{background-color: pink;}";
+   const char *whitebg = "stack{background-color: aliceblue;}";
    static GtkCssProvider *cssProvidercolor = 0;
    static GtkCssProvider *cssProviderwhite = 0;
    if (!cssProvidercolor)

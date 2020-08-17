@@ -195,6 +195,8 @@ static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_wupdate(gpointer data);
 
+static int do_stopafter(gpointer data);
+
 
 
 
@@ -439,6 +441,9 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
    add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
+
+   if (Flags.StopAfter > 0)
+      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
 
 
 
@@ -1452,4 +1457,8 @@ void HandleExposures()
 }
 
 
-
+int do_stopafter(gpointer data)
+{
+   Flags.Done = 1;
+   return FALSE;
+}
