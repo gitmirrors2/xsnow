@@ -93,7 +93,6 @@ FLAGS OldFlags;
 // from windows.h
 Display *display;
 int     screen;
-Window  SnowWin;
 int     SnowWinBorderWidth;
 int     SnowWinDepth;
 int     SnowWinHeight;
@@ -101,13 +100,9 @@ int     SnowWinWidth;
 char   *DesktopSession = 0;
 int     IsCompiz;
 int     IsWayland;
-int     UseAlpha;
 Pixel   ErasePixel;
-int     Exposures;
 Pixel   BlackPix;
 int     counter = 0;
-int     UseGtk;
-GtkWidget *GtkWinb = NULL; 
 
 double  factor = 1.0;
 float   NewWind = 0;
@@ -123,12 +118,12 @@ char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 
 
 // timing stuff
 //static double       TotSleepTime = 0;
-static double       TStart;
 
 // windows stuff
 long                CWorkSpace = 0;
 long                TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 static int          DoRestart = 0;
+static guint        draw_all_id = 0;
 
 
 
@@ -152,7 +147,8 @@ static void   SetGCFunctions(void);
 static void   SigHandler(int signum);
 static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static void   drawit(cairo_t *cr);
-static void   show_desktop_type(void);
+static void   restart_do_draw_all(void);
+static int    myDetermineWindow(void);
 
 
 static void Thanks(void)
@@ -168,6 +164,8 @@ static int do_show_range_etc(gpointer data);
 static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
+static int do_show_desktop_type(gpointer data);
+static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 
 #if 0
@@ -217,17 +215,124 @@ static void testje()
 }
 #endif
 
+/* About windows, user whishes and scenarios
+
+ * The following animations exist:
+
+ - Snow: snow, Santa and scenery.
+ - Birds: birds.
+
+ * The following windows are used:
+
+ - TransA: transparent GtkWidget with drawing area
+ - SnowWin: X11 window
+ - depending on window manager and user whishes, this can be
+ - the root window
+ - an existing non-root window (see flags -xwindow and -id)
+ - a new transparent window
+
+ * The following user whishes are possible:
+ ( enum{UW_NONE,UW_ROOT,UW_TRANSPARENT}; )
+
+ - WantWindow = none: default, no special whish
+ - Flags.WantWindow = UW_NONE
+ - -wantwindow default
+ - WantWindow = root: user whishes to use X11 window for snow
+ - Flags.WantWindow = UW_ROOT
+ - -wantwindow root
+ - WantWindow = trans: user whishes to use X11 transparent window
+ - Flags.WantWindow = UW_TRANSPARENT
+ - -wantwindow transparent
+
+ If -id or -xwininfo are specified, WantWindow = 1 is implied, and SnowWin
+ is an existing non-root window.
+ If WantWindow = 1 and -id and -xwininfo are not specified, 
+ SnowWin is the root window.
+
+ * The following switches are determined, dependend on window 
+ manager and user whishes. These switches should be sufficient
+ to determine how to paint snow and birds.
+
+ - UseGtk: 
+ - 1: Snow is painted on TransA, using cairo
+ - 0: Snow is painted on SnowWin, using X11
+
+ - Trans:
+ - 1: SnowWin is     transparent
+ - 0: SnowWin is not transparent
+
+ - Root:  (maybe this is superfluous, we will see)
+ - 1: SnowWin is     root window
+ - 0: SnowWin is not root window
+
+ - DrawBirds:
+ - 1: Birds are painted on TransA, using cairo
+ - 0: Birds cannot be painted
+
+ * Depending on the possibility to create transparent windows and user wishes,
+ the following scenarios exist:
+
+ - Transparent window is possible: TransA exists
+
+ - SCENARIO 1:
+ - WantWindow = root
+ - Snow in     SnowWin
+ - Birds in    TransA
+ - UseGtk    = 0
+ - Trans     = 0
+ - Root      = 0 or 1
+ - DrawBirds = 1
+
+ - SCENARIO 2:
+ - WantWindow = trans
+ - Snow in     SnowWin
+- Birds in    TransA
+- UseGtk    = 0
+- Trans     = 1
+- Root      = 1
+- DrawBirds = 1
+
+- SCENARIO 3:
+- WantWindow = none
+- Snow in     TransA
+- Birds in    TransA
+- UseGtk    = 1
+- Trans     = n/a
+- Root      = n/a
+- DrawBirds = 1
+
+- Transparent window is NOT possible, TransA does not exist
+
+- SCENARIO 4:
+- WantWindow = none|trans|root, user cannot force anything
+- Snow in     SnowWin
+- Birds in    nothing, birds cannot fly
+- UseGtk    = 0
+- Trans     = 0
+- Root      = 1
+- DrawBirds = 0
+*/
+
 int main_c(int argc, char *argv[])
 {
    signal(SIGINT, SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP, SigHandler);
    srand48((long int)(wallcl()*1.0e6));
+   int i;
+   // make a copy of all flags, before gtk_init() maybe removes some.
+   // we need this at a restart of the program.
+
+   char **Argv;
+   Argv = (char**) malloc((argc+1)*sizeof(char**));
+   for (i=0; i<argc; i++)
+      Argv[i] = strdup(argv[i]);
+   Argv[argc] = 0;
+
    //testje();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
    // gtk_init() would fail.
-   int i;
    for (i=0; i<argc; i++)
    {
       char *arg = argv[i];
@@ -282,6 +387,7 @@ int main_c(int argc, char *argv[])
       WriteFlags();
 
    display = XOpenDisplay(Flags.DisplayName);
+   RootWindow = DefaultRootWindow(display);
    XSynchronize(display,dosync);
    XSetErrorHandler(XsnowErrors);
    screen = DefaultScreen(display);
@@ -321,9 +427,9 @@ int main_c(int argc, char *argv[])
    //
    // Find window to snow in:
    //
-   // if(Isdesktop): we have a desktop and we will snow on the windows in it
+   // if(switches.Desktop): we have a desktop and we will snow on the windows in it
    //   else we have a normal window and will not snow on other windows
-   // if(UseAlpha): drawing to the desktop is as follows:
+   // if(switches.Trans): drawing to the desktop is as follows:
    //   - all colours are made opaque by or-ing the colors with 0xff000000
    //   - clearing is done writing the same image, but with color black (0x00000000) 
    //   else
@@ -335,22 +441,19 @@ int main_c(int argc, char *argv[])
    //
 
 
-   RootWindow = DefaultRootWindow(display);
 
-   if (!DetermineWindow())
+   if (!myDetermineWindow())
    {
-      printf("xsnow: cannot determine window, exiting...\n");
       return 1;
    }
-   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %d - exposures: %d\n",
-	 SnowWin,SnowWinName,SnowWinDepth,
-	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, UseAlpha,Exposures);
 
-   Santa_init();
-
+   Flags.Done = 0;
    NoSnowArea_dynamic   = XCreateRegion();  // needed when drawing on background with xor.
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
+   windows_init();
+   Santa_init();
+   birds_init();
    scenery_init();
    snow_init();
    meteo_init();
@@ -359,8 +462,18 @@ int main_c(int argc, char *argv[])
    fallensnow_init();
    blowoff_init();
    treesnow_init();
-   windows_init();
    loadmeasure_init();
+
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
+
+   if (Flags.StopAfter > 0)
+      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
+
+   HandleFactor();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -385,42 +498,31 @@ int main_c(int argc, char *argv[])
    //InitSnowColor();
 
    // events
-   if(Isdesktop)
+   if(switches.Desktop)
       XSelectInput(display, SnowWin, 0);
    else
       XSelectInput(display, SnowWin, 
 	    StructureNotifyMask);
 
-   TStart = wallclock();
-   Flags.Done = 0;
    ClearScreen();   // without this, no snow, scenery etc. in KDE
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
-   add_to_mainloop(PRIORITY_HIGH, time_ui_check,       do_ui_check           ,0);
-   //   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate,        do_wupdate            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
-   //add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_show_desktop_type  ,0);
-
-   if (Flags.StopAfter > 0)
-      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
-
-   HandleFactor();
 
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
-      if (UseGtk)
+
+      if (TransA)
       {
-	 gtk_widget_show_all(GtkWinb);
+	 ui_gray_erase(switches.UseGtk);
       }
       else
       {
-	 ui_set_birds_header("Your screen does not support alpha channel, no birds will fly.");
+	 ui_gray_ww(1);
+	 ui_gray_below(1);
+	 ui_set_birds_header("The snow window does not support alpha channel, no birds will fly.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
-      show_desktop_type();
+      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, 0);
    }
 
    // main loop
@@ -435,14 +537,140 @@ int main_c(int argc, char *argv[])
 
    if (DoRestart)
    {
-      sleep(2);
+      sleep(0);
       extern char **environ;
-      execve(argv[0],argv,environ);
+      execve(Argv[0],Argv,environ);
    }
    Thanks();
    return 0;
 }		/* End of snowing */
 
+int myDetermineWindow()
+{
+   P("myDetermineWindow root: %#lx\n",RootWindow);
+   static Window SnowWina    = 0;
+   static Window SnowWinb    = 0;
+   static gulong drawconnect = 0;
+
+   if (drawconnect)
+   {
+      P("disconnecting %ld\n",drawconnect);
+      g_signal_handler_disconnect(TransA,drawconnect);
+      P("disconnected\n");
+   }
+
+   int IsDesktop;
+   if (!SnowWina)
+   {
+      if (!DetermineWindow(&SnowWina,&TransA,"Xsnow-A", &IsDesktop))
+      {
+	 printf("xsnow: cannot determine window, exiting...\n");
+	 return 0;
+      }
+
+      P("SnowWina: %#lx TransA: %p\n",SnowWina,(void *)TransA);
+      if (TransA)
+      {
+	 drawing_area = gtk_drawing_area_new();
+	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
+
+
+	 DetermineWindow(&SnowWinb, &TransB, "Xnow-B", &IsDesktop);
+
+	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
+      }
+   }
+
+
+   SnowWin            = SnowWina;
+   switches.UseGtk    = 1;
+   switches.DrawBirds = 1;
+   switches.Trans     = 0;
+   switches.Root      = 0;
+   switches.Desktop   = IsDesktop;
+
+
+   if (TransA)  // we have a transparent window
+   {
+
+      if (Flags.WantWindow == UW_ROOT)    // Scenario 1
+      {
+	 R("Scenario 1\n");
+	 DestroyWindow(SnowWin);
+
+	 SnowWin            = RootWindow;
+
+	 switches.UseGtk    = 0;
+	 switches.DrawBirds = 1;
+	 switches.Trans     = 0;
+	 switches.Root      = 1;
+	 switches.Desktop   = 1;
+      }
+      else if (Flags.WantWindow == UW_TRANSPARENT) // Scenario 2
+      {
+	 R("Scenario 2\n");
+
+	 SnowWin            = SnowWinb;
+
+	 switches.UseGtk    = 0;
+	 switches.DrawBirds = 1;
+	 switches.Trans     = 1;
+	 switches.Root      = 0;
+	 switches.Desktop   = IsDesktop;
+      }
+      else                       // Scenario 3
+      {
+	 R("Scenario 3\n");
+	 SnowWin            = SnowWina;
+
+	 switches.UseGtk    = 1;
+	 switches.DrawBirds = 1;
+	 switches.Trans     = 0;
+	 switches.Root      = 0;
+	 switches.Desktop   = 1;
+      }
+   }
+   else                          //  No transparent window: Scenario 4
+   {
+      R("Scenario 4\n");
+      printf("Your screen does not support alpha channel, no birds will fly.\n");
+      SnowWin            = SnowWina;
+      switches.UseGtk    = 0;
+      switches.DrawBirds = 0;
+      switches.Trans     = 0;
+      switches.Root      = 1;
+      switches.Desktop   = IsDesktop;
+   }
+
+   InitDisplayDimensions();
+
+   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %d - exposures: %d\n",
+	 SnowWin,SnowWinName,SnowWinDepth,
+	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, switches.Trans,switches.Exposures);
+
+   if(switches.UseGtk || switches.Trans)
+   {
+      TransWorkSpace = GetCurrentWorkspace();
+
+      drawconnect = g_signal_connect(TransA, "draw", G_CALLBACK(on_draw_event), NULL);
+      P("connecting %ld\n",drawconnect);
+      restart_do_draw_all();  // to (re-)establish the timeout for do_draw_all
+
+   }
+   else
+   {
+#if 0
+      // snow in root window:
+      P("snow in root window\n");
+      if(SnowWinName) free(SnowWinName);
+      SnowWin     = DefaultRootWindow(display);
+      SnowWinName = strdup("No Name");
+#endif
+      drawconnect = 0;
+   }
+
+   return 1;
+}
 
 /* ------------------------------------------------------------------ */ 
 /*
@@ -482,6 +710,19 @@ int do_ui_check(gpointer data)
    changes += blowoff_ui();
    changes += treesnow_ui();
 
+   if (Flags.WantWindow != OldFlags.WantWindow)
+   {
+      ClearScreen();
+      OldFlags.WantWindow = Flags.WantWindow;
+      P("WantWindow: %d\n",Flags.WantWindow);
+      if(draw_all_id)
+	 g_source_remove(draw_all_id);
+      draw_all_id = 0;
+      myDetermineWindow();
+      changes++;
+
+      ui_gray_erase(switches.UseGtk);
+   }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
@@ -497,16 +738,6 @@ int do_ui_check(gpointer data)
       ClearScreen();
       changes++;
       P("changes: %d\n",changes);
-   }
-   if(Flags.UseAlpha != OldFlags.UseAlpha)
-   {
-      P("changes: %d %d %d\n",changes,OldFlags.UseAlpha,Flags.UseAlpha);
-      OldFlags.UseAlpha = Flags.UseAlpha;
-      UseAlpha          = Flags.UseAlpha;
-      SetGCFunctions();
-      ClearScreen();
-      changes++;
-      P("changes: %d %d %d\n",changes,OldFlags.UseAlpha,Flags.UseAlpha);
    }
    if(Flags.Exposures != OldFlags.Exposures)
    {
@@ -540,7 +771,7 @@ int do_ui_check(gpointer data)
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;
-      DetermineWindow();
+      myDetermineWindow();
       InitFallenSnow();
       init_stars();
       EraseTrees();
@@ -552,21 +783,27 @@ int do_ui_check(gpointer data)
    {
       if(0)
       {
-	 DetermineWindow();
+	 myDetermineWindow();
       }
       else
       {
 	 if(Flags.AllWorkspaces)
 	 {
-	    R("stick\n");
-	    if (UseGtk)
-	       gtk_window_stick(GTK_WINDOW(GtkWinb));
+	    P("stick\n");
+	    if (switches.UseGtk||switches.Trans)
+	    {
+	       gtk_window_stick(GTK_WINDOW(TransA));
+	       gtk_window_stick(GTK_WINDOW(TransB));
+	    }
 	 }
 	 else
 	 {
-	    R("unstick\n");
-	    if (UseGtk)
-	       gtk_window_unstick(GTK_WINDOW(GtkWinb));
+	    P("unstick\n");
+	    if (switches.UseGtk||switches.Trans)
+	    {
+	       gtk_window_unstick(GTK_WINDOW(TransA));
+	       gtk_window_unstick(GTK_WINDOW(TransB));
+	    }
 	 }
       }
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;
@@ -578,22 +815,30 @@ int do_ui_check(gpointer data)
    {
       OldFlags.BelowAll = Flags.BelowAll;
       if(1)
-	 DetermineWindow();
+      {
+	 Flags.Done = 1;
+	 DoRestart  = 1;
+      }
       else   // this does not work:
       {
-	 if(UseGtk)
+	 if(switches.UseGtk)
 	 {
+	    GdkWindow *gdk_window;
 	    if(Flags.BelowAll)
 	    {
 	       R("below\n");
-	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), FALSE);
-	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), TRUE);
+	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
+	       gdk_window_hide(gdk_window);
+	       gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
+	       gdk_window_show(gdk_window);
 	    }
 	    else
 	    {
 	       R("above\n");
-	       gtk_window_set_keep_below(GTK_WINDOW(GtkWinb), FALSE);
-	       gtk_window_set_keep_above(GTK_WINDOW(GtkWinb), TRUE);
+	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
+	       gdk_window_hide(gdk_window);
+	       gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
+	       gdk_window_show(gdk_window);
 	    }
 	 }
       }
@@ -620,7 +865,7 @@ int do_displaychanged(gpointer data)
    // If the size has been changed, we restart the program
    if (Flags.Done)
       return FALSE;
-   if (!Isdesktop)
+   if (!switches.Desktop)
       return TRUE;
    {
       unsigned int w,h;
@@ -644,14 +889,14 @@ int do_event(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   //if(UseAlpha) return; we are tempted, but if the event loop is escaped,
+   //if(switches.Trans) return; we are tempted, but if the event loop is escaped,
    // a memory leak appears
    XEvent ev;
    XFlush(display);
    while (XPending(display)) 
    {
       XNextEvent(display, &ev);
-      if(!UseAlpha) 
+      if(!switches.Trans) 
       {
 	 switch (ev.type) 
 	 {
@@ -697,7 +942,7 @@ void RestartDisplay()    // todo
       XDestroyRegion(TreeRegion);
       TreeRegion = XCreateRegion();
    }
-   XClearArea(display, SnowWin, 0,0,0,0,Exposures);
+   XClearArea(display, SnowWin, 0,0,0,0,switches.Exposures);
 }
 
 
@@ -713,16 +958,22 @@ int do_show_range_etc(gpointer data)
    return TRUE;
 }
 
-void show_desktop_type()
+int do_show_desktop_type(gpointer data)
 {
+   P("do_show_desktop_type %d\n",counter++);
    if (Flags.NoMenu)
-      return;
+      return TRUE;
+   char *s;
    if (IsWayland)
-      ui_show_desktop_type("Wayland (Expect some slugginess)");
+      s = "Wayland (Expect some slugginess)";
    else if (IsCompiz)
-      ui_show_desktop_type("Compiz");
+      s = "Compiz";
    else
-      ui_show_desktop_type("Probably X11");
+      s = "Probably X11";
+   char t[128];
+   snprintf(t,64,"%s. Snow window: %#lx",s,SnowWin);
+   ui_show_desktop_type(t);
+   return TRUE;
 }
 
 
@@ -742,6 +993,7 @@ int do_testing(gpointer data)
 /* ------------------------------------------------------------------ */ 
 void SigHandler(int signum)
 {
+   printf("Caught signal %d\n",signum);
    Flags.Done = 1;
 }
 /* ------------------------------------------------------------------ */ 
@@ -784,7 +1036,6 @@ void EraseStars()
 
 
 
-/* ------------------------------------------------------------------ */ 
 int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
    if (Flags.Quiet) return 0;
@@ -793,17 +1044,13 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
    P("%s\n",msg);
    return 0;
 }
-/* ------------------------------------------------------------------ */ 
-
-/* ------------------------------------------------------------------ */ 
-
 
 
 
 // the draw callback
 gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
-   P("Just to check who this is: %p %p\n",(void *)widget,(void *)GtkWinb);
+   P("Just to check who this is: %p %p\n",(void *)widget,(void *)TransA);
    drawit(cr);
    return FALSE;
 }
@@ -811,21 +1058,25 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 void drawit(cairo_t *cr)
 {
    P("drawit %d\n",counter++);
-   stars_draw(cr);
 
-   meteo_draw(cr);
+   if (switches.UseGtk)
+   {
+      stars_draw(cr);
 
-   scenery_draw(cr);
+      meteo_draw(cr);
 
-   Santa_draw(cr);
+      scenery_draw(cr);
+
+      Santa_draw(cr);
+
+      snow_draw(cr);
+
+      fallensnow_draw(cr);
+
+      treesnow_draw(cr);
+   }
 
    birds_draw(cr);
-
-   snow_draw(cr);
-
-   fallensnow_draw(cr);
-
-   treesnow_draw(cr);
 
 }
 
@@ -857,8 +1108,7 @@ void HandleFactor()
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   if(!UseGtk)
-      Santa_HandleFactor();
+   Santa_HandleFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
    P("handlefactor %f %f %d\n",oldfactor,factor,counter++);
@@ -870,19 +1120,16 @@ void HandleFactor()
 
 void restart_do_draw_all()
 {
-   static guint draw_all_id = 0;
-   if (!UseGtk)
+   if (!switches.UseGtk && !switches.Trans)
       return;
    if (draw_all_id)
       g_source_remove(draw_all_id);
-   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, GtkWinb);
+   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
 }
 
 
 void SetGCFunctions()
 {
-   if(UseGtk)
-      return;
    if (Flags.UseBG)
       ErasePixel = AllocNamedColor(Flags.BGColor,Black) | 0xff000000;
    else
@@ -953,17 +1200,17 @@ void HandleExposures()
 {
    if (Flags.Exposures == -SOMENUMBER) // no -exposures or -noexposures given
       if (Flags.XWinInfoHandling)
-	 Exposures = True;
+	 switches.Exposures = 1;
       else
-	 Exposures = False;
+	 switches.Exposures = 0;
    else
-      Exposures = Flags.Exposures;
-
+      switches.Exposures = Flags.Exposures;
 }
 
 
 int do_stopafter(gpointer data)
 {
    Flags.Done = 1;
+   printf("Halting because of flag -stopafter\n");
    return FALSE;
 }

@@ -117,7 +117,7 @@ int do_snow_on_trees(gpointer data)
       ConvertOnTreeToFlakes();
    static int second = 0;
 
-   if (UseGtk)
+   if (switches.UseGtk)
    {
    // for gtk, drawing is done in treesnow_draw()
    }

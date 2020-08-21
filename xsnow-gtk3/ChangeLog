@@ -1,3 +1,8 @@
+version 3.0.4.28
+	In settings: gray out and make inactive not usable buttons
+version 3.0.4.27
+	better logic to determine what kind of windows are used
+	simplified ui settings window
 version 3.0.4.21
 	transparent.c: remove sticky hint for gdkwindow: this is ierreversible
 	made do_wupdate conform. Created windows.c. This is a mess, have to

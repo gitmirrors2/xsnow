@@ -31,7 +31,6 @@
 #include "wmctrl.h"
 #include "fallensnow.h"
 #include "transparent.h"
-#include "birds.h"
 #include "dsimple.h"
 
 static int    do_wupdate(gpointer data);
@@ -41,16 +40,19 @@ static Window XWinInfo(char **name);
 static WinInfo      *Windows = 0;
 static int          NWindows;
 
-int          UsingTrans = 0;
-int          Isdesktop;
 char        *SnowWinName = 0;
-int     SnowWinX; 
-int     SnowWinY; 
+int          SnowWinX; 
+int          SnowWinY; 
 Window       RootWindow;
 unsigned int Wroot;
 unsigned int Hroot;
 int          Xroot;
 int          Yroot;
+GtkWidget   *TransA = 0;
+GtkWidget   *TransB = 0;
+Window       SnowWin = 0;
+
+struct _switches switches;
 
 int windows_ui()
 {
@@ -63,6 +65,13 @@ void windows_draw(cairo_t *cr)
    // nothing to draw
 }
 
+void DestroyWindow(Window w)
+{
+   return;
+   if (w && w != RootWindow)
+      XDestroyWindow(display,w);
+}
+
 void windows_init()
 {
    add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, 0);
@@ -70,17 +79,16 @@ void windows_init()
 
 int WorkspaceActive()
 {
-   P("UsingTrans etc %d %d %d %d\n",Flags.AllWorkspaces,UsingTrans,CWorkSpace == TransWorkSpace,
-	 Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace);
+   P("switches.UseGtk etc %d %d %d %d\n",Flags.AllWorkspaces,switches.UseGtk,CWorkSpace == TransWorkSpace,
+	 Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace);
    // ah, so difficult ...
-   return Flags.AllWorkspaces || !UsingTrans || CWorkSpace == TransWorkSpace;
+   return Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace;
 }
 
 int do_wupdate(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   if(!Isdesktop) return TRUE;
    if(Flags.NoKeepSWin) return TRUE;
    long r;
    r = GetCurrentWorkspace();
@@ -88,6 +96,7 @@ int do_wupdate(gpointer data)
       CWorkSpace = r;
    else
    {
+      R("Cannot get current workspace\n");
       Flags.Done = 1;
       return TRUE;
    }
@@ -96,6 +105,7 @@ int do_wupdate(gpointer data)
 
    if (GetWindows(&Windows, &NWindows)<0)
    {
+      R("Cannot get windows\n");
       Flags.Done = 1;
       return TRUE;
    };
@@ -109,7 +119,7 @@ int do_wupdate(gpointer data)
    // check also on valid winfo: after toggling 'below'
    // winfo is nil sometimes
 
-   if(UsingTrans && winfo)
+   if(switches.UseGtk && winfo)
    {
       // in xfce and maybe others, workspace info is not to be found
       // in our transparent window. winfo->ws will be 0, and we keep
@@ -122,12 +132,20 @@ int do_wupdate(gpointer data)
       P("TransWorkSpace %#lx %#lx %#lx %#lx\n",TransWorkSpace,winfo->ws,SnowWin,GetCurrentWorkspace());
    }
 
+   P("do_wupdate: %p %p\n",(void *)TransA,(void *)winfo);
+   if (SnowWin != RootWindow)
+      if (!TransA && !winfo)
+      {
+	 R("No transparent window & no SnowWin %#lx found\n",SnowWin); 
+	 Flags.Done = 1;
+      }
 
    UpdateWindows();
    return TRUE;
 }
-// Have a look at the windows we are snowing on
 
+// Have a look at the windows we are snowing on
+// Also update of fallensnow area's
 void UpdateWindows()
 {
    typeof(Windows) w;
@@ -258,30 +276,31 @@ void UpdateWindows()
    free(toremove);
 }
 
-int DetermineWindow()
+int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
    P("DetermineWindow\n");
+   // User supplies window id:
    if (Flags.WindowId)
    {
-      SnowWin = Flags.WindowId;
-      Isdesktop = 0;
-      UseAlpha  = 0;
+      *xwin = Flags.WindowId;
+      *IsDesktop = 0;
    }
    else
    {
+      // user ask to point to a window
       if (Flags.XWinInfoHandling)
       {
-	 SnowWin = XWinInfo(&SnowWinName);
-	 if (SnowWin == 0)
+	 *xwin = XWinInfo(&SnowWinName);
+	 if (*xwin == 0)
 	 {
 	    fprintf(stderr,"XWinInfo failed\n");
 	    exit(1);
 	 }
-	 Isdesktop = 0;
-	 UseAlpha  = 0;
+	 *IsDesktop = 0;
       }
       else
       {
+	 // default behaviour
 	 char *desktopsession = 0;
 	 const char *desktops[] = {
 	    "DESKTOP_SESSION",
@@ -327,14 +346,21 @@ int DetermineWindow()
 	 }
 	 if(lxdefound)
 	 {
-	    UseAlpha  = 0;
-	    Isdesktop = 1;
-	    Exposures = 0;
+	    *IsDesktop = 1;
+
+#if 0
+	    // Scenario 4: snowwindow in root, no birds
+	    switches.UseGtk    = 0;
+	    switches.Trans     = 0;
+	    switches.Root      = 1;
+	    switches.DrawBirds = 0;
+	    switches.Exposures = 0;
+#endif
 	 }
 	 else
 	 {
 
-	    P("DetermineWindow\n");
+	    P("DetermineWindow %p\n",(void *)gtkwin);
 	    int x,y;
 	    unsigned int w,h,b,depth;
 	    Window root;
@@ -342,76 +368,26 @@ int DetermineWindow()
 		  &x, &y, &w, &h, &b, &depth);
 	    if(SnowWinName) free(SnowWinName);
 
-	    if (GtkWinb)
+	    if (*gtkwin)
 	    {
-	       gtk_window_close(GTK_WINDOW(GtkWinb));
-	       gtk_widget_destroy(GTK_WIDGET(GtkWinb));
+	       gtk_window_close(GTK_WINDOW(*gtkwin));
+	       gtk_widget_destroy(GTK_WIDGET(*gtkwin));
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  &SnowWin, "Birds-Window", &SnowWinName, &GtkWinb,w,h);
-	    R("birds window %ld %p\n",SnowWin,(void *)GtkWinb);
-	    if (GtkWinb)
-	    {
-	       UseGtk = 1;
-	       restart_do_draw_all();  // to (re-)establish the timeout for do_draw_all
-	    }
-	    else
-	    {
-	       UseGtk = 0;
-	       printf("Your screen does not support alpha channel, no birds will fly.\n");
-	    }
-	    //create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-	    //	  &SnowWin, "Xsnow-Window", &SnowWinName, &GtkWin,w,h);
-	    //   P("snow window %ld %p\n",SnowWin,(void *)GtkWin);
-
-	    Isdesktop = 1;
-	    UseAlpha  = 1;
-	    XGetGeometry(display,SnowWin,&root,
-		  &x, &y, &w, &h, &b, &depth);
-	    P("depth: %d snowwin: 0x%lx %s\n",depth,SnowWin,SnowWinName);
-	    if(SnowWin)
-	    {
-	       TransWorkSpace = GetCurrentWorkspace();
-	       UsingTrans     = 1;
-
-	       drawing_area = gtk_drawing_area_new();
-	       gtk_container_add(GTK_CONTAINER(GtkWinb), drawing_area);
-
-	       g_signal_connect(GtkWinb, "draw", G_CALLBACK(on_draw_event), NULL);
-
-	       birds_init();
-	    }
-	    else
-	    {
-	       // snow in root window:
-	       P("snow in root window\n");
-	       Isdesktop = 1;
-	       UseAlpha  = 0;
-	       if(SnowWinName) free(SnowWinName);
-	       SnowWin     = DefaultRootWindow(display);
-	       SnowWinName = strdup("No Name");
-	    }
+		  xwin, transname, &SnowWinName, gtkwin,w,h);
+	    P("DetermineWindow gtkwin: %p xwin: %#lx\n",(void *)gtkwin,*xwin);
+	    if (*xwin == 0)
+	       *xwin = RootWindow;
 	 }
       }
    }
-   // override Isdesktop if user desires so:
-   if (Flags.Desktop)
-      Isdesktop = 1;
-   P("Isdesktop: %d\n",Isdesktop);
-   if(Isdesktop) 
+   if(*IsDesktop) 
       CWorkSpace = GetCurrentWorkspace();
    P("CWorkSpace: %ld\n",CWorkSpace);
    if (CWorkSpace < 0)
-      return 0;
-   InitDisplayDimensions();
-   // if depth != 32, we assume that the desktop is not gnome-like TODO
-   if (Isdesktop && SnowWinDepth != 32)
-      UseAlpha = 0;
-   // override UseAlpha if user desires so:
-   if (Flags.UseAlpha != SOMENUMBER)
-      UseAlpha = Flags.UseAlpha;
+      return FALSE;
 
-   return 1;
+   return TRUE;
 }
 
 Window XWinInfo(char **name)
@@ -447,11 +423,11 @@ void InitDisplayDimensions()
    SnowWinX           = x;
    SnowWinY           = y;
    SnowWinWidth       = w;
-   if(UsingTrans)
+   if(switches.UseGtk || switches.Trans)
       SnowWinHeight      = hroot + Flags.OffsetS;
    else
       SnowWinHeight      = h + Flags.OffsetS;
-   if(!Flags.FullScreen && UsingTrans)
+   if(!Flags.FullScreen && switches.UseGtk)
       SnowWinHeight -= y;
    SnowWinBorderWidth = b;
    SnowWinDepth       = d;

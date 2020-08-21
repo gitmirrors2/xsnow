@@ -75,8 +75,8 @@
    DOIT_I(SnowFlakesFactor) \
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(TreeFill) \
-   DOIT_I(UseAlpha)  \
    DOIT_I(UseBG) \
+   DOIT_I(WantWindow) \
    DOIT_I(WhirlFactor) \
    DOIT_I(WindTimer) \
    \

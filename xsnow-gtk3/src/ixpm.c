@@ -101,6 +101,33 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 
    XImage *ximage,*shapeimage;
    rc = XpmCreateImageFromData(display,idata,&ximage,&shapeimage,attr);
+   if (rc != 0)
+   {
+      R("rc from XpmCreateImageFromData: ");
+      switch (rc)
+      {
+	 case 1:
+	    printf("XpmColorError\n");
+	    break;
+	 case -1:
+	    printf("XpmOpenFailed\n");
+	    break;
+	 case -2:
+	    printf("XpmFileInvalid\n");
+	    break;
+	 case -3:
+	    printf("XpmNoMemory\n");
+	    break;
+	 case -4:
+	    printf("XpmColorFaild\n");
+	    break;
+	 default:
+	    printf("%d\n",rc);
+	    break;
+      }
+      printf("exiting\n");
+      abort();
+   }
    XAddPixel(ximage,0xff000000);
    if(p)
       xpmCreatePixmapFromImage(display, d, ximage, p);

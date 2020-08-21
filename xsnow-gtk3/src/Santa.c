@@ -113,6 +113,7 @@ int Santa_ui()
 
 int Santa_draw(cairo_t *cr)
 {
+   P("Santa_draw %d\n",counter++);
    if (Flags.Done)
       return FALSE;
    if (Flags.NoSanta || NOTACTIVE)
@@ -126,6 +127,7 @@ int Santa_draw(cairo_t *cr)
 
 void Santa_init()
 {
+   P("Santa_init\n");
    ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
    SantaGC              = XCreateGC(display, SnowWin, 0, 0);
    InitSantaPixmaps();
@@ -339,6 +341,8 @@ int do_santa(gpointer data)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;
+   if (switches.UseGtk)
+      return TRUE;
    if (!Flags.NoSanta)
       DrawSanta();
    return TRUE;
@@ -349,6 +353,8 @@ int do_santa1(gpointer data)
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
+      return TRUE;
+   if (switches.UseGtk)
       return TRUE;
    if (!Flags.NoSanta)
       DrawSanta1();
@@ -368,7 +374,9 @@ void DrawSanta()
 
 void EraseSanta(int x, int y)
 {
-   if(UseAlpha|Flags.UseBG)
+   if (switches.UseGtk)
+      return;
+   if(switches.Trans|Flags.UseBG)
       XFillRectangle(display, SnowWin, ESantaGC, x,y,SantaWidth+1,SantaHeight);
    // probably due to rounding errors in computing SantaX, one pixel in front 
    // is not erased when leaving out the +1
@@ -376,11 +384,12 @@ void EraseSanta(int x, int y)
       XClearArea(display, SnowWin,
 	    x , y,     
 	    SantaWidth+1,SantaHeight,
-	    Exposures);
+	    switches.Exposures);
 }
 
 void DrawSanta1()
 {
+   P("DrawSanta1 %#lx %d\n",SnowWin,counter++);
    XSetClipMask(display,
 	 SantaGC,
 	 SantaMaskPixmap[CurrentSanta]);
@@ -398,6 +407,7 @@ void DrawSanta1()
 // update santa's coordinates and speed
 int do_usanta(gpointer data)
 {
+   P("do_usanta %d\n",counter++);
    if (Flags.Done)
       return FALSE;
 #define RETURN do { return TRUE ; } while(0)

@@ -57,6 +57,7 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
 #if 0
 static cairo_surface_t *globsurface = NULL;
 #endif
+
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static cairo_surface_t *attrsurface = 0;
 
@@ -111,6 +112,7 @@ static struct kdtree *kd = 0;
 
 static BirdType *birds = 0;
 static BirdType attrbird;
+
 
 
 int birds_ui()
@@ -275,9 +277,9 @@ static void r2i(BirdType *bird)
    }
    else
    {
-      P("%d %f %f\n",counter++,bird->y, globals.vd);
       bird->drawable = 0;
    }
+      P("r2i %d %d\n",counter++,bird->drawable);
 }
 
 
@@ -328,6 +330,8 @@ int do_update_speed_birds(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
+   if (!switches.DrawBirds)
+      return TRUE;
    LEAVE_IF_INACTIVE;
    P("do_update_speed_birds %d\n",counter);
 
@@ -473,6 +477,8 @@ int do_update_pos_birds(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
+   if (!switches.DrawBirds)
+      return TRUE;
    LEAVE_IF_INACTIVE;
    P("do_update_pos_birds %d %d\n",Nbirds,counter++);
    double dt;
@@ -488,8 +494,6 @@ int do_update_pos_birds(gpointer data)
       bird->x += dt*bird->sx;
       bird->y += dt*bird->sy;
       bird->z += dt*bird->sz;
-      P("update: %f %f %f\n",bird->x,bird->z,bird->sx);
-
    }
    return TRUE;
 }
@@ -498,6 +502,8 @@ int birds_draw(cairo_t *cr)
 {
    if (Flags.Done)
       return FALSE;
+   if (!switches.DrawBirds)
+      return TRUE;
    LEAVE_IF_INACTIVE;
 
    int before;
@@ -704,6 +710,8 @@ static int do_wings(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
+   if (!switches.DrawBirds)
+      return TRUE;
    LEAVE_IF_INACTIVE;
    int i;
    for (i=0; i<Nbirds; i++)
@@ -757,10 +765,11 @@ void birds_set_speed()
 
 static void main_window()
 {
-   counter++;
-   GtkWidget *window = GtkWinb;
-   globals.maxix = gtk_widget_get_allocated_width(window);
-   globals.maxiz = gtk_widget_get_allocated_height(window);
+   //GtkWidget *window = TransA;
+   //globals.maxix = gtk_widget_get_allocated_width(window);
+   //globals.maxiz = gtk_widget_get_allocated_height(window);
+   globals.maxix = SnowWinWidth;
+   globals.maxiz = SnowWinHeight;
    globals.maxiy = (globals.maxix+globals.maxiz)/2;
 
    P("%d %d %d\n",globals.maxix,globals.maxiy,globals.maxiz);
@@ -773,11 +782,12 @@ static void main_window()
 
    P("drawing window: %d %d %d %f %f %f\n",
 	 globals.maxix, globals.maxiy, globals.maxiz, globals.maxx, globals.maxy,globals.maxz);
-   gtk_window_set_title(GTK_WINDOW(window),"xflock_birds");
 }
 
 void birds_init_color()
 {
+   if (!switches.DrawBirds)
+      return;
    int i;
    for (i=0; i<NBIRDPIXBUFS; i++)
    {
@@ -842,6 +852,7 @@ int do_change_attr(gpointer data)
 	 );
    return TRUE;
 }
+
 void birds_init ()
 {
    init_bird_pixbufs("black"); // just to have pixbufs we can throw away

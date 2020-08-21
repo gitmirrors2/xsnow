@@ -106,14 +106,17 @@ void docs_usage(int man)
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
    manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
-   manout("-exposures"                ,"Force XClearArea(...,exposures=True) when erasing.");
-   manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
+   manout("-exposures"                ,"Use XClearArea(...,exposures=True) when erasing.");
+   manout("-noexposures"              ,"Use XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
-   manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel.");
    manout("-fvwm"                     ,"prepare for FVWM and the like: no background, -alpha 0, -noexposures .");
    manout("-gnome"                    ,"prepare for GNOME, KDE and the like: no background, -alpha 1, -noexposures .");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
+   manout("-wantwindow"               ,"Specify your favorite window:");
+   manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
+   manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
+   manout("            root"          ,"Use X11-root window for Santa, snow and scenery (often these items will not be visible).");
    if(doman)
    {
       printf(".PP\n"); printf(".SS \"Snow options:\n");

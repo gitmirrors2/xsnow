@@ -199,7 +199,7 @@ int do_initbaum()
 {
    if (Flags.Done)
       return FALSE;
-   P("initbaum %d %d\n",NTrees, (int)wallclock());
+   P("initbaum %d %d\n",NTrees, counter++);
    if (Flags.NoTrees || NTrees != 0)
       return TRUE;
    int i,h,w;
@@ -314,7 +314,7 @@ int do_initbaum()
       tree->rev  = flop;
       P("tree: %d %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev, NTrees);
 
-      if (!UseGtk)
+      //if (!switches.UseGtk)
 	 add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
@@ -435,6 +435,8 @@ int do_drawtree(Treeinfo *tree)
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
+      return TRUE;
+   if (switches.UseGtk)
       return TRUE;
    if (KillTrees)
    {

@@ -285,17 +285,17 @@ void PrintFallenSnow(FallenSnow *list)
 
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
-   if(UseGtk)
+   if(switches.UseGtk)
       return;
    if(fsnow->clean) 
       return;
    int x = fsnow->x;
    int y = fsnow->y - fsnow->h;
-   if(UseAlpha|Flags.UseBG)
+   if(switches.Trans|Flags.UseBG)
       XFillRectangle(display, SnowWin,  EFallenGC, x+xstart,y,
 	    w, fsnow->h+MaxSnowFlakeHeight);
    else
-      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, Exposures);
+      XClearArea(display, SnowWin, x+xstart, y, w, fsnow->h+MaxSnowFlakeHeight, switches.Exposures);
    if(xstart <= 0 && w >= fsnow->w)
       fsnow->clean = 1;
 }
@@ -409,7 +409,7 @@ void DrawFallen(FallenSnow *fsnow)
 	       XFlush(display);
 	    }
 	 }
-	 if(UseGtk)
+	 if(switches.UseGtk)
 	 {
 	    CreateSurfaceFromFallen(fsnow);
 	    // drawing is handled in fallensnow-draw
@@ -468,14 +468,14 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 {
    if(fsnow->acth[x] > 0)
    {
-      if(!UseGtk)
+      if(!switches.UseGtk)
       {
 	 int x1 = fsnow->x + x;
 	 int y1 = fsnow->y - fsnow->acth[x];
-	 if(UseAlpha|Flags.UseBG)
+	 if(switches.Trans|Flags.UseBG)
 	    XDrawPoint(display, SnowWin, EFallenGC, x1, y1);
 	 else
-	    XClearArea(display, SnowWin, x1 , y1, 1, 1, Exposures);     
+	    XClearArea(display, SnowWin, x1 , y1, 1, 1, switches.Exposures);     
       }
       fsnow->acth[x]--;
    }

@@ -75,6 +75,7 @@
 #define DEFAULT_WindowId 0
 #define DEFAULT_WindTimer 30
 #define DEFAULT_XWinInfoHandling 0
+#define DEFAULT_WantWindow 0
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
@@ -165,8 +166,9 @@
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */
 #define time_santa1           (0.01 * factor)  /* time between redrawings of santa           */
-//#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
-#define time_snowflakes       (UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snow on trees   */
+//#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snowflakes      */
+#define time_snowflakes       (0.02 * factor)  /* time between redrawings of snowflakes      */
+//#define time_snowflakes       (switches.UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snowflakes      */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
 
 #define time_draw_all         (0.04 * factor)    /* time between update of screen */
@@ -194,5 +196,4 @@ typedef struct Treeinfo {
 /* ------------------------------------------------------------------ */
 
 extern double factor;
-extern void   restart_do_draw_all(void);
 

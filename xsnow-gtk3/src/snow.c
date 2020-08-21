@@ -188,6 +188,7 @@ int snow_draw(cairo_t *cr)
    Snow *flake;
    while( (flake = (Snow *)set_next()) )
    {
+      P("snow_draw %d\n",counter++);
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
       cairo_paint(cr);
    }
@@ -354,7 +355,7 @@ int do_UpdateSnowFlake(Snow *flake)
    int y  = lrintf(flake->ry);
 
    // check if flake is in nowsnowarea
-   if (!UseGtk)  // we can skip this when using gtk
+   if (!switches.UseGtk)  // we can skip this when using gtk
    {
       int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
@@ -441,7 +442,7 @@ int do_UpdateSnowFlake(Snow *flake)
 
    // prevent snow erase on a tree
    // we can skip this when using gtk
-   if (!UseGtk)
+   if (!switches.UseGtk)
    {
       int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
@@ -456,7 +457,7 @@ int do_UpdateSnowFlake(Snow *flake)
    flake->ry = NewY;
    // prevent drawing a flake on a tree
    // we can skip this when using gtk
-   if (UseGtk)
+   if (switches.UseGtk)
       DrawSnowFlake(flake);
    else
    {
@@ -481,11 +482,11 @@ Snow *MakeFlake()
 
 void EraseSnowFlake(Snow *flake)
 {
-   if(UseGtk || Flags.NoSnowFlakes)
+   if(switches.UseGtk || Flags.NoSnowFlakes)
       return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
-   if(UseAlpha|Flags.UseBG)
+   if(switches.Trans|Flags.UseBG)
    {
       XSetTSOrigin(display, ESnowGC[flake->whatFlake], 
 	    x + flake->w, y + flake->h);
@@ -496,7 +497,7 @@ void EraseSnowFlake(Snow *flake)
       XClearArea(display, SnowWin, 
 	    x, y,
 	    flake->w, flake->h,
-	    Exposures);
+	    switches.Exposures);
 }
 
 // a call to this function must be followed by 'return FALSE' to remove this
@@ -512,11 +513,12 @@ void DelFlake(Snow *flake)
 void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(Flags.NoSnowFlakes) return;
-   if (UseGtk)
+   if (switches.UseGtk)
    {
       set_insert(flake); // will be picked up by snow_draw()
       return;
    }
+   P("DrawSnowFlake X11 %d\n",counter++);
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
    XSetTSOrigin(display, SnowGC[flake->whatFlake], 

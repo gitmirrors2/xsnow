@@ -45,32 +45,18 @@ static MeteoMap      meteorite;
 
 void meteo_init()
 {
-   if (UseGtk)
+   //if (switches.UseGtk)
    {
       if (!gdk_rgba_parse(&color, MeteoColor))
 	 gdk_rgba_parse(&color,"rgb(255,165,0)");
    }
-   else
+   //else
    {
       meteorite.gc  = XCreateGC(display, SnowWin, 0, 0);
       meteorite.egc = XCreateGC(display, SnowWin, 0, 0);
       MeteoPix = IAllocNamedColor(MeteoColor, White);
       XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
       XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
-      if(UseAlpha)
-      {
-	 XSetFunction(display,   meteorite.gc,  GXcopy);
-	 XSetForeground(display, meteorite.gc,  MeteoPix);
-	 XSetFunction(display,   meteorite.egc, GXcopy);
-	 XSetForeground(display, meteorite.egc, ErasePixel);
-      }
-      else
-      {
-	 XSetFunction(display,   meteorite.gc,  GXxor);
-	 XSetForeground(display, meteorite.gc,  MeteoPix);
-	 XSetFunction(display,   meteorite.egc, GXxor);
-	 XSetForeground(display, meteorite.egc, MeteoPix);
-      }
    }
    add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
    add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
@@ -90,7 +76,7 @@ int meteo_ui()
 
 void meteo_draw(cairo_t *cr)
 {
-   if(!UseGtk)
+   if(!switches.UseGtk)
       return;
    if (!meteorite.active)
       return;
@@ -115,8 +101,18 @@ int do_emeteorite(gpointer data)
       return TRUE;
    if (wallclock() - meteorite.starttime > 0.3)
    {
-      if (!UseGtk)
+      if (!switches.UseGtk)
       {
+	 if(switches.Trans)
+	 {
+	    XSetFunction(display,   meteorite.egc, GXcopy);
+	    XSetForeground(display, meteorite.egc, ErasePixel);
+	 }
+	 else
+	 {
+	    XSetFunction(display,   meteorite.egc, GXxor);
+	    XSetForeground(display, meteorite.egc, MeteoPix);
+	 }
 	 XDrawLine(display, SnowWin, meteorite.egc,  
 	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
 	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
@@ -147,8 +143,18 @@ int do_meteorite(gpointer data)
    if (meteorite.y2 == meteorite.y1)
       meteorite.y2 +=5;
    meteorite.active  = 1;
-   if(!UseGtk)
+   if(!switches.UseGtk)
    {
+      if(switches.Trans)
+      {
+	 XSetFunction(display,   meteorite.gc,  GXcopy);
+	 XSetForeground(display, meteorite.gc,  MeteoPix);
+      }
+      else
+      {
+	 XSetFunction(display,   meteorite.gc,  GXxor);
+	 XSetForeground(display, meteorite.gc,  MeteoPix);
+      }
       const int npoints = 5;
       XPoint points[npoints];
 

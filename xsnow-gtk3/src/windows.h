@@ -33,29 +33,38 @@ extern int         IsCompiz;
 extern int         IsWayland;
 extern GtkWidget  *drawing_area;
 extern GdkWindow  *gdkwindow;
-extern int          UseAlpha;
 extern Pixel        ErasePixel;
 extern int          Exposures;
 extern Pixel        BlackPix;
-extern GtkWidget   *GtkWinb;  
+extern GtkWidget   *TransA;  
+extern GtkWidget   *TransB;  
 extern long         CWorkSpace;
 extern long         TransWorkSpace;  // workspace on which transparent window is placed
-extern int          UseGtk;
-extern int          UsingTrans;   // using transparent window or not
-extern int          Isdesktop;
 extern char        *SnowWinName;
 extern Window       RootWindow;
 extern int          Xroot;
 extern int          Yroot;
 extern unsigned int Wroot;
 extern unsigned int Hroot;
-extern int     SnowWinX; 
-extern int     SnowWinY; 
+extern int          SnowWinX; 
+extern int          SnowWinY; 
 
-extern int     windows_ui(void);
-extern void    windows_draw(cairo_t *cr);
-extern void    windows_init(void);
-extern int     WorkspaceActive(void);  // defined in main.c
-extern int     DetermineWindow(void);
-extern gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-extern void   InitDisplayDimensions(void);
+extern int          windows_ui(void);
+extern void         windows_draw(cairo_t *cr);
+extern void         windows_init(void);
+extern int          WorkspaceActive(void);  // defined in main.c
+extern int          DetermineWindow(Window *xtrans, GtkWidget **gtrans,const char *transname, int *IsDesktop);
+extern void         InitDisplayDimensions(void);
+extern void         DestroyWindow(Window w);
+
+enum {UW_DEFAULT, UW_ROOT, UW_TRANSPARENT};
+
+extern struct _switches
+{
+   unsigned int UseGtk    :1;
+   unsigned int Trans     :1;
+   unsigned int Root      :1;
+   unsigned int DrawBirds :1;
+   unsigned int Exposures :1;
+   unsigned int Desktop   :1;
+} switches;

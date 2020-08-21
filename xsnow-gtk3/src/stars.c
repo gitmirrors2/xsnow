@@ -48,7 +48,7 @@ void stars_init()
 {
    int i;
    init_stars();
-   if (UseGtk)
+   //if (switches.UseGtk)
    {
       for(i=0; i<STARANIMATIONS; i++)
       {
@@ -72,7 +72,7 @@ void stars_init()
 	 cairo_destroy(cr);
       }
    }
-   else
+   //else
    {
       for (i=0; i<STARANIMATIONS; i++)
       {
@@ -81,8 +81,8 @@ void stars_init()
       }
       starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (char *)starPix.starBits, starPix.width, starPix.height);
-      if (!UseGtk)
-	 add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
+      //if (!switches.UseGtk)
+      add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
    }
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
 }
@@ -108,7 +108,7 @@ void stars_draw(cairo_t *cr)
 {
    if (Flags.Done)
       return;
-   if (!UseGtk)
+   if (!switches.UseGtk)
       return;
    int i;
    cairo_save(cr);
@@ -149,6 +149,8 @@ int do_stars(gpointer data)
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
+      return TRUE;
+   if (switches.UseGtk)
       return TRUE;
    int i;
    for (i=0; i<NStars; i++)

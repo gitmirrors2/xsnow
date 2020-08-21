@@ -1415,6 +1415,9 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
+                    <style>
+                      <class name="cpuload"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1507,6 +1510,9 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_snow_intensity" swapped="no"/>
+                <style>
+                  <class name="cpuload"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -1616,7 +1622,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <object class="GtkImage" id="santa-0-imid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-zoom-fit</property>
+                    <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
               </object>
@@ -3536,6 +3542,9 @@ point</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
                 <signal name="value-changed" handler="button_birds_nbirds" swapped="no"/>
+                <style>
+                  <class name="cpuload"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3852,7 +3861,7 @@ point</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Advanced settings</property>
+                <property name="label" translatable="yes">Advanced snow settings</property>
                 <attributes>
                   <attribute name="scale" value="1.2"/>
                 </attributes>
@@ -3911,10 +3920,14 @@ windows</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing on you windows too if you are running gnome or kde.</property>
+                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing on you windows too if you are running gnome or kde.
+Pressing this button will cause a restart of xsnow.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_below" swapped="no"/>
+                    <style>
+                      <class name="below"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3928,7 +3941,7 @@ windows</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">cpu
- load</property>
+ factor</property>
                     <property name="width_chars">6</property>
                   </object>
                   <packing>
@@ -3950,6 +3963,9 @@ windows</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <signal name="value-changed" handler="button_cpuload" swapped="no"/>
+                    <style>
+                      <class name="cpuload"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4020,97 +4036,18 @@ windows</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Desktop:</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">GNOME/KDE-like</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Settings for screens supporting alpha channel.</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_gnome" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">FVWM-like</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Settings for screens NOT supporting alpha channel.</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_fvwm" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">12</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <object class="GtkToggleButton" id="general-usebg">
-                    <property name="label" translatable="yes">Use color to erase</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use the specified background color to erase.</property>
-                    <signal name="toggled" handler="button_use_bgcolor" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="general-bgcolor">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use this color as background when erasing pictures. Useful in KDE: choose here the same color as the background color of your desktop.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="show_editor">True</property>
-                    <signal name="color-set" handler="button_bgcolor" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4135,37 +4072,10 @@ windows</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-alpha">
-                    <property name="label" translatable="yes">Alpha mode</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">If set, xsnow makes use of the alpha channel to paint and erase. Otherwise, The XClearArea method is used.
-</property>
-                    <property name="valign">center</property>
-                    <signal name="toggled" handler="button_alpha" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-exposures">
-                    <property name="label" translatable="yes">Use exposures</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">If set, xsnow will ask the X server to generate exposure events when painting or erasing.</property>
-                    <property name="valign">center</property>
-                    <signal name="toggled" handler="button_exposures" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -4194,7 +4104,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">27</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -4207,17 +4117,6 @@ windows</property>
                 <property name="left_attach">0</property>
                 <property name="top_attach">9</property>
                 <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -4241,7 +4140,7 @@ windows</property>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">10</property>
-                <property name="height">6</property>
+                <property name="height">16</property>
               </packing>
             </child>
             <child>
@@ -4254,17 +4153,18 @@ windows</property>
               <packing>
                 <property name="left_attach">15</property>
                 <property name="top_attach">10</property>
-                <property name="height">7</property>
+                <property name="height">16</property>
               </packing>
             </child>
             <child>
               <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">start</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">26</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -4288,7 +4188,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">26</property>
               </packing>
             </child>
             <child>
@@ -4314,7 +4214,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">22</property>
+                <property name="top_attach">29</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4341,7 +4241,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">22</property>
+                <property name="top_attach">29</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4385,7 +4285,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">28</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4429,7 +4329,7 @@ windows</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">28</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4450,9 +4350,53 @@ windows</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">True</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">11</property>
+                <property name="width">13</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">17</property>
+                <property name="width">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">22</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
@@ -4462,9 +4406,286 @@ windows</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">11</property>
+                <property name="left_attach">1</property>
+                <property name="top_attach">14</property>
+                <property name="width">14</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">8</property>
+                <property name="top_attach">20</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">20</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">8</property>
+                <property name="top_attach">19</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">19</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Window: </property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="general-ww-0">
+                    <property name="label" translatable="yes">Default</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Use GTK window and Cairo for drawing non-birds, i.e. use a double buffer
+and paint this at about 25 times per second (depending on cpu load),
+along with the birds.</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">False</property>
+                    <signal name="toggled" handler="button_ww" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="general-ww-1">
+                    <property name="label" translatable="yes">On root</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Use root window for drawing non-birds. 
+In most environments (Gnome, KDE, XFCE, ...) this will result in not visible Santa, snow, scenery.</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">False</property>
+                    <property name="group">general-ww-0</property>
+                    <signal name="toggled" handler="button_ww" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="general-ww-2">
+                    <property name="label" translatable="yes">Transparent</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Use transparent X11 window for Santa, snow and scenery. 
+Drawing and erasing will be done by X11 functions.</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">False</property>
+                    <property name="group">general-ww-0</property>
+                    <signal name="toggled" handler="button_ww" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <style>
+                  <class name="window-choice"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">21</property>
+                <property name="width">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">How to erase: </property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="general-usebg">
+                    <property name="label" translatable="yes">Use color</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use the specified background color to erase.</property>
+                    <signal name="toggled" handler="button_use_bgcolor" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="general-bgcolor">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use this color as background when erasing pictures. Useful in KDE: choose here the same color as the background color of your desktop.</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="show_editor">True</property>
+                    <signal name="color-set" handler="button_bgcolor" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="general-exposures">
+                    <property name="label" translatable="yes">Use exposures</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">If set, xsnow will ask the X server to generate exposure events when painting or erasing.</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_exposures" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <style>
+                  <class name="erase-settings"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">23</property>
+                <property name="width">14</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">24</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
