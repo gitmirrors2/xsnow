@@ -74,7 +74,8 @@ void DestroyWindow(Window w)
 
 void windows_init()
 {
-   add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, 0);
+   if (switches.Desktop)
+      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, 0);
 }
 
 int WorkspaceActive()

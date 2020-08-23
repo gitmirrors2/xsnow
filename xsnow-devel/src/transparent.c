@@ -91,9 +91,19 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       return;
    }
 
+   // prevent window from showing up in taskbar: 
+   {
+      GValue val = G_VALUE_INIT;
+      g_value_init(&val,G_TYPE_BOOLEAN);
+      g_value_set_boolean(&val,TRUE);
+      g_object_set_property(G_OBJECT(*gtkwin),"skip-taskbar-hint",&val);
+      g_value_unset(&val);
+   }
+
    gtk_widget_show_all(*gtkwin);
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));  // problems with dock
+
 
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
    P("gdk_window %p\n",(void *)gdk_window);
@@ -101,7 +111,7 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    // xsnow visible on all workspaces in some desktops:
    // The following makes all workspaces irreversible:
    //if (allworkspaces)
-    //  gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
+   //  gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
    //
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));

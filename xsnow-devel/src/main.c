@@ -167,53 +167,7 @@ static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
-
-#if 0
-static void testje()
-{
-   const int n=10;
-   int a[n];
-   int i;
-   for (i=0; i<n; i++)
-      a[i]=i*i;
-
-   for (i=0; i<n; i++)
-   {
-      printf("%d %p %d\n",i,(void *)&a[i],a[i]);
-      set_insert(&a[i]);
-   }
-   printf("---\n");
-
-   for (i=0; i<n; i++)
-   {
-      printf("%d %d %d\n",i,set_count(&a[i]),set_count(&a[i]+4));
-   }
-   printf("--- erase test\n");
-
-   set_erase(&a[1]);
-   for (i=0; i<n; i++)
-   {
-      printf("%d %d\n",i,set_count(&a[i]));
-   }
-   printf("--- begin, next\n");
-   set_begin();
-   int *p;
-   while ( (p = set_next()) )
-   {
-      printf("%p %i\n",(void *)p,*p);
-   }
-
-   printf("--- clear\n");
-
-   set_clear();
-   for (i=0; i<n; i++)
-   {
-      printf("%d %d %d\n",i,set_count(&a[i]),set_count(&a[i]+1));
-   }
-
-   exit(0);
-}
-#endif
+/**********************************************************************************************/
 
 /* About windows, user whishes and scenarios
 
@@ -269,6 +223,8 @@ static void testje()
  *     - 1: Birds are painted on TransA, using cairo
  *     - 0: Birds cannot be painted
  *
+ */
+/*
  * * Depending on the possibility to create transparent windows and user wishes,
  *   the following scenarios exist:
  *
@@ -315,13 +271,15 @@ static void testje()
  *        - Trans     = 0
  *        - Root      = 1
  *        - DrawBirds = 0
-*/
+ */
+
+/**********************************************************************************************/
 
 int main_c(int argc, char *argv[])
 {
-   signal(SIGINT, SigHandler);
+   signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
-   signal(SIGHUP, SigHandler);
+   signal(SIGHUP,  SigHandler);
    srand48((long int)(wallcl()*1.0e6));
    int i;
    // make a copy of all flags, before gtk_init() maybe removes some.
@@ -333,7 +291,6 @@ int main_c(int argc, char *argv[])
       Argv[i] = strdup(argv[i]);
    Argv[argc] = 0;
 
-   //testje();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
    // gtk_init() would fail.
@@ -576,6 +533,12 @@ int myDetermineWindow()
       }
 
       P("SnowWina: %#lx TransA: %p\n",SnowWina,(void *)TransA);
+
+      GValue val = G_VALUE_INIT;
+      g_value_init(&val,G_TYPE_BOOLEAN);
+      g_value_set_boolean(&val,TRUE);
+      g_object_set_property(G_OBJECT(TransA),"skip-taskbar-hint",&val);
+
       if (TransA)
       {
 	 drawing_area = gtk_drawing_area_new();
@@ -584,11 +547,13 @@ int myDetermineWindow()
 
 	 char *s = 0;
 	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
+	 g_object_set_property(G_OBJECT(TransB),"skip-taskbar-hint",&val);
 	 if (s)
 	    free(s);
 
 	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
       }
+      g_value_unset(&val);
    }
 
 
@@ -629,7 +594,7 @@ int myDetermineWindow()
    }
    else                          //  No transparent window: Scenario 4
    {
-      P("Scenario 4\n");
+      R("Scenario 4 Desktop: %d\n",IsDesktop);
       printf("Scenario: Use X11 for drawing snow in root window, no birds are possible.\n");
       // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
       SnowWin            = SnowWina;
@@ -1010,18 +975,6 @@ void SigHandler(int signum)
    exit(0);
 }
 /* ------------------------------------------------------------------ */ 
-
-/*
-   int SnowPtInRect(int snx, int sny, int recx, int recy, int width, int height)
-   {
-   if (snx < recx) return 0;
-   if (snx > (recx + width)) return 0;
-   if (sny < recy) return 0;
-   if (sny > (recy + height)) return 0;
-   return 1;
-   }
-   */
-
 
 
 
