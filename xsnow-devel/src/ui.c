@@ -19,14 +19,16 @@
 #-# 
 */
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <math.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdlib.h>
-#include "clocks.h"
+
 #include "ui.h"
+#include "utils.h"
+#include "clocks.h"
 #include "ui_xml.h"
 #include "xsnow.h"
 #include "flags.h"
@@ -34,6 +36,7 @@
 #include "pixmaps.h"
 #include "version.h"
 #include "birds.h"
+#include "windows.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -51,6 +54,7 @@
 
 #define PREFIX_SANTA   "santa-"
 #define PREFIX_TREE    "tree-"
+#define PREFIX_WW      "ww-"
 
 #define SANTA2(x) SANTA(x) SANTA(x ## r)
 #define SANTA_ALL SANTA2(0) SANTA2(1) SANTA2(2) SANTA2(3) SANTA2(4)
@@ -120,11 +124,11 @@
 
 #define self(x) (x)
 
-long int counter = 0;
-static GtkBuilder *builder;
-static GtkWidget *mean_distance;
-static GtkWidget *range;
-static GtkWidget *desktop_type;
+static GtkBuilder    *builder;
+static GtkWidget     *mean_distance;
+static GtkWidget     *range;
+static GtkWidget     *desktop_type;
+static GtkContainer  *birdsgrid;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -133,6 +137,9 @@ static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void set_star_buttons(void);
 static void set_meteo_buttons(void);
+static void apply_standard_css(void);
+static void birdscb(GtkWidget *w, void *m);
+
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
 
@@ -140,6 +147,7 @@ GtkWidget *nflakeslabel;
 static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
 {
    P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
+
    gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
 	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
 	 GTK_STYLE_PROVIDER_PRIORITY_USER );
@@ -224,7 +232,7 @@ void button_santa(GtkWidget *w, gpointer d)
    const gchar *s  = gtk_widget_get_name(w)+strlen(PREFIX_SANTA);
    int santa_type  = atoi(s);
    int have_rudolf = ('r' == s[strlen(s)-1]);
-   P("button_santa: Santa %d Rudolf %d\n",santa_type,have_rudolf);
+   P("button_santa: Santa %d Rudolf %d s: %s name: %s\n",santa_type,have_rudolf,s,gtk_widget_get_name(w));
    Flags.SantaSize = santa_type;
    Flags.NoRudolf  = !have_rudolf;
 }
@@ -550,46 +558,64 @@ typedef struct _general_button
    GtkWidget *button;
 }general_button;
 
+   MODULE_EXPORT 
+void button_ww(GtkWidget *w, gpointer d)
+{
+   if(!human_interaction) return;
+   if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
+   const gchar *s  = gtk_widget_get_name(w)+strlen(PREFIX_WW);
+   int ww  = atoi(s);
+   P("button_ww: ww: %d s:%s name:%s\n",ww,s,gtk_widget_get_name(w));
+   Flags.WantWindow = ww;
+}
+
 static struct _general_buttons
 {
    general_button cpuload;
    general_button usebg;
    general_button bgcolor;
-   general_button alpha;
    general_button exposures;
-   general_button kdebg;
    general_button lift;
    general_button fullscreen;
    general_button below;
    general_button allworkspaces;
+   general_button ww_0;
+   general_button ww_2;
 } general_buttons;
 
 static void init_general_buttons()
 {
-   HANDLE_INIT(general_buttons.cpuload.button,general-cpuload);
-   HANDLE_INIT(general_buttons.usebg.button,general-usebg);
-   HANDLE_INIT(general_buttons.bgcolor.button,general-bgcolor);
-   HANDLE_INIT(general_buttons.alpha.button,general-alpha);
-   HANDLE_INIT(general_buttons.exposures.button,general-exposures);
-   HANDLE_INIT(general_buttons.kdebg.button,general-kde-background);
-   HANDLE_INIT(general_buttons.lift.button,general-lift);
-   HANDLE_INIT(general_buttons.fullscreen.button,general-fullscreen);
-   HANDLE_INIT(general_buttons.below.button,general-below);
-   HANDLE_INIT(general_buttons.allworkspaces.button,general-allworkspaces);
+   general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-0"));
+   general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-2"));
+   gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
+   gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
+
+   HANDLE_INIT(general_buttons.cpuload.button,            general-cpuload);
+   HANDLE_INIT(general_buttons.usebg.button,              general-usebg);
+   HANDLE_INIT(general_buttons.bgcolor.button,            general-bgcolor);
+   HANDLE_INIT(general_buttons.exposures.button,          general-exposures);
+   HANDLE_INIT(general_buttons.lift.button,               general-lift);
+   HANDLE_INIT(general_buttons.fullscreen.button,         general-fullscreen);
+   HANDLE_INIT(general_buttons.below.button,              general-below);
+   HANDLE_INIT(general_buttons.allworkspaces.button,      general-allworkspaces);
    gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"general-version")),"xsnow version " VERSION);
+
 }
 
 static void set_general_buttons()
 {
+   if (Flags.WantWindow == UW_DEFAULT)
+      HANDLE_SET_TOGGLE_(general_buttons.ww_0.button,TRUE);
+   else
+      HANDLE_SET_TOGGLE_(general_buttons.ww_2.button,TRUE);
+
    HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
-   HANDLE_SET_TOGGLE(general_buttons.usebg.button,UseBG);
-   HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
-   HANDLE_SET_TOGGLE(general_buttons.alpha.button,UseAlpha);
-   HANDLE_SET_TOGGLE(general_buttons.kdebg.button,KDEbg);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
-   HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,FullScreen);
-   HANDLE_SET_TOGGLE(general_buttons.below.button,BelowAll);
-   HANDLE_SET_TOGGLE(general_buttons.allworkspaces.button,AllWorkspaces);
+   HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
+   HANDLE_SET_TOGGLE(general_buttons.usebg.button,          UseBG);
+   HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,     FullScreen);
+   HANDLE_SET_TOGGLE(general_buttons.below.button,          BelowAll);
+   HANDLE_SET_TOGGLE(general_buttons.allworkspaces.button,  AllWorkspaces);
    if (Flags.Exposures != -SOMENUMBER)
       HANDLE_SET_TOGGLE(general_buttons.exposures.button,Exposures);
    else
@@ -603,11 +629,10 @@ void button_cpuload(GtkWidget *w, gpointer d)
    gdouble value;
    value = gtk_range_get_value(GTK_RANGE(w));
    Flags.CpuLoad = lrint(value);
-   P("button_cpuload: %d\n",Flags.cpuload);
+   P("button_cpuload: %d\n",Flags.CpuLoad);
 }
 
 HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
-HANDLE_TOGGLE(button_kde_background, KDEbg, 1, 0);
 
    MODULE_EXPORT
 void button_bgcolor(GtkWidget *w, gpointer d)
@@ -620,12 +645,11 @@ void button_bgcolor(GtkWidget *w, gpointer d)
    P("button_bgcolor: %s\n",Flags.BGColor);
 }
 
-HANDLE_TOGGLE(button_alpha, UseAlpha, 1,0);
-HANDLE_TOGGLE(button_exposures, Exposures, 1,0);
-HANDLE_TOGGLE(button_fullscreen, FullScreen, 1,0);
-HANDLE_TOGGLE(button_below, BelowAll, 1,0);
-HANDLE_TOGGLE(button_allworkspaces, AllWorkspaces, 1,0);
-HANDLE_RANGE(button_lift, OffsetS, -value);
+HANDLE_TOGGLE(button_exposures,               Exposures,     1,0);
+HANDLE_TOGGLE(button_fullscreen,              FullScreen,    1,0);
+HANDLE_TOGGLE(button_below,                   BelowAll,      1,0);
+HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
+HANDLE_RANGE(button_lift,                     OffsetS,       -value);
 
    MODULE_EXPORT
 void button_quit(GtkWidget *w, gpointer d)
@@ -643,13 +667,12 @@ void general_default(int vintage)
    Flags.UseBG         = DEFAULT_UseBG;
    free(Flags.BGColor);
    Flags.BGColor       = strdup(DEFAULT_BGColor);
-   Flags.UseAlpha      = DEFAULT_UseAlpha;
    Flags.Exposures     = DEFAULT_Exposures;
    Flags.OffsetS       = DEFAULT_OffsetS;
-   Flags.KDEbg         = DEFAULT_KDEbg;
    Flags.FullScreen    = DEFAULT_FullScreen;
    Flags.BelowAll      = DEFAULT_BelowAll;
    Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
+   Flags.WantWindow    = DEFAULT_WantWindow;
    if (vintage)
    {
    }
@@ -1050,28 +1073,6 @@ void button_all_vintage()
    all_default(1);
 }
 
-   MODULE_EXPORT
-void button_fvwm()
-{
-   int h = human_interaction;
-   human_interaction      = 0;
-   P("button_fvwm\n");
-   FVWMFLAGS;
-   set_general_buttons();
-   human_interaction = h;
-}
-
-   MODULE_EXPORT
-void button_gnome()
-{
-   int h = human_interaction;
-   human_interaction      = 0;
-   P("button_gnome\n");
-   GNOMEFLAGS;
-   set_general_buttons();
-   human_interaction = h;
-}
-
 void ui_show_nflakes(int n)
 {
    char a[20];
@@ -1107,24 +1108,102 @@ void ui(int *argc, char **argv[])
    // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
-   hauptfenster  = GTK_WIDGET(gtk_builder_get_object(builder, "hauptfenster"));
-   mean_distance = GTK_WIDGET(gtk_builder_get_object(builder, "birds-mean-distance"));
-   range         = GTK_WIDGET(gtk_builder_get_object(builder, "birds-range"));
-   desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
+   hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
+   mean_distance = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-mean-distance"));
+   range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
+   desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
+   birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
 
-
-   const char *css = ".wv button.radio{min-width:40px;}";
-
-   GtkCssProvider *cssProvider  = gtk_css_provider_new();
-   gtk_css_provider_load_from_data (cssProvider,
-	 css,-1,NULL);
-
-   apply_css_provider(hauptfenster, cssProvider);
+   apply_standard_css();
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();
    init_pixmaps();
    set_buttons();
+}
+
+void apply_standard_css()
+{
+   const char *css     = 
+      "button.radio                        { min-width:        10px;    }"   // make window as small as possible
+      "button                              { background:       #CCF0D8; }"   // color of normal buttons
+      "button.radio,        button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
+      "radiobutton:active,  button:active  { background:       #0DAB44; }"   // color of buttons while being activated
+      "radiobutton:checked, button:checked { background:       #6AF69B; }"   // color of checked buttons
+      "headerbar                           { background:       #B3F4CA; }"   // color of headerbar
+      "scale slider                        { background:       #D4EDDD; }"   // color of sliders
+      "scale trough                        { background:       #F0FEF5; }"   // color of trough of sliders
+      "stack                               { background-color: #EAFBF0; }"   // color of main area
+      "*                                   { color:            #065522; }"   // foreground color (text)
+      "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items
+      ".pink { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      ;
+
+   static GtkCssProvider *cssProvider = 0;
+   if (!cssProvider)
+   {
+      cssProvider  = gtk_css_provider_new();
+      gtk_css_provider_load_from_data (cssProvider, css,-1,NULL);
+   }
+
+   apply_css_provider(hauptfenster, cssProvider);
+
+}
+
+// if m==1: change some colors of the ui
+// if m==0: change back to default colors
+
+void ui_background(int m)
+{
+   const char *colorbg =   // load alert colors
+      "stack                { background-color: #FFC0CB; }"   // color of main area
+      "scale.cpuload slider { background:       #FF0000; }"   // color of sliders with class cpuload
+      ;
+   static GtkCssProvider *cssProvidercolor = 0;
+   if (!cssProvidercolor)
+   {
+      cssProvidercolor  = gtk_css_provider_new();
+      gtk_css_provider_load_from_data (cssProvidercolor, colorbg,-1,NULL);
+   }
+
+   apply_standard_css();
+   if(m)
+      apply_css_provider(hauptfenster,cssProvidercolor);
+}
+
+// m=0: make active
+// m=1: make inactive
+void ui_gray_ww(int m)
+{
+   gtk_widget_set_sensitive(general_buttons.ww_0.button,!m);
+   gtk_widget_set_sensitive(general_buttons.ww_2.button,!m);
+}
+
+// m=0: make active
+// m=1: make inactive
+void ui_gray_erase(int m)
+{
+   gtk_widget_set_sensitive(general_buttons.exposures.button,!m);
+   gtk_widget_set_sensitive(general_buttons.usebg.button,!m);
+   gtk_widget_set_sensitive(general_buttons.bgcolor.button,!m);
+}
+
+
+// m=0: make active
+// m=1: make inactive
+void ui_gray_below(int m)
+{
+   gtk_widget_set_sensitive(general_buttons.below.button,!m);
+}
+
+void birdscb(GtkWidget *w, void *m)
+{
+   gtk_widget_set_sensitive(w,!(int *)m);
+}
+
+void ui_gray_birds(int m)
+{
+   gtk_container_foreach(birdsgrid, birdscb, &m);
 }
 
 // next function is not used, I leave it here as a template, who knows...

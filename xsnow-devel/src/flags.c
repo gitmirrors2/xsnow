@@ -25,11 +25,13 @@
 #include <libxml/xpath.h>
 #include <libxml/tree.h>
 #include "flags.h"
+#include "utils.h"
 #include "xsnow.h"
 #include "docs.h"
 #include "version.h"
 #include "doit.h"
 #include "birds.h"
+#include "windows.h"
 
 #include "debug.h"
 static void ReadFlags(void);
@@ -132,11 +134,26 @@ int HandleFlags(int argc, char*argv[])
 	    docs_usage(1);
 	    return 1;
 	 }
-	 else if (strcmp(arg, "-version") == 0) 
+	 else if (!strcmp(arg, "-v") || !strcmp(arg, "-version")) 
 	 {
 	    PrintVersion();
 	    return 1;
 	 }
+	 else if (!strcmp(arg, "-wantwindow"))
+	       {
+		  checkax;
+		  char *v = argv[++ax];
+		  if (!strcmp(v,"default"))
+		     Flags.WantWindow = UW_DEFAULT;
+		  else if (!strcmp(v,"transparent"))
+		     Flags.WantWindow = UW_TRANSPARENT;
+		  else
+		  {
+		     printf("** Invalid value for -wantwindow: %s\n",v);
+		     printf("** Expected on of: default, transparent\n");
+		     return -1;
+		  }
+	       }
 	 else if (strcmp(arg, "-nokeepsnow") == 0) 
 	 {
 	    Flags.NoKeepSnow = 1;
@@ -171,20 +188,9 @@ int HandleFlags(int argc, char*argv[])
 	 else if (strcmp(arg, "-above") == 0) {
 	    Flags.BelowAll = 0;
 	 }
-	 else if(strcmp(arg,"-kdebg") == 0) {
-	    Flags.KDEbg  = 1;
-	 }
-	 else if(strcmp(arg,"-fvwm") == 0) {
-	    FVWMFLAGS;
-	 }
-	 else if(strcmp(arg,"-gnome") == 0) {
-	    GNOMEFLAGS;
-	 }
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
 	 handle_ia(-cpuload             ,CpuLoad                          );
 	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
-	 handle_ia(-gnome               ,UseAlpha                         );
-	 handle_ia(-alpha               ,UseAlpha                         );
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
 	 handle_im(-offsets             ,OffsetS                          );

@@ -19,6 +19,7 @@
 #-# 
 */
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include "clocks.h"
 
 double wallcl() 

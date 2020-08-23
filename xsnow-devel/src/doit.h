@@ -49,7 +49,6 @@
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
    DOIT_I(FullScreen) \
-   DOIT_I(KDEbg) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
@@ -76,8 +75,8 @@
    DOIT_I(SnowFlakesFactor) \
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(TreeFill) \
-   DOIT_I(UseAlpha)  \
    DOIT_I(UseBG) \
+   DOIT_I(WantWindow) \
    DOIT_I(WhirlFactor) \
    DOIT_I(WindTimer) \
    \

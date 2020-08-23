@@ -17,9 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-// obtain normally distributed number. The number will be between min and max:
-extern double gaussian (double mean, double standard_deviation, double min, double max);
-// seed the random generator (alternatively, srand48() can be used):
-extern void sgaussian(long int seed);
+ */
+
+#include <gtk/gtk.h>
+#include <stdlib.h>
+
+extern int loadmeasure_ui(void);
+extern void loadmeasure_draw(cairo_t *cr);
+extern void loadmeasure_init(void);

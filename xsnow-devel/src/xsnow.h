@@ -22,7 +22,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#define SOMENUMBER 42
 
 #define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
@@ -37,7 +36,6 @@
 #define DEFAULT_Exposures -SOMENUMBER
 #define DEFAULT_FlakeCountMax 2000 
 #define DEFAULT_FullScreen 0
-#define DEFAULT_KDEbg 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
@@ -77,6 +75,7 @@
 #define DEFAULT_WindowId 0
 #define DEFAULT_WindTimer 30
 #define DEFAULT_XWinInfoHandling 0
+#define DEFAULT_WantWindow 0
 #define DEFAULTTREETYPE 2
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
@@ -109,10 +108,9 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWFLAKEMAXTYPE 6  
+#define SNOWFLAKEMAXTYPE 6  // type is 0..SNOWFLAKEMAXTYPE  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
-#define STARANIMATIONS 4
 #define WHIRL 150
 
 /* birds */
@@ -130,7 +128,7 @@
 #define DEFAULT_AttrFactor 100
 #define DEFAULT_DisWeight 20
 #define DEFAULT_FollowWeight 30
-#define DEFAULT_BirdsColor "#D3D3D3"
+#define DEFAULT_BirdsColor "#361A07"
 #define DEFAULT_ShowAttrPoint 0
 #define DEFAULT_BirdsScale 100
 
@@ -163,64 +161,20 @@
 #define time_wupdate          0.50             /* time between getting windows information   */ 
 #define time_show_range_etc   0.50             /* time between showing range etc.            */
 #define time_change_attr      60.0             /* time between changing attraction point     */
+#define time_measure          0.1
 
 #define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * factor)  /* time between drawings of santa             */
 #define time_santa1           (0.01 * factor)  /* time between redrawings of santa           */
-#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snow on trees   */
+//#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snowflakes      */
+#define time_snowflakes       (0.02 * factor)  /* time between redrawings of snowflakes      */
+//#define time_snowflakes       (switches.UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snowflakes      */
 #define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
+
+#define time_draw_all         (0.04 * factor)    /* time between update of screen */
 
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
-/* ------------------------------------------------------------------ */
-
-typedef struct Snow {
-   int w;                   // width
-   int h;                   // height
-   float rx;                // x position
-   float ry;                // y position
-   float vx;                // speed in x-direction, pixels/second
-   float vy;                // speed in y-direction, pixels/second
-   float m;                 // mass of flake
-   float ivy;               // initial speed in y direction
-   float wsens;             // wind dependency factor
-   unsigned int cyclic : 1; // 0: flake is not cyclic 
-   int whatFlake;           // snowflake index
-} Snow;
-
-typedef struct SnowMap {
-   char *snowBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} SnowMap;
-
-
-// star stuff
-
-
-typedef struct StarMap {
-   unsigned char *starBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} StarMap;
-
-typedef struct Skoordinaten {
-   int x; 
-   int y; 
-   int color; 
-} Skoordinaten;
-
-// meteorites stuff
-
-typedef struct MeteoMap {
-   int x1,x2,y1,y2,active;
-   double starttime;
-   GC gc,egc;
-   Region r;
-} MeteoMap;
-
 /* ------------------------------------------------------------------ */
 
 
@@ -240,4 +194,6 @@ typedef struct Treeinfo {
 } Treeinfo;
 
 /* ------------------------------------------------------------------ */
+
+extern double factor;
 

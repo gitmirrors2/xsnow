@@ -17,23 +17,48 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #pragma once
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
+#include <gtk/gtk.h>
+#include <stdlib.h>
+
 typedef struct FallenSnow {
-   Window id;                 // window id, 0 for snow at bottom
-   int x,y;                   // Coordinates of fallen snow, y for bottom
-   int w,h;                   // width, max height of fallen snow
-   int w8;                    // width rounded up to 8-fold
-   short int *acth;           // actual height
-   short int *desh;           // desired height
-   short int ws;              // visible on workspace ws
-   unsigned int hidden : 1;   // if True, the window is hidden (iconized)
-   unsigned int clean : 1;    // if True, this area has been cleaned
-   unsigned int sticky : 1;   // visible on all workspaces
-   struct FallenSnow *next;   // pointer to next item
+   Window id;                       // window id, 0 for snow at bottom
+   int                x,y;          // Coordinates of fallen snow, y for bottom
+   int                w,h;          // width, max height of fallen snow
+   int                w8;           // width rounded up to 8-fold
+   short int         *acth;         // actual height
+   short int         *desh;         // desired height
+   short int          ws;           // visible on workspace ws
+   struct FallenSnow *next;         // pointer to next item
+   cairo_surface_t   *surface;      // 
+   unsigned int       hidden : 1;   // if True, the window is hidden (iconized)
+   unsigned int       clean  : 1;   // if True, this area has been cleaned
+   unsigned int       sticky : 1;   // visible on all workspaces
 } FallenSnow;
+
+extern FallenSnow *FsnowFirst;
+
+extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w); // used in snow.c
+extern int    HandleFallenSnow(FallenSnow *fsnow);
+
+
+extern void   fallensnow_init(void);
+extern void   fallensnow_draw(cairo_t *cr);
+extern int    fallensnow_ui(void);
+extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
+extern void   CleanFallen(Window id);
+extern void   DrawFallen(FallenSnow *fsnow);
+extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
+extern void   InitFallenSnow(void);
+extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
+extern int    do_fallen(gpointer data);
+extern void   SetMaxScreenSnowDepth(void);
+extern void   fallensnow_set_gc(void);
+
+
 
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
@@ -54,3 +79,4 @@ extern void FreeFallenSnow(FallenSnow *fallen);
 // find fallensnow with id
 extern FallenSnow *FindFallen(FallenSnow *first, Window id);
 
+extern int        MaxScrSnowDepth;

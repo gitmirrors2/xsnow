@@ -34,13 +34,16 @@ static void printdescription(void);
 
 void printdescription()
 {
-      printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
-      printf("Xsnow can also run in one or more windows, see options -xwininfo, -id .\n");
-      printf("(These options only work satisfactorily in an X11 environment.)\n");
-      printf("Xsnow depends on an X11 environment. This is forced by setting the\n");
-      printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
-      printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
-      printf("for some time.\n");
+   printf("Xsnow shows an animation of Santa and snow on your desktop.\n");
+   printf("Xsnow can also run in one or more windows, see options -xwininfo, -id .\n");
+   printf("(These options only work satisfactorily in an X11 environment.)\n");
+   printf("Xsnow depends on an X11 environment. This is forced by setting the\n");
+   printf("environment variable GDK_BACKEND=x11 before initializing the GTK.\n");
+   printf("Hopefully, this will ensure that xsnow also runs in a Wayland environment\n");
+   printf("for some time.\n");
+   if(doman)
+      printf(".PP\n");
+   printf("If xsnow is misbehaving, try to remove the file $HOME/.xsnowrc.\n");
 }
 
 void docs_usage(int man)
@@ -103,15 +106,17 @@ void docs_usage(int man)
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
    manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
-   manout("-kdebg"                    ,"sets the KDE desktop background color to the value given at '-bg'.");
-   manout("-exposures"                ,"Force XClearArea(...,exposures=True) when erasing.");
-   manout("-noexposures"              ,"Force XClearArea(...,exposures=False) when erasing.");
+   manout("-exposures"                ,"Use XClearArea(...,exposures=True) when erasing.");
+   manout("-noexposures"              ,"Use XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
-   manout("-alpha <n>"                ,"0: do not use alpha channel; 1: use alpha channel.");
    manout("-fvwm"                     ,"prepare for FVWM and the like: no background, -alpha 0, -noexposures .");
    manout("-gnome"                    ,"prepare for GNOME, KDE and the like: no background, -alpha 1, -noexposures .");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
+   manout("-wantwindow"               ,"Specify your favorite window:");
+   manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
+   manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
+
    if(doman)
    {
       printf(".PP\n"); printf(".SS \"Snow options:\n");

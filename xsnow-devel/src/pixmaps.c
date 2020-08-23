@@ -19,6 +19,7 @@
 #-# 
 */
 #include "xsnow.h"
+#include "snow.h"
 #include "pixmaps.h"
 
 #include "Pixmaps/snow00.xbm"
@@ -44,82 +45,82 @@ SnowMap snowPix[] = {
 #include "Pixmaps/BigSanta3.xpm"
 #include "Pixmaps/BigSanta4.xpm"
 
-static char **BigSanta[] = 
-{(char **)BigSanta1,(char **)BigSanta2,(char **)BigSanta3,(char **)BigSanta4};
+static XPM_TYPE **BigSanta[] = 
+{BigSanta1,BigSanta2,BigSanta3,BigSanta4};
 
 #include "Pixmaps/BigSantaRudolf1.xpm"
 #include "Pixmaps/BigSantaRudolf2.xpm"
 #include "Pixmaps/BigSantaRudolf3.xpm"
 #include "Pixmaps/BigSantaRudolf4.xpm"
 
-static char **BigSantaRudolf[] =
-{(char **)BigSantaRudolf1,(char **)BigSantaRudolf2,(char **)BigSantaRudolf3,(char **)BigSantaRudolf4};
+static XPM_TYPE **BigSantaRudolf[] =
+{BigSantaRudolf1,BigSantaRudolf2,BigSantaRudolf3,BigSantaRudolf4};
 
 #include "Pixmaps/BigSanta81.xpm"
 #include "Pixmaps/BigSanta82.xpm"
 #include "Pixmaps/BigSanta83.xpm"
 #include "Pixmaps/BigSanta84.xpm"
 
-static char **BigSanta8[] =
-{(char **)BigSanta81,(char **)BigSanta82,(char **)BigSanta83,(char **)BigSanta84};
+static XPM_TYPE **BigSanta8[] =
+{BigSanta81,BigSanta82,BigSanta83,BigSanta84};
 
 #include "Pixmaps/BigSantaRudolf81.xpm"
 #include "Pixmaps/BigSantaRudolf82.xpm"
 #include "Pixmaps/BigSantaRudolf83.xpm"
 #include "Pixmaps/BigSantaRudolf84.xpm"
 
-static char **BigSantaRudolf8[] =
-{(char **)BigSantaRudolf81,(char **)BigSantaRudolf82,(char **)BigSantaRudolf83,(char **)BigSantaRudolf84};
+static XPM_TYPE **BigSantaRudolf8[] =
+{BigSantaRudolf81,BigSantaRudolf82,BigSantaRudolf83,BigSantaRudolf84};
 
 #include "Pixmaps/MediumSanta1.xpm"
 #include "Pixmaps/MediumSanta2.xpm"
 #include "Pixmaps/MediumSanta3.xpm"
 #include "Pixmaps/MediumSanta4.xpm"
 
-static char **MediumSanta[] =
-{(char **)MediumSanta1,(char **)MediumSanta2,(char **)MediumSanta3,(char **)MediumSanta4};
+static XPM_TYPE **MediumSanta[] =
+{MediumSanta1,MediumSanta2,MediumSanta3,MediumSanta4};
 
 #include "Pixmaps/MediumSantaRudolf1.xpm"
 #include "Pixmaps/MediumSantaRudolf2.xpm"
 #include "Pixmaps/MediumSantaRudolf3.xpm"
 #include "Pixmaps/MediumSantaRudolf4.xpm"
 
-static char **MediumSantaRudolf[] =
-{(char **)MediumSantaRudolf1,(char **)MediumSantaRudolf2,(char **)MediumSantaRudolf3,(char **)MediumSantaRudolf4};
+static XPM_TYPE **MediumSantaRudolf[] =
+{MediumSantaRudolf1,MediumSantaRudolf2,MediumSantaRudolf3,MediumSantaRudolf4};
 
 #include "Pixmaps/RegularSanta1.xpm"
 #include "Pixmaps/RegularSanta2.xpm"
 #include "Pixmaps/RegularSanta3.xpm"
 #include "Pixmaps/RegularSanta4.xpm"
 
-static char **RegularSanta[] = 
-{(char **)RegularSanta1,(char **)RegularSanta2,(char **)RegularSanta3,(char **)RegularSanta4};
+static XPM_TYPE **RegularSanta[] = 
+{RegularSanta1,RegularSanta2,RegularSanta3,RegularSanta4};
 
 #include "Pixmaps/RegularSantaRudolf1.xpm"
 #include "Pixmaps/RegularSantaRudolf2.xpm"
 #include "Pixmaps/RegularSantaRudolf3.xpm"
 #include "Pixmaps/RegularSantaRudolf4.xpm"
 
-static char **RegularSantaRudolf[] =
-{(char **)RegularSantaRudolf1,(char **)RegularSantaRudolf2,(char **)RegularSantaRudolf3,(char **)RegularSantaRudolf4};
+static XPM_TYPE **RegularSantaRudolf[] =
+{RegularSantaRudolf1,RegularSantaRudolf2,RegularSantaRudolf3,RegularSantaRudolf4};
 
 #include "Pixmaps/AltSanta1.xpm"
 #include "Pixmaps/AltSanta2.xpm"
 #include "Pixmaps/AltSanta3.xpm"
 #include "Pixmaps/AltSanta4.xpm"
 
-static char **AltSanta[] =
-{(char **)AltSanta1,(char **)AltSanta2,(char **)AltSanta3,(char **)AltSanta4};
+static XPM_TYPE **AltSanta[] =
+{AltSanta1,AltSanta2,AltSanta3,AltSanta4};
 
 #include "Pixmaps/AltSantaRudolf1.xpm"
 #include "Pixmaps/AltSantaRudolf2.xpm"
 #include "Pixmaps/AltSantaRudolf3.xpm"
 #include "Pixmaps/AltSantaRudolf4.xpm"
 
-static char **AltSantaRudolf[] =
-{(char **)AltSantaRudolf1,(char **)AltSantaRudolf2,(char **)AltSantaRudolf3,(char **)AltSantaRudolf4};
+static XPM_TYPE **AltSantaRudolf[] =
+{AltSantaRudolf1,AltSantaRudolf2,AltSantaRudolf3,AltSantaRudolf4};
 
-char ***Santas[MAXSANTA+1][2] =
+XPM_TYPE ***Santas[MAXSANTA+1][2] =
 {
    { RegularSanta , RegularSantaRudolf },
    { MediumSanta  , MediumSantaRudolf  },
@@ -139,9 +140,8 @@ char ***Santas[MAXSANTA+1][2] =
 #include "Pixmaps/snowtree.xpm"
 #include "Pixmaps/polarbear.xpm"
 
-char **xpmtrees[MAXTREETYPE+1] =
-{(char **)tannenbaum_xpm, (char **)tree_xpm, (char **)tree_1_100px, (char **)huis4_xpm, 
-   (char **)reindeer_xpm, (char **)eland_xpm, (char **)snowtree_xpm, (char **)polarbear_xpm};
+XPM_TYPE **xpmtrees[MAXTREETYPE+1] =
+{tannenbaum_xpm, tree_xpm, tree_1_100px, huis4_xpm, reindeer_xpm, eland_xpm, snowtree_xpm, polarbear_xpm};
 
 #include "Pixmaps/star.xbm"
 
@@ -149,7 +149,7 @@ StarMap starPix =
 { star_bits, None, star_height, star_width };
 
 #include "Pixmaps/xsnow.xpm"
-char **xsnow_logo = (char **)xsnow_xpm;
+XPM_TYPE **xsnow_logo = xsnow_xpm;
 
 /* front bird */
 #include "Pixmaps/bird1.xpm"
@@ -181,10 +181,22 @@ char **xsnow_logo = (char **)xsnow_xpm;
 #include "Pixmaps/birdd7.xpm"
 #include "Pixmaps/birdd8.xpm"
 
-const char **birds_xpm[] = 
+XPM_TYPE **birds_xpm[] = 
 {
    bird1_xpm,  bird2_xpm,  bird3_xpm,  bird4_xpm,  bird5_xpm,  bird6_xpm,  bird7_xpm,  bird8_xpm,
    birdl1_xpm, birdl2_xpm, birdl3_xpm, birdl4_xpm, birdl5_xpm, birdl6_xpm, birdl7_xpm, birdl8_xpm,
    birdd1_xpm, birdd2_xpm, birdd3_xpm, birdd4_xpm, birdd5_xpm, birdd6_xpm, birdd7_xpm, birdd8_xpm
 };
 
+#include "Pixmaps/snow00.xpm"
+#include "Pixmaps/snow01.xpm"
+#include "Pixmaps/snow02.xpm"
+#include "Pixmaps/snow03.xpm"
+#include "Pixmaps/snow04.xpm"
+#include "Pixmaps/snow05.xpm"
+#include "Pixmaps/snow06.xpm"
+
+XPM_TYPE **snow_xpm[] =
+{
+   snow00_xpm, snow01_xpm, snow02_xpm, snow03_xpm, snow04_xpm, snow05_xpm, snow06_xpm
+};
