@@ -4253,7 +4253,7 @@ Pressing this button will cause a restart of xsnow.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Snow window: </property>
+                    <property name="label" translatable="yes">Painting method: </property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4263,7 +4263,7 @@ Pressing this button will cause a restart of xsnow.</property>
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="general-ww-0">
-                    <property name="label" translatable="yes">Default</property>
+                    <property name="label" translatable="yes">GTK/Cairo</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -4284,7 +4284,7 @@ buffer and paint this at about 25 times per second, along with the birds.</prope
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="general-ww-2">
-                    <property name="label" translatable="yes">Transparent</property>
+                    <property name="label" translatable="yes">X11</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
