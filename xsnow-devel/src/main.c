@@ -277,6 +277,7 @@ static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_
 
 int main_c(int argc, char *argv[])
 {
+   R("This is xsnow\n");
    signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
@@ -500,10 +501,11 @@ int main_c(int argc, char *argv[])
    if (DoRestart)
    {
       sleep(0);
-      extern char **environ;
-      execve(Argv[0],Argv,environ);
+      printf("Xsnow restarting: %s\n",Argv[0]);
+      execvp(Argv[0],Argv);
    }
-   Thanks();
+   else
+      Thanks();
    return 0;
 }		/* End of snowing */
 
@@ -534,11 +536,6 @@ int myDetermineWindow()
 
       P("SnowWina: %#lx TransA: %p\n",SnowWina,(void *)TransA);
 
-      GValue val = G_VALUE_INIT;
-      g_value_init(&val,G_TYPE_BOOLEAN);
-      g_value_set_boolean(&val,TRUE);
-      g_object_set_property(G_OBJECT(TransA),"skip-taskbar-hint",&val);
-
       if (TransA)
       {
 	 drawing_area = gtk_drawing_area_new();
@@ -547,13 +544,11 @@ int myDetermineWindow()
 
 	 char *s = 0;
 	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
-	 g_object_set_property(G_OBJECT(TransB),"skip-taskbar-hint",&val);
 	 if (s)
 	    free(s);
 
 	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
       }
-      g_value_unset(&val);
    }
 
 
@@ -972,6 +967,7 @@ void SigHandler(int signum)
 {
    printf("\nCaught signal %d\n",signum);
    Thanks();
+   ClearScreen();
    exit(0);
 }
 /* ------------------------------------------------------------------ */ 

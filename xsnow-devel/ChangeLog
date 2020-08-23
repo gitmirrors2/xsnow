@@ -2,6 +2,9 @@ version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar
 	windows.c: no update of windows if not snowing on a desktop
+	DetermineWindow (windows.c): make sure IsDesktop is initialized
+	SigHandler (main.c): Nicer exit after interrupt.
+	Use execvp instead of execve restarting xsnow.
 version 3.0.4.30
 	Some trivial changes to settings tab.
 	Better handling of clicking BGColor button.

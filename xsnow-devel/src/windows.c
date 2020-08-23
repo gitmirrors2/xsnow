@@ -88,6 +88,7 @@ int WorkspaceActive()
 
 int do_wupdate(gpointer data)
 {
+   P("do_wupdate\n");
    if (Flags.Done)
       return FALSE;
    if(Flags.NoKeepSWin) return TRUE;
@@ -280,6 +281,7 @@ void UpdateWindows()
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
    P("DetermineWindow\n");
+   *IsDesktop = 1;
    // User supplies window id:
    if (Flags.WindowId)
    {

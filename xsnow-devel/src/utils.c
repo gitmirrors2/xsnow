@@ -51,6 +51,7 @@ void ClearScreen()
    // Yes this is hairy: also remove meteorite.
    // It could be that a meteor region is still hanging around
    meteo_erase();
+   XFlush(display);
 
 }
 
