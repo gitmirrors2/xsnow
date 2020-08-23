@@ -96,7 +96,7 @@ int do_wupdate(gpointer data)
       CWorkSpace = r;
    else
    {
-      R("Cannot get current workspace\n");
+      I("Cannot get current workspace\n");
       Flags.Done = 1;
       return TRUE;
    }
@@ -105,7 +105,7 @@ int do_wupdate(gpointer data)
 
    if (GetWindows(&Windows, &NWindows)<0)
    {
-      R("Cannot get windows\n");
+      I("Cannot get windows\n");
       Flags.Done = 1;
       return TRUE;
    };
@@ -136,7 +136,7 @@ int do_wupdate(gpointer data)
    if (SnowWin != RootWindow)
       if (!TransA && !winfo)
       {
-	 R("No transparent window & no SnowWin %#lx found\n",SnowWin); 
+	 I("No transparent window & no SnowWin %#lx found\n",SnowWin); 
 	 Flags.Done = 1;
       }
 
@@ -187,7 +187,7 @@ void UpdateWindows()
 	    // and also not if it is a very wide window, probably this is a panel then
 	    //P("add %#lx %d\n",w->id, RunCounter);
 	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->y > 0 && w->w < SnowWinWidth -100)
+	    if (w->id != SnowWin && w->y > 0 && (int)w->w < SnowWinWidth -100)
 	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
@@ -276,7 +276,7 @@ void UpdateWindows()
    free(toremove);
 }
 
-int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
+int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
    P("DetermineWindow\n");
    // User supplies window id:
@@ -290,7 +290,7 @@ int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int
       // user ask to point to a window
       if (Flags.XWinInfoHandling)
       {
-	 *xwin = XWinInfo(&SnowWinName);
+	 *xwin = XWinInfo(xwinname);
 	 if (*xwin == 0)
 	 {
 	    fprintf(stderr,"XWinInfo failed\n");
@@ -341,21 +341,13 @@ int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))
 	 {
-	    lxdefound = FindWindowWithName("pcmanfm",&SnowWin,&SnowWinName);
-	    printf("LXDE session found, searching for window 'pcmanfm'\n");
+	    lxdefound = FindWindowWithName("pcmanfm",xwin,xwinname);
+	    printf("LXDE session found, using window 'pcmanfm'\n");
+	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
 	 if(lxdefound)
 	 {
 	    *IsDesktop = 1;
-
-#if 0
-	    // Scenario 4: snowwindow in root, no birds
-	    switches.UseGtk    = 0;
-	    switches.Trans     = 0;
-	    switches.Root      = 1;
-	    switches.DrawBirds = 0;
-	    switches.Exposures = 0;
-#endif
 	 }
 	 else
 	 {
@@ -366,7 +358,7 @@ int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int
 	    Window root;
 	    XGetGeometry(display,RootWindow,&root,
 		  &x, &y, &w, &h, &b, &depth);
-	    if(SnowWinName) free(SnowWinName);
+	    if(*xwinname) free(*xwinname);
 
 	    if (*gtkwin)
 	    {
@@ -374,7 +366,7 @@ int DetermineWindow(Window *xwin, GtkWidget **gtkwin, const char *transname, int
 	       gtk_widget_destroy(GTK_WIDGET(*gtkwin));
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
-		  xwin, transname, &SnowWinName, gtkwin,w,h);
+		  xwin, transname, xwinname, gtkwin,w,h);
 	    P("DetermineWindow gtkwin: %p xwin: %#lx\n",(void *)gtkwin,*xwin);
 	    if (*xwin == 0)
 	       *xwin = RootWindow;

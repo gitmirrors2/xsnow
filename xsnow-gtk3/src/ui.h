@@ -32,3 +32,4 @@ extern void ui_background(int m);
 extern void ui_gray_ww(const int m);
 extern void ui_gray_erase(const int m);
 extern void ui_gray_below(const int m);
+extern void ui_gray_birds(int m);

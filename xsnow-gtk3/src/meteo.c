@@ -93,13 +93,19 @@ void meteo_draw(cairo_t *cr)
    cairo_restore(cr);
 }
 
+void meteo_erase()
+{
+   int x=1;
+   do_emeteorite((gpointer)&x);
+}
+
 int do_emeteorite(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
    if (!meteorite.active || NOTACTIVE || Flags.NoMeteorites)
       return TRUE;
-   if (wallclock() - meteorite.starttime > 0.3)
+   if (wallclock() - meteorite.starttime > 0.3 || data)
    {
       if (!switches.UseGtk)
       {

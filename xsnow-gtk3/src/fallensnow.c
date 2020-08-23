@@ -527,7 +527,7 @@ void SetMaxScreenSnowDepth()
 {
    MaxScrSnowDepth = Flags.MaxScrSnowDepth;
    if (MaxScrSnowDepth> (SnowWinHeight-SNOWFREE)) {
-      R("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
+      printf("** Maximum snow depth set to %d\n", SnowWinHeight-SNOWFREE);
       MaxScrSnowDepth = SnowWinHeight-SNOWFREE;
    }
 }

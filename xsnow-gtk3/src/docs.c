@@ -116,7 +116,7 @@ void docs_usage(int man)
    manout("-wantwindow"               ,"Specify your favorite window:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
-   manout("            root"          ,"Use X11-root window for Santa, snow and scenery (often these items will not be visible).");
+
    if(doman)
    {
       printf(".PP\n"); printf(".SS \"Snow options:\n");

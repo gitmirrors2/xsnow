@@ -1,3 +1,10 @@
+version 3.0.4.30
+	Some trivial changes to settings tab.
+	Better handling of clicking BGColor button.
+	Removed root window choice.
+	Birds: set meanspeed before creation, not after.
+version 3.0.4.29
+	Gray out all birds buttons when appropriate
 version 3.0.4.28
 	In settings: gray out and make inactive not usable buttons
 version 3.0.4.27

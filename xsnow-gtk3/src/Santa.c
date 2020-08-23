@@ -49,10 +49,10 @@ static void   ResetSanta(void);
 static void   SetSantaSpeed(void);
 
 static int    CurrentSanta;
-static GC     ESantaGC;
+static GC     ESantaGC = 0;
 static int    OldSantaX = 0;  // the x value of Santa when he was last drawn
 static int    OldSantaY = 0;  // the y value of Santa when he was last drawn
-static GC     SantaGC;
+static GC     SantaGC = 0;
 static int    SantaHeight;   
 static Pixmap SantaMaskPixmap[PIXINANIMATION];
 static Pixmap SantaPixmap[PIXINANIMATION];
@@ -128,10 +128,10 @@ int Santa_draw(cairo_t *cr)
 void Santa_init()
 {
    P("Santa_init\n");
-   ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
-   SantaGC              = XCreateGC(display, SnowWin, 0, 0);
    InitSantaPixmaps();
 
+   ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
+   SantaGC              = XCreateGC(display, SnowWin, 0, 0);
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
    init_Santa_surfaces();
@@ -141,6 +141,7 @@ void Santa_init()
 
 void Santa_set_gc()
 {
+   P("Santa_set_gc SantaGC: %p SnowWin: %#lx\n",(void*)SantaGC,SnowWin);
    XSetFunction(display,   SantaGC, GXcopy);
    XSetForeground(display, SantaGC, BlackPix);
    XSetFillStyle(display,  SantaGC, FillStippled);

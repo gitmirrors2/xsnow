@@ -103,7 +103,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
    rc = XpmCreateImageFromData(display,idata,&ximage,&shapeimage,attr);
    if (rc != 0)
    {
-      R("rc from XpmCreateImageFromData: ");
+      I("rc from XpmCreateImageFromData: ");
       switch (rc)
       {
 	 case 1:

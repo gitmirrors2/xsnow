@@ -143,16 +143,14 @@ int HandleFlags(int argc, char*argv[])
 	       {
 		  checkax;
 		  char *v = argv[++ax];
-		  if (!strcmp(v,"root"))
-		     Flags.WantWindow = UW_ROOT;
-		  else if (!strcmp(v,"default"))
+		  if (!strcmp(v,"default"))
 		     Flags.WantWindow = UW_DEFAULT;
 		  else if (!strcmp(v,"transparent"))
 		     Flags.WantWindow = UW_TRANSPARENT;
 		  else
 		  {
 		     printf("** Invalid value for -wantwindow: %s\n",v);
-		     printf("** Expected on of: root, default, transparent\n");
+		     printf("** Expected on of: default, transparent\n");
 		     return -1;
 		  }
 	       }

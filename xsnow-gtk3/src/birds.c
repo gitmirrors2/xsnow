@@ -47,6 +47,7 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
+   // R("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
 
 //static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
@@ -500,6 +501,7 @@ int do_update_pos_birds(gpointer data)
 
 int birds_draw(cairo_t *cr)
 {
+   P("birds_draw %d %d\n",counter++,switches.DrawBirds);
    if (Flags.Done)
       return FALSE;
    if (!switches.DrawBirds)
@@ -697,7 +699,7 @@ void init_birds(int start)
       bird->sy = (0.5-drand48());
       bird->sz = (0.5-drand48());
       normalize_speed(bird,globals.meanspeed);
-      P("speed: %d %f\n",i,sqrtf(sq3(bird->sx,bird->sy,bird->sz)));
+      P("speed1: %d %f\n",i,sqrtf(sq3(bird->sx,bird->sy,bird->sz)));
       bird->drawable = 1;
       bird->wingstate = drand48()*NWINGS;
 
@@ -905,8 +907,8 @@ void birds_init ()
 
    globals.maxrange = globals.maxx-globals.ox+ globals.maxy-globals.oy+ globals.maxz-globals.oz;
 
-   init_birds(0);
    birds_set_speed();
+   init_birds(0);
 
    attrbird2surface();
 

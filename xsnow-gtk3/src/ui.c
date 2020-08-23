@@ -124,10 +124,11 @@
 
 #define self(x) (x)
 
-static GtkBuilder *builder;
-static GtkWidget *mean_distance;
-static GtkWidget *range;
-static GtkWidget *desktop_type;
+static GtkBuilder    *builder;
+static GtkWidget     *mean_distance;
+static GtkWidget     *range;
+static GtkWidget     *desktop_type;
+static GtkContainer  *birdsgrid;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -137,6 +138,7 @@ static void set_tree_buttons(void);
 static void set_star_buttons(void);
 static void set_meteo_buttons(void);
 static void apply_standard_css(void);
+static void birdscb(GtkWidget *w, void *m);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -578,17 +580,14 @@ static struct _general_buttons
    general_button below;
    general_button allworkspaces;
    general_button ww_0;
-   general_button ww_1;
    general_button ww_2;
 } general_buttons;
 
 static void init_general_buttons()
 {
    general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-0"));
-   general_buttons.ww_1.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-1"));
    general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-2"));
    gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
-   gtk_widget_set_name(general_buttons.ww_1.button,"ww-1"); 
    gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
 
    HANDLE_INIT(general_buttons.cpuload.button,            general-cpuload);
@@ -605,16 +604,11 @@ static void init_general_buttons()
 
 static void set_general_buttons()
 {
-   int k = Flags.WantWindow;
-   switch (k)
-   {
-      case UW_DEFAULT:     HANDLE_SET_TOGGLE_(general_buttons.ww_0.button,TRUE);
-	      break;
-      case UW_ROOT:        HANDLE_SET_TOGGLE_(general_buttons.ww_1.button,TRUE);
-	      break;
-      case UW_TRANSPARENT: HANDLE_SET_TOGGLE_(general_buttons.ww_2.button,TRUE);
-	      break;
-   }
+   if (Flags.WantWindow == UW_DEFAULT)
+      HANDLE_SET_TOGGLE_(general_buttons.ww_0.button,TRUE);
+   else
+      HANDLE_SET_TOGGLE_(general_buttons.ww_2.button,TRUE);
+
    HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
    HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
@@ -1114,10 +1108,11 @@ void ui(int *argc, char **argv[])
    // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
-   hauptfenster  = GTK_WIDGET(gtk_builder_get_object(builder, "hauptfenster"));
-   mean_distance = GTK_WIDGET(gtk_builder_get_object(builder, "birds-mean-distance"));
-   range         = GTK_WIDGET(gtk_builder_get_object(builder, "birds-range"));
-   desktop_type  = GTK_WIDGET(gtk_builder_get_object(builder, "settings-show-desktop-type"));
+   hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
+   mean_distance = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-mean-distance"));
+   range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
+   desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
+   birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
 
    apply_standard_css();
    gtk_widget_show_all (hauptfenster);
@@ -1139,7 +1134,9 @@ void apply_standard_css()
       "scale slider                        { background:       #D4EDDD; }"   // color of sliders
       "scale trough                        { background:       #F0FEF5; }"   // color of trough of sliders
       "stack                               { background-color: #EAFBF0; }"   // color of main area
-      "*                                   { color:            #065522; }"   // forground color (text)
+      "*                                   { color:            #065522; }"   // foreground color (text)
+      "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items
+      ".pink { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
       ;
 
    static GtkCssProvider *cssProvider = 0;
@@ -1178,21 +1175,7 @@ void ui_background(int m)
 // m=1: make inactive
 void ui_gray_ww(int m)
 {
-   char *css;
-   if(m)
-      css = ".window-choice label {color: #8FB39B; }" ;
-   else
-      css = ".window-choice label {color: #065522; }" ;
-
-   static GtkCssProvider *mycss = 0;
-   if (!mycss)
-   {
-      mycss= gtk_css_provider_new();
-   }
-   gtk_css_provider_load_from_data (mycss, css,-1,NULL);
-   apply_css_provider(hauptfenster,mycss);
    gtk_widget_set_sensitive(general_buttons.ww_0.button,!m);
-   gtk_widget_set_sensitive(general_buttons.ww_1.button,!m);
    gtk_widget_set_sensitive(general_buttons.ww_2.button,!m);
 }
 
@@ -1200,19 +1183,6 @@ void ui_gray_ww(int m)
 // m=1: make inactive
 void ui_gray_erase(int m)
 {
-   P("ui_gray_erase %d\n",m);
-   char *css;
-   if (m) 
-      css = ".erase-settings label {color: #8FB39B; }" ;
-   else
-      css = ".erase-settings label {color: #065522; }" ;
-   static GtkCssProvider *mycss = 0;
-   if (!mycss)
-   {
-      mycss= gtk_css_provider_new();
-   }
-   gtk_css_provider_load_from_data (mycss, css,-1,NULL);
-   apply_css_provider(hauptfenster,mycss);
    gtk_widget_set_sensitive(general_buttons.exposures.button,!m);
    gtk_widget_set_sensitive(general_buttons.usebg.button,!m);
    gtk_widget_set_sensitive(general_buttons.bgcolor.button,!m);
@@ -1223,20 +1193,17 @@ void ui_gray_erase(int m)
 // m=1: make inactive
 void ui_gray_below(int m)
 {
-   R("ui_gray_below %d\n",m);
-   char *css;
-   if (m) 
-      css = ".below label {color: #8FB39B; }" ;
-   else
-      css = ".below label {color: #065522; }" ;
-   static GtkCssProvider *mycss = 0;
-   if (!mycss)
-   {
-      mycss= gtk_css_provider_new();
-   }
-   gtk_css_provider_load_from_data (mycss, css,-1,NULL);
-   apply_css_provider(hauptfenster,mycss);
    gtk_widget_set_sensitive(general_buttons.below.button,!m);
+}
+
+void birdscb(GtkWidget *w, void *m)
+{
+   gtk_widget_set_sensitive(w,!(int *)m);
+}
+
+void ui_gray_birds(int m)
+{
+   gtk_container_foreach(birdsgrid, birdscb, &m);
 }
 
 // next function is not used, I leave it here as a template, who knows...

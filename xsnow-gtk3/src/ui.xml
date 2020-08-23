@@ -849,9 +849,14 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">If the system is too busy, this window becomes pink. 
+                <property name="label" translatable="yes">If the system is too busy, all windows get this color.
 You could adapt some things in "snow", "birds" or "settings".</property>
+                <property name="justify">center</property>
+                <property name="xalign">0.5</property>
+                <property name="yalign">0.5</property>
+                <style>
+                  <class name="pink"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3191,7 +3196,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3217,7 +3222,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3243,7 +3248,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">13</property>
               </packing>
             </child>
             <child>
@@ -3288,7 +3293,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3334,7 +3339,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -3351,7 +3356,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -3363,7 +3368,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -3392,7 +3397,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -3408,7 +3413,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -3423,7 +3428,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -3438,7 +3443,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -3451,7 +3456,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -3468,7 +3473,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -3482,7 +3487,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3498,7 +3503,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -3515,7 +3520,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -3528,7 +3533,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -3548,7 +3553,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -3561,7 +3566,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -3574,7 +3579,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -3593,7 +3598,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -3610,7 +3615,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -3623,7 +3628,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -3634,7 +3639,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -3651,7 +3656,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -3668,7 +3673,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -3681,7 +3686,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -3696,7 +3701,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">7</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3710,7 +3715,7 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -3727,35 +3732,19 @@ point</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -4031,84 +4020,6 @@ Pressing this button will cause a restart of xsnow.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">27</property>
-                <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -4117,17 +4028,6 @@ Pressing this button will cause a restart of xsnow.</property>
                 <property name="left_attach">0</property>
                 <property name="top_attach">9</property>
                 <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -4140,7 +4040,7 @@ Pressing this button will cause a restart of xsnow.</property>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">10</property>
-                <property name="height">16</property>
+                <property name="height">7</property>
               </packing>
             </child>
             <child>
@@ -4153,7 +4053,7 @@ Pressing this button will cause a restart of xsnow.</property>
               <packing>
                 <property name="left_attach">15</property>
                 <property name="top_attach">10</property>
-                <property name="height">16</property>
+                <property name="height">7</property>
               </packing>
             </child>
             <child>
@@ -4164,7 +4064,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">26</property>
+                <property name="top_attach">17</property>
                 <property name="width">16</property>
               </packing>
             </child>
@@ -4188,7 +4088,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">26</property>
+                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -4214,7 +4114,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">29</property>
+                <property name="top_attach">19</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4241,7 +4141,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">29</property>
+                <property name="top_attach">19</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4285,7 +4185,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">28</property>
+                <property name="top_attach">18</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4329,54 +4229,8 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">28</property>
+                <property name="top_attach">18</property>
                 <property name="width">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkLabel" id="settings-show-desktop-type">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="margin_top">4</property>
-                    <property name="margin_bottom">4</property>
-                    <property name="label" translatable="yes">label</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">11</property>
-                <property name="width">13</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">17</property>
-                <property name="width">14</property>
               </packing>
             </child>
             <child>
@@ -4387,87 +4241,7 @@ Pressing this button will cause a restart of xsnow.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">22</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
                 <property name="top_attach">14</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">8</property>
-                <property name="top_attach">20</property>
-                <property name="width">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">20</property>
-                <property name="width">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">8</property>
-                <property name="top_attach">19</property>
-                <property name="width">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">19</property>
-                <property name="width">7</property>
               </packing>
             </child>
             <child>
@@ -4479,7 +4253,7 @@ Pressing this button will cause a restart of xsnow.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Window: </property>
+                    <property name="label" translatable="yes">Snow window: </property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4493,9 +4267,8 @@ Pressing this button will cause a restart of xsnow.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Use GTK window and Cairo for drawing non-birds, i.e. use a double buffer
-and paint this at about 25 times per second (depending on cpu load),
-along with the birds.</property>
+                    <property name="tooltip_text" translatable="yes">Use transparent GTK window and Cairo for drawing non-birds, i.e. use a double 
+buffer and paint this at about 25 times per second, along with the birds.</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">False</property>
                     <signal name="toggled" handler="button_ww" swapped="no"/>
@@ -4507,23 +4280,7 @@ along with the birds.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="general-ww-1">
-                    <property name="label" translatable="yes">On root</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Use root window for drawing non-birds. 
-In most environments (Gnome, KDE, XFCE, ...) this will result in not visible Santa, snow, scenery.</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">False</property>
-                    <property name="group">general-ww-0</property>
-                    <signal name="toggled" handler="button_ww" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="general-ww-2">
@@ -4550,7 +4307,7 @@ Drawing and erasing will be done by X11 functions.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">21</property>
+                <property name="top_attach">13</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4577,7 +4334,7 @@ Drawing and erasing will be done by X11 functions.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use the specified background color to erase.</property>
+                    <property name="tooltip_text" translatable="yes">Use the specified color to erase.</property>
                     <signal name="toggled" handler="button_use_bgcolor" swapped="no"/>
                   </object>
                   <packing>
@@ -4591,7 +4348,7 @@ Drawing and erasing will be done by X11 functions.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use this color as background when erasing pictures. Useful in KDE: choose here the same color as the background color of your desktop.</property>
+                    <property name="tooltip_text" translatable="yes">Use this color for erasing.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <property name="show_editor">True</property>
@@ -4625,7 +4382,7 @@ Drawing and erasing will be done by X11 functions.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">23</property>
+                <property name="top_attach">15</property>
                 <property name="width">14</property>
               </packing>
             </child>
@@ -4637,7 +4394,7 @@ Drawing and erasing will be done by X11 functions.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">24</property>
+                <property name="top_attach">16</property>
               </packing>
             </child>
             <child>
@@ -4652,91 +4409,43 @@ Drawing and erasing will be done by X11 functions.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkLabel" id="settings-show-desktop-type">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="label" translatable="yes">window type etc.</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">11</property>
+                <property name="width">13</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">12</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

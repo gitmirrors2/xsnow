@@ -1,3 +1,4 @@
+#pragma once
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -18,7 +19,6 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
 extern Display    *display;
@@ -53,11 +53,12 @@ extern int          windows_ui(void);
 extern void         windows_draw(cairo_t *cr);
 extern void         windows_init(void);
 extern int          WorkspaceActive(void);  // defined in main.c
-extern int          DetermineWindow(Window *xtrans, GtkWidget **gtrans,const char *transname, int *IsDesktop);
+extern int          DetermineWindow(Window *xtrans, char **xtransname, GtkWidget **gtrans,const char *transname, int *IsDesktop);
 extern void         InitDisplayDimensions(void);
 extern void         DestroyWindow(Window w);
 
-enum {UW_DEFAULT, UW_ROOT, UW_TRANSPARENT};
+static const int UW_DEFAULT     = 0; 
+static const int UW_TRANSPARENT = 2;
 
 extern struct _switches
 {

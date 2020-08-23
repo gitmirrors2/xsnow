@@ -219,98 +219,102 @@ static void testje()
 
  * The following animations exist:
 
- - Snow: snow, Santa and scenery.
- - Birds: birds.
-
- * The following windows are used:
-
- - TransA: transparent GtkWidget with drawing area
- - SnowWin: X11 window
- - depending on window manager and user whishes, this can be
- - the root window
- - an existing non-root window (see flags -xwindow and -id)
- - a new transparent window
-
- * The following user whishes are possible:
- ( enum{UW_NONE,UW_ROOT,UW_TRANSPARENT}; )
-
- - WantWindow = none: default, no special whish
- - Flags.WantWindow = UW_NONE
- - -wantwindow default
- - WantWindow = root: user whishes to use X11 window for snow
- - Flags.WantWindow = UW_ROOT
- - -wantwindow root
- - WantWindow = trans: user whishes to use X11 transparent window
- - Flags.WantWindow = UW_TRANSPARENT
- - -wantwindow transparent
-
- If -id or -xwininfo are specified, WantWindow = 1 is implied, and SnowWin
- is an existing non-root window.
- If WantWindow = 1 and -id and -xwininfo are not specified, 
- SnowWin is the root window.
-
- * The following switches are determined, dependend on window 
- manager and user whishes. These switches should be sufficient
- to determine how to paint snow and birds.
-
- - UseGtk: 
- - 1: Snow is painted on TransA, using cairo
- - 0: Snow is painted on SnowWin, using X11
-
- - Trans:
- - 1: SnowWin is     transparent
- - 0: SnowWin is not transparent
-
- - Root:  (maybe this is superfluous, we will see)
- - 1: SnowWin is     root window
- - 0: SnowWin is not root window
-
- - DrawBirds:
- - 1: Birds are painted on TransA, using cairo
- - 0: Birds cannot be painted
-
- * Depending on the possibility to create transparent windows and user wishes,
- the following scenarios exist:
-
- - Transparent window is possible: TransA exists
-
- - SCENARIO 1:
- - WantWindow = root
- - Snow in     SnowWin
- - Birds in    TransA
- - UseGtk    = 0
- - Trans     = 0
- - Root      = 0 or 1
- - DrawBirds = 1
-
- - SCENARIO 2:
- - WantWindow = trans
- - Snow in     SnowWin
-- Birds in    TransA
-- UseGtk    = 0
-- Trans     = 1
-- Root      = 1
-- DrawBirds = 1
-
-- SCENARIO 3:
-- WantWindow = none
-- Snow in     TransA
-- Birds in    TransA
-- UseGtk    = 1
-- Trans     = n/a
-- Root      = n/a
-- DrawBirds = 1
-
-- Transparent window is NOT possible, TransA does not exist
-
-- SCENARIO 4:
-- WantWindow = none|trans|root, user cannot force anything
-- Snow in     SnowWin
-- Birds in    nothing, birds cannot fly
-- UseGtk    = 0
-- Trans     = 0
-- Root      = 1
-- DrawBirds = 0
+ *   - Snow: snow, Santa and scenery.
+ *   - Birds: birds.
+ *
+ * * The following windows are used:
+ *
+ *   - TransA: transparent GtkWidget with drawing area
+ *   - SnowWin: X11 window
+ *   - depending on window manager and user whishes, this can be
+ *   - the root window
+ *   - an existing non-root window (see flags -xwindow and -id)
+ *   - a new transparent window
+ *
+ * * The following user whishes are possible:
+ *   ( enum{UW_NONE,UW_ROOT,UW_TRANSPARENT}; )
+ *
+ *   - WantWindow = none: default, no special whish
+ *   - Flags.WantWindow = UW_NONE
+ *   - -wantwindow default
+ *   - WantWindow = root: user whishes to use X11 window for snow
+ *   - Flags.WantWindow = UW_ROOT
+ *   - -wantwindow root
+ *   - WantWindow = trans: user whishes to use X11 transparent window
+ *   - Flags.WantWindow = UW_TRANSPARENT
+ *   - -wantwindow transparent
+ *
+ *   If -id or -xwininfo are specified, WantWindow = 1 is implied, and SnowWin
+ *   is an existing non-root window.
+ *   If WantWindow = 1 and -id and -xwininfo are not specified, 
+ *   SnowWin is the root window.
+ *
+ * * The following switches are determined, dependend on window 
+ *   manager and user whishes. These switches should be sufficient
+ *   to determine how to paint snow and birds.
+ *
+ *   - UseGtk: 
+ *     - 1: Snow is painted on TransA, using cairo
+ *     - 0: Snow is painted on SnowWin, using X11
+ *
+ *   - Trans:
+ *     - 1: SnowWin is     transparent
+ *     - 0: SnowWin is not transparent
+ *
+ *   - Root:  (maybe this is superfluous, we will see)
+ *     - 1: SnowWin is     root window
+ *     - 0: SnowWin is not root window
+ *
+ *   - DrawBirds:
+ *     - 1: Birds are painted on TransA, using cairo
+ *     - 0: Birds cannot be painted
+ *
+ * * Depending on the possibility to create transparent windows and user wishes,
+ *   the following scenarios exist:
+ *
+ *   - Transparent window is possible: TransA exists
+ *
+ *      - SCENARIO 1:        ** Not implemented, starting with scenario1, switch to
+ *                           ** scenario 2 gives no Santa, snow etc. Something wrong probably 
+ *                           ** with GC's, but also when re-creating GC's, got no visuals of Santa etc.
+ *                           ** Snowing in root window is useless in a compositing window manager
+ *                           ** so: no big loss.
+ *        - WantWindow = root
+ *        - Snow in     SnowWin
+ *        - Birds in    TransA
+ *        - UseGtk    = 0
+ *        - Trans     = 0
+ *        - Root      = 0 or 1
+ *        - DrawBirds = 1
+ *
+ *      - SCENARIO 2:
+ *        - WantWindow = trans
+ *        - Snow in     SnowWin
+ *        - Birds in    TransA
+ *        - UseGtk    = 0
+ *        - Trans     = 1
+ *        - Root      = 1
+ *        - DrawBirds = 1
+ *
+ *      - SCENARIO 3:
+ *        - WantWindow = none
+ *        - Snow in     TransA
+ *        - Birds in    TransA
+ *        - UseGtk    = 1
+ *        - Trans     = n/a
+ *        - Root      = n/a
+ *        - DrawBirds = 1
+ *
+ *   - Transparent window is NOT possible, TransA does not exist
+ *
+ *      - SCENARIO 4:
+ *        - WantWindow = none|trans|root, user cannot force anything
+ *        - Snow in     SnowWin
+ *        - Birds in    nothing, birds cannot fly
+ *        - UseGtk    = 0
+ *        - Trans     = 0
+ *        - Root      = 1
+ *        - DrawBirds = 0
 */
 
 int main_c(int argc, char *argv[])
@@ -519,7 +523,8 @@ int main_c(int argc, char *argv[])
       {
 	 ui_gray_ww(1);
 	 ui_gray_below(1);
-	 ui_set_birds_header("The snow window does not support alpha channel, no birds will fly.");
+	 ui_gray_birds(1);
+	 ui_set_birds_header("No alpha channel: no birds will fly.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, 0);
@@ -562,7 +567,9 @@ int myDetermineWindow()
    int IsDesktop;
    if (!SnowWina)
    {
-      if (!DetermineWindow(&SnowWina,&TransA,"Xsnow-A", &IsDesktop))
+      if (SnowWinName)
+	 free(SnowWinName);
+      if (!DetermineWindow(&SnowWina,&SnowWinName,&TransA,"Xsnow-A", &IsDesktop))
       {
 	 printf("xsnow: cannot determine window, exiting...\n");
 	 return 0;
@@ -575,14 +582,16 @@ int myDetermineWindow()
 	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
 
 
-	 DetermineWindow(&SnowWinb, &TransB, "Xnow-B", &IsDesktop);
+	 char *s = 0;
+	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
+	 if (s)
+	    free(s);
 
 	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
       }
    }
 
 
-   SnowWin            = SnowWina;
    switches.UseGtk    = 1;
    switches.DrawBirds = 1;
    switches.Trans     = 0;
@@ -592,24 +601,11 @@ int myDetermineWindow()
 
    if (TransA)  // we have a transparent window
    {
-
-      if (Flags.WantWindow == UW_ROOT)    // Scenario 1
+      if (Flags.WantWindow == UW_TRANSPARENT) // Scenario 2
       {
-	 R("Scenario 1\n");
-	 DestroyWindow(SnowWin);
+	 P("Scenario 2\n");
 
-	 SnowWin            = RootWindow;
-
-	 switches.UseGtk    = 0;
-	 switches.DrawBirds = 1;
-	 switches.Trans     = 0;
-	 switches.Root      = 1;
-	 switches.Desktop   = 1;
-      }
-      else if (Flags.WantWindow == UW_TRANSPARENT) // Scenario 2
-      {
-	 R("Scenario 2\n");
-
+	 printf("Scenario: Use X11 for drawing snow in transparent window, birds are possible.\n");
 	 SnowWin            = SnowWinb;
 
 	 switches.UseGtk    = 0;
@@ -618,9 +614,10 @@ int myDetermineWindow()
 	 switches.Root      = 0;
 	 switches.Desktop   = IsDesktop;
       }
-      else                       // Scenario 3
+      else if(Flags.WantWindow == UW_DEFAULT)  // Scenario 3
       {
-	 R("Scenario 3\n");
+	 P("Scenario 3\n");
+	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds are possible\n");
 	 SnowWin            = SnowWina;
 
 	 switches.UseGtk    = 1;
@@ -632,8 +629,9 @@ int myDetermineWindow()
    }
    else                          //  No transparent window: Scenario 4
    {
-      R("Scenario 4\n");
-      printf("Your screen does not support alpha channel, no birds will fly.\n");
+      P("Scenario 4\n");
+      printf("Scenario: Use X11 for drawing snow in root window, no birds are possible.\n");
+      // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
       SnowWin            = SnowWina;
       switches.UseGtk    = 0;
       switches.DrawBirds = 0;
@@ -648,7 +646,7 @@ int myDetermineWindow()
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, switches.Trans,switches.Exposures);
 
-   if(switches.UseGtk || switches.Trans)
+   if(TransA)
    {
       TransWorkSpace = GetCurrentWorkspace();
 
@@ -716,12 +714,14 @@ int do_ui_check(gpointer data)
       OldFlags.WantWindow = Flags.WantWindow;
       P("WantWindow: %d\n",Flags.WantWindow);
       if(draw_all_id)
+      {
 	 g_source_remove(draw_all_id);
+	 P("removed %d\n",draw_all_id);
+      }
       draw_all_id = 0;
       myDetermineWindow();
-      changes++;
-
       ui_gray_erase(switches.UseGtk);
+      changes++;
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -738,6 +738,18 @@ int do_ui_check(gpointer data)
       ClearScreen();
       changes++;
       P("changes: %d\n",changes);
+   }
+   if(strcmp(Flags.BGColor,OldFlags.BGColor))
+   {
+      free(OldFlags.BGColor);
+      OldFlags.BGColor = strdup(Flags.BGColor);
+      if(Flags.UseBG)
+      {
+	 SetGCFunctions();
+	 ClearScreen();
+      }
+      changes++;
+      R("changes: %d\n",changes);
    }
    if(Flags.Exposures != OldFlags.Exposures)
    {
@@ -826,7 +838,7 @@ int do_ui_check(gpointer data)
 	    GdkWindow *gdk_window;
 	    if(Flags.BelowAll)
 	    {
-	       R("below\n");
+	       P("below\n");
 	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
 	       gdk_window_hide(gdk_window);
 	       gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
@@ -834,7 +846,7 @@ int do_ui_check(gpointer data)
 	    }
 	    else
 	    {
-	       R("above\n");
+	       P("above\n");
 	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
 	       gdk_window_hide(gdk_window);
 	       gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
@@ -965,11 +977,11 @@ int do_show_desktop_type(gpointer data)
       return TRUE;
    char *s;
    if (IsWayland)
-      s = "Wayland (Expect some slugginess)";
+      s = (char *)"Wayland (Expect some slugginess)";
    else if (IsCompiz)
-      s = "Compiz";
+      s = (char *)"Compiz";
    else
-      s = "Probably X11";
+      s = (char *)"Probably X11";
    char t[128];
    snprintf(t,64,"%s. Snow window: %#lx",s,SnowWin);
    ui_show_desktop_type(t);
@@ -993,8 +1005,9 @@ int do_testing(gpointer data)
 /* ------------------------------------------------------------------ */ 
 void SigHandler(int signum)
 {
-   printf("Caught signal %d\n",signum);
-   Flags.Done = 1;
+   printf("\nCaught signal %d\n",signum);
+   Thanks();
+   exit(0);
 }
 /* ------------------------------------------------------------------ */ 
 
@@ -1120,11 +1133,12 @@ void HandleFactor()
 
 void restart_do_draw_all()
 {
-   if (!switches.UseGtk && !switches.Trans)
+   if (!TransA)
       return;
    if (draw_all_id)
       g_source_remove(draw_all_id);
    draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
+   P("started do_draw_all %d\n",draw_all_id);
 }
 
 
@@ -1136,62 +1150,19 @@ void SetGCFunctions()
       ErasePixel = 0;
 
    Santa_set_gc();
-   /*
-      XSetFunction(display,   ESantaGC, GXcopy);
-      XSetFillStyle(display,  ESantaGC, FillSolid);
-      XSetForeground(display, ESantaGC, ErasePixel);
-      */
+   P("Santa_set_gc\n");
 
    scenery_set_gc();
-   /*
-      XSetFunction(display,   TreeGC, GXcopy);
-      XSetForeground(display, TreeGC, BlackPix);
-      XSetFillStyle(display,  TreeGC, FillStippled);
-      */
 
    treesnow_set_gc();
-   // XSetFunction(display, SnowOnTreesGC, GXcopy);
-
 
    snow_set_gc();
-   /*
-      for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
-      {
-      XSetFunction(   display, SnowGC[i], GXcopy);
-      XSetStipple(    display, SnowGC[i], snowPix[i].pixmap);
-      XSetFillStyle(  display, SnowGC[i], FillStippled);
-
-      XSetFunction(   display, ESnowGC[i], GXcopy);
-      XSetStipple(    display, ESnowGC[i], snowPix[i].pixmap);
-      XSetForeground( display, ESnowGC[i], ErasePixel);
-      XSetFillStyle(  display, ESnowGC[i], FillStippled);
-      }
-      */
 
    stars_set_gc();
-   /*
-      for (i=0; i<STARANIMATIONS; i++)
-      {
-      XSetFunction(   display,StarGC[i],GXcopy);
-      XSetStipple(    display,StarGC[i],starPix.pixmap);
-      XSetForeground( display,StarGC[i],StarcPix[i]);
-      XSetFillStyle(  display,StarGC[i],FillStippled);
-      }
-      */
-
    XSetFunction(display,CleanGC, GXcopy);
    XSetForeground(display,CleanGC,BlackPix);
 
-   /*
-      XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
-      */
-
    fallensnow_set_gc();
-   /*
-      XSetFillStyle( display, EFallenGC, FillSolid);
-      XSetFunction(  display, EFallenGC, GXcopy);
-      XSetForeground(display, EFallenGC, ErasePixel);
-      */
 
 }
 

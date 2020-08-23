@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include "windows.h"
+#include "meteo.h"
 
 
 Pixel Black, White;
@@ -47,6 +48,10 @@ void ClearScreen()
 {
    // remove all our snow-related drawings
    XClearArea(display, SnowWin, 0,0,0,0,True);
+   // Yes this is hairy: also remove meteorite.
+   // It could be that a meteor region is still hanging around
+   meteo_erase();
+
 }
 
 float sq3(float x, float y, float z)

@@ -128,7 +128,7 @@
 #define DEFAULT_AttrFactor 100
 #define DEFAULT_DisWeight 20
 #define DEFAULT_FollowWeight 30
-#define DEFAULT_BirdsColor "#D3D3D3"
+#define DEFAULT_BirdsColor "#361A07"
 #define DEFAULT_ShowAttrPoint 0
 #define DEFAULT_BirdsScale 100
 

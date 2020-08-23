@@ -26,5 +26,6 @@
 #define P(...) {}
 #endif
 #define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
+#define I(...) do {printf ("Xsnow info: %s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
 
 extern int counter;
