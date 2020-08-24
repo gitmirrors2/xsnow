@@ -106,10 +106,6 @@ void init_stars()
 
 void stars_draw(cairo_t *cr)
 {
-   if (Flags.Done)
-      return;
-   if (!switches.UseGtk)
-      return;
    int i;
    cairo_save(cr);
    cairo_set_line_width(cr,1);

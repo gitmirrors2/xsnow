@@ -111,7 +111,7 @@ int do_wupdate(gpointer data)
       Flags.Done = 1;
       return TRUE;
    };
-   //printwindows(Windows,NWindows);
+   //R(":\n");printwindows(Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.

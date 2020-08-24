@@ -76,8 +76,6 @@ int meteo_ui()
 
 void meteo_draw(cairo_t *cr)
 {
-   if(!switches.UseGtk)
-      return;
    if (!meteorite.active)
       return;
    cairo_save(cr);

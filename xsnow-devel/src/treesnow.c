@@ -76,7 +76,7 @@ void treesnow_draw(cairo_t *cr)
    cairo_fill(cr);
    cairo_region_destroy(region);
 #endif
-   if (Flags.NoKeepSnowOnTrees || Flags.NoTrees || Flags.BirdsOnly || Flags.Done)
+   if (Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return;
    GdkRGBA color;
    gdk_rgba_parse(&color,Flags.SnowColor);

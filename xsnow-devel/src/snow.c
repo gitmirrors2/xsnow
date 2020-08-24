@@ -179,9 +179,7 @@ void init_snow_surfaces()
 
 int snow_draw(cairo_t *cr)
 {
-   if (Flags.Done)
-      return FALSE;
-   if (Flags.NoSnowFlakes || NOTACTIVE)
+   if (Flags.NoSnowFlakes)
       return TRUE;
 
    set_begin();

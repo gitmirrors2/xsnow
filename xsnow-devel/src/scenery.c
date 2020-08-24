@@ -76,10 +76,6 @@ void scenery_set_gc()
 
 int scenery_draw(cairo_t *cr)
 {
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
    int i;
 
    if (KillTrees)

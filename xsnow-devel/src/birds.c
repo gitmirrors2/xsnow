@@ -502,10 +502,6 @@ int do_update_pos_birds(gpointer data)
 int birds_draw(cairo_t *cr)
 {
    P("birds_draw %d %d\n",counter++,switches.DrawBirds);
-   if (Flags.Done)
-      return FALSE;
-   if (!switches.DrawBirds)
-      return TRUE;
    LEAVE_IF_INACTIVE;
 
    int before;

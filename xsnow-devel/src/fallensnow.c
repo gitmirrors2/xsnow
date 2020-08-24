@@ -68,12 +68,6 @@ extern void   fallensnow_set_gc()
 
 void fallensnow_draw(cairo_t *cr)
 {
-
-   if (Flags.Done)
-      return;
-   if (Flags.BirdsOnly)
-      return;
-
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
@@ -494,15 +488,13 @@ void InitFallenSnow()
 // also add snowflakes
 void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
-   if(Flags.NoBlowSnow)
-      return;
    int i;
    int x = randint(fsnow->w - w);
    for(i=x; i<x+w; i++)
       if(fsnow->acth[i] > h)
       {
 	 // animation of blown off snow
-	 if (!Flags.NoWind && !Flags.NoBlowSnow && Wind != 0 && drand48() > 0.5)
+	 if (!Flags.NoWind && Wind != 0 && drand48() > 0.5)
 	 {
 	    int j, jmax = BlowOff();
 	    //P("%d\n",jmax);
@@ -601,8 +593,6 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 
 int HandleFallenSnow(FallenSnow *fsnow)
 {
-   //if (fsnow->ws < 0)
-   //  return 0;
    if (fsnow->id == 0)
       return 1;
    if (fsnow->hidden)

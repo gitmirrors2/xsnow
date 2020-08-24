@@ -114,9 +114,7 @@ int Santa_ui()
 int Santa_draw(cairo_t *cr)
 {
    P("Santa_draw %d\n",counter++);
-   if (Flags.Done)
-      return FALSE;
-   if (Flags.NoSanta || NOTACTIVE)
+   if (Flags.NoSanta)
       return TRUE;
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];

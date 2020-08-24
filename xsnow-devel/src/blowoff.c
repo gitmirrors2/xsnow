@@ -83,7 +83,7 @@ int do_blowoff(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   if (NOTACTIVE)
+   if (NOTACTIVE || Flags.NoBlowSnow)
       return TRUE;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)

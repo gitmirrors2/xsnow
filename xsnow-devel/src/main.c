@@ -86,6 +86,7 @@
 #endif
 //#define DEBUG
 
+
 // from flags.h
 FLAGS Flags;
 FLAGS OldFlags;
@@ -631,16 +632,7 @@ int myDetermineWindow()
 }
 
 /* ------------------------------------------------------------------ */ 
-/*
- * do nothing if current workspace is not to be updated
- */
-/*
-#define NOTACTIVE \
-(Flags.BirdsOnly || (!Flags.AllWorkspaces && (UsingTrans && CWorkSpace != TransWorkSpace)))
-*/
 
-#define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
 
 
 // here we are handling the buttons in ui
@@ -955,9 +947,7 @@ int do_testing(gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
-   P("Wind: %d %f\n",Wind,NewWind);
-   P("%d cw %#lx\n",counter, CWorkSpace);
-   //PrintFallenSnow(FsnowFirst);
+   
    return TRUE;
 }
 
@@ -1021,24 +1011,27 @@ void drawit(cairo_t *cr)
 {
    P("drawit %d\n",counter++);
 
-   if (switches.UseGtk)
-   {
-      stars_draw(cr);
-
-      meteo_draw(cr);
-
-      scenery_draw(cr);
-
-      Santa_draw(cr);
-
-      snow_draw(cr);
-
-      fallensnow_draw(cr);
-
-      treesnow_draw(cr);
-   }
+   if (Flags.Done)
+      return;
 
    birds_draw(cr);
+
+   if (!switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive())
+      return;
+
+   stars_draw(cr);
+
+   meteo_draw(cr);
+
+   scenery_draw(cr);
+
+   Santa_draw(cr);
+
+   snow_draw(cr);
+
+   fallensnow_draw(cr);
+
+   treesnow_draw(cr);
 
 }
 
