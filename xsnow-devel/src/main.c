@@ -134,7 +134,6 @@ static const char *BlackColor  = "black";
 
 /* GC's */
 static GC CleanGC;
-static GC TestingGC;
 //static GC TreesGC[2];
 
 // region stuff
@@ -278,7 +277,7 @@ static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_
 
 int main_c(int argc, char *argv[])
 {
-   R("This is xsnow\n");
+   P("This is xsnow\n");
    signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
@@ -449,7 +448,6 @@ int main_c(int argc, char *argv[])
 
    BlackPix = AllocNamedColor(BlackColor, Black);
 
-   TestingGC     = XCreateGC(display, RootWindow, 0, 0);
    CleanGC       = XCreateGC(display, SnowWin,    0, 0);
    /*
       FallenGC      = XCreateGC(display, SnowWin,    0, 0);
@@ -590,7 +588,7 @@ int myDetermineWindow()
    }
    else                          //  No transparent window: Scenario 4
    {
-      R("Scenario 4 Desktop: %d\n",IsDesktop);
+      P("Scenario 4 Desktop: %d\n",IsDesktop);
       printf("Scenario: Use X11 for drawing snow in root window, no birds are possible.\n");
       // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
       SnowWin            = SnowWina;
@@ -701,7 +699,7 @@ int do_ui_check(gpointer data)
 	 ClearScreen();
       }
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
    }
    if(Flags.Exposures != OldFlags.Exposures)
    {

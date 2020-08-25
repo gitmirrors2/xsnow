@@ -1,3 +1,6 @@
+version 3.0.6
+	Correct some typo's
+	Removed memory-leak in birds.c: birds_draw
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar
@@ -7,6 +10,7 @@ version 3.0.5
 	Use execvp instead of execve restarting xsnow.
 	Stratified some code starting from main.c: drawit
 	wmctrl.c: also sticky=1 if (int)ws == -1
+	Adapt for uploading to debian
 version 3.0.4.30
 	Some trivial changes to settings tab.
 	Better handling of clicking BGColor button.

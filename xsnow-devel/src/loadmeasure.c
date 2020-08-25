@@ -67,7 +67,7 @@ int do_loadmeasure(gpointer data)
       {
 	 P("pink %d %d %f %f\n",count,status,time_measure,tnow-tprev);
 	 printf("system is too busy, suggest to lower 'cpu load' in 'settings'\n");
-	 printf(" or have a look ad 'snow': 'Intensity', 'Max # of flakes', ...\n");
+	 printf(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n");
 	 printf(" or specify a smaller number of birds in 'birds'\n");
 	 ui_background(1);
 	 status = 1;

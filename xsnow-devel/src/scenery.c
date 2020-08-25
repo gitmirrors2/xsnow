@@ -341,7 +341,7 @@ void InitTreePixmaps()
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
-   char *path;
+   char *path = 0;
    FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
    if (f)
    {
@@ -372,7 +372,6 @@ void InitTreePixmaps()
 	 exit(1);
       }
       fclose(f);
-      free(path);
    }
    else
    {
@@ -390,6 +389,8 @@ void InitTreePixmaps()
       }
       ReInitTree0();
    }
+   if(path)
+      free(path);
    OnTrees = 0;
 }
 

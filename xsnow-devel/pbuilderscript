@@ -7,14 +7,12 @@ if [ -z "$3" ] ; then
    echo usage: pbuilderscript workdir oldversion newversion
    exit 1
 fi
-if [ x$PBUILDER_OPERATION != x ] ; then
-   sed -i '0,/^#deb-src/s/^#//' /etc/apt/sources.list
-   apt update
-fi
 cd "$workdir" || exit 1
 echo "working in `pwd`"
 export DEBEMAIL=wvermin@gmail.com
 export DEBFULLNAME="Willem Vermin"
+sed -i 's/^#//' /etc/apt/sources.list   # uncomment 2de regel
+apt update
 apt -y install apt-utils || exit 1
 apt -y install quilt devscripts debhelper autotools-dev equivs || exit 1
 apt source xsnow || exit 1
@@ -22,37 +20,42 @@ cd xsnow-$oldversion || exit 1
 uupdate -v $newversion ../xsnow-$newversion.tar.gz || exit 1
 cd ../xsnow-$newversion
 if [ -d debian.upstream ] ; then       
-   rm -r debian                     # staan hier .buildinfo en .changes?
+   rm -r debian
    mv debian.upstream debian || exit 1
 fi
 echo quilt ...
 while quilt push; do quilt refresh; done
 #dch
 echo "---------- mk-build-deps -----------------"
-echo | mk-build-deps -i -r debian/control || exit 1
+echo | mk-build-deps --install --remove debian/control || exit 1
 # got dpkg-source: error: aborting due to unexpected upstream changes
 # caused by the files *-build-deps*.buildinfo and *-build-deps*.changes
 # created by mk-build-deps
 # hence the following:
 if true ; then
-   # this seems to be the recommended way
-   mkdir -p debian/source
-   (
-   echo "Description: to remedy this"
-   echo "  dpkg-source: error: aborting due to unexpected upstream changes"
-   echo "Forwarded: not-needed"
-   ) > debian/source/local-patch-header
-   EDITOR=/bin/true dpkg-source --commit . buildinfo-changes
-   while quilt push; do quilt refresh; done
-   #
-else
-   # simple remove the offending files
-   rm -f *-build-deps*.buildinfo *-build-deps*.changes
+   if false ; then
+      # this seems to be the recommended way
+      mkdir -p debian/source
+      (
+      echo "Description: to remedy this"
+      echo "  dpkg-source: error: aborting due to unexpected upstream changes"
+      echo "Forwarded: not-needed"
+      ) > debian/source/local-patch-header
+      EDITOR=/bin/true dpkg-source --commit . buildinfo-changes
+      while quilt push; do quilt refresh; done
+      #
+   else
+      # simple remove the offending files
+      rm -f *-build-deps*.buildinfo *-build-deps*.changes
+   fi
 fi
 echo "-------------- dpkg-buildpackage ------------"
-dpkg-buildpackage -us -uc || exit 1
-cd ..
-echo "running lintian ..."
-lintian -i -I --show-overrides --no-tag-display-limit xsnow_$newversion-1_amd64.changes
-echo "end lintian"
+debuild -us -uc || exit 1
+if false ; then
+   # debuild already runs lintian
+   cd ..
+   echo "running lintian ..."
+   lintian -F -i -I --show-overrides --no-tag-display-limit xsnow_$newversion-1_amd64.changes
+   echo "end lintian"
+fi
 echo $0 done

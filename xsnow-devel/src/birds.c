@@ -568,7 +568,6 @@ int birds_draw(cairo_t *cr)
 	    float p = scale(bird->y);
 
 	    cairo_surface_t *surface;
-	    GdkPixbuf       *pixbuf = 0;
 	    int iw,ih,nw;
 	    nw = bird->wingstate;
 
@@ -639,14 +638,14 @@ int birds_draw(cairo_t *cr)
 	       table_counter++;
 	       cache += iw*ih;
 	       P("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
-	       pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
+	       GdkPixbuf *pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
 	       table_insert(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow));
+	       g_clear_object(&pixbuf);
 	    }
 	    surface = (cairo_surface_t*) table_get(key);
 
 	    cairo_set_source_surface (cr, surface, bird->ix, bird->iz);
 	    cairo_paint(cr);
-	    g_clear_object(&pixbuf);
 	    P("draw: %d %d\n",bird->ix,bird->iz);
 	 }
 	 else
