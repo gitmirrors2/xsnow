@@ -5,12 +5,9 @@ newversion=`./getversion`
 oldversion=2.0.19
 curdir=`pwd`
 dist=sid
-tar=$curdir/xsnow-$newversion.tar.gz
+tar=$curdir/../versions/xsnow-$newversion.tar.gz
 uploaddir=$curdir/../upload/upload-$newversion
-#rm -rf src/tags src/.deps
-./configure
-make distcheck || exit 1
-
+./maketar || exit 1
 echo removing $uploaddir ...
 mkdir -p $uploaddir
 sudo chown -R willem.willem $uploaddir

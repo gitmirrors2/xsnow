@@ -1,3 +1,93 @@
+version 3.0.5
+	New major release
+	transparent.c: Prevent icons for transparent windows showing up in taskbar
+	windows.c: no update of windows if not snowing on a desktop
+	DetermineWindow (windows.c): make sure IsDesktop is initialized
+	SigHandler (main.c): Nicer exit after interrupt.
+	Use execvp instead of execve restarting xsnow.
+	Stratified some code starting from main.c: drawit
+	wmctrl.c: also sticky=1 if (int)ws == -1
+	Adapt for uploading to debian
+version 3.0.4.30
+	Some trivial changes to settings tab.
+	Better handling of clicking BGColor button.
+	Removed root window choice.
+	Birds: set meanspeed before creation, not after.
+version 3.0.4.29
+	Gray out all birds buttons when appropriate
+version 3.0.4.28
+	In settings: gray out and make inactive not usable buttons
+version 3.0.4.27
+	better logic to determine what kind of windows are used
+	simplified ui settings window
+version 3.0.4.21
+	transparent.c: remove sticky hint for gdkwindow: this is ierreversible
+	made do_wupdate conform. Created windows.c. This is a mess, have to
+	look into it.
+version 3.0.4.20
+	ui: colors, and slight layout improvements
+	corrected error after going to full screen of behind windows
+	removed setting of kde background (kdesetbg)
+version 3.0.4.19
+	re-instated the stopafter functionality
+	ui: set colors
+version 3.0.4.18
+	added a warning for a too high system load
+version 3.0.4.17
+	convert snow_on_tree done, together with some other minor adjustments
+version 3.0.4.16
+	produce output with -h, -help, -H, -manpage, -v, -version without
+	    calling gtk_init()
+	made parsing of flags conformant with the docs: added -v
+	place test for wayland before gtk_init()
+	do not draw fallensnow when window is hidden (iconized)
+version 3.0.4.15
+	blowoff in standard
+	made timeout callbacks conform doc
+version 3.0.4.14
+	fallensnow in standard
+version 3.0.4.13
+	place gtk_init before handling the flags
+	changed code for 'on all workspaces' (settings)
+	do not collect snow if y <= 0
+	implemented part of standard form for fallensnow
+	  todo: snow disappears now from windows that show on all workspaces
+version 3.0.4.12
+	draw stars using surfaces
+version 3.0.4.11
+	added stdlkib.h where desirable
+version 3.0.4.10
+	stars done
+version 3.0.4.09
+	some minor things in snow.c
+version 3.0.4.08
+	wind done
+version 3.0.4.07
+	meteorite done
+version 3.0.4.06
+	snow in standard form for the major part
+version 3.0.4.05
+	start with snow in standard form.
+	hashtable.{cpp,h}: added set functions
+	turned macro's delflake and makeflake into functions
+	stratified declarations of xpm's (pixmap.(c,h}
+	added snow xpm's (it seems there is no standard function to convert
+	   bitmap to GdkPixbuf)
+	implemented canonical update of sreen, using gtk_widget_queue_draw()
+version 3.0.4.03/4
+	put birds in 'standard form'
+version 3.0.4.02
+	gtk-scenery working
+	use timeout time at computing birds position (contrary to 3.0.3)
+version 3.0.4.01
+	Santa.c: handle usage of user-defined Santa
+	if Flags.NoMenu: do not write to ui labels or make ui sticky/unsticky
+	Made start with gtk-ing scenery.
+version 3.0.3.01
+	All santa stuff moved from main.c to Santa.c
+	Added utils.c utils.h
+version 3.0.3-gtk-0.1
+	Santa runs in gtk
 version 3.0.3
 	birds.c: use actual time to compute bird positions instead of callback
 	time

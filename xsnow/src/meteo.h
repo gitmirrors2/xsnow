@@ -17,9 +17,19 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-// obtain normally distributed number. The number will be between min and max:
-extern double gaussian (double mean, double standard_deviation, double min, double max);
-// seed the random generator (alternatively, srand48() can be used):
-extern void sgaussian(long int seed);
+
+typedef struct _MeteoMap {
+   int x1,x2,y1,y2,active;
+   double starttime;
+   GC gc,egc;
+   Region r;
+} MeteoMap;
+
+
+extern void meteo_init(void);
+extern int  meteo_ui(void);
+extern void meteo_draw(cairo_t *cr);
+extern void meteo_erase(void);
+

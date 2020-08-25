@@ -17,28 +17,22 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#include <stdlib.h>
-#include <math.h>
-#include "gaussian.h"
-// https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
+ */
+#pragma once
 
-double gaussian (double mean, double std, double min, double max) 
-{
-   double x;
-   do {
-      double v1, v2, s;
-      do {
-	 v1 = 2.0 * drand48() - 1.0;
-	 v2 = 2.0 * drand48() - 1.0;
-	 s = v1 * v1 + v2 * v2;
-      } while (s >= 1.0 || s == 0);
-      x = mean + v1 * sqrt((-2.0 * log(s)) / s) * std;
-   } while (x < min || x > max);
-   return x;
-}
+extern int    Wind;
+// Wind = 0: no wind
+// Wind = 1: wind only affecting snow
+// Wind = 2: wind affecting snow and santa
+// Direction =  0: no wind direction I guess
+// Direction =  1: wind from left to right
+// Direction = -1: wind from right to left
+extern int    Direction;
+extern float  Whirl;
+extern double WindTimer;
+extern double WindTimerStart;
+extern float  NewWind;
 
-void sgaussian(long int seed)
-{
-   srand48(seed);
-}
+
+extern void wind_init(void);
+extern int wind_ui(void);

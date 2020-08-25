@@ -175,6 +175,9 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    if(s) XFree(s);
 	 }
       }
+      // another sticky test, needed in KDE en LXDE:
+      if ((int)w->ws == -1)
+	 w->sticky = 1;
       if(properties) XFree(properties);
       properties = 0;
       nitems = 0;

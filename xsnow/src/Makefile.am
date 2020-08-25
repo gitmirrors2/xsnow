@@ -27,17 +27,20 @@ xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h windows.h\
-		flags.c flags.h \
-		gaussian.c gaussian.h csvpos.c csvpos.h \
+		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
+		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
-		kdesetbg.c kdesetbg.h \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
-		hashtable.cpp hashtable.h
+		hashtable.cpp hashtable.h \
+		Santa.c Santa.h utils.c utils.h \
+		scenery.c scenery.h snow.c snow.h \
+		meteo.c meteo.h wind.c wind.h \
+		stars.c stars.h blowoff.c blowoff.h \
+		treesnow.c treesnow.h loadmeasure.c loadmeasure.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 
@@ -72,4 +75,5 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h
+CLEANFILES = xsnow.6 ui_xml.h .deps/* 
+

@@ -20,11 +20,15 @@
 */
 #pragma once
 #define XPM_TYPE const char
+
 #include "xsnow.h"
+#include "snow.h"
+#include "stars.h"
+
 extern SnowMap       snowPix[];
 extern StarMap       starPix;
-extern char          ***Santas[][2];
-extern char          **xpmtrees[];
-extern TannenbaumMap tannenbaumPix[];
-extern char          **xsnow_logo;
+extern const char    ***Santas[][2];
+extern const char    **xpmtrees[];
+extern const char    **xsnow_logo;
 extern const char    **birds_xpm[];
+extern const char    **snow_xpm[];

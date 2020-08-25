@@ -29,10 +29,11 @@
 // and
 // https://github.com/anko/hudkit
 
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <gdk/gdkx.h>
+#include <string.h>
+
 #include "transparent.h"
 
 #ifdef DEBUG
@@ -50,8 +51,23 @@ static int is_below = 1;
 
 static GdkRectangle workarea;
 
+//
+// create transparent click-through window without any decorations
+// input:
+//   fullscreen:    1: set window fullscreen
+//   below:         1: place transparent window bleow all windows
+//   allworkspaces: 1: make window visible on all workspaces
+//   prefname:         use this as name for the window
+//   width:            width of desired window
+//   height:           height of desired window
+// output:
+//   xwin              will receive id of created X11-window, 0 if transparent iss not possible
+//   name              will contain copy of prefname
+//   gtkwin            will contain GtkWidget of transparent screen, use this to write with gtk/cairo to
+//                       0 if no transparent window is possible
+//
 void create_transparent_window(int fullscreen, int below, int allworkspaces, 
-      Window *win, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
+      Window *xwin, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
 {
    workarea.width  = width;
    workarea.height = height;
@@ -71,19 +87,31 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       P("No alpha\n");
       gtk_window_close(GTK_WINDOW(*gtkwin));
       *gtkwin = NULL;
-      *win = 0;
+      *xwin = 0;
       return;
+   }
+
+   // prevent window from showing up in taskbar: 
+   {
+      GValue val = G_VALUE_INIT;
+      g_value_init(&val,G_TYPE_BOOLEAN);
+      g_value_set_boolean(&val,TRUE);
+      g_object_set_property(G_OBJECT(*gtkwin),"skip-taskbar-hint",&val);
+      g_value_unset(&val);
    }
 
    gtk_widget_show_all(*gtkwin);
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));  // problems with dock
 
+
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
+   P("gdk_window %p\n",(void *)gdk_window);
    // keep xsnow visible after 'show desktop', and as a bonus, keep
    // xsnow visible on all workspaces in some desktops:
-   if (allworkspaces)
-      gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
+   // The following makes all workspaces irreversible:
+   //if (allworkspaces)
+   //  gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
    //
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
@@ -107,12 +135,14 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
 
-   usleep(200000);  // seems to be necessary with nvidia
+   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
+#if 0
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
    else
       gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
-   *win = gdk_x11_window_get_xid(gdk_window);
+#endif
+   *xwin = gdk_x11_window_get_xid(gdk_window);
 }
 
 #if 1

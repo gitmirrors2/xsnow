@@ -21,5 +21,8 @@
 #pragma once
 #include <X11/xpm.h>
 extern int iXpmCreatePixmapFromData(Display *display, Drawable d, 
-      char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
-extern Region regionfromxpm(char **data, int flop);
+      const char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
+extern Region regionfromxpm(const char **data, int flop);
+
+extern void xpm_set_color(const char **data, char ***out, int *lines, const char *color);
+extern void xpm_destroy(char **data, int lines);

@@ -35,20 +35,8 @@ typedef struct flags {
 #undef DOIT_L
 #undef DOIT_S
 
-#define FVWMFLAGS \
-   do { \
-      Flags.UseAlpha  = 0; \
-      Flags.UseBG     = 0; \
-      Flags.Exposures = 0; } while(0)
-
-#define GNOMEFLAGS \
-   do { \
-      Flags.UseAlpha  = 1; \
-      Flags.UseBG     = 0; \
-      Flags.Exposures = 0; } while(0)
-
-
 extern FLAGS Flags;
+extern FLAGS OldFlags;
 
 extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);
