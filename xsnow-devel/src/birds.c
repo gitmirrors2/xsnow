@@ -47,7 +47,7 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
-   // R("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
+   // I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
 
 //static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
