@@ -1,6 +1,8 @@
 version 3.0.6
 	Correct some typo's
 	Removed memory-leak in birds.c: birds_draw
+
+	birds.c: birds_draw: Correct position of birds by their width and height
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar

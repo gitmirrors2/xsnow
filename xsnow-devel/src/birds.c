@@ -47,7 +47,7 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
-   // I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
+// I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
 
 //static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
@@ -280,7 +280,7 @@ static void r2i(BirdType *bird)
    {
       bird->drawable = 0;
    }
-      P("r2i %d %d\n",counter++,bird->drawable);
+   P("r2i %d %d\n",counter++,bird->drawable);
 }
 
 
@@ -511,7 +511,9 @@ int birds_draw(cairo_t *cr)
       if(before && Flags.ShowAttrPoint)
       {
 	 r2i(&attrbird);
-	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz);
+	 int mx = cairo_image_surface_get_width(attrsurface);
+	 int mz = cairo_image_surface_get_height(attrsurface);
+	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
 	 cairo_paint(cr);
 	 //#define TESTBIRDS
 #ifdef TESTBIRDS
@@ -644,9 +646,11 @@ int birds_draw(cairo_t *cr)
 	    }
 	    surface = (cairo_surface_t*) table_get(key);
 
-	    cairo_set_source_surface (cr, surface, bird->ix, bird->iz);
+	    int mx = cairo_image_surface_get_width(surface);
+	    int mz = cairo_image_surface_get_height(surface);
+	    cairo_set_source_surface (cr, surface, bird->ix-mx/2, bird->iz-mz/2);
 	    cairo_paint(cr);
-	    P("draw: %d %d\n",bird->ix,bird->iz);
+	    P("draw: %d %d\n",bird->ix-mx/2,bird->iz-mz/2);
 	 }
 	 else
 	 {
