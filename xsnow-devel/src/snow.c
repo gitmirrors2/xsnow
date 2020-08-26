@@ -188,7 +188,8 @@ int snow_draw(cairo_t *cr)
    {
       P("snow_draw %d\n",counter++);
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
-      cairo_paint(cr);
+      //cairo_paint(cr);
+      my_paint(cr);
    }
    return TRUE;
 }

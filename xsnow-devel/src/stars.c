@@ -120,7 +120,8 @@ void stars_draw(cairo_t *cr)
       int y = star->y;
       int color = star->color;
       cairo_set_source_surface (cr, surfaces[color], x, y);
-      cairo_paint(cr);
+      //cairo_paint(cr);
+      my_paint(cr);
    }
    cairo_restore(cr);
 }

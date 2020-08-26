@@ -316,7 +316,7 @@ void attrbird2surface()
    P("attrbird2surface %d %f\n",counter++,f);
    attrsurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*f+2,2*f+2);
    cairo_t *cr = cairo_create(attrsurface);
-   cairo_set_source_rgba(cr,0.914,0.592,0.04,0.6);
+   cairo_set_source_rgba(cr,0.914,0.592,0.04,ALPHA);
    cairo_arc(cr,f+1,f+1,f,0,2*M_PI);
    cairo_fill(cr);
    cairo_destroy(cr);
@@ -514,7 +514,8 @@ int birds_draw(cairo_t *cr)
 	 int mx = cairo_image_surface_get_width(attrsurface);
 	 int mz = cairo_image_surface_get_height(attrsurface);
 	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
-	 cairo_paint(cr);
+	 //cairo_paint(cr);
+	 my_paint(cr);
 	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
@@ -539,7 +540,8 @@ int birds_draw(cairo_t *cr)
 	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	       r2i(&testbird);
 	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
-	       cairo_paint(cr);
+	       //cairo_paint(cr);
+	       my_paint(cr);
 	       g_clear_object(&pixbuf);
 	       cairo_surface_destroy(surface);
 	    }
@@ -649,7 +651,8 @@ int birds_draw(cairo_t *cr)
 	    int mx = cairo_image_surface_get_width(surface);
 	    int mz = cairo_image_surface_get_height(surface);
 	    cairo_set_source_surface (cr, surface, bird->ix-mx/2, bird->iz-mz/2);
-	    cairo_paint(cr);
+	    //cairo_paint(cr);
+	    my_paint(cr);
 	    P("draw: %d %d\n",bird->ix-mx/2,bird->iz-mz/2);
 	 }
 	 else

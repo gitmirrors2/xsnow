@@ -3909,7 +3909,7 @@ windows</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing on you windows too if you are running gnome or kde.
+                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing with transparency on you windows too.
 Pressing this button will cause a restart of xsnow.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>

@@ -39,6 +39,7 @@ extern float   sq3(float x, float y, float z);
 extern Pixel   IAllocNamedColor(const char *colorName, Pixel dfltPix);
 extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
 extern int     randint(int m);
+extern void    my_paint(cairo_t *cr);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);

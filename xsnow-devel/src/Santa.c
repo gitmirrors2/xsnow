@@ -119,7 +119,8 @@ int Santa_draw(cairo_t *cr)
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);
-   cairo_paint(cr);
+   //cairo_paint(cr);
+   my_paint(cr);
    return TRUE;
 }
 

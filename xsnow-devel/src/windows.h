@@ -60,6 +60,8 @@ extern void         DestroyWindow(Window w);
 static const int UW_DEFAULT     = 0; 
 static const int UW_TRANSPARENT = 2;
 
+static const double ALPHA = 0.6;     // used when Flags.BelowAll == 0
+
 extern struct _switches
 {
    unsigned int UseGtk    :1;

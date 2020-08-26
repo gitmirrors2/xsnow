@@ -21,10 +21,13 @@
 #include <stdio.h>
 #include <utils.h>
 #include <string.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include "windows.h"
 #include "meteo.h"
+#include "flags.h"
+#include "debug.h"
 
 
 Pixel Black, White;
@@ -121,4 +124,13 @@ void sgaussian(long int seed)
 guint add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap) 
 {
    return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0);
+}
+
+void my_paint(cairo_t *cr)
+{
+   P("BelowAll: %d\n",Flags.BelowAll);
+   if (Flags.BelowAll)
+      cairo_paint(cr);
+   else
+      cairo_paint_with_alpha(cr,ALPHA);
 }
