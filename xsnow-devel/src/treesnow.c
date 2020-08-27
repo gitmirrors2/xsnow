@@ -56,6 +56,16 @@ void treesnow_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
 }
 
+void treesnow_clear()
+{
+   XFreeGC(display, SnowOnTreesGC);
+}
+
+void treesnow_reinit()
+{
+   SnowOnTreesGC        = XCreateGC(display, SnowWin,    0, 0);
+}
+
 void treesnow_draw(cairo_t *cr)
 {
 #define testj
@@ -80,10 +90,7 @@ void treesnow_draw(cairo_t *cr)
       return;
    GdkRGBA color;
    gdk_rgba_parse(&color,Flags.SnowColor);
-   if (Flags.BelowAll)
-      cairo_set_source_rgb(cr,color.red,color.green,color.blue);
-   else
-      cairo_set_source_rgba(cr,color.red,color.green,color.blue,ALPHA);
+   cairo_set_source_rgba(cr,color.red,color.green,color.blue,ALPHA);
    gdk_cairo_region(cr,gSnowOnTreesRegion);
    cairo_fill(cr);
 }

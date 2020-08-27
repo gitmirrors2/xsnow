@@ -48,14 +48,12 @@ void stars_init()
 {
    int i;
    init_stars();
-   //if (switches.UseGtk)
    {
       for(i=0; i<STARANIMATIONS; i++)
       {
 	 surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,9,9);
 	 cairo_t *cr = cairo_create(surfaces[i]);
 	 cairo_set_line_width(cr,1);
-	 //cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
 	 GdkRGBA color;
 	 gdk_rgba_parse(&color,StarColor[i]);
 	 cairo_set_source_rgba(cr,color.red, color.green, color.blue,color.alpha);
@@ -72,19 +70,41 @@ void stars_init()
 	 cairo_destroy(cr);
       }
    }
-   //else
    {
       for (i=0; i<STARANIMATIONS; i++)
       {
-	 StarGC[i]  = XCreateGC(display,SnowWin,0,0);
+	 StarGC[i]   = XCreateGC(display,SnowWin,0,0);
 	 StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
       }
       starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (char *)starPix.starBits, starPix.width, starPix.height);
-      //if (!switches.UseGtk)
       add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
    }
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
+}
+
+void stars_clear()
+{
+   int i;
+   for (i=0; i<STARANIMATIONS; i++)
+   {
+      XFreeGC(display,StarGC[i]);
+   }
+   XFreePixmap(display,starPix.pixmap);
+}
+
+void stars_reinit()
+{
+   //init_stars();
+   int i;
+   for (i=0; i<STARANIMATIONS; i++)
+   {
+      StarGC[i]   = XCreateGC(display,SnowWin,0,0);
+      StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
+   }
+   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
+	 (char *)starPix.starBits, starPix.width, starPix.height);
+
 }
 
 void init_stars()
@@ -93,7 +113,6 @@ void init_stars()
    NStars = Flags.NStars;
    P("initstars %d\n",NStars);
    Stars = (Skoordinaten *) realloc(Stars,NStars*sizeof(Skoordinaten));
-   //for (i=0; i<Flags.NStars; i++)
    for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
@@ -120,8 +139,7 @@ void stars_draw(cairo_t *cr)
       int y = star->y;
       int color = star->color;
       cairo_set_source_surface (cr, surfaces[color], x, y);
-      //cairo_paint(cr);
-      my_paint(cr);
+      cairo_paint_with_alpha(cr,ALPHA);
    }
    cairo_restore(cr);
 }
@@ -149,6 +167,7 @@ int do_stars(gpointer data)
       return TRUE;
    if (switches.UseGtk)
       return TRUE;
+   P("do_stars %d %d\n",NStars,counter++);
    int i;
    for (i=0; i<NStars; i++)
    {

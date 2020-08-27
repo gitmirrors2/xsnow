@@ -57,8 +57,19 @@ void fallensnow_init()
    EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
 }
 
+void fallensnow_clear()
+{
+   XFreeGC(display,  FallenGC);
+   XFreeGC(display, EFallenGC);
+}
 
-extern void   fallensnow_set_gc()
+void fallensnow_reinit()
+{
+   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
+   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+}
+
+void   fallensnow_set_gc()
 {
    XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
    XSetFillStyle( display, EFallenGC, FillSolid);
@@ -76,8 +87,7 @@ void fallensnow_draw(cairo_t *cr)
 	 P("fallensnow_draw %d\n",
 	       cairo_image_surface_get_width(fsnow->surface));
 	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h+1);
-	 //cairo_paint(cr);
-	 my_paint(cr);
+	 cairo_paint_with_alpha(cr,ALPHA);
       }
       fsnow = fsnow->next;
    }

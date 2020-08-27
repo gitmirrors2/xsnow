@@ -61,6 +61,7 @@ static const int UW_DEFAULT     = 0;
 static const int UW_TRANSPARENT = 2;
 
 static const double ALPHA = 0.6;     // used when Flags.BelowAll == 0
+#define ALPHA (Flags.BelowAll?1.0:0.6)
 
 extern struct _switches
 {

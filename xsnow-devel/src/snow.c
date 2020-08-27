@@ -97,6 +97,38 @@ void snow_init()
    }
 }
 
+void snow_clear()
+{
+   int i;
+   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   {
+      XFreeGC(display,SnowGC[i]);
+      XFreeGC(display,ESnowGC[i]);
+      SnowMap *rp = &snowPix[i];
+      XFreePixmap(display,rp->pixmap);
+   }
+}
+
+void snow_reinit()
+{
+   int i;
+   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   {
+      SnowGC[i]  = XCreateGC(display, SnowWin, 0, 0);
+      ESnowGC[i] = XCreateGC(display, SnowWin, 0, 0);
+   }
+   InitSnowColor();
+   int flake;
+   for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
+   {
+      SnowMap *rp = &snowPix[flake];
+      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
+	    rp->snowBits, rp->width, rp->height);
+      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
+      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+   }
+}
+
 void snow_set_gc()
 {
    int i;
@@ -188,8 +220,7 @@ int snow_draw(cairo_t *cr)
    {
       P("snow_draw %d\n",counter++);
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
-      //cairo_paint(cr);
-      my_paint(cr);
+      cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }

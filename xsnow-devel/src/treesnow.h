@@ -30,3 +30,5 @@ extern void            InitSnowOnTrees(void);
 extern void            treesnow_init(void);
 extern void            treesnow_draw(cairo_t *cr);
 extern int             treesnow_ui(void);
+extern void            treesnow_clear(void);
+extern void            treesnow_reinit(void);

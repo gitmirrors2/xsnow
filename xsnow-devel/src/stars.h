@@ -42,4 +42,6 @@ extern void    stars_draw(cairo_t *cr);
 extern void    stars_init(void);
 extern void    stars_set_gc(void);
 extern int     stars_ui(void);
+extern void    stars_clear(void);
+extern void    stars_reinit(void);
 

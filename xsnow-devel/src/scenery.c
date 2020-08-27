@@ -67,6 +67,19 @@ void scenery_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,0);
 }
 
+void scenery_clear()
+{
+   XFreeGC(display, TreeGC);
+   // todo free existing trees
+
+}
+
+void scenery_reinit()
+{
+   TreeGC        = XCreateGC(display, SnowWin, 0, 0);
+   InitTreePixmaps(); 
+}
+
 void scenery_set_gc()
 {
    XSetFunction(display,   TreeGC, GXcopy);
@@ -86,8 +99,7 @@ int scenery_draw(cairo_t *cr)
       Treeinfo *tree = &Trees[i];
       cairo_surface_t *surface = tree_surfaces[tree->type][tree->rev];
       cairo_set_source_surface (cr, surface, tree->x, tree->y);
-      //cairo_paint(cr);
-      my_paint(cr);
+      cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }
@@ -312,7 +324,7 @@ int do_initbaum()
       P("tree: %d %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev, NTrees);
 
       //if (!switches.UseGtk)
-	 add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
+      add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
 

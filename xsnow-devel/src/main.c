@@ -449,10 +449,6 @@ int main_c(int argc, char *argv[])
    BlackPix = AllocNamedColor(BlackColor, Black);
 
    CleanGC       = XCreateGC(display, SnowWin,    0, 0);
-   /*
-      FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-      EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
-      */
 
    SetGCFunctions();
 
@@ -629,8 +625,53 @@ int myDetermineWindow()
    return 1;
 }
 
-/* ------------------------------------------------------------------ */ 
+static void reinit_windows()
+{
+   XCloseDisplay(display); 
 
+   display = XOpenDisplay(Flags.DisplayName);
+   RootWindow = DefaultRootWindow(display);
+   XSynchronize(display,dosync);
+   XSetErrorHandler(XsnowErrors);
+   screen = DefaultScreen(display);
+   Black = BlackPixel(display, screen);
+   White = WhitePixel(display, screen);
+
+   XSelectInput(display, SnowWin, 0);
+   R("reinit Fase 1\n");
+
+   static Window SnowWina    = 0;
+   static Window SnowWinb    = 0;
+
+   int IsDesktop;
+   if (!SnowWina)
+   {
+      if (SnowWinName)
+	 free(SnowWinName);
+      if (!DetermineWindow(&SnowWina,&SnowWinName,&TransA,"Xsnow-A", &IsDesktop))
+      {
+	 printf("xsnow: cannot determine window, exiting...\n");
+	 exit(1);
+      }
+      R("reinit Fase 2\n");
+
+      P("SnowWina: %#lx TransA: %p\n",SnowWina,(void *)TransA);
+
+      if (TransA)
+      {
+	 drawing_area = gtk_drawing_area_new();
+	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
+
+
+	 char *s = 0;
+	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
+	 if (s)
+	    free(s);
+
+	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
+      }
+   }
+}
 
 
 // here we are handling the buttons in ui
@@ -781,29 +822,52 @@ int do_ui_check(gpointer data)
 	 Flags.Done = 1;
 	 DoRestart  = 1;
       }
-      else   // this does not work:
+      else
       {
-	 if(switches.UseGtk)
-	 {
-	    GdkWindow *gdk_window;
-	    if(Flags.BelowAll)
-	    {
-	       P("below\n");
-	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
-	       gdk_window_hide(gdk_window);
-	       gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
-	       gdk_window_show(gdk_window);
-	    }
-	    else
-	    {
-	       P("above\n");
-	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
-	       gdk_window_hide(gdk_window);
-	       gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
-	       gdk_window_show(gdk_window);
-	    }
-	 }
+	 // experimental
+	 Santa_clear();
+	 scenery_clear();
+	 treesnow_clear();
+	 snow_clear();
+	 stars_clear();
+	 fallensnow_clear();
+
+	 //g_source_remove(draw_all_id);
+	 //reinit_windows();
+
+	 XCloseDisplay(display);
+	 display = XOpenDisplay("");
+	 screen = DefaultScreen(display);
+	 unsigned long valuemask;
+	 valuemask = CWBackPixel | CWBorderPixel | CWEventMask ;
+
+	 XSetWindowAttributes myat;
+	 myat.background_pixel = WhitePixel(display, screen);
+	 myat.border_pixel     = WhitePixel(display, screen);
+	 myat.event_mask       = ButtonPressMask ;
+
+	 myat.background_pixel = 0xffff00; // excercise 4
+
+	 Window mywindow = XCreateWindow (display, RootWindow(display, screen),
+	       0, 0, 1350, 1250, 1,
+	       DefaultDepth(display, screen), InputOutput ,
+	       DefaultVisual(display, screen),
+	       valuemask, &myat);
+	 XMapWindow( display, mywindow);
+	 SnowWin = mywindow;
+
+
+
+	 Santa_reinit();
+	 scenery_reinit();
+	 treesnow_reinit();
+	 snow_reinit();
+	 stars_reinit();
+	 fallensnow_reinit();
+
+	 SetGCFunctions();
       }
+
       changes++;
       P("changes: %d\n",changes);
    }
@@ -816,8 +880,6 @@ int do_ui_check(gpointer data)
    }
    return TRUE;
 }
-
-
 
 
 int do_displaychanged(gpointer data)
@@ -945,7 +1007,7 @@ int do_testing(gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
-   
+
    return TRUE;
 }
 
