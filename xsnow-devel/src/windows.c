@@ -370,6 +370,8 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  xwin, transname, xwinname, gtkwin,w,h);
+
+
 	    P("DetermineWindow gtkwin: %p xwin: %#lx\n",(void *)gtkwin,*xwin);
 	    if (*xwin == 0)
 	       *xwin = RootWindow;

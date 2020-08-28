@@ -38,7 +38,8 @@ static int              NStars;  // is copied from Flags.NStars in init_stars. W
 static Pixel            StarcPix[STARANIMATIONS];
 static GC               StarGC[STARANIMATIONS];
 static Skoordinaten    *Stars = 0;
-static char            *StarColor[STARANIMATIONS] = { "gold", "gold1", "gold4", "orange" };
+static char            *StarColor[STARANIMATIONS] = { (char *)"gold", (char *)"gold1", 
+   (char *)"gold4", (char *)"orange" };
 static int              do_stars(gpointer data);
 static int              do_ustars(gpointer data);
 
