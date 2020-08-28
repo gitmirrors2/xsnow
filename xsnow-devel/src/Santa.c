@@ -143,18 +143,6 @@ void Santa_init()
    add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
 }
 
-void Santa_clear()
-{
-   XFreeGC(display, ESantaGC);
-   XFreeGC(display, SantaGC);
-}
-
-void Santa_reinit()
-{
-   InitSantaPixmaps();
-   ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
-   SantaGC              = XCreateGC(display, SnowWin, 0, 0);
-}
 
 void Santa_set_gc()
 {

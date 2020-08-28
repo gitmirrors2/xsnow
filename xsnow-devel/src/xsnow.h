@@ -28,6 +28,7 @@
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 100
 #define DEFAULT_CpuLoad 100
+#define DEFAULT_Transparency 0
 #define DEFAULT_Defaults 0
 #define DEFAULT_DesiredNumberOfTrees 10
 #define DEFAULT_Desktop 0
@@ -186,12 +187,6 @@ typedef struct TannenbaumMap {
 } TannenbaumMap;
 
 
-typedef struct Treeinfo { 
-   int x;                    // x position
-   int y;                    // y position
-   unsigned int type;        // type (TreeType, -treetype)
-   unsigned int rev:1;       // reversed
-} Treeinfo;
 
 /* ------------------------------------------------------------------ */
 

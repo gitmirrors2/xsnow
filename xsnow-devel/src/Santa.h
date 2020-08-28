@@ -26,9 +26,6 @@ extern void   Santa_init(void);
 extern void   Santa_set_gc(void);
 extern int    Santa_ui(void);
 
-extern void Santa_clear(void);
-extern void Santa_reinit(void);
-
 extern float  ActualSantaSpeed;
 extern Region SantaPlowRegion;
 extern int    SantaWidth;

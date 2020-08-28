@@ -84,29 +84,6 @@ void stars_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
 }
 
-void stars_clear()
-{
-   int i;
-   for (i=0; i<STARANIMATIONS; i++)
-   {
-      XFreeGC(display,StarGC[i]);
-   }
-   XFreePixmap(display,starPix.pixmap);
-}
-
-void stars_reinit()
-{
-   //init_stars();
-   int i;
-   for (i=0; i<STARANIMATIONS; i++)
-   {
-      StarGC[i]   = XCreateGC(display,SnowWin,0,0);
-      StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
-   }
-   starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
-	 (char *)starPix.starBits, starPix.width, starPix.height);
-
-}
 
 void init_stars()
 {

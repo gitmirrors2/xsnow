@@ -1,12 +1,11 @@
 version 3.0.6
-	Correct some typo's
+	1:Correct some typo's
 	Removed memory-leak in birds.c: birds_draw
-
 	birds.c: birds_draw: Correct position of birds by their width and height
-
-	Paint with transparency if ~Flags.BelowAll
-
-	No need for restart after changing below/above
+	2:Paint with transparency if ~Flags.BelowAll
+	3:No need for restart after changing below/above
+	4:introduction of transparency used by painting
+	fixed bug concerning removing trees
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar

@@ -57,9 +57,6 @@ extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 extern int    do_fallen(gpointer data);
 extern void   SetMaxScreenSnowDepth(void);
 extern void   fallensnow_set_gc(void);
-extern void   fallensnow_clear(void);
-extern void   fallensnow_reinit(void);
-
 
 
 // insert a node at the start of the list

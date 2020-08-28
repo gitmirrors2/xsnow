@@ -572,6 +572,7 @@ void button_ww(GtkWidget *w, gpointer d)
 static struct _general_buttons
 {
    general_button cpuload;
+   general_button transparency;
    general_button usebg;
    general_button bgcolor;
    general_button exposures;
@@ -591,6 +592,7 @@ static void init_general_buttons()
    gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
 
    HANDLE_INIT(general_buttons.cpuload.button,            general-cpuload);
+   HANDLE_INIT(general_buttons.transparency.button,       general-transparency);
    HANDLE_INIT(general_buttons.usebg.button,              general-usebg);
    HANDLE_INIT(general_buttons.bgcolor.button,            general-bgcolor);
    HANDLE_INIT(general_buttons.exposures.button,          general-exposures);
@@ -610,6 +612,7 @@ static void set_general_buttons()
       HANDLE_SET_TOGGLE_(general_buttons.ww_2.button,TRUE);
 
    HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
+   HANDLE_SET_RANGE(general_buttons.transparency.button,Transparency,self);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
    HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
    HANDLE_SET_TOGGLE(general_buttons.usebg.button,          UseBG);
@@ -630,6 +633,16 @@ void button_cpuload(GtkWidget *w, gpointer d)
    value = gtk_range_get_value(GTK_RANGE(w));
    Flags.CpuLoad = lrint(value);
    P("button_cpuload: %d\n",Flags.CpuLoad);
+}
+
+   MODULE_EXPORT
+void button_transparency(GtkWidget *w, gpointer d)
+{
+   if(!human_interaction) return;
+   gdouble value;
+   value = gtk_range_get_value(GTK_RANGE(w));
+   Flags.Transparency = lrint(value);
+   P("button_transparency: %d\n",Flags.Transparency);
 }
 
 HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
@@ -664,6 +677,7 @@ void general_default(int vintage)
    human_interaction      = 0;
 
    Flags.CpuLoad       = DEFAULT_CpuLoad;
+   Flags.Transparency  = DEFAULT_Transparency;
    Flags.UseBG         = DEFAULT_UseBG;
    free(Flags.BGColor);
    Flags.BGColor       = strdup(DEFAULT_BGColor);
@@ -1181,11 +1195,13 @@ void ui_gray_ww(int m)
 
 // m=0: make active
 // m=1: make inactive
+// however, see transparency below
 void ui_gray_erase(int m)
 {
-   gtk_widget_set_sensitive(general_buttons.exposures.button,!m);
-   gtk_widget_set_sensitive(general_buttons.usebg.button,!m);
-   gtk_widget_set_sensitive(general_buttons.bgcolor.button,!m);
+   gtk_widget_set_sensitive(general_buttons.exposures.button,    !m);
+   gtk_widget_set_sensitive(general_buttons.usebg.button,        !m);
+   gtk_widget_set_sensitive(general_buttons.bgcolor.button,      !m);
+   gtk_widget_set_sensitive(general_buttons.transparency.button,  m);
 }
 
 

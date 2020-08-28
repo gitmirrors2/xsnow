@@ -45,6 +45,7 @@
    DOIT_I(BelowAll) \
    DOIT_I(BlowOffFactor)  \
    DOIT_I(CpuLoad)  \
+   DOIT_I(Transparency)  \
    DOIT_I(DesiredNumberOfTrees)  \
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \

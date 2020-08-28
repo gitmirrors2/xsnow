@@ -673,6 +673,13 @@ int do_ui_check(gpointer data)
       changes++;
       P("changes: %d\n",changes);
    }
+   if(Flags.Transparency != OldFlags.Transparency)
+   {
+      OldFlags.Transparency = Flags.Transparency;
+      P("Transparency: %d %d\n",OldFlags.Transparency,Flags.Transparency);
+      changes++;
+      P("changes: %d\n",changes);
+   }
    if(Flags.UseBG != OldFlags.UseBG)
    {
       OldFlags.UseBG = Flags.UseBG;

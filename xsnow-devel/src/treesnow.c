@@ -56,16 +56,6 @@ void treesnow_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
 }
 
-void treesnow_clear()
-{
-   XFreeGC(display, SnowOnTreesGC);
-}
-
-void treesnow_reinit()
-{
-   SnowOnTreesGC        = XCreateGC(display, SnowWin,    0, 0);
-}
-
 void treesnow_draw(cairo_t *cr)
 {
 #define testj
@@ -119,7 +109,7 @@ int do_snow_on_trees(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   if (NOTACTIVE || KillTrees)
+   if (NOTACTIVE)
       return TRUE;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return TRUE;

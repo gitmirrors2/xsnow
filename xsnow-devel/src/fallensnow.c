@@ -57,18 +57,6 @@ void fallensnow_init()
    EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
 }
 
-void fallensnow_clear()
-{
-   XFreeGC(display,  FallenGC);
-   XFreeGC(display, EFallenGC);
-}
-
-void fallensnow_reinit()
-{
-   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
-}
-
 void   fallensnow_set_gc()
 {
    XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);

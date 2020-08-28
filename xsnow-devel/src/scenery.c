@@ -55,7 +55,6 @@ static GC       TreeGC;
 static Treeinfo *Trees = 0;
 
 Region TreeRegion;
-int      KillTrees  = 0;  // 1: signal to trees to kill themselves
 
 static cairo_surface_t *tree_surfaces[MAXTREETYPE+1][2];
 
@@ -65,19 +64,6 @@ void scenery_init()
    TreeRegion    = XCreateRegion();
    InitTreePixmaps();
    add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,0);
-}
-
-void scenery_clear()
-{
-   XFreeGC(display, TreeGC);
-   // todo free existing trees
-
-}
-
-void scenery_reinit()
-{
-   TreeGC        = XCreateGC(display, SnowWin, 0, 0);
-   InitTreePixmaps(); 
 }
 
 void scenery_set_gc()
@@ -91,8 +77,6 @@ int scenery_draw(cairo_t *cr)
 {
    int i;
 
-   if (KillTrees)
-      NTrees = 0;
 
    for (i=0; i<NTrees; i++)
    {
@@ -122,7 +106,8 @@ int scenery_ui()
       RedrawTrees();
       OldFlags.DesiredNumberOfTrees = Flags.DesiredNumberOfTrees;
       changes++;
-      P("changes: %d\n",changes);
+      R("NTREES: %d %d\n",OldFlags.DesiredNumberOfTrees,Flags.DesiredNumberOfTrees);
+      R("changes: %d\n",changes);
    }
    if(Flags.TreeFill != OldFlags.TreeFill)
    {
@@ -153,33 +138,24 @@ int scenery_ui()
 
 void RedrawTrees()
 {
-   EraseTrees();
+   // remove trees from timeout callbacks:
+   int i;
+   for (i=0; i<NTrees; i++)
+   {
+      Treeinfo *tree = &Trees[i];
+      int rc = g_source_remove_by_user_data(tree->p);
+      R("removed %d %d %p\n",i,rc,(void *)tree->p);
+      if (rc)
+	 free(tree->p);
+   }
+   NTrees = 0;     // this signals initbaum to recreate the trees
+   ClearScreen();
+
 }
 
 void EraseTrees()
 {
-   KillTrees = 1;
-#if 0
-   // keeping this code in case I need explicit erase of trees
-   int i;
-   int d = 3;
-   for (i=0; i<NTrees; i++)
-   {
-      int x = Tree[i].x-d; 
-      int y = Tree[i].y-d; 
-      int t = Tree[i].type; 
-      int w = TreeWidth[t]+d+d;
-      int h = TreeHeight[t]+d+d;
-      if(UseAlpha|Flags.UseBG)
-	 XFillRectangle(display, SnowWin, ESantaGC, 
-	       x, y, w, h);
-      else
-	 XClearArea(display, SnowWin,
-	       x, y, w, h, Exposures);
-   }
-#endif
-
-   ClearScreen();
+   RedrawTrees();
 }
 
 void create_tree_surface(int tt,int flip, const char **xpm)
@@ -293,7 +269,6 @@ int do_initbaum()
    // determine placement of trees and NTrees:
 
    NTrees    = 0;
-   KillTrees = 0;
    for (i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted
    {
       if (NTrees >= Flags.DesiredNumberOfTrees)
@@ -321,9 +296,9 @@ int do_initbaum()
       tree->y    = y;
       tree->type = tt;
       tree->rev  = flop;
-      P("tree: %d %d %d %d %d\n",tree->x, tree->y, tree->type, tree->rev, NTrees);
+      R("tree: %d %d %d %d %d %p\n",tree->x, tree->y, tree->type, tree->rev, NTrees,(void *)tree);
 
-      //if (!switches.UseGtk)
+      tree->p = tree;
       add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
@@ -448,12 +423,6 @@ int do_drawtree(Treeinfo *tree)
       return TRUE;
    if (switches.UseGtk)
       return TRUE;
-   if (KillTrees)
-   {
-      free(tree);
-      NTrees--;
-      return FALSE;
-   }
    int x = tree->x; int y = tree->y; int t = tree->type; int r = tree->rev;
    P("t = %d %d\n",t,(int)wallclock());
    if (t<0) t=0;

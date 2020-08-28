@@ -97,37 +97,6 @@ void snow_init()
    }
 }
 
-void snow_clear()
-{
-   int i;
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
-   {
-      XFreeGC(display,SnowGC[i]);
-      XFreeGC(display,ESnowGC[i]);
-      SnowMap *rp = &snowPix[i];
-      XFreePixmap(display,rp->pixmap);
-   }
-}
-
-void snow_reinit()
-{
-   int i;
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
-   {
-      SnowGC[i]  = XCreateGC(display, SnowWin, 0, 0);
-      ESnowGC[i] = XCreateGC(display, SnowWin, 0, 0);
-   }
-   InitSnowColor();
-   int flake;
-   for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
-   {
-      SnowMap *rp = &snowPix[flake];
-      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
-	    rp->snowBits, rp->width, rp->height);
-      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
-      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
-   }
-}
 
 void snow_set_gc()
 {
