@@ -52,7 +52,7 @@ static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static int     *TreeType = 0;
 static int      NTrees     = 0;  // actual number of trees
 static GC       TreeGC;
-static Treeinfo *Trees = 0;
+static Treeinfo **Trees = 0;
 
 Region TreeRegion;
 
@@ -80,7 +80,7 @@ int scenery_draw(cairo_t *cr)
 
    for (i=0; i<NTrees; i++)
    {
-      Treeinfo *tree = &Trees[i];
+      Treeinfo *tree = Trees[i];
       cairo_surface_t *surface = tree_surfaces[tree->type][tree->rev];
       cairo_set_source_surface (cr, surface, tree->x, tree->y);
       cairo_paint_with_alpha(cr,ALPHA);
@@ -106,8 +106,8 @@ int scenery_ui()
       RedrawTrees();
       OldFlags.DesiredNumberOfTrees = Flags.DesiredNumberOfTrees;
       changes++;
-      R("NTREES: %d %d\n",OldFlags.DesiredNumberOfTrees,Flags.DesiredNumberOfTrees);
-      R("changes: %d\n",changes);
+      P("NTREES: %d %d\n",OldFlags.DesiredNumberOfTrees,Flags.DesiredNumberOfTrees);
+      P("changes: %d\n",changes);
    }
    if(Flags.TreeFill != OldFlags.TreeFill)
    {
@@ -142,15 +142,17 @@ void RedrawTrees()
    int i;
    for (i=0; i<NTrees; i++)
    {
-      Treeinfo *tree = &Trees[i];
-      int rc = g_source_remove_by_user_data(tree->p);
-      R("removed %d %d %p\n",i,rc,(void *)tree->p);
+      Treeinfo *tree = Trees[i];
+      int rc = g_source_remove_by_user_data(tree);
+      P("removed %d %d %p\n",i,rc,(void *)tree);
       if (rc)
-	 free(tree->p);
+	 free(tree);
+      else
+	I("This should not happen i=%d rc=%d tree=%p\n",i,rc,(void *)tree);
    }
    NTrees = 0;     // this signals initbaum to recreate the trees
+   reinit_treesnow_region();
    ClearScreen();
-
 }
 
 void EraseTrees()
@@ -296,9 +298,8 @@ int do_initbaum()
       tree->y    = y;
       tree->type = tt;
       tree->rev  = flop;
-      R("tree: %d %d %d %d %d %p\n",tree->x, tree->y, tree->type, tree->rev, NTrees,(void *)tree);
+      P("tree: %d %d %d %d %d %p\n",tree->x, tree->y, tree->type, tree->rev, NTrees,(void *)tree);
 
-      tree->p = tree;
       add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
@@ -317,8 +318,8 @@ int do_initbaum()
       XDestroyRegion(r);
 
       NTrees++;
-      Trees = (Treeinfo *)realloc(Trees,NTrees*sizeof(Treeinfo));
-      Trees[NTrees-1] = *tree;
+      Trees = (Treeinfo **)realloc(Trees,NTrees*sizeof(Treeinfo*));
+      Trees[NTrees-1] = tree;
    }
    OnTrees = 0;
    return TRUE;

@@ -105,7 +105,7 @@ Pixel   ErasePixel;
 Pixel   BlackPix;
 int     counter = 0;
 
-double  factor = 1.0;
+double  cpufactor = 1.0;
 float   NewWind = 0;
 
 GtkWidget       *drawing_area = 0;
@@ -140,7 +140,7 @@ static GC CleanGC;
 //static Region NoSnowArea_static;
 
 /* Forward decls */
-static void   HandleFactor(void);
+static void   HandleCpuFactor(void);
 static void   HandleExposures(void);
 static void   RestartDisplay(void);
 static void   SetGCFunctions(void);
@@ -435,7 +435,7 @@ int main_c(int argc, char *argv[])
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
 
-   HandleFactor();
+   HandleCpuFactor();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -669,7 +669,7 @@ int do_ui_check(gpointer data)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
       P("cpuload: %d %d\n",OldFlags.CpuLoad,Flags.CpuLoad);
-      HandleFactor();
+      HandleCpuFactor();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -705,7 +705,7 @@ int do_ui_check(gpointer data)
       P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
       OldFlags.Exposures = Flags.Exposures;
       HandleExposures();
-      HandleFactor();
+      HandleCpuFactor();
       ClearScreen();
       changes++;
       P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
@@ -1032,29 +1032,27 @@ int do_draw_all(gpointer widget)
 }
 
 
-// handle callbacks for things whose timings depend on factor
-void HandleFactor()
+// handle callbacks for things whose timings depend on cpufactor
+void HandleCpuFactor()
 {
    static guint fallen_id=0;
 
-   float oldfactor = factor;
-   // re-add things whose timing is dependent on factor
+   // re-add things whose timing is dependent on cpufactor
    if (Flags.CpuLoad <= 0)
-      factor = 1;
+      cpufactor = 1;
    else
-      factor = 100.0/Flags.CpuLoad;
+      cpufactor = 100.0/Flags.CpuLoad;
 
    //EraseTrees();
 
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   Santa_HandleFactor();
+   Santa_HandleCpuFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
-   P("handlefactor %f %f %d\n",oldfactor,factor,counter++);
-   if (factor > oldfactor) // user wants a smaller cpu load
-      add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
+   P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
+   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
 
    restart_do_draw_all();
 }

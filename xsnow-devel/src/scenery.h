@@ -26,9 +26,8 @@
 typedef struct Treeinfo { 
    int x;                    // x position
    int y;                    // y position
-   struct Treeinfo *p;       // pointer to this tree
-   unsigned int type;        // type (TreeType, -treetype)
-   unsigned int rev:1;       // reversed
+   unsigned int type:8;      // type (TreeType, -treetype)
+   unsigned int rev :1;      // reversed
 } Treeinfo;
 
 extern void scenery_init(void);

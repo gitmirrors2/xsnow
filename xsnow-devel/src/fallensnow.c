@@ -593,7 +593,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 int HandleFallenSnow(FallenSnow *fsnow)
 {
    if (fsnow->id == 0)
-      return 1;
+      return !Flags.NoKeepSBot;
    if (fsnow->hidden)
       return 0;
    if (!fsnow->sticky)
@@ -601,9 +601,7 @@ int HandleFallenSnow(FallenSnow *fsnow)
       if (fsnow->ws != CWorkSpace)
 	 return 0;
    }
-   if (fsnow->id)
-      return !Flags.NoKeepSWin;
-   return !Flags.NoKeepSBot;
+   return !Flags.NoKeepSWin;
 }
 
 

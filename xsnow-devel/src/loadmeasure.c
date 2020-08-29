@@ -55,7 +55,7 @@ int do_loadmeasure(gpointer data)
    static int count = 0;
    static int status   = 0;
 
-   if (tnow-tprev > 1.05*time_measure)
+   if (tnow-tprev > 1.1*time_measure)
       count++;
    else 
       count --;

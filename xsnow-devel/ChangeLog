@@ -6,6 +6,11 @@ version 3.0.6
 	3:No need for restart after changing below/above
 	4:introduction of transparency used by painting
 	fixed bug concerning removing trees
+	5:scenery.c: change definition of Tree to **Treeinfo and changed a few 
+	  lines accordingly
+	RedrawTrees now clears fallensnow on scenery
+	Change factor -> cpufactor
+	fallensnow.c: HandleFallenSnow: do not collect snow on bottom when Flags.NoKeepSBot
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar

@@ -316,7 +316,7 @@ void InitSantaPixmaps()
    if (wrong) exit(1);
 }		
 
-void Santa_HandleFactor()
+void Santa_HandleCpuFactor()
 {
    static guint santa_id=0, santa1_id=0;
 

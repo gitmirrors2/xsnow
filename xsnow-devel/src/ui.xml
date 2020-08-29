@@ -1127,7 +1127,7 @@ maintainer of xsnow, here is a paypal link.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If set, try to show fluff on fallen snow and trees.</property>
+                <property name="tooltip_text" translatable="yes">If set, try to show fluff on fallen snow and trees if possible.</property>
                 <property name="halign">start</property>
                 <property name="margin_right">8</property>
                 <signal name="toggled" handler="button_snow_fluff_show" swapped="no"/>
