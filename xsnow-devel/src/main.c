@@ -115,6 +115,7 @@ GdkWindow       *gdkwindow = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
+static int HaltedByInterrupt = 0;
 
 
 // timing stuff
@@ -127,17 +128,9 @@ static int          DoRestart = 0;
 static guint        draw_all_id = 0;
 
 
-
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
 
-
-/* GC's */
-static GC CleanGC;
-//static GC TreesGC[2];
-
-// region stuff
-//static Region NoSnowArea_static;
 
 /* Forward decls */
 static void   HandleCpuFactor(void);
@@ -153,6 +146,8 @@ static int    myDetermineWindow(void);
 
 static void Thanks(void)
 {
+   if (HaltedByInterrupt)
+      printf("\nXsnow: Caught signal %d\n",HaltedByInterrupt);
    printf("\nThank you for using xsnow\n");
 }
 
@@ -447,8 +442,6 @@ int main_c(int argc, char *argv[])
 
 
    BlackPix = AllocNamedColor(BlackColor, Black);
-
-   CleanGC       = XCreateGC(display, SnowWin,    0, 0);
 
    SetGCFunctions();
 
@@ -775,12 +768,7 @@ int do_ui_check(gpointer data)
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
-      if(0)
-      {
-	 Flags.Done = 1;
-	 DoRestart  = 1;
-      }
-      else
+      if(TransA)
       {
 	 if(Flags.BelowAll)
 	 {
@@ -941,10 +929,8 @@ int do_testing(gpointer data)
 /* ------------------------------------------------------------------ */ 
 void SigHandler(int signum)
 {
-   printf("\nCaught signal %d\n",signum);
-   Thanks();
-   ClearScreen();
-   exit(0);
+   HaltedByInterrupt = signum;
+   Flags.Done        = 1;
 }
 /* ------------------------------------------------------------------ */ 
 
@@ -1085,8 +1071,6 @@ void SetGCFunctions()
    snow_set_gc();
 
    stars_set_gc();
-   XSetFunction(display,CleanGC, GXcopy);
-   XSetForeground(display,CleanGC,BlackPix);
 
    fallensnow_set_gc();
 

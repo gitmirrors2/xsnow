@@ -11,6 +11,8 @@ version 3.0.6
 	RedrawTrees now clears fallensnow on scenery
 	Change factor -> cpufactor
 	fallensnow.c: HandleFallenSnow: do not collect snow on bottom when Flags.NoKeepSBot
+	6:Changed actions at interrupt.
+	Removed unused CleanGC
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar
