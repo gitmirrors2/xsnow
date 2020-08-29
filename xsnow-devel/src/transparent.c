@@ -91,12 +91,19 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    }
 
    // prevent window from showing up in taskbar: 
+   // Alas, it does show in Gnome's top bar standard window menu
+   /*
    {
       GValue val = G_VALUE_INIT;
       g_value_init(&val,G_TYPE_BOOLEAN);
       g_value_set_boolean(&val,TRUE);
       g_object_set_property(G_OBJECT(*gtkwin),"skip-taskbar-hint",&val);
       g_value_unset(&val);
+   }
+   */
+   {
+      gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin),TRUE);
+      gtk_window_set_skip_pager_hint  (GTK_WINDOW(*gtkwin),TRUE);
    }
 
    gtk_widget_show_all(*gtkwin);

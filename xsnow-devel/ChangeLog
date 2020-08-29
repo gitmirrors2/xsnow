@@ -13,6 +13,8 @@ version 3.0.6
 	fallensnow.c: HandleFallenSnow: do not collect snow on bottom when Flags.NoKeepSBot
 	6:Changed actions at interrupt.
 	Removed unused CleanGC
+	transparent.c: simplified applying skip-taskbar-hint
+	               added skip-pager-hint
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar
