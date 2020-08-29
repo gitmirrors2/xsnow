@@ -21,11 +21,21 @@
  */
 
 #include "xsnow.h"
+#include <gtk/gtk.h>
+
+typedef struct Treeinfo { 
+   int x;                    // x position
+   int y;                    // y position
+   unsigned int type:8;      // type (TreeType, -treetype)
+   unsigned int rev :1;      // reversed
+} Treeinfo;
+
 extern void scenery_init(void);
 extern int      scenery_ui(void);
 extern void     EraseTrees(void);
 extern void     scenery_set_gc(void);
 extern int      scenery_draw(cairo_t *cr);
+
 extern int      KillTrees;  // 1: signal to trees to kill themselves
-extern Region TreeRegion;
+extern Region   TreeRegion;
 

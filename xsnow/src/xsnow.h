@@ -28,6 +28,7 @@
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 100
 #define DEFAULT_CpuLoad 100
+#define DEFAULT_Transparency 0
 #define DEFAULT_Defaults 0
 #define DEFAULT_DesiredNumberOfTrees 10
 #define DEFAULT_Desktop 0
@@ -163,37 +164,19 @@
 #define time_change_attr      60.0             /* time between changing attraction point     */
 #define time_measure          0.1
 
-#define time_fallen           (0.15 * factor)  /* time between redraw fallen snow            */
-#define time_santa            (0.02 * factor)  /* time between drawings of santa             */
-#define time_santa1           (0.01 * factor)  /* time between redrawings of santa           */
-//#define time_snowflakes       (0.05 * factor)  /* time between redrawings of snowflakes      */
-#define time_snowflakes       (0.02 * factor)  /* time between redrawings of snowflakes      */
-//#define time_snowflakes       (switches.UseGtk?0.02 * factor:0.05*factor)  /* time between redrawings of snowflakes      */
-#define time_tree             (0.25 * factor)  /* time between redrawings of trees           */
+#define time_fallen           (0.15 * cpufactor)  /* time between redraw fallen snow            */
+#define time_santa            (0.02 * cpufactor)  /* time between drawings of santa             */
+#define time_santa1           (0.01 * cpufactor)  /* time between redrawings of santa           */
+//#define time_snowflakes       (0.05 * cpufactor)  /* time between redrawings of snowflakes      */
+#define time_snowflakes       (0.02 * cpufactor)  /* time between redrawings of snowflakes      */
+//#define time_snowflakes       (switches.UseGtk?0.02 * cpufactor:0.05*cpufactor)  /* time between redrawings of snowflakes      */
+#define time_tree             (0.25 * cpufactor)  /* time between redrawings of trees           */
 
-#define time_draw_all         (0.04 * factor)    /* time between update of screen */
+#define time_draw_all         (0.04 * cpufactor)    /* time between update of screen */
 
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
 
-
-typedef struct TannenbaumMap {
-   char *tannenbaumBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} TannenbaumMap;
-
-
-typedef struct Treeinfo { 
-   int x;                    // x position
-   int y;                    // y position
-   unsigned int type;        // type (TreeType, -treetype)
-   unsigned int rev:1;       // reversed
-} Treeinfo;
-
-/* ------------------------------------------------------------------ */
-
-extern double factor;
+extern double cpufactor;
 

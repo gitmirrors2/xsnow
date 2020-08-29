@@ -37,6 +37,7 @@ long GetCurrentWorkspace()
    unsigned char *properties;
    long r;
 
+   P("GetCurrentWorkspace %p %d\n",(void *)display,counter++);
    if (IsCompiz)
    {
       properties = 0;
@@ -59,6 +60,7 @@ long GetCurrentWorkspace()
    {
       properties = 0;
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
+      P("before XGetWindowProperty\n");
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       P("type: %ld %ld\n",type,XA_CARDINAL);
@@ -85,7 +87,7 @@ long GetCurrentWorkspace()
 	 r = *(long *)properties;
       if(properties) XFree(properties);
    }
-   //printf("TD: wmctrl: %d: %ld %#lx\n",__LINE__,nitems,r);
+   P("TD: wmctrl: %d: %ld %#lx\n",__LINE__,nitems,r);
 
    return r;
 }

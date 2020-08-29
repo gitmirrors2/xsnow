@@ -119,13 +119,19 @@ int Santa_draw(cairo_t *cr)
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);
-   cairo_paint(cr);
+   cairo_paint_with_alpha(cr,ALPHA);
    return TRUE;
 }
 
 void Santa_init()
 {
    P("Santa_init\n");
+   int i;
+   for (i=0; i<PIXINANIMATION; i++)
+   {
+      SantaPixmap[i]     = 0;
+      SantaMaskPixmap[i] = 0;
+   }
    InitSantaPixmaps();
 
    ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
@@ -136,6 +142,7 @@ void Santa_init()
    ResetSanta();   
    add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
 }
+
 
 void Santa_set_gc()
 {
@@ -188,24 +195,12 @@ void init_Santa_surfaces()
       char **santaxpm;
       for (i=0; i<PIXINANIMATION; i++)
       {
-	 /*
-	 if(SantaPixmap[i]) 
-	    XFreePixmap(display,SantaPixmap[i]);
-	 if(SantaMaskPixmap[i]) 
-	    XFreePixmap(display,SantaMaskPixmap[i]);
-	    */
 	 rc = XpmReadFileToData(path[i],&santaxpm);
 	 if(rc == XpmSuccess)
 	 {
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
 	    cairo_surface_destroy( Santa_surfaces[0][0][i]);
 	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,gdkwindow);
-	    /*
-	    iXpmCreatePixmapFromData(display, SnowWin, santaxpm, 
-		  &SantaPixmap[i], &SantaMaskPixmap[i], &attributes,0);
-
-	    sscanf(*santaxpm,"%d %d",&SantaWidth,&SantaHeight);
-	    */
 	    XpmFree(santaxpm);
 	    g_clear_object(&pixbuf);
 	 }
@@ -321,7 +316,7 @@ void InitSantaPixmaps()
    if (wrong) exit(1);
 }		
 
-void Santa_HandleFactor()
+void Santa_HandleCpuFactor()
 {
    static guint santa_id=0, santa1_id=0;
 

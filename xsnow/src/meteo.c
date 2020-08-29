@@ -80,7 +80,7 @@ void meteo_draw(cairo_t *cr)
       return;
    cairo_save(cr);
 
-   cairo_set_source_rgb(cr,color.red, color.green, color.blue);
+   cairo_set_source_rgba(cr,color.red, color.green, color.blue, ALPHA);
    cairo_set_line_width(cr,2);
    cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
    cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);

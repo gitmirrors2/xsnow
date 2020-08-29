@@ -80,7 +80,7 @@ void treesnow_draw(cairo_t *cr)
       return;
    GdkRGBA color;
    gdk_rgba_parse(&color,Flags.SnowColor);
-   cairo_set_source_rgb(cr,color.red,color.green,color.blue);
+   cairo_set_source_rgba(cr,color.red,color.green,color.blue,ALPHA);
    gdk_cairo_region(cr,gSnowOnTreesRegion);
    cairo_fill(cr);
 }
@@ -109,7 +109,7 @@ int do_snow_on_trees(gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   if (NOTACTIVE || KillTrees)
+   if (NOTACTIVE)
       return TRUE;
    if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return TRUE;
@@ -119,7 +119,7 @@ int do_snow_on_trees(gpointer data)
 
    if (switches.UseGtk)
    {
-   // for gtk, drawing is done in treesnow_draw()
+      // for gtk, drawing is done in treesnow_draw()
    }
    else
    {

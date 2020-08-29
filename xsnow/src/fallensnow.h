@@ -59,7 +59,6 @@ extern void   SetMaxScreenSnowDepth(void);
 extern void   fallensnow_set_gc(void);
 
 
-
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
       int x, int y, int w, int h);

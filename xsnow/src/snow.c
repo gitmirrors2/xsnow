@@ -97,6 +97,7 @@ void snow_init()
    }
 }
 
+
 void snow_set_gc()
 {
    int i;
@@ -188,7 +189,7 @@ int snow_draw(cairo_t *cr)
    {
       P("snow_draw %d\n",counter++);
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
-      cairo_paint(cr);
+      cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }

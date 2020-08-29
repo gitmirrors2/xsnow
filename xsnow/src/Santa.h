@@ -21,7 +21,7 @@
  */
 #include "xsnow.h"
 extern int    Santa_draw(cairo_t *cr);
-extern void   Santa_HandleFactor(void);
+extern void   Santa_HandleCpuFactor(void);
 extern void   Santa_init(void);
 extern void   Santa_set_gc(void);
 extern int    Santa_ui(void);

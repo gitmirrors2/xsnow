@@ -43,11 +43,10 @@
 #include "debug.h"
 
 static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
-static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
+//static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
 
 
 static gboolean supports_alpha = FALSE;
-static int is_below = 1;
 
 static GdkRectangle workarea;
 
@@ -71,14 +70,14 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
 {
    workarea.width  = width;
    workarea.height = height;
-   is_below = below;
-   P("create_transparent_window\n");
    *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL); 
+   P("create_transparent_window %p\n",(void *)*gtkwin);
    gtk_window_set_position(GTK_WINDOW(*gtkwin), GTK_WIN_POS_CENTER);
    *name = strdup(prefname);
    gtk_window_set_title(GTK_WINDOW(*gtkwin), *name);
    gtk_widget_set_app_paintable(*gtkwin, TRUE);
-   g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw), NULL);
+   // this callback we do not need:
+   //g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw), NULL);
    g_signal_connect(G_OBJECT(*gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
    gtk_widget_add_events(*gtkwin, GDK_BUTTON_PRESS_MASK);
    screen_changed(*gtkwin, NULL, NULL);
@@ -92,12 +91,19 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    }
 
    // prevent window from showing up in taskbar: 
+   // Alas, it does show in Gnome's top bar standard window menu
+   /*
    {
       GValue val = G_VALUE_INIT;
       g_value_init(&val,G_TYPE_BOOLEAN);
       g_value_set_boolean(&val,TRUE);
       g_object_set_property(G_OBJECT(*gtkwin),"skip-taskbar-hint",&val);
       g_value_unset(&val);
+   }
+   */
+   {
+      gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin),TRUE);
+      gtk_window_set_skip_pager_hint  (GTK_WINDOW(*gtkwin),TRUE);
    }
 
    gtk_widget_show_all(*gtkwin);
@@ -115,10 +121,7 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    //
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
-   if(below)
-      gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
-   else
-      gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
+
    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin), TRUE);
    gtk_window_set_accept_focus     (GTK_WINDOW(*gtkwin), FALSE);
    gtk_window_set_decorated        (GTK_WINDOW(*gtkwin), FALSE);
@@ -130,18 +133,18 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));
    gdk_window_show                 (GDK_WINDOW(gdk_window));
+
    // xsnow visible on all workspaces:
    if (allworkspaces)
       gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
 
-   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
-#if 0
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
    else
       gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
-#endif
+
+   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
    *xwin = gdk_x11_window_get_xid(gdk_window);
 }
 
@@ -237,15 +240,12 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
    size_to_screen(GTK_WINDOW(widget)); 
 }
 
+#if 0
 static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
 {
 #ifdef DEBUG
    static int count = 0;
 #endif
-   if(is_below)
-      gtk_window_set_keep_below(GTK_WINDOW(widget),TRUE);
-   else
-      gtk_window_set_keep_above(GTK_WINDOW(widget),TRUE);
    gtk_window_set_accept_focus(GTK_WINDOW(widget),FALSE);
    cairo_save (cr);
 
@@ -253,7 +253,7 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
    {
       //cairo_set_source_rgba (cr, 0.5, 1.0, 0.50, 0.5); /* transparent */
       cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0); /* transparent */
-      P("Draw: transparent %d\n",++count);
+      P("Draw: transparent %d\n",++counter);
    }
    else
    {
@@ -269,3 +269,4 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
 
    return FALSE;
 }
+#endif

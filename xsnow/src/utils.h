@@ -31,6 +31,7 @@
 #include <math.h>
 
 extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap);
+extern void    remove_from_mainloop(guint tag);
 extern void    ClearScreen(void);
 extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);

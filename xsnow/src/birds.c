@@ -47,7 +47,7 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
-   // R("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
+// I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
 
 //static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
 #if 0
@@ -280,7 +280,7 @@ static void r2i(BirdType *bird)
    {
       bird->drawable = 0;
    }
-      P("r2i %d %d\n",counter++,bird->drawable);
+   P("r2i %d %d\n",counter++,bird->drawable);
 }
 
 
@@ -316,7 +316,7 @@ void attrbird2surface()
    P("attrbird2surface %d %f\n",counter++,f);
    attrsurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*f+2,2*f+2);
    cairo_t *cr = cairo_create(attrsurface);
-   cairo_set_source_rgba(cr,0.914,0.592,0.04,0.6);
+   cairo_set_source_rgba(cr,0.914,0.592,0.04,ALPHA);
    cairo_arc(cr,f+1,f+1,f,0,2*M_PI);
    cairo_fill(cr);
    cairo_destroy(cr);
@@ -511,8 +511,10 @@ int birds_draw(cairo_t *cr)
       if(before && Flags.ShowAttrPoint)
       {
 	 r2i(&attrbird);
-	 cairo_set_source_surface (cr, attrsurface, attrbird.ix, attrbird.iz);
-	 cairo_paint(cr);
+	 int mx = cairo_image_surface_get_width(attrsurface);
+	 int mz = cairo_image_surface_get_height(attrsurface);
+	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
+	 cairo_paint_with_alpha(cr,ALPHA);
 	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
@@ -537,7 +539,7 @@ int birds_draw(cairo_t *cr)
 	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	       r2i(&testbird);
 	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
-	       cairo_paint(cr);
+	       my_paint(cr);
 	       g_clear_object(&pixbuf);
 	       cairo_surface_destroy(surface);
 	    }
@@ -568,7 +570,6 @@ int birds_draw(cairo_t *cr)
 	    float p = scale(bird->y);
 
 	    cairo_surface_t *surface;
-	    GdkPixbuf       *pixbuf = 0;
 	    int iw,ih,nw;
 	    nw = bird->wingstate;
 
@@ -639,15 +640,17 @@ int birds_draw(cairo_t *cr)
 	       table_counter++;
 	       cache += iw*ih;
 	       P("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
-	       pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
+	       GdkPixbuf *pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
 	       table_insert(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow));
+	       g_clear_object(&pixbuf);
 	    }
 	    surface = (cairo_surface_t*) table_get(key);
 
-	    cairo_set_source_surface (cr, surface, bird->ix, bird->iz);
-	    cairo_paint(cr);
-	    g_clear_object(&pixbuf);
-	    P("draw: %d %d\n",bird->ix,bird->iz);
+	    int mx = cairo_image_surface_get_width(surface);
+	    int mz = cairo_image_surface_get_height(surface);
+	    cairo_set_source_surface (cr, surface, bird->ix-mx/2, bird->iz-mz/2);
+	    cairo_paint_with_alpha(cr,ALPHA);
+	    P("draw: %d %d\n",bird->ix-mx/2,bird->iz-mz/2);
 	 }
 	 else
 	 {

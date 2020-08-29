@@ -111,7 +111,7 @@ int do_wupdate(gpointer data)
       Flags.Done = 1;
       return TRUE;
    };
-   //R(":\n");printwindows(Windows,NWindows);
+   //I(":\n");printwindows(Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
@@ -370,6 +370,8 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    }
 	    create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 		  xwin, transname, xwinname, gtkwin,w,h);
+
+
 	    P("DetermineWindow gtkwin: %p xwin: %#lx\n",(void *)gtkwin,*xwin);
 	    if (*xwin == 0)
 	       *xwin = RootWindow;

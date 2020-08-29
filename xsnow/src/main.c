@@ -105,7 +105,7 @@ Pixel   ErasePixel;
 Pixel   BlackPix;
 int     counter = 0;
 
-double  factor = 1.0;
+double  cpufactor = 1.0;
 float   NewWind = 0;
 
 GtkWidget       *drawing_area = 0;
@@ -115,6 +115,7 @@ GdkWindow       *gdkwindow = 0;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
+static int HaltedByInterrupt = 0;
 
 
 // timing stuff
@@ -127,21 +128,12 @@ static int          DoRestart = 0;
 static guint        draw_all_id = 0;
 
 
-
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
 
 
-/* GC's */
-static GC CleanGC;
-static GC TestingGC;
-//static GC TreesGC[2];
-
-// region stuff
-//static Region NoSnowArea_static;
-
 /* Forward decls */
-static void   HandleFactor(void);
+static void   HandleCpuFactor(void);
 static void   HandleExposures(void);
 static void   RestartDisplay(void);
 static void   SetGCFunctions(void);
@@ -154,6 +146,8 @@ static int    myDetermineWindow(void);
 
 static void Thanks(void)
 {
+   if (HaltedByInterrupt)
+      printf("\nXsnow: Caught signal %d\n",HaltedByInterrupt);
    printf("\nThank you for using xsnow\n");
 }
 
@@ -278,7 +272,7 @@ static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_
 
 int main_c(int argc, char *argv[])
 {
-   R("This is xsnow\n");
+   P("This is xsnow\n");
    signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
@@ -436,7 +430,7 @@ int main_c(int argc, char *argv[])
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
 
-   HandleFactor();
+   HandleCpuFactor();
 
 #define DOIT_I(x) OldFlags.x = Flags.x;
 #define DOIT_L(x) DOIT_I(x);
@@ -448,13 +442,6 @@ int main_c(int argc, char *argv[])
 
 
    BlackPix = AllocNamedColor(BlackColor, Black);
-
-   TestingGC     = XCreateGC(display, RootWindow, 0, 0);
-   CleanGC       = XCreateGC(display, SnowWin,    0, 0);
-   /*
-      FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-      EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
-      */
 
    SetGCFunctions();
 
@@ -510,12 +497,12 @@ int main_c(int argc, char *argv[])
    return 0;
 }		/* End of snowing */
 
+static gulong drawconnect = 0;
 int myDetermineWindow()
 {
    P("myDetermineWindow root: %#lx\n",RootWindow);
    static Window SnowWina    = 0;
    static Window SnowWinb    = 0;
-   static gulong drawconnect = 0;
 
    if (drawconnect)
    {
@@ -551,7 +538,6 @@ int myDetermineWindow()
 	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
       }
    }
-
 
    switches.UseGtk    = 1;
    switches.DrawBirds = 1;
@@ -590,7 +576,7 @@ int myDetermineWindow()
    }
    else                          //  No transparent window: Scenario 4
    {
-      R("Scenario 4 Desktop: %d\n",IsDesktop);
+      P("Scenario 4 Desktop: %d\n",IsDesktop);
       printf("Scenario: Use X11 for drawing snow in root window, no birds are possible.\n");
       // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
       SnowWin            = SnowWina;
@@ -630,9 +616,6 @@ int myDetermineWindow()
 
    return 1;
 }
-
-/* ------------------------------------------------------------------ */ 
-
 
 
 // here we are handling the buttons in ui
@@ -679,7 +662,14 @@ int do_ui_check(gpointer data)
    {
       OldFlags.CpuLoad = Flags.CpuLoad;
       P("cpuload: %d %d\n",OldFlags.CpuLoad,Flags.CpuLoad);
-      HandleFactor();
+      HandleCpuFactor();
+      changes++;
+      P("changes: %d\n",changes);
+   }
+   if(Flags.Transparency != OldFlags.Transparency)
+   {
+      OldFlags.Transparency = Flags.Transparency;
+      P("Transparency: %d %d\n",OldFlags.Transparency,Flags.Transparency);
       changes++;
       P("changes: %d\n",changes);
    }
@@ -701,14 +691,14 @@ int do_ui_check(gpointer data)
 	 ClearScreen();
       }
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
    }
    if(Flags.Exposures != OldFlags.Exposures)
    {
       P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
       OldFlags.Exposures = Flags.Exposures;
       HandleExposures();
-      HandleFactor();
+      HandleCpuFactor();
       ClearScreen();
       changes++;
       P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
@@ -778,34 +768,20 @@ int do_ui_check(gpointer data)
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
-      if(1)
+      if(TransA)
       {
-	 Flags.Done = 1;
-	 DoRestart  = 1;
-      }
-      else   // this does not work:
-      {
-	 if(switches.UseGtk)
+	 if(Flags.BelowAll)
 	 {
-	    GdkWindow *gdk_window;
-	    if(Flags.BelowAll)
-	    {
-	       P("below\n");
-	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
-	       gdk_window_hide(gdk_window);
-	       gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
-	       gdk_window_show(gdk_window);
-	    }
-	    else
-	    {
-	       P("above\n");
-	       gdk_window = gtk_widget_get_window(GTK_WIDGET(TransA));
-	       gdk_window_hide(gdk_window);
-	       gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
-	       gdk_window_show(gdk_window);
-	    }
+	    gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
+	    gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
+	 }
+	 else
+	 {
+	    gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
+	    gtk_window_set_keep_above(GTK_WINDOW(TransB), TRUE);
 	 }
       }
+
       changes++;
       P("changes: %d\n",changes);
    }
@@ -818,8 +794,6 @@ int do_ui_check(gpointer data)
    }
    return TRUE;
 }
-
-
 
 
 int do_displaychanged(gpointer data)
@@ -947,7 +921,7 @@ int do_testing(gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
-   
+
    return TRUE;
 }
 
@@ -955,10 +929,8 @@ int do_testing(gpointer data)
 /* ------------------------------------------------------------------ */ 
 void SigHandler(int signum)
 {
-   printf("\nCaught signal %d\n",signum);
-   Thanks();
-   ClearScreen();
-   exit(0);
+   HaltedByInterrupt = signum;
+   Flags.Done        = 1;
 }
 /* ------------------------------------------------------------------ */ 
 
@@ -1009,7 +981,7 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
 void drawit(cairo_t *cr)
 {
-   P("drawit %d\n",counter++);
+   P("drawit %d %p\n",counter++,(void *)cr);
 
    if (Flags.Done)
       return;
@@ -1046,29 +1018,27 @@ int do_draw_all(gpointer widget)
 }
 
 
-// handle callbacks for things whose timings depend on factor
-void HandleFactor()
+// handle callbacks for things whose timings depend on cpufactor
+void HandleCpuFactor()
 {
    static guint fallen_id=0;
 
-   float oldfactor = factor;
-   // re-add things whose timing is dependent on factor
+   // re-add things whose timing is dependent on cpufactor
    if (Flags.CpuLoad <= 0)
-      factor = 1;
+      cpufactor = 1;
    else
-      factor = 100.0/Flags.CpuLoad;
+      cpufactor = 100.0/Flags.CpuLoad;
 
    //EraseTrees();
 
    if (fallen_id)
       g_source_remove(fallen_id);
 
-   Santa_HandleFactor();
+   Santa_HandleCpuFactor();
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
-   P("handlefactor %f %f %d\n",oldfactor,factor,counter++);
-   if (factor > oldfactor) // user wants a smaller cpu load
-      add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
+   P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
+   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
 
    restart_do_draw_all();
 }
@@ -1080,7 +1050,7 @@ void restart_do_draw_all()
    if (draw_all_id)
       g_source_remove(draw_all_id);
    draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
-   P("started do_draw_all %d\n",draw_all_id);
+   P("started do_draw_all %d %p\n",draw_all_id, (void *)TransA);
 }
 
 
@@ -1101,8 +1071,6 @@ void SetGCFunctions()
    snow_set_gc();
 
    stars_set_gc();
-   XSetFunction(display,CleanGC, GXcopy);
-   XSetForeground(display,CleanGC,BlackPix);
 
    fallensnow_set_gc();
 

@@ -1,3 +1,20 @@
+version 3.0.6
+	1:Correct some typo's
+	Removed memory-leak in birds.c: birds_draw
+	birds.c: birds_draw: Correct position of birds by their width and height
+	2:Paint with transparency if ~Flags.BelowAll
+	3:No need for restart after changing below/above
+	4:introduction of transparency used by painting
+	fixed bug concerning removing trees
+	5:scenery.c: change definition of Tree to **Treeinfo and changed a few 
+	  lines accordingly
+	RedrawTrees now clears fallensnow on scenery
+	Change factor -> cpufactor
+	fallensnow.c: HandleFallenSnow: do not collect snow on bottom when Flags.NoKeepSBot
+	6:Changed actions at interrupt.
+	Removed unused CleanGC
+	transparent.c: simplified applying skip-taskbar-hint
+	               added skip-pager-hint
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar

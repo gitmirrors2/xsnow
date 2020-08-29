@@ -3,9 +3,9 @@ ulimit -c unlimited
 rm -f core
 reset
 if [ ! -e Makefile ] ; then
-   CFLAGS='-Wpedantic -Wall -O2 -g' CC=gcc-10 CXX=g++-10 ./configure
+   CFLAGS='-Wpedantic -Wall -O0 -g' CC=gcc-10 CXX=g++-10 ./configure
 fi
-#make -j  && src/xsnow --g-fatal-warnings
+make -j  && src/xsnow --g-fatal-warnings
 #make -j  && GDK_SYNCHRONIZE=1 GTK_DEBUG=interactive src/xsnow #--g-fatal-warnings
-make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
+#make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
 
