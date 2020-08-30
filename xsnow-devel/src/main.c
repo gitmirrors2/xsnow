@@ -353,10 +353,6 @@ int main_c(int argc, char *argv[])
 
    HandleExposures();
 
-   //InitSnowSpeedFactor();
-   //SetWhirl();
-   //SetWindTimer();
-
    InitSnowOnTrees();
 
    if (display == NULL) {
@@ -604,13 +600,6 @@ int myDetermineWindow()
    }
    else
    {
-#if 0
-      // snow in root window:
-      P("snow in root window\n");
-      if(SnowWinName) free(SnowWinName);
-      SnowWin     = DefaultRootWindow(display);
-      SnowWinName = strdup("No Name");
-#endif
       drawconnect = 0;
    }
 

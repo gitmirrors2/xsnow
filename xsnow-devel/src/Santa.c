@@ -484,19 +484,10 @@ void ResetSanta()
 Region RegionCreateRectangle(int x, int y, int w, int h)
 {
    XPoint p[5];
-   //p[0] = (XPoint){x  ,        y  };
    p[0].x =          x; p[0].y = y;
-
-   //p[1] = (XPoint){x+w,          y  };
    p[1].x =          x+w; p[1].y = y;
-
-   //p[2] = (XPoint){x+w,          y+h};
    p[2].x =          x+w; p[2].y = y+h;
-
-   //p[3] = (XPoint){x  ,        y+h}; 
    p[3].x =          x; p[3].y = y+h;
-
-   //p[4] = (XPoint){x  ,        y  };
    p[4].x =          x; p[4].y = y;
    return XPolygonRegion(p, 5, EvenOddRule);
 }

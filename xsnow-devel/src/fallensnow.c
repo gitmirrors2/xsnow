@@ -52,7 +52,6 @@ void fallensnow_init()
 {
    InitFallenSnow();
    P(" ");
-   //PrintFallenSnow(FsnowFirst);
    FallenGC      = XCreateGC(display, SnowWin,    0, 0);
    EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
 }
@@ -341,7 +340,6 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
 
 void CreateSurfaceFromFallen(FallenSnow *f)
 {
-   //if (f->w >2500)
    P("createsurface %#10lx %d %d %d %d %d %d\n",f->id,f->x,f->y,f->w,f->h,
 	 cairo_image_surface_get_width(f->surface),
 	 cairo_image_surface_get_height(f->surface));
