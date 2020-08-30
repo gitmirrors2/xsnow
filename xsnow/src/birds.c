@@ -65,11 +65,6 @@ static cairo_surface_t *attrsurface = 0;
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
 
-// https://stackoverflow.com/questions/3908565/how-to-make-gtk-window-background-transparent
-// https://stackoverflow.com/questions/16832581/how-do-i-make-a-gtkwindow-background-transparent-on-linux]
-//static int supports_alpha = 1;
-//static gboolean supports_alpha = TRUE;
-
 
 typedef struct _Birdtype
 {
@@ -246,7 +241,6 @@ static float scale(float y)
    if (y != 0)
    {
       s = 0.005*(100-Flags.ViewingDistance)*globals.maxy/y;
-      //s = Flags.BirdsScale*0.01*globals.maxx*0.0005*(100-Flags.ViewingDistance)*globals.maxy/y;
    }
    else
       s = 1.0e6;
@@ -766,9 +760,6 @@ void birds_set_speed()
 
 static void main_window()
 {
-   //GtkWidget *window = TransA;
-   //globals.maxix = gtk_widget_get_allocated_width(window);
-   //globals.maxiz = gtk_widget_get_allocated_height(window);
    globals.maxix = SnowWinWidth;
    globals.maxiz = SnowWinHeight;
    globals.maxiy = (globals.maxix+globals.maxiz)/2;
@@ -777,7 +768,6 @@ static void main_window()
 
    globals.maxz = globals.maxx*(float)globals.maxiz/(float)globals.maxix;
    globals.maxy = globals.maxx*(float)globals.maxiy/(float)globals.maxix;
-   //globals.vd   = 0.2*globals.maxy;
    globals.xc   = (globals.maxx-globals.ox)/2;
    globals.zc   = (globals.maxz-globals.oz)/2;
 
@@ -803,37 +793,11 @@ static void init_bird_pixbufs(const char *color)
    int i;
    for (i=0; i<NBIRDPIXBUFS; i++)
    {
-#if 0
-      int n;
-      sscanf(birds_xpm[i][0],"%*d %d",&n);
-      P("n= %d\n",n);
-      char **x = (char**)malloc(sizeof(char *)*(n+3));
-      int j;
-      for (j=0; j<2; j++)
-	 x[j] = strdup(birds_xpm[i][j]);
-      x[2] = (char *)malloc(5+sizeof(color));
-      x[2][0] = 0;
-      strcat(x[2],". c ");
-      strcat(x[2],color);
-      P("c: [%s]\n",x[2]);
-
-      for (j=3; j<n+3; j++)
-      {
-	 x[j] = strdup(birds_xpm[i][j]);
-	 P("%d %s\n",j,x[j]);
-      }
-
-      bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
-      for (j=0; j<n+3; j++)
-	 free(x[j]);
-      free(x);
-#else
       char **x;
       int lines;
       xpm_set_color(birds_xpm[i], &x, &lines, color);
       bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
       xpm_destroy(x,lines);
-#endif
    }
 }
 

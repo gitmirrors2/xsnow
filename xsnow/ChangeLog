@@ -1,3 +1,6 @@
+version 3.0.7
+	1:adapt hovertext for 'Below windows' button.
+	some code-cleanup
 version 3.0.6
 	1:Correct some typo's
 	Removed memory-leak in birds.c: birds_draw
