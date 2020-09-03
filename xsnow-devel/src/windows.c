@@ -176,6 +176,7 @@ void UpdateWindows()
       //P("%d %#lx\n",i,w->id);
       {
 	 f = FindFallen(FsnowFirst,w->id);
+	 P("%#lx %d\n",w->id,w->dock);
 	 if(f)
 	 {
 	    if ((!f->sticky) && f->ws != CWorkSpace)
@@ -186,10 +187,10 @@ void UpdateWindows()
 	    // window found in Windows, nut not in list of fallensnow,
 	    // add it, but not if we are snowing or birding in this window (Desktop for example)
 	    // and also not if this window has y <= 0
-	    // and also not if it is a very wide window, probably this is a panel then
-	    //P("add %#lx %d\n",w->id, RunCounter);
+	    // and also not if this window is a "dock"
 	    //PrintFallenSnow(FsnowFirst);
-	    if (w->id != SnowWin && w->y > 0 && (int)w->w < SnowWinWidth -100)
+	    P("               %#lx %d\n",w->id,w->dock);
+	    if (w->id != SnowWin && w->y > 0 && !(w->dock))
 	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
@@ -202,7 +203,7 @@ void UpdateWindows()
    long int *toremove = (long int *)malloc(sizeof(*toremove)*nf);
    int ntoremove = 0;
    f = FsnowFirst;
-   Atom wmState = XInternAtom(display, "_NET_WM_STATE", True);
+   Atom wmState  = XInternAtom(display, "_NET_WM_STATE", True);
    while(f)
    {
       if (f->id != 0)  // f->id=0: this is the snow at the bottom
@@ -228,7 +229,7 @@ void UpdateWindows()
 	       s = XGetAtomName(display,((Atom*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
-		  //P("%#lx is hidden %d\n",f->id, RunCounter);
+		  P("%#lx is hidden %d\n",f->id, counter++);
 		  f->hidden = 1;
 		  CleanFallenArea(f,0,f->w);
 		  if(s) XFree(s);

@@ -27,6 +27,7 @@ typedef struct WinInfo
    int x,y;               // x,y coordinates
    unsigned int w,h;      // width, height
    unsigned int sticky:1; // visible on all workspaces
+   unsigned int dock  :1; // is a "dock" (panel)
 
 } WinInfo;
 

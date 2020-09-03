@@ -1,3 +1,6 @@
+version 3.0.8
+	1:check op _NET_WIM_WINDOW_TYPE_DOCK: do not fall snow on
+	  such a window
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

@@ -127,8 +127,8 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
    gtk_window_set_decorated        (GTK_WINDOW(*gtkwin), FALSE);
    gtk_window_set_resizable        (GTK_WINDOW(*gtkwin), FALSE);
    cairo_region_t *cairo_region = cairo_region_create();
-   gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window),
-	 cairo_region, 0,0);
+   gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window), cairo_region, 0,0);
+   R("Region empty: %d\n",cairo_region_is_empty(cairo_region));
    cairo_region_destroy(cairo_region);
    if (fullscreen)
       gtk_window_fullscreen(GTK_WINDOW(*gtkwin));
@@ -139,12 +139,12 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       gtk_window_stick(GTK_WINDOW(*gtkwin));
    //
 
+   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
    if(below)
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
    else
       gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
 
-   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
    *xwin = gdk_x11_window_get_xid(gdk_window);
 }
 

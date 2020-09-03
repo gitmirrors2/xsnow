@@ -78,7 +78,7 @@ long GetCurrentWorkspace()
 	    // in Wayland, the actual number of current workspace can only
 	    // be obtained if user has done some workspace-switching
 	    // we return zero if the workspace number cannot be determined
-	    
+
 	    r = 0;
 	 else
 	    r = -1;
@@ -181,6 +181,34 @@ int GetWindows(WinInfo **windows, int *nwin)
       if ((int)w->ws == -1)
 	 w->sticky = 1;
       if(properties) XFree(properties);
+
+      // check if window is a "dock". 
+      w->dock = 0;
+      properties = 0;
+      nitems = 0;
+      atom = XInternAtom(display,"_NET_WM_WINDOW_TYPE", True);
+      XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
+	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if(format == 32)
+      {
+	 int i;
+	 for(i=0; (unsigned long)i<nitems; i++)
+	 {
+	    char *s = 0;
+	    s = XGetAtomName(display,((Atom*)properties)[i]);
+	    if (!strcmp(s,"_NET_WM_WINDOW_TYPE_DOCK"))
+	    { 
+	       P("%#lx is dock %d\n",w->id, counter++);
+	       w->dock = 1;
+	       if(s) XFree(s);
+	       break;
+	    }
+	    if(s) XFree(s);
+	 }
+      }
+      if(properties) XFree(properties);
+
+
       properties = 0;
       nitems = 0;
 
