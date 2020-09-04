@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "wind.h"
 #include "ixpm.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -49,10 +50,10 @@ static void   ResetSanta(void);
 static void   SetSantaSpeed(void);
 
 static int    CurrentSanta;
-static GC     ESantaGC = 0;
+static GC     ESantaGC = NULL;
 static int    OldSantaX = 0;  // the x value of Santa when he was last drawn
 static int    OldSantaY = 0;  // the y value of Santa when he was last drawn
-static GC     SantaGC = 0;
+static GC     SantaGC = NULL;
 static int    SantaHeight;   
 static Pixmap SantaMaskPixmap[PIXINANIMATION];
 static Pixmap SantaPixmap[PIXINANIMATION];
@@ -134,13 +135,13 @@ void Santa_init()
    }
    InitSantaPixmaps();
 
-   ESantaGC             = XCreateGC(display, SnowWin, 0, 0);
-   SantaGC              = XCreateGC(display, SnowWin, 0, 0);
+   ESantaGC             = XCreateGC(display, SnowWin, 0, NULL);
+   SantaGC              = XCreateGC(display, SnowWin, 0, NULL);
    SantaRegion          = XCreateRegion();
    SantaPlowRegion      = XCreateRegion();
    init_Santa_surfaces();
    ResetSanta();   
-   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,0);
+   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,NULL);
 }
 
 
@@ -180,7 +181,7 @@ void init_Santa_surfaces()
    };
    for (i=0; i<PIXINANIMATION; i++)
    {
-      path[i] = 0;
+      path[i] = NULL;
       FILE *f = HomeOpen(filenames[i],"r",&path[i]);
       if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
@@ -248,7 +249,7 @@ void InitSantaPixmaps()
    int ok = 1;
    for (i=0; i<PIXINANIMATION; i++)
    {
-      path[i] = 0;
+      path[i] = NULL;
       f = HomeOpen(filenames[i],"r",&path[i]);
       if(!f){ ok = 0; if (path[i]) free(path[i]); break; }
       fclose(f);
@@ -325,11 +326,11 @@ void Santa_HandleCpuFactor()
    if (santa1_id)
       g_source_remove(santa1_id);
 
-   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa,  0);
-   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, 0);
+   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa,  NULL);
+   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, NULL);
 }
 
-int do_santa(gpointer data)
+int do_santa(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -342,7 +343,7 @@ int do_santa(gpointer data)
    return TRUE;
 }
 
-int do_santa1(gpointer data)
+int do_santa1(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -399,7 +400,7 @@ void DrawSanta1()
 }
 
 // update santa's coordinates and speed
-int do_usanta(gpointer data)
+int do_usanta(UNUSED gpointer data)
 {
    P("do_usanta %d\n",counter++);
    if (Flags.Done)

@@ -1,6 +1,8 @@
 version 3.0.8
 	1:check op _NET_WIM_WINDOW_TYPE_DOCK: do not fall snow on
 	  such a window
+	2:changed 0 -> NULL where appropriate
+	  insert __attribute__ ((unused)) via macro UNUSED where appropriate
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

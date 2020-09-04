@@ -32,15 +32,16 @@
 #include "fallensnow.h"
 #include "transparent.h"
 #include "dsimple.h"
+#include "varia.h"
 
 static int    do_wupdate(gpointer data);
 static void   UpdateWindows(void);
 static Window XWinInfo(char **name);
 
-static WinInfo      *Windows = 0;
+static WinInfo      *Windows = NULL;
 static int          NWindows;
 
-char        *SnowWinName = 0;
+char        *SnowWinName = NULL;
 int          SnowWinX; 
 int          SnowWinY; 
 Window       RootWindow;
@@ -48,8 +49,8 @@ unsigned int Wroot;
 unsigned int Hroot;
 int          Xroot;
 int          Yroot;
-GtkWidget   *TransA = 0;
-GtkWidget   *TransB = 0;
+GtkWidget   *TransA = NULL;
+GtkWidget   *TransB = NULL;
 Window       SnowWin = 0;
 
 struct _switches switches;
@@ -60,7 +61,7 @@ int windows_ui()
    return changes;
 }
 
-void windows_draw(cairo_t *cr)
+void windows_draw(UNUSED cairo_t *cr)
 {
    // nothing to draw
 }
@@ -75,7 +76,7 @@ void DestroyWindow(Window w)
 void windows_init()
 {
    if (switches.Desktop)
-      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, 0);
+      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, NULL);
 }
 
 int WorkspaceActive()
@@ -86,7 +87,7 @@ int WorkspaceActive()
    return Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace;
 }
 
-int do_wupdate(gpointer data)
+int do_wupdate(UNUSED gpointer data)
 {
    P("do_wupdate\n");
    if (Flags.Done)
@@ -127,7 +128,7 @@ int do_wupdate(gpointer data)
       // in our transparent window. winfo->ws will be 0, and we keep
       // the same value for TransWorkSpace.
 
-      if ((int)winfo->ws > 0)
+      if (winfo->ws > 0)
       {
 	 TransWorkSpace = winfo->ws;
       }
@@ -191,7 +192,7 @@ void UpdateWindows()
 	    //PrintFallenSnow(FsnowFirst);
 	    P("               %#lx %d\n",w->id,w->dock);
 	    if (w->id != SnowWin && w->y > 0 && !(w->dock))
-	       PushFallenSnow(&FsnowFirst, w->id, w->ws, w->sticky,
+	       PushFallenSnow(&FsnowFirst, w->id, w, w->ws, w->sticky,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
 	 }
@@ -216,7 +217,7 @@ void UpdateWindows()
 	 }
 
 	 // test if f->id is hidden. If so: clear the area and notify in f
-	 Atom type; int format; unsigned long n, b; unsigned char *properties = 0;
+	 Atom type; int format; unsigned long n, b; unsigned char *properties = NULL;
 	 XGetWindowProperty(display, f->id, wmState, 0, (~0L), False, AnyPropertyType, 
 	       &type, &format, &n, &b, &properties);
 	 f->hidden = 0;
@@ -225,7 +226,7 @@ void UpdateWindows()
 	    unsigned long i;
 	    for (i=0; i<n; i++)
 	    {
-	       char *s = 0;
+	       char *s = NULL;
 	       s = XGetAtomName(display,((Atom*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
@@ -305,13 +306,13 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       else
       {
 	 // default behaviour
-	 char *desktopsession = 0;
+	 char *desktopsession = NULL;
 	 const char *desktops[] = {
 	    "DESKTOP_SESSION",
 	    "XDG_SESSION_DESKTOP",
 	    "XDG_CURRENT_DESKTOP",
 	    "GDMSESSION",
-	    0
+	    NULL
 	 };
 
 	 int i;
@@ -340,7 +341,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    *a = toupper(*a);
 	    a++;
 	 }
-	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != 0);
+	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != NULL);
 	 int lxdefound = 0;
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && !strncmp(DesktopSession,"LXDE",4))

@@ -40,7 +40,7 @@ long GetCurrentWorkspace()
    P("GetCurrentWorkspace %p %d\n",(void *)display,counter++);
    if (IsCompiz)
    {
-      properties = 0;
+      properties = NULL;
       atom = XInternAtom(display,"_NET_DESKTOP_VIEWPORT",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 2, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
@@ -58,7 +58,7 @@ long GetCurrentWorkspace()
    }
    else
    {
-      properties = 0;
+      properties = NULL;
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
       P("before XGetWindowProperty\n");
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
@@ -98,9 +98,9 @@ int GetWindows(WinInfo **windows, int *nwin)
    Atom atom, type;
    int format;
    unsigned long nitems,b;
-   unsigned char *properties = 0;
+   unsigned char *properties = NULL;
    long *r;
-   (*windows) = 0;
+   (*windows) = NULL;
    atom = XInternAtom(display,"_NET_CLIENT_LIST",False);
    XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
@@ -133,7 +133,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    &(w->x), &(w->y), &child_return);
 
       enum{NET,GTK};
-      Atom type; int format; unsigned long nitems,b; unsigned char *properties = 0;
+      Atom type; int format; unsigned long nitems,b; unsigned char *properties = NULL;
       Atom atom;
       atom = XInternAtom(display,"_NET_WM_DESKTOP",False);
       XGetWindowProperty(display, w->id, atom, 0, 1, False, 
@@ -141,7 +141,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(type != XA_CARDINAL)
       {
 	 if(properties) XFree(properties);
-	 properties = 0;
+	 properties = NULL;
 	 atom = XInternAtom(display,"_WIN_WORKSPACE",False);
 	 XGetWindowProperty(display, w->id, atom, 0, 1, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
@@ -155,7 +155,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 w->ws = 0;
       // maybe this window is sticky:
       w->sticky = 0;
-      properties = 0;
+      properties = NULL;
       nitems = 0;
       atom = XInternAtom(display,"_NET_WM_STATE",True);
       XGetWindowProperty(display, w->id, atom, 0, (~0L), False,
@@ -165,7 +165,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 int i;
 	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
-	    char *s = 0;
+	    char *s = NULL;
 	    s = XGetAtomName(display,((Atom*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_STATE_STICKY"))
 	    { 
@@ -178,13 +178,13 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 }
       }
       // another sticky test, needed in KDE en LXDE:
-      if ((int)w->ws == -1)
+      if (w->ws == -1)
 	 w->sticky = 1;
       if(properties) XFree(properties);
 
       // check if window is a "dock". 
       w->dock = 0;
-      properties = 0;
+      properties = NULL;
       nitems = 0;
       atom = XInternAtom(display,"_NET_WM_WINDOW_TYPE", True);
       XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
@@ -194,7 +194,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 int i;
 	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
-	    char *s = 0;
+	    char *s = NULL;
 	    s = XGetAtomName(display,((Atom*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_WINDOW_TYPE_DOCK"))
 	    { 
@@ -209,7 +209,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(properties) XFree(properties);
 
 
-      properties = 0;
+      properties = NULL;
       nitems = 0;
 
       // first try to get adjustments for _GTK_FRAME_EXTENTS
@@ -220,7 +220,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if (nitems != 4)
       {
 	 if(properties) XFree(properties);
-	 properties = 0;
+	 properties = NULL;
 	 //printf("%d: trying net...\n",__LINE__);
 	 XGetWindowProperty(display, w->id, net_atom, 0, 4, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
@@ -259,6 +259,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(properties)XFree(properties);
    }
    if(properties) XFree(properties);
+   //R("%d\n",counter++);printwindows(*windows,*nwin);
    return 1;
 }
 
@@ -283,7 +284,7 @@ WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
 	 return w;
       w++;
    }
-   return 0;
+   return NULL;
 }
 
 void printwindows(WinInfo *windows, int nwin)
@@ -292,7 +293,8 @@ void printwindows(WinInfo *windows, int nwin)
    int i;
    for (i=0; i<nwin; i++)
    {
-      printf("id:%#lx ws:%#lx x:%d y:%d w:%d h:%d sticky:%d\n",w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky);
+      printf("id:%#12lx ws:%4d x:%6d y:%6d w:%6d h:%6d sticky:%d dock:%d\n",
+	    w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky,w->dock);
       w++;
    }
    return;

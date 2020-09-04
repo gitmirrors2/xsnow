@@ -33,27 +33,28 @@
 #include "blowoff.h"
 #include "wind.h"
 #include "debug.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
 int        MaxScrSnowDepth = 0;
-FallenSnow *FsnowFirst = 0;
+FallenSnow *FsnowFirst = NULL;
 
 static GC EFallenGC;
 static GC FallenGC;
 
 static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
 static void CreateSurfaceFromFallen(FallenSnow *f);
-static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
+static Pixmap CreatePixmapFromFallen(FallenSnow *f);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 
 void fallensnow_init()
 {
    InitFallenSnow();
    P(" ");
-   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+   FallenGC      = XCreateGC(display, SnowWin,    0, NULL);
+   EFallenGC     = XCreateGC(display, SnowWin,    0, NULL);  // used to erase fallen snow
 }
 
 void   fallensnow_set_gc()
@@ -119,7 +120,7 @@ int fallensnow_ui()
    return changes;
 }
 
-int do_fallen(gpointer data)
+int do_fallen(UNUSED gpointer data)
 {
 
    if (Flags.Done)
@@ -147,11 +148,12 @@ void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 }
 
 // insert a node at the start of the list 
-void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
+void PushFallenSnow(FallenSnow **first, int window_id, WinInfo *win, int ws, int sticky,
       int x, int y, int w, int h) 
 {
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
    p->id         = window_id;
+   p->win        = *win;
    p->x          = x;
    p->y          = y;
    p->w          = w;
@@ -210,7 +212,7 @@ int PopFallenSnow(FallenSnow **list)
 // remove by id
 int RemoveFallenSnow(FallenSnow **list, Window id)
 {
-   if (*list == 0)
+   if (*list == NULL)
       return 0;
 
    FallenSnow *fallen = *list;
@@ -257,7 +259,7 @@ FallenSnow *FindFallen(FallenSnow *first, Window id)
 	 return fsnow;
       fsnow = fsnow->next;
    }
-   return 0;
+   return NULL;
 }
 // print list
 void PrintFallenSnow(FallenSnow *list)
@@ -477,7 +479,9 @@ void InitFallenSnow()
    while (FsnowFirst)
       PopFallenSnow(&FsnowFirst);
    // create fallensnow on bottom of screen:
-   PushFallenSnow(&FsnowFirst, 0, CWorkSpace, 0, 0, 
+   WinInfo *NullWindow = (WinInfo *)malloc(sizeof(WinInfo));
+   NullWindow->id = 0;
+   PushFallenSnow(&FsnowFirst, 0, NullWindow, CWorkSpace, 0, 0, 
 	 SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
 }
 

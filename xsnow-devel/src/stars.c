@@ -28,6 +28,7 @@
 #include "windows.h"
 #include "pixmaps.h"
 #include "utils.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -37,7 +38,7 @@ static int              NStars;  // is copied from Flags.NStars in init_stars. W
 //                               // NStars is changed outside init_stars
 static Pixel            StarcPix[STARANIMATIONS];
 static GC               StarGC[STARANIMATIONS];
-static Skoordinaten    *Stars = 0;
+static Skoordinaten    *Stars = NULL;
 static char            *StarColor[STARANIMATIONS] = { (char *)"gold", (char *)"gold1", 
    (char *)"gold4", (char *)"orange" };
 static int              do_stars(gpointer data);
@@ -74,14 +75,14 @@ void stars_init()
    {
       for (i=0; i<STARANIMATIONS; i++)
       {
-	 StarGC[i]   = XCreateGC(display,SnowWin,0,0);
+	 StarGC[i]   = XCreateGC(display,SnowWin,0,NULL);
 	 StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
       }
       starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (char *)starPix.starBits, starPix.width, starPix.height);
-      add_to_mainloop(PRIORITY_DEFAULT, time_star,           do_stars              ,0);
+      add_to_mainloop(PRIORITY_DEFAULT, time_star, do_stars, NULL);
    }
-   add_to_mainloop(PRIORITY_DEFAULT, time_ustar,          do_ustars             ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars, NULL);
 }
 
 
@@ -137,7 +138,7 @@ int stars_ui()
 }
 
 
-int do_stars(gpointer data)
+int do_stars(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -163,7 +164,7 @@ int do_stars(gpointer data)
    return TRUE;
 }
 
-int do_ustars(gpointer data)
+int do_ustars(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;

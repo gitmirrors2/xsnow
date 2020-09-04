@@ -80,6 +80,7 @@
 #include "debug.h"
 #include "treesnow.h"
 #include "loadmeasure.h"
+#include "varia.h"
 
 #ifdef DEBUG
 #undef DEBUG
@@ -98,7 +99,7 @@ int     SnowWinBorderWidth;
 int     SnowWinDepth;
 int     SnowWinHeight;
 int     SnowWinWidth; 
-char   *DesktopSession = 0;
+char   *DesktopSession = NULL;
 int     IsCompiz;
 int     IsWayland;
 Pixel   ErasePixel;
@@ -108,8 +109,8 @@ int     counter = 0;
 double  cpufactor = 1.0;
 float   NewWind = 0;
 
-GtkWidget       *drawing_area = 0;
-GdkWindow       *gdkwindow = 0;
+GtkWidget       *drawing_area = NULL;
+GdkWindow       *gdkwindow = NULL;
 
 
 
@@ -285,7 +286,7 @@ int main_c(int argc, char *argv[])
    Argv = (char**) malloc((argc+1)*sizeof(char**));
    for (i=0; i<argc; i++)
       Argv[i] = strdup(argv[i]);
-   Argv[argc] = 0;
+   Argv[argc] = NULL;
 
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
@@ -417,14 +418,14 @@ int main_c(int argc, char *argv[])
    treesnow_init();
    loadmeasure_init();
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,0);
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,NULL);
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,NULL);
 
    if (Flags.StopAfter > 0)
-      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, 0);
+      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, NULL);
 
    HandleCpuFactor();
 
@@ -469,7 +470,7 @@ int main_c(int argc, char *argv[])
 	 ui_set_birds_header("No alpha channel: no birds will fly.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
-      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, 0);
+      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, NULL);
    }
 
    // main loop
@@ -526,7 +527,7 @@ int myDetermineWindow()
 	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
 
 
-	 char *s = 0;
+	 char *s = NULL;
 	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
 	 if (s)
 	    free(s);
@@ -612,7 +613,7 @@ int myDetermineWindow()
 // But, do_ui_check is called not too frequently, so....
 // Note: if changes != 0, the settings will be written to .xsnowrc
 //
-int do_ui_check(gpointer data)
+int do_ui_check(UNUSED gpointer data)
 {
    if (Flags.Done)
       gtk_main_quit();
@@ -785,7 +786,7 @@ int do_ui_check(gpointer data)
 }
 
 
-int do_displaychanged(gpointer data)
+int do_displaychanged(UNUSED gpointer data)
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
@@ -812,7 +813,7 @@ int do_displaychanged(gpointer data)
    }
 }
 
-int do_event(gpointer data)
+int do_event(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -874,7 +875,7 @@ void RestartDisplay()    // todo
 
 
 
-int do_show_range_etc(gpointer data)
+int do_show_range_etc(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -885,7 +886,7 @@ int do_show_range_etc(gpointer data)
    return TRUE;
 }
 
-int do_show_desktop_type(gpointer data)
+int do_show_desktop_type(UNUSED gpointer data)
 {
    P("do_show_desktop_type %d\n",counter++);
    if (Flags.NoMenu)
@@ -905,7 +906,7 @@ int do_show_desktop_type(gpointer data)
 
 
 
-int do_testing(gpointer data)
+int do_testing(UNUSED gpointer data)
 {
    counter++;
    if (Flags.Done)
@@ -961,7 +962,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 
 
 // the draw callback
-gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
+gboolean on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data) 
 {
    P("Just to check who this is: %p %p\n",(void *)widget,(void *)TransA);
    drawit(cr);
@@ -1025,9 +1026,9 @@ void HandleCpuFactor()
 
    Santa_HandleCpuFactor();
 
-   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, 0);
+   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, NULL);
    P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
-   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, 0);  // remove flakes
+   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, NULL);  // remove flakes
 
    restart_do_draw_all();
 }
@@ -1078,7 +1079,7 @@ void HandleExposures()
 }
 
 
-int do_stopafter(gpointer data)
+int do_stopafter(UNUSED gpointer data)
 {
    Flags.Done = 1;
    printf("Halting because of flag -stopafter\n");

@@ -23,20 +23,22 @@
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include "wmctrl.h"
 
-typedef struct FallenSnow {
-   Window id;                       // window id, 0 for snow at bottom
-   int                x,y;          // Coordinates of fallen snow, y for bottom
-   int                w,h;          // width, max height of fallen snow
-   int                w8;           // width rounded up to 8-fold
-   short int         *acth;         // actual height
-   short int         *desh;         // desired height
-   short int          ws;           // visible on workspace ws
-   struct FallenSnow *next;         // pointer to next item
-   cairo_surface_t   *surface;      // 
-   unsigned int       hidden : 1;   // if True, the window is hidden (iconized)
-   unsigned int       clean  : 1;   // if True, this area has been cleaned
-   unsigned int       sticky : 1;   // visible on all workspaces
+typedef struct _FallenSnow {
+   Window              id;           // window id, 0 for snow at bottom  // to remove
+   WinInfo             win;          // WinInfo of window, win.id == 0 if snow at bottom
+   int                 x,y;          // Coordinates of fallen snow, y for bottom of fallen snow
+   int                 w,h;          // width, max height of fallen snow
+   int                 w8;           // width rounded up to 8-fold
+   short int          *acth;         // actual heights
+   short int          *desh;         // desired heights
+   struct _FallenSnow *next;         // pointer to next item
+   cairo_surface_t    *surface;      // 
+   unsigned int        ws     :16;   // visible on workspace ws
+   unsigned int        hidden : 1;   // if True, the window is hidden (iconized)  // to remove
+   unsigned int        clean  : 1;   // if True, this area has been cleaned
+   unsigned int        sticky : 1;   // visible on all workspaces                 // to remove
 } FallenSnow;
 
 extern FallenSnow *FsnowFirst;
@@ -60,7 +62,7 @@ extern void   fallensnow_set_gc(void);
 
 
 // insert a node at the start of the list
-extern void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
+extern void PushFallenSnow(FallenSnow **first, int window_id, WinInfo *win, int ws, int sticky,
       int x, int y, int w, int h);
 
 // pop first element

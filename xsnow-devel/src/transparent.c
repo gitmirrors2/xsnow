@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <gdk/gdkx.h>
 #include <string.h>
+#include "varia.h"
 
 #include "transparent.h"
 
@@ -214,7 +215,7 @@ static void size_to_screen(GtkWindow *window) {
 }
 #endif
 
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata)
+static void screen_changed(GtkWidget *widget, UNUSED GdkScreen *old_screen, UNUSED gpointer userdata)
 {
    static int msg1 = 0, msg2 = 0;
    /* To check if the display supports alpha channels, get the visual */

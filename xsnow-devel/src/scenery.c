@@ -36,23 +36,24 @@
 #include "fallensnow.h"
 #include "csvpos.h"
 #include "treesnow.h"
+#include "varia.h"
 
 static int      do_drawtree(Treeinfo *tree);
-static int      do_initbaum(void);
+static int      do_initbaum(gpointer data);
 static void     ReInitTree0(void);
 static void     InitTreePixmaps(void);
 static void     RedrawTrees(void);
 static void     create_tree_surface(int tt,int flip, const char **xpm);
 static int      NtreeTypes = 0;
 static int      TreeRead = 0;
-static char     **TreeXpm = 0;
+static char     **TreeXpm = NULL;
 static Pixmap   TreePixmap[MAXTREETYPE+1][2];
 static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
 static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-static int     *TreeType = 0;
+static int     *TreeType = NULL;
 static int      NTrees     = 0;  // actual number of trees
 static GC       TreeGC;
-static Treeinfo **Trees = 0;
+static Treeinfo **Trees = NULL;
 
 Region TreeRegion;
 
@@ -60,10 +61,10 @@ static cairo_surface_t *tree_surfaces[MAXTREETYPE+1][2];
 
 void scenery_init()
 {
-   TreeGC        = XCreateGC(display, SnowWin, 0, 0);
+   TreeGC        = XCreateGC(display, SnowWin, 0, NULL);
    TreeRegion    = XCreateRegion();
    InitTreePixmaps();
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,NULL);
 }
 
 void scenery_set_gc()
@@ -182,7 +183,7 @@ void create_tree_surface(int tt,int flip, const char **xpm)
 // of a changed window size
 // The function returns immediately if NTrees!=0, otherwize an attempt
 // is done to place the DesiredNumberOfTrees
-int do_initbaum()
+int do_initbaum(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -330,7 +331,7 @@ void InitTreePixmaps()
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
    attributes.depth     = SnowWinDepth;
-   char *path = 0;
+   char *path = NULL;
    FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
    if (f)
    {

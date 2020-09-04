@@ -317,7 +317,7 @@ char *replace_all(const char *s, const char *needle, const char *rep)
    while(1)
    {
       const char *q = strstr(haystack,needle);
-      if (q == 0)  // no needle in haystack
+      if (q == NULL)  // no needle in haystack
       {            // cat haystack to result
 	 result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
 	 result = strcat(result,haystack);

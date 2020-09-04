@@ -39,6 +39,7 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -72,11 +73,11 @@ void snow_init()
 {
    int i;
    for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
-      snow_surfaces[i] = 0;
+      snow_surfaces[i] = NULL;
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    {
-      SnowGC[i]  = XCreateGC(display, SnowWin, 0, 0);
-      ESnowGC[i] = XCreateGC(display, SnowWin, 0, 0);
+      SnowGC[i]  = XCreateGC(display, SnowWin, 0, NULL);
+      ESnowGC[i] = XCreateGC(display, SnowWin, 0, NULL);
    }
    init_snow_surfaces();
    InitSnowSpeedFactor();
@@ -84,8 +85,8 @@ void snow_init()
    InitSnowColor();
    InitSnowSpeedFactor();
    InitBlowOffFactor();
-   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
@@ -194,7 +195,7 @@ int snow_draw(cairo_t *cr)
    return TRUE;
 }
 
-int do_genflakes(gpointer data)
+int do_genflakes(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -574,7 +575,7 @@ void InitSnowSpeedFactor()
 }
 
 
-int do_initsnow(gpointer data)
+int do_initsnow(UNUSED gpointer data)
 {
    P("initsnow %d %d\n",FlakeCount,counter++);
    if (Flags.Done)
@@ -592,7 +593,7 @@ int do_initsnow(gpointer data)
    return FALSE;  // stop callback
 }
 
-int do_show_flakecount(gpointer data)
+int do_show_flakecount(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;

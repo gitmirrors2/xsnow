@@ -30,6 +30,7 @@
 #include "debug.h"
 #include "windows.h"
 #include "fallensnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -38,7 +39,7 @@ static float BlowOffFactor;
 
 void blowoff_init()
 {
-   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff,        do_blowoff            ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff, do_blowoff, NULL);
 }
 
 int blowoff_ui()
@@ -60,7 +61,7 @@ int blowoff_ui()
    return changes;
 }
 
-void blowoff_draw(cairo_t *cr)
+void blowoff_draw(UNUSED cairo_t *cr)
 {
    // nothing to draw here
 }
@@ -79,7 +80,7 @@ void InitBlowOffFactor()
 }
 
 // determine if fallensnow should be handled for fsnow
-int do_blowoff(gpointer data)
+int do_blowoff(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;

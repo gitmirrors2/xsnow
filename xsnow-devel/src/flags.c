@@ -39,7 +39,7 @@ static void SetDefaultFlags(void);
 
 static long int S2Int(char *s)     // string to integer
 {
-   return strtol(s,0,0);
+   return strtol(s,NULL,0);
 }
 static long int S2PosInt(char *s)  //string to positive integer
 {
@@ -56,7 +56,7 @@ void PrintVersion()
 }
 
 
-static char *FlagsFile          = 0;
+static char *FlagsFile          = NULL;
 static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
@@ -307,9 +307,9 @@ static xmlXPathObjectPtr getnodeset (xmlDocPtr doc, xmlChar *xpath){
 
 static void makeflagsfile()
 {
-   if (FlagsFile != 0 || FlagsFileAvailable == 0) return;
+   if (FlagsFile != NULL || FlagsFileAvailable == 0) return;
    char *h = getenv("HOME");
-   if (h == 0)
+   if (h == NULL)
    {
       FlagsFileAvailable = 0;
       printf("Warning: cannot create or read $HOME/%s\n",FLAGSFILE);
@@ -342,7 +342,7 @@ void ReadFlags()
       if(value == NULL) \
       intval = 0; \
       else \
-      intval = strtol((char*)value,0,0); \
+      intval = strtol((char*)value,NULL,0); \
       Flags.x = intval; \
       /* printf(# x ": %ld\n",(long int)Flags.x); */ \
       xmlFree(value); \

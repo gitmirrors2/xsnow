@@ -37,6 +37,7 @@
 #include "version.h"
 #include "birds.h"
 #include "windows.h"
+#include "varia.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -66,7 +67,7 @@
 // can be accessed with gtk_range_get_value().
 // In general, the widget is a GtkScale.
 #define HANDLE_RANGE(_name,_flag,_value) \
-   MODULE_EXPORT void _name(GtkWidget *w, gpointer d)\
+   MODULE_EXPORT void _name(GtkWidget *w, UNUSED gpointer d)\
 {\
    if(!human_interaction) return;\
    gdouble value;\
@@ -77,7 +78,7 @@
 
 #define HANDLE_TOGGLE(_name,_flag,_t,_f) \
    MODULE_EXPORT \
-   void _name(GtkWidget *w, gpointer d) \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
 { \
    if(!human_interaction) return; \
    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
@@ -90,7 +91,7 @@
 
 #define HANDLE_COLOR(_name,_flag) \
    MODULE_EXPORT \
-   void _name(GtkWidget *w, gpointer d) \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
 { \
    if(!human_interaction) return; \
    GdkRGBA color; \
@@ -164,7 +165,7 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
 static GtkWidget *hauptfenster;
 
    MODULE_EXPORT
-void button_iconify(GtkWidget *w, gpointer p)
+void button_iconify(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_iconify\n");
    gtk_window_iconify(GTK_WINDOW(hauptfenster));
@@ -225,7 +226,7 @@ static void set_santa_buttons()
 }
 
    MODULE_EXPORT 
-void button_santa(GtkWidget *w, gpointer d)
+void button_santa(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -259,14 +260,14 @@ void santa_default(int vintage)
 }
 
    MODULE_EXPORT 
-void button_defaults_santa(GtkWidget *w, gpointer d)
+void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa defaults\n");
    santa_default(0);
 }
 
    MODULE_EXPORT 
-void button_vintage_santa(GtkWidget *w, gpointer d)
+void button_vintage_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa vintage\n");
    santa_default(1);
@@ -355,7 +356,7 @@ static void report_tree_type(int p, gint active)
 }
 
    MODULE_EXPORT
-void button_tree(GtkWidget *w, gpointer d)
+void button_tree(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gint active;
@@ -394,14 +395,14 @@ void scenery_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_scenery(GtkWidget *w, gpointer d)
+void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_scenery\n");
    scenery_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_scenery(GtkWidget *w, gpointer d)
+void button_vintage_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_scenery\n");
    scenery_default(1);
@@ -559,7 +560,7 @@ typedef struct _general_button
 }general_button;
 
    MODULE_EXPORT 
-void button_ww(GtkWidget *w, gpointer d)
+void button_ww(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -626,7 +627,7 @@ static void set_general_buttons()
 }
 
    MODULE_EXPORT
-void button_cpuload(GtkWidget *w, gpointer d)
+void button_cpuload(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gdouble value;
@@ -636,7 +637,7 @@ void button_cpuload(GtkWidget *w, gpointer d)
 }
 
    MODULE_EXPORT
-void button_transparency(GtkWidget *w, gpointer d)
+void button_transparency(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gdouble value;
@@ -648,7 +649,7 @@ void button_transparency(GtkWidget *w, gpointer d)
 HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
 
    MODULE_EXPORT
-void button_bgcolor(GtkWidget *w, gpointer d)
+void button_bgcolor(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    GdkRGBA color;
@@ -665,7 +666,7 @@ HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
 HANDLE_RANGE(button_lift,                     OffsetS,       -value);
 
    MODULE_EXPORT
-void button_quit(GtkWidget *w, gpointer d)
+void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    Flags.Done = 1;
    P("button_quit: %d\n",Flags.Done);
@@ -696,14 +697,14 @@ void general_default(int vintage)
 
 
    MODULE_EXPORT 
-void button_defaults_general(GtkWidget *w, gpointer d)
+void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general\n");
    general_default(0);
 }
 
    MODULE_EXPORT 
-void button_vintage_general(GtkWidget *w, gpointer d)
+void button_vintage_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general vintage\n");
    general_default(1);
@@ -821,14 +822,14 @@ void snow_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_snow(GtkWidget *w, gpointer d)
+void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_snow\n");
    snow_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_snow(GtkWidget *w, gpointer d)
+void button_vintage_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_snow\n");
    snow_default(1);
@@ -952,20 +953,20 @@ void birds_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_birds(GtkWidget *w, gpointer d)
+void button_defaults_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_birds\n");
    birds_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_birds(GtkWidget *w, gpointer d)
+void button_vintage_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_birds\n");
    birds_default(1);
 }
    MODULE_EXPORT
-void button_birds_restart(GtkWidget *w, gpointer p)
+void button_birds_restart(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_birds_restart\n");
    Flags.BirdsRestart = 1;
@@ -1004,7 +1005,7 @@ HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value);
 HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value);
 
    MODULE_EXPORT
-void button_wind_activate(GtkWidget *w, gpointer p)
+void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_wind_activate\n");
    Flags.WindNow = 1;
@@ -1025,14 +1026,14 @@ void wind_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_wind(GtkWidget *w, gpointer d)
+void button_defaults_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_wind\n");
    wind_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_wind(GtkWidget *w, gpointer d)
+void button_vintage_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_wind\n");
    wind_default(1);
@@ -1116,7 +1117,7 @@ void ui_set_sticky(int x)
       gtk_window_unstick(GTK_WINDOW(hauptfenster));
 }
 
-void ui(int *argc, char **argv[])
+void ui(UNUSED int *argc, UNUSED char **argv[])
 {
 
    // gtk_init(argc, argv);
@@ -1153,7 +1154,7 @@ void apply_standard_css()
       ".pink { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
       ;
 
-   static GtkCssProvider *cssProvider = 0;
+   static GtkCssProvider *cssProvider = NULL;
    if (!cssProvider)
    {
       cssProvider  = gtk_css_provider_new();
@@ -1173,7 +1174,7 @@ void ui_background(int m)
       "stack                { background-color: #FFC0CB; }"   // color of main area
       "scale.cpuload slider { background:       #FF0000; }"   // color of sliders with class cpuload
       ;
-   static GtkCssProvider *cssProvidercolor = 0;
+   static GtkCssProvider *cssProvidercolor = NULL;
    if (!cssProvidercolor)
    {
       cssProvidercolor  = gtk_css_provider_new();
@@ -1224,7 +1225,7 @@ void ui_gray_birds(int m)
 
 // next function is not used, I leave it here as a template, who knows...
 // see also ui.xml
-void ui_error_x11(int *argc, char **argv[])
+void ui_error_x11(UNUSED int *argc, UNUSED char **argv[])
 {
    GtkWidget *errorfenster;
    GObject *button;

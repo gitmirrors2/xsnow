@@ -17,22 +17,6 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#include <X11/Xlib.h>
-typedef struct _WinInfo
-{
-   Window id;
-   int x,y;                // x,y coordinates
-   unsigned int w,h;       // width, height
-            int ws    :16; // workspace
-   unsigned int sticky: 1; // visible on all workspaces
-   unsigned int dock  : 1; // is a "dock" (panel)
-} WinInfo;
-
-extern long     GetCurrentWorkspace();
-extern int      GetWindows(WinInfo **w, int *nw);
-extern int      FindWindowWithName(const char* needle, Window *win, char **name);
-extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);
-extern void     printwindows(WinInfo *windows, int nwin);
-
+#define UNUSED __attribute__ ((unused))
