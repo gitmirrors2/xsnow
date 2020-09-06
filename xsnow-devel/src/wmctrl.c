@@ -29,17 +29,18 @@
 #include "dsimple.h"
 #include "debug.h"
 
-long GetCurrentWorkspace()
+int GetCurrentWorkspace()
 {
    Atom atom, type;
    int format;
    unsigned long nitems,b;
    unsigned char *properties;
-   long r;
+   int r;
 
    P("GetCurrentWorkspace %p %d\n",(void *)display,counter++);
    if (IsCompiz)
    {
+      P("compiz\n");
       properties = NULL;
       atom = XInternAtom(display,"_NET_DESKTOP_VIEWPORT",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 2, False, 
@@ -60,10 +61,10 @@ long GetCurrentWorkspace()
    {
       properties = NULL;
       atom = XInternAtom(display,"_NET_CURRENT_DESKTOP",False);
-      P("before XGetWindowProperty\n");
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       P("type: %ld %ld\n",type,XA_CARDINAL);
+      P("properties: %d %d %d %ld\n",properties[0],properties[1],format,nitems);
       if(type != XA_CARDINAL)
       {
 	 P("nog eens %ld ...\n",type);
@@ -84,10 +85,10 @@ long GetCurrentWorkspace()
 	    r = -1;
       }
       else
-	 r = *(long *)properties;
+	 r = *(long *)properties;        // see man XGetWindowProperty
       if(properties) XFree(properties);
    }
-   P("TD: wmctrl: %d: %ld %#lx\n",__LINE__,nitems,r);
+   P("wmctrl: nitems: %ld ws: %d\n",nitems,r);
 
    return r;
 }
@@ -208,6 +209,32 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
       if(properties) XFree(properties);
 
+      // check if window is hidden
+      w->hidden = 0;
+      properties = NULL;
+      nitems = 0;
+      atom  = XInternAtom(display, "_NET_WM_STATE", True);
+      XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
+	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if(format == 32)
+      {
+	 unsigned long i;
+	 for (i=0; i<nitems; i++)
+	 {
+	    char *s = NULL;
+	    s = XGetAtomName(display,((Atom*)properties)[i]);
+	    if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
+	    { 
+	       P("%#lx is hidden %d\n",f->id, counter++);
+	       w->hidden = 1;
+	       if(s) XFree(s);
+	       break;
+	    }
+	    if(s) XFree(s);
+	 }
+      }
+      if(properties) XFree(properties);
+
 
       properties = NULL;
       nitems = 0;
@@ -259,8 +286,69 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(properties)XFree(properties);
    }
    if(properties) XFree(properties);
-   //R("%d\n",counter++);printwindows(*windows,*nwin);
+   //P("%d\n",counter++);printwindows(*windows,*nwin);
    return 1;
+}
+
+// an heroic effort to write a wrapper around XGetWindowProperty()
+//     not used (yet)
+// if needle != NULL:
+//     returns 1 if Atom atomname contains char *needle
+//     else returns 0
+// if needle == NULL && props != NULL
+//     props must be allocated by caller to contain nprops elements
+//     on return, props will contain at most nprops integers as obtained by 
+//     XGetWindowProperty().
+//     return value is number of properties returned from XGetWindowProperty()
+// works only with format==32, if another format is found, returns -format found
+// see man XGetWindowProperty
+int GetProperty32(Display *display, Window window, const char *atomname, 
+      const char *needle, int *props, const int nprops)
+{
+   unsigned char *properties = NULL;
+   Atom           type;
+   int            format;
+   unsigned long  nitems = 0;
+   unsigned long  b;
+   int            rc = 0;
+
+   Atom atom = XInternAtom(display, atomname, True);
+   XGetWindowProperty(display, window, atom, 0, (~0L), False, 
+	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
+   if(format == 32)
+   {
+      if (needle)
+      {
+	 int i;
+	 for(i=0; i<(int)nitems; i++)
+	 {
+	    char *s = NULL;
+	    s = XGetAtomName(display,((Atom*)properties)[i]);
+	    if (!strcmp(s,needle))
+	    { 
+	       if(s) XFree(s);
+	       rc = 1;
+	       break;
+	    }
+	    if(s) XFree(s);
+	 }
+      }
+      else
+      {
+	 if(props)
+	 {
+	    int i;
+	    for (i=0; i<(int)nitems && i<nprops; i++)
+	       props[i] = ((long *)properties)[i];
+	 }
+	 rc = nitems;
+      }
+   }
+   else
+      rc = -format;
+
+   if(properties) XFree(properties);
+   return rc;
 }
 
 int FindWindowWithName(const char *needle, Window *win, char **name)
@@ -293,8 +381,8 @@ void printwindows(WinInfo *windows, int nwin)
    int i;
    for (i=0; i<nwin; i++)
    {
-      printf("id:%#12lx ws:%4d x:%6d y:%6d w:%6d h:%6d sticky:%d dock:%d\n",
-	    w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky,w->dock);
+      printf("id:%#12lx ws:%4d x:%6d y:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d\n",
+	    w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky,w->dock,w->hidden);
       w++;
    }
    return;

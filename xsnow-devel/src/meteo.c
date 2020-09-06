@@ -46,12 +46,10 @@ static MeteoMap      meteorite;
 
 void meteo_init()
 {
-   //if (switches.UseGtk)
    {
       if (!gdk_rgba_parse(&color, MeteoColor))
 	 gdk_rgba_parse(&color,"rgb(255,165,0)");
    }
-   //else
    {
       meteorite.gc  = XCreateGC(display, SnowWin, 0, NULL);
       meteorite.egc = XCreateGC(display, SnowWin, 0, NULL);

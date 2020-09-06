@@ -286,13 +286,16 @@ void docs_usage(int man)
    }
    manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
    manout(".","- Xsnow stresses the Xserver too much.");
-   manout(".","- The -xwininfo and -id flags do not function properly.");
    manout(".","- Xsnow does run in Wayland, but will not snow on all windows.");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","  settings are changed while xsnow is running.");
    manout(" ","  This does not function always well.");
+   manout(".","- In some combinations of display managers and compositors de-activating");
+   manout(" ","  'Below windows' in 'settings', results in a not clickable desktop.");
+   manout(" ","  Known examples are Awesome and WindowMaker in combination with");
+   manout(" ","  xcompmgr or compton.");
 
    if(doman)
    {

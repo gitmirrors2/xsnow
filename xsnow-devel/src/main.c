@@ -123,7 +123,7 @@ static int HaltedByInterrupt = 0;
 //static double       TotSleepTime = 0;
 
 // windows stuff
-long                CWorkSpace = 0;
+int                 CWorkSpace = 0;
 long                TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 static int          DoRestart = 0;
 static guint        draw_all_id = 0;
@@ -498,8 +498,6 @@ static gulong drawconnect = 0;
 int myDetermineWindow()
 {
    P("myDetermineWindow root: %#lx\n",RootWindow);
-   static Window SnowWina    = 0;
-   static Window SnowWinb    = 0;
 
    if (drawconnect)
    {
@@ -508,31 +506,38 @@ int myDetermineWindow()
       P("disconnected\n");
    }
 
+   static char * SnowWinaName = NULL;
+   static char * SnowWinbName = NULL;
    int IsDesktop;
    if (!SnowWina)
    {
-      if (SnowWinName)
-	 free(SnowWinName);
-      if (!DetermineWindow(&SnowWina,&SnowWinName,&TransA,"Xsnow-A", &IsDesktop))
+      if (SnowWinaName)
+      {
+	 free(SnowWinaName);
+	 SnowWinaName = NULL;
+      }
+      if (!DetermineWindow(&SnowWina,&SnowWinaName,&TransA,"Xsnow-A", &IsDesktop))
       {
 	 printf("xsnow: cannot determine window, exiting...\n");
 	 return 0;
       }
 
-      P("SnowWina: %#lx TransA: %p\n",SnowWina,(void *)TransA);
+      P("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
 
+      // if user specified window, TransA will be 0
       if (TransA)
       {
+	 if (SnowWinbName)
+	 {
+	    free(SnowWinbName);
+	    SnowWinbName = NULL;
+	 }
 	 drawing_area = gtk_drawing_area_new();
 	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
 
+	 DetermineWindow(&SnowWinb, &SnowWinbName, &TransB, "Xnow-B", &IsDesktop);
 
-	 char *s = NULL;
-	 DetermineWindow(&SnowWinb, &s, &TransB, "Xnow-B", &IsDesktop);
-	 if (s)
-	    free(s);
-
-	 P("SnowWinb: %#lx TransB: %p\n",SnowWinb,(void *)TransB);
+	 P("SnowWinb: %#lx %s TransB: %p\n",SnowWinb,SnowWinbName,(void *)TransB);
       }
    }
 
@@ -549,8 +554,9 @@ int myDetermineWindow()
       {
 	 P("Scenario 2\n");
 
-	 printf("Scenario: Use X11 for drawing snow in transparent window, birds are possible.\n");
+	 printf("Scenario: Use X11 for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWinb;
+	 SnowWinName        = SnowWinbName;
 
 	 switches.UseGtk    = 0;
 	 switches.DrawBirds = 1;
@@ -561,8 +567,9 @@ int myDetermineWindow()
       else if(Flags.WantWindow == UW_DEFAULT)  // Scenario 3
       {
 	 P("Scenario 3\n");
-	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds are possible\n");
+	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWina;
+	 SnowWinName        = SnowWinaName;
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
@@ -574,9 +581,10 @@ int myDetermineWindow()
    else                          //  No transparent window: Scenario 4
    {
       P("Scenario 4 Desktop: %d\n",IsDesktop);
-      printf("Scenario: Use X11 for drawing snow in root window, no birds are possible.\n");
+      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly.\n");
       // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
       SnowWin            = SnowWina;
+      SnowWinName        = SnowWinaName;
       switches.UseGtk    = 0;
       switches.DrawBirds = 0;
       switches.Trans     = 0;
@@ -586,9 +594,13 @@ int myDetermineWindow()
 
    InitDisplayDimensions();
 
-   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %d - exposures: %d\n",
+   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %s - exposures: %d\n",
 	 SnowWin,SnowWinName,SnowWinDepth,
-	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, switches.Trans,switches.Exposures);
+	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, TransA?"yes":"no",switches.Exposures);
+   if (TransA)
+      printf("Birds in window: %#lx - \"%s\"\n",SnowWina,SnowWinaName);
+   else
+      printf("No birds (you need a compositing display manager to let birds fly).\n");
 
    if(TransA)
    {
@@ -603,7 +615,6 @@ int myDetermineWindow()
    {
       drawconnect = 0;
    }
-
    return 1;
 }
 

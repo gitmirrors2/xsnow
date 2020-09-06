@@ -26,7 +26,6 @@
 #include "wmctrl.h"
 
 typedef struct _FallenSnow {
-   Window              id;           // window id, 0 for snow at bottom  // to remove
    WinInfo             win;          // WinInfo of window, win.id == 0 if snow at bottom
    int                 x,y;          // Coordinates of fallen snow, y for bottom of fallen snow
    int                 w,h;          // width, max height of fallen snow
@@ -35,10 +34,11 @@ typedef struct _FallenSnow {
    short int          *desh;         // desired heights
    struct _FallenSnow *next;         // pointer to next item
    cairo_surface_t    *surface;      // 
-   unsigned int        ws     :16;   // visible on workspace ws
-   unsigned int        hidden : 1;   // if True, the window is hidden (iconized)  // to remove
    unsigned int        clean  : 1;   // if True, this area has been cleaned
-   unsigned int        sticky : 1;   // visible on all workspaces                 // to remove
+   //Window              id;           // window id, 0 for snow at bottom  // to remove
+   //unsigned int        ws     :16;   // visible on workspace ws
+   //unsigned int        hidden : 1;   // if True, the window is hidden (iconized)  // to remove
+   //unsigned int        sticky : 1;   // visible on all workspaces                 // to remove
 } FallenSnow;
 
 extern FallenSnow *FsnowFirst;
@@ -62,8 +62,7 @@ extern void   fallensnow_set_gc(void);
 
 
 // insert a node at the start of the list
-extern void PushFallenSnow(FallenSnow **first, int window_id, WinInfo *win, int ws, int sticky,
-      int x, int y, int w, int h);
+extern void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h);
 
 // pop first element
 extern int PopFallenSnow(FallenSnow **list);

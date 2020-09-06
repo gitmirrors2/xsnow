@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.0.8~pre2], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.0.8~pre7], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -60,7 +60,6 @@ AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
-PKG_CHECK_MODULES(DBUS, [dbus-1])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T

@@ -3,6 +3,11 @@ version 3.0.8
 	  such a window
 	2:changed 0 -> NULL where appropriate
 	  insert __attribute__ ((unused)) via macro UNUSED where appropriate
+	3:create GetProperty32() in wmctrl.c
+	4:fallenshow.h: moved window-specific items in FallenSnow to
+	  FallenSnow.win
+	6:stratify windows.c
+	  transparent.c: make also click-through in draw callback
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

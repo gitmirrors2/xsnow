@@ -408,19 +408,7 @@ xsnow, created in 1993 by Rick Jansen.\n
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">23</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="vexpand">True</property>
-                <property name="label" translatable="yes">   </property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">20</property>
+                <property name="top_attach">25</property>
               </packing>
             </child>
             <child>
@@ -657,7 +645,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">16</property>
+                <property name="top_attach">18</property>
               </packing>
             </child>
             <child>
@@ -770,7 +758,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">20</property>
               </packing>
             </child>
             <child>
@@ -782,7 +770,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">21</property>
               </packing>
             </child>
             <child>
@@ -808,6 +796,23 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkLinkButton" id="donate-button1">
+                    <property name="label" translatable="yes">Donate</property>
+                    <property name="name">donate</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
+maintainer of xsnow, here is a paypal link.</property>
+                    <property name="uri">https://paypal.me/wvermin</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">All vintage</property>
                     <property name="visible">True</property>
@@ -821,13 +826,13 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">22</property>
+                <property name="top_attach">24</property>
               </packing>
             </child>
             <child>
@@ -865,7 +870,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
+                <property name="top_attach">17</property>
               </packing>
             </child>
             <child>
@@ -875,24 +880,44 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
+                <property name="top_attach">16</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">&lt;b&gt;In case of emergency&lt;/b&gt; Remove the file .xsnowrc in your home directory.</property>
+                <property name="use_markup">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">15</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes"> </property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
                 <property name="top_attach">14</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLinkButton" id="donate-button">
-                <property name="label" translatable="yes">Donate</property>
-                <property name="name">donate</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If you feel the urge to make a donation to inspire the 
-maintainer of xsnow, here is a paypal link.</property>
-                <property name="uri">https://paypal.me/wvermin</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">21</property>
-              </packing>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3707,7 +3732,6 @@ point</property>
               <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">7</property>
-                <property name="width">2</property>
               </packing>
             </child>
             <child>
@@ -3750,6 +3774,9 @@ point</property>
                 <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3914,7 +3941,9 @@ windows</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.</property>
+                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.
+NOTE: when deactivated, with some combinations of window managers and compositors, you will not be able to click items on your desktop.
+Example: window manager awesome, compositor xcompmgr.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_below" swapped="no"/>

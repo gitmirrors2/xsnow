@@ -22,17 +22,20 @@
 #include <X11/Xlib.h>
 typedef struct _WinInfo
 {
-   Window id;
-   int x,y;                // x,y coordinates
-   unsigned int w,h;       // width, height
-            int ws    :16; // workspace
-   unsigned int sticky: 1; // visible on all workspaces
+   Window id             ;
+   int x,y               ; // x,y coordinates
+   unsigned int w,h      ; // width, height
+            int ws       ; // workspace
+   unsigned int sticky: 1; // is visible on all workspaces
    unsigned int dock  : 1; // is a "dock" (panel)
+   unsigned int hidden: 1; // is hidden (iconified)
 } WinInfo;
 
-extern long     GetCurrentWorkspace();
-extern int      GetWindows(WinInfo **w, int *nw);
-extern int      FindWindowWithName(const char* needle, Window *win, char **name);
-extern WinInfo *FindWindow(WinInfo *windows, int nwin, Window id);
-extern void     printwindows(WinInfo *windows, int nwin);
+extern int          GetCurrentWorkspace();
+extern int          GetWindows(WinInfo **w, int *nw);
+extern int          FindWindowWithName(const char* needle, Window *win, char **name);
+extern WinInfo     *FindWindow(WinInfo *windows, int nwin, Window id);
+extern void         printwindows(WinInfo *windows, int nwin);
+extern int          GetProperty32(Display *display, Window window, const char *atomname, 
+      const char *needle, int *props, const int nprops);
 

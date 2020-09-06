@@ -310,8 +310,8 @@ int do_UpdateSnowFlake(Snow *flake)
    // investigate if flake is in a not-hidden fallensnowarea on current workspace
    while(fsnow && !found)
    {
-      if(!fsnow->hidden)
-	 if(fsnow->id == 0 ||(fsnow->ws == CWorkSpace || fsnow->sticky))
+      if(!fsnow->win.hidden)
+	 if(fsnow->win.id == 0 ||(fsnow->win.ws == CWorkSpace || fsnow->win.sticky))
 	 {
 	    if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
 		  ny < fsnow->y+2)
