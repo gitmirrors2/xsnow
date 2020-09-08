@@ -140,9 +140,14 @@ static void set_star_buttons(void);
 static void set_meteo_buttons(void);
 static void apply_standard_css(void);
 static void birdscb(GtkWidget *w, void *m);
+static int  below_confirm_ticker(UNUSED gpointer data);
+static void show_bct_countdown(void);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
+
+static int bct_id;
+static int bct_countdown;
 
 // Set the style provider for the widgets
 static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
@@ -580,6 +585,7 @@ static struct _general_buttons
    general_button lift;
    general_button fullscreen;
    general_button below;
+   general_button below_confirm;
    general_button allworkspaces;
    general_button ww_0;
    general_button ww_2;
@@ -587,11 +593,8 @@ static struct _general_buttons
 
 static void init_general_buttons()
 {
-   general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-0"));
-   general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-2"));
-   gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
-   gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
-
+   HANDLE_INIT(general_buttons.ww_0.button,               general-ww-0);
+   HANDLE_INIT(general_buttons.ww_2.button,               general-ww-2);
    HANDLE_INIT(general_buttons.cpuload.button,            general-cpuload);
    HANDLE_INIT(general_buttons.transparency.button,       general-transparency);
    HANDLE_INIT(general_buttons.usebg.button,              general-usebg);
@@ -600,9 +603,12 @@ static void init_general_buttons()
    HANDLE_INIT(general_buttons.lift.button,               general-lift);
    HANDLE_INIT(general_buttons.fullscreen.button,         general-fullscreen);
    HANDLE_INIT(general_buttons.below.button,              general-below);
+   HANDLE_INIT(general_buttons.below_confirm.button,      general-below-confirm);
    HANDLE_INIT(general_buttons.allworkspaces.button,      general-allworkspaces);
    gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"general-version")),"xsnow version " VERSION);
-
+   gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
+   gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
+   gtk_widget_hide(general_buttons.below_confirm.button);
 }
 
 static void set_general_buttons()
@@ -625,6 +631,7 @@ static void set_general_buttons()
    else
       HANDLE_SET_TOGGLE_(general_buttons.exposures.button,0);
 }
+
 
    MODULE_EXPORT
 void button_cpuload(GtkWidget *w, UNUSED gpointer d)
@@ -661,9 +668,84 @@ void button_bgcolor(GtkWidget *w, UNUSED gpointer d)
 
 HANDLE_TOGGLE(button_exposures,               Exposures,     1,0);
 HANDLE_TOGGLE(button_fullscreen,              FullScreen,    1,0);
-HANDLE_TOGGLE(button_below,                   BelowAll,      1,0);
+//HANDLE_TOGGLE(button_below,                   BelowAll,      1,0);
+//  This one gets some special code, see below.
 HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
 HANDLE_RANGE(button_lift,                     OffsetS,       -value);
+
+   MODULE_EXPORT
+void button_below(GtkWidget *w, UNUSED gpointer d)
+{
+   /*
+    * In some desktop environments putting our transparent click-through window
+    * above all other windows results in a un-clickable desktop.
+    * Therefore, we ask for confirmation by clicking on a button.
+    * If this succeeds, then there is no problem.
+    * If the user cannot click, the timer runs out and the BelowAll
+    * setting is switched to TRUE.
+    */
+   if(!human_interaction) return;
+   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
+   P("button_below: %d\n",Flags.BelowAll);
+   if(active)
+      Flags.BelowAll = 1;
+   else
+   {
+      Flags.BelowAll = 0;
+      bct_countdown  = 9;
+      show_bct_countdown();
+      gtk_widget_hide(general_buttons.below.button);
+      gtk_widget_show(general_buttons.below_confirm.button);
+      bct_id = add_to_mainloop(PRIORITY_DEFAULT,1.0,below_confirm_ticker,NULL);
+   }
+}
+
+
+void show_bct_countdown()
+{
+   sprintf(sbuffer,"Click to\nconfirm %d",bct_countdown);
+   gtk_button_set_label(GTK_BUTTON(general_buttons.below_confirm.button),sbuffer);
+
+}
+
+int below_confirm_ticker(UNUSED gpointer data)
+{
+   bct_countdown--;
+   show_bct_countdown();
+   if (bct_countdown>0)
+      return TRUE;
+   else
+   {
+      Flags.BelowAll = 1;
+      HANDLE_SET_TOGGLE(general_buttons.below.button,          BelowAll);
+      gtk_widget_hide(general_buttons.below_confirm.button);
+      gtk_widget_show(general_buttons.below.button);
+      return FALSE;
+   }
+}
+
+   MODULE_EXPORT
+void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
+{
+   gtk_widget_hide(general_buttons.below_confirm.button);
+   gtk_widget_show(general_buttons.below.button);
+   remove_from_mainloop(bct_id);
+}
+
+#if 0
+#define HANDLE_TOGGLE(_name,_flag,_t,_f) \
+   MODULE_EXPORT \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
+{ \
+   if(!human_interaction) return; \
+   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
+   if(active) \
+   Flags._flag = _t; \
+   else \
+   Flags._flag = _f; \
+   P(#_name ": %d\n",Flags._flag); \
+} typedef int dummytype // to request a ;
+#endif
 
    MODULE_EXPORT
 void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
@@ -694,7 +776,6 @@ void general_default(int vintage)
    set_general_buttons();
    human_interaction      = h;
 }
-
 
    MODULE_EXPORT 
 void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)

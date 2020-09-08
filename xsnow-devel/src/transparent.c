@@ -65,7 +65,7 @@ static GdkRectangle workarea;
 // create transparent click-through window without any decorations
 // input:
 //   fullscreen:    1: set window fullscreen
-//   below:         1: place transparent window bleow all windows
+//   below:         1: place transparent window below all windows
 //   allworkspaces: 1: make window visible on all workspaces
 //   prefname:         use this as name for the window
 //   width:            width of desired window
@@ -75,6 +75,9 @@ static GdkRectangle workarea;
 //   name              will contain copy of prefname
 //   gtkwin            will contain GtkWidget of transparent screen, use this to write with gtk/cairo to
 //                       0 if no transparent window is possible
+//
+// NOTE: in FVWM, combined with xcompmgr or compton, it seems not be possible to put a window below:
+// reason (I guess): _NET_WM_ALLOWED_ACTIONS(ATOM) (from xprop) does not include _NET_WM_ACTION_BELOW
 //
 void create_transparent_window(int fullscreen, int below, int allworkspaces, 
       Window *xwin, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
@@ -150,8 +153,10 @@ void create_transparent_window(int fullscreen, int below, int allworkspaces,
       gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
    else
       gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
+   P("below:%d\n",below);
 
    *xwin = gdk_x11_window_get_xid(gdk_window);
+
 }
 
 #if 1
@@ -291,7 +296,7 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, UNUSED gpointer userdata)
 // to gdk_window_input_shape_combine_region(): for SnowWina, then for SnowWinb
 // and then for SnowWina again (probably superfluous). 
 // This seems to fix the problem in some cases.
-// Problem remains in awesome, windowmaker and others.
+// Problem remains in fvwm and others incombination with xcompmgr or compton.
 //
 static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer userdata)
 {
@@ -306,7 +311,7 @@ static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer use
       gdk_window_input_shape_combine_region(gdk_window1, cairo_region1, 0,0);
       cairo_region_destroy(cairo_region1);
       // gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
-      P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
+      R("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
    }
    return FALSE;
 }

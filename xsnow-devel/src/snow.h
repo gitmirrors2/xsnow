@@ -25,18 +25,23 @@
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
 
+#define FLUFFTIME 0.7  // #seconds fluff will live, using GTK/Cairo
+
 typedef struct _Snow {
-   int w;                       // width
-   int h;                       // height
-   float rx;                    // x position
-   float ry;                    // y position
-   float vx;                    // speed in x-direction, pixels/second
-   float vy;                    // speed in y-direction, pixels/second
-   float m;                     // mass of flake
-   float ivy;                   // initial speed in y direction
-   float wsens;                 // wind dependency factor
-   unsigned int whatFlake : 8;  // snowflake index
-   unsigned int cyclic : 1;     // 0: flake is not cyclic 
+   int w;                        // width
+   int h;                        // height
+   float rx;                     // x position
+   float ry;                     // y position
+   float vx;                     // speed in x-direction, pixels/second
+   float vy;                     // speed in y-direction, pixels/second
+   float m;                      // mass of flake
+   float ivy;                    // initial speed in y direction
+   float wsens;                  // wind dependency factor
+   float flufftimer;             // fluff timeout timer
+   unsigned int whatFlake  : 7;  // snowflake index
+   unsigned int cyclic     : 1;  // 1: flake is cyclic 
+   unsigned int fluff      : 1;  // 1: flake is in fluff state
+
 } Snow;
 
 typedef struct _SnowMap {

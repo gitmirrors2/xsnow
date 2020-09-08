@@ -2,7 +2,7 @@
 ulimit -c unlimited
 rm -f core
 reset
-if false; then
+if true; then
    export CC=gcc-10 CXX=g++-10
    export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O0 -g'
 else

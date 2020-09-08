@@ -44,8 +44,8 @@ FallenSnow *FsnowFirst = NULL;
 static GC EFallenGC;
 static GC FallenGC;
 
-static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
-static void CreateSurfaceFromFallen(FallenSnow *f);
+static void   drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
+static void   CreateSurfaceFromFallen(FallenSnow *f);
 static Pixmap CreatePixmapFromFallen(FallenSnow *f);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 

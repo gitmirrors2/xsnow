@@ -8,6 +8,10 @@ version 3.0.8
 	  FallenSnow.win
 	6:stratify windows.c
 	  transparent.c: make also click-through in draw callback
+	8:ask for confirmation before permanently de-activating 
+	  'Below windows'.
+	  Remove 'BelowAll' from .xsnowrc.
+	9:also in Cairo fluff
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

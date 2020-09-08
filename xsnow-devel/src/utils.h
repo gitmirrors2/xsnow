@@ -23,6 +23,8 @@
 //#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 
 #define SOMENUMBER 42
+#define PRIORITY_DEFAULT   G_PRIORITY_LOW
+#define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 
 #include <stdio.h>
 #include <X11/Intrinsic.h>

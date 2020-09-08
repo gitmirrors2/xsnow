@@ -350,7 +350,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
 	    xwin, transname, xwinname, gtkwin,w,h);
 
-      P("DetermineWindow gtkwin: %p xwin: %#lx\n",(void *)gtkwin,*xwin);
+      R("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
       // if not possible to create transparent window:
       if (*xwin == 0)
       {

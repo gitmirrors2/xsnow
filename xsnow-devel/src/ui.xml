@@ -884,28 +884,10 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">&lt;b&gt;In case of emergency&lt;/b&gt; Remove the file .xsnowrc in your home directory.</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">15</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">14</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3942,8 +3924,8 @@ windows</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.
-NOTE: when deactivated, with some combinations of window managers and compositors, you will not be able to click items on your desktop.
-Example: window manager awesome, compositor xcompmgr.</property>
+On some desktop environments, when snowing above your windows you will not be able to click on any window.
+Therefore, you will be asked to click a button, to be sure that things are OK.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_below" swapped="no"/>
@@ -3958,6 +3940,21 @@ Example: window manager awesome, compositor xcompmgr.</property>
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkButton" id="general-below-confirm">
+                    <property name="label" translatable="yes">Click to 
+confirm</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="button_below_confirm" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -3969,7 +3966,7 @@ Example: window manager awesome, compositor xcompmgr.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
                 <child>
@@ -3992,7 +3989,7 @@ Example: window manager awesome, compositor xcompmgr.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </object>

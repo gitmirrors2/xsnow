@@ -102,6 +102,7 @@ void docs_usage(int man)
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
    manout("-fullscreen"               ,"Snow on full screen window: panels, task bars etc. will be not accessible.");
    manout("-above"                    ,"Snow above your windows. Default is to snow below your windows.");
+   manout(" "                         ,"NOTE: in some environments this results in an un-clickable desktop.");
    manout("-xwininfo  "               ,"Use a cursor to point at the window you want the snow to be fallen in.");
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
@@ -109,8 +110,6 @@ void docs_usage(int man)
    manout("-exposures"                ,"Use XClearArea(...,exposures=True) when erasing.");
    manout("-noexposures"              ,"Use XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
-   manout("-fvwm"                     ,"prepare for FVWM and the like: no background, -alpha 0, -noexposures .");
-   manout("-gnome"                    ,"prepare for GNOME, KDE and the like: no background, -alpha 1, -noexposures .");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
    manout("-wantwindow"               ,"Specify your favorite window:");
@@ -202,7 +201,7 @@ void docs_usage(int man)
    manout("-nofluffy"                 ,"Do not create fluff on fallen snow.");
    manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
    manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
-   manout("-offsetw <n>"              ,"Correction for window-manager provided of width of window. Default " EQ(DEFAULT_OffsetW) ".");
+   manout("-offsetw <n>"              ,"Correction for window-manager provided width of window. Default " EQ(DEFAULT_OffsetW) ".");
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");
 
@@ -273,7 +272,6 @@ void docs_usage(int man)
    manout(".","    $ xsnow -defaults        # run with defaults.");
    manout(".","    $ xsnow                  # run using values from the config file.");
    manout(".","    $ xsnow -treetype 1,2    # use tree types 1 and 2.");
-   manout(".","    $ xsnow -kde -kdebg -bg blue4  # for the KDE environment.");
 
    if(doman)
    {
@@ -292,10 +290,12 @@ void docs_usage(int man)
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","  settings are changed while xsnow is running.");
    manout(" ","  This does not function always well.");
-   manout(".","- In some combinations of display managers and compositors de-activating");
-   manout(" ","  'Below windows' in 'settings', results in a not clickable desktop.");
-   manout(" ","  Known examples are Awesome and WindowMaker in combination with");
-   manout(" ","  xcompmgr or compton.");
+   manout(".","- In some combinations of display managers and compositors");
+   manout(" ","  the desktop is visible, but unclickable.");
+   manout(" ","  Known example is FVWM in combination with xcompmgr or compton.");
+   manout(" ","  Solution: xsnow -xwininfo, and click on the desktop.");
+   manout(" ","  This will result in stuttering Santa and snow flakes.");
+   manout(" ","  In FVWM, for xsnow it is better to run without compositor.");
 
    if(doman)
    {

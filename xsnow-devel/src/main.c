@@ -522,7 +522,7 @@ int myDetermineWindow()
 	 return 0;
       }
 
-      P("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
+      R("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
 
       // if user specified window, TransA will be 0
       if (TransA)
@@ -535,9 +535,9 @@ int myDetermineWindow()
 	 drawing_area = gtk_drawing_area_new();
 	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
 
-	 DetermineWindow(&SnowWinb, &SnowWinbName, &TransB, "Xnow-B", &IsDesktop);
+	 DetermineWindow(&SnowWinb, &SnowWinbName, &TransB, "Xsnow-B", &IsDesktop);
 
-	 P("SnowWinb: %#lx %s TransB: %p\n",SnowWinb,SnowWinbName,(void *)TransB);
+	 R("SnowWinb: %#lx %s TransB: %p\n",SnowWinb,SnowWinbName,(void *)TransB);
       }
    }
 
@@ -594,6 +594,7 @@ int myDetermineWindow()
 
    InitDisplayDimensions();
 
+   R("windows: SnowWin:%s SnowWina:%s SnowWinb:%s\n",SnowWinName,SnowWinaName,SnowWinbName);
    printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %s - exposures: %d\n",
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, TransA?"yes":"no",switches.Exposures);
@@ -784,7 +785,7 @@ int do_ui_check(UNUSED gpointer data)
       }
 
       changes++;
-      P("changes: %d\n",changes);
+      P("changes: %d %d\n",changes,Flags.BelowAll);
    }
 
    if (changes > 0)
@@ -1000,11 +1001,11 @@ void drawit(cairo_t *cr)
 
    Santa_draw(cr);
 
+   treesnow_draw(cr);
+
    snow_draw(cr);
 
    fallensnow_draw(cr);
-
-   treesnow_draw(cr);
 
 }
 
