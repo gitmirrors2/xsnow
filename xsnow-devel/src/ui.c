@@ -583,7 +583,7 @@ static struct _general_buttons
    general_button bgcolor;
    general_button exposures;
    general_button lift;
-   general_button fullscreen;
+   general_button fullscreen;   // is disabled in ui.xml.
    general_button below;
    general_button below_confirm;
    general_button allworkspaces;
@@ -609,6 +609,8 @@ static void init_general_buttons()
    gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
    gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
    gtk_widget_hide(general_buttons.below_confirm.button);
+
+   gtk_widget_hide(general_buttons.fullscreen.button);
 }
 
 static void set_general_buttons()

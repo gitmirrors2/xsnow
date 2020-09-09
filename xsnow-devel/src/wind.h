@@ -32,6 +32,7 @@ extern float  Whirl;
 extern double WindTimer;
 extern double WindTimerStart;
 extern float  NewWind;
+extern float  WindMax;
 
 
 extern void wind_init(void);

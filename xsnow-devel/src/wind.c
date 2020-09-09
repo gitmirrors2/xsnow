@@ -35,11 +35,12 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-int Wind = 0;
+int    Wind = 0;
 int    Direction = 0;
 double WindTimer;
 double WindTimerStart;
 float  Whirl;
+float  WindMax = 100.0;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
@@ -60,6 +61,8 @@ int wind_ui()
    if(Flags.NoWind != OldFlags.NoWind)
    {
       OldFlags.NoWind = Flags.NoWind;
+      Wind    = 0;
+      NewWind = 0;
       changes++;
       P("changes: %d\n",changes);
    }
@@ -110,7 +113,6 @@ int do_newwind(UNUSED gpointer data)
       return TRUE;
    }
 
-   float windmax = 100.0;
    float r;
    switch (Wind)
    {
@@ -118,8 +120,8 @@ int do_newwind(UNUSED gpointer data)
       default:
 	 r = drand48()*Whirl;
 	 NewWind += r - Whirl/2;
-	 if(NewWind > windmax) NewWind = windmax;
-	 if(NewWind < -windmax) NewWind = -windmax;
+	 if(NewWind > WindMax) NewWind = WindMax;
+	 if(NewWind < -WindMax) NewWind = -WindMax;
 	 break;
       case(1): 
 	 NewWind = Direction*0.6*Whirl;

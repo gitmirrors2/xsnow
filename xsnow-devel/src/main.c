@@ -161,6 +161,7 @@ static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
+//static int do_restart_belowall(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 /**********************************************************************************************/
@@ -401,6 +402,7 @@ int main_c(int argc, char *argv[])
       return 1;
    }
 
+
    Flags.Done = 0;
    NoSnowArea_dynamic   = XCreateRegion();  // needed when drawing on background with xor.
    //                                          unpleasant things happen when a snowflake
@@ -452,7 +454,6 @@ int main_c(int argc, char *argv[])
 	    StructureNotifyMask);
 
    ClearScreen();   // without this, no snow, scenery etc. in KDE
-
 
    if(!Flags.NoMenu)
    {
@@ -522,7 +523,7 @@ int myDetermineWindow()
 	 return 0;
       }
 
-      R("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
+      P("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
 
       // if user specified window, TransA will be 0
       if (TransA)
@@ -537,7 +538,7 @@ int myDetermineWindow()
 
 	 DetermineWindow(&SnowWinb, &SnowWinbName, &TransB, "Xsnow-B", &IsDesktop);
 
-	 R("SnowWinb: %#lx %s TransB: %p\n",SnowWinb,SnowWinbName,(void *)TransB);
+	 P("SnowWinb: %#lx %s TransB: %p\n",SnowWinb,SnowWinbName,(void *)TransB);
       }
    }
 
@@ -594,7 +595,7 @@ int myDetermineWindow()
 
    InitDisplayDimensions();
 
-   R("windows: SnowWin:%s SnowWina:%s SnowWinb:%s\n",SnowWinName,SnowWinaName,SnowWinbName);
+   P("windows: SnowWin:%s SnowWina:%s SnowWinb:%s\n",SnowWinName,SnowWinaName,SnowWinbName);
    printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %s - exposures: %d\n",
 	 SnowWin,SnowWinName,SnowWinDepth,
 	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, TransA?"yes":"no",switches.Exposures);
@@ -610,7 +611,6 @@ int myDetermineWindow()
       drawconnect = g_signal_connect(TransA, "draw", G_CALLBACK(on_draw_event), NULL);
       P("connecting %ld\n",drawconnect);
       restart_do_draw_all();  // to (re-)establish the timeout for do_draw_all
-
    }
    else
    {
@@ -724,10 +724,41 @@ int do_ui_check(UNUSED gpointer data)
       changes++;
       P("changes: %d\n",changes);
    }
+   // following button is hided in ui.c because setting to fullscreen
+   // results in putting the transparent windows above everything,
+   // and I could not force the windows to go below if Flags.BelowAll
+   // requests so. 
+   // Only when the user clicks on the 'below' button things are working
+   // as they should. Maybe I will find a solution, other than restart
+   // the whole program (Flags.Done = 1; DoRestart = 1;).
+   // Maybe the weird solution to simulate 2 clicks on the 'below' button,
+   // taking care that no confirmation is asked?
+   //
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;
-      myDetermineWindow();
+      if(TransA)
+      {
+	 if (Flags.FullScreen)
+	 {
+	    {
+	       gtk_window_fullscreen(GTK_WINDOW(TransA));
+	       gtk_window_fullscreen(GTK_WINDOW(TransB));
+	    }
+	 }
+	 else
+	 {
+	    {
+	       gtk_window_unfullscreen(GTK_WINDOW(TransA));
+	       gtk_window_unfullscreen(GTK_WINDOW(TransB));
+	    }
+	 }
+	 if (Flags.BelowAll)  // this does not work
+	 {
+	    gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
+	    gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
+	 }
+      }
       InitFallenSnow();
       init_stars();
       EraseTrees();
@@ -774,6 +805,7 @@ int do_ui_check(UNUSED gpointer data)
       {
 	 if(Flags.BelowAll)
 	 {
+	    P("below %d\n",counter++);
 	    gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
 	    gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
 	 }
@@ -797,6 +829,24 @@ int do_ui_check(UNUSED gpointer data)
    return TRUE;
 }
 
+/*
+int do_restart_belowall(UNUSED gpointer data)  //todo to remove
+{
+   if (Flags.BelowAll)
+   {
+      P("fullscreen below\n");
+      gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
+      gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
+   }
+   else
+   {
+      P("fullscreen above\n");
+      gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
+      gtk_window_set_keep_above(GTK_WINDOW(TransB), TRUE);
+   }
+   return TRUE;
+}
+*/
 
 int do_displaychanged(UNUSED gpointer data)
 {
@@ -925,6 +975,7 @@ int do_testing(UNUSED gpointer data)
       return FALSE;
 
    return TRUE;
+   Flags.BelowAll = !Flags.BelowAll;
 }
 
 

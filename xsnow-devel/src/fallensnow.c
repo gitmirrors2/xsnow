@@ -382,10 +382,10 @@ void DrawFallen(FallenSnow *fsnow)
 	       int xfront = SantaX+SantaWidth - fsnow->x;
 	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
 	       int xback = xfront - SantaWidth;
-	       const int clearing = 10;
+	       const int clearing = 1;
 	       float vy = -1.5*ActualSantaSpeed; 
 	       if(vy > 0) vy = -vy;
-	       if (vy > -100.0)
+	       if (vy < -100.0)
 		  vy = -100;
 	       if (ActualSantaSpeed > 0)
 		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
@@ -420,7 +420,8 @@ void DrawFallen(FallenSnow *fsnow)
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
-   if (Flags.NoBlowSnow || Flags.NoWind)
+   P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
+   if (Flags.NoBlowSnow)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
@@ -429,17 +430,19 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
    if (ifirst > fsnow->w) ifirst = fsnow->w;
    int ilast  = x+w; if(ilast < 0) ilast = 0;
    if (ilast > fsnow->w) ilast = fsnow->w;
-   for (i=ifirst; i<ilast; i+=MaxSnowFlakeWidth)
+   P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<MaxSnowFlakeWidth?w:MaxSnowFlakeWidth);
+   for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
    {
       int j;
       for(j=0; j<fsnow->acth[i]; j++)
       {
 	 int k, kmax = BlowOff();
+	 //kmax = 5;
 	 for(k=0; k<kmax; k++)
 	 {
 	    Snow *flake   = MakeFlake();
 	    flake->rx     = fsnow->x + i;
-	    flake->ry     = fsnow->y - j;
+	    flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
 	    if (Flags.NoWind)
 	       flake->vx     = 0;
 	    else
@@ -498,9 +501,9 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    {
 	       Snow *flake   = MakeFlake();
 	       flake->rx     = fsnow->x + i;
-	       flake->ry     = fsnow->y - fsnow->acth[i] - randint(2*MaxSnowFlakeWidth);
-	       flake->vx     = NewWind/8;
-	       flake->vy     = -10;
+	       flake->ry     = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
+	       flake->vx     = fsignf(NewWind)*WindMax;
+	       flake->vy     = -5;
 	       flake->cyclic = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
 	       add_flake_to_mainloop(flake);
 	    }
@@ -508,8 +511,6 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	 }
       }
 }
-
-
 
 void SetMaxScreenSnowDepth()
 {

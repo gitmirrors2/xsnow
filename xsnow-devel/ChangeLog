@@ -12,6 +12,13 @@ version 3.0.8
 	  'Below windows'.
 	  Remove 'BelowAll' from .xsnowrc.
 	9:also in Cairo fluff
+	12:better display of blown snow
+	13:change code for going in and out full screen mode
+	   default is now full screen
+	   transparent.c: draw1(): remember two rpevious widgets in stead of
+	   one.
+	   removed full-screen button, see comment at Flags.FullScreen
+	   in main.c
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

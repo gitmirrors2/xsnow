@@ -91,9 +91,10 @@ int WorkspaceActive()
 
 int do_wupdate(UNUSED gpointer data)
 {
-   P("do_wupdate\n");
+   P("do_wupdate %d\n",counter++);
    if (Flags.Done)
       return FALSE;
+
    if(Flags.NoKeepSWin) return TRUE;
    long r;
    r = GetCurrentWorkspace();
@@ -347,10 +348,11 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	 gtk_widget_destroy(GTK_WIDGET(*gtkwin));
       }
 
-      create_transparent_window(Flags.FullScreen, Flags.BelowAll, Flags.AllWorkspaces, 
+      create_transparent_window(Flags.AllWorkspaces, 
 	    xwin, transname, xwinname, gtkwin,w,h);
 
-      R("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
+
+      P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
       // if not possible to create transparent window:
       if (*xwin == 0)
       {
