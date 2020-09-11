@@ -15,10 +15,22 @@ version 3.0.8
 	12:better display of blown snow
 	13:change code for going in and out full screen mode
 	   default is now full screen
-	   transparent.c: draw1(): remember two rpevious widgets in stead of
+	   transparent.c: draw1(): remember two previous widgets in stead of
 	   one.
 	   removed full-screen button, see comment at Flags.FullScreen
 	   in main.c
+	14:Solution for refusing to go below windows: first
+	   ask the opposite.
+	15:Use absolute x,y coordinates for determining snow window placement
+	   and dimensions.
+	   Created a call back to check coordinates and dimensions of
+	   snowwindow once per second.
+	16:Changed css color for troughs.
+	   No flakes: no fallensnow, no fluff, no blowoff, no treesnow.
+	   Flakes blown off trees&window&bottom: smallest type of snow.
+	   Flakes from disappearing fallensnow: all types.
+	   Somewhat more randominess in generateflakesfromfallensnow
+	   in the x-value of the flakes. Better ploughing!
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

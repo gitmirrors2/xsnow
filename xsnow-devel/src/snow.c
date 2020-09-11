@@ -42,7 +42,7 @@
 #include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
 static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
 static float    FlakesPerSecond;

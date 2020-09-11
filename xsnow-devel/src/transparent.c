@@ -58,6 +58,7 @@ static gboolean draw1(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 #endif
 
 static gboolean supports_alpha = FALSE;
+static int below1;
 
 static GdkRectangle workarea;
 
@@ -66,98 +67,105 @@ static GdkRectangle workarea;
 // input:
 //   fullscreen:    1: set window fullscreen
 //   below:         1: place transparent window below all windows
+//                  0: place transparent window above all windows
+//                  NOTE: this is applied in draw1()
 //   allworkspaces: 1: make window visible on all workspaces
-//   prefname:         use this as name for the window
+//   name:             use this as name for the window
+//   gtkwin            GtkWindow to transform into transparent
 //   width:            width of desired window
 //   height:           height of desired window
 // output:
 //   xwin              will receive id of created X11-window, 0 if transparency is not possible
-//   name              will contain copy of prefname
-//   gtkwin            will contain GtkWidget of transparent screen, use this to write with gtk/cairo to
 //                       0 if no transparent window is possible
 //
 // NOTE: in FVWM, combined with xcompmgr or compton, it seems not be possible to put a window below:
 // reason (I guess): _NET_WM_ALLOWED_ACTIONS(ATOM) (from xprop) does not include _NET_WM_ACTION_BELOW
 //
-void create_transparent_window(int allworkspaces, 
-      Window *xwin, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
+int create_transparent_window(int allworkspaces, int below, int fullscreen,  
+      Window *xwin, const char *name, GtkWidget *gtkwin, unsigned int width, unsigned int height)
 {
+   below1 = below;
    workarea.width  = width;
    workarea.height = height;
-   *gtkwin = gtk_window_new        (GTK_WINDOW_TOPLEVEL); 
-   gtk_window_set_decorated        (GTK_WINDOW(*gtkwin),FALSE);
+
+   gtk_window_set_decorated        (GTK_WINDOW(gtkwin),FALSE);
 
    // prevent window from showing up in taskbar: 
    // Alas, it does show in Gnome's top bar standard window menu
-   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin),TRUE);
-   gtk_window_set_skip_pager_hint  (GTK_WINDOW(*gtkwin),TRUE);
+   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin),TRUE);
+   gtk_window_set_skip_pager_hint  (GTK_WINDOW(gtkwin),TRUE);
 
-   gtk_window_set_position         (GTK_WINDOW(*gtkwin), GTK_WIN_POS_CENTER);
-   gtk_window_fullscreen           (GTK_WINDOW(*gtkwin)); // maybe superfluous here
-   // it seems that some window managers want the following below-setting here,
-   // before showing the window:
-   gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE); 
+   gtk_window_set_position         (GTK_WINDOW(gtkwin), GTK_WIN_POS_CENTER);
 
-   P("create_transparent_window %p\n",(void *)*gtkwin);
-   *name = strdup(prefname);
-   gtk_window_set_title(GTK_WINDOW(*gtkwin), *name);
-   gtk_widget_set_app_paintable(*gtkwin, TRUE);
+   P("create_transparent_window %p\n",(void *)gtkwin);
+   gtk_window_set_title(GTK_WINDOW(gtkwin), name);
+   gtk_widget_set_app_paintable(gtkwin, TRUE);
    // this callback we do not need:
 #ifdef USEDRAW
-   g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw), NULL);
+   g_signal_connect(G_OBJECT(gtkwin), "draw", G_CALLBACK(draw), NULL);
 #endif
 #ifdef USEDRAW1
-   g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw1), NULL);
+   g_signal_connect(G_OBJECT(gtkwin), "draw", G_CALLBACK(draw1), NULL);
 #endif
 
-   g_signal_connect(G_OBJECT(*gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
-   gtk_widget_add_events(*gtkwin, GDK_BUTTON_PRESS_MASK);
-   screen_changed(*gtkwin, NULL, NULL);
+   g_signal_connect(G_OBJECT(gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
+   gtk_widget_add_events(gtkwin, GDK_BUTTON_PRESS_MASK);
+   screen_changed(gtkwin, NULL, NULL);
    if (!supports_alpha)
    {
       P("No alpha\n");
-      gtk_window_close(GTK_WINDOW(*gtkwin));
-      *gtkwin = NULL;
       *xwin = 0;
-      return;
+      return FALSE;
    }
+#if 0
+   if(fullscreen)
+      gtk_window_fullscreen        (GTK_WINDOW(gtkwin));
+   else
+      gtk_window_unfullscreen      (GTK_WINDOW(gtkwin));
+#endif
 
-   gtk_widget_show_all(*gtkwin);
+   gtk_widget_show_all(gtkwin);
 
-   GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
+   GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(gtkwin));
    P("gdk_window %p\n",(void *)gdk_window);
    // keep xsnow visible after 'show desktop', and as a bonus, keep
    // xsnow visible on all workspaces in some desktops:
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
 
-   //gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin), TRUE);
-   //gtk_window_set_accept_focus     (GTK_WINDOW(*gtkwin), FALSE);
-   //gtk_window_set_decorated        (GTK_WINDOW(*gtkwin), FALSE);
-   gtk_window_set_resizable        (GTK_WINDOW(*gtkwin), FALSE);
+   //gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin), TRUE);
+   //gtk_window_set_accept_focus     (GTK_WINDOW(gtkwin), FALSE);
+   //gtk_window_set_decorated        (GTK_WINDOW(gtkwin), FALSE);
+   gtk_window_set_resizable        (GTK_WINDOW(gtkwin), FALSE);
 
    // see comment at draw1()
    cairo_region_t *cairo_region = cairo_region_create();
    gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window), cairo_region, 0,0);
-   P("shape stuff: %p %p\n",(void *)*gtkwin,(void*)gdk_window);
+   P("shape stuff: %p %p\n",(void *)gtkwin,(void*)gdk_window);
    cairo_region_destroy(cairo_region);
    //gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
 
    gdk_window_show                 (GDK_WINDOW(gdk_window));
-   gtk_window_fullscreen           (GTK_WINDOW(*gtkwin));
    // it seems that some window managers want the following below-setting also here,
    // after showing the window:
-   gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
-
-   // xsnow visible on all workspaces:
-   if (allworkspaces)
-      gtk_window_stick(GTK_WINDOW(*gtkwin));
-   //
+#if 0
+   if(fullscreen)
+      gtk_window_fullscreen        (GTK_WINDOW(gtkwin));
+   else
+      gtk_window_unfullscreen      (GTK_WINDOW(gtkwin));
+#endif
 
    usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
 
+
+   // xsnow visible on all workspaces:
+   if (allworkspaces)
+      gtk_window_stick(GTK_WINDOW(gtkwin));
+   //
+
    *xwin = gdk_x11_window_get_xid(gdk_window);
 
+   return TRUE;
 }
 
 #if 1
@@ -297,7 +305,13 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, UNUSED gpointer userdata)
 // to gdk_window_input_shape_combine_region(): for SnowWina, then for SnowWinb
 // and then for SnowWina again (probably superfluous). 
 // This seems to fix the problem in some cases.
-// Problem remains in fvwm and others incombination with xcompmgr or compton.
+// Problem remains in fvwm and others in combination with xcompmgr or compton.
+//
+// Also, the 'below' paarmeter is applied here, this seems to be the only
+// safe place to do it. Maybe because it is in the gtk_main loop?
+//
+// NOTE: this code assumes that no more than two windows are created. If there are 
+//       more, some trivial changes in keeping track of these windows.
 //
 static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer userdata)
 {
@@ -314,6 +328,11 @@ static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer use
       cairo_region_destroy(cairo_region1);
       // gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
       P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
+
+      if(below1)
+	 setbelow(GTK_WINDOW(widget)); // see windows.c 
+      else
+	 setabove(GTK_WINDOW(widget)); // see windows.c 
    }
    return FALSE;
 }

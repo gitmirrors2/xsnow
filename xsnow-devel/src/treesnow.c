@@ -36,7 +36,7 @@
 #include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes || Flags.NoKeepSnowOnTrees || Flags.NoTrees)
 
 // we need both type of regions because the region is painted to
 cairo_region_t *gSnowOnTreesRegion;
@@ -77,7 +77,7 @@ void treesnow_draw(cairo_t *cr)
    cairo_fill(cr);
    cairo_region_destroy(region);
 #endif
-   if (Flags.NoKeepSnowOnTrees || Flags.NoTrees)
+   if (NOTACTIVE)
       return;
    GdkRGBA color;
    gdk_rgba_parse(&color,Flags.SnowColor);
@@ -112,8 +112,6 @@ int do_snow_on_trees(UNUSED gpointer data)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;
-   if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
-      return TRUE;
    if (Wind == 2)
       ConvertOnTreeToFlakes();
    static int second = 0;
@@ -146,21 +144,20 @@ void  treesnow_set_gc()
 // blow snow off trees
 void ConvertOnTreeToFlakes()
 {
-   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
-      return;
    int i;
    for (i=0; i<OnTrees; i++)
    {
       int j;
-      for (j=0; j<3; j++)
+      for (j=0; j<2; j++)
       {
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
 	    Snow *flake   = MakeFlake();
+	    flake->whatFlake = 0;
 	    flake->rx     = SnowOnTrees[i].x;
 	    flake->ry     = SnowOnTrees[i].y-5*j;
-	    flake->vy     = -10;
+	    flake->vy     = 0;
 	    flake->cyclic = 0;
 	    add_flake_to_mainloop(flake);
 	 }

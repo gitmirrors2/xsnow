@@ -59,6 +59,8 @@ extern int          WorkspaceActive(void);  // defined in main.c
 extern int          DetermineWindow(Window *xtrans, char **xtransname, GtkWidget **gtrans,const char *transname, int *IsDesktop);
 extern void         InitDisplayDimensions(void);
 extern void         DestroyWindow(Window w);
+extern void         setbelow(GtkWindow *w);
+extern void         setabove(GtkWindow *w);
 
 static const int UW_DEFAULT     = 0; 
 static const int UW_TRANSPARENT = 2;

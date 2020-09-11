@@ -125,13 +125,16 @@ int GetWindows(WinInfo **windows, int *nwin)
    for (i=0; (unsigned long)i<nitems; i++,w++)
    {
       Window root,child_return;
-      int x0,y0;
+      int x0,y0,xr,yr;
       unsigned int bw,depth;
       w->id = r[i];
       XGetGeometry (display, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
-      XTranslateCoordinates (display, w->id, SnowWin, 0, 0,
-	    &(w->x), &(w->y), &child_return);
+      XTranslateCoordinates(display, w->id, RootWindow, 0, 0, &xr,     &yr,     &child_return);
+      w->xa = xr - x0;
+      w->ya = yr - y0;
+
+      XTranslateCoordinates(display, w->id, SnowWin,    0, 0, &(w->x), &(w->y), &child_return);
 
       enum{NET,GTK};
       Atom type; int format; unsigned long nitems,b; unsigned char *properties = NULL;
@@ -286,7 +289,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(properties)XFree(properties);
    }
    if(properties) XFree(properties);
-   //P("%d\n",counter++);printwindows(*windows,*nwin);
+   //P("%d\n",counter++);printwindows(display,*windows,*nwin);
    return 1;
 }
 
@@ -375,14 +378,19 @@ WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
    return NULL;
 }
 
-void printwindows(WinInfo *windows, int nwin)
+void printwindows(Display *dpy,WinInfo *windows, int nwin)
 {
    WinInfo *w = windows;
    int i;
    for (i=0; i<nwin; i++)
    {
-      printf("id:%#12lx ws:%4d x:%6d y:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d\n",
-	    w->id,w->ws,w->x,w->y,w->w,w->h,w->sticky,w->dock,w->hidden);
+      char *name;
+      XFetchName(dpy, w->id, &name);
+      if (strlen(name)>20)
+	 name[20] = '\0';
+      printf("id:%#10lx ws:%3d x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",
+	    w->id,w->ws,w->x,w->y,w->xa,w->ya,w->w,w->h,w->sticky,w->dock,w->hidden,name);
+      XFree(name);
       w++;
    }
    return;

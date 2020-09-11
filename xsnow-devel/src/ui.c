@@ -610,7 +610,7 @@ static void init_general_buttons()
    gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
    gtk_widget_hide(general_buttons.below_confirm.button);
 
-   gtk_widget_hide(general_buttons.fullscreen.button);
+   // gtk_widget_hide(general_buttons.fullscreen.button);
 }
 
 static void set_general_buttons()
@@ -1223,6 +1223,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
 void apply_standard_css()
 {
    const char *css     = 
+      "scale                               { padding:          1em;     }"   // padding in slider buttons
       "button.radio                        { min-width:        10px;    }"   // make window as small as possible
       "button                              { background:       #CCF0D8; }"   // color of normal buttons
       "button.radio,        button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
@@ -1230,7 +1231,7 @@ void apply_standard_css()
       "radiobutton:checked, button:checked { background:       #6AF69B; }"   // color of checked buttons
       "headerbar                           { background:       #B3F4CA; }"   // color of headerbar
       "scale slider                        { background:       #D4EDDD; }"   // color of sliders
-      "scale trough                        { background:       #F0FEF5; }"   // color of trough of sliders
+      "scale trough                        { background:       #0DAB44; }"   // color of trough of sliders
       "stack                               { background-color: #EAFBF0; }"   // color of main area
       "*                                   { color:            #065522; }"   // foreground color (text)
       "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items

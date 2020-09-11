@@ -127,6 +127,7 @@ int                 CWorkSpace = 0;
 long                TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 static int          DoRestart = 0;
 static guint        draw_all_id = 0;
+static gulong       drawconnect = 0;
 
 
 /* Colo(u)rs */
@@ -143,6 +144,7 @@ static int    XsnowErrors(Display *dpy, XErrorEvent *err);
 static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
+static void   set_below_above(void);
 
 
 static void Thanks(void)
@@ -161,6 +163,7 @@ static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
+static int do_init_display_dimensions(UNUSED gpointer data);
 //static int do_restart_belowall(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
@@ -420,11 +423,12 @@ int main_c(int argc, char *argv[])
    treesnow_init();
    loadmeasure_init();
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            ,NULL);
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged          ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event                   ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing                 ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_init_display_dimensions ,NULL);
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check                ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc          ,NULL);
 
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, NULL);
@@ -439,6 +443,8 @@ int main_c(int argc, char *argv[])
 #undef DOIT_L
 #undef DOIT_S
 
+
+   OldFlags.FullScreen = !Flags.FullScreen;
 
    BlackPix = AllocNamedColor(BlackColor, Black);
 
@@ -495,7 +501,21 @@ int main_c(int argc, char *argv[])
    return 0;
 }		/* End of snowing */
 
-static gulong drawconnect = 0;
+void set_below_above()
+{
+   P("%d set_below_above\n",counter++);
+   if (Flags.BelowAll)
+   {
+      setbelow(GTK_WINDOW(TransA));
+      setbelow(GTK_WINDOW(TransB));
+   }
+   else
+   {
+      setabove(GTK_WINDOW(TransA));
+      setabove(GTK_WINDOW(TransB));
+   }
+}
+
 int myDetermineWindow()
 {
    P("myDetermineWindow root: %#lx\n",RootWindow);
@@ -709,13 +729,15 @@ int do_ui_check(UNUSED gpointer data)
    if(Flags.OffsetS != OldFlags.OffsetS)
    {
       OldFlags.OffsetS = Flags.OffsetS;
+#if 0
       InitDisplayDimensions();
       InitFallenSnow();
       init_stars();
       EraseTrees();
       ClearScreen();
+#endif
       changes++;
-      P("changes: %d\n",changes);
+      P("changes: %d %d\n",changes,Flags.OffsetS);
    }
    if(Flags.NoFluffy != OldFlags.NoFluffy)
    {
@@ -753,16 +775,15 @@ int do_ui_check(UNUSED gpointer data)
 	       gtk_window_unfullscreen(GTK_WINDOW(TransB));
 	    }
 	 }
-	 if (Flags.BelowAll)  // this does not work
-	 {
-	    gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
-	    gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
-	 }
+	 set_below_above();
       }
+
+#if 0
       InitFallenSnow();
       init_stars();
       EraseTrees();
       ClearScreen();
+#endif
       changes++;
       P("changes: %d\n",changes);
    }
@@ -801,21 +822,7 @@ int do_ui_check(UNUSED gpointer data)
    if(Flags.BelowAll != OldFlags.BelowAll)
    {
       OldFlags.BelowAll = Flags.BelowAll;
-      if(TransA)
-      {
-	 if(Flags.BelowAll)
-	 {
-	    P("below %d\n",counter++);
-	    gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
-	    gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
-	 }
-	 else
-	 {
-	    gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
-	    gtk_window_set_keep_above(GTK_WINDOW(TransB), TRUE);
-	 }
-      }
-
+      set_below_above();
       changes++;
       P("changes: %d %d\n",changes,Flags.BelowAll);
    }
@@ -829,24 +836,6 @@ int do_ui_check(UNUSED gpointer data)
    return TRUE;
 }
 
-/*
-int do_restart_belowall(UNUSED gpointer data)  //todo to remove
-{
-   if (Flags.BelowAll)
-   {
-      P("fullscreen below\n");
-      gtk_window_set_keep_below(GTK_WINDOW(TransA), TRUE);
-      gtk_window_set_keep_below(GTK_WINDOW(TransB), TRUE);
-   }
-   else
-   {
-      P("fullscreen above\n");
-      gtk_window_set_keep_above(GTK_WINDOW(TransA), TRUE);
-      gtk_window_set_keep_above(GTK_WINDOW(TransB), TRUE);
-   }
-   return TRUE;
-}
-*/
 
 int do_displaychanged(UNUSED gpointer data)
 {
@@ -967,13 +956,11 @@ int do_show_desktop_type(UNUSED gpointer data)
 }
 
 
-
 int do_testing(UNUSED gpointer data)
 {
    counter++;
    if (Flags.Done)
       return FALSE;
-
    return TRUE;
    Flags.BelowAll = !Flags.BelowAll;
 }
@@ -1058,6 +1045,33 @@ void drawit(cairo_t *cr)
 
    fallensnow_draw(cr);
 
+}
+
+int do_init_display_dimensions(UNUSED gpointer data)
+{
+   if (Flags.Done)
+      return FALSE;
+   static int prevw = 0, prevh = 0;
+   P("%d do_init_display_dimensions\n",counter);
+   InitDisplayDimensions();
+   if (prevw != SnowWinWidth || prevh != SnowWinHeight)
+   {
+      if (prevw == SnowWinWidth)
+      {
+	 // search fallensnow at bottom
+	 FallenSnow *f = FindFallen(FsnowFirst,0);
+	 if (f)
+	    f->y = SnowWinHeight;
+      }
+      else
+	 InitFallenSnow();
+      init_stars();
+      EraseTrees();
+      ClearScreen();
+      prevw = SnowWinWidth;
+      prevh = SnowWinHeight;
+   }
+   return TRUE;
 }
 
 int do_draw_all(gpointer widget)

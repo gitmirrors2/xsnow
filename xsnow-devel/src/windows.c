@@ -114,8 +114,8 @@ int do_wupdate(UNUSED gpointer data)
       I("Cannot get windows\n");
       Flags.Done = 1;
       return TRUE;
-   };
-   //I(":\n");printwindows(Windows,NWindows);
+   }
+   //I("%d:\n",counter++);printwindows(display,Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
@@ -348,8 +348,20 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	 gtk_widget_destroy(GTK_WIDGET(*gtkwin));
       }
 
-      create_transparent_window(Flags.AllWorkspaces, 
-	    xwin, transname, xwinname, gtkwin,w,h);
+      *gtkwin = gtk_window_new        (GTK_WINDOW_TOPLEVEL); 
+
+      int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, Flags.FullScreen, 
+	    xwin, transname, *gtkwin, w, h);
+
+      // todo: use rc for testing on transparency later on, not TransA
+
+      if (!rc)
+      {
+	 gtk_window_close(GTK_WINDOW(*gtkwin));
+	 *gtkwin = NULL;
+      }
+
+      *xwinname = strdup(transname);
 
 
       P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
@@ -446,10 +458,10 @@ Window XWinInfo(char **name)
 void InitDisplayDimensions()
 {
    unsigned int w,h,b,d;
-   int x,y;
+   int x,y,xr,yr;
    unsigned int wroot,hroot,broot,droot;
    int xroot,yroot;
-   Window root;
+   Window root,child_return;
    XGetGeometry(display,RootWindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
    Xroot = xroot;
@@ -457,21 +469,43 @@ void InitDisplayDimensions()
    Wroot = wroot;
    Hroot = hroot;
    P("InitDisplayDimensions: %d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
-   XGetGeometry(display,SnowWin,&root,
-	 &x, &y, &w, &h, &b, &d);
-   P("InitDisplayDimensions: %d %d %d %d %d %d\n",x,y,w,h,b,d);
-   SnowWinX           = x;
-   SnowWinY           = y;
-   SnowWinWidth       = w;
+   XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
+   XTranslateCoordinates(display, SnowWin, RootWindow, 0, 0, &xr, &yr, &child_return);
+   P("InitDisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
+   SnowWinX           = xr;// - x;
+   SnowWinY           = yr;// - y;
+   SnowWinWidth       = wroot - SnowWinX;
+   SnowWinHeight      = hroot - SnowWinY + Flags.OffsetS;
+   P("InitDisplayDimensions: SnowWinX:%d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
    if(switches.UseGtk || switches.Trans)
-      SnowWinHeight      = hroot + Flags.OffsetS;
+   {
+      //SnowWinHeight      = hroot + Flags.OffsetS;
+   }
    else
       SnowWinHeight      = h + Flags.OffsetS;
+#if 0
    if(!Flags.FullScreen && switches.UseGtk)
       SnowWinHeight -= y;
+#endif
+
    SnowWinBorderWidth = b;
    SnowWinDepth       = d;
 
    SetMaxScreenSnowDepth();
+}
+
+// Force window below or above other windows.
+// It appears that, to get a window below other windows, it often is necessary
+// to do first the opposite, and vice-versa.
+void setbelow(GtkWindow *w)
+{
+   gtk_window_set_keep_above(GTK_WINDOW(w), TRUE);
+   gtk_window_set_keep_below(GTK_WINDOW(w), TRUE);
+}
+
+void setabove(GtkWindow *w)
+{
+   gtk_window_set_keep_below(GTK_WINDOW(w), TRUE);
+   gtk_window_set_keep_above(GTK_WINDOW(w), TRUE);
 }
 

@@ -36,7 +36,7 @@
 #include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
 int        MaxScrSnowDepth = 0;
 FallenSnow *FsnowFirst = NULL;
@@ -67,6 +67,8 @@ void   fallensnow_set_gc()
 
 void fallensnow_draw(cairo_t *cr)
 {
+   if (NOTACTIVE)
+      return;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
@@ -441,14 +443,15 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 for(k=0; k<kmax; k++)
 	 {
 	    Snow *flake   = MakeFlake();
-	    flake->rx     = fsnow->x + i;
+	    flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
 	    flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
 	    if (Flags.NoWind)
 	       flake->vx     = 0;
 	    else
 	       flake->vx     = NewWind/8;
-	    flake->vy     = vy;
-	    flake->cyclic = 0;
+	    flake->vy         = vy;
+	    flake->cyclic     = 0;
+	    flake->whatFlake  = randint(SNOWFLAKEMAXTYPE+1);
 	    add_flake_to_mainloop(flake);
 	 }
       }
@@ -499,13 +502,15 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       Snow *flake   = MakeFlake();
-	       flake->rx     = fsnow->x + i;
-	       flake->ry     = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
-	       flake->vx     = fsignf(NewWind)*WindMax;
-	       flake->vy     = -5;
-	       flake->cyclic = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
+	       Snow *flake       = MakeFlake();
+	       flake->rx         = fsnow->x + i;
+	       flake->ry         = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
+	       flake->vx         = fsignf(NewWind)*WindMax;
+	       flake->vy         = -5;
+	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
+	       flake->whatFlake  = 0;
 	       add_flake_to_mainloop(flake);
+	       P("%d:\n",counter++);
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
