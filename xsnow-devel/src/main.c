@@ -397,6 +397,8 @@ int main_c(int argc, char *argv[])
    //     which severely stresses plasma shell (or nautilus-desktop in Gnome, 
    //     but we do not use XClearArea in Gnome).
    //
+   // And then, we have 'snowing below' and 'snowing above', which respectively
+   // means: snow behind all windows and snow before all windows.
 
 
 
@@ -729,13 +731,6 @@ int do_ui_check(UNUSED gpointer data)
    if(Flags.OffsetS != OldFlags.OffsetS)
    {
       OldFlags.OffsetS = Flags.OffsetS;
-#if 0
-      InitDisplayDimensions();
-      InitFallenSnow();
-      init_stars();
-      EraseTrees();
-      ClearScreen();
-#endif
       changes++;
       P("changes: %d %d\n",changes,Flags.OffsetS);
    }
@@ -763,55 +758,37 @@ int do_ui_check(UNUSED gpointer data)
       {
 	 if (Flags.FullScreen)
 	 {
-	    {
-	       gtk_window_fullscreen(GTK_WINDOW(TransA));
-	       gtk_window_fullscreen(GTK_WINDOW(TransB));
-	    }
+	    gtk_window_fullscreen(GTK_WINDOW(TransA));
+	    gtk_window_fullscreen(GTK_WINDOW(TransB));
 	 }
 	 else
 	 {
-	    {
-	       gtk_window_unfullscreen(GTK_WINDOW(TransA));
-	       gtk_window_unfullscreen(GTK_WINDOW(TransB));
-	    }
+	    gtk_window_unfullscreen(GTK_WINDOW(TransA));
+	    gtk_window_unfullscreen(GTK_WINDOW(TransB));
 	 }
 	 set_below_above();
       }
-
-#if 0
-      InitFallenSnow();
-      init_stars();
-      EraseTrees();
-      ClearScreen();
-#endif
       changes++;
       P("changes: %d\n",changes);
    }
    if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
    {
-      if(0)
+      if(Flags.AllWorkspaces)
       {
-	 myDetermineWindow();
+	 P("stick\n");
+	 if (switches.UseGtk||switches.Trans)
+	 {
+	    gtk_window_stick(GTK_WINDOW(TransA));
+	    gtk_window_stick(GTK_WINDOW(TransB));
+	 }
       }
       else
       {
-	 if(Flags.AllWorkspaces)
+	 P("unstick\n");
+	 if (switches.UseGtk||switches.Trans)
 	 {
-	    P("stick\n");
-	    if (switches.UseGtk||switches.Trans)
-	    {
-	       gtk_window_stick(GTK_WINDOW(TransA));
-	       gtk_window_stick(GTK_WINDOW(TransB));
-	    }
-	 }
-	 else
-	 {
-	    P("unstick\n");
-	    if (switches.UseGtk||switches.Trans)
-	    {
-	       gtk_window_unstick(GTK_WINDOW(TransA));
-	       gtk_window_unstick(GTK_WINDOW(TransB));
-	    }
+	    gtk_window_unstick(GTK_WINDOW(TransA));
+	    gtk_window_unstick(GTK_WINDOW(TransB));
 	 }
       }
       OldFlags.AllWorkspaces = Flags.AllWorkspaces;

@@ -3599,8 +3599,6 @@ point</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Anarchy level: the higher, the more anarchy</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
                 <property name="adjustment">birds-anarchy-adjustment</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
@@ -3946,6 +3944,9 @@ confirm</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="button_below_confirm" swapped="no"/>
+                    <style>
+                      <class name="confirm"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>

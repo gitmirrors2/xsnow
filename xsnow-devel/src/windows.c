@@ -350,7 +350,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
       *gtkwin = gtk_window_new        (GTK_WINDOW_TOPLEVEL); 
 
-      int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, Flags.FullScreen, 
+      int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, 
 	    xwin, transname, *gtkwin, w, h);
 
       // todo: use rc for testing on transparency later on, not TransA
@@ -483,10 +483,6 @@ void InitDisplayDimensions()
    }
    else
       SnowWinHeight      = h + Flags.OffsetS;
-#if 0
-   if(!Flags.FullScreen && switches.UseGtk)
-      SnowWinHeight -= y;
-#endif
 
    SnowWinBorderWidth = b;
    SnowWinDepth       = d;

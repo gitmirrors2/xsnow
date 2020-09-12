@@ -31,6 +31,7 @@ version 3.0.8
 	   Flakes from disappearing fallensnow: all types.
 	   Somewhat more randominess in generateflakesfromfallensnow
 	   in the x-value of the flakes. Better ploughing!
+	 17:yellow confirm button.
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

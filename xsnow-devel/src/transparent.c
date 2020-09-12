@@ -65,7 +65,6 @@ static GdkRectangle workarea;
 //
 // create transparent click-through window without any decorations
 // input:
-//   fullscreen:    1: set window fullscreen
 //   below:         1: place transparent window below all windows
 //                  0: place transparent window above all windows
 //                  NOTE: this is applied in draw1()
@@ -81,7 +80,7 @@ static GdkRectangle workarea;
 // NOTE: in FVWM, combined with xcompmgr or compton, it seems not be possible to put a window below:
 // reason (I guess): _NET_WM_ALLOWED_ACTIONS(ATOM) (from xprop) does not include _NET_WM_ACTION_BELOW
 //
-int create_transparent_window(int allworkspaces, int below, int fullscreen,  
+int create_transparent_window(int allworkspaces, int below,  
       Window *xwin, const char *name, GtkWidget *gtkwin, unsigned int width, unsigned int height)
 {
    below1 = below;
@@ -117,12 +116,6 @@ int create_transparent_window(int allworkspaces, int below, int fullscreen,
       *xwin = 0;
       return FALSE;
    }
-#if 0
-   if(fullscreen)
-      gtk_window_fullscreen        (GTK_WINDOW(gtkwin));
-   else
-      gtk_window_unfullscreen      (GTK_WINDOW(gtkwin));
-#endif
 
    gtk_widget_show_all(gtkwin);
 
@@ -146,14 +139,6 @@ int create_transparent_window(int allworkspaces, int below, int fullscreen,
    //gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
 
    gdk_window_show                 (GDK_WINDOW(gdk_window));
-   // it seems that some window managers want the following below-setting also here,
-   // after showing the window:
-#if 0
-   if(fullscreen)
-      gtk_window_fullscreen        (GTK_WINDOW(gtkwin));
-   else
-      gtk_window_unfullscreen      (GTK_WINDOW(gtkwin));
-#endif
 
    usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
 

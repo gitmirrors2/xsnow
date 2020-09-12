@@ -1235,7 +1235,8 @@ void apply_standard_css()
       "stack                               { background-color: #EAFBF0; }"   // color of main area
       "*                                   { color:            #065522; }"   // foreground color (text)
       "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items
-      ".pink { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      ".pink    { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      ".confirm { background-color: #FFFF00; }"
       ;
 
    static GtkCssProvider *cssProvider = NULL;
