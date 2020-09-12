@@ -439,19 +439,18 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
       for(j=0; j<fsnow->acth[i]; j++)
       {
 	 int k, kmax = BlowOff();
-	 //kmax = 5;
 	 for(k=0; k<kmax; k++)
 	 {
-	    Snow *flake   = MakeFlake();
+	    Snow *flake   = MakeFlake(-1);
 	    flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
 	    flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
 	    if (Flags.NoWind)
 	       flake->vx     = 0;
 	    else
-	       flake->vx     = NewWind/8;
+	       flake->vx      = NewWind/8;
 	    flake->vy         = vy;
 	    flake->cyclic     = 0;
-	    flake->whatFlake  = randint(SNOWFLAKEMAXTYPE+1);
+
 	    add_flake_to_mainloop(flake);
 	 }
       }
@@ -502,13 +501,12 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       Snow *flake       = MakeFlake();
+	       Snow *flake       = MakeFlake(0);
 	       flake->rx         = fsnow->x + i;
 	       flake->ry         = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
 	       flake->vx         = fsignf(NewWind)*WindMax;
 	       flake->vy         = -5;
 	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
-	       flake->whatFlake  = 0;
 	       add_flake_to_mainloop(flake);
 	       P("%d:\n",counter++);
 	    }

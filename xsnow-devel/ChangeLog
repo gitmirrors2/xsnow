@@ -32,6 +32,8 @@ version 3.0.8
 	   Somewhat more randominess in generateflakesfromfallensnow
 	   in the x-value of the flakes. Better ploughing!
 	 17:yellow confirm button.
+	    Bigger logo santa.xpm
+	    Stratified MakeFlake-InitFlake combo.
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

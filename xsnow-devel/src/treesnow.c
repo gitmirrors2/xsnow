@@ -153,8 +153,7 @@ void ConvertOnTreeToFlakes()
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    Snow *flake   = MakeFlake();
-	    flake->whatFlake = 0;
+	    Snow *flake   = MakeFlake(0);
 	    flake->rx     = SnowOnTrees[i].x;
 	    flake->ry     = SnowOnTrees[i].y-5*j;
 	    flake->vy     = 0;

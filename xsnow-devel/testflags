@@ -1,0 +1,105 @@
+#!/bin/bash
+xsnow=src/xsnow
+doit()
+{
+   echo "------------------------------------------" $*
+   $xsnow -defaults -stopafter 2 $*  | tee /tmp/out || exit 1
+   case "$1" in
+      -h) : ;;
+      -help) : ;;
+      -H) : ;;
+      -manpage) : ;;
+      -v) : ;;
+      -version) : ;;
+      *)
+	 if grep -q "Halting because of flag -stopafter" /tmp/out ; then
+	    :
+	 else
+	    if grep -q Caught /tmp/out ; then
+	       echo "Halting because someone forced xsnow to stop"
+	    else
+	       echo "Halting because xsnow detected an error"
+	    fi
+	    exit
+	 fi
+	 ;;
+   esac
+}
+for f in                   \
+   "-above"                \
+   "-allworkspaces 1"      \
+   "-anarchy 40"           \
+   "-bg green"             \
+   "-birdscolor black"     \
+   "-birdsonly 0"          \
+   "-birdsspeed 20"        \
+   "-blowofffactor 10"     \
+   "-cpuload 80"           \
+   "-desktop"              \
+   "-display $DISPLAY"     \
+   "-disweight 40"         \
+   "-exposures"            \
+   "-flakecountmax 800"    \
+   "-focuscentre 30"       \
+   "-followneighbours 20"  \
+   "-fullscreen"           \
+   "-h"                    \
+   "-H"                    \
+   "-help"                 \
+   "-manpage"              \
+   "-maxontrees 250"       \
+   "-nbirds 30"            \
+   "-neighbours 8"         \
+   "-noblowsnow"           \
+   "-noconfig"             \
+   "-noexposures"          \
+   "-nofluffy"             \
+   "-nokeepsnow"           \
+   "-nokeepsnowonscreen"   \
+   "-nokeepsnowontrees"    \
+   "-nokeepsnowonwindows"  \
+   "-nomenu"               \
+   "-nometeorites"         \
+   "-noquiet"              \
+   "-norudolph"            \
+   "-nosanta"              \
+   "-nosnowflakes"         \
+   "-notrees"              \
+   "-nowind"               \
+   "-offsets 1"            \
+   "-offsetw 9"            \
+   "-offsetx 10"           \
+   "-offsety 10"           \
+   "-prefdistance 40"      \
+   "-santa 3"              \
+   "-santaspeedfactor 80"  \
+   "-sc black"             \
+   "-showattr 1"           \
+   "-showbirds 1"          \
+   "-snowflakes 30"        \
+   "-snowspeedfactor 80"   \
+   "-ssnowdepth 40"        \
+   "-stars 70"             \
+   "-tc blue"              \
+   "-treefill 30"          \
+   "-trees 20"             \
+   "-treetype 2,3,4"       \
+   "-treetype all"         \
+   "-v"                    \
+   "-version"              \
+   "-viewingdistance 20"   \
+   "-vintage"              \
+   "-wantwindow default"   \
+   "-whirlfactor 120"      \
+   "-windtimer 40"         \
+   "-wsnowdepth 20"        \
+   " "                     \
+   ; do
+   doit "$f"
+done
+
+exit
+
+
+
+

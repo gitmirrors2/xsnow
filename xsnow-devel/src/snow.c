@@ -238,7 +238,7 @@ int do_genflakes(UNUSED gpointer data)
    int i;
    for(i=0; i<desflakes; i++)
    {
-      Snow *flake = MakeFlake();
+      Snow *flake = MakeFlake(-1);
       add_flake_to_mainloop(flake);
    }
    RETURN;
@@ -500,10 +500,15 @@ int do_UpdateSnowFlake(Snow *flake)
    return TRUE;
 }
 
-Snow *MakeFlake()
+// creates snowflake from type (0<type<=SNOWFLAKEMAXTYPE)
+// if <0, create random type
+Snow *MakeFlake(int type)
 {
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
    FlakeCount++; 
+   if (type < 0)
+      type = randint(SNOWFLAKEMAXTYPE+1);
+   flake -> whatFlake = type; 
    InitFlake(flake);
    return flake;
 }
@@ -557,7 +562,6 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 
 void InitFlake(Snow *flake)
 {
-   flake->whatFlake  = randint(SNOWFLAKEMAXTYPE+1);
    flake->w          = snowPix[flake->whatFlake].width;
    flake->h          = snowPix[flake->whatFlake].height;
    flake->rx         = randint(SnowWinWidth - flake->w);
@@ -576,8 +580,6 @@ void InitFlake(Snow *flake)
    P("wsens: %f\n",flake->wsens);
    //P("%f %f\n",flake->rx, flake->ry);
 }
-
-
 
 void InitFlakesPerSecond()
 {

@@ -206,7 +206,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-stopafter           ,StopAfter                        );
 	 handle_ia(-treefill            ,TreeFill                         );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
-	 handle_ia(-whirlwactor         ,WhirlFactor                      );
+	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
@@ -225,12 +225,11 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
 	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
-	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
 	 handle_iv(-nomenu              ,NoMenu                   ,1      );
 	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
 	 handle_iv(-noquiet             ,Quiet                    ,0      );
-	 handle_iv(-norudolf            ,NoRudolf                 ,1      );
+	 handle_iv(-norudolph           ,NoRudolf                 ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
 	 handle_iv(-nosnowflakes        ,NoSnowFlakes             ,1      );
 	 handle_iv(-notrees             ,NoTrees                  ,1      );
