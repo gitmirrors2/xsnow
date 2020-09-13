@@ -70,7 +70,6 @@
    DOIT_I(OffsetW) \
    DOIT_I(OffsetX) \
    DOIT_I(OffsetY) \
-   DOIT_I(Quiet) \
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
    DOIT_I(SnowFlakesFactor) \

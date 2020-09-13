@@ -61,6 +61,7 @@ extern void         InitDisplayDimensions(void);
 extern void         DestroyWindow(Window w);
 extern void         setbelow(GtkWindow *w);
 extern void         setabove(GtkWindow *w);
+extern void         DisplayDimensions(void);
 
 static const int UW_DEFAULT     = 0; 
 static const int UW_TRANSPARENT = 2;

@@ -163,7 +163,7 @@ static int do_testing(gpointer data);
 static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
-static int do_init_display_dimensions(UNUSED gpointer data);
+static int do_display_dimensions(UNUSED gpointer data);
 //static int do_restart_belowall(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
@@ -428,7 +428,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event                   ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing                 ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_init_display_dimensions ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_display_dimensions      ,NULL);
    add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check                ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc          ,NULL);
 
@@ -979,7 +979,6 @@ void EraseStars()
 
 int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
-   if (Flags.Quiet) return 0;
    char msg[1024];
    XGetErrorText(dpy, err->error_code, msg,sizeof(msg));
    P("%s\n",msg);
@@ -1024,13 +1023,13 @@ void drawit(cairo_t *cr)
 
 }
 
-int do_init_display_dimensions(UNUSED gpointer data)
+int do_display_dimensions(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
    static int prevw = 0, prevh = 0;
    P("%d do_init_display_dimensions\n",counter);
-   InitDisplayDimensions();
+   DisplayDimensions();
    if (prevw != SnowWinWidth || prevh != SnowWinHeight)
    {
       if (prevw == SnowWinWidth)

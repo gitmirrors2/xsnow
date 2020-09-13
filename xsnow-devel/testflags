@@ -60,7 +60,6 @@ for f in                   \
    "-nokeepsnowonwindows"  \
    "-nomenu"               \
    "-nometeorites"         \
-   "-noquiet"              \
    "-norudolph"            \
    "-nosanta"              \
    "-nosnowflakes"         \

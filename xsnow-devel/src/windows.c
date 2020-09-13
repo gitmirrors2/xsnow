@@ -115,6 +115,9 @@ int do_wupdate(UNUSED gpointer data)
       Flags.Done = 1;
       return TRUE;
    }
+   DisplayDimensions();
+
+
    //I("%d:\n",counter++);printwindows(display,Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
@@ -457,11 +460,9 @@ Window XWinInfo(char **name)
 
 void InitDisplayDimensions()
 {
-   unsigned int w,h,b,d;
-   int x,y,xr,yr;
    unsigned int wroot,hroot,broot,droot;
    int xroot,yroot;
-   Window root,child_return;
+   Window root;
    XGetGeometry(display,RootWindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
    Xroot = xroot;
@@ -469,14 +470,23 @@ void InitDisplayDimensions()
    Wroot = wroot;
    Hroot = hroot;
    P("InitDisplayDimensions: %d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
+   DisplayDimensions();
+}
+
+void DisplayDimensions()
+{
+   unsigned int w,h,b,d;
+   int x,y,xr,yr;
+   Window root,child_return;
+
    XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
    XTranslateCoordinates(display, SnowWin, RootWindow, 0, 0, &xr, &yr, &child_return);
-   P("InitDisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
+   P("DisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
    SnowWinX           = xr;// - x;
    SnowWinY           = yr;// - y;
-   SnowWinWidth       = wroot - SnowWinX;
-   SnowWinHeight      = hroot - SnowWinY + Flags.OffsetS;
-   P("InitDisplayDimensions: SnowWinX:%d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
+   SnowWinWidth       = Wroot - SnowWinX;
+   SnowWinHeight      = Hroot - SnowWinY + Flags.OffsetS;
+   P("DisplayDimensions: SnowWinX:%d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
    if(switches.UseGtk || switches.Trans)
    {
       //SnowWinHeight      = hroot + Flags.OffsetS;

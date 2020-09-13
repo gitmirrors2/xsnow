@@ -228,7 +228,6 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
 	 handle_iv(-nomenu              ,NoMenu                   ,1      );
 	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
-	 handle_iv(-noquiet             ,Quiet                    ,0      );
 	 handle_iv(-norudolph           ,NoRudolf                 ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
 	 handle_iv(-nosnowflakes        ,NoSnowFlakes             ,1      );

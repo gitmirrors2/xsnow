@@ -285,7 +285,7 @@ int do_initbaum(UNUSED gpointer data)
       int y2 = SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
       if (y2>y1) y1=y2+1;
 
-      int x = randint(SnowWinWidth);
+      int x = randint(SnowWinWidth-w);
       int y = y1 - randint(y1-y2);
 
       int in = XRectInRegion(TreeRegion,x,y,w,h);

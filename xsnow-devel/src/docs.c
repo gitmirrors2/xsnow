@@ -111,7 +111,6 @@ void docs_usage(int man)
    manout("-noexposures"              ,"Use XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
-   manout("-noquiet"                  ,"Print during running info about disappeared windows, blown fuses etc.");
    manout("-wantwindow"               ,"Specify your favorite window:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
