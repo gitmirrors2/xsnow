@@ -174,8 +174,6 @@
 
 #define time_draw_all         (0.04 * cpufactor)    /* time between update of screen */
 
-#define PRIORITY_DEFAULT   G_PRIORITY_LOW
-#define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 /* ------------------------------------------------------------------ */
 
 extern double cpufactor;

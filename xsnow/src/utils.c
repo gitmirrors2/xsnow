@@ -34,8 +34,8 @@ Pixel Black, White;
 FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
    char *h = getenv("HOME");
-   if (h == 0)
-      return 0;
+   if (h == NULL)
+      return NULL;
    char *home = strdup(h);
    (*path) = (char *) malloc(strlen(home)+strlen(file)+2);
    strcpy(*path,home);
@@ -122,7 +122,7 @@ void sgaussian(long int seed)
 
 guint add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap) 
 {
-   return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0);
+   return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,NULL);
 }
 
 void remove_from_mainloop(guint tag)

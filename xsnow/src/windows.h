@@ -23,7 +23,9 @@
 #include <X11/Intrinsic.h>
 extern Display    *display;
 extern int         screen;
-extern Window      SnowWin;
+extern Window      SnowWin;       // window to snow in
+extern Window      SnowWina;      // SnowWin is either SnowWina
+extern Window      SnowWinb;      //   or SnowWinb
 extern int         SnowWinWidth; 
 extern int         SnowWinHeight;
 extern int         SnowWinBorderWidth;
@@ -38,7 +40,8 @@ extern int          Exposures;
 extern Pixel        BlackPix;
 extern GtkWidget   *TransA;  
 extern GtkWidget   *TransB;  
-extern long         CWorkSpace;
+extern int          CWorkSpace;  // int? Yes, in compiz we take the placement of the desktop
+//                                  which can easily be > 16 bits
 extern long         TransWorkSpace;  // workspace on which transparent window is placed
 extern char        *SnowWinName;
 extern Window       RootWindow;
@@ -56,6 +59,9 @@ extern int          WorkspaceActive(void);  // defined in main.c
 extern int          DetermineWindow(Window *xtrans, char **xtransname, GtkWidget **gtrans,const char *transname, int *IsDesktop);
 extern void         InitDisplayDimensions(void);
 extern void         DestroyWindow(Window w);
+extern void         setbelow(GtkWindow *w);
+extern void         setabove(GtkWindow *w);
+extern void         DisplayDimensions(void);
 
 static const int UW_DEFAULT     = 0; 
 static const int UW_TRANSPARENT = 2;

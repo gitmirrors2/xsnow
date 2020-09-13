@@ -37,6 +37,7 @@
 #include "version.h"
 #include "birds.h"
 #include "windows.h"
+#include "varia.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -66,7 +67,7 @@
 // can be accessed with gtk_range_get_value().
 // In general, the widget is a GtkScale.
 #define HANDLE_RANGE(_name,_flag,_value) \
-   MODULE_EXPORT void _name(GtkWidget *w, gpointer d)\
+   MODULE_EXPORT void _name(GtkWidget *w, UNUSED gpointer d)\
 {\
    if(!human_interaction) return;\
    gdouble value;\
@@ -77,7 +78,7 @@
 
 #define HANDLE_TOGGLE(_name,_flag,_t,_f) \
    MODULE_EXPORT \
-   void _name(GtkWidget *w, gpointer d) \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
 { \
    if(!human_interaction) return; \
    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
@@ -90,7 +91,7 @@
 
 #define HANDLE_COLOR(_name,_flag) \
    MODULE_EXPORT \
-   void _name(GtkWidget *w, gpointer d) \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
 { \
    if(!human_interaction) return; \
    GdkRGBA color; \
@@ -139,9 +140,14 @@ static void set_star_buttons(void);
 static void set_meteo_buttons(void);
 static void apply_standard_css(void);
 static void birdscb(GtkWidget *w, void *m);
+static int  below_confirm_ticker(UNUSED gpointer data);
+static void show_bct_countdown(void);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
+
+static int bct_id;
+static int bct_countdown;
 
 // Set the style provider for the widgets
 static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
@@ -164,7 +170,7 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
 static GtkWidget *hauptfenster;
 
    MODULE_EXPORT
-void button_iconify(GtkWidget *w, gpointer p)
+void button_iconify(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_iconify\n");
    gtk_window_iconify(GTK_WINDOW(hauptfenster));
@@ -225,7 +231,7 @@ static void set_santa_buttons()
 }
 
    MODULE_EXPORT 
-void button_santa(GtkWidget *w, gpointer d)
+void button_santa(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -259,14 +265,14 @@ void santa_default(int vintage)
 }
 
    MODULE_EXPORT 
-void button_defaults_santa(GtkWidget *w, gpointer d)
+void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa defaults\n");
    santa_default(0);
 }
 
    MODULE_EXPORT 
-void button_vintage_santa(GtkWidget *w, gpointer d)
+void button_vintage_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa vintage\n");
    santa_default(1);
@@ -355,7 +361,7 @@ static void report_tree_type(int p, gint active)
 }
 
    MODULE_EXPORT
-void button_tree(GtkWidget *w, gpointer d)
+void button_tree(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gint active;
@@ -394,14 +400,14 @@ void scenery_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_scenery(GtkWidget *w, gpointer d)
+void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_scenery\n");
    scenery_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_scenery(GtkWidget *w, gpointer d)
+void button_vintage_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_scenery\n");
    scenery_default(1);
@@ -559,7 +565,7 @@ typedef struct _general_button
 }general_button;
 
    MODULE_EXPORT 
-void button_ww(GtkWidget *w, gpointer d)
+void button_ww(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -577,8 +583,9 @@ static struct _general_buttons
    general_button bgcolor;
    general_button exposures;
    general_button lift;
-   general_button fullscreen;
+   general_button fullscreen;   // is disabled in ui.xml.
    general_button below;
+   general_button below_confirm;
    general_button allworkspaces;
    general_button ww_0;
    general_button ww_2;
@@ -586,11 +593,8 @@ static struct _general_buttons
 
 static void init_general_buttons()
 {
-   general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-0"));
-   general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-2"));
-   gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
-   gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
-
+   HANDLE_INIT(general_buttons.ww_0.button,               general-ww-0);
+   HANDLE_INIT(general_buttons.ww_2.button,               general-ww-2);
    HANDLE_INIT(general_buttons.cpuload.button,            general-cpuload);
    HANDLE_INIT(general_buttons.transparency.button,       general-transparency);
    HANDLE_INIT(general_buttons.usebg.button,              general-usebg);
@@ -599,9 +603,14 @@ static void init_general_buttons()
    HANDLE_INIT(general_buttons.lift.button,               general-lift);
    HANDLE_INIT(general_buttons.fullscreen.button,         general-fullscreen);
    HANDLE_INIT(general_buttons.below.button,              general-below);
+   HANDLE_INIT(general_buttons.below_confirm.button,      general-below-confirm);
    HANDLE_INIT(general_buttons.allworkspaces.button,      general-allworkspaces);
    gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"general-version")),"xsnow version " VERSION);
+   gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
+   gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
+   gtk_widget_hide(general_buttons.below_confirm.button);
 
+   // gtk_widget_hide(general_buttons.fullscreen.button);
 }
 
 static void set_general_buttons()
@@ -625,8 +634,9 @@ static void set_general_buttons()
       HANDLE_SET_TOGGLE_(general_buttons.exposures.button,0);
 }
 
+
    MODULE_EXPORT
-void button_cpuload(GtkWidget *w, gpointer d)
+void button_cpuload(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gdouble value;
@@ -636,7 +646,7 @@ void button_cpuload(GtkWidget *w, gpointer d)
 }
 
    MODULE_EXPORT
-void button_transparency(GtkWidget *w, gpointer d)
+void button_transparency(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    gdouble value;
@@ -648,7 +658,7 @@ void button_transparency(GtkWidget *w, gpointer d)
 HANDLE_TOGGLE(button_use_bgcolor, UseBG, 1,0);
 
    MODULE_EXPORT
-void button_bgcolor(GtkWidget *w, gpointer d)
+void button_bgcolor(GtkWidget *w, UNUSED gpointer d)
 {
    if(!human_interaction) return;
    GdkRGBA color;
@@ -660,12 +670,87 @@ void button_bgcolor(GtkWidget *w, gpointer d)
 
 HANDLE_TOGGLE(button_exposures,               Exposures,     1,0);
 HANDLE_TOGGLE(button_fullscreen,              FullScreen,    1,0);
-HANDLE_TOGGLE(button_below,                   BelowAll,      1,0);
+//HANDLE_TOGGLE(button_below,                   BelowAll,      1,0);
+//  This one gets some special code, see below.
 HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
 HANDLE_RANGE(button_lift,                     OffsetS,       -value);
 
    MODULE_EXPORT
-void button_quit(GtkWidget *w, gpointer d)
+void button_below(GtkWidget *w, UNUSED gpointer d)
+{
+   /*
+    * In some desktop environments putting our transparent click-through window
+    * above all other windows results in a un-clickable desktop.
+    * Therefore, we ask for confirmation by clicking on a button.
+    * If this succeeds, then there is no problem.
+    * If the user cannot click, the timer runs out and the BelowAll
+    * setting is switched to TRUE.
+    */
+   if(!human_interaction) return;
+   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
+   P("button_below: %d\n",Flags.BelowAll);
+   if(active)
+      Flags.BelowAll = 1;
+   else
+   {
+      Flags.BelowAll = 0;
+      bct_countdown  = 9;
+      show_bct_countdown();
+      gtk_widget_hide(general_buttons.below.button);
+      gtk_widget_show(general_buttons.below_confirm.button);
+      bct_id = add_to_mainloop(PRIORITY_DEFAULT,1.0,below_confirm_ticker,NULL);
+   }
+}
+
+
+void show_bct_countdown()
+{
+   sprintf(sbuffer,"Click to\nconfirm %d",bct_countdown);
+   gtk_button_set_label(GTK_BUTTON(general_buttons.below_confirm.button),sbuffer);
+
+}
+
+int below_confirm_ticker(UNUSED gpointer data)
+{
+   bct_countdown--;
+   show_bct_countdown();
+   if (bct_countdown>0)
+      return TRUE;
+   else
+   {
+      Flags.BelowAll = 1;
+      HANDLE_SET_TOGGLE(general_buttons.below.button,          BelowAll);
+      gtk_widget_hide(general_buttons.below_confirm.button);
+      gtk_widget_show(general_buttons.below.button);
+      return FALSE;
+   }
+}
+
+   MODULE_EXPORT
+void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
+{
+   gtk_widget_hide(general_buttons.below_confirm.button);
+   gtk_widget_show(general_buttons.below.button);
+   remove_from_mainloop(bct_id);
+}
+
+#if 0
+#define HANDLE_TOGGLE(_name,_flag,_t,_f) \
+   MODULE_EXPORT \
+   void _name(GtkWidget *w, UNUSED gpointer d) \
+{ \
+   if(!human_interaction) return; \
+   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
+   if(active) \
+   Flags._flag = _t; \
+   else \
+   Flags._flag = _f; \
+   P(#_name ": %d\n",Flags._flag); \
+} typedef int dummytype // to request a ;
+#endif
+
+   MODULE_EXPORT
+void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    Flags.Done = 1;
    P("button_quit: %d\n",Flags.Done);
@@ -694,16 +779,15 @@ void general_default(int vintage)
    human_interaction      = h;
 }
 
-
    MODULE_EXPORT 
-void button_defaults_general(GtkWidget *w, gpointer d)
+void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general\n");
    general_default(0);
 }
 
    MODULE_EXPORT 
-void button_vintage_general(GtkWidget *w, gpointer d)
+void button_vintage_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general vintage\n");
    general_default(1);
@@ -821,14 +905,14 @@ void snow_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_snow(GtkWidget *w, gpointer d)
+void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_snow\n");
    snow_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_snow(GtkWidget *w, gpointer d)
+void button_vintage_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_snow\n");
    snow_default(1);
@@ -952,20 +1036,20 @@ void birds_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_birds(GtkWidget *w, gpointer d)
+void button_defaults_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_birds\n");
    birds_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_birds(GtkWidget *w, gpointer d)
+void button_vintage_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_birds\n");
    birds_default(1);
 }
    MODULE_EXPORT
-void button_birds_restart(GtkWidget *w, gpointer p)
+void button_birds_restart(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_birds_restart\n");
    Flags.BirdsRestart = 1;
@@ -1004,7 +1088,7 @@ HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value);
 HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value);
 
    MODULE_EXPORT
-void button_wind_activate(GtkWidget *w, gpointer p)
+void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
 {
    P("button_wind_activate\n");
    Flags.WindNow = 1;
@@ -1025,14 +1109,14 @@ void wind_default(int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_wind(GtkWidget *w, gpointer d)
+void button_defaults_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_wind\n");
    wind_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_wind(GtkWidget *w, gpointer d)
+void button_vintage_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_wind\n");
    wind_default(1);
@@ -1116,7 +1200,7 @@ void ui_set_sticky(int x)
       gtk_window_unstick(GTK_WINDOW(hauptfenster));
 }
 
-void ui(int *argc, char **argv[])
+void ui(UNUSED int *argc, UNUSED char **argv[])
 {
 
    // gtk_init(argc, argv);
@@ -1139,6 +1223,7 @@ void ui(int *argc, char **argv[])
 void apply_standard_css()
 {
    const char *css     = 
+      "scale                               { padding:          1em;     }"   // padding in slider buttons
       "button.radio                        { min-width:        10px;    }"   // make window as small as possible
       "button                              { background:       #CCF0D8; }"   // color of normal buttons
       "button.radio,        button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
@@ -1146,14 +1231,15 @@ void apply_standard_css()
       "radiobutton:checked, button:checked { background:       #6AF69B; }"   // color of checked buttons
       "headerbar                           { background:       #B3F4CA; }"   // color of headerbar
       "scale slider                        { background:       #D4EDDD; }"   // color of sliders
-      "scale trough                        { background:       #F0FEF5; }"   // color of trough of sliders
+      "scale trough                        { background:       #0DAB44; }"   // color of trough of sliders
       "stack                               { background-color: #EAFBF0; }"   // color of main area
       "*                                   { color:            #065522; }"   // foreground color (text)
       "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items
-      ".pink { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      ".pink    { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      ".confirm { background-color: #FFFF00; }"
       ;
 
-   static GtkCssProvider *cssProvider = 0;
+   static GtkCssProvider *cssProvider = NULL;
    if (!cssProvider)
    {
       cssProvider  = gtk_css_provider_new();
@@ -1173,7 +1259,7 @@ void ui_background(int m)
       "stack                { background-color: #FFC0CB; }"   // color of main area
       "scale.cpuload slider { background:       #FF0000; }"   // color of sliders with class cpuload
       ;
-   static GtkCssProvider *cssProvidercolor = 0;
+   static GtkCssProvider *cssProvidercolor = NULL;
    if (!cssProvidercolor)
    {
       cssProvidercolor  = gtk_css_provider_new();
@@ -1224,7 +1310,7 @@ void ui_gray_birds(int m)
 
 // next function is not used, I leave it here as a template, who knows...
 // see also ui.xml
-void ui_error_x11(int *argc, char **argv[])
+void ui_error_x11(UNUSED int *argc, UNUSED char **argv[])
 {
    GtkWidget *errorfenster;
    GObject *button;

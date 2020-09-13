@@ -19,7 +19,4 @@
 #-# 
  */
 #pragma once
-#include <gtk/gtk.h>
-#include <X11/Xlib.h>
-extern int create_transparent_window(int allworkspaces, int below,
-      Window *w, const char *name, GtkWidget *gtkwin,unsigned int width, unsigned int height);
+#define UNUSED __attribute__ ((unused))

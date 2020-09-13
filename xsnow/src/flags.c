@@ -39,7 +39,7 @@ static void SetDefaultFlags(void);
 
 static long int S2Int(char *s)     // string to integer
 {
-   return strtol(s,0,0);
+   return strtol(s,NULL,0);
 }
 static long int S2PosInt(char *s)  //string to positive integer
 {
@@ -56,7 +56,7 @@ void PrintVersion()
 }
 
 
-static char *FlagsFile          = 0;
+static char *FlagsFile          = NULL;
 static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
@@ -206,7 +206,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-stopafter           ,StopAfter                        );
 	 handle_ia(-treefill            ,TreeFill                         );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
-	 handle_ia(-whirlwactor         ,WhirlFactor                      );
+	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
@@ -225,12 +225,10 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
 	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
-	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
 	 handle_iv(-nomenu              ,NoMenu                   ,1      );
 	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
-	 handle_iv(-noquiet             ,Quiet                    ,0      );
-	 handle_iv(-norudolf            ,NoRudolf                 ,1      );
+	 handle_iv(-norudolph           ,NoRudolf                 ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
 	 handle_iv(-nosnowflakes        ,NoSnowFlakes             ,1      );
 	 handle_iv(-notrees             ,NoTrees                  ,1      );
@@ -307,9 +305,9 @@ static xmlXPathObjectPtr getnodeset (xmlDocPtr doc, xmlChar *xpath){
 
 static void makeflagsfile()
 {
-   if (FlagsFile != 0 || FlagsFileAvailable == 0) return;
+   if (FlagsFile != NULL || FlagsFileAvailable == 0) return;
    char *h = getenv("HOME");
-   if (h == 0)
+   if (h == NULL)
    {
       FlagsFileAvailable = 0;
       printf("Warning: cannot create or read $HOME/%s\n",FLAGSFILE);
@@ -342,7 +340,7 @@ void ReadFlags()
       if(value == NULL) \
       intval = 0; \
       else \
-      intval = strtol((char*)value,0,0); \
+      intval = strtol((char*)value,NULL,0); \
       Flags.x = intval; \
       /* printf(# x ": %ld\n",(long int)Flags.x); */ \
       xmlFree(value); \

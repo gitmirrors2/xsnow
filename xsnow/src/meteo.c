@@ -31,6 +31,7 @@
 #include "meteo.h"
 #include "utils.h"
 #include "xsnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -45,21 +46,19 @@ static MeteoMap      meteorite;
 
 void meteo_init()
 {
-   //if (switches.UseGtk)
    {
       if (!gdk_rgba_parse(&color, MeteoColor))
 	 gdk_rgba_parse(&color,"rgb(255,165,0)");
    }
-   //else
    {
-      meteorite.gc  = XCreateGC(display, SnowWin, 0, 0);
-      meteorite.egc = XCreateGC(display, SnowWin, 0, 0);
+      meteorite.gc  = XCreateGC(display, SnowWin, 0, NULL);
+      meteorite.egc = XCreateGC(display, SnowWin, 0, NULL);
       MeteoPix = IAllocNamedColor(MeteoColor, White);
       XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
       XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
    }
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite,     do_emeteorite         ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite,      do_meteorite          ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite, do_emeteorite, NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite, do_meteorite, NULL);
 }
 
 int meteo_ui()
@@ -128,7 +127,7 @@ int do_emeteorite(gpointer data)
    return TRUE;
 }
 
-int do_meteorite(gpointer data)
+int do_meteorite(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;

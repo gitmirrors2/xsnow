@@ -25,8 +25,9 @@
 // DOIT_L is for x that should be output as 0x123456
 
 // these flags are not written to the config file and
-// are no part of the ui
+// are no part of the ui (except BelowAll)
 #define DOITALL \
+   DOIT_I(BelowAll) \
    DOIT_I(Defaults)  \
    DOIT_I(Desktop) \
    DOIT_I(NoConfig)  \
@@ -42,7 +43,6 @@
 // are part of the ui
 #define DOIT  \
    DOIT_I(AllWorkspaces) \
-   DOIT_I(BelowAll) \
    DOIT_I(BlowOffFactor)  \
    DOIT_I(CpuLoad)  \
    DOIT_I(Transparency)  \
@@ -70,7 +70,6 @@
    DOIT_I(OffsetW) \
    DOIT_I(OffsetX) \
    DOIT_I(OffsetY) \
-   DOIT_I(Quiet) \
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
    DOIT_I(SnowFlakesFactor) \

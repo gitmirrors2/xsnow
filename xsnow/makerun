@@ -2,10 +2,17 @@
 ulimit -c unlimited
 rm -f core
 reset
-if [ ! -e Makefile ] ; then
-   CFLAGS='-Wpedantic -Wall -O0 -g' CC=gcc-10 CXX=g++-10 ./configure
+if true; then
+   export CC=gcc-10 CXX=g++-10
+   export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O0 -g'
+else
+   export CC=g++-10 CXX=g++-10
+   export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O0 -g' 
 fi
-make -j  && src/xsnow --g-fatal-warnings
+if [ ! -e Makefile ] ; then
+   ./configure
+fi
+make   && src/xsnow --g-fatal-warnings
 #make -j  && GDK_SYNCHRONIZE=1 GTK_DEBUG=interactive src/xsnow #--g-fatal-warnings
 #make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
 

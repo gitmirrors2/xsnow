@@ -30,15 +30,17 @@
 #include "windows.h"
 #include "clocks.h"
 #include "xsnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-int Wind = 0;
+int    Wind = 0;
 int    Direction = 0;
 double WindTimer;
 double WindTimerStart;
 float  Whirl;
+float  WindMax = 100.0;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
@@ -49,8 +51,8 @@ void wind_init()
 {
    SetWhirl();
    SetWindTimer();
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,NULL);
 }
 
 int wind_ui()
@@ -59,6 +61,8 @@ int wind_ui()
    if(Flags.NoWind != OldFlags.NoWind)
    {
       OldFlags.NoWind = Flags.NoWind;
+      Wind    = 0;
+      NewWind = 0;
       changes++;
       P("changes: %d\n",changes);
    }
@@ -90,7 +94,7 @@ void draw_wind()
    // Nothing to draw
 }
 
-int do_newwind(gpointer data)
+int do_newwind(UNUSED gpointer data)
 {
    P("newwind\n");
    if (Flags.Done)
@@ -109,7 +113,6 @@ int do_newwind(gpointer data)
       return TRUE;
    }
 
-   float windmax = 100.0;
    float r;
    switch (Wind)
    {
@@ -117,8 +120,8 @@ int do_newwind(gpointer data)
       default:
 	 r = drand48()*Whirl;
 	 NewWind += r - Whirl/2;
-	 if(NewWind > windmax) NewWind = windmax;
-	 if(NewWind < -windmax) NewWind = -windmax;
+	 if(NewWind > WindMax) NewWind = WindMax;
+	 if(NewWind < -WindMax) NewWind = -WindMax;
 	 break;
       case(1): 
 	 NewWind = Direction*0.6*Whirl;
@@ -130,7 +133,7 @@ int do_newwind(gpointer data)
    return TRUE;
 }
 
-int do_wind(gpointer data)
+int do_wind(UNUSED gpointer data)
 {
    P("wind\n");
    if (Flags.Done)

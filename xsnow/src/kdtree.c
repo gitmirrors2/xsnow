@@ -133,13 +133,13 @@ struct kdtree *kd_create(int k)
    struct kdtree *tree;
 
    if(!(tree = (struct kdtree *)malloc(sizeof *tree))) {
-      return 0;
+      return NULL;
    }
 
    tree->dim = k;
-   tree->root = 0;
-   tree->destr = 0;
-   tree->rect = 0;
+   tree->root = NULL;
+   tree->destr = NULL;
+   tree->rect = NULL;
 
    return tree;
 }
@@ -169,11 +169,11 @@ static void clear_rec(struct kdnode *node, void (*destr)(void*))
 void kd_clear(struct kdtree *tree)
 {
    clear_rec(tree->root, tree->destr);
-   tree->root = 0;
+   tree->root = NULL;
 
    if (tree->rect) {
       hyperrect_free(tree->rect);
-      tree->rect = 0;
+      tree->rect = NULL;
    }
 }
 
@@ -199,7 +199,7 @@ static int insert_rec(struct kdnode **nptr, const double *pos, void *data, int d
       memcpy(node->pos, pos, dim * sizeof *node->pos);
       node->data = data;
       node->dir = dir;
-      node->left = node->right = 0;
+      node->left = node->right = NULL;
       *nptr = node;
       return 0;
    }
@@ -218,7 +218,7 @@ int kd_insert(struct kdtree *tree, const double *pos, void *data)
       return -1;
    }
 
-   if (tree->rect == 0) {
+   if (tree->rect == NULL) {
       tree->rect = hyperrect_create(tree->dim, pos, pos);
    } else {
       hyperrect_extend(tree->rect, pos);
@@ -230,7 +230,7 @@ int kd_insert(struct kdtree *tree, const double *pos, void *data)
 int kd_insertf(struct kdtree *tree, const float *pos, void *data)
 {
    static double sbuf[16];
-   double *bptr, *buf = 0;
+   double *bptr, *buf = NULL;
    int res, dim = tree->dim;
 
    if(dim > 16) {
@@ -428,24 +428,24 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
    double dist_sq;
    int i;
 
-   if (!kd) return 0;
-   if (!kd->rect) return 0;
+   if (!kd) return NULL;
+   if (!kd->rect) return NULL;
 
    /* Allocate result set */
    if(!(rset = (struct kdres *)malloc(sizeof *rset))) {
-      return 0;
+      return NULL;
    }
    if(!(rset->rlist = alloc_resnode())) {
       free(rset);
-      return 0;
+      return NULL;
    }
-   rset->rlist->next = 0;
+   rset->rlist->next = NULL;
    rset->tree = kd;
 
    /* Duplicate the bounding hyperrectangle, we will work on the copy */
    if (!(rect = hyperrect_duplicate(kd->rect))) {
       kd_res_free(rset);
-      return 0;
+      return NULL;
    }
 
    /* Our first guesstimate is the root node */
@@ -464,21 +464,21 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
    if (result) {
       if (rlist_insert(rset->rlist, result, -1.0) == -1) {
 	 kd_res_free(rset);
-	 return 0;
+	 return NULL;
       }
       rset->size = 1;
       kd_res_rewind(rset);
       return rset;
    } else {
       kd_res_free(rset);
-      return 0;
+      return NULL;
    }
 }
 
 struct kdres *kd_nearestf(struct kdtree *tree, const float *pos)
 {
    static double sbuf[16];
-   double *bptr, *buf = 0;
+   double *bptr, *buf = NULL;
    int dim = tree->dim;
    struct kdres *res;
 
@@ -489,7 +489,7 @@ struct kdres *kd_nearestf(struct kdtree *tree, const float *pos)
       else
 #endif
 	 if(!(bptr = buf = (double *)malloc(dim * sizeof *bptr))) {
-	    return 0;
+	    return NULL;
 	 }
    } else {
       bptr = buf = sbuf;
@@ -559,18 +559,18 @@ struct kdres *kd_nearest_range(struct kdtree *kd, const double *pos, double rang
    struct kdres *rset;
 
    if(!(rset = (struct kdres *)malloc(sizeof *rset))) {
-      return 0;
+      return NULL;
    }
    if(!(rset->rlist = alloc_resnode())) {
       free(rset);
-      return 0;
+      return NULL;
    }
-   rset->rlist->next = 0;
+   rset->rlist->next = NULL;
    rset->tree = kd;
 
    if((ret = find_nearest(kd->root, pos, range, rset->rlist, 0, kd->dim)) == -1) {
       kd_res_free(rset);
-      return 0;
+      return NULL;
    }
    rset->size = ret;
    kd_res_rewind(rset);
@@ -580,7 +580,7 @@ struct kdres *kd_nearest_range(struct kdtree *kd, const double *pos, double rang
 struct kdres *kd_nearest_rangef(struct kdtree *kd, const float *pos, float range)
 {
    static double sbuf[16];
-   double *bptr, *buf = 0;
+   double *bptr, *buf = NULL;
    int dim = kd->dim;
    struct kdres *res;
 
@@ -591,7 +591,7 @@ struct kdres *kd_nearest_rangef(struct kdtree *kd, const float *pos, float range
       else
 #endif
 	 if(!(bptr = buf = (double *)malloc(dim * sizeof *bptr))) {
-	    return 0;
+	    return NULL;
 	 }
    } else {
       bptr = buf = sbuf;
@@ -648,13 +648,13 @@ void kd_res_rewind(struct kdres *rset)
 
 int kd_res_end(struct kdres *rset)
 {
-   return rset->riter == 0;
+   return rset->riter == NULL;
 }
 
 int kd_res_next(struct kdres *rset)
 {
    rset->riter = rset->riter->next;
-   return rset->riter != 0;
+   return rset->riter != NULL;
 }
 
 void *kd_res_item(struct kdres *rset, double *pos)
@@ -665,7 +665,7 @@ void *kd_res_item(struct kdres *rset, double *pos)
       }
       return rset->riter->item->data;
    }
-   return 0;
+   return NULL;
 }
 
 void *kd_res_itemf(struct kdres *rset, float *pos)
@@ -679,7 +679,7 @@ void *kd_res_itemf(struct kdres *rset, float *pos)
       }
       return rset->riter->item->data;
    }
-   return 0;
+   return NULL;
 }
 
 void *kd_res_item3(struct kdres *rset, double *x, double *y, double *z)
@@ -690,7 +690,7 @@ void *kd_res_item3(struct kdres *rset, double *x, double *y, double *z)
       if(z) *z = rset->riter->item->pos[2];
       return rset->riter->item->data;
    }
-   return 0;
+   return NULL;
 }
 
 void *kd_res_item3f(struct kdres *rset, float *x, float *y, float *z)
@@ -701,33 +701,33 @@ void *kd_res_item3f(struct kdres *rset, float *x, float *y, float *z)
       if(z) *z = rset->riter->item->pos[2];
       return rset->riter->item->data;
    }
-   return 0;
+   return NULL;
 }
 
 void *kd_res_item_data(struct kdres *set)
 {
-   return kd_res_item(set, 0);
+   return kd_res_item(set, NULL);
 }
 
 /* ---- hyperrectangle helpers ---- */
 static struct kdhyperrect* hyperrect_create(int dim, const double *min, const double *max)
 {
    size_t size = dim * sizeof(double);
-   struct kdhyperrect* rect = 0;
+   struct kdhyperrect* rect = NULL;
 
    if (!(rect = (struct kdhyperrect *)malloc(sizeof(struct kdhyperrect)))) {
-      return 0;
+      return NULL;
    }
 
    rect->dim = dim;
    if (!(rect->min = (double *)malloc(size))) {
       free(rect);
-      return 0;
+      return NULL;
    }
    if (!(rect->max = (double *)malloc(size))) {
       free(rect->min);
       free(rect);
-      return 0;
+      return NULL;
    }
    memcpy(rect->min, min, size);
    memcpy(rect->max, max, size);
@@ -800,7 +800,7 @@ static struct res_node *alloc_resnode(void)
    } else {
       node = free_nodes;
       free_nodes = free_nodes->next;
-      node->next = 0;
+      node->next = NULL;
    }
 
 #ifndef NO_PTHREADS
@@ -858,5 +858,5 @@ static void clear_results(struct kdres *rset)
       free_resnode(tmp);
    }
 
-   rset->rlist->next = 0;
+   rset->rlist->next = NULL;
 }

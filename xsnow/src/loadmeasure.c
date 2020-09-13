@@ -28,6 +28,7 @@
 #include "utils.h"
 #include "clocks.h"
 #include "xsnow.h"
+#include "varia.h"
 
 static int do_loadmeasure(gpointer data);
 
@@ -36,7 +37,7 @@ int loadmeasure_ui()
    // nothing to do
    return 0;
 }
-void loadmeasure_draw(cairo_t *cr)
+void loadmeasure_draw(UNUSED cairo_t *cr)
 {
    // nothing to draw
    //
@@ -44,11 +45,11 @@ void loadmeasure_draw(cairo_t *cr)
 
 void loadmeasure_init()
 {
-   add_to_mainloop(PRIORITY_DEFAULT, time_measure, do_loadmeasure, 0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_measure, do_loadmeasure, NULL);
 }
 
 // changes background color of ui if load to high
-int do_loadmeasure(gpointer data)
+int do_loadmeasure(UNUSED gpointer data)
 {
    double tnow = wallclock();
    static double tprev;

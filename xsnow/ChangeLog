@@ -1,3 +1,42 @@
+version 3.0.8
+	1:check op _NET_WIM_WINDOW_TYPE_DOCK: do not fall snow on
+	  such a window
+	2:changed 0 -> NULL where appropriate
+	  insert __attribute__ ((unused)) via macro UNUSED where appropriate
+	3:create GetProperty32() in wmctrl.c
+	4:fallenshow.h: moved window-specific items in FallenSnow to
+	  FallenSnow.win
+	6:stratify windows.c
+	  transparent.c: make also click-through in draw callback
+	8:ask for confirmation before permanently de-activating 
+	  'Below windows'.
+	  Remove 'BelowAll' from .xsnowrc.
+	9:also in Cairo fluff
+	12:better display of blown snow
+	13:change code for going in and out full screen mode
+	   default is now full screen
+	   transparent.c: draw1(): remember two previous widgets in stead of
+	   one.
+	   removed full-screen button, see comment at Flags.FullScreen
+	   in main.c
+	14:Solution for refusing to go below windows: first
+	   ask the opposite.
+	15:Use absolute x,y coordinates for determining snow window placement
+	   and dimensions.
+	   Created a call back to check coordinates and dimensions of
+	   snowwindow once per second.
+	16:Changed css color for troughs.
+	   No flakes: no fallensnow, no fluff, no blowoff, no treesnow.
+	   Flakes blown off trees&window&bottom: smallest type of snow.
+	   Flakes from disappearing fallensnow: all types.
+	   Somewhat more randominess in generateflakesfromfallensnow
+	   in the x-value of the flakes. Better ploughing!
+	 17:yellow confirm button.
+	    Bigger logo santa.xpm
+	    Stratified MakeFlake-InitFlake combo.
+	    Corrected two typos in flags.c
+	 18:take care that trees are not placed partially right from screen
+	    removed -noquiet flag
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup

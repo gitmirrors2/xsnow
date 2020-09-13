@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <gdk/gdkx.h>
 #include <string.h>
+#include "varia.h"
+#include "windows.h"
 
 #include "transparent.h"
 
@@ -42,110 +44,113 @@
 //#define DEBUG
 #include "debug.h"
 
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
-//static gboolean draw(GtkWidget *widget, cairo_t *new_cr, gpointer user_data);
+// USEDRAW should NOT be set, it is here for historical reasons
+//#define USEDRAW
+//USEDRAW1 should certainly be set, see comment below at draw1()
+#define USEDRAW1
 
+static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
+#ifdef USEDRAW
+static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+#endif
+#ifdef USEDRAW1
+static gboolean draw1(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+#endif
 
 static gboolean supports_alpha = FALSE;
+static int below1;
 
 static GdkRectangle workarea;
 
 //
 // create transparent click-through window without any decorations
 // input:
-//   fullscreen:    1: set window fullscreen
-//   below:         1: place transparent window bleow all windows
+//   below:         1: place transparent window below all windows
+//                  0: place transparent window above all windows
+//                  NOTE: this is applied in draw1()
 //   allworkspaces: 1: make window visible on all workspaces
-//   prefname:         use this as name for the window
+//   name:             use this as name for the window
+//   gtkwin            GtkWindow to transform into transparent
 //   width:            width of desired window
 //   height:           height of desired window
 // output:
-//   xwin              will receive id of created X11-window, 0 if transparent iss not possible
-//   name              will contain copy of prefname
-//   gtkwin            will contain GtkWidget of transparent screen, use this to write with gtk/cairo to
+//   xwin              will receive id of created X11-window, 0 if transparency is not possible
 //                       0 if no transparent window is possible
 //
-void create_transparent_window(int fullscreen, int below, int allworkspaces, 
-      Window *xwin, const char *prefname, char **name, GtkWidget **gtkwin, unsigned int width, unsigned int height)
+// NOTE: in FVWM, combined with xcompmgr or compton, it seems not be possible to put a window below:
+// reason (I guess): _NET_WM_ALLOWED_ACTIONS(ATOM) (from xprop) does not include _NET_WM_ACTION_BELOW
+//
+int create_transparent_window(int allworkspaces, int below,  
+      Window *xwin, const char *name, GtkWidget *gtkwin, unsigned int width, unsigned int height)
 {
+   below1 = below;
    workarea.width  = width;
    workarea.height = height;
-   *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL); 
-   P("create_transparent_window %p\n",(void *)*gtkwin);
-   gtk_window_set_position(GTK_WINDOW(*gtkwin), GTK_WIN_POS_CENTER);
-   *name = strdup(prefname);
-   gtk_window_set_title(GTK_WINDOW(*gtkwin), *name);
-   gtk_widget_set_app_paintable(*gtkwin, TRUE);
-   // this callback we do not need:
-   //g_signal_connect(G_OBJECT(*gtkwin), "draw", G_CALLBACK(draw), NULL);
-   g_signal_connect(G_OBJECT(*gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
-   gtk_widget_add_events(*gtkwin, GDK_BUTTON_PRESS_MASK);
-   screen_changed(*gtkwin, NULL, NULL);
-   if (!supports_alpha)
-   {
-      P("No alpha\n");
-      gtk_window_close(GTK_WINDOW(*gtkwin));
-      *gtkwin = NULL;
-      *xwin = 0;
-      return;
-   }
+
+   gtk_window_set_decorated        (GTK_WINDOW(gtkwin),FALSE);
 
    // prevent window from showing up in taskbar: 
    // Alas, it does show in Gnome's top bar standard window menu
-   /*
+   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin),TRUE);
+   gtk_window_set_skip_pager_hint  (GTK_WINDOW(gtkwin),TRUE);
+
+   gtk_window_set_position         (GTK_WINDOW(gtkwin), GTK_WIN_POS_CENTER);
+
+   P("create_transparent_window %p\n",(void *)gtkwin);
+   gtk_window_set_title(GTK_WINDOW(gtkwin), name);
+   gtk_widget_set_app_paintable(gtkwin, TRUE);
+   // this callback we do not need:
+#ifdef USEDRAW
+   g_signal_connect(G_OBJECT(gtkwin), "draw", G_CALLBACK(draw), NULL);
+#endif
+#ifdef USEDRAW1
+   g_signal_connect(G_OBJECT(gtkwin), "draw", G_CALLBACK(draw1), NULL);
+#endif
+
+   g_signal_connect(G_OBJECT(gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
+   gtk_widget_add_events(gtkwin, GDK_BUTTON_PRESS_MASK);
+   screen_changed(gtkwin, NULL, NULL);
+   if (!supports_alpha)
    {
-      GValue val = G_VALUE_INIT;
-      g_value_init(&val,G_TYPE_BOOLEAN);
-      g_value_set_boolean(&val,TRUE);
-      g_object_set_property(G_OBJECT(*gtkwin),"skip-taskbar-hint",&val);
-      g_value_unset(&val);
-   }
-   */
-   {
-      gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin),TRUE);
-      gtk_window_set_skip_pager_hint  (GTK_WINDOW(*gtkwin),TRUE);
+      P("No alpha\n");
+      *xwin = 0;
+      return FALSE;
    }
 
-   gtk_widget_show_all(*gtkwin);
-   if (fullscreen)
-      gtk_window_fullscreen(GTK_WINDOW(*gtkwin));  // problems with dock
+   gtk_widget_show_all(gtkwin);
 
-
-   GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(*gtkwin));
+   GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(gtkwin));
    P("gdk_window %p\n",(void *)gdk_window);
    // keep xsnow visible after 'show desktop', and as a bonus, keep
    // xsnow visible on all workspaces in some desktops:
-   // The following makes all workspaces irreversible:
-   //if (allworkspaces)
-   //  gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
-   //
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
 
-   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(*gtkwin), TRUE);
-   gtk_window_set_accept_focus     (GTK_WINDOW(*gtkwin), FALSE);
-   gtk_window_set_decorated        (GTK_WINDOW(*gtkwin), FALSE);
-   gtk_window_set_resizable        (GTK_WINDOW(*gtkwin), FALSE);
+   //gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin), TRUE);
+   //gtk_window_set_accept_focus     (GTK_WINDOW(gtkwin), FALSE);
+   //gtk_window_set_decorated        (GTK_WINDOW(gtkwin), FALSE);
+   gtk_window_set_resizable        (GTK_WINDOW(gtkwin), FALSE);
+
+   // see comment at draw1()
    cairo_region_t *cairo_region = cairo_region_create();
-   gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window),
-	 cairo_region, 0,0);
+   gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window), cairo_region, 0,0);
+   P("shape stuff: %p %p\n",(void *)gtkwin,(void*)gdk_window);
    cairo_region_destroy(cairo_region);
-   if (fullscreen)
-      gtk_window_fullscreen(GTK_WINDOW(*gtkwin));
+   //gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
+
    gdk_window_show                 (GDK_WINDOW(gdk_window));
+
+   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
+
 
    // xsnow visible on all workspaces:
    if (allworkspaces)
-      gtk_window_stick(GTK_WINDOW(*gtkwin));
+      gtk_window_stick(GTK_WINDOW(gtkwin));
    //
 
-   if(below)
-      gtk_window_set_keep_below       (GTK_WINDOW(*gtkwin), TRUE);
-   else
-      gtk_window_set_keep_above       (GTK_WINDOW(*gtkwin), TRUE);
-
-   usleep(200000);  // seems to be necessary with nvidia, not sure if this is indeed the case
    *xwin = gdk_x11_window_get_xid(gdk_window);
+
+   return TRUE;
 }
 
 #if 1
@@ -214,7 +219,7 @@ static void size_to_screen(GtkWindow *window) {
 }
 #endif
 
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata)
+static void screen_changed(GtkWidget *widget, UNUSED GdkScreen *old_screen, UNUSED gpointer userdata)
 {
    static int msg1 = 0, msg2 = 0;
    /* To check if the display supports alpha channels, get the visual */
@@ -240,12 +245,9 @@ static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer us
    size_to_screen(GTK_WINDOW(widget)); 
 }
 
-#if 0
-static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
+#ifdef USEDRAW
+static gboolean draw(GtkWidget *widget, cairo_t *cr, UNUSED gpointer userdata)
 {
-#ifdef DEBUG
-   static int count = 0;
-#endif
    gtk_window_set_accept_focus(GTK_WINDOW(widget),FALSE);
    cairo_save (cr);
 
@@ -258,7 +260,7 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
    else
    {
       cairo_set_source_rgb (cr, 1.0, 1.0, 1.0); /* opaque white */
-      P("Draw: not transparent %d\n",++count);
+      P("Draw: not transparent %d\n",++counter);
    }
 
    /* draw the background */
@@ -270,3 +272,54 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer userdata)
    return FALSE;
 }
 #endif
+
+#ifdef USEDRAW1
+// Two windows have been dreated: SnowWina and SnowWinb.
+// Both windows must be made click-through.
+// Fot this, gdk_window_input_shape_combine_region() is used.
+// This works fine in e.g. xfce (compositing ON), Gnome, KDE.
+//
+// However: in e.g. LXDE with xcompmgr running, somebody loses the click-through
+// properties: when running with settings "Below windows" off, snow and birds
+// are flying over your windows, but you cannot click: the windows are not
+// click-through.
+// Maybe this has something to do with the mainloop of GTK running or not?
+//
+// Hence this callback: the gdk_window_input_shape_combine_region() trick is done
+// if a widget appears that has not been seen yet. This results in three calls
+// to gdk_window_input_shape_combine_region(): for SnowWina, then for SnowWinb
+// and then for SnowWina again (probably superfluous). 
+// This seems to fix the problem in some cases.
+// Problem remains in fvwm and others in combination with xcompmgr or compton.
+//
+// Also, the 'below' paarmeter is applied here, this seems to be the only
+// safe place to do it. Maybe because it is in the gtk_main loop?
+//
+// NOTE: this code assumes that no more than two windows are created. If there are 
+//       more, some trivial changes in keeping track of these windows.
+//
+static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer userdata)
+{
+   static GtkWidget *prev_widget[2] = {NULL,NULL};
+
+   P("draw1 %d %p\n",counter++,(void *)widget);
+   if (prev_widget[0] != widget && prev_widget[1]!= widget)
+   {
+      prev_widget[0] = prev_widget[1];
+      prev_widget[1] = widget;
+      GdkWindow *gdk_window1 = gtk_widget_get_window(widget);
+      cairo_region_t *cairo_region1 = cairo_region_create();
+      gdk_window_input_shape_combine_region(gdk_window1, cairo_region1, 0,0);
+      cairo_region_destroy(cairo_region1);
+      // gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
+      P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
+
+      if(below1)
+	 setbelow(GTK_WINDOW(widget)); // see windows.c 
+      else
+	 setabove(GTK_WINDOW(widget)); // see windows.c 
+   }
+   return FALSE;
+}
+#endif
+

@@ -33,16 +33,17 @@
 #include "snow.h"
 #include "blowoff.h"
 #include "treesnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes || Flags.NoKeepSnowOnTrees || Flags.NoTrees)
 
 // we need both type of regions because the region is painted to
 cairo_region_t *gSnowOnTreesRegion;
 Region          SnowOnTreesRegion;
 
 static          GC SnowOnTreesGC;
-XPoint         *SnowOnTrees = 0;
+XPoint         *SnowOnTrees = NULL;
 int            OnTrees = 0;
 
 static int do_snow_on_trees(gpointer data);
@@ -50,10 +51,10 @@ static void   ConvertOnTreeToFlakes(void);
 
 void treesnow_init()
 {
-   SnowOnTreesGC        = XCreateGC(display, SnowWin,    0, 0);
+   SnowOnTreesGC        = XCreateGC(display, SnowWin,    0, NULL);
    SnowOnTreesRegion    = XCreateRegion();
    gSnowOnTreesRegion   = cairo_region_create();
-   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,NULL);
 }
 
 void treesnow_draw(cairo_t *cr)
@@ -76,7 +77,7 @@ void treesnow_draw(cairo_t *cr)
    cairo_fill(cr);
    cairo_region_destroy(region);
 #endif
-   if (Flags.NoKeepSnowOnTrees || Flags.NoTrees)
+   if (NOTACTIVE)
       return;
    GdkRGBA color;
    gdk_rgba_parse(&color,Flags.SnowColor);
@@ -105,13 +106,11 @@ int treesnow_ui()
    return changes;
 }
 
-int do_snow_on_trees(gpointer data)
+int do_snow_on_trees(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
-      return TRUE;
-   if(Flags.NoKeepSnowOnTrees || Flags.NoTrees)
       return TRUE;
    if (Wind == 2)
       ConvertOnTreeToFlakes();
@@ -145,21 +144,19 @@ void  treesnow_set_gc()
 // blow snow off trees
 void ConvertOnTreeToFlakes()
 {
-   if(Flags.NoKeepSnowOnTrees || Flags.NoBlowSnow || Flags.NoTrees)
-      return;
    int i;
    for (i=0; i<OnTrees; i++)
    {
       int j;
-      for (j=0; j<3; j++)
+      for (j=0; j<2; j++)
       {
 	 int k, kmax = BlowOff();
 	 for (k=0; k<kmax; k++)
 	 {
-	    Snow *flake   = MakeFlake();
+	    Snow *flake   = MakeFlake(0);
 	    flake->rx     = SnowOnTrees[i].x;
 	    flake->ry     = SnowOnTrees[i].y-5*j;
-	    flake->vy     = -10;
+	    flake->vy     = 0;
 	    flake->cyclic = 0;
 	    add_flake_to_mainloop(flake);
 	 }

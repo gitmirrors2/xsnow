@@ -33,27 +33,28 @@
 #include "blowoff.h"
 #include "wind.h"
 #include "debug.h"
+#include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
 int        MaxScrSnowDepth = 0;
-FallenSnow *FsnowFirst = 0;
+FallenSnow *FsnowFirst = NULL;
 
 static GC EFallenGC;
 static GC FallenGC;
 
-static void drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
-static void CreateSurfaceFromFallen(FallenSnow *f);
-static Pixmap CreatePixmapFromFallen(struct FallenSnow *f);
+static void   drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
+static void   CreateSurfaceFromFallen(FallenSnow *f);
+static Pixmap CreatePixmapFromFallen(FallenSnow *f);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
 
 void fallensnow_init()
 {
    InitFallenSnow();
    P(" ");
-   FallenGC      = XCreateGC(display, SnowWin,    0, 0);
-   EFallenGC     = XCreateGC(display, SnowWin,    0, 0);  // used to erase fallen snow
+   FallenGC      = XCreateGC(display, SnowWin,    0, NULL);
+   EFallenGC     = XCreateGC(display, SnowWin,    0, NULL);  // used to erase fallen snow
 }
 
 void   fallensnow_set_gc()
@@ -66,6 +67,8 @@ void   fallensnow_set_gc()
 
 void fallensnow_draw(cairo_t *cr)
 {
+   if (NOTACTIVE)
+      return;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)
    {
@@ -119,7 +122,7 @@ int fallensnow_ui()
    return changes;
 }
 
-int do_fallen(gpointer data)
+int do_fallen(UNUSED gpointer data)
 {
 
    if (Flags.Done)
@@ -147,11 +150,10 @@ void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 }
 
 // insert a node at the start of the list 
-void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
-      int x, int y, int w, int h) 
+void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h) 
 {
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
-   p->id         = window_id;
+   p->win        = *win;
    p->x          = x;
    p->y          = y;
    p->w          = w;
@@ -159,9 +161,6 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
    p->w8         = ((w-1)/8+1)*8;
    p->acth       = (short int *)malloc(sizeof(*(p->acth))*w);
    p->desh       = (short int *)malloc(sizeof(*(p->desh))*w);
-   p->ws         = ws;
-   p->sticky     = sticky;
-   p->hidden     = 0;
    p->clean      = 0;  
    p->surface    = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
 
@@ -182,7 +181,7 @@ void PushFallenSnow(FallenSnow **first, int window_id, int ws, int sticky,
    }
 
 
-   if (w > h && window_id != 0)
+   if (w > h && win->id != 0)
    {
       drawquartcircle(h,&(p->desh[w-h-1]));
       for(i=0; i<=h; i++)
@@ -210,11 +209,11 @@ int PopFallenSnow(FallenSnow **list)
 // remove by id
 int RemoveFallenSnow(FallenSnow **list, Window id)
 {
-   if (*list == 0)
+   if (*list == NULL)
       return 0;
 
    FallenSnow *fallen = *list;
-   if (fallen->id == id)
+   if (fallen->win.id == id)
    {
       fallen = fallen->next;
       FreeFallenSnow(*list);
@@ -229,7 +228,7 @@ int RemoveFallenSnow(FallenSnow **list, Window id)
       if (fallen->next == NULL)
 	 return 0;
       scratch = fallen->next;
-      if (scratch->id == id)
+      if (scratch->win.id == id)
 	 break;
       fallen = fallen->next;
    }
@@ -253,11 +252,11 @@ FallenSnow *FindFallen(FallenSnow *first, Window id)
    FallenSnow *fsnow = first;
    while(fsnow)
    {
-      if(fsnow->id == id)
+      if(fsnow->win.id == id)
 	 return fsnow;
       fsnow = fsnow->next;
    }
-   return 0;
+   return NULL;
 }
 // print list
 void PrintFallenSnow(FallenSnow *list)
@@ -269,8 +268,8 @@ void PrintFallenSnow(FallenSnow *list)
       int i;
       for(i=0; i<fallen->w; i++)
 	 sumact += fallen->acth[i];
-      printf("id:%#10lx ws:%4d x:%6d y:%6d w:%6d cln:%2d sty:%2d sum:%8d\n", fallen->id, fallen->ws,
-	    fallen->x, fallen->y, fallen->w, fallen->clean, fallen->sticky, sumact);
+      printf("id:%#10lx ws:%4d x:%6d y:%6d w:%6d cln:%2d sty:%2d hid:%2d sum:%8d\n", fallen->win.id, fallen->win.ws,
+	    fallen->x, fallen->y, fallen->w, fallen->clean, fallen->win.sticky, fallen->win.hidden, sumact);
       fallen = fallen->next;
    }
 }
@@ -299,7 +298,7 @@ void CleanFallen(Window id)
    // search the id
    while(fsnow)
    {
-      if(fsnow->id == id)
+      if(fsnow->win.id == id)
       {
 	 CleanFallenArea(fsnow,0,fsnow->w);
 	 break;
@@ -371,8 +370,8 @@ void CreateSurfaceFromFallen(FallenSnow *f)
 void DrawFallen(FallenSnow *fsnow)
 {
    if(!fsnow->clean)
-      if(fsnow->id == 0 || (!fsnow->hidden &&
-	       (fsnow->ws == CWorkSpace || fsnow->sticky)))
+      if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
+	       (fsnow->win.ws == CWorkSpace || fsnow->win.sticky)))
       {
 	 // do not interfere with Santa
 	 if(!Flags.NoSanta)
@@ -385,10 +384,10 @@ void DrawFallen(FallenSnow *fsnow)
 	       int xfront = SantaX+SantaWidth - fsnow->x;
 	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
 	       int xback = xfront - SantaWidth;
-	       const int clearing = 10;
+	       const int clearing = 1;
 	       float vy = -1.5*ActualSantaSpeed; 
 	       if(vy > 0) vy = -vy;
-	       if (vy > -100.0)
+	       if (vy < -100.0)
 		  vy = -100;
 	       if (ActualSantaSpeed > 0)
 		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
@@ -423,7 +422,8 @@ void DrawFallen(FallenSnow *fsnow)
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
-   if (Flags.NoBlowSnow || Flags.NoWind)
+   P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
+   if (Flags.NoBlowSnow)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
@@ -432,7 +432,8 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
    if (ifirst > fsnow->w) ifirst = fsnow->w;
    int ilast  = x+w; if(ilast < 0) ilast = 0;
    if (ilast > fsnow->w) ilast = fsnow->w;
-   for (i=ifirst; i<ilast; i+=MaxSnowFlakeWidth)
+   P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<MaxSnowFlakeWidth?w:MaxSnowFlakeWidth);
+   for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
    {
       int j;
       for(j=0; j<fsnow->acth[i]; j++)
@@ -440,15 +441,16 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    Snow *flake   = MakeFlake();
-	    flake->rx     = fsnow->x + i;
-	    flake->ry     = fsnow->y - j;
+	    Snow *flake   = MakeFlake(-1);
+	    flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
+	    flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
 	    if (Flags.NoWind)
 	       flake->vx     = 0;
 	    else
-	       flake->vx     = NewWind/8;
-	    flake->vy     = vy;
-	    flake->cyclic = 0;
+	       flake->vx      = NewWind/8;
+	    flake->vy         = vy;
+	    flake->cyclic     = 0;
+
 	    add_flake_to_mainloop(flake);
 	 }
       }
@@ -477,8 +479,10 @@ void InitFallenSnow()
    while (FsnowFirst)
       PopFallenSnow(&FsnowFirst);
    // create fallensnow on bottom of screen:
-   PushFallenSnow(&FsnowFirst, 0, CWorkSpace, 0, 0, 
-	 SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
+   WinInfo *NullWindow = (WinInfo *)malloc(sizeof(WinInfo));
+   memset(NullWindow,0,sizeof(WinInfo));
+
+   PushFallenSnow(&FsnowFirst, NullWindow, 0, SnowWinHeight, SnowWinWidth, MaxScrSnowDepth);
 }
 
 // removes some fallen snow from fsnow, w pixels. If fallensnowheight < h: no removal
@@ -497,20 +501,19 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    //P("%d\n",jmax);
 	    for (j=0; j< jmax; j++)
 	    {
-	       Snow *flake   = MakeFlake();
-	       flake->rx     = fsnow->x + i;
-	       flake->ry     = fsnow->y - fsnow->acth[i] - randint(2*MaxSnowFlakeWidth);
-	       flake->vx     = NewWind/8;
-	       flake->vy     = -10;
-	       flake->cyclic = (fsnow->id == 0); // not cyclic for Windows, cyclic for bottom
+	       Snow *flake       = MakeFlake(0);
+	       flake->rx         = fsnow->x + i;
+	       flake->ry         = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
+	       flake->vx         = fsignf(NewWind)*WindMax;
+	       flake->vy         = -5;
+	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
 	       add_flake_to_mainloop(flake);
+	       P("%d:\n",counter++);
 	    }
 	    EraseFallenPixel(fsnow,i);
 	 }
       }
 }
-
-
 
 void SetMaxScreenSnowDepth()
 {
@@ -590,13 +593,13 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
 
 int HandleFallenSnow(FallenSnow *fsnow)
 {
-   if (fsnow->id == 0)
+   if (fsnow->win.id == 0)
       return !Flags.NoKeepSBot;
-   if (fsnow->hidden)
+   if (fsnow->win.hidden)
       return 0;
-   if (!fsnow->sticky)
+   if (!fsnow->win.sticky)
    {
-      if (fsnow->ws != CWorkSpace)
+      if (fsnow->win.ws != CWorkSpace)
 	 return 0;
    }
    return !Flags.NoKeepSWin;

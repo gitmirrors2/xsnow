@@ -38,6 +38,7 @@
 #include "ui.h"
 #include "utils.h"
 #include "windows.h"
+#include "varia.h"
 
 
 
@@ -60,7 +61,7 @@ static cairo_surface_t *globsurface = NULL;
 #endif
 
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
-static cairo_surface_t *attrsurface = 0;
+static cairo_surface_t *attrsurface = NULL;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
 //                  // Nbirds is changed outside init_birds
@@ -104,9 +105,9 @@ static float time_update_pos_birds     = 0.01;
 static float time_update_speed_birds   = 0.20;
 static float time_wings                = 0.10;
 
-static struct kdtree *kd = 0;
+static struct kdtree *kd = NULL;
 
-static BirdType *birds = 0;
+static BirdType *birds = NULL;
 static BirdType attrbird;
 
 
@@ -321,7 +322,7 @@ void birds_set_scale()
    attrbird2surface();
 }
 
-int do_update_speed_birds(gpointer data)
+int do_update_speed_birds(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -468,7 +469,7 @@ int do_update_speed_birds(gpointer data)
    return TRUE;
 }
 
-int do_update_pos_birds(gpointer data)
+int do_update_pos_birds(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -696,12 +697,12 @@ void init_birds(int start)
       bird->drawable = 1;
       bird->wingstate = drand48()*NWINGS;
 
-      kd_insert3f(kd, bird->x, bird->y, bird->z, 0);
+      kd_insert3f(kd, bird->x, bird->y, bird->z, NULL);
    }
 }
 
 
-static int do_wings(gpointer data)
+static int do_wings(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -801,7 +802,7 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
-int do_change_attr(gpointer data)
+int do_change_attr(UNUSED gpointer data)
 {
    // move attraction point in the range
    // x: 0.3 .. 0.7
@@ -842,10 +843,10 @@ void birds_init ()
       globals.prefdweight    = 1;
 
       clear_flags();
-      add_to_mainloop(PRIORITY_HIGH,time_update_pos_birds,     do_update_pos_birds,     0);
-      add_to_mainloop(PRIORITY_HIGH,time_update_speed_birds,   do_update_speed_birds,   0);
-      add_to_mainloop(PRIORITY_HIGH,time_wings,                do_wings,                0);
-      add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,       do_change_attr,          0);
+      add_to_mainloop(PRIORITY_HIGH,time_update_pos_birds,     do_update_pos_birds,     NULL);
+      add_to_mainloop(PRIORITY_HIGH,time_update_speed_birds,   do_update_speed_birds,   NULL);
+      add_to_mainloop(PRIORITY_HIGH,time_wings,                do_wings,                NULL);
+      add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,       do_change_attr,          NULL);
       main_window();
    }
 

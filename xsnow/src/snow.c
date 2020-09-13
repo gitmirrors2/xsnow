@@ -39,9 +39,10 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
+#include "varia.h"
 
 #define NOTACTIVE \
-   (Flags.BirdsOnly || !WorkspaceActive())
+   (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
 static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
 static float    FlakesPerSecond;
@@ -72,11 +73,11 @@ void snow_init()
 {
    int i;
    for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
-      snow_surfaces[i] = 0;
+      snow_surfaces[i] = NULL;
    for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    {
-      SnowGC[i]  = XCreateGC(display, SnowWin, 0, 0);
-      ESnowGC[i] = XCreateGC(display, SnowWin, 0, 0);
+      SnowGC[i]  = XCreateGC(display, SnowWin, 0, NULL);
+      ESnowGC[i] = XCreateGC(display, SnowWin, 0, NULL);
    }
    init_snow_surfaces();
    InitSnowSpeedFactor();
@@ -84,8 +85,8 @@ void snow_init()
    InitSnowColor();
    InitSnowSpeedFactor();
    InitBlowOffFactor();
-   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,0);
-   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,0);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
    int flake;
    for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    {
@@ -187,14 +188,17 @@ int snow_draw(cairo_t *cr)
    Snow *flake;
    while( (flake = (Snow *)set_next()) )
    {
-      P("snow_draw %d\n",counter++);
+      P("snow_draw %d %f\n",counter++,ALPHA);
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
-      cairo_paint_with_alpha(cr,ALPHA);
+      double alpha = ALPHA;
+      if (flake->fluff)
+	 alpha *= flake->flufftimer>0?flake->flufftimer/FLUFFTIME:0;
+      cairo_paint_with_alpha(cr,alpha);
    }
    return TRUE;
 }
 
-int do_genflakes(gpointer data)
+int do_genflakes(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
@@ -234,7 +238,7 @@ int do_genflakes(gpointer data)
    int i;
    for(i=0; i<desflakes; i++)
    {
-      Snow *flake = MakeFlake();
+      Snow *flake = MakeFlake(-1);
       add_flake_to_mainloop(flake);
    }
    RETURN;
@@ -247,9 +251,10 @@ int do_UpdateSnowFlake(Snow *flake)
       return TRUE;
    int fckill = FlakeCount >= Flags.FlakeCountMax;
    if (
-	 KillFlakes ||                                     // merciless remove if KillFlakes
+	 KillFlakes                                    ||  // merciless remove if KillFlakes
 	 (fckill && !flake->cyclic && drand48() > 0.5) ||  // high probability to remove blown-off flake
-	 (fckill && drand48() > 0.9)                       // low probability to remove other flakes
+	 (fckill && drand48() > 0.9)                   ||  // low probability to remove other flakes
+	 (flake->fluff && flake->flufftimer < 0)           // fluff has expired
       )
    {
       EraseSnowFlake(flake);
@@ -257,10 +262,16 @@ int do_UpdateSnowFlake(Snow *flake)
       return FALSE;
    }
 
+   double FlakesDT = time_snowflakes;
+   // handle fluff
+   if (flake->fluff)
+   {
+      flake->flufftimer -= FlakesDT;
+      return TRUE;
+   }
    //
    // update speed in x Direction
    //
-   double FlakesDT = time_snowflakes;
    if (!Flags.NoWind)
    {
       flake->vx += FlakesDT*flake->wsens*(NewWind - flake->vx)/flake->m;
@@ -309,8 +320,8 @@ int do_UpdateSnowFlake(Snow *flake)
    // investigate if flake is in a not-hidden fallensnowarea on current workspace
    while(fsnow && !found)
    {
-      if(!fsnow->hidden)
-	 if(fsnow->id == 0 ||(fsnow->ws == CWorkSpace || fsnow->sticky))
+      if(!fsnow->win.hidden)
+	 if(fsnow->win.id == 0 ||(fsnow->win.ws == CWorkSpace || fsnow->win.sticky))
 	 {
 	    if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
 		  ny < fsnow->y+2)
@@ -338,9 +349,16 @@ int do_UpdateSnowFlake(Snow *flake)
 			   flake->rx = NewX;
 			   flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
 			   DrawSnowFlake(flake);
+			   flake->fluff      = 1;
+			   flake->flufftimer = FLUFFTIME;
 			}
-			DelFlake(flake);
-			return FALSE;
+			if (flake->fluff)
+			   return TRUE;
+			else
+			{
+			   DelFlake(flake);
+			   return FALSE;
+			}
 		     }
 		     found = 1;
 		     break;
@@ -371,9 +389,20 @@ int do_UpdateSnowFlake(Snow *flake)
       int in = XRectInRegion(SnowOnTreesRegion,x,y,flake->w,flake->h);
       if (in == RectanglePart || in == RectangleIn)
       {
-	 EraseSnowFlake(flake);
-	 DelFlake(flake);
-	 return FALSE;
+	 if (Flags.NoFluffy)
+	    EraseSnowFlake(flake);
+	 else
+	 {
+	    flake->fluff      = 1;
+	    flake->flufftimer = FLUFFTIME;
+	 }
+	 if (flake->fluff)
+	    return TRUE;
+	 else
+	 {
+	    DelFlake(flake);
+	    return FALSE;
+	 }
       }
 
       // check if flake is touching TreeRegion. If so: add snow to 
@@ -471,10 +500,15 @@ int do_UpdateSnowFlake(Snow *flake)
    return TRUE;
 }
 
-Snow *MakeFlake()
+// creates snowflake from type (0<type<=SNOWFLAKEMAXTYPE)
+// if <0, create random type
+Snow *MakeFlake(int type)
 {
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
    FlakeCount++; 
+   if (type < 0)
+      type = randint(SNOWFLAKEMAXTYPE+1);
+   flake -> whatFlake = type; 
    InitFlake(flake);
    return flake;
 }
@@ -528,25 +562,24 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 
 void InitFlake(Snow *flake)
 {
-   flake->whatFlake = randint(SNOWFLAKEMAXTYPE+1);
-   flake->w         = snowPix[flake->whatFlake].width;
-   flake->h         = snowPix[flake->whatFlake].height;
-   flake->rx        = randint(SnowWinWidth - flake->w);
-   flake->ry        = -randint(SnowWinHeight/10);
-   flake->cyclic    = 1;
-   flake->m         = drand48()+0.1;
+   flake->w          = snowPix[flake->whatFlake].width;
+   flake->h          = snowPix[flake->whatFlake].height;
+   flake->rx         = randint(SnowWinWidth - flake->w);
+   flake->ry         = -randint(SnowWinHeight/10);
+   flake->cyclic     = 1;
+   flake->fluff      = 0;
+   flake->flufftimer = 0;
+   flake->m          = drand48()+0.1;
    if(Flags.NoWind)
-      flake->vx     = 0; 
+      flake->vx      = 0; 
    else
-      flake->vx     = randint(NewWind)/2; 
-   flake->ivy       = INITIALYSPEED * sqrt(flake->m);
-   flake->vy        = flake->ivy;
-   flake->wsens     = drand48()*MAXWSENS;
+      flake->vx      = randint(NewWind)/2; 
+   flake->ivy        = INITIALYSPEED * sqrt(flake->m);
+   flake->vy         = flake->ivy;
+   flake->wsens      = drand48()*MAXWSENS;
    P("wsens: %f\n",flake->wsens);
    //P("%f %f\n",flake->rx, flake->ry);
 }
-
-
 
 void InitFlakesPerSecond()
 {
@@ -574,7 +607,7 @@ void InitSnowSpeedFactor()
 }
 
 
-int do_initsnow(gpointer data)
+int do_initsnow(UNUSED gpointer data)
 {
    P("initsnow %d %d\n",FlakeCount,counter++);
    if (Flags.Done)
@@ -592,7 +625,7 @@ int do_initsnow(gpointer data)
    return FALSE;  // stop callback
 }
 
-int do_show_flakecount(gpointer data)
+int do_show_flakecount(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;

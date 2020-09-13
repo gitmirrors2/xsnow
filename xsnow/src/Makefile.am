@@ -22,8 +22,8 @@ SUBDIRS = Pixmaps
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
-xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(DBUS_CFLAGS) -DUSE_LIST_NODE_ALLOCATOR 
-xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)   $(DBUS_LIBS)
+xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) -DUSE_LIST_NODE_ALLOCATOR 
+xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)  
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
@@ -40,7 +40,8 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		scenery.c scenery.h snow.c snow.h \
 		meteo.c meteo.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
-		treesnow.c treesnow.h loadmeasure.c loadmeasure.h
+		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
+		varia.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 
