@@ -938,6 +938,11 @@ int do_testing(UNUSED gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
+   /*
+#include "hashtable.h"
+#include "snow.h"
+   R("flakes: %d %d\n",set_size(),FlakeCount);
+   */
    return TRUE;
    Flags.BelowAll = !Flags.BelowAll;
 }

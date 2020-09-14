@@ -441,17 +441,31 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 int k, kmax = BlowOff();
 	 for(k=0; k<kmax; k++)
 	 {
-	    Snow *flake   = MakeFlake(-1);
-	    flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
-	    flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
-	    if (Flags.NoWind)
-	       flake->vx     = 0;
-	    else
-	       flake->vx      = NewWind/8;
-	    flake->vy         = vy;
-	    flake->cyclic     = 0;
-
+	    float p = 0;
+	    if (!switches.UseGtk)
+	       p = drand48();
+	    // In X11, (switches.UseGtk!=1) we want not too much
+	    // generated flakes
+	    // Otherwize, we go for more dramatic effects
+	    if (p < 0.15)
+	    {
+	       Snow *flake   = MakeFlake(-1);
+	       flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
+	       flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
+	       if (Flags.NoWind)
+		  flake->vx     = 0;
+	       else
+		  flake->vx      = NewWind/8;
+	       flake->vy         = vy;
+	       flake->cyclic     = 0;
+	       if (switches.UseGtk && drand48() > 0.25)
+	       {
+		  flake->fluff      = 1;
+		  flake->flufftimer = FLUFFTIME;
+		  flake->ry += 2*MaxSnowFlakeHeight*drand48();
+	       }
 	    add_flake_to_mainloop(flake);
+	    }
 	 }
       }
    }

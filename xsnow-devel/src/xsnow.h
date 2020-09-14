@@ -164,7 +164,7 @@
 #define time_change_attr      60.0             /* time between changing attraction point     */
 #define time_measure          0.1
 
-#define time_fallen           (0.15 * cpufactor)  /* time between redraw fallen snow            */
+#define time_fallen           (0.04 * cpufactor)  /* time between redraw fallen snow            */
 #define time_santa            (0.02 * cpufactor)  /* time between drawings of santa             */
 #define time_santa1           (0.01 * cpufactor)  /* time between redrawings of santa           */
 //#define time_snowflakes       (0.05 * cpufactor)  /* time between redrawings of snowflakes      */

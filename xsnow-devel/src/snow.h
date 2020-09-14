@@ -41,6 +41,7 @@ typedef struct _Snow {
    unsigned int fluff      : 1;  // 1: flake is in fluff state
    unsigned int w          : 8;  // width
    unsigned int h          : 8;  // height
+   unsigned int testing    : 2;  // for testing purposes
 
 } Snow;
 
@@ -55,6 +56,7 @@ extern Region     NoSnowArea_dynamic;
 extern Pixel      SnowcPix;
 extern int        MaxSnowFlakeHeight;  /* Biggest flake */
 extern int        MaxSnowFlakeWidth;   /* Biggest flake */
+extern int        FlakeCount;          /* number of flakes */
 
 extern int        do_initsnow(gpointer data);
 extern int        do_UpdateSnowFlake(Snow *flake);

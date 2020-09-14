@@ -48,7 +48,6 @@ static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
 static float    FlakesPerSecond;
 static int      KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
 static float    SnowSpeedFactor;
-static int      FlakeCount = 0;
 static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC       SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
 
@@ -68,6 +67,7 @@ Region     NoSnowArea_dynamic;
 Pixel      SnowcPix;
 int        MaxSnowFlakeHeight = 0;  /* Biggest flake */
 int        MaxSnowFlakeWidth = 0;   /* Biggest flake */
+int        FlakeCount = 0;
 
 void snow_init()
 {
@@ -194,6 +194,7 @@ int snow_draw(cairo_t *cr)
       if (flake->fluff)
 	 alpha *= flake->flufftimer>0?flake->flufftimer/FLUFFTIME:0;
       cairo_paint_with_alpha(cr,alpha);
+      //if (flake->testing) P("testing flake: alpha: %f\n",alpha);
    }
    return TRUE;
 }
@@ -510,6 +511,7 @@ Snow *MakeFlake(int type)
       type = randint(SNOWFLAKEMAXTYPE+1);
    flake -> whatFlake = type; 
    InitFlake(flake);
+   //DrawSnowFlake(flake);
    return flake;
 }
 
@@ -534,7 +536,7 @@ void EraseSnowFlake(Snow *flake)
 }
 
 // a call to this function must be followed by 'return FALSE' to remove this
-// flake from the g_timeout_full stack
+// flake from the g_timeout callback
 void DelFlake(Snow *flake)
 {
    set_erase(flake);
@@ -547,10 +549,7 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
 {
    if(Flags.NoSnowFlakes) return;
    if (switches.UseGtk)
-   {
-      set_insert(flake); // will be picked up by snow_draw()
-      return;
-   }
+      return; // will be picked up by snow_draw()
    P("DrawSnowFlake X11 %d\n",counter++);
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
@@ -577,6 +576,8 @@ void InitFlake(Snow *flake)
    flake->ivy        = INITIALYSPEED * sqrt(flake->m);
    flake->vy         = flake->ivy;
    flake->wsens      = drand48()*MAXWSENS;
+   flake->testing    = 0;
+   set_insert(flake); // will be picked up by snow_draw()
    P("wsens: %f\n",flake->wsens);
    //P("%f %f\n",flake->rx, flake->ry);
 }
