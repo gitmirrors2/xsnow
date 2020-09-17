@@ -1,3 +1,9 @@
+version 3.0.9
+	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
+	2:fallensnow.c xsnow.h: shorter time between updates fallensnow
+	  better simulation of plowing
+	  3:snow.c: InitFlake takes now care of inserting flake in set
+	    of flakes
 version 3.0.8
 	1:check op _NET_WIM_WINDOW_TYPE_DOCK: do not fall snow on
 	  such a window

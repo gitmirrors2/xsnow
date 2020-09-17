@@ -115,8 +115,6 @@ int do_wupdate(UNUSED gpointer data)
       Flags.Done = 1;
       return TRUE;
    }
-   DisplayDimensions();
-
 
    //I("%d:\n",counter++);printwindows(display,Windows,NWindows);
    // Take care of the situation that the transparent window changes from workspace, 
