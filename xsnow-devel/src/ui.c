@@ -466,13 +466,15 @@ static void init_tree_pixmaps()
 static void init_hello_pixmaps()
 {
    GtkImage *image; 
-   GdkPixbuf *pixbuf;
+   GdkPixbuf *pixbuf, *pixbuf1;
    pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
+   pixbuf1 = gdk_pixbuf_scale_simple(pixbuf,64,64,GDK_INTERP_BILINEAR);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image1"));
-   gtk_image_set_from_pixbuf(image,pixbuf);
+   gtk_image_set_from_pixbuf(image,pixbuf1);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image2"));
-   gtk_image_set_from_pixbuf(image,pixbuf);
+   gtk_image_set_from_pixbuf(image,pixbuf1);
    g_object_unref(pixbuf);
+   g_object_unref(pixbuf1);
    pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[0]);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image3"));
    gtk_image_set_from_pixbuf(image,pixbuf);

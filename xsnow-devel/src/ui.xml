@@ -663,6 +663,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">center</property>
                 <child>
                   <object class="GtkImage" id="hello-image1">
                     <property name="visible">True</property>
@@ -680,8 +681,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">8</property>
-                    <property name="margin_right">8</property>
+                    <property name="margin_left">24</property>
+                    <property name="margin_right">24</property>
                     <property name="label" translatable="yes">Welcome at xsnow!</property>
                     <attributes>
                       <attribute name="scale" value="2"/>
@@ -4500,6 +4501,9 @@ Drawing and erasing will be done by X11 functions.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

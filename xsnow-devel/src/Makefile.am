@@ -70,7 +70,7 @@ desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop
 
 appicondir=$(datadir)/pixmaps
-appicon_DATA=Pixmaps/xsnow.xpm
+appicon_DATA=Pixmaps/xsnow.svg
 
 man6_MANS = xsnow.6
 xsnow.6: xsnow
