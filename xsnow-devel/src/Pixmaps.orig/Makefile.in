@@ -135,8 +135,6 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
-DBUS_CFLAGS = @DBUS_CFLAGS@
-DBUS_LIBS = @DBUS_LIBS@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
@@ -293,6 +291,13 @@ snow03.xbm \
 snow04.xbm \
 snow05.xbm \
 snow06.xbm \
+snow00.xpm \
+snow01.xpm \
+snow02.xpm \
+snow03.xpm \
+snow04.xpm \
+snow05.xpm \
+snow06.xpm \
 snowtree.xpm \
 star.xbm \
 tannenbaum.xpm \
@@ -300,6 +305,7 @@ tree-1_100px.xpm \
 polarbear.xpm \
 tree.xpm \
 xsnow.xpm \
+xsnow.svg \
 bird1.xpm \
 bird2.xpm \
 bird3.xpm \

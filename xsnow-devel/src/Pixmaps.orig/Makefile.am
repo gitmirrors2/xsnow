@@ -69,6 +69,13 @@ snow03.xbm \
 snow04.xbm \
 snow05.xbm \
 snow06.xbm \
+snow00.xpm \
+snow01.xpm \
+snow02.xpm \
+snow03.xpm \
+snow04.xpm \
+snow05.xpm \
+snow06.xpm \
 snowtree.xpm \
 star.xbm \
 tannenbaum.xpm \
@@ -76,6 +83,7 @@ tree-1_100px.xpm \
 polarbear.xpm \
 tree.xpm \
 xsnow.xpm \
+xsnow.svg \
 bird1.xpm \
 bird2.xpm \
 bird3.xpm \

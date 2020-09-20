@@ -46,7 +46,7 @@ typedef struct _Snow {
 } Snow;
 
 typedef struct _SnowMap {
-   char *snowBits;
+   unsigned char *snowBits;
    Pixmap pixmap;
    int width   : 8;
    int height  : 8;

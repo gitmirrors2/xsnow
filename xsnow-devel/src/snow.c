@@ -92,7 +92,7 @@ void snow_init()
    {
       SnowMap *rp = &snowPix[flake];
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
-	    rp->snowBits, rp->width, rp->height);
+	    (char *)rp->snowBits, rp->width, rp->height);
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
    }
