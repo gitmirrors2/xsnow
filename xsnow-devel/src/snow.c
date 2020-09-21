@@ -44,12 +44,18 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
-static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
-static float    FlakesPerSecond;
-static int      KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
-static float    SnowSpeedFactor;
-static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
-static GC       SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
+//static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
+//static cairo_surface_t *snow_surfaces[1000];
+static cairo_surface_t **snow_surfaces;
+static float             FlakesPerSecond;
+static int               KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
+static float             SnowSpeedFactor;
+//static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
+//static GC       ESnowGC[1000];  // There are SNOWFLAKEMAXTYPE+1 flakes
+static GC                *ESnowGC;
+//static GC       SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
+//static GC       SnowGC[1000];  // There are SNOWFLAKEMAXTYPE+1 flakes
+static GC                *SnowGC;
 
 static int    do_genflakes(gpointer data);
 static void   InitFlake(Snow *flake);
@@ -68,13 +74,31 @@ Pixel      SnowcPix;
 int        MaxSnowFlakeHeight = 0;  /* Biggest flake */
 int        MaxSnowFlakeWidth = 0;   /* Biggest flake */
 int        FlakeCount = 0;
+int        MaxFlakeTypes;
+int        NFlakeTypes;
 
 void snow_init()
 {
    int i;
-   for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
+   MaxFlakeTypes = 0;
+   while(snowPix[MaxFlakeTypes].snowBits)
+      MaxFlakeTypes++;
+
+   NFlakeTypes = MaxFlakeTypes;
+
+   snow_surfaces = (cairo_surface_t **)malloc(MaxFlakeTypes*sizeof(cairo_surface_t*));
+   ESnowGC       = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
+   SnowGC        = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
+
+
+   R("MaxFlakeTypes: %d\n",MaxFlakeTypes);
+
+   //for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
+   for (i=0; i<MaxFlakeTypes; i++)
       snow_surfaces[i] = NULL;
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+
+   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   for (i=0; i<MaxFlakeTypes; i++) 
    {
       SnowGC[i]  = XCreateGC(display, SnowWin, 0, NULL);
       ESnowGC[i] = XCreateGC(display, SnowWin, 0, NULL);
@@ -88,7 +112,8 @@ void snow_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
    int flake;
-   for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
+   //for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
+   for (flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
@@ -102,7 +127,8 @@ void snow_init()
 void snow_set_gc()
 {
    int i;
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   for (i=0; i<MaxFlakeTypes; i++) 
    {
       XSetFunction(   display, SnowGC[i], GXcopy);
       XSetStipple(    display, SnowGC[i], snowPix[i].pixmap);
@@ -164,7 +190,8 @@ void init_snow_surfaces()
 {
    GdkPixbuf *pixbuf;
    int i;
-   for(i=0; i<SNOWFLAKEMAXTYPE+1; i++)
+   //for(i=0; i<SNOWFLAKEMAXTYPE+1; i++)
+   for(i=0; i<MaxFlakeTypes; i++)
    {
       P("%d\n",i);
       char **x;
@@ -508,7 +535,8 @@ Snow *MakeFlake(int type)
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
    FlakeCount++; 
    if (type < 0)
-      type = randint(SNOWFLAKEMAXTYPE+1);
+      //type = randint(SNOWFLAKEMAXTYPE+1);
+      type = randint(NFlakeTypes);
    flake -> whatFlake = type; 
    InitFlake(flake);
    //DrawSnowFlake(flake);
@@ -593,7 +621,8 @@ void InitSnowColor()
 {
    int i;
    SnowcPix = IAllocNamedColor(Flags.SnowColor, White);   
-   for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
+   for (i=0; i<MaxFlakeTypes; i++) 
       XSetForeground(display, SnowGC[i], SnowcPix);
    init_snow_surfaces();
 }

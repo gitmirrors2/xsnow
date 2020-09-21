@@ -2,6 +2,7 @@ version 3.0.10
 	1:Better icons
 	2:better flakes
 	3:more flakes, auto generate snow includes and macro's for pixmaps.c
+	4:more flakes
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow

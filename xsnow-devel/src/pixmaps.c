@@ -28,6 +28,7 @@
 #define SNOW(x) {snow##x##_bits, None, snow##x##_width, snow##x##_height},
 SnowMap snowPix[] = {
    SNOW_ALL
+   { NULL, None, 0,0}
 }; 
 #undef SNOW
 

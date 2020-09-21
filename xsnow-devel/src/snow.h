@@ -27,6 +27,11 @@
 
 #define FLUFFTIME 0.7  // #seconds fluff will live, using GTK/Cairo
 
+#define NFlakeTypesVintage 7
+
+extern int MaxFlakeTypes;    // total number of available snow flake types
+extern int NFlakeTypes;      // effective number of snow flake types
+
 typedef struct _Snow {
    float rx;                     // x position
    float ry;                     // y position

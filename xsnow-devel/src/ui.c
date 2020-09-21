@@ -896,11 +896,19 @@ void snow_default(int vintage)
    Flags.NoKeepSBot        = DEFAULT_NoKeepSBot;
    Flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
    Flags.NoFluffy          = DEFAULT_NoFluffy;
+
+   NFlakeTypes             = MaxFlakeTypes;
+
    if(vintage)
    {
       Flags.NoBlowSnow        = VINTAGE_NoBlowSnow;
       Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
       Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
+
+      if (MaxFlakeTypes >=7)
+	 NFlakeTypes = 7;
+      else NFlakeTypes = MaxFlakeTypes;
+
    }
    set_snow_buttons();
    human_interaction = h;

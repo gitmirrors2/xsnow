@@ -115,7 +115,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/make.inc
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
@@ -264,63 +264,6 @@ BigSantaRudolf81.xpm \
 BigSantaRudolf82.xpm \
 BigSantaRudolf83.xpm \
 BigSantaRudolf84.xpm \
-eland.xpm \
-huis4.xpm \
-Makefile.am \
-MediumSanta1.xpm \
-MediumSanta2.xpm \
-MediumSanta3.xpm \
-MediumSanta4.xpm \
-MediumSantaRudolf1.xpm \
-MediumSantaRudolf2.xpm \
-MediumSantaRudolf3.xpm \
-MediumSantaRudolf4.xpm \
-RegularSanta1.xpm \
-RegularSanta2.xpm \
-RegularSanta3.xpm \
-RegularSanta4.xpm \
-RegularSantaRudolf1.xpm \
-RegularSantaRudolf2.xpm \
-RegularSantaRudolf3.xpm \
-RegularSantaRudolf4.xpm \
-rendier.xpm \
-snow00.xbm \
-snow01.xbm \
-snow02.xbm \
-snow03.xbm \
-snow04.xbm \
-snow05.xbm \
-snow06.xbm \
-snow06.xbm \
-snow07.xbm \
-snow08.xbm \
-snow09.xbm \
-snow10.xbm \
-snow11.xbm \
-snow12.xbm \
-snow13.xbm \
-snow00.xpm \
-snow01.xpm \
-snow02.xpm \
-snow03.xpm \
-snow04.xpm \
-snow05.xpm \
-snow06.xpm \
-snow07.xpm \
-snow08.xpm \
-snow09.xpm \
-snow10.xpm \
-snow11.xpm \
-snow12.xpm \
-snow13.xpm \
-snowtree.xpm \
-star.xbm \
-tannenbaum.xpm \
-tree-1_100px.xpm \
-polarbear.xpm \
-tree.xpm \
-xsnow.xpm \
-xsnow.svg \
 bird1.xpm \
 bird2.xpm \
 bird3.xpm \
@@ -344,12 +287,82 @@ birdl4.xpm \
 birdl5.xpm \
 birdl6.xpm \
 birdl7.xpm \
-birdl8.xpm
+birdl8.xpm \
+eland.xpm \
+huis4.xpm \
+MediumSanta1.xpm \
+MediumSanta2.xpm \
+MediumSanta3.xpm \
+MediumSanta4.xpm \
+MediumSantaRudolf1.xpm \
+MediumSantaRudolf2.xpm \
+MediumSantaRudolf3.xpm \
+MediumSantaRudolf4.xpm \
+polarbear.png \
+polarbear.xpm \
+RegularSanta1.xpm \
+RegularSanta2.xpm \
+RegularSanta3.xpm \
+RegularSanta4.xpm \
+RegularSantaRudolf1.xpm \
+RegularSantaRudolf2.xpm \
+RegularSantaRudolf3.xpm \
+RegularSantaRudolf4.xpm \
+rendier.xpm \
+snow00.xbm \
+snow00.xpm \
+snow01.xbm \
+snow01.xpm \
+snow02.xbm \
+snow02.xpm \
+snow03.xbm \
+snow03.xpm \
+snow04.xbm \
+snow04.xpm \
+snow05.xbm \
+snow05.xpm \
+snow06.xbm \
+snow06.xpm \
+snow07.xbm \
+snow07.xpm \
+snow08.xbm \
+snow08.xpm \
+snow09.xbm \
+snow09.xpm \
+snow10.xbm \
+snow10.xpm \
+snow11.xbm \
+snow11.xpm \
+snow12.xbm \
+snow12.xpm \
+snow13.xbm \
+snow13.xpm \
+snow14.xbm \
+snow14.xpm \
+snow15.xbm \
+snow15.xpm \
+snow16.xbm \
+snow16.xpm \
+snow17.xbm \
+snow17.xpm \
+snow18.xbm \
+snow18.xpm \
+snowtree.xpm \
+star.xbm \
+tannenbaum.xpm \
+tree-1_100px.xpm \
+tree.xpm \
+xsnow41x30.xpm \
+xsnow64x64.xpm \
+xsnow.jpg \
+xsnow.png \
+xsnow.svg \
+xsnow.xpm 
 
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/make.inc $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -369,6 +382,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles);; \
 	esac;
+$(srcdir)/make.inc $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
