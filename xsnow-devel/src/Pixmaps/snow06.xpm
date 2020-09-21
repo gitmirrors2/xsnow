@@ -1,8 +1,10 @@
 /* XPM */
-static char *snow06[] = {
+/* -copyright- 
+ */
+XPM_TYPE *snow06_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "6 7 2 1 ",
-"  c white",
+"  c None",
 ". c black",
 /* pixels */
 "  .. .",

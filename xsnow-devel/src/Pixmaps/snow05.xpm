@@ -1,8 +1,10 @@
 /* XPM */
+/* -copyright- 
+ */
 XPM_TYPE *snow05_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "9 8 2 1 ",
-"  c none",
+"  c None",
 ". c black",
 /* pixels */
 "     ..  ",
