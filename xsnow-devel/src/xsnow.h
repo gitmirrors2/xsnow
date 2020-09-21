@@ -109,7 +109,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWFLAKEMAXTYPE 6  // type is 0..SNOWFLAKEMAXTYPE  
+#define SNOWFLAKEMAXTYPE 13  // type is 0..SNOWFLAKEMAXTYPE  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150

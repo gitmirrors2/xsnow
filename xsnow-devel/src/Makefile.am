@@ -45,7 +45,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 
 nodist_xsnow_SOURCES = ui_xml.h
 
-BUILT_SOURCES = ui_xml.h
+BUILT_SOURCES = ui_xml.h snow_includes.h
 
 # create C code to get ui.xml in a string
 # ISO C stipulates that the length of a string constant should
@@ -56,13 +56,22 @@ ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
 	@echo "/* This file is generated from $< by Makefile */" > $@
 	@echo "#pragma once" >> $@
-	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
 	@sed 's/^ *//' $< | awk -v FS="" \
 	'BEGIN{for(n=0;n<256;n++)ord[sprintf("%c",n)]=n;}'\
 	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
+
+snow_includes.h: Pixmaps
+	@echo "Creating $@"
+	@echo "#pragma once" > $@
+	@ls $(top_srcdir)/src/Pixmaps/snow??.x[bp]m | sed "s/^/#include \"/;s/$$/\"/" >> $@
+	@echo -n "#define SNOW_ALL " >> $@
+	@for i in $$(seq `ls $(top_srcdir)/src/Pixmaps/snow??.xpm | wc -l`) ; do \
+	   printf 'SNOW(%02d) ' `expr $$i - 1` ;\
+	done >> $@
+	@echo >> $@
 
 TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
 
@@ -76,5 +85,5 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h .deps/* 
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* 
 
