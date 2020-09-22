@@ -18,5 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-#pragma once
-#define VERSION "3.0.10~pre5"
+#define snow22_width 8
+#define snow22_height 9
+static unsigned char snow22_bits[] = {
+   0xc3, 0x42, 0x24, 0x18, 0x7e, 0x18, 0x24, 0x43, 0xc1};

@@ -1,0 +1,4 @@
+#define snow30_width 5
+#define snow30_height 5
+static unsigned char snow30_bits[] = {
+   0x04, 0x0a, 0x0e, 0x0a, 0x11};
