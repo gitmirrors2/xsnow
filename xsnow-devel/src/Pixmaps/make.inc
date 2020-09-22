@@ -18,6 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 EXTRA_DIST = \
+make.inc \
+README \
 AltSanta1.xpm \
 AltSanta2.xpm \
 AltSanta3.xpm \
@@ -151,6 +153,24 @@ snow30.xbm \
 snow30.xpm \
 snow31.xbm \
 snow31.xpm \
+snow32.xbm \
+snow32.xpm \
+snow33.xbm \
+snow33.xpm \
+snow34.xbm \
+snow34.xpm \
+snow35.xbm \
+snow35.xpm \
+snow36.xbm \
+snow36.xpm \
+snow37.xbm \
+snow37.xpm \
+snow38.xbm \
+snow38.xpm \
+snow39.xbm \
+snow39.xpm \
+snow40.xbm \
+snow40.xpm \
 snowtree.xpm \
 star.xbm \
 tannenbaum.xpm \

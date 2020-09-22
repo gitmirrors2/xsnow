@@ -18,7 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#define snow31_width 2
-#define snow31_height 2
-static unsigned char snow31_bits[] = {
-   0x03, 0x03};
+#define snow33_width 4
+#define snow33_height 9
+static unsigned char snow33_bits[] = {
+   0x02, 0x04, 0x0d, 0x02, 0x02, 0x04, 0x03, 0x05, 0x02};
