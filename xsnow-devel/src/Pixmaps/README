@@ -12,7 +12,7 @@ example:
 
 Then run in this folder:
 
-  ./snowxbm2xpm.sh
+  ./snowxbm2xpm.sh  # you need imagemagick
 
 This will re-create all snow??.xpm's from snow??.xbm's
 

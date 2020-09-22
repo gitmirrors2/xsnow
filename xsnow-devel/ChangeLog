@@ -4,6 +4,8 @@ version 3.0.10
 	3:more flakes, auto generate snow includes and macro's for pixmaps.c
 	4:more flakes
 	5:more flakes
+	  birds.c: made attraction point transparent again
+	  ui.xml: remove seperators from snow tab
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow

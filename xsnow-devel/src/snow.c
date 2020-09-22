@@ -91,7 +91,7 @@ void snow_init()
    SnowGC        = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
 
 
-   R("MaxFlakeTypes: %d\n",MaxFlakeTypes);
+   P("MaxFlakeTypes: %d\n",MaxFlakeTypes);
 
    //for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
    for (i=0; i<MaxFlakeTypes; i++)

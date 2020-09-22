@@ -1004,17 +1004,6 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1143,17 +1132,6 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
-                <property name="width">4</property>
               </packing>
             </child>
             <child>
@@ -1586,6 +1564,12 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

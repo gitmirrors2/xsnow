@@ -311,7 +311,7 @@ void attrbird2surface()
    P("attrbird2surface %d %f\n",counter++,f);
    attrsurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*f+2,2*f+2);
    cairo_t *cr = cairo_create(attrsurface);
-   cairo_set_source_rgba(cr,0.914,0.592,0.04,ALPHA);
+   cairo_set_source_rgba(cr,0.914,0.592,0.04,0.6);
    cairo_arc(cr,f+1,f+1,f,0,2*M_PI);
    cairo_fill(cr);
    cairo_destroy(cr);

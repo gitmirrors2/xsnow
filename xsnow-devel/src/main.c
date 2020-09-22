@@ -941,7 +941,7 @@ int do_testing(UNUSED gpointer data)
    /*
 #include "hashtable.h"
 #include "snow.h"
-   R("flakes: %d %d\n",set_size(),FlakeCount);
+   P("flakes: %d %d\n",set_size(),FlakeCount);
    */
    return TRUE;
    Flags.BelowAll = !Flags.BelowAll;
