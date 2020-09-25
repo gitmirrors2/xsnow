@@ -200,7 +200,7 @@ Region regionfromxpm(const char **data, int flop)
  * Return value: 1: OK, 0: not OK.
  * BUGS: this code has not been tested on a big endian system
  */
-int xpmtobits(const char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn)
+int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn)
 {
    int nc,cpp,w,h;
 
@@ -308,7 +308,7 @@ int xpmtobits(const char *xpm[],unsigned char **bitsreturn, int *wreturn, int *h
 // change the second color to color and put the result in out.
 // lines will become the number of lines in out, comes in handy
 // when wanteing to free out.
-void xpm_set_color(const char **data, char ***out, int *lines, const char *color)
+void xpm_set_color(char **data, char ***out, int *lines, const char *color)
 {
    int n;  
    sscanf(data[0],"%*d %d",&n);
@@ -331,11 +331,37 @@ void xpm_set_color(const char **data, char ***out, int *lines, const char *color
    *lines = n+3;
 }
 
-void xpm_destroy(char **data, int lines)
+void xpm_destroy(char **data)
 {
+   int h,nc;
+   sscanf(data[0],"%*d %d %d",&h,&nc);
    int i;
-   for (i=0; i<lines; i++)
+   for (i=0; i<h+nc+1; i++)
       free(data[i]);
    free(data);
+}
+
+void xpm_print(char **xpm)
+{
+   int w,h,nc;
+   sscanf(xpm[0],"%d %d %d",&w,&h,&nc);
+   int i,j;
+   printf("%s\n",xpm[0]);
+   for (i=1; i<1+nc; i++)
+      printf("%s\n",xpm[i]);
+   for (i=0; i<2*w+2; i++)
+      printf("_");
+   printf("\n");
+   for (i=0; i<h; i++)
+   {
+      printf("|");
+      for (j=0; j<w; j++)
+	 printf("%2c",xpm[i+nc+1][j]);
+      printf("|");
+      printf("\n");
+   }
+   for (i=0; i<2*w+2; i++)
+      printf("-");
+   printf("\n");
 }
 

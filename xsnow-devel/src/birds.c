@@ -796,9 +796,9 @@ static void init_bird_pixbufs(const char *color)
    {
       char **x;
       int lines;
-      xpm_set_color(birds_xpm[i], &x, &lines, color);
+      xpm_set_color((char **)birds_xpm[i], &x, &lines, color);
       bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
-      xpm_destroy(x,lines);
+      xpm_destroy(x);
    }
 }
 

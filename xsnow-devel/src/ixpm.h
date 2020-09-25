@@ -24,6 +24,7 @@ extern int iXpmCreatePixmapFromData(Display *display, Drawable d,
       const char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
 extern Region regionfromxpm(const char **data, int flop);
 
-extern void xpm_set_color(const char **data, char ***out, int *lines, const char *color);
-extern void xpm_destroy(char **data, int lines);
-extern int xpmtobits(const char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn);
+extern void xpm_set_color(char **data, char ***out, int *lines, const char *color);
+extern void xpm_destroy(char **data);
+extern int  xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn);
+extern void xpm_print(char **xpm);

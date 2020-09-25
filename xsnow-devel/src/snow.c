@@ -58,6 +58,7 @@ static GC                *ESnowGC;
 static GC                *SnowGC;
 
 static SnowMap *snowPix;
+static char  ***xsnow_xpm;
 
 static int    do_genflakes(gpointer data);
 static void   InitFlake(Snow *flake);
@@ -69,6 +70,8 @@ static void   init_snow_surfaces(void);
 static void   EraseSnowFlake(Snow *flake);
 static void   DelFlake(Snow *flake);
 static void   DrawSnowFlake(Snow *flake);
+static void   genxpmflake(char ***xpm, int w, int h);
+static void   add_random_flakes(int n);
 
 
 Region     NoSnowArea_dynamic;
@@ -82,9 +85,15 @@ int        NFlakeTypes;
 void snow_init()
 {
    int i;
+
+
    MaxFlakeTypes = 0;
    while(snow_xpm[MaxFlakeTypes])
       MaxFlakeTypes++;
+
+   add_random_flakes(1000);   // will change MaxFlakeTypes
+   //                           and create xsnow_xpm, containing
+   //                           old and new flakes
 
    NFlakeTypes = MaxFlakeTypes;
 
@@ -125,10 +134,10 @@ void snow_init()
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
 #else
-      // get snowbits from snow_xpm[flake]
+      // get snowbits from xsnow_xpm[flake]
       unsigned char *bits;
       int w,h,l;
-      xpmtobits(snow_xpm[flake],&bits,&w,&h,&l);
+      xpmtobits(xsnow_xpm[flake],&bits,&w,&h,&l);
       rp->width  = w;
       rp->height = h;
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
@@ -138,6 +147,14 @@ void snow_init()
       free(bits);
 #endif
    }
+
+   // now we should be able to get rid of the snow xpms:
+   /*
+   for (i=0; i<MaxFlakeTypes; i++)
+      xpm_destroy(xsnow_xpm[i]);
+   free(xsnow_xpm);
+   */
+   // but we cannot: they are needed if user changes color
 }
 
 
@@ -213,9 +230,9 @@ void init_snow_surfaces()
       P("%d\n",i);
       char **x;
       int lines;
-      xpm_set_color(snow_xpm[i], &x, &lines, Flags.SnowColor);
+      xpm_set_color(xsnow_xpm[i], &x, &lines, Flags.SnowColor);
       pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)x);
-      xpm_destroy(x,lines);
+      xpm_destroy(x);
       if (snow_surfaces[i])
 	 cairo_surface_destroy(snow_surfaces[i]);
       snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
@@ -552,8 +569,8 @@ Snow *MakeFlake(int type)
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
    FlakeCount++; 
    if (type < 0)
-      //type = randint(SNOWFLAKEMAXTYPE+1);
       type = randint(NFlakeTypes);
+   //if (type > 1 && type < 7)P("type: %d\n",type);
    flake -> whatFlake = type; 
    InitFlake(flake);
    //DrawSnowFlake(flake);
@@ -681,3 +698,78 @@ int do_show_flakecount(UNUSED gpointer data)
    return TRUE;
 }
 
+void genxpmflake(char ***xpm, int w, int h)
+{
+   const char c='.';
+   *xpm = (char **)malloc((h+3)*sizeof(char*));
+   char **X = *xpm;
+
+   X[0] = (char *)malloc(20*sizeof(char));
+   snprintf(X[0],19,"%d %d 2 1",w,h);
+
+   X[1] = strdup("  c None");
+   X[2] = (char *)malloc(20*sizeof(char));
+   snprintf(X[2],19,"%c c black",c);
+
+   int offset = 3;
+   int i,j;
+   for (i=0; i<h; i++)
+      X[i+offset] = (char *) malloc((w+1)*sizeof(char));
+
+   for (i=0; i<h; i++)
+   {
+      for(j=0; j<w; j++)
+	 X[i+offset][j] = ' ';
+      X[i+offset][w] = 0;
+   }
+
+   float w2 = 0.5*w;
+   float h2 = 0.5*h;
+
+   for (i=0; i<h; i++)
+   {
+      float y = i;
+      if (y > h2)
+	 y = h - y;
+      float py = 2*y/h;
+      for (j=0; j<w; j++)
+      {
+	 float x = j;
+	 if (x > w2)
+	    x = w - x;
+	 float px = 2*x/w;
+	 float p = 0.9-(px*py);
+	 P("%d %d %f %f %f %f %f\n",j,i,y,x,px,py,p);
+	 if (drand48() > p)
+	    X[i+offset][j] = c;
+      }
+   }
+   X[h/2+offset][w/2] = c;
+   //xpm_print(*xpm);
+}
+
+void add_random_flakes(int n)
+{
+   // create a new array with snow-xpm's:
+   char ***x;
+   x = (char ***)malloc((n+MaxFlakeTypes+1)*sizeof(char **));
+   int i;
+   int lines;
+   // copy Rick's flakes:
+   for (i=0; i<NFlakeTypesVintage; i++)
+   {
+      xpm_set_color((char **)snow_xpm[i],&x[i],&lines,"snow");
+      //xpm_print((char**)snow_xpm[i]);
+   }
+   // add n flakes:
+   for (i=0; i<n; i++)
+   {
+      int w,h;
+      w = 3+7*drand48();
+      h = 3+7*drand48();
+      genxpmflake(&x[i+NFlakeTypesVintage],w,h);
+   }
+   MaxFlakeTypes   += n;
+   x[MaxFlakeTypes] = NULL;
+   xsnow_xpm = x;
+}

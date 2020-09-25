@@ -8,6 +8,7 @@ version 3.0.10
 	  ui.xml: remove seperators from snow tab
 	7:get rid of snow??.xbm. Conversion from xpm is done with xpmtoxbm().
 	  rename snow*.xpm to flake*.xpm
+	8:next to the 7 archaic flakes, generate random flakes
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow
