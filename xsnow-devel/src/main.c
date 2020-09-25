@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -164,7 +164,6 @@ static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
 static int do_display_dimensions(UNUSED gpointer data);
-//static int do_restart_belowall(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 /**********************************************************************************************/
@@ -452,8 +451,6 @@ int main_c(int argc, char *argv[])
 
    SetGCFunctions();
 
-   //InitSnowColor();
-
    // events
    if(switches.Desktop)
       XSelectInput(display, SnowWin, 0);
@@ -605,7 +602,7 @@ int myDetermineWindow()
    {
       P("Scenario 4 Desktop: %d\n",IsDesktop);
       printf("Scenario: Use X11 for drawing snow in root window, no birds will fly.\n");
-      // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
+      // in LXDE, SnowWin will be overwritten by id of window pcmanfm
       SnowWin            = SnowWina;
       SnowWinName        = SnowWinaName;
       switches.UseGtk    = 0;
@@ -1076,8 +1073,6 @@ void HandleCpuFactor()
       cpufactor = 1;
    else
       cpufactor = 100.0/Flags.CpuLoad;
-
-   //EraseTrees();
 
    if (fallen_id)
       g_source_remove(fallen_id);

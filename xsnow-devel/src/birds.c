@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -48,17 +48,8 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
-// I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
-
-//static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
-#if 0
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata);
-#endif
 
 /* Surface to store current scribbles */
-#if 0
-static cairo_surface_t *globsurface = NULL;
-#endif
 
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static cairo_surface_t *attrsurface = NULL;
@@ -605,11 +596,8 @@ int birds_draw(cairo_t *cr)
 
 	    P("%f %f %d\n",sxz,bird->sy,orient);
 	    GdkPixbuf *bird_pixbuf = bird_pixbufs[nw+orient];
-	    //iw = p*globals.bird_scale;
-	    // Flags.BirdsScale default 100
 	    iw = p*globals.bird_scale*Flags.BirdsScale*6.0e-6*globals.maxix;
 	    P("%d %d\n",Flags.BirdsScale,globals.maxix);
-	    //ih = p*globals.bird_scale*gdk_pixbuf_get_height(bird_pixbuf)/
 	    ih = (float)iw*gdk_pixbuf_get_height(bird_pixbuf)/
 	       (float)gdk_pixbuf_get_width(bird_pixbuf);
 	    // do not draw very large birds (would be bad for cache use)

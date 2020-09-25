@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -24,15 +24,6 @@
 #include "pixmaps.h"
 #include "snow_includes.h" // a generated file, containing #includes for snow xbm's and xpm's
 //                            and the definition of SNOW_ALL
-
-/*
-#define SNOW(x) {None, snow##x##_width, snow##x##_height},
-SnowMap snowPix[] = {
-   SNOW_ALL
-   { None, 0,0}
-}; 
-#undef SNOW
-*/
 
 #include "Pixmaps/BigSanta1.xpm"
 #include "Pixmaps/BigSanta2.xpm"

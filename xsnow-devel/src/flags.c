@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -61,7 +61,6 @@ static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
-   //Flags.WindowId                = WINDOW_ID; 
 #define DOIT_I(x) Flags.x = DEFAULT_ ## x ;
 #define DOIT_S(x) free(Flags.x); Flags.x = strdup(DEFAULT_ ## x);
 #define DOIT_L(x) DOIT_I(x)

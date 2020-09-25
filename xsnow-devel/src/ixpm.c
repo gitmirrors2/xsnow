@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -155,9 +155,9 @@ Region regionfromxpm(const char **data, int flop)
    for(i=1; i<=nc; i++)
    {
       char s[100];
-      //printf("%d: %s\n",__LINE__,data[i]);
+      P("%s\n",data[i]);
       sscanf(data[i]+n,"%*s %100s",s);
-      //printf("%d: %s\n",__LINE__,s);
+      P("%s\n",s);
       if(!strcasecmp(s,"None"))
       {
 	 code = strndup(data[i],n);

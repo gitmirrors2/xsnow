@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -55,8 +55,7 @@ BUILT_SOURCES = ui_xml.h snow_includes.h
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
 	@echo "/* This file is generated from $< by Makefile */" > $@
-	@echo -n "/* -copyright" >> $@
-	@echo "-" >> $@
+	@echo "/* -""copyright-" >> $@
 	@echo "*/" >> $@
 	@echo "#pragma once" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
@@ -65,12 +64,12 @@ ui_xml.h: ui.xml
 	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
+	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
 snow_includes.h: Pixmaps
 	@echo "Creating $@"
 	@echo "#pragma once" > $@
-	@echo -n "/* -copyright" >> $@
-	@echo "-" >> $@
+	@echo "/* -""copyright-" >> $@
 	@echo "*/" >> $@
 	@ls $(top_srcdir)/src/Pixmaps/flake*.xpm | sed "s/^/#include \"/;s/$$/\"/" >> $@
 	@echo "#define SNOW_ALL \\" >> $@
@@ -78,6 +77,7 @@ snow_includes.h: Pixmaps
 	   printf 'SNOW(%d) \\\n' `expr $$i - 1` ;\
 	done >> $@
 	@echo >> $@
+	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
 TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
 

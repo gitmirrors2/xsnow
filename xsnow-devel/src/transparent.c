@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 // https://stackoverflow.com/questions/16832581/how-do-i-make-a-gtkwindow-background-transparent-on-linux]
 // and
 // https://github.com/anko/hudkit
+//
+// This is probably the most frequent changed file in xsnow
 
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -126,9 +128,6 @@ int create_transparent_window(int allworkspaces, int below,
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
 
-   //gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin), TRUE);
-   //gtk_window_set_accept_focus     (GTK_WINDOW(gtkwin), FALSE);
-   //gtk_window_set_decorated        (GTK_WINDOW(gtkwin), FALSE);
    gtk_window_set_resizable        (GTK_WINDOW(gtkwin), FALSE);
 
    // see comment at draw1()

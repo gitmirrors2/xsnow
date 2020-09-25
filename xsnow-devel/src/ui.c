@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -736,20 +736,6 @@ void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
    remove_from_mainloop(bct_id);
 }
 
-#if 0
-#define HANDLE_TOGGLE(_name,_flag,_t,_f) \
-   MODULE_EXPORT \
-   void _name(GtkWidget *w, UNUSED gpointer d) \
-{ \
-   if(!human_interaction) return; \
-   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
-   if(active) \
-   Flags._flag = _t; \
-   else \
-   Flags._flag = _f; \
-   P(#_name ": %d\n",Flags._flag); \
-} typedef int dummytype // to request a ;
-#endif
 
    MODULE_EXPORT
 void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
@@ -1162,7 +1148,6 @@ static void set_buttons()
 void all_default(int vintage)
 {
    santa_default(vintage);
-   // general_default(vintage);
    scenery_default(vintage);
    snow_default(vintage);
    wind_default(vintage);
@@ -1213,7 +1198,6 @@ void ui_set_sticky(int x)
 void ui(UNUSED int *argc, UNUSED char **argv[])
 {
 
-   // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));

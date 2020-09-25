@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -44,17 +44,11 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
-//static cairo_surface_t *snow_surfaces[SNOWFLAKEMAXTYPE+1];
-//static cairo_surface_t *snow_surfaces[1000];
 static cairo_surface_t **snow_surfaces;
 static float             FlakesPerSecond;
 static int               KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
 static float             SnowSpeedFactor;
-//static GC       ESnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
-//static GC       ESnowGC[1000];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC                *ESnowGC;
-//static GC       SnowGC[SNOWFLAKEMAXTYPE+1];  // There are SNOWFLAKEMAXTYPE+1 flakes
-//static GC       SnowGC[1000];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC                *SnowGC;
 
 static SnowMap *snowPix;
@@ -92,8 +86,8 @@ void snow_init()
       MaxFlakeTypes++;
 
    add_random_flakes(1000);   // will change MaxFlakeTypes
-   //                           and create xsnow_xpm, containing
-   //                           old and new flakes
+   //                            and create xsnow_xpm, containing
+   //                            vintage and new flakes
 
    NFlakeTypes = MaxFlakeTypes;
 
@@ -103,13 +97,11 @@ void snow_init()
    SnowGC        = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
 
 
-   R("MaxFlakeTypes: %d\n",MaxFlakeTypes);
+   P("MaxFlakeTypes: %d\n",MaxFlakeTypes);
 
-   //for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
    for (i=0; i<MaxFlakeTypes; i++)
       snow_surfaces[i] = NULL;
 
-   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    for (i=0; i<MaxFlakeTypes; i++) 
    {
       SnowGC[i]  = XCreateGC(display, SnowWin, 0, NULL);
@@ -124,16 +116,9 @@ void snow_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
    int flake;
-   //for (flake=0; flake<=SNOWFLAKEMAXTYPE; flake++) 
    for (flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
-#if 0
-      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
-	    (char *)rp->snowBits, rp->width, rp->height);
-      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
-      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
-#else
       // get snowbits from xsnow_xpm[flake]
       unsigned char *bits;
       int w,h,l;
@@ -145,10 +130,9 @@ void snow_init()
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
       free(bits);
-#endif
    }
 
-   // now we should be able to get rid of the snow xpms:
+   // now we would like to be able to get rid of the snow xpms:
    /*
    for (i=0; i<MaxFlakeTypes; i++)
       xpm_destroy(xsnow_xpm[i]);
@@ -161,7 +145,6 @@ void snow_init()
 void snow_set_gc()
 {
    int i;
-   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    for (i=0; i<MaxFlakeTypes; i++) 
    {
       XSetFunction(   display, SnowGC[i], GXcopy);
@@ -224,7 +207,6 @@ void init_snow_surfaces()
 {
    GdkPixbuf *pixbuf;
    int i;
-   //for(i=0; i<SNOWFLAKEMAXTYPE+1; i++)
    for(i=0; i<MaxFlakeTypes; i++)
    {
       P("%d\n",i);
@@ -570,10 +552,8 @@ Snow *MakeFlake(int type)
    FlakeCount++; 
    if (type < 0)
       type = randint(NFlakeTypes);
-   //if (type > 1 && type < 7)P("type: %d\n",type);
    flake -> whatFlake = type; 
    InitFlake(flake);
-   //DrawSnowFlake(flake);
    return flake;
 }
 
@@ -655,7 +635,6 @@ void InitSnowColor()
 {
    int i;
    SnowcPix = IAllocNamedColor(Flags.SnowColor, White);   
-   //for (i=0; i<=SNOWFLAKEMAXTYPE; i++) 
    for (i=0; i<MaxFlakeTypes; i++) 
       XSetForeground(display, SnowGC[i], SnowcPix);
    init_snow_surfaces();
@@ -755,7 +734,7 @@ void add_random_flakes(int n)
    x = (char ***)malloc((n+MaxFlakeTypes+1)*sizeof(char **));
    int i;
    int lines;
-   // copy Rick's flakes:
+   // copy Rick's vntage flakes:
    for (i=0; i<NFlakeTypesVintage; i++)
    {
       xpm_set_color((char **)snow_xpm[i],&x[i],&lines,"snow");
