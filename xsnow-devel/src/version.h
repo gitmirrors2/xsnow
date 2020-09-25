@@ -19,4 +19,4 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.0.10~pre5"
+#define VERSION "3.0.10~pre8"

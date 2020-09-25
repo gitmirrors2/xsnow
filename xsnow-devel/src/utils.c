@@ -130,3 +130,8 @@ void remove_from_mainloop(guint tag)
    g_source_remove(tag);
 }
 
+int is_little_endian(void)
+{
+   int endiantest = 1;
+   return (*(char *)&endiantest) == 1;
+}

@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include "ixpm.h"
 #include "debug.h"
+#include "utils.h"
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
       Display	*display,
@@ -157,7 +158,7 @@ Region regionfromxpm(const char **data, int flop)
       //printf("%d: %s\n",__LINE__,data[i]);
       sscanf(data[i]+n,"%*s %100s",s);
       //printf("%d: %s\n",__LINE__,s);
-      if(!strcmp(s,"None"))
+      if(!strcasecmp(s,"None"))
       {
 	 code = strndup(data[i],n);
 	 break;
@@ -187,6 +188,110 @@ Region regionfromxpm(const char **data, int flop)
    free(code);
    return r;
 }
+
+/*
+ * converts xpm data to bitmap
+ * xpm:        input xpm data
+ * bitsreturn: output bitmap, allocated by this function
+ * wreturn:    width of bitmap
+ * hreturn:    height of bitmap
+ * lreturn:    length of bitmap
+ *
+ * Return value: 1: OK, 0: not OK.
+ * BUGS: this code has not been tested on a big endian system
+ */
+int xpmtobits(const char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn)
+{
+   int nc,cpp,w,h;
+
+   unsigned char *bits = (unsigned char*) malloc(sizeof(unsigned char)*1);
+   if (sscanf(xpm[0],"%d %d %d %d",&w,&h,&nc,&cpp)!=4)
+      return 0;
+   if(cpp <=0 || w<0 || h<0 || nc<0)
+      return 0;
+   *wreturn = w;
+   *hreturn = h;
+   int l = ((w-1)/8+1);
+   *lreturn = l*h;
+   bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*l*h);
+   *bitsreturn = bits;
+   int i;
+
+   char *code = (char *)malloc(sizeof(char)*cpp);
+   for (i=0; i<cpp; i++)
+      code[i] = ' ';
+
+   int offset = nc + 1;
+   for(i=1; i<=nc; i++)
+   {
+      char s[100];
+      if (strlen(xpm[i]) > (size_t)cpp + 6)
+      {
+	 sscanf(xpm[i]+cpp,"%*s %100s",s);
+	 if(!strcasecmp(s,"none"))
+	 {
+	    free(code);
+	    code = strndup(xpm[i],cpp);
+	    break;
+	 }
+      }
+   }
+   int y;
+   unsigned char c = 0;
+   int j = 0;
+   if (is_little_endian())
+      for (y=0; y<h; y++)         // little endian
+      {
+	 int x,k=0;
+	 const char *s = xpm[y+offset];
+	 int l = strlen(s);
+	 for(x=0; x<w; x++)
+	 {
+	    c >>= 1;
+	    if (cpp*x + cpp <= l)
+	    {
+	       if (strncmp(s+cpp*x,code,cpp))
+		  c |= 0x80;
+	    }
+	    k++;
+	    if (k == 8)
+	    {
+	       bits[j++] = c;
+	       k = 0;
+	    }
+	 }
+	 if (k)
+	    bits[j++] = c>>(8-k);
+      }
+   else  
+      for (y=0; y<h; y++)      // big endian  NOT tested
+      {
+	 int x,k=0;
+	 const char *s = xpm[y+offset];
+	 int l = strlen(s);
+	 for(x=0; x<w; x++)
+	 {
+	    c <<= 1;
+	    if (cpp*x + cpp <= l)
+	    {
+	       if (strncmp(s+cpp*x,code,cpp))
+		  c |= 0x01;
+	    }
+	    k++;
+	    if (k == 8)
+	    {
+	       bits[j++] = c;
+	       k = 0;
+	    }
+	 }
+	 if (k)
+	    bits[j++] = c<<(8-k);
+      }
+
+   free(code);
+   return 1;
+}
+
 
 // given color and xmpdata **data of a monocolored picture like:
 // 

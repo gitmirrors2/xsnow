@@ -6,6 +6,8 @@ version 3.0.10
 	5:more flakes
 	  birds.c: made attraction point transparent again
 	  ui.xml: remove seperators from snow tab
+	7:get rid of snow??.xbm. Conversion from xpm is done with xpmtoxbm().
+	  rename snow*.xpm to flake*.xpm
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow

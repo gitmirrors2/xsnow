@@ -25,7 +25,7 @@
 #include "snow.h"
 #include "stars.h"
 
-extern SnowMap       snowPix[];
+//extern SnowMap       snowPix[];
 extern StarMap       starPix;
 extern const char    ***Santas[][2];
 extern const char    **xpmtrees[];

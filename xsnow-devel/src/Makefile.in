@@ -1777,10 +1777,10 @@ snow_includes.h: Pixmaps
 	@echo -n "/* -copyright" >> $@
 	@echo "-" >> $@
 	@echo "*/" >> $@
-	@ls $(top_srcdir)/src/Pixmaps/snow??.x[bp]m | sed "s/^/#include \"/;s/$$/\"/" >> $@
-	@echo -n "#define SNOW_ALL " >> $@
-	@for i in $$(seq `ls $(top_srcdir)/src/Pixmaps/snow??.xpm | wc -l`) ; do \
-	   printf 'SNOW(%02d) ' `expr $$i - 1` ;\
+	@ls $(top_srcdir)/src/Pixmaps/flake*.xpm | sed "s/^/#include \"/;s/$$/\"/" >> $@
+	@echo "#define SNOW_ALL \\" >> $@
+	@for i in $$(seq `ls $(top_srcdir)/src/Pixmaps/flake*.xpm | wc -l`) ; do \
+	   printf 'SNOW(%d) \\\n' `expr $$i - 1` ;\
 	done >> $@
 	@echo >> $@
 xsnow.6: xsnow

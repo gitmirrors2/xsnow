@@ -25,12 +25,14 @@
 #include "snow_includes.h" // a generated file, containing #includes for snow xbm's and xpm's
 //                            and the definition of SNOW_ALL
 
-#define SNOW(x) {snow##x##_bits, None, snow##x##_width, snow##x##_height},
+/*
+#define SNOW(x) {None, snow##x##_width, snow##x##_height},
 SnowMap snowPix[] = {
    SNOW_ALL
-   { NULL, None, 0,0}
+   { None, 0,0}
 }; 
 #undef SNOW
+*/
 
 #include "Pixmaps/BigSanta1.xpm"
 #include "Pixmaps/BigSanta2.xpm"
@@ -185,5 +187,14 @@ XPM_TYPE **birds_xpm[] =
 XPM_TYPE **snow_xpm[] =
 {
    SNOW_ALL
+      NULL
 };
+/* Like:
+ * XPM_TYPE **snow_xpm[] =
+ * {
+ *    snow00_xpm,
+ *    snow01_xpm,
+ *    NULL
+ * }
+ * */
 #undef SNOW

@@ -26,3 +26,4 @@ extern Region regionfromxpm(const char **data, int flop);
 
 extern void xpm_set_color(const char **data, char ***out, int *lines, const char *color);
 extern void xpm_destroy(char **data, int lines);
+extern int xpmtobits(const char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn);

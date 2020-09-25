@@ -57,6 +57,8 @@ static GC                *ESnowGC;
 //static GC       SnowGC[1000];  // There are SNOWFLAKEMAXTYPE+1 flakes
 static GC                *SnowGC;
 
+static SnowMap *snowPix;
+
 static int    do_genflakes(gpointer data);
 static void   InitFlake(Snow *flake);
 static void   InitFlakesPerSecond(void);
@@ -81,17 +83,18 @@ void snow_init()
 {
    int i;
    MaxFlakeTypes = 0;
-   while(snowPix[MaxFlakeTypes].snowBits)
+   while(snow_xpm[MaxFlakeTypes])
       MaxFlakeTypes++;
 
    NFlakeTypes = MaxFlakeTypes;
 
+   snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
    snow_surfaces = (cairo_surface_t **)malloc(MaxFlakeTypes*sizeof(cairo_surface_t*));
    ESnowGC       = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
    SnowGC        = (GC               *)malloc(MaxFlakeTypes*sizeof(GC));
 
 
-   P("MaxFlakeTypes: %d\n",MaxFlakeTypes);
+   R("MaxFlakeTypes: %d\n",MaxFlakeTypes);
 
    //for (i=0; i<SNOWFLAKEMAXTYPE +1; i++)
    for (i=0; i<MaxFlakeTypes; i++)
@@ -116,10 +119,24 @@ void snow_init()
    for (flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
+#if 0
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (char *)rp->snowBits, rp->width, rp->height);
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
       if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+#else
+      // get snowbits from snow_xpm[flake]
+      unsigned char *bits;
+      int w,h,l;
+      xpmtobits(snow_xpm[flake],&bits,&w,&h,&l);
+      rp->width  = w;
+      rp->height = h;
+      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
+	    (const char*)bits, rp->width, rp->height);
+      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
+      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+      free(bits);
+#endif
    }
 }
 

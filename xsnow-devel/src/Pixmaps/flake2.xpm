@@ -1,3 +1,4 @@
+/* XPM */
 /* -copyright- 
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -18,8 +19,18 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#define snow29_width 9
-#define snow29_height 9
-static unsigned char snow29_bits[] = {
-   0x38, 0x00, 0x54, 0x01, 0x96, 0x00, 0x79, 0x01, 0x5f, 0x01, 0x99, 0x01,
-   0xcf, 0x00, 0x66, 0x00, 0x38, 0x00};
+XPM_TYPE *snow2_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"8 8 2 1 ",
+"  c None",
+". c black",
+/* pixels */
+"  . .   ",
+"   .    ",
+".  .  . ",
+" .. ..  ",
+".  .  . ",
+"   .    ",
+"  . .   ",
+"        "
+};
