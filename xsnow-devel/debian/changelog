@@ -3,7 +3,7 @@ xsnow (1:3.0.10~pre8-1) unstable; urgency=low
   * New upstream release
   * Bump debhelper compat level to 13.
 
- -- Willem Vermin <wvermin@gmail.com>  Thu, 24 Sep 2020 13:33:31 +0200
+ -- Willem Vermin <wvermin@gmail.com>  Fri, 25 Sep 2020 10:41:46 +0200
 
 xsnow (1:2.0.19-1) unstable; urgency=low
 
