@@ -89,12 +89,34 @@ int create_transparent_window(int allworkspaces, int below,
    workarea.width  = width;
    workarea.height = height;
 
+   // see https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html :
+   // following prevents above/below:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DESKTOP);
+   // following prevents gtk_window_set_skip_taskbar_hint from working:
+   gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_NORMAL);
+   // always above:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DIALOG);
+   // always above:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_MENU);
+   // always above:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_TOOLBAR);
+   // no taskbar_hint:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+   // always above:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_UTILITY);
+   // no taskbar_hint:
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DOCK);
+
+
+
    gtk_window_set_decorated        (GTK_WINDOW(gtkwin),FALSE);
 
-   // prevent window from showing up in taskbar: 
-   // Alas, it does show in Gnome's top bar standard window menu
+   // try to prevent window from showing up in taskbar: 
    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(gtkwin),TRUE);
+   // try to do something alike:
    gtk_window_set_skip_pager_hint  (GTK_WINDOW(gtkwin),TRUE);
+
+   gtk_window_set_accept_focus     (GTK_WINDOW(gtkwin), FALSE);
 
    gtk_window_set_position         (GTK_WINDOW(gtkwin), GTK_WIN_POS_CENTER);
 
@@ -145,8 +167,8 @@ int create_transparent_window(int allworkspaces, int below,
    // xsnow visible on all workspaces:
    if (allworkspaces)
       gtk_window_stick(GTK_WINDOW(gtkwin));
-   //
 
+   // the X11 window:
    *xwin = gdk_x11_window_get_xid(gdk_window);
 
    return TRUE;
