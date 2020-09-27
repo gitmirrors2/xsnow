@@ -246,6 +246,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="snow-size-adjustment">
+    <property name="lower">20</property>
+    <property name="upper">200</property>
+    <property name="value">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="snow-speed-adjustment">
     <property name="lower">10</property>
     <property name="upper">300</property>
@@ -1381,6 +1388,28 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkScale" id="snow-size">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">snow-size-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <signal name="value-changed" handler="button_snow_size" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkScale" id="snow-speed">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
@@ -1396,7 +1425,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1418,7 +1447,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -1431,8 +1460,14 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">4</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -1447,6 +1482,22 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Size</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkLabel">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
@@ -1456,7 +1507,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1470,7 +1521,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -1484,8 +1535,14 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">4</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -1564,6 +1621,24 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

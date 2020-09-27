@@ -243,8 +243,9 @@ int GetWindows(WinInfo **windows, int *nwin)
       nitems = 0;
 
       // first try to get adjustments for _GTK_FRAME_EXTENTS
-      XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
-	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (gtk_atom)
+	 XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
       int wintype = GTK;
       // if not succesfull, try _NET_FRAME_EXTENTS
       if (nitems != 4)

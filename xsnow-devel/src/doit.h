@@ -73,6 +73,7 @@
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
    DOIT_I(SnowFlakesFactor) \
+   DOIT_I(SnowSize) \
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(TreeFill) \
    DOIT_I(UseBG) \

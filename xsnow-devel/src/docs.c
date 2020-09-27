@@ -126,9 +126,10 @@ void docs_usage(int man)
    manout("-snowflakes <n>"           ,"The higher, the more snowflakes are generated per second. Default: " EQ(DEFAULT_SnowFlakesFactor) ".");
    manout("-noblowsnow"               ,"Do not animate blowing snow from trees or windows.");
    manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_SnowColor) ").");
-   manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default:" EQ(DEFAULT_SnowSpeedFactor) ").");
+   manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default: " EQ(DEFAULT_SnowSpeedFactor) ").");
+   manout("-snowsize <n>"             ,"Set size of (non-vintage) snow flakes (default: " EQ(DEFAULT_SnowSize) ").");
    manout("-nosnowflakes"             ,"Do not show falling snowflakes. (Weird!)");
-   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default " EQ(DEFAULT_FlakeCountMax) ").");
+   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default: " EQ(DEFAULT_FlakeCountMax) ").");
    manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_BlowOffFactor) ").");
 
    if(doman)
@@ -139,7 +140,7 @@ void docs_usage(int man)
    {
       printf("\n  Tree options:\n\n");
    }
-   manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default " EQ(DEFAULT_TreeType) ").");
+   manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default: " EQ(DEFAULT_TreeType) ").");
    manout(" "                         ,"Thanks to Carla Vermin for numbers >=3!"); 
    manout(" "                         ,"Credits: Image by b0red on Pixabay.");
    manout("-treetype all"             ,"Use all available tree types.");

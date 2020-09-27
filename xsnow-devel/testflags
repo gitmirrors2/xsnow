@@ -76,6 +76,7 @@ for f in                   \
    "-showattr 1"           \
    "-showbirds 1"          \
    "-snowflakes 30"        \
+   "-snowsize 200"         \
    "-snowspeedfactor 80"   \
    "-ssnowdepth 40"        \
    "-stars 70"             \

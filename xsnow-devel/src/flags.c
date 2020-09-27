@@ -200,6 +200,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-santaspeedfactor    ,SantaSpeedFactor                 );
 	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
 	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
+	 handle_ia(-snowsize            ,SnowSize                         );
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
 	 handle_ia(-stopafter           ,StopAfter                        );

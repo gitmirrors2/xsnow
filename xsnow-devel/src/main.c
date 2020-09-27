@@ -983,7 +983,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
    char msg[1024];
    XGetErrorText(dpy, err->error_code, msg,sizeof(msg));
-   P("%s\n",msg);
+   I("%d %s\n",counter++,msg);
    return 0;
 }
 

@@ -51,8 +51,10 @@ static float             SnowSpeedFactor;
 static GC                *ESnowGC;
 static GC                *SnowGC;
 
-static SnowMap *snowPix;
-static char  ***xsnow_xpm;
+static SnowMap           *snowPix;
+static char            ***xsnow_xpm = NULL;
+static int                NFlakeTypesVintage;
+static int                MaxFlakeTypes;
 
 static int    do_genflakes(gpointer data);
 static void   InitFlake(Snow *flake);
@@ -61,6 +63,7 @@ static void   InitSnowColor(void);
 static void   InitSnowSpeedFactor(void);
 static int    do_show_flakecount(gpointer data);
 static void   init_snow_surfaces(void);
+static void   init_snow_pix(void);
 static void   EraseSnowFlake(Snow *flake);
 static void   DelFlake(Snow *flake);
 static void   DrawSnowFlake(Snow *flake);
@@ -70,11 +73,10 @@ static void   add_random_flakes(int n);
 
 Region     NoSnowArea_dynamic;
 Pixel      SnowcPix;
-int        MaxSnowFlakeHeight = 0;  /* Biggest flake */
-int        MaxSnowFlakeWidth = 0;   /* Biggest flake */
-int        FlakeCount = 0;
-int        MaxFlakeTypes;
-int        NFlakeTypes;
+int        MaxSnowFlakeHeight = 0;  /* Highest flake */
+int        MaxSnowFlakeWidth  = 0;  /* Widest  flake */
+int        FlakeCount         = 0;  /* # active flakes */
+int        UseVintageFlakes   = 0;  /* whether to use only vintage flakes */
 
 void snow_init()
 {
@@ -84,12 +86,12 @@ void snow_init()
    MaxFlakeTypes = 0;
    while(snow_xpm[MaxFlakeTypes])
       MaxFlakeTypes++;
+   NFlakeTypesVintage = MaxFlakeTypes;
 
    add_random_flakes(1000);   // will change MaxFlakeTypes
    //                            and create xsnow_xpm, containing
    //                            vintage and new flakes
 
-   NFlakeTypes = MaxFlakeTypes;
 
    snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
    snow_surfaces = (cairo_surface_t **)malloc(MaxFlakeTypes*sizeof(cairo_surface_t*));
@@ -104,10 +106,12 @@ void snow_init()
 
    for (i=0; i<MaxFlakeTypes; i++) 
    {
-      SnowGC[i]  = XCreateGC(display, SnowWin, 0, NULL);
-      ESnowGC[i] = XCreateGC(display, SnowWin, 0, NULL);
+      SnowGC[i]         = XCreateGC(display, SnowWin, 0, NULL);
+      ESnowGC[i]        = XCreateGC(display, SnowWin, 0, NULL);
+      snowPix[i].pixmap = 0;
    }
    init_snow_surfaces();
+   init_snow_pix();
    InitSnowSpeedFactor();
    InitFlakesPerSecond();
    InitSnowColor();
@@ -115,29 +119,13 @@ void snow_init()
    InitBlowOffFactor();
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
-   int flake;
-   for (flake=0; flake<MaxFlakeTypes; flake++) 
-   {
-      SnowMap *rp = &snowPix[flake];
-      // get snowbits from xsnow_xpm[flake]
-      unsigned char *bits;
-      int w,h,l;
-      xpmtobits(xsnow_xpm[flake],&bits,&w,&h,&l);
-      rp->width  = w;
-      rp->height = h;
-      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
-	    (const char*)bits, rp->width, rp->height);
-      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
-      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
-      free(bits);
-   }
 
    // now we would like to be able to get rid of the snow xpms:
    /*
-   for (i=0; i<MaxFlakeTypes; i++)
+      for (i=0; i<MaxFlakeTypes; i++)
       xpm_destroy(xsnow_xpm[i]);
-   free(xsnow_xpm);
-   */
+      free(xsnow_xpm);
+      */
    // but we cannot: they are needed if user changes color
 }
 
@@ -199,6 +187,21 @@ int snow_ui()
       changes++;
       P("changes: %d\n",changes);
    }
+   if(Flags.SnowSize != OldFlags.SnowSize)
+   {
+      OldFlags.SnowSize = Flags.SnowSize;
+      add_random_flakes(1000);
+      init_snow_surfaces();
+      init_snow_pix();
+      snow_set_gc();
+      ClearScreen();
+      // the following, otherwize we see often double flakes
+      // why? race condition in x server?
+      if (!switches.UseGtk)
+	 add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow ,NULL);
+      changes++;
+      P("changes: %d %d\n",changes,Flags.SnowSize);
+   }
 
    return changes;
 }
@@ -219,6 +222,28 @@ void init_snow_surfaces()
 	 cairo_surface_destroy(snow_surfaces[i]);
       snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
       g_clear_object(&pixbuf);
+   }
+}
+
+void init_snow_pix()
+{
+   int flake;
+   for (flake=0; flake<MaxFlakeTypes; flake++) 
+   {
+      SnowMap *rp = &snowPix[flake];
+      // get snowbits from xsnow_xpm[flake]
+      unsigned char *bits;
+      int w,h,l;
+      xpmtobits(xsnow_xpm[flake],&bits,&w,&h,&l);
+      rp->width  = w;
+      rp->height = h;
+      if(rp->pixmap)
+	 XFreePixmap(display,rp->pixmap);
+      rp->pixmap = XCreateBitmapFromData(display, SnowWin,
+	    (const char*)bits, rp->width, rp->height);
+      if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
+      if (rp->width  > MaxSnowFlakeWidth ) MaxSnowFlakeWidth  = rp->width;
+      free(bits);
    }
 }
 
@@ -551,7 +576,13 @@ Snow *MakeFlake(int type)
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
    FlakeCount++; 
    if (type < 0)
-      type = randint(NFlakeTypes);
+   {
+      if (UseVintageFlakes)
+	 type = drand48()*NFlakeTypesVintage;
+      else
+	 type = NFlakeTypesVintage + drand48()*(MaxFlakeTypes - NFlakeTypesVintage);
+   }
+   //if(type > 0 && type <7)P("type: %d\n",type);
    flake -> whatFlake = type; 
    InitFlake(flake);
    return flake;
@@ -679,62 +710,139 @@ int do_show_flakecount(UNUSED gpointer data)
 
 void genxpmflake(char ***xpm, int w, int h)
 {
-   const char c='.';
-   *xpm = (char **)malloc((h+3)*sizeof(char*));
+   const char c='.'; // imposed by xpm_set_color
+   int nmax = w*h;
+   float *x, *y;
+
+   x = (float *)malloc(nmax*sizeof(float));
+   y = (float *)malloc(nmax*sizeof(float));
+
+   int i,j;
+   float w2 = 0.5*w;
+   float h2 = 0.5*h;
+
+   x[0] = w2;
+   y[0] = h2;
+   int n = 1;
+   for (i=0; i<h; i++)
+   {
+      float yy = i;
+      if (yy > h2)
+	 yy = h - yy;
+      float py = 2*yy/h;
+      for (j=0; j<w; j++)
+      {
+	 float xx = j;
+	 if (xx > w2)
+	    xx = w - xx;
+	 float px = 2*xx/w;
+	 float p = 1.1-(px*py);
+	 //printf("%d %d %f %f %f %f %f\n",j,i,y,x,px,py,p);
+	 if (drand48() > p)
+	 {
+	    if (n<nmax)
+	    {
+	       x[n] = i - w2;
+	       y[n] = j - h2;
+	       n++;
+	    }
+	 }
+      }
+   }
+   // rotate points with a random angle 0 .. pi
+   float a = drand48()*355.0/113.0;
+   float *xa, *ya;
+   xa = (float *)malloc(n*sizeof(float));
+   ya = (float *)malloc(n*sizeof(float));
+
+
+   for (i=0; i<n; i++)
+   {
+      xa[i] = x[i]*cosf(a)-y[i]*sinf(a);
+      ya[i] = x[i]*sinf(a)+y[i]*cosf(a);
+   }
+
+   float xmin = xa[0];
+   float xmax = xa[0];
+   float ymin = ya[0];
+   float ymax = ya[0];
+
+   for (i=0; i<n; i++)
+   {
+      // smallest xa:
+      if (xa[i] < xmin)
+	 xmin = xa[i];
+      // etc ..
+      if (xa[i] > xmax)
+	 xmax = xa[i];
+      if (ya[i] < ymin)
+	 ymin = ya[i];
+      if (ya[i] > ymax)
+	 ymax = ya[i];
+   }
+
+   int nw = ceilf(xmax - xmin + 1);
+   int nh = ceilf(ymax - ymin + 1);
+
+   // for some reason, drawing of surfaces derived from 1x1 xpm slow down
+   // the x server terribly. So, to be sure, I demand that none of
+   // the dimensions is 1
+   // Btw: genxpmflake rotates and compresses the original wxh xpm, 
+   // and sometimes that results in an xpm with both dimensions one.
+
+   if (nw <= 1) 
+      nw = 2;
+   if (nh <= 1)
+      nh = 2;
+
+   *xpm = (char **)malloc((nh+3)*sizeof(char*));
    char **X = *xpm;
 
    X[0] = (char *)malloc(20*sizeof(char));
-   snprintf(X[0],19,"%d %d 2 1",w,h);
+   snprintf(X[0],19,"%d %d 2 1",nw,nh);
 
    X[1] = strdup("  c None");
    X[2] = (char *)malloc(20*sizeof(char));
    snprintf(X[2],19,"%c c black",c);
 
    int offset = 3;
-   int i,j;
-   for (i=0; i<h; i++)
-      X[i+offset] = (char *) malloc((w+1)*sizeof(char));
+   for (i=0; i<nh; i++)
+      X[i+offset] = (char *) malloc((nw+1)*sizeof(char));
 
-   for (i=0; i<h; i++)
+   for (i=0; i<nh; i++)
    {
-      for(j=0; j<w; j++)
+      for(j=0; j<nw; j++)
 	 X[i+offset][j] = ' ';
-      X[i+offset][w] = 0;
+      X[i+offset][nw] = 0;
    }
 
-   float w2 = 0.5*w;
-   float h2 = 0.5*h;
-
-   for (i=0; i<h; i++)
+   P("max: %d %f %f %f %f\n",n,ymin,ymax,xmin,xmax);
+   for (i=0; i<n; i++)
    {
-      float y = i;
-      if (y > h2)
-	 y = h - y;
-      float py = 2*y/h;
-      for (j=0; j<w; j++)
-      {
-	 float x = j;
-	 if (x > w2)
-	    x = w - x;
-	 float px = 2*x/w;
-	 float p = 0.9-(px*py);
-	 P("%d %d %f %f %f %f %f\n",j,i,y,x,px,py,p);
-	 if (drand48() > p)
-	    X[i+offset][j] = c;
-      }
+      X[offset + (int)(ya[i]-ymin)] [(int)(xa[i]-xmin)] = c;
+      //printf("%f %f\n",ya[i]-ymin,xa[i]-xmin);
    }
-   X[h/2+offset][w/2] = c;
-   //xpm_print(*xpm);
+
+   X[nh/2+offset][nw/2] = c;
+
 }
 
 void add_random_flakes(int n)
 {
-   // create a new array with snow-xpm's:
-   char ***x;
-   x = (char ***)malloc((n+MaxFlakeTypes+1)*sizeof(char **));
    int i;
+   // create a new array with snow-xpm's:
+   if (xsnow_xpm)
+   {
+      for (i=0; i<MaxFlakeTypes; i++)
+	 xpm_destroy(xsnow_xpm[i]);
+      free(xsnow_xpm);
+   }
+   if(n < 1)
+      n = 1;
+   char ***x;
+   x = (char ***)malloc((n+NFlakeTypesVintage+1)*sizeof(char **));
    int lines;
-   // copy Rick's vntage flakes:
+   // copy Rick's vintage flakes:
    for (i=0; i<NFlakeTypesVintage; i++)
    {
       xpm_set_color((char **)snow_xpm[i],&x[i],&lines,"snow");
@@ -744,11 +852,12 @@ void add_random_flakes(int n)
    for (i=0; i<n; i++)
    {
       int w,h;
-      w = 3+7*drand48();
-      h = 3+7*drand48();
-      genxpmflake(&x[i+NFlakeTypesVintage],w,h);
+      w = 3+3*drand48();
+      h = 3+3*drand48();
+      genxpmflake(&x[i+NFlakeTypesVintage],Flags.SnowSize/30*w,Flags.SnowSize/30*h);
+      P("flake: %s\n",x[i+NFlakeTypesVintage][0]);
    }
-   MaxFlakeTypes   += n;
+   MaxFlakeTypes   = n + NFlakeTypesVintage;
    x[MaxFlakeTypes] = NULL;
    xsnow_xpm = x;
 }

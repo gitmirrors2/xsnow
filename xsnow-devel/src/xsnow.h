@@ -64,6 +64,7 @@
 #define DEFAULT_SantaSpeedFactor 100
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
+#define DEFAULT_SnowSize 100 
 #define DEFAULT_SnowSpeedFactor 100
 #define DEFAULT_StopAfter -1
 #define DEFAULT_TreeColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */

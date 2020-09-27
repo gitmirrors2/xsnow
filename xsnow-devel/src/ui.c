@@ -26,18 +26,19 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "ui.h"
-#include "utils.h"
-#include "clocks.h"
-#include "ui_xml.h"
-#include "xsnow.h"
-#include "flags.h"
-#include "csvpos.h"
-#include "pixmaps.h"
-#include "version.h"
 #include "birds.h"
-#include "windows.h"
+#include "clocks.h"
+#include "csvpos.h"
+#include "flags.h"
+#include "pixmaps.h"
+#include "snow.h"
+#include "ui.h"
+#include "ui_xml.h"
+#include "utils.h"
 #include "varia.h"
+#include "version.h"
+#include "windows.h"
+#include "xsnow.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -791,6 +792,7 @@ static struct _snow_buttons
    snow_button show_snow;
    snow_button show_snow_blowoff;
    snow_button intensity;
+   snow_button snow_size;
    snow_button blowoff_intensity;
    snow_button speed;
    snow_button countmax;
@@ -810,6 +812,7 @@ static void init_snow_buttons()
    HANDLE_INIT(snow_buttons.show_snow.button             ,snow-show);
    HANDLE_INIT(snow_buttons.show_snow_blowoff.button     ,snow-show-blowoff);
    HANDLE_INIT(snow_buttons.intensity.button             ,snow-intensity);
+   HANDLE_INIT(snow_buttons.snow_size.button             ,snow-size);
    HANDLE_INIT(snow_buttons.blowoff_intensity.button     ,snow-blowoff-intensity);
    HANDLE_INIT(snow_buttons.speed.button                 ,snow-speed);
    HANDLE_INIT(snow_buttons.countmax.button              ,flake-count-max);
@@ -834,6 +837,7 @@ static void set_snow_buttons()
    HANDLE_SET_TOGGLE_I(snow_buttons.fluff_show.button         ,NoFluffy);
 
    HANDLE_SET_RANGE(snow_buttons.intensity.button             ,SnowFlakesFactor ,self);
+   HANDLE_SET_RANGE(snow_buttons.snow_size.button             ,SnowSize         ,self);
    HANDLE_SET_RANGE(snow_buttons.blowoff_intensity.button     ,BlowOffFactor    ,self);
    HANDLE_SET_RANGE(snow_buttons.speed.button                 ,SnowSpeedFactor  ,self);
    HANDLE_SET_RANGE(snow_buttons.countmax.button              ,FlakeCountMax    ,self);
@@ -856,6 +860,7 @@ HANDLE_COLOR(button_snow_color          ,SnowColor);
 
 HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value);
 HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value);
+HANDLE_RANGE(button_snow_size                , SnowSize         ,value);
 HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value);
 HANDLE_RANGE(button_flake_count_max          , FlakeCountMax    ,value);
 HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value);
@@ -869,6 +874,7 @@ void snow_default(int vintage)
    human_interaction = 0;
    Flags.NoBlowSnow        = DEFAULT_NoBlowSnow;
    Flags.SnowFlakesFactor  = DEFAULT_SnowFlakesFactor;
+   Flags.SnowSize          = DEFAULT_SnowSize;
    Flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
    free(Flags.SnowColor);
    Flags.SnowColor         = strdup(DEFAULT_SnowColor);
@@ -883,7 +889,7 @@ void snow_default(int vintage)
    Flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
    Flags.NoFluffy          = DEFAULT_NoFluffy;
 
-   NFlakeTypes             = MaxFlakeTypes;
+   UseVintageFlakes        = 0;
 
    if(vintage)
    {
@@ -891,9 +897,7 @@ void snow_default(int vintage)
       Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
       Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
 
-      if (MaxFlakeTypes >=7)
-	 NFlakeTypes = 7;
-      else NFlakeTypes = MaxFlakeTypes;
+   UseVintageFlakes        = 1;
 
    }
    set_snow_buttons();

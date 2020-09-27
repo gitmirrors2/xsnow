@@ -1,7 +1,8 @@
 version 3.1.0
 	1:change version number
 	  some trivia in transparent.c
-	2:
+	2:take care that only generated flakes are used when snow->defaults
+	3:snow flakes size adjustable
 version 3.0.10
 	1:Better icons
 	2:better flakes

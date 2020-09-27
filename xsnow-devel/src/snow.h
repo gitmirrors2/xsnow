@@ -27,10 +27,8 @@
 
 #define FLUFFTIME 0.7  // #seconds fluff will live, using GTK/Cairo
 
-#define NFlakeTypesVintage 7
 
-extern int MaxFlakeTypes;    // total number of available snow flake types
-extern int NFlakeTypes;      // effective number of snow flake types
+extern int UseVintageFlakes; // whether to use the not-generated flakes
 
 typedef struct _Snow {
    float rx;                     // x position
@@ -41,7 +39,7 @@ typedef struct _Snow {
    float ivy;                    // initial speed in y direction
    float wsens;                  // wind dependency factor
    float flufftimer;             // fluff timeout timer
-   unsigned int whatFlake  : 7;  // snowflake index
+   unsigned int whatFlake;       // snowflake index
    unsigned int cyclic     : 1;  // 1: flake is cyclic 
    unsigned int fluff      : 1;  // 1: flake is in fluff state
    unsigned int w          : 8;  // width

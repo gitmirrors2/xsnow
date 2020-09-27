@@ -517,7 +517,7 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    {
 	       Snow *flake       = MakeFlake(0);
 	       flake->rx         = fsnow->x + i;
-	       flake->ry         = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
+	       flake->ry         = fsnow->y - fsnow->acth[i] - drand48()*8;// randint(MaxSnowFlakeWidth);
 	       flake->vx         = fsignf(NewWind)*WindMax;
 	       flake->vy         = -5;
 	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
