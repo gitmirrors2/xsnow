@@ -433,7 +433,9 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
    int ilast  = x+w; if(ilast < 0) ilast = 0;
    if (ilast > fsnow->w) ilast = fsnow->w;
    P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<MaxSnowFlakeWidth?w:MaxSnowFlakeWidth);
-   for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
+   P("maxheight: %d maxw: %d\n",MaxSnowFlakeHeight,MaxSnowFlakeWidth);
+   //for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
+   for (i=ifirst; i<ilast; i+=1)
    {
       int j;
       for(j=0; j<fsnow->acth[i]; j++)
@@ -450,8 +452,10 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	    if (p < 0.15)
 	    {
 	       Snow *flake   = MakeFlake(-1);
-	       flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
-	       flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
+	       //flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
+	       //flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
+	       flake->rx     = fsnow->x + i + 16*(drand48()-0.5);
+	       flake->ry     = fsnow->y - j - 8;
 	       if (Flags.NoWind)
 		  flake->vx     = 0;
 	       else
@@ -462,7 +466,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	       {
 		  flake->fluff      = 1;
 		  flake->flufftimer = FLUFFTIME;
-		  flake->ry += 2*MaxSnowFlakeHeight*drand48();
+		  //flake->ry += 2*MaxSnowFlakeHeight*drand48();
 	       }
 	    add_flake_to_mainloop(flake);
 	    }

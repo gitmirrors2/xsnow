@@ -25,7 +25,7 @@ XPM_TYPE *snow6_xpm[] = {
 "  c None",
 ". c black",
 /* pixels */
-"  . .   ",
-"   .    ",
-"  . .   "
+". .     ",
+" .      ",
+". .     "
 };

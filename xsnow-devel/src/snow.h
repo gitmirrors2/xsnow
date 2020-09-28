@@ -51,8 +51,9 @@ typedef struct _Snow {
 typedef struct _SnowMap {
    //unsigned char *snowBits;
    Pixmap pixmap;
-   unsigned int width   : 8;
-   unsigned int height  : 8;
+   unsigned int width   : 16;
+   unsigned int height  : 16;
+   unsigned int weff    : 16;   // effective width
 } SnowMap;
 
 extern Region     NoSnowArea_dynamic;
