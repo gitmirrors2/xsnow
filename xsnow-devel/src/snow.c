@@ -790,8 +790,11 @@ void genxpmflake(char ***xpm, int w, int h)
    // Btw: genxpmflake rotates and compresses the original wxh xpm, 
    // and sometimes that results in an xpm with both dimensions one.
 
-   if (nw <= 1) 
-      nw = 2;
+   //if (nw <= 7) 
+    //  nw = 8;
+    if (nw == 0) nw = 1;
+    nw = ((nw-1)/8+1)*8;
+    R("%d nw: %d\n",counter++,nw);
    if (nh <= 1)
       nh = 2;
 
