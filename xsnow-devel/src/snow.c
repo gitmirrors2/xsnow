@@ -799,12 +799,12 @@ void genxpmflake(char ***xpm, int w, int h)
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
    char **X = *xpm;
 
-   X[0] = (char *)malloc(20*sizeof(char));
-   snprintf(X[0],19,"%d %d 2 1",nw,nh);
+   X[0] = (char *)malloc(80*sizeof(char));
+   snprintf(X[0],79,"%d %d 2 1",nw,nh);
 
    X[1] = strdup("  c None");
-   X[2] = (char *)malloc(20*sizeof(char));
-   snprintf(X[2],19,"%c c black",c);
+   X[2] = (char *)malloc(80*sizeof(char));
+   snprintf(X[2],79,"%c c black",c);
 
    int offset = 3;
    for (i=0; i<nh; i++)
