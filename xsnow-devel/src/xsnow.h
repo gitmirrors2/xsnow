@@ -26,7 +26,7 @@
 #define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
 #define DEFAULT_BGColor "#000000"
-#define DEFAULT_BlowOffFactor 100
+#define DEFAULT_BlowOffFactor 40
 #define DEFAULT_CpuLoad 100
 #define DEFAULT_Transparency 0
 #define DEFAULT_Defaults 0
@@ -35,7 +35,7 @@
 #define DEFAULT_DisplayName ""
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
-#define DEFAULT_FlakeCountMax 2000 
+#define DEFAULT_FlakeCountMax 500 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */

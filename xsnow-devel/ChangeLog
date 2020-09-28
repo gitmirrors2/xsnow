@@ -5,6 +5,10 @@ version 3.1.0
 	3:snow flakes size adjustable
 	4:limit snowsize
 	  start snowflake always above window
+	  all generated snow xpm's: width multiple of 8
+	  also all off the vintage xpm's in Pixmaps
+	  change defaults for max number of flakes and blow-off to more humane
+	      numbers
 version 3.0.10
 	1:Better icons
 	2:better flakes

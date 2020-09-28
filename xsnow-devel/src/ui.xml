@@ -164,8 +164,8 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="flake-count-max-adjustment">
     <property name="lower">10</property>
-    <property name="upper">4000</property>
-    <property name="value">1000</property>
+    <property name="upper">1000</property>
+    <property name="value">500</property>
     <property name="step_increment">100</property>
     <property name="page_increment">100</property>
   </object>
@@ -218,7 +218,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="snow-blow-adjustment">
     <property name="lower">10</property>
-    <property name="upper">200</property>
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
