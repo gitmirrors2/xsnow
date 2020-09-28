@@ -271,6 +271,11 @@ int HandleFlags(int argc, char*argv[])
       free(Flags.TreeType);
       Flags.TreeType = strdup(ALLTREETYPES);
    }
+   if (Flags.SnowSize > 500)
+   {
+      printf("snowsize brought back to 500\n");
+      Flags.SnowSize = 500;
+   }
    return 0;
 }
 #undef checkax

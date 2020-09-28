@@ -637,7 +637,7 @@ void InitFlake(Snow *flake)
    flake->w          = snowPix[flake->whatFlake].width;
    flake->h          = snowPix[flake->whatFlake].height;
    flake->rx         = randint(SnowWinWidth - flake->w);
-   flake->ry         = -randint(SnowWinHeight/10);
+   flake->ry         = -randint(SnowWinHeight/10)-flake->h;
    flake->cyclic     = 1;
    flake->fluff      = 0;
    flake->flufftimer = 0;

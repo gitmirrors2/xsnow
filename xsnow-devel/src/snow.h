@@ -40,10 +40,10 @@ typedef struct _Snow {
    float wsens;                  // wind dependency factor
    float flufftimer;             // fluff timeout timer
    unsigned int whatFlake;       // snowflake index
+   unsigned int w          : 16; // width
+   unsigned int h          : 16; // height
    unsigned int cyclic     : 1;  // 1: flake is cyclic 
    unsigned int fluff      : 1;  // 1: flake is in fluff state
-   unsigned int w          : 8;  // width
-   unsigned int h          : 8;  // height
    unsigned int testing    : 2;  // for testing purposes
 
 } Snow;

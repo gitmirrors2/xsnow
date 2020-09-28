@@ -3,6 +3,8 @@ version 3.1.0
 	  some trivia in transparent.c
 	2:take care that only generated flakes are used when snow->defaults
 	3:snow flakes size adjustable
+	4:limit snowsize
+	  start snowflake always above window
 version 3.0.10
 	1:Better icons
 	2:better flakes
