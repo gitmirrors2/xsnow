@@ -11,6 +11,8 @@ version 3.1.0
 	      numbers
 	5:use effective width for flakes (weff in snow.c)
 	  small changes in GenerateFlakesFromFallen()
+	  it appears that the height of an xpm should be >=2 to prevent
+	    terrible degradation of performance. snow.c: genxpmflake()
 version 3.0.10
 	1:Better icons
 	2:better flakes

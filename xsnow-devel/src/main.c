@@ -1093,7 +1093,7 @@ void restart_do_draw_all()
    if (draw_all_id)
       g_source_remove(draw_all_id);
    draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
-   P("started do_draw_all %d %p\n",draw_all_id, (void *)TransA);
+   P("started do_draw_all %d %p %f\n",draw_all_id, (void *)TransA, time_draw_all);
 }
 
 

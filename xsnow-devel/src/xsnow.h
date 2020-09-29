@@ -173,7 +173,7 @@
 //#define time_snowflakes       (switches.UseGtk?0.02 * cpufactor:0.05*cpufactor)  /* time between redrawings of snowflakes      */
 #define time_tree             (0.25 * cpufactor)  /* time between redrawings of trees           */
 
-#define time_draw_all         (0.04 * cpufactor)    /* time between update of screen */
+#define time_draw_all         (0.04 * cpufactor)    /* time between updates of screen */
 
 /* ------------------------------------------------------------------ */
 

@@ -221,7 +221,18 @@ void init_snow_surfaces()
       if (snow_surfaces[i])
 	 cairo_surface_destroy(snow_surfaces[i]);
       snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+      //snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 1, NULL);
       g_clear_object(&pixbuf);
+      /*
+       * another method:
+       surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+       gdk_pixbuf_get_width (pixbuf),
+       gdk_pixbuf_get_height (pixbuf));
+       cr = cairo_create (surface);
+       gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+       cairo_paint (cr);
+       cairo_destroy (cr);
+       */
    }
 }
 
@@ -322,7 +333,7 @@ int do_UpdateSnowFlake(Snow *flake)
    int fckill = FlakeCount >= Flags.FlakeCountMax;
    if (
 	 KillFlakes                                    ||  // merciless remove if KillFlakes
-	 (fckill && !flake->cyclic && drand48() > 0.5) ||  // high probability to remove blown-off flake
+	 (fckill && !flake->cyclic && drand48() > 0.3) ||  // high probability to remove blown-off flake
 	 (fckill && drand48() > 0.9)                   ||  // low probability to remove other flakes
 	 (flake->fluff && flake->flufftimer < 0)           // fluff has expired
       )
@@ -337,7 +348,8 @@ int do_UpdateSnowFlake(Snow *flake)
    if (flake->fluff)
    {
       flake->flufftimer -= FlakesDT;
-      return TRUE;
+      if (!switches.UseGtk)
+	 return TRUE;
    }
    //
    // update speed in x Direction
@@ -380,62 +392,65 @@ int do_UpdateSnowFlake(Snow *flake)
    int nx = lrintf(NewX);
    int ny = lrintf(NewY);
 
-   // determine if flake touches the fallen snow,
-   // if so: make the flake inactive.
-   // the bottom pixels of the snowflake are at y = NewY + (height of flake)
-   // the bottompixels are at x values NewX .. NewX+(width of flake)-1
-
-   FallenSnow *fsnow = FsnowFirst;
-   int found = 0;
-   // investigate if flake is in a not-hidden fallensnowarea on current workspace
-   while(fsnow && !found)
+   if (!flake->fluff)
    {
-      if(!fsnow->win.hidden)
-	 if(fsnow->win.id == 0 ||(fsnow->win.ws == CWorkSpace || fsnow->win.sticky))
-	 {
-	    if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
-		  ny < fsnow->y+2)
+      // determine if non-fluffy-flake touches the fallen snow,
+      // if so: make the flake inactive.
+      // the bottom pixels of the snowflake are at y = NewY + (height of flake)
+      // the bottompixels are at x values NewX .. NewX+(width of flake)-1
+
+      FallenSnow *fsnow = FsnowFirst;
+      int found = 0;
+      // investigate if flake is in a not-hidden fallensnowarea on current workspace
+      while(fsnow && !found)
+      {
+	 if(!fsnow->win.hidden)
+	    if(fsnow->win.id == 0 ||(fsnow->win.ws == CWorkSpace || fsnow->win.sticky))
 	    {
-	       int i;
-	       int istart = nx     - fsnow->x;
-	       int imax   = istart + flake->w;
-	       if (istart < 0) istart = 0;
-	       if (imax > fsnow->w) imax = fsnow->w;
-	       for (i = istart; i < imax; i++)
-		  if (ny > fsnow->y - fsnow->acth[i] - 1)
-		  {
-		     if(fsnow->acth[i] < fsnow->h/2)
-			UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flake->w);
-		     if(HandleFallenSnow(fsnow))
+	       if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
+		     ny < fsnow->y+2)
+	       {
+		  int i;
+		  int istart = nx     - fsnow->x;
+		  int imax   = istart + flake->w;
+		  if (istart < 0) istart = 0;
+		  if (imax > fsnow->w) imax = fsnow->w;
+		  for (i = istart; i < imax; i++)
+		     if (ny > fsnow->y - fsnow->acth[i] - 1)
 		     {
-			// always erase flake, but repaint it on top of
-			// the correct position on fsnow (if !NoFluffy))
-			if (Flags.NoFluffy)
-			   EraseSnowFlake(flake); // flake is removed from screen, but still available
-			else
+			if(fsnow->acth[i] < fsnow->h/2)
+			   UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flake->w);
+			if(HandleFallenSnow(fsnow))
 			{
-			   // x-value: NewX;
-			   // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
-			   flake->rx = NewX;
-			   flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
-			   DrawSnowFlake(flake);
-			   flake->fluff      = 1;
-			   flake->flufftimer = FLUFFTIME;
+			   // always erase flake, but repaint it on top of
+			   // the correct position on fsnow (if !NoFluffy))
+			   if (Flags.NoFluffy)
+			      EraseSnowFlake(flake); // flake is removed from screen, but still available
+			   else
+			   {
+			      // x-value: NewX;
+			      // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
+			      flake->rx = NewX;
+			      flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
+			      DrawSnowFlake(flake);
+			      flake->fluff      = 1;
+			      flake->flufftimer = FLUFFTIME;
+			   }
+			   if (flake->fluff)
+			      return TRUE;
+			   else
+			   {
+			      DelFlake(flake);
+			      return FALSE;
+			   }
 			}
-			if (flake->fluff)
-			   return TRUE;
-			else
-			{
-			   DelFlake(flake);
-			   return FALSE;
-			}
+			found = 1;
+			break;
 		     }
-		     found = 1;
-		     break;
-		  }
+	       }
 	    }
-	 }
-      fsnow = fsnow->next;
+	 fsnow = fsnow->next;
+      }
    }
 
    int x  = lrintf(flake->rx);
@@ -800,9 +815,12 @@ void genxpmflake(char ***xpm, int w, int h, int *weffective)
 
    if (nw == 0) nw = 1;
    *weffective = nw;
-   nw = ((nw-1)/8+1)*8;
+   // Now, suddenly, nw doesn't seem to matter any more?
+   //nw = ((nw-1)/8+1)*8;
+   //nw = ((nw-1)/32+1)*32;
    P("%d nw: %d\n",counter++,nw);
-   if (nh <= 1)
+   // Ah! nh should be 2 at least ...
+   if (nh < 2)
       nh = 2;
 
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
