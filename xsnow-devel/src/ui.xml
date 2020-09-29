@@ -166,7 +166,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="lower">10</property>
     <property name="upper">1000</property>
     <property name="value">500</property>
-    <property name="step_increment">100</property>
+    <property name="step_increment">10</property>
     <property name="page_increment">100</property>
   </object>
   <object class="GtkAdjustment" id="general-transparency-adjuspment">
@@ -247,11 +247,11 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="snow-size-adjustment">
-    <property name="lower">20</property>
-    <property name="upper">200</property>
-    <property name="value">100</property>
+    <property name="lower">2</property>
+    <property name="upper">20</property>
+    <property name="value">8</property>
     <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="page_increment">5</property>
   </object>
   <object class="GtkAdjustment" id="snow-speed-adjustment">
     <property name="lower">10</property>

@@ -35,7 +35,7 @@
 #define DEFAULT_DisplayName ""
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
-#define DEFAULT_FlakeCountMax 500 
+#define DEFAULT_FlakeCountMax 300 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
@@ -64,7 +64,7 @@
 #define DEFAULT_SantaSpeedFactor 100
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
-#define DEFAULT_SnowSize 100 
+#define DEFAULT_SnowSize 8 
 #define DEFAULT_SnowSpeedFactor 100
 #define DEFAULT_StopAfter -1
 #define DEFAULT_TreeColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */
@@ -119,7 +119,7 @@
 #define DEFAULT_Anarchy 50    /*percent*/
 #define DEFAULT_Neighbours 7
 //#define DEFAULT_Range 20      /*m*/
-#define DEFAULT_Nbirds 100
+#define DEFAULT_Nbirds 70
 #define DEFAULT_ShowBirds 1
 #define DEFAULT_BirdsOnly 0
 #define DEFAULT_PrefDistance 20

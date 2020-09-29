@@ -44,6 +44,8 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
+#define EXTRA_FLAKES 300
+
 static cairo_surface_t **snow_surfaces;
 static float             FlakesPerSecond;
 static int               KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
@@ -53,7 +55,6 @@ static GC                *SnowGC;
 
 static SnowMap           *snowPix;
 static char            ***xsnow_xpm = NULL;
-static int               *weff      = NULL;
 static int                NFlakeTypesVintage;
 static int                MaxFlakeTypes;
 
@@ -68,7 +69,7 @@ static void   init_snow_pix(void);
 static void   EraseSnowFlake(Snow *flake);
 static void   DelFlake(Snow *flake);
 static void   DrawSnowFlake(Snow *flake);
-static void   genxpmflake(char ***xpm, int w, int h, int *weffective);
+static void   genxpmflake(char ***xpm, int w, int h);
 static void   add_random_flakes(int n);
 
 
@@ -89,7 +90,7 @@ void snow_init()
       MaxFlakeTypes++;
    NFlakeTypesVintage = MaxFlakeTypes;
 
-   add_random_flakes(1000);   // will change MaxFlakeTypes
+   add_random_flakes(EXTRA_FLAKES);   // will change MaxFlakeTypes
    //                            and create xsnow_xpm, containing
    //                            vintage and new flakes
 
@@ -132,6 +133,7 @@ void snow_init()
 
 void snow_set_gc()
 {
+   P("%d snow_set_gc\n",counter++);
    int i;
    for (i=0; i<MaxFlakeTypes; i++) 
    {
@@ -190,7 +192,7 @@ int snow_ui()
    if(Flags.SnowSize != OldFlags.SnowSize)
    {
       OldFlags.SnowSize = Flags.SnowSize;
-      add_random_flakes(1000);
+      add_random_flakes(EXTRA_FLAKES);
       init_snow_surfaces();
       init_snow_pix();
       snow_set_gc();
@@ -212,7 +214,7 @@ void init_snow_surfaces()
    int i;
    for(i=0; i<MaxFlakeTypes; i++)
    {
-      P("%d\n",i);
+      P("%d %d\n",counter++,i);
       char **x;
       int lines;
       xpm_set_color(xsnow_xpm[i], &x, &lines, Flags.SnowColor);
@@ -239,6 +241,7 @@ void init_snow_surfaces()
 void init_snow_pix()
 {
    int flake;
+   P("%d init_snow_pix\n",counter++);
    for (flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
@@ -248,7 +251,6 @@ void init_snow_pix()
       xpmtobits(xsnow_xpm[flake],&bits,&w,&h,&l);
       rp->width  = w;
       rp->height = h;
-      rp->weff   = weff[flake];
       if(rp->pixmap)
 	 XFreePixmap(display,rp->pixmap);
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
@@ -368,9 +370,13 @@ int do_UpdateSnowFlake(Snow *flake)
 
    float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
+
+   int flakew = snowPix[flake->whatFlake].width;
+   int flakeh = snowPix[flake->whatFlake].height;
+
    if(flake->cyclic)
    {
-      if (NewX < -flake->w)     NewX += SnowWinWidth-1;
+      if (NewX < -flakew)       NewX += SnowWinWidth-1;
       if (NewX >= SnowWinWidth) NewX -= SnowWinWidth;
    }
    else if (NewX < 0 || NewX >= SnowWinWidth)
@@ -412,14 +418,14 @@ int do_UpdateSnowFlake(Snow *flake)
 	       {
 		  int i;
 		  int istart = nx     - fsnow->x;
-		  int imax   = istart + flake->w;
+		  int imax   = istart + flakew;
 		  if (istart < 0) istart = 0;
 		  if (imax > fsnow->w) imax = fsnow->w;
 		  for (i = istart; i < imax; i++)
 		     if (ny > fsnow->y - fsnow->acth[i] - 1)
 		     {
 			if(fsnow->acth[i] < fsnow->h/2)
-			   UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flake->w);
+			   UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flakew);
 			if(HandleFallenSnow(fsnow))
 			{
 			   // always erase flake, but repaint it on top of
@@ -431,7 +437,7 @@ int do_UpdateSnowFlake(Snow *flake)
 			      // x-value: NewX;
 			      // y-value of top of fallen snow: fsnow->y - fsnow->acth[i]
 			      flake->rx = NewX;
-			      flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flake->h;
+			      flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flakeh;
 			      DrawSnowFlake(flake);
 			      flake->fluff      = 1;
 			      flake->flufftimer = FLUFFTIME;
@@ -459,7 +465,7 @@ int do_UpdateSnowFlake(Snow *flake)
    // check if flake is in nowsnowarea
    if (!switches.UseGtk)  // we can skip this when using gtk
    {
-      int in = XRectInRegion(NoSnowArea_dynamic,x, y, flake ->w, flake->h);
+      int in = XRectInRegion(NoSnowArea_dynamic,x, y, flakew, flakeh);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in nosnowarea_dynamic
       //
       // if (b): no erase, no draw, no move
@@ -471,7 +477,7 @@ int do_UpdateSnowFlake(Snow *flake)
    {
       // check if flake is touching or in SnowOnTreesRegion
       // if so: remove it
-      int in = XRectInRegion(SnowOnTreesRegion,x,y,flake->w,flake->h);
+      int in = XRectInRegion(SnowOnTreesRegion,x,y,flakew,flakeh);
       if (in == RectanglePart || in == RectangleIn)
       {
 	 if (Flags.NoFluffy)
@@ -492,7 +498,7 @@ int do_UpdateSnowFlake(Snow *flake)
 
       // check if flake is touching TreeRegion. If so: add snow to 
       // SnowOnTreesRegion.
-      in = XRectInRegion(TreeRegion,x,y,flake->w,flake->h);
+      in = XRectInRegion(TreeRegion,x,y,flakew,flakeh);
       if (in == RectanglePart)
       {
 	 // so, part of the flake is in TreeRegion.
@@ -504,10 +510,10 @@ int do_UpdateSnowFlake(Snow *flake)
 	 // Only one snow-on-tree pixel has to be found.
 	 int i;
 	 int found = 0;
-	 for(i=0; i<flake->w; i++)
+	 for(i=0; i<flakew; i++)
 	 {
 	    if(found) break;
-	    int ybot = y+flake->h;
+	    int ybot = y+flakeh;
 	    int xbot = x+i;
 	    int in = XRectInRegion(TreeRegion,xbot,ybot,1,1);
 	    if (in != RectangleIn) // if bottom pixel not in TreeRegion, skip
@@ -557,7 +563,7 @@ int do_UpdateSnowFlake(Snow *flake)
    // we can skip this when using gtk
    if (!switches.UseGtk)
    {
-      int in = XRectInRegion(TreeRegion,x, y, flake ->w, flake->h);
+      int in = XRectInRegion(TreeRegion,x, y, flakew, flakeh);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
       // if(b): erase: no, move: yes
       // erase this flake 
@@ -574,7 +580,7 @@ int do_UpdateSnowFlake(Snow *flake)
       DrawSnowFlake(flake);
    else
    {
-      int in = XRectInRegion(TreeRegion,nx, ny, flake ->w, flake->h);
+      int in = XRectInRegion(TreeRegion,nx, ny, flakew, flakeh);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
       // if b: draw: no
       if (!b)
@@ -610,17 +616,19 @@ void EraseSnowFlake(Snow *flake)
       return;
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+   int flakew = snowPix[flake->whatFlake].width;
+   int flakeh = snowPix[flake->whatFlake].height;
    if(switches.Trans|Flags.UseBG)
    {
       XSetTSOrigin(display, ESnowGC[flake->whatFlake], 
-	    x + flake->w, y + flake->h);
+	    x + flakew, y + flakeh);
       XFillRectangle(display, SnowWin, ESnowGC[flake->whatFlake],
-	    x, y, flake->w, flake->h);
+	    x, y, flakew, flakeh);
    }
    else
       XClearArea(display, SnowWin, 
 	    x, y,
-	    flake->w, flake->h,
+	    flakew, flakeh,
 	    switches.Exposures);
 }
 
@@ -642,19 +650,20 @@ void DrawSnowFlake(Snow *flake) // draw snowflake using flake->rx and flake->ry
    P("DrawSnowFlake X11 %d\n",counter++);
    int x = lrintf(flake->rx);
    int y = lrintf(flake->ry);
+   int flakew = snowPix[flake->whatFlake].width;
+   int flakeh = snowPix[flake->whatFlake].height;
    XSetTSOrigin(display, SnowGC[flake->whatFlake], 
-	 x + flake->w, y + flake->h);
+	 x + flakew, y + flakeh);
    XFillRectangle(display, SnowWin, SnowGC[flake->whatFlake],
-	 x, y, flake->w, flake->h);
+	 x, y, flakew, flakeh);
 }
 
 void InitFlake(Snow *flake)
 {
-   //flake->w          = snowPix[flake->whatFlake].width;
-   flake->w          = snowPix[flake->whatFlake].weff;
-   flake->h          = snowPix[flake->whatFlake].height;
-   flake->rx         = randint(SnowWinWidth - flake->w);
-   flake->ry         = -randint(SnowWinHeight/10)-flake->h;
+   int flakew        = snowPix[flake->whatFlake].width;
+   int flakeh        = snowPix[flake->whatFlake].height;
+   flake->rx         = randint(SnowWinWidth - flakew);
+   flake->ry         = -randint(SnowWinHeight/10)-flakeh;
    flake->cyclic     = 1;
    flake->fluff      = 0;
    flake->flufftimer = 0;
@@ -674,7 +683,7 @@ void InitFlake(Snow *flake)
 
 void InitFlakesPerSecond()
 {
-   FlakesPerSecond = SnowWinWidth*0.003*Flags.SnowFlakesFactor*
+   FlakesPerSecond = SnowWinWidth*0.0015*Flags.SnowFlakesFactor*
       0.001*FLAKES_PER_SEC_PER_PIXEL*SnowSpeedFactor;
    P("snowflakesfactor: %d %f %f\n",Flags.SnowFlakesFactor,FlakesPerSecond,SnowSpeedFactor);
 }
@@ -728,11 +737,9 @@ int do_show_flakecount(UNUSED gpointer data)
 // generate random xpm for flake with dimensions wxh
 // the flake will be rotated, so the w and h of the resulting xpm will
 // be different from the input w and h.
-// The withdt of the xpm will be rounded to the next 8-fold
-// weffective becomes the effective with of the xpm, the width before 
-// rounding up.
-void genxpmflake(char ***xpm, int w, int h, int *weffective)
+void genxpmflake(char ***xpm, int w, int h)
 {
+   P("%d genxpmflake %d %d\n",counter++,w,h);
    const char c='.'; // imposed by xpm_set_color
    int nmax = w*h;
    float *x, *y;
@@ -807,20 +814,24 @@ void genxpmflake(char ***xpm, int w, int h, int *weffective)
    int nw = ceilf(xmax - xmin + 1);
    int nh = ceilf(ymax - ymin + 1);
 
-   // for some reason, drawing of surfaces derived from 1x1 xpm slow down
+   // for some reason, drawing of cairo_surfaces derived from 1x1 xpm slow down
    // the x server terribly. So, to be sure, I demand that none of
-   // the dimensions is 1, and that the witdth is a multiple of 8.
+   // the dimensions is 1, and that the width is a multiple of 8.
    // Btw: genxpmflake rotates and compresses the original wxh xpm, 
    // and sometimes that results in an xpm with both dimensions one.
 
-   if (nw == 0) nw = 1;
-   *weffective = nw;
    // Now, suddenly, nw doesn't seem to matter any more?
    //nw = ((nw-1)/8+1)*8;
    //nw = ((nw-1)/32+1)*32;
-   P("%d nw: %d\n",counter++,nw);
+   P("%d nw nh: %d %d\n",counter++,nw,nh);
    // Ah! nh should be 2 at least ...
-   if (nh < 2)
+   // nw is not important
+   //
+   // Ok, I tried some things, and it seems that if both nw and nh are 1,
+   // then we have trouble.
+   // Some pages on the www point in the same direction.
+
+   if (nw == 1 && nh == 1)
       nh = 2;
 
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
@@ -861,33 +872,26 @@ void add_random_flakes(int n)
       for (i=0; i<MaxFlakeTypes; i++)
 	 xpm_destroy(xsnow_xpm[i]);
       free(xsnow_xpm);
-      free(weff);
    }
    if(n < 1)
       n = 1;
    char ***x;
    x = (char ***)malloc((n+NFlakeTypesVintage+1)*sizeof(char **));
-   weff = (int *)malloc((n+NFlakeTypesVintage  )*sizeof(int));
    int lines;
    // copy Rick's vintage flakes:
    for (i=0; i<NFlakeTypesVintage; i++)
    {
       xpm_set_color((char **)snow_xpm[i],&x[i],&lines,"snow");
-      switch(i)
-      {
-	 case 0: case 6: weff[i] = 3; break;
-	 default: weff[i] = 7;
-      }
       //xpm_print((char**)snow_xpm[i]);
    }
    // add n flakes:
    for (i=0; i<n; i++)
    {
       int w,h;
-      w = 3+3*drand48();
-      h = 3+3*drand48();
-      genxpmflake(&x[i+NFlakeTypesVintage],(float)Flags.SnowSize/30*w,(float)Flags.SnowSize/30*h, &weff[i+NFlakeTypesVintage]);
-      P("flake: %s weff: %d\n",x[i+NFlakeTypesVintage][0],weff[i+NFlakeTypesVintage]);
+      int m = Flags.SnowSize;
+      w = m+m*drand48();
+      h = m+m*drand48();
+      genxpmflake(&x[i+NFlakeTypesVintage],w,h);
       //xpm_print(x[i+NFlakeTypesVintage]);
    }
    MaxFlakeTypes   = n + NFlakeTypesVintage;

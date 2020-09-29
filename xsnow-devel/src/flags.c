@@ -271,10 +271,10 @@ int HandleFlags(int argc, char*argv[])
       free(Flags.TreeType);
       Flags.TreeType = strdup(ALLTREETYPES);
    }
-   if (Flags.SnowSize > 500)
+   if (Flags.SnowSize > 40)
    {
-      printf("snowsize brought back to 500\n");
-      Flags.SnowSize = 500;
+      printf("snowsize brought back from %d to 40\n",Flags.SnowSize);
+      Flags.SnowSize = 40;
    }
    return 0;
 }

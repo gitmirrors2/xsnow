@@ -90,7 +90,7 @@ int do_blowoff(UNUSED gpointer data)
    while(fsnow)
    {
       P("blowoff ...\n");
-      if (HandleFallenSnow(fsnow)) 
+      if (HandleFallenSnow(fsnow) && !Flags.NoSnowFlakes) 
 	 if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
 		  (fsnow->win.ws == CWorkSpace || fsnow->win.sticky)))
 	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 

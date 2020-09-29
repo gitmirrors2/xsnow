@@ -13,6 +13,11 @@ version 3.1.0
 	  small changes in GenerateFlakesFromFallen()
 	  it appears that the height of an xpm should be >=2 to prevent
 	    terrible degradation of performance. snow.c: genxpmflake()
+	6:snow.h, snow.c: remove w and h from type Snow, these were redundant
+	7:changed some defaults and ranges
+	8:snow.c: reduce extra_flakes to 300. I have the impression that this
+	     is beneficial for cramped systems
+	  correct bug: blowoff.c: do not generate blow-off snow if Flags.NoSnowFlakes
 version 3.0.10
 	1:Better icons
 	2:better flakes

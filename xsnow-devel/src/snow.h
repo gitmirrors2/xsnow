@@ -40,8 +40,6 @@ typedef struct _Snow {
    float wsens;                  // wind dependency factor
    float flufftimer;             // fluff timeout timer
    unsigned int whatFlake;       // snowflake index
-   unsigned int w          : 16; // width
-   unsigned int h          : 16; // height
    unsigned int cyclic     : 1;  // 1: flake is cyclic 
    unsigned int fluff      : 1;  // 1: flake is in fluff state
    unsigned int testing    : 2;  // for testing purposes
@@ -49,11 +47,9 @@ typedef struct _Snow {
 } Snow;
 
 typedef struct _SnowMap {
-   //unsigned char *snowBits;
    Pixmap pixmap;
    unsigned int width   : 16;
    unsigned int height  : 16;
-   unsigned int weff    : 16;   // effective width
 } SnowMap;
 
 extern Region     NoSnowArea_dynamic;
