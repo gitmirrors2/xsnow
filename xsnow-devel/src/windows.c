@@ -428,7 +428,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
    if(*IsDesktop)                                  
    {
       CWorkSpace = GetCurrentWorkspace();
-      P("CWorkSpace: %ld\n",CWorkSpace);
+      P("CWorkSpace: %d\n",CWorkSpace);
       if (CWorkSpace < 0)
 	 return FALSE;
    }

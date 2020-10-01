@@ -77,7 +77,7 @@ void fallensnow_draw(cairo_t *cr)
 	 P("fallensnow_draw %d\n",
 	       cairo_image_surface_get_width(fsnow->surface));
 	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h+1);
-	 cairo_paint_with_alpha(cr,ALPHA);
+	 my_cairo_paint_with_alpha(cr,ALPHA);
       }
       fsnow = fsnow->next;
    }

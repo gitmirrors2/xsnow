@@ -458,17 +458,15 @@ int main_c(int argc, char *argv[])
       XSelectInput(display, SnowWin, 
 	    StructureNotifyMask);
 
-   ClearScreen();   // without this, no snow, scenery etc. in KDE
+   ClearScreen();   // without this, no snow, scenery etc. in KDE; this seems to be a vintage comment
 
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
 
-      if (TransA)
-      {
-	 ui_gray_erase(switches.UseGtk);
-      }
-      else
+      ui_gray_erase(switches.UseGtk);
+
+      if (!TransA)
       {
 	 ui_gray_ww(1);
 	 ui_gray_below(1);
@@ -538,7 +536,7 @@ int myDetermineWindow()
       }
       if (!DetermineWindow(&SnowWina,&SnowWinaName,&TransA,"Xsnow-A", &IsDesktop))
       {
-	 printf("xsnow: cannot determine window, exiting...\n");
+	 printf("xsnow: Cannot run, probably missing a window manager. Exiting...\n");
 	 return 0;
       }
 
@@ -577,6 +575,7 @@ int myDetermineWindow()
 	 printf("Scenario: Use X11 for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWinb;
 	 SnowWinName        = SnowWinbName;
+	 gtk_widget_show_all(TransB);
 
 	 switches.UseGtk    = 0;
 	 switches.DrawBirds = 1;
@@ -590,6 +589,7 @@ int myDetermineWindow()
 	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWina;
 	 SnowWinName        = SnowWinaName;
+	 gtk_widget_hide(TransB);
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
@@ -678,6 +678,7 @@ int do_ui_check(UNUSED gpointer data)
       myDetermineWindow();
       ui_gray_erase(switches.UseGtk);
       changes++;
+      R("changes: %d\n",changes);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -738,16 +739,6 @@ int do_ui_check(UNUSED gpointer data)
       changes++;
       P("changes: %d\n",changes);
    }
-   // following button is hided in ui.c because setting to fullscreen
-   // results in putting the transparent windows above everything,
-   // and I could not force the windows to go below if Flags.BelowAll
-   // requests so. 
-   // Only when the user clicks on the 'below' button things are working
-   // as they should. Maybe I will find a solution, other than restart
-   // the whole program (Flags.Done = 1; DoRestart = 1;).
-   // Maybe the weird solution to simulate 2 clicks on the 'below' button,
-   // taking care that no confirmation is asked?
-   //
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;

@@ -23,11 +23,24 @@ XSNOW=xsnow
 if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
-if [ "$DISPLAY" ] ; then
-   $XSNOW -stopafter 3
-   if [ "$?" -ne 0 ]; then
-      exit 77
-   fi
-else
-   exit 0
+xvfb-run -s "-screen 0 1920x1080x24" sh -c "fvwm & sleep 4; $XSNOW -defaults -stopafter 3 >xsnow_out 2>&1"
+if [ "$?" -ne 0 ] ; then
+   echo "Problem in 'xvfb-run' command"
+   cat xsnow_out
+   exit 1
 fi
+grep -q "Halting because of flag -stopafter" xsnow_out
+if [ "$?" -ne 0 ] ; then
+   echo "xsnow did not end as expected"
+   cat xsnow_out
+   exit 1
+fi
+grep -q "no birds will fly" xsnow_out
+if [ "$?" -ne 0 ] ; then
+   echo "xsnow did not start as expected"
+   cat xsnow_out
+   exit 1
+fi
+
+exit 0
+

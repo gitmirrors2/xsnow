@@ -275,7 +275,7 @@ int snow_draw(cairo_t *cr)
       double alpha = ALPHA;
       if (flake->fluff)
 	 alpha *= flake->flufftimer>0?flake->flufftimer/FLUFFTIME:0;
-      cairo_paint_with_alpha(cr,alpha);
+      my_cairo_paint_with_alpha(cr,alpha);
       //if (flake->testing) P("testing flake: alpha: %f\n",alpha);
    }
    return TRUE;

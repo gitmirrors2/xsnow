@@ -109,6 +109,8 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       {
 	 case 1:
 	    printf("XpmColorError\n");
+	    for (i=0; i<lines; i++)
+	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 case -1:
 	    printf("XpmOpenFailed\n");
@@ -120,7 +122,9 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 	    printf("XpmNoMemory\n");
 	    break;
 	 case -4:
-	    printf("XpmColorFaild\n");
+	    printf("XpmColorFailed\n");
+	    for (i=0; i<lines; i++)
+	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 default:
 	    printf("%d\n",rc);

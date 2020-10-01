@@ -497,10 +497,11 @@ int birds_draw(cairo_t *cr)
       if(before && Flags.ShowAttrPoint)
       {
 	 r2i(&attrbird);
+	 P("attrbird %f %f %d %d\n",attrbird.x,attrbird.z,attrbird.ix,attrbird.iz);
 	 int mx = cairo_image_surface_get_width(attrsurface);
 	 int mz = cairo_image_surface_get_height(attrsurface);
 	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
-	 cairo_paint_with_alpha(cr,ALPHA);
+	 my_cairo_paint_with_alpha(cr,ALPHA);
 	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
@@ -525,7 +526,7 @@ int birds_draw(cairo_t *cr)
 	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	       r2i(&testbird);
 	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
-	       my_paint(cr);
+	       my_cairo_paint_with_alpha(cr,ALPHA);
 	       g_clear_object(&pixbuf);
 	       cairo_surface_destroy(surface);
 	    }
@@ -632,7 +633,7 @@ int birds_draw(cairo_t *cr)
 	    int mx = cairo_image_surface_get_width(surface);
 	    int mz = cairo_image_surface_get_height(surface);
 	    cairo_set_source_surface (cr, surface, bird->ix-mx/2, bird->iz-mz/2);
-	    cairo_paint_with_alpha(cr,ALPHA);
+	    my_cairo_paint_with_alpha(cr,ALPHA);
 	    P("draw: %d %d\n",bird->ix-mx/2,bird->iz-mz/2);
 	 }
 	 else

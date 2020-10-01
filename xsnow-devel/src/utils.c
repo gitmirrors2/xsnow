@@ -135,3 +135,12 @@ int is_little_endian(void)
    int endiantest = 1;
    return (*(char *)&endiantest) == 1;
 }
+
+void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
+{
+   if (alpha > 0.9)
+      cairo_paint(cr);
+   else
+      cairo_paint_with_alpha(cr,alpha);
+   P("%d alpha %f\n",counter++,alpha);
+}

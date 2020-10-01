@@ -84,7 +84,7 @@ int scenery_draw(cairo_t *cr)
       Treeinfo *tree = Trees[i];
       cairo_surface_t *surface = tree_surfaces[tree->type][tree->rev];
       cairo_set_source_surface (cr, surface, tree->x, tree->y);
-      cairo_paint_with_alpha(cr,ALPHA);
+      my_cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }

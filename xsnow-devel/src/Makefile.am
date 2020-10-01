@@ -79,7 +79,7 @@ snow_includes.h: Pixmaps
 	@echo >> $@
 	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
-TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
+TESTS = test1.sh test2.sh
 
 desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop
@@ -91,5 +91,5 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* 
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out  
 

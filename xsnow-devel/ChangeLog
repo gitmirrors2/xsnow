@@ -18,6 +18,12 @@ version 3.1.0
 	8:snow.c: reduce extra_flakes to 300. I have the impression that this
 	     is beneficial for cramped systems
 	  correct bug: blowoff.c: do not generate blow-off snow if Flags.NoSnowFlakes
+	9:utils.c: wrapper for cairo_paint_with_alpha(). If alpha > 0.9, use
+	     cairo_paint(). Seems to have some performance gain (less stress
+	     on Xorg), but I am not sure.
+	  main.c: hide gtk_widget TransB when not used.
+	          gray out transparency when running in fvwm-like environment
+	  added test2.sh for 'make check' and 'autopkgtest'
 version 3.0.10
 	1:Better icons
 	2:better flakes
