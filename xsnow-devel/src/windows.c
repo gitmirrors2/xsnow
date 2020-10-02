@@ -366,10 +366,9 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
 
       P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
-      // if not possible to create transparent window:
-      if (*xwin == 0)
+      char *desktopsession = NULL;
+      if (DesktopSession == NULL)
       {
-	 char *desktopsession = NULL;
 	 const char *desktops[] = {
 	    "DESKTOP_SESSION",
 	    "XDG_SESSION_DESKTOP",
@@ -393,10 +392,15 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    desktopsession = (char *)"unknown_desktop_session";
 	 }
 
-	 if (DesktopSession)
-	    free(DesktopSession);
 	 DesktopSession = strdup(desktopsession);
 
+	 if (!strcasecmp(DesktopSession,"enlightenment"))
+	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+      }
+
+      // if not possible to create transparent window:
+      if (*xwin == 0)
+      {
 	 // convert DesktopSession to upper case
 	 char *a = DesktopSession;
 	 while (*a)

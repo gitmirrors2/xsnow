@@ -18,6 +18,15 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+/*
+ * This works with EWHM/NetWM compatible X Window managers,
+ * so enlightenment (for example) is a problem.
+ * In enlightenment there is no way to tell if a window is minimized,
+ * and on which workspace the focus is.
+ * There would be one advantage of enlightenment: you can tell easily
+ * if a window is on the screen (minimized or not) by looking at __E_WINDOW_MAPPED
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
@@ -85,6 +94,7 @@ int GetCurrentWorkspace()
 	    r = -1;
 	 r = 0; // second thought: always return 0 here
 	 //        so things will run in enlightenment also
+	 //        more or less ;-)
       }
       else
 	 r = *(long *)properties;        // see man XGetWindowProperty
