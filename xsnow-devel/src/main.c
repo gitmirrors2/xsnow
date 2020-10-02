@@ -678,7 +678,7 @@ int do_ui_check(UNUSED gpointer data)
       myDetermineWindow();
       ui_gray_erase(switches.UseGtk);
       changes++;
-      R("changes: %d\n",changes);
+      P("changes: %d\n",changes);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {

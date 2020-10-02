@@ -3933,7 +3933,8 @@ workspaces</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.</property>
+                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.
+NOTE: this works not properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_allworkspaces" swapped="no"/>
@@ -3951,7 +3952,8 @@ screen</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
+                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.
+NOTE: this works not properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_fullscreen" swapped="no"/>

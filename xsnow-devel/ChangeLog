@@ -24,6 +24,7 @@ version 3.1.0
 	  main.c: hide gtk_widget TransB when not used.
 	          gray out transparency when running in fvwm-like environment
 	  added test2.sh for 'make check' and 'autopkgtest'
+	  GetCurrentWorkspace now always returns 0 if there are problems 
 version 3.0.10
 	1:Better icons
 	2:better flakes

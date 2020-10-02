@@ -83,6 +83,8 @@ int GetCurrentWorkspace()
 	    r = 0;
 	 else
 	    r = -1;
+	 r = 0; // second thought: always return 0 here
+	 //        so things will run in enlightenment also
       }
       else
 	 r = *(long *)properties;        // see man XGetWindowProperty
