@@ -23,12 +23,12 @@ XSNOW=xsnow
 if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
-logfile=xsnow_out_2
->$logfile
 # open Santa tab, click on train with Rudolph
 xdo="xdotool mousemove 200 50 click 1 mousemove 470 320 click 1"
-# testing without a compositing X window manager
-xvfb-run -a -s "-screen 0 1920x1080x24" sh -c "$XSNOW -defaults -stopafter 5 >$logfile 2>&1& sleep 2; $xdo;sleep 8"
+# testing with a compositing X window manager
+logfile=xsnow_out_3
+>$logfile
+xvfb-run -a -s "-screen 0 1920x1080x24" sh -c "xcompmgr& sleep 2; $XSNOW -defaults -stopafter 3 >$logfile 2>&1& sleep 2; $xdo; sleep 8"
 if [ "$?" -ne 0 ] ; then
    echo "Problem in 'xvfb-run' command" 1>&2
    cat $logfile 1>&2
@@ -40,7 +40,7 @@ if [ "$?" -ne 0 ] ; then
    cat $logfile 1>&2
    exit 1
 fi
-grep -q "no birds will fly" $logfile
+grep -q "birds can fly" $logfile
 if [ "$?" -ne 0 ] ; then
    echo "xsnow did not start as expected" 1>&2
    cat $logfile 1>&2

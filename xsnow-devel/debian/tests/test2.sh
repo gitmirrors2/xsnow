@@ -23,24 +23,33 @@ XSNOW=xsnow
 if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
-xvfb-run -s "-screen 0 1920x1080x24" sh -c "fvwm & sleep 4; $XSNOW -defaults -stopafter 3 >xsnow_out 2>&1"
+logfile=xsnow_out_2
+>$logfile
+# open Santa tab, click on train with Rudolph
+xdo="xdotool mousemove 200 50 click 1 mousemove 470 320 click 1"
+# testing without a compositing X window manager
+xvfb-run -a -s "-screen 0 1920x1080x24" sh -c "$XSNOW -defaults -stopafter 5 >$logfile 2>&1& sleep 2; $xdo;sleep 8"
 if [ "$?" -ne 0 ] ; then
-   echo "Problem in 'xvfb-run' command"
-   cat xsnow_out
+   echo "Problem in 'xvfb-run' command" 1>&2
+   cat $logfile 1>&2
    exit 1
 fi
-grep -q "Halting because of flag -stopafter" xsnow_out
+grep -q "Halting because of flag -stopafter" $logfile
 if [ "$?" -ne 0 ] ; then
-   echo "xsnow did not end as expected"
-   cat xsnow_out
+   echo "xsnow did not end as expected" 1>&2
+   cat $logfile 1>&2
    exit 1
 fi
-grep -q "no birds will fly" xsnow_out
+grep -q "no birds will fly" $logfile
 if [ "$?" -ne 0 ] ; then
-   echo "xsnow did not start as expected"
-   cat xsnow_out
+   echo "xsnow did not start as expected" 1>&2
+   cat $logfile 1>&2
    exit 1
 fi
-
+grep -q "Santa: 4 Rudolph: 1" $logfile
+if [ "$?" -ne 0 ] ; then
+   echo "xsnow did not react to mouse as expected" 1>&2
+   cat $logfile 1>&2
+   exit 77
+fi
 exit 0
-

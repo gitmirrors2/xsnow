@@ -4,3 +4,10 @@ libxt-dev
 pkg-config
 libxml2-dev
 libgtk-3-dev
+
+If you want to run 'make check':
+xdotool
+xcompmgr
+xvfb
+xauth
+

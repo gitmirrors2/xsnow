@@ -91,6 +91,7 @@ int Santa_ui()
       OldFlags.NoRudolf = Flags.NoRudolf;
       changes++;
       P("changes: %d\n",changes);
+      printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, !Flags.NoRudolf);  // this for testing, see test2.sh and test3.sh
    }
    if (Flags.NoSanta != OldFlags.NoSanta)
    {

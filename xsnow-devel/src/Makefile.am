@@ -30,7 +30,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh test2.sh  xsnow.desktop \
+		test1.sh test2.sh test3.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
@@ -79,7 +79,7 @@ snow_includes.h: Pixmaps
 	@echo >> $@
 	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
-TESTS = test1.sh test2.sh
+TESTS = test1.sh test2.sh test3.sh
 
 desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop
@@ -91,5 +91,5 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out  
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3  
 

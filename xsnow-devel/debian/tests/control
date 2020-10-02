@@ -1,3 +1,3 @@
-Tests: test1.sh, test2.sh
-Depends: fvwm, xauth, xvfb
+Tests: test1.sh, test2.sh test3.sh
+Depends: xcompmgr, xauth, xvfb
 Restrictions: superficial
