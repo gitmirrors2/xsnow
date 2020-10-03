@@ -26,7 +26,11 @@ version 3.1.0
 	  added test2.sh for 'make check' and 'autopkgtest'
 	  GetCurrentWorkspace now always returns 0 if there are problems 
 	10:added tests using simulated mouse clicks, test2.sh and test3.sh
-	   xsnow reports now which Santa is chosen
+	   xsnow reports now which Santa is chosen, needed for 
+	     'make check' and autopkgtest
+	   in Pixmaps: changed snowtree.xpm, eland.xpm, polarbear.xpm,
+	      huis4.xpm, AltSanta*.xpm to use one char to encode color
+	      using 'convert in.xpm -colors nn out.xpm'
 version 3.0.10
 	1:Better icons
 	2:better flakes
