@@ -24,7 +24,7 @@ if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
 # open Santa tab, click on train with Rudolph
-xdo="xdotool mousemove 200 50 click 1 mousemove 470 320 click 1"
+xdo="xdotool mousemove --sync 200 50 click 1 mousemove --sync 470 320 click 1"
 # testing with a compositing X window manager
 logfile=xsnow_out_3
 >$logfile

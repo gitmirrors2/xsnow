@@ -26,7 +26,7 @@ fi
 logfile=xsnow_out_2
 >$logfile
 # open Santa tab, click on train with Rudolph
-xdo="xdotool mousemove 200 50 click 1 mousemove 470 320 click 1"
+xdo="xdotool mousemove --sync 200 50 click 1 mousemove --sync 470 320 click 1"
 # testing without a compositing X window manager
 xvfb-run -a -s "-screen 0 1920x1080x24" sh -c "$XSNOW -defaults -stopafter 5 >$logfile 2>&1& sleep 2; $xdo;sleep 8"
 if [ "$?" -ne 0 ] ; then
