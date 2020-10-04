@@ -974,7 +974,8 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
    char msg[1024];
    XGetErrorText(dpy, err->error_code, msg,sizeof(msg));
-   I("%d %s\n",counter++,msg);
+   if(Flags.Noisy)
+      I("%d %s\n",counter++,msg);
    return 0;
 }
 
@@ -1006,7 +1007,8 @@ void drawit(cairo_t *cr)
 
    scenery_draw(cr);
 
-   Santa_draw(cr);
+   if(!Flags.FollowSanta) // if Flags.FollowSanta: drawing of Santa is done in birds_draw()
+      Santa_draw(cr);
 
    treesnow_draw(cr);
 
@@ -1045,6 +1047,7 @@ int do_display_dimensions(UNUSED gpointer data)
 
 int do_draw_all(gpointer widget)
 {
+   // called via drawit()
    if (Flags.Done)
       return FALSE;
    P("do_draw_all %d %p\n",counter++,(void *)widget);

@@ -215,11 +215,13 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
       return 0;
    *wreturn = w;
    *hreturn = h;
-   int l = ((w-1)/8+1);
+   int l = ((int)w + 7)/8;   // # chars needed for this w
    *lreturn = l*h;
    bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*l*h);
    *bitsreturn = bits;
    int i;
+   for(i=0; i<l*h; i++)
+      bits[i] = 0;
 
    char *code = (char *)malloc(sizeof(char)*cpp);
    for (i=0; i<cpp; i++)

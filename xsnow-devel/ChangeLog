@@ -31,6 +31,10 @@ version 3.1.0
 	   in Pixmaps: changed snowtree.xpm, eland.xpm, polarbear.xpm,
 	      huis4.xpm, AltSanta*.xpm to use one char to encode color
 	      using 'convert in.xpm -colors nn out.xpm'
+	11:removed references to test2.sh and test3.sh
+	   add flag '-noisy'
+	   corrected non fatal bugs in xpmtobits
+	   implemented 'birds follow Santa'
 version 3.0.10
 	1:Better icons
 	2:better flakes

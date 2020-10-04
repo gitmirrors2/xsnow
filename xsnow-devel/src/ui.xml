@@ -3206,7 +3206,6 @@ Note: in Wayland, there is no snow on the windows.</property>
           <object class="GtkGrid" id="grid_birds">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">The range in use to get the desired number of neighbours.</property>
             <property name="halign">center</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
@@ -3475,7 +3474,8 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkScale" id="birds-viewingdistance">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Viewing distance.</property>
+                <property name="tooltip_text" translatable="yes">Viewing distance.
+NOTE: Santa has no knowledge of viewing distance, so when birds are following Santa, the relative positions of Santa and birds will be temporarely out of sync when you change the viewing distance. This is only noticeable when the birds are following Santa.</property>
                 <property name="adjustment">birds-vd-adjustment</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
@@ -3760,7 +3760,8 @@ point</property>
             </child>
             <child>
               <object class="GtkToggleButton" id="birds-show-attr">
-                <property name="label" translatable="yes">Show attraction point</property>
+                <property name="label" translatable="yes">Show 
+attr point</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3815,7 +3816,20 @@ point</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkToggleButton" id="birds-follow-santa">
+                <property name="label" translatable="yes">Follow 
+Santa</property>
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Birds are attracted by an attraction point. Here you can choose to let Santa be the attraction point.</property>
+                <signal name="toggled" handler="button_birds_follow_santa" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">7</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

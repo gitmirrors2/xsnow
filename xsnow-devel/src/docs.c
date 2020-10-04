@@ -114,6 +114,7 @@ void docs_usage(int man)
    manout("-wantwindow"               ,"Specify your favorite window:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
+   manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
 
    if(doman)
    {
@@ -225,6 +226,7 @@ void docs_usage(int man)
    manout("-prefdistance <n>"      ,"Preferred distance to neighbours ( 0..100 default: " EQ(DEFAULT_PrefDistance) ").");
    manout("-showbirds <n>"         ,"Show birds ( 0/1 default: " EQ(DEFAULT_ShowBirds) ").");
    manout("-showattr <n>"          ,"Show attraction point ( 0/1 default: " EQ(DEFAULT_ShowAttrPoint) ").");
+   manout("-followsanta <n>"       ,"Birds like Santa ( 0/1 default: " EQ(DEFAULT_FollowSanta) ").");
    manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
    if(doman)

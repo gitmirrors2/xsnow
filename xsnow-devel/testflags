@@ -54,6 +54,7 @@ for f in                   \
    "-noconfig"             \
    "-noexposures"          \
    "-nofluffy"             \
+   "-noisy"                \
    "-nokeepsnow"           \
    "-nokeepsnowonscreen"   \
    "-nokeepsnowontrees"    \

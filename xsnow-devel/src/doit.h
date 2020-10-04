@@ -37,6 +37,7 @@
    DOIT_I(WindNow)  \
    DOIT_I(XWinInfoHandling) \
    DOIT_L(WindowId)  \
+   DOIT_I(Noisy) \
    DOIT
 
 // following flags are written to the config file and
@@ -88,19 +89,20 @@
    DOIT_S(TreeType)   \
    \
    DOIT_I(Anarchy) \
-   DOIT_I(Neighbours) \
-   DOIT_I(Nbirds) \
-   DOIT_I(ShowBirds) \
+   DOIT_I(AttrFactor)  \
    DOIT_I(BirdsOnly) \
    DOIT_I(BirdsRestart)  \
-   DOIT_I(ViewingDistance)  \
+   DOIT_I(BirdsScale) \
    DOIT_I(BirdsSpeed)  \
-   DOIT_I(AttrFactor)  \
    DOIT_I(DisWeight)  \
    DOIT_I(FollowWeight)  \
+   DOIT_I(FollowSanta)  \
+   DOIT_I(Nbirds) \
+   DOIT_I(Neighbours) \
    DOIT_I(PrefDistance) \
    DOIT_I(ShowAttrPoint) \
-   DOIT_I(BirdsScale) \
+   DOIT_I(ShowBirds) \
+   DOIT_I(ViewingDistance)  \
    \
    DOIT_S(BirdsColor)
 

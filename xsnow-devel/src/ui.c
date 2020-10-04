@@ -934,6 +934,7 @@ static struct _birds_buttons
    birds_button show_birds;
    birds_button birds_only;
    birds_button show_attr;
+   birds_button follow_santa;
 
    birds_button nbirds;
    birds_button neighbours;
@@ -953,6 +954,7 @@ static void init_birds_buttons()
    HANDLE_INIT(birds_buttons.show_birds.button         ,birds-show);
    HANDLE_INIT(birds_buttons.birds_only.button         ,birds-only);
    HANDLE_INIT(birds_buttons.show_attr.button          ,birds-show-attr);
+   HANDLE_INIT(birds_buttons.follow_santa.button       ,birds-follow-santa);
 
    HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
    HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
@@ -972,6 +974,7 @@ static void set_birds_buttons()
    HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
    HANDLE_SET_TOGGLE(birds_buttons.birds_only.button     ,BirdsOnly);
    HANDLE_SET_TOGGLE(birds_buttons.show_attr.button      ,ShowAttrPoint);
+   HANDLE_SET_TOGGLE(birds_buttons.follow_santa.button   ,FollowSanta);
 
    HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds          ,self);
    HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours      ,self);
@@ -987,11 +990,12 @@ static void set_birds_buttons()
    HANDLE_SET_COLOR(birds_buttons.color.button,BirdsColor);
 }
 
-HANDLE_TOGGLE(button_birds_show        ,ShowBirds     ,1  ,0);
-HANDLE_TOGGLE(button_birds_only        ,BirdsOnly     ,1  ,0);
-HANDLE_TOGGLE(button_birds_attr        ,ShowAttrPoint ,1  ,0);
+HANDLE_TOGGLE(button_birds_show           ,ShowBirds     ,1  ,0);
+HANDLE_TOGGLE(button_birds_only           ,BirdsOnly     ,1  ,0);
+HANDLE_TOGGLE(button_birds_attr           ,ShowAttrPoint ,1  ,0);
+HANDLE_TOGGLE(button_birds_follow_santa   ,FollowSanta   ,1  ,0);
 
-HANDLE_COLOR(button_birds_color        ,BirdsColor);
+HANDLE_COLOR(button_birds_color           ,BirdsColor);
 
 HANDLE_RANGE(button_birds_nbirds          ,Nbirds              ,value);
 HANDLE_RANGE(button_birds_neighbours      ,Neighbours          ,value);
@@ -1027,6 +1031,7 @@ void birds_default(int vintage)
       Flags.DisWeight        = DEFAULT_DisWeight;
       Flags.FollowWeight     = DEFAULT_FollowWeight;
       Flags.ShowAttrPoint    = DEFAULT_ShowAttrPoint;
+      Flags.FollowSanta      = DEFAULT_FollowSanta;
       Flags.BirdsScale       = DEFAULT_BirdsScale;
       free(Flags.BirdsColor);
       Flags.BirdsColor       = strdup(DEFAULT_BirdsColor);
@@ -1211,6 +1216,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
 
    apply_standard_css();
+   gtk_window_set_title(GTK_WINDOW(hauptfenster)," ");
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();

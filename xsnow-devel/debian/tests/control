@@ -1,3 +1,6 @@
-Tests: test1.sh, test2.sh test3.sh
-Depends: xcompmgr, xauth, xvfb
+Tests: test1.sh
 Restrictions: superficial
+# also in this folder: test2.sh and test3.sh, they depend on
+# Depends: xcompmgr, xauth, xvfb
+# I am not satisfied with the quality of these tests, so I left them
+# out here. 

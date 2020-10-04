@@ -54,7 +54,6 @@ static GC     ESantaGC = NULL;
 static int    OldSantaX = 0;  // the x value of Santa when he was last drawn
 static int    OldSantaY = 0;  // the y value of Santa when he was last drawn
 static GC     SantaGC = NULL;
-static int    SantaHeight;   
 static Pixmap SantaMaskPixmap[PIXINANIMATION];
 static Pixmap SantaPixmap[PIXINANIMATION];
 static Region SantaRegion;
@@ -65,6 +64,7 @@ static int    SantaYStep;
 
 float  ActualSantaSpeed;
 Region SantaPlowRegion;
+int    SantaHeight;   
 int    SantaWidth;
 int    SantaX;   // should always be lrintf(SantaYr)
 int    SantaY;   // should always be lrintf(SantaYr)
@@ -91,7 +91,8 @@ int Santa_ui()
       OldFlags.NoRudolf = Flags.NoRudolf;
       changes++;
       P("changes: %d\n",changes);
-      printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, !Flags.NoRudolf);  // this for testing, see test2.sh and test3.sh
+      if(Flags.Noisy)
+	 printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, !Flags.NoRudolf);  // this for testing, see test2.sh and test3.sh
    }
    if (Flags.NoSanta != OldFlags.NoSanta)
    {

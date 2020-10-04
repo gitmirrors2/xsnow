@@ -27,7 +27,6 @@ extern struct _globals {
    float ox, oy, oz;            // [m]           idem
    float maxrange;              // max distanc to look for other birds [m]
    float bird_scale;            // scale for drawing birds
-   float attrx, attry, attrz;   // [m]          attraction point
    float prefdweight;           // dimensionless
    float meanspeed;             // [m/s]      preferred mean speed of birds
    int neighbours_max;          // max number of neighbours to look at

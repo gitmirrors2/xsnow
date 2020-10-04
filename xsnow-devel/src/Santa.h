@@ -28,6 +28,7 @@ extern int    Santa_ui(void);
 
 extern float  ActualSantaSpeed;
 extern Region SantaPlowRegion;
+extern int    SantaHeight;
 extern int    SantaWidth;
 extern int    SantaX;
 extern int    SantaY;

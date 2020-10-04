@@ -253,6 +253,20 @@ void init_snow_pix()
       rp->height = h;
       if(rp->pixmap)
 	 XFreePixmap(display,rp->pixmap);
+      /*
+       * running under valgrind: XCreateBitmapFromData() often gives 
+       * Syscall param writev(vector[...]) points to uninitialised byte(s)
+       * and
+       * Address 0xc60f5b1 is 1 bytes inside a block of size 36 alloc'd
+       * at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+       * by 0x581C3FC: _XAllocScratch (in /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0)
+       * by 0x580E30A: ??? (in /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0)
+       * by 0x580EAAD: XPutImage (in /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0)
+       * by 0x57F715B: XCreateBitmapFromData (in /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0)
+       * 
+       * bits is initialised, I tested that. So, I guess there is 
+       * something not cosher in XCreateBitmapFromData() maybe....
+       */
       rp->pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (const char*)bits, rp->width, rp->height);
       if (rp->height > MaxSnowFlakeHeight) MaxSnowFlakeHeight = rp->height;
@@ -751,8 +765,8 @@ void genxpmflake(char ***xpm, int w, int h)
    float w2 = 0.5*w;
    float h2 = 0.5*h;
 
-   x[0] = w2;  //so we have at least one pixel
-   y[0] = h2;
+   y[0] = -w2;
+   x[0] = -h2;    // to have at least one pixel in the centre
    int n = 1;
    for (i=0; i<h; i++)
    {
@@ -768,12 +782,12 @@ void genxpmflake(char ***xpm, int w, int h)
 	 float px = 2*xx/w;
 	 float p = 1.1-(px*py);
 	 //printf("%d %d %f %f %f %f %f\n",j,i,y,x,px,py,p);
-	 if (drand48() > p)
+	 if (drand48() > p )
 	 {
 	    if (n<nmax)
 	    {
-	       x[n] = i - w2;
-	       y[n] = j - h2;
+	       y[n] = i - w2;
+	       x[n] = j - h2;
 	       n++;
 	    }
 	 }
@@ -834,17 +848,20 @@ void genxpmflake(char ***xpm, int w, int h)
    if (nw == 1 && nh == 1)
       nh = 2;
 
+   
+   P("allocating %d\n",(nh+3)*sizeof(char*));
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
    char **X = *xpm;
 
    X[0] = (char *)malloc(80*sizeof(char));
-   snprintf(X[0],79,"%d %d 2 1",nw,nh);
+   snprintf(X[0],80,"%d %d 2 1",nw,nh);
 
    X[1] = strdup("  c None");
    X[2] = (char *)malloc(80*sizeof(char));
-   snprintf(X[2],79,"%c c black",c);
+   snprintf(X[2],80,"%c c black",c);
 
    int offset = 3;
+   P("allocating %d\n",nw+1);
    for (i=0; i<nh; i++)
       X[i+offset] = (char *) malloc((nw+1)*sizeof(char));
 

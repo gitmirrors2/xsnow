@@ -79,6 +79,7 @@
 #define DEFAULT_XWinInfoHandling 0
 #define DEFAULT_WantWindow 0
 #define DEFAULTTREETYPE 2
+#define DEFAULT_Noisy 0
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
 
@@ -130,6 +131,7 @@
 #define DEFAULT_AttrFactor 100
 #define DEFAULT_DisWeight 20
 #define DEFAULT_FollowWeight 30
+#define DEFAULT_FollowSanta 1
 #define DEFAULT_BirdsColor "#361A07"
 #define DEFAULT_ShowAttrPoint 0
 #define DEFAULT_BirdsScale 100

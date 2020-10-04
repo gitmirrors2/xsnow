@@ -223,6 +223,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );
 	 handle_iv(-noexposures         ,Exposures                ,False  );
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
+	 handle_iv(-noisy               ,Noisy                    ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
 	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
@@ -243,6 +244,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-disweight           ,DisWeight                        );
 	 handle_ia(-focuscentre         ,AttrFactor                       );
 	 handle_ia(-followneighbours    ,FollowWeight                     );
+	 handle_ia(-followsanta         ,FollowSanta                      );
 	 handle_ia(-nbirds              ,Nbirds                           );
 	 handle_ia(-neighbours          ,Neighbours                       );
 	 handle_ia(-prefdistance        ,PrefDistance                     );
