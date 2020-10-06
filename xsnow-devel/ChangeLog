@@ -38,6 +38,7 @@ version 3.1.0
 	12:main.c: do_display_dimensions(): restart stars etc. not in the
 	   first call
 	   add scale button for 'Lift snow windows' == OffsetY
+	13:corrected handling of fluff in snow.c
 version 3.0.10
 	1:Better icons
 	2:better flakes

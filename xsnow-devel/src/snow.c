@@ -354,19 +354,13 @@ int do_UpdateSnowFlake(Snow *flake)
 	 (flake->fluff && flake->flufftimer < 0)           // fluff has expired
       )
    {
+      //if (flake->fluff)P("%d hoppa %d %d %f\n",counter++,flake->fluff,flake->whatFlake,flake->flufftimer);
       EraseSnowFlake(flake);
       DelFlake(flake);
       return FALSE;
    }
 
    double FlakesDT = time_snowflakes;
-   // handle fluff
-   if (flake->fluff)
-   {
-      flake->flufftimer -= FlakesDT;
-      if (!switches.UseGtk)
-	 return TRUE;
-   }
    //
    // update speed in x Direction
    //
@@ -384,6 +378,19 @@ int do_UpdateSnowFlake(Snow *flake)
 
    float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
+
+   // handle fluff
+   //if (flake->testing == 2)P("%d hoppa %d %f\n",counter++,flake->fluff,flake->flufftimer);
+   if (flake->fluff)
+   {
+      if (switches.UseGtk)
+      {
+	 flake->rx = NewX;
+	 flake->ry = NewY;
+      }
+      flake->flufftimer -= FlakesDT;
+      return TRUE;
+   }
 
    int flakew = snowPix[flake->whatFlake].width;
    int flakeh = snowPix[flake->whatFlake].height;
@@ -543,7 +550,7 @@ int do_UpdateSnowFlake(Snow *flake)
 		  found = 1;
 		  XRectangle rec;
 		  rec.x = xbot;
-		  int p = randint(4);
+		  int p = 1+drand48()*3;
 		  rec.y = j-p+1;
 		  rec.width = p;
 		  rec.height = p;
@@ -567,6 +574,9 @@ int do_UpdateSnowFlake(Snow *flake)
 	    }
 	    // do not erase: this gives bad effects in fvwm-like desktops
 	    //EraseSnowFlake(flake);
+	    flake->fluff = 1;
+	    flake->flufftimer = FLUFFTIME;
+	    return TRUE;
 	    DelFlake(flake);
 	    return FALSE;
 	 }
@@ -590,9 +600,7 @@ int do_UpdateSnowFlake(Snow *flake)
    flake->ry = NewY;
    // prevent drawing a flake on a tree
    // we can skip this when using gtk
-   if (switches.UseGtk)
-      DrawSnowFlake(flake);
-   else
+   if (!switches.UseGtk)
    {
       int in = XRectInRegion(TreeRegion,nx, ny, flakew, flakeh);
       int b  = (in == RectangleIn || in == RectanglePart); // true if in TreeRegion
@@ -848,7 +856,7 @@ void genxpmflake(char ***xpm, int w, int h)
    if (nw == 1 && nh == 1)
       nh = 2;
 
-   
+
    P("allocating %d\n",(nh+3)*sizeof(char*));
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
    char **X = *xpm;

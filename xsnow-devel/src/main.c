@@ -1040,6 +1040,7 @@ int do_display_dimensions(UNUSED gpointer data)
       return TRUE;
    }
    DisplayDimensions();
+   P("do_display_dim: prevw: %d SnowWinWidth: %d prevh: %d SnowWinHeight: %d\n",prevw,SnowWinWidth,prevh,SnowWinHeight);
    if (prevw != SnowWinWidth || prevh != SnowWinHeight)
    {
       if (prevw == SnowWinWidth)
