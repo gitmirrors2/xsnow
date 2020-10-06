@@ -116,7 +116,8 @@ int do_wupdate(UNUSED gpointer data)
       return TRUE;
    }
 
-   //I("%d:\n",counter++);printwindows(display,Windows,NWindows);
+   //P("%d:\n",counter++);printwindows(display,Windows,NWindows);
+   //P("%d:\n",counter++);PrintFallenSnow(FsnowFirst);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
@@ -396,6 +397,8 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
 	 if (!strcasecmp(DesktopSession,"enlightenment"))
 	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	 else if(!strcasecmp(DesktopSession,"twm"))
+	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
       }
 
       // if not possible to create transparent window:

@@ -22,14 +22,14 @@
 #include <X11/Xlib.h>
 typedef struct _WinInfo
 {
-   Window id             ;
-   int x,y               ; // x,y coordinates
-   int xa,ya             ; // x,y coordinates absolute
-   unsigned int w,h      ; // width, height
-            int ws       ; // workspace
-   unsigned int sticky: 1; // is visible on all workspaces
-   unsigned int dock  : 1; // is a "dock" (panel)
-   unsigned int hidden: 1; // is hidden (iconified)
+   Window id              ;
+   int x,y                ; // x,y coordinates
+   int xa,ya              ; // x,y coordinates absolute
+   unsigned int w,h       ; // width, height
+            int ws        ; // workspace
+   unsigned int sticky:  1; // is visible on all workspaces
+   unsigned int dock  :  1; // is a "dock" (panel)
+   unsigned int hidden:  1; // is hidden (iconified)
 } WinInfo;
 
 extern int          GetCurrentWorkspace();

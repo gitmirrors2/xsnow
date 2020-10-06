@@ -586,7 +586,8 @@ static struct _general_buttons
    general_button bgcolor;
    general_button exposures;
    general_button lift;
-   general_button fullscreen;   // is disabled in ui.xml.
+   general_button lift_windows;
+   general_button fullscreen;
    general_button below;
    general_button below_confirm;
    general_button allworkspaces;
@@ -604,6 +605,7 @@ static void init_general_buttons()
    HANDLE_INIT(general_buttons.bgcolor.button,            general-bgcolor);
    HANDLE_INIT(general_buttons.exposures.button,          general-exposures);
    HANDLE_INIT(general_buttons.lift.button,               general-lift);
+   HANDLE_INIT(general_buttons.lift_windows.button,       general-lift-windows);
    HANDLE_INIT(general_buttons.fullscreen.button,         general-fullscreen);
    HANDLE_INIT(general_buttons.below.button,              general-below);
    HANDLE_INIT(general_buttons.below_confirm.button,      general-below-confirm);
@@ -626,6 +628,7 @@ static void set_general_buttons()
    HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
    HANDLE_SET_RANGE(general_buttons.transparency.button,Transparency,self);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
+   HANDLE_SET_RANGE(general_buttons.lift_windows.button,OffsetY,-self);
    HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
    HANDLE_SET_TOGGLE(general_buttons.usebg.button,          UseBG);
    HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,     FullScreen);
@@ -677,6 +680,7 @@ HANDLE_TOGGLE(button_fullscreen,              FullScreen,    1,0);
 //  This one gets some special code, see below.
 HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
 HANDLE_RANGE(button_lift,                     OffsetS,       -value);
+HANDLE_RANGE(button_lift_windows,             OffsetY,       -value);
 
    MODULE_EXPORT
 void button_below(GtkWidget *w, UNUSED gpointer d)
@@ -757,6 +761,7 @@ void general_default(int vintage)
    Flags.BGColor       = strdup(DEFAULT_BGColor);
    Flags.Exposures     = DEFAULT_Exposures;
    Flags.OffsetS       = DEFAULT_OffsetS;
+   Flags.OffsetY       = DEFAULT_OffsetY;
    Flags.FullScreen    = DEFAULT_FullScreen;
    Flags.BelowAll      = DEFAULT_BelowAll;
    Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
@@ -1216,7 +1221,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
 
    apply_standard_css();
-   gtk_window_set_title(GTK_WINDOW(hauptfenster)," ");
+   gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();

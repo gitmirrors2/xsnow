@@ -603,8 +603,8 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 
 nodist_xsnow_SOURCES = ui_xml.h
 BUILT_SOURCES = ui_xml.h snow_includes.h
-TESTS = test1.sh # test2.sh test3.sh
-# test2.sh and test3.sh are still here, they test xsnow using Xvfb and xdotool.
+TESTS = test1.sh
+# test2.sh and test3.sh are still available, they test xsnow using Xvfb and xdotool.
 # I am not satisfied with the quality of these tests, so I left them out here.
 desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop

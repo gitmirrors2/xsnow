@@ -79,8 +79,8 @@ snow_includes.h: Pixmaps
 	@echo >> $@
 	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
-TESTS = test1.sh # test2.sh test3.sh
-# test2.sh and test3.sh are still here, they test xsnow using Xvfb and xdotool.
+TESTS = test1.sh
+# test2.sh and test3.sh are still available, they test xsnow using Xvfb and xdotool.
 # I am not satisfied with the quality of these tests, so I left them out here.
 
 desktopdir = $(datadir)/applications

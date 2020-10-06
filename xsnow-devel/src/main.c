@@ -732,6 +732,12 @@ int do_ui_check(UNUSED gpointer data)
       changes++;
       P("changes: %d %d\n",changes,Flags.OffsetS);
    }
+   if(Flags.OffsetY != OldFlags.OffsetY)
+   {
+      OldFlags.OffsetY = Flags.OffsetY;
+      changes++;
+      P("changes: %d %d\n",changes,Flags.OffsetY);
+   }
    if(Flags.NoFluffy != OldFlags.NoFluffy)
    {
       OldFlags.NoFluffy = Flags.NoFluffy;
@@ -1024,6 +1030,15 @@ int do_display_dimensions(UNUSED gpointer data)
       return FALSE;
    static int prevw = 0, prevh = 0;
    P("%d do_init_display_dimensions\n",counter);
+   static int first = 1;
+   if(first)
+   { 
+      // at the first call, nothing has to be done, except:
+      prevw = SnowWinWidth;
+      prevh = SnowWinHeight;
+      first = 0;
+      return TRUE;
+   }
    DisplayDimensions();
    if (prevw != SnowWinWidth || prevh != SnowWinHeight)
    {
@@ -1036,6 +1051,7 @@ int do_display_dimensions(UNUSED gpointer data)
       }
       else
 	 InitFallenSnow();
+      P("%d do_display_dimensions\n",counter++);
       init_stars();
       EraseTrees();
       ClearScreen();

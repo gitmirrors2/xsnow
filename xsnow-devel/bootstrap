@@ -60,7 +60,7 @@ done
 cp debian.sid/* debian
 
 mkdir -p debian/tests
-for t in src/test*.sh ; do
+for t in src/test1.sh ; do
    cp $t debian/tests
 done
 

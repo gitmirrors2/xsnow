@@ -1,2 +1,7 @@
 #!/bin/bash
 rsync -auv ../versions pi@raspi.local:xsnow-versions
+if [ -d /media/willem/E306-BF0E/xsnow ] ; then
+   cp -urv ../versions /media/willem/E306-BF0E/xsnow
+else
+   echo "Cannot find usb stick"
+fi

@@ -179,6 +179,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="lift-windows-adjustment">
+    <property name="lower">-20</property>
+    <property name="upper">100</property>
+    <property name="value">-20</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="ntreesadjustment">
     <property name="upper">30</property>
     <property name="value">10</property>
@@ -3899,7 +3906,7 @@ Santa</property>
                 <property name="label" translatable="yes">version</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">0</property>
                 <property name="width">14</property>
               </packing>
@@ -4109,7 +4116,8 @@ confirm</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <property name="label" translatable="yes">Lift snow bottom</property>
+                    <property name="label" translatable="yes">Lift snow
+on bottom</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4140,6 +4148,46 @@ or fallen snow hides something that should not be hidden.</property>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Lift snow
+on windows</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="general-lift-windows">
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Use this if no snow collects on your windows, or if snow collects separated from your windows. 
+Some basic window managers need this setting (e.g. TWM needs in general a value of 25 .. 28).</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">lift-windows-adjustment</property>
+                    <property name="inverted">True</property>
+                    <property name="restrict_to_fill_level">False</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">right</property>
+                    <signal name="value-changed" handler="button_lift_windows" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </object>
@@ -4181,7 +4229,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="orientation">vertical</property>
               </object>
               <packing>
-                <property name="left_attach">15</property>
+                <property name="left_attach">16</property>
                 <property name="top_attach">10</property>
                 <property name="height">7</property>
               </packing>
@@ -4205,7 +4253,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">10</property>
               </packing>
             </child>
@@ -4217,7 +4265,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">17</property>
               </packing>
             </child>
@@ -4270,7 +4318,7 @@ or fallen snow hides something that should not be hidden.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">8</property>
+                <property name="left_attach">9</property>
                 <property name="top_attach">19</property>
                 <property name="width">8</property>
               </packing>
@@ -4358,7 +4406,7 @@ or fallen snow hides something that should not be hidden.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">8</property>
+                <property name="left_attach">9</property>
                 <property name="top_attach">18</property>
                 <property name="width">8</property>
               </packing>
@@ -4370,7 +4418,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">14</property>
               </packing>
             </child>
@@ -4436,7 +4484,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </style>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">13</property>
                 <property name="width">14</property>
               </packing>
@@ -4511,7 +4559,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </style>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">15</property>
                 <property name="width">14</property>
               </packing>
@@ -4561,7 +4609,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">3</property>
                 <property name="top_attach">11</property>
                 <property name="width">13</property>
               </packing>
@@ -4573,9 +4621,69 @@ Drawing and erasing will be done by X11 functions.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

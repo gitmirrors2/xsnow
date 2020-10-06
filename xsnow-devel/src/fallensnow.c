@@ -57,7 +57,7 @@ void fallensnow_init()
    EFallenGC     = XCreateGC(display, SnowWin,    0, NULL);  // used to erase fallen snow
 }
 
-void   fallensnow_set_gc()
+void fallensnow_set_gc()
 {
    XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
    XSetFillStyle( display, EFallenGC, FillSolid);
@@ -416,6 +416,7 @@ void DrawFallen(FallenSnow *fsnow)
 	    XSetForeground(display, FallenGC, SnowcPix);
 	    XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
 	    XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+	    P("Fallensnow %d %d %d %d\n",x,y,fsnow->w,fsnow->h);
 	 }
       }
 }

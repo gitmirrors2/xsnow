@@ -162,7 +162,7 @@
 #define time_usanta           0.02             /* time between update of santa position      */
 #define time_ustar            2.00             /* time between updating stars                */ 
 #define time_wind             0.10             /* time between starting or ending wind       */
-#define time_wupdate          0.50             /* time between getting windows information   */ 
+#define time_wupdate          0.40             /* time between getting windows information   */ 
 #define time_show_range_etc   0.50             /* time between showing range etc.            */
 #define time_change_attr      60.0             /* time between changing attraction point     */
 #define time_measure          0.1

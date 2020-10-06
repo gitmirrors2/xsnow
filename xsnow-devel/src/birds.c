@@ -145,9 +145,7 @@ int birds_ui()
    {
       Flags.BirdsRestart = 0;
       init_birds(0);
-      attrbird.x = globals.maxx/2;
-      attrbird.y = globals.maxy/2;
-      attrbird.z = globals.maxz/2;
+      birds_set_attraction_point_relative(0.5, 0.5, 0.5);
       P("changes: %d\n",changes);
    }
    if(Flags.ViewingDistance != OldFlags.ViewingDistance)
@@ -223,6 +221,8 @@ int birds_ui()
    {
       P("FollowSanta: %d->%d\n",OldFlags.FollowSanta,Flags.FollowSanta);
       OldFlags.FollowSanta = Flags.FollowSanta;
+      if (!Flags.FollowSanta)
+	 birds_set_attraction_point_relative(0.5, 0.5, 0.5);
       changes ++;
    }
    return changes;
@@ -521,7 +521,7 @@ int birds_draw(cairo_t *cr)
 
    for (before=0; before<2; before++)
    {
-      if(before && Flags.FollowSanta)
+      if(before && Flags.FollowSanta && !Flags.BirdsOnly)
       {
 	 static int prevSantasize = -1;
 	 Santa_draw(cr);
@@ -537,7 +537,7 @@ int birds_draw(cairo_t *cr)
 	 P("santasize: %d %d %d %f\n",prevSantasize,Flags.SantaSize,Flags.ViewingDistance,scale(attrbird.y));
 	 if (prevSantasize != Flags.SantaSize)
 	 {
-	    R("iy: %d %d\n",prevSantasize,Flags.SantaSize);
+	    P("iy: %d %d\n",prevSantasize,Flags.SantaSize);
 	    prevSantasize = Flags.SantaSize;
 	    attrbird2surface();
 	 }
@@ -844,7 +844,7 @@ int do_change_attr(UNUSED gpointer data)
    // z: 0.3 .. 0.7
    if (Flags.Done)
       return FALSE;
-   if (Flags.FollowSanta)
+   if (Flags.FollowSanta && !Flags.BirdsOnly)
       return TRUE;
    P("change attr\n");
    birds_set_attraction_point_relative(
