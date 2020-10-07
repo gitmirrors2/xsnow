@@ -1013,7 +1013,7 @@ void drawit(cairo_t *cr)
 
    scenery_draw(cr);
 
-   if(!Flags.FollowSanta) // if Flags.FollowSanta: drawing of Santa is done in birds_draw()
+   if(!Flags.FollowSanta || !Flags.ShowBirds) // if Flags.FollowSanta: drawing of Santa is done in birds_draw()
       Santa_draw(cr);
 
    treesnow_draw(cr);

@@ -1019,8 +1019,8 @@ void birds_default(int vintage)
    human_interaction = 0;
    if(vintage)
    {
-      Flags.ShowBirds = VINTAGE_ShowBirds;
-      Flags.BirdsOnly = VINTAGE_BirdsOnly;
+      Flags.ShowBirds   = VINTAGE_ShowBirds;
+      Flags.BirdsOnly   = VINTAGE_BirdsOnly;
    }
    else
    {

@@ -3711,7 +3711,9 @@ point</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Follow neighbours</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Adjust speed to
+neighbours</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
