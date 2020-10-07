@@ -25,9 +25,6 @@
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
 
-#define FLUFFTIME 0.7  // #seconds fluff will live, using GTK/Cairo
-
-
 extern int UseVintageFlakes; // whether to use the not-generated flakes
 
 typedef struct _Snow {
@@ -39,10 +36,12 @@ typedef struct _Snow {
    float ivy;                    // initial speed in y direction
    float wsens;                  // wind dependency factor
    float flufftimer;             // fluff timeout timer
+   float flufftime;              // fluff timeout
    unsigned int whatFlake;       // snowflake index
    unsigned int cyclic     : 1;  // 1: flake is cyclic 
    unsigned int fluff      : 1;  // 1: flake is in fluff state
    unsigned int testing    : 2;  // for testing purposes
+   unsigned int freeze     ;  // 1: flake does not move
 
 } Snow;
 
@@ -57,6 +56,7 @@ extern Pixel      SnowcPix;
 extern int        MaxSnowFlakeHeight;  /* Biggest flake */
 extern int        MaxSnowFlakeWidth;   /* Biggest flake */
 extern int        FlakeCount;          /* number of flakes */
+extern int        FluffCount;          /* number of fluff flakes */
 
 extern int        do_initsnow(gpointer data);
 extern int        do_UpdateSnowFlake(Snow *flake);
@@ -65,3 +65,4 @@ extern int        snow_draw(cairo_t *cr);
 extern void       snow_init(void);
 extern void       snow_set_gc(void);
 extern int        snow_ui();
+extern void       fluffify(Snow *flake, float t);

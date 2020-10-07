@@ -158,7 +158,6 @@ void ConvertOnTreeToFlakes()
 	    flake->ry     = SnowOnTrees[i].y-5*j;
 	    flake->vy     = 0;
 	    flake->cyclic = 0;
-	    add_flake_to_mainloop(flake);
 	 }
       }
    }

@@ -79,6 +79,7 @@ int        MaxSnowFlakeHeight = 0;  /* Highest flake */
 int        MaxSnowFlakeWidth  = 0;  /* Widest  flake */
 int        FlakeCount         = 0;  /* # active flakes */
 int        UseVintageFlakes   = 0;  /* whether to use only vintage flakes */
+int        FluffCount         = 0;
 
 void snow_init()
 {
@@ -288,9 +289,13 @@ int snow_draw(cairo_t *cr)
       cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
       double alpha = ALPHA;
       if (flake->fluff)
-	 alpha *= flake->flufftimer>0?flake->flufftimer/FLUFFTIME:0;
+	 //alpha *= flake->flufftimer>0?flake->flufftimer/FLUFFTIME:0;
+	 alpha *= (1-flake->flufftimer/flake->flufftime);
+      if (alpha < 0)
+	 alpha = 0;
       my_cairo_paint_with_alpha(cr,alpha);
       //if (flake->testing) P("testing flake: alpha: %f\n",alpha);
+      //if (flake->whatFlake == 2) P("%d %d %d %f %f %f %f %f %f\n",counter++,flake->fluff,flake->freeze,flake->rx, flake->ry, flake->flufftimer, flake->flufftime,flake->vx, flake->vy);
    }
    return TRUE;
 }
@@ -335,8 +340,7 @@ int do_genflakes(UNUSED gpointer data)
    int i;
    for(i=0; i<desflakes; i++)
    {
-      Snow *flake = MakeFlake(-1);
-      add_flake_to_mainloop(flake);
+      MakeFlake(-1);
    }
    RETURN;
 #undef RETURN
@@ -346,15 +350,24 @@ int do_UpdateSnowFlake(Snow *flake)
 {
    if(NOTACTIVE)
       return TRUE;
-   int fckill = FlakeCount >= Flags.FlakeCountMax;
+   int fckill = FlakeCount - FluffCount >= Flags.FlakeCountMax;
    if (
 	 KillFlakes                                    ||  // merciless remove if KillFlakes
 	 (fckill && !flake->cyclic && drand48() > 0.3) ||  // high probability to remove blown-off flake
-	 (fckill && drand48() > 0.9)                   ||  // low probability to remove other flakes
-	 (flake->fluff && flake->flufftimer < 0)           // fluff has expired
+	 (fckill && drand48() > 0.9)                       // low probability to remove other flakes
       )
    {
       //if (flake->fluff)P("%d hoppa %d %d %f\n",counter++,flake->fluff,flake->whatFlake,flake->flufftimer);
+      /*
+	 EraseSnowFlake(flake);
+	 DelFlake(flake);
+	 return FALSE;
+	 */
+      fluffify(flake,0.5);
+      return TRUE;
+   }
+   if (flake->fluff && flake->flufftimer > flake->flufftime)
+   {
       EraseSnowFlake(flake);
       DelFlake(flake);
       return FALSE;
@@ -367,7 +380,7 @@ int do_UpdateSnowFlake(Snow *flake)
    if (!Flags.NoWind)
    {
       flake->vx += FlakesDT*flake->wsens*(NewWind - flake->vx)/flake->m;
-      float speedxmaxes[] = {100.0, 300.0, 600.0,};
+      static float speedxmaxes[] = {100.0, 300.0, 600.0,};
       float speedxmax = speedxmaxes[Wind];
       if(flake->vx > speedxmax) flake->vx = speedxmax;
       if(flake->vx < -speedxmax) flake->vx = -speedxmax;
@@ -383,12 +396,18 @@ int do_UpdateSnowFlake(Snow *flake)
    //if (flake->testing == 2)P("%d hoppa %d %f\n",counter++,flake->fluff,flake->flufftimer);
    if (flake->fluff)
    {
-      if (switches.UseGtk)
+      if (switches.UseGtk && !flake->freeze)
       {
 	 flake->rx = NewX;
 	 flake->ry = NewY;
       }
-      flake->flufftimer -= FlakesDT;
+      flake->flufftimer += FlakesDT;
+      return TRUE;
+   }
+
+   if (flake->freeze)
+   {
+      DrawSnowFlake(flake);
       return TRUE;
    }
 
@@ -460,8 +479,7 @@ int do_UpdateSnowFlake(Snow *flake)
 			      flake->rx = NewX;
 			      flake->ry = fsnow->y - fsnow->acth[i] - 0.8*drand48()*flakeh;
 			      DrawSnowFlake(flake);
-			      flake->fluff      = 1;
-			      flake->flufftimer = FLUFFTIME;
+			      fluffify(flake,0.1);
 			   }
 			   if (flake->fluff)
 			      return TRUE;
@@ -502,18 +520,16 @@ int do_UpdateSnowFlake(Snow *flake)
       if (in == RectanglePart || in == RectangleIn)
       {
 	 if (Flags.NoFluffy)
-	    EraseSnowFlake(flake);
-	 else
-	 {
-	    flake->fluff      = 1;
-	    flake->flufftimer = FLUFFTIME;
-	 }
-	 if (flake->fluff)
-	    return TRUE;
-	 else
 	 {
 	    DelFlake(flake);
 	    return FALSE;
+	 }
+	 else
+	 {
+	    fluffify(flake,0.4);
+	    flake->freeze=1;
+	    DrawSnowFlake(flake);
+	    return TRUE;
 	 }
       }
 
@@ -531,6 +547,7 @@ int do_UpdateSnowFlake(Snow *flake)
 	 // Only one snow-on-tree pixel has to be found.
 	 int i;
 	 int found = 0;
+	 int xfound,yfound;
 	 for(i=0; i<flakew; i++)
 	 {
 	    if(found) break;
@@ -569,16 +586,26 @@ int do_UpdateSnowFlake(Snow *flake)
 		     OnTrees++;
 		     //P("%d %d %d\n",OnTrees,rec.x,rec.y);
 		  }
+		  xfound = rec.x;
+		  yfound = rec.y;
 		  break;
 	       }
 	    }
-	    // do not erase: this gives bad effects in fvwm-like desktops
-	    //EraseSnowFlake(flake);
-	    flake->fluff = 1;
-	    flake->flufftimer = FLUFFTIME;
+	 }
+	 // do not erase: this gives bad effects in fvwm-like desktops
+	 if(found)
+	 {
+	    flake->freeze = 1;
+	    fluffify(flake,0.6);
+	    DrawSnowFlake(flake);
+
+	    Snow *newflake = MakeFlake(1);
+	    newflake->freeze = 1;
+	    newflake->rx = xfound;
+	    newflake->ry = yfound-snowPix[1].height*0.3f;
+	    fluffify(newflake,8);
+	    DrawSnowFlake(newflake);
 	    return TRUE;
-	    DelFlake(flake);
-	    return FALSE;
 	 }
       }
    }
@@ -629,6 +656,7 @@ Snow *MakeFlake(int type)
    //if(type > 0 && type <7)P("type: %d\n",type);
    flake -> whatFlake = type; 
    InitFlake(flake);
+   add_flake_to_mainloop(flake);
    return flake;
 }
 
@@ -661,6 +689,8 @@ void DelFlake(Snow *flake)
    set_erase(flake);
    free(flake);
    FlakeCount--;
+   if (flake->fluff)
+      FluffCount--;
 }
 
 
@@ -698,6 +728,7 @@ void InitFlake(Snow *flake)
    flake->vy         = flake->ivy;
    flake->wsens      = drand48()*MAXWSENS;
    flake->testing    = 0;
+   flake->freeze     = 0;
    set_insert(flake); // will be picked up by snow_draw()
    P("wsens: %f\n",flake->wsens);
    //P("%f %f\n",flake->rx, flake->ry);
@@ -922,4 +953,17 @@ void add_random_flakes(int n)
    MaxFlakeTypes   = n + NFlakeTypesVintage;
    x[MaxFlakeTypes] = NULL;
    xsnow_xpm = x;
+}
+
+void fluffify(Snow *flake,float t)
+{
+   if (flake->fluff)
+      return;
+   flake->fluff      = 1;
+   flake->flufftimer = 0;
+   if (t > 0.01)
+      flake->flufftime  = t;
+   else
+      flake->flufftime = 0.01;
+   FluffCount ++;
 }

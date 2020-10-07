@@ -465,11 +465,9 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	       flake->cyclic     = 0;
 	       if (switches.UseGtk && drand48() > 0.25)
 	       {
-		  flake->fluff      = 1;
-		  flake->flufftimer = FLUFFTIME;
+		  fluffify(flake,0.7);
 		  //flake->ry += 2*MaxSnowFlakeHeight*drand48();
 	       }
-	    add_flake_to_mainloop(flake);
 	    }
 	 }
       }
@@ -526,7 +524,6 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	       flake->vx         = fsignf(NewWind)*WindMax;
 	       flake->vy         = -5;
 	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
-	       add_flake_to_mainloop(flake);
 	       P("%d:\n",counter++);
 	    }
 	    EraseFallenPixel(fsnow,i);

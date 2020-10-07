@@ -932,6 +932,10 @@ int do_testing(UNUSED gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
+   return TRUE;
+   P("Flakecount: %d FluffCount: %d\n",FlakeCount,FluffCount);
+   if (FluffCount < 0 || FluffCount > FlakeCount)
+      Flags.Done = 1;
    /*
 #include "hashtable.h"
 #include "snow.h"

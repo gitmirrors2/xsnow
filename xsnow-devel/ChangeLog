@@ -40,6 +40,7 @@ version 3.1.0
 	   add scale button for 'Lift snow windows' == OffsetY
 	13:corrected handling of fluff in snow.c
 	   corrected: if !ShowBirds, Santa should be shown (main.c)
+	14:some fine tuning snow on trees
 version 3.0.10
 	1:Better icons
 	2:better flakes
