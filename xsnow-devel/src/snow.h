@@ -38,25 +38,37 @@ typedef struct _Snow {
    float flufftimer;             // fluff timeout timer
    float flufftime;              // fluff timeout
    unsigned int whatFlake;       // snowflake index
-   unsigned int cyclic     : 1;  // 1: flake is cyclic 
-   unsigned int fluff      : 1;  // 1: flake is in fluff state
+#ifdef NO_USE_BITS 
+   unsigned int cyclic     ;  // flake is cyclic 
+   unsigned int fluff      ;  // flake is in fluff state
+   unsigned int freeze     ;  // flake does not move
+   unsigned int testing    ;  // for testing purposes
+#else
+   unsigned int cyclic     : 1;  // flake is cyclic 
+   unsigned int fluff      : 1;  // flake is in fluff state
+   unsigned int freeze     : 1;  // flake does not move
    unsigned int testing    : 2;  // for testing purposes
-   unsigned int freeze     ;  // 1: flake does not move
+#endif
 
 } Snow;
 
 typedef struct _SnowMap {
    Pixmap pixmap;
+#ifdef NO_USE_BITS 
+   unsigned int width       ;
+   unsigned int height      ;
+#else
    unsigned int width   : 16;
    unsigned int height  : 16;
+#endif
 } SnowMap;
 
-extern Region     NoSnowArea_dynamic;
-extern Pixel      SnowcPix;
-extern int        MaxSnowFlakeHeight;  /* Biggest flake */
-extern int        MaxSnowFlakeWidth;   /* Biggest flake */
-extern int        FlakeCount;          /* number of flakes */
-extern int        FluffCount;          /* number of fluff flakes */
+extern Region       NoSnowArea_dynamic;
+extern Pixel        SnowcPix;
+extern unsigned int MaxSnowFlakeHeight;  /* Biggest flake */
+extern unsigned int MaxSnowFlakeWidth;   /* Biggest flake */
+extern int          FlakeCount;          /* number of flakes */
+extern int          FluffCount;          /* number of fluff flakes */
 
 extern int        do_initsnow(gpointer data);
 extern int        do_UpdateSnowFlake(Snow *flake);
@@ -66,3 +78,4 @@ extern void       snow_init(void);
 extern void       snow_set_gc(void);
 extern int        snow_ui();
 extern void       fluffify(Snow *flake, float t);
+extern void       printflake(Snow *flake);

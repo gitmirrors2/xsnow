@@ -41,6 +41,9 @@ version 3.1.0
 	13:corrected handling of fluff in snow.c
 	   corrected: if !ShowBirds, Santa should be shown (main.c)
 	14:some fine tuning snow on trees
+	15:trivia in snow.h
+	16:fixed serious bug in snow.c which caused freezing
+	   snow flakes when changing size of flakes
 version 3.0.10
 	1:Better icons
 	2:better flakes

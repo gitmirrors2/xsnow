@@ -73,13 +73,13 @@ static void   genxpmflake(char ***xpm, int w, int h);
 static void   add_random_flakes(int n);
 
 
-Region     NoSnowArea_dynamic;
-Pixel      SnowcPix;
-int        MaxSnowFlakeHeight = 0;  /* Highest flake */
-int        MaxSnowFlakeWidth  = 0;  /* Widest  flake */
-int        FlakeCount         = 0;  /* # active flakes */
-int        UseVintageFlakes   = 0;  /* whether to use only vintage flakes */
-int        FluffCount         = 0;
+Region       NoSnowArea_dynamic;
+Pixel        SnowcPix;
+unsigned int MaxSnowFlakeHeight = 0;  /* Highest flake */
+unsigned int MaxSnowFlakeWidth  = 0;  /* Widest  flake */
+int          FlakeCount         = 0;  /* # active flakes */
+int          UseVintageFlakes   = 0;  /* whether to use only vintage flakes */
+int          FluffCount         = 0;
 
 void snow_init()
 {
@@ -350,9 +350,33 @@ int do_UpdateSnowFlake(Snow *flake)
 {
    if(NOTACTIVE)
       return TRUE;
+   //P(" ");printflake(flake);
+   
+   double FlakesDT = time_snowflakes;
+   float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
+   float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
+
+   // handle fluff and KillFlakes
+   //if (flake->testing == 2)P("%d hoppa %d %f\n",counter++,flake->fluff,flake->flufftimer);
+   if (KillFlakes || (flake->fluff && flake->flufftimer > flake->flufftime))
+   {
+      EraseSnowFlake(flake);
+      DelFlake(flake);
+      return FALSE;
+   }
+   if (flake->fluff)
+   {
+      if (switches.UseGtk && !flake->freeze)
+      {
+	 flake->rx = NewX;
+	 flake->ry = NewY;
+      }
+      flake->flufftimer += FlakesDT;
+      return TRUE;
+   }
+
    int fckill = FlakeCount - FluffCount >= Flags.FlakeCountMax;
    if (
-	 KillFlakes                                    ||  // merciless remove if KillFlakes
 	 (fckill && !flake->cyclic && drand48() > 0.3) ||  // high probability to remove blown-off flake
 	 (fckill && drand48() > 0.9)                       // low probability to remove other flakes
       )
@@ -363,17 +387,10 @@ int do_UpdateSnowFlake(Snow *flake)
 	 DelFlake(flake);
 	 return FALSE;
 	 */
-      fluffify(flake,0.5);
+      fluffify(flake,0.51);
       return TRUE;
    }
-   if (flake->fluff && flake->flufftimer > flake->flufftime)
-   {
-      EraseSnowFlake(flake);
-      DelFlake(flake);
-      return FALSE;
-   }
 
-   double FlakesDT = time_snowflakes;
    //
    // update speed in x Direction
    //
@@ -389,21 +406,7 @@ int do_UpdateSnowFlake(Snow *flake)
    flake->vy += INITIALYSPEED * (drand48()-0.4)*0.1 ;
    if (flake->vy > flake->ivy*1.5) flake->vy = flake->ivy*1.5;
 
-   float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
-   float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
 
-   // handle fluff
-   //if (flake->testing == 2)P("%d hoppa %d %f\n",counter++,flake->fluff,flake->flufftimer);
-   if (flake->fluff)
-   {
-      if (switches.UseGtk && !flake->freeze)
-      {
-	 flake->rx = NewX;
-	 flake->ry = NewY;
-      }
-      flake->flufftimer += FlakesDT;
-      return TRUE;
-   }
 
    if (flake->freeze)
    {
@@ -686,11 +689,11 @@ void EraseSnowFlake(Snow *flake)
 // flake from the g_timeout callback
 void DelFlake(Snow *flake)
 {
+   if (flake->fluff)
+      FluffCount--;
    set_erase(flake);
    free(flake);
    FlakeCount--;
-   if (flake->fluff)
-      FluffCount--;
 }
 
 
@@ -719,6 +722,7 @@ void InitFlake(Snow *flake)
    flake->cyclic     = 1;
    flake->fluff      = 0;
    flake->flufftimer = 0;
+   flake->flufftime  = 0;
    flake->m          = drand48()+0.1;
    if(Flags.NoWind)
       flake->vx      = 0; 
@@ -966,4 +970,10 @@ void fluffify(Snow *flake,float t)
    else
       flake->flufftime = 0.01;
    FluffCount ++;
+}
+
+void printflake(Snow *flake)
+{
+   printf("flake: %p rx: %6.0f ry: %6.0f fluff: %d freeze: %d ftr: %8.3f ft: %8.3f\n",
+	 (void *)flake,flake->rx,flake->ry,flake->fluff,flake->freeze,flake->flufftimer,flake->flufftime);
 }

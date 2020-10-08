@@ -27,9 +27,16 @@ typedef struct _WinInfo
    int xa,ya              ; // x,y coordinates absolute
    unsigned int w,h       ; // width, height
             int ws        ; // workspace
+
+#ifdef NO_USE_BITS
+   unsigned int sticky    ; // is visible on all workspaces
+   unsigned int dock      ; // is a "dock" (panel)
+   unsigned int hidden    ; // is hidden (iconified)
+#else
    unsigned int sticky:  1; // is visible on all workspaces
    unsigned int dock  :  1; // is a "dock" (panel)
    unsigned int hidden:  1; // is hidden (iconified)
+#endif
 } WinInfo;
 
 extern int          GetCurrentWorkspace();

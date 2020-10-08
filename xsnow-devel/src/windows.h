@@ -70,10 +70,19 @@ static const int UW_TRANSPARENT = 2;
 
 extern struct _switches
 {
+#ifdef NO_USE_BITS
+   unsigned int UseGtk    ;
+   unsigned int Trans     ;
+   unsigned int Root      ;
+   unsigned int DrawBirds ;
+   unsigned int Exposures ;
+   unsigned int Desktop   ;
+#else
    unsigned int UseGtk    :1;
    unsigned int Trans     :1;
    unsigned int Root      :1;
    unsigned int DrawBirds :1;
    unsigned int Exposures :1;
    unsigned int Desktop   :1;
+#endif
 } switches;

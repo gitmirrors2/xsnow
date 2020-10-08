@@ -526,7 +526,7 @@ int myDetermineWindow()
 
    static char * SnowWinaName = NULL;
    static char * SnowWinbName = NULL;
-   int IsDesktop;
+   static int IsDesktop;
    if (!SnowWina)
    {
       if (SnowWinaName)
@@ -630,6 +630,7 @@ int myDetermineWindow()
       drawconnect = g_signal_connect(TransA, "draw", G_CALLBACK(on_draw_event), NULL);
       P("connecting %ld\n",drawconnect);
       restart_do_draw_all();  // to (re-)establish the timeout for do_draw_all
+      set_below_above();
    }
    else
    {
@@ -815,6 +816,10 @@ int do_displaychanged(UNUSED gpointer data)
    // If the size has been changed, we restart the program
    if (Flags.Done)
       return FALSE;
+   P("UseGtk: %d Trans: %d Root: %d DrawBirds: %d Exposures: %d Desktop: %d\n",
+	 switches.UseGtk, switches.Trans, switches.Root, switches.DrawBirds, 
+	 switches.Exposures, switches.Desktop);
+
    if (!switches.Desktop)
       return TRUE;
    {

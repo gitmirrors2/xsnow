@@ -34,11 +34,12 @@ typedef struct _FallenSnow {
    short int          *desh;         // desired heights
    struct _FallenSnow *next;         // pointer to next item
    cairo_surface_t    *surface;      // 
+
+#ifdef NO_USE_BITS 
+   unsigned int        clean     ;   // if True, this area has been cleaned
+#else
    unsigned int        clean  : 1;   // if True, this area has been cleaned
-   //Window              id;           // window id, 0 for snow at bottom  // to remove
-   //unsigned int        ws     :16;   // visible on workspace ws
-   //unsigned int        hidden : 1;   // if True, the window is hidden (iconized)  // to remove
-   //unsigned int        sticky : 1;   // visible on all workspaces                 // to remove
+#endif
 } FallenSnow;
 
 extern FallenSnow *FsnowFirst;

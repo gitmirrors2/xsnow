@@ -34,7 +34,11 @@ extern struct _globals {
    float mean_distance;         // mean distance [m]
    //float vd;                    // viewing distance (camera obscura) [m]
    float xc, zc;                // coordinates of camera obscura lens
+#ifdef NO_USE_BITS 
+   unsigned int freeze   ;      // when true, system freezes
+#else
    unsigned int freeze :1;      // when true, system freezes
+#endif
 
 #define DOITB(what,type) \
    type what; \
@@ -42,15 +46,24 @@ extern struct _globals {
 
    DOITALLB()
 #undef DOITB
+#ifdef NO_USE_BITS 
 #define DOITB(what,type) \
-      unsigned int what ## _changed  :1;
+      unsigned int what ## _changed    ;
+#else
+#define DOITB(what,type) \
+      unsigned int what ## _changed  : 1;
+#endif
 
       DOITALLB()
 #undef DOITB
 
+#ifdef NO_USE_BITS 
 #define DOITB(what) \
-      unsigned int what ## _requested  :1;
-
+      unsigned int what ## _requested    ;
+#else
+#define DOITB(what) \
+      unsigned int what ## _requested  : 1;
+#endif
       BUTTONALL()
 #undef DOITB
 
