@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -61,7 +61,6 @@ static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
-   //Flags.WindowId                = WINDOW_ID; 
 #define DOIT_I(x) Flags.x = DEFAULT_ ## x ;
 #define DOIT_S(x) free(Flags.x); Flags.x = strdup(DEFAULT_ ## x);
 #define DOIT_L(x) DOIT_I(x)
@@ -201,6 +200,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-santaspeedfactor    ,SantaSpeedFactor                 );
 	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
 	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
+	 handle_ia(-snowsize            ,SnowSize                         );
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
 	 handle_ia(-stopafter           ,StopAfter                        );
@@ -223,6 +223,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );
 	 handle_iv(-noexposures         ,Exposures                ,False  );
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
+	 handle_iv(-noisy               ,Noisy                    ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
 	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
@@ -243,6 +244,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-disweight           ,DisWeight                        );
 	 handle_ia(-focuscentre         ,AttrFactor                       );
 	 handle_ia(-followneighbours    ,FollowWeight                     );
+	 handle_ia(-followsanta         ,FollowSanta                      );
 	 handle_ia(-nbirds              ,Nbirds                           );
 	 handle_ia(-neighbours          ,Neighbours                       );
 	 handle_ia(-prefdistance        ,PrefDistance                     );
@@ -270,6 +272,11 @@ int HandleFlags(int argc, char*argv[])
    {
       free(Flags.TreeType);
       Flags.TreeType = strdup(ALLTREETYPES);
+   }
+   if (Flags.SnowSize > 40)
+   {
+      printf("snowsize brought back from %d to 40\n",Flags.SnowSize);
+      Flags.SnowSize = 40;
    }
    return 0;
 }

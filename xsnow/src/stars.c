@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -107,9 +107,7 @@ void stars_draw(cairo_t *cr)
    int i;
    cairo_save(cr);
    cairo_set_line_width(cr,1);
-   //cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
    cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
-   //cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
    for (i=0; i<NStars; i++)
    {
       P("stars_draw i: %d %d %d\n",i,NStars,counter++);
@@ -118,7 +116,7 @@ void stars_draw(cairo_t *cr)
       int y = star->y;
       int color = star->color;
       cairo_set_source_surface (cr, surfaces[color], x, y);
-      cairo_paint_with_alpha(cr,ALPHA);
+      my_cairo_paint_with_alpha(cr,ALPHA);
    }
    cairo_restore(cr);
 }
@@ -128,11 +126,11 @@ int stars_ui()
    int changes = 0;
    if(Flags.NStars != OldFlags.NStars)
    {
+      P("changes NStars: %d %d %d\n",changes,OldFlags.NStars,Flags.NStars);
       OldFlags.NStars = Flags.NStars;
       init_stars();
       ClearScreen();
       changes++;
-      P("changes NStars: %d %d %d\n",changes,OldFlags.NStars,Flags.NStars);
    }
    return changes;
 }

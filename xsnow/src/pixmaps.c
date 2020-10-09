@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -18,27 +18,12 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+
 #include "xsnow.h"
 #include "snow.h"
 #include "pixmaps.h"
-
-#include "Pixmaps/snow00.xbm"
-#include "Pixmaps/snow01.xbm"
-#include "Pixmaps/snow02.xbm"
-#include "Pixmaps/snow03.xbm"
-#include "Pixmaps/snow04.xbm"
-#include "Pixmaps/snow05.xbm"
-#include "Pixmaps/snow06.xbm"
-
-SnowMap snowPix[] = {
-   {snow00_bits, None, snow00_width, snow00_height},
-   {snow01_bits, None, snow01_width, snow01_height},
-   {snow02_bits, None, snow02_width, snow02_height},
-   {snow03_bits, None, snow03_width, snow03_height},
-   {snow04_bits, None, snow04_width, snow04_height},
-   {snow05_bits, None, snow05_width, snow05_height},
-   {snow06_bits, None, snow06_width, snow06_height},
-}; 
+#include "snow_includes.h" // a generated file, containing #includes for snow xbm's and xpm's
+//                            and the definition of SNOW_ALL
 
 #include "Pixmaps/BigSanta1.xpm"
 #include "Pixmaps/BigSanta2.xpm"
@@ -188,15 +173,19 @@ XPM_TYPE **birds_xpm[] =
    birdd1_xpm, birdd2_xpm, birdd3_xpm, birdd4_xpm, birdd5_xpm, birdd6_xpm, birdd7_xpm, birdd8_xpm
 };
 
-#include "Pixmaps/snow00.xpm"
-#include "Pixmaps/snow01.xpm"
-#include "Pixmaps/snow02.xpm"
-#include "Pixmaps/snow03.xpm"
-#include "Pixmaps/snow04.xpm"
-#include "Pixmaps/snow05.xpm"
-#include "Pixmaps/snow06.xpm"
 
+#define SNOW(x) snow##x##_xpm,
 XPM_TYPE **snow_xpm[] =
 {
-   snow00_xpm, snow01_xpm, snow02_xpm, snow03_xpm, snow04_xpm, snow05_xpm, snow06_xpm
+   SNOW_ALL
+      NULL
 };
+/* Like:
+ * XPM_TYPE **snow_xpm[] =
+ * {
+ *    snow00_xpm,
+ *    snow01_xpm,
+ *    NULL
+ * }
+ * */
+#undef SNOW

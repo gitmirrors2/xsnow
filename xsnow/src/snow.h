@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
 
-#define FLUFFTIME 0.7  // #seconds fluff will live, using GTK/Cairo
+extern int UseVintageFlakes; // whether to use the not-generated flakes
 
 typedef struct _Snow {
    float rx;                     // x position
@@ -36,27 +36,39 @@ typedef struct _Snow {
    float ivy;                    // initial speed in y direction
    float wsens;                  // wind dependency factor
    float flufftimer;             // fluff timeout timer
-   unsigned int whatFlake  : 7;  // snowflake index
-   unsigned int cyclic     : 1;  // 1: flake is cyclic 
-   unsigned int fluff      : 1;  // 1: flake is in fluff state
-   unsigned int w          : 8;  // width
-   unsigned int h          : 8;  // height
+   float flufftime;              // fluff timeout
+   unsigned int whatFlake;       // snowflake index
+#ifdef NO_USE_BITS 
+   unsigned int cyclic     ;  // flake is cyclic 
+   unsigned int fluff      ;  // flake is in fluff state
+   unsigned int freeze     ;  // flake does not move
+   unsigned int testing    ;  // for testing purposes
+#else
+   unsigned int cyclic     : 1;  // flake is cyclic 
+   unsigned int fluff      : 1;  // flake is in fluff state
+   unsigned int freeze     : 1;  // flake does not move
    unsigned int testing    : 2;  // for testing purposes
+#endif
 
 } Snow;
 
 typedef struct _SnowMap {
-   char *snowBits;
    Pixmap pixmap;
-   int width   : 8;
-   int height  : 8;
+#ifdef NO_USE_BITS 
+   unsigned int width       ;
+   unsigned int height      ;
+#else
+   unsigned int width   : 16;
+   unsigned int height  : 16;
+#endif
 } SnowMap;
 
-extern Region     NoSnowArea_dynamic;
-extern Pixel      SnowcPix;
-extern int        MaxSnowFlakeHeight;  /* Biggest flake */
-extern int        MaxSnowFlakeWidth;   /* Biggest flake */
-extern int        FlakeCount;          /* number of flakes */
+extern Region       NoSnowArea_dynamic;
+extern Pixel        SnowcPix;
+extern unsigned int MaxSnowFlakeHeight;  /* Biggest flake */
+extern unsigned int MaxSnowFlakeWidth;   /* Biggest flake */
+extern int          FlakeCount;          /* number of flakes */
+extern int          FluffCount;          /* number of fluff flakes */
 
 extern int        do_initsnow(gpointer data);
 extern int        do_UpdateSnowFlake(Snow *flake);
@@ -65,3 +77,5 @@ extern int        snow_draw(cairo_t *cr);
 extern void       snow_init(void);
 extern void       snow_set_gc(void);
 extern int        snow_ui();
+extern void       fluffify(Snow *flake, float t);
+extern void       printflake(Snow *flake);

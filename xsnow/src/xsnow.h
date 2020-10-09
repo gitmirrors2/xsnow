@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
 #define DEFAULT_BGColor "#000000"
-#define DEFAULT_BlowOffFactor 100
+#define DEFAULT_BlowOffFactor 40
 #define DEFAULT_CpuLoad 100
 #define DEFAULT_Transparency 0
 #define DEFAULT_Defaults 0
@@ -35,7 +35,7 @@
 #define DEFAULT_DisplayName ""
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
-#define DEFAULT_FlakeCountMax 2000 
+#define DEFAULT_FlakeCountMax 300 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
@@ -64,6 +64,7 @@
 #define DEFAULT_SantaSpeedFactor 100
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
+#define DEFAULT_SnowSize 8 
 #define DEFAULT_SnowSpeedFactor 100
 #define DEFAULT_StopAfter -1
 #define DEFAULT_TreeColor "chartreuse" // The author thoroughly recommends a cup of tea with a dash of green Chartreuse. Jum!         */
@@ -78,6 +79,7 @@
 #define DEFAULT_XWinInfoHandling 0
 #define DEFAULT_WantWindow 0
 #define DEFAULTTREETYPE 2
+#define DEFAULT_Noisy 0
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
 
@@ -109,7 +111,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-#define SNOWFLAKEMAXTYPE 6  // type is 0..SNOWFLAKEMAXTYPE  
+//#define SNOWFLAKEMAXTYPE 13  // type is 0..SNOWFLAKEMAXTYPE  
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150
@@ -118,7 +120,7 @@
 #define DEFAULT_Anarchy 50    /*percent*/
 #define DEFAULT_Neighbours 7
 //#define DEFAULT_Range 20      /*m*/
-#define DEFAULT_Nbirds 100
+#define DEFAULT_Nbirds 70
 #define DEFAULT_ShowBirds 1
 #define DEFAULT_BirdsOnly 0
 #define DEFAULT_PrefDistance 20
@@ -129,6 +131,7 @@
 #define DEFAULT_AttrFactor 100
 #define DEFAULT_DisWeight 20
 #define DEFAULT_FollowWeight 30
+#define DEFAULT_FollowSanta 1
 #define DEFAULT_BirdsColor "#361A07"
 #define DEFAULT_ShowAttrPoint 0
 #define DEFAULT_BirdsScale 100
@@ -159,7 +162,7 @@
 #define time_usanta           0.02             /* time between update of santa position      */
 #define time_ustar            2.00             /* time between updating stars                */ 
 #define time_wind             0.10             /* time between starting or ending wind       */
-#define time_wupdate          0.50             /* time between getting windows information   */ 
+#define time_wupdate          0.40             /* time between getting windows information   */ 
 #define time_show_range_etc   0.50             /* time between showing range etc.            */
 #define time_change_attr      60.0             /* time between changing attraction point     */
 #define time_measure          0.1
@@ -172,7 +175,7 @@
 //#define time_snowflakes       (switches.UseGtk?0.02 * cpufactor:0.05*cpufactor)  /* time between redrawings of snowflakes      */
 #define time_tree             (0.25 * cpufactor)  /* time between redrawings of trees           */
 
-#define time_draw_all         (0.04 * cpufactor)    /* time between update of screen */
+#define time_draw_all         (0.04 * cpufactor)    /* time between updates of screen */
 
 /* ------------------------------------------------------------------ */
 

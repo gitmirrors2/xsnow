@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -24,5 +24,7 @@ extern int iXpmCreatePixmapFromData(Display *display, Drawable d,
       const char **data, Pixmap *p,Pixmap *s, XpmAttributes *attr, int flop);
 extern Region regionfromxpm(const char **data, int flop);
 
-extern void xpm_set_color(const char **data, char ***out, int *lines, const char *color);
-extern void xpm_destroy(char **data, int lines);
+extern void xpm_set_color(char **data, char ***out, int *lines, const char *color);
+extern void xpm_destroy(char **data);
+extern int  xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn);
+extern void xpm_print(char **xpm);

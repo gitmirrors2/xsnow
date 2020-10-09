@@ -3,7 +3,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -70,10 +70,19 @@ static const int UW_TRANSPARENT = 2;
 
 extern struct _switches
 {
+#ifdef NO_USE_BITS
+   unsigned int UseGtk    ;
+   unsigned int Trans     ;
+   unsigned int Root      ;
+   unsigned int DrawBirds ;
+   unsigned int Exposures ;
+   unsigned int Desktop   ;
+#else
    unsigned int UseGtk    :1;
    unsigned int Trans     :1;
    unsigned int Root      :1;
    unsigned int DrawBirds :1;
    unsigned int Exposures :1;
    unsigned int Desktop   :1;
+#endif
 } switches;

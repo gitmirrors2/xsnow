@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ void fallensnow_init()
    EFallenGC     = XCreateGC(display, SnowWin,    0, NULL);  // used to erase fallen snow
 }
 
-void   fallensnow_set_gc()
+void fallensnow_set_gc()
 {
    XSetLineAttributes(display, FallenGC, 1, LineSolid,CapRound,JoinMiter);
    XSetFillStyle( display, EFallenGC, FillSolid);
@@ -77,7 +77,7 @@ void fallensnow_draw(cairo_t *cr)
 	 P("fallensnow_draw %d\n",
 	       cairo_image_surface_get_width(fsnow->surface));
 	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h+1);
-	 cairo_paint_with_alpha(cr,ALPHA);
+	 my_cairo_paint_with_alpha(cr,ALPHA);
       }
       fsnow = fsnow->next;
    }
@@ -416,6 +416,7 @@ void DrawFallen(FallenSnow *fsnow)
 	    XSetForeground(display, FallenGC, SnowcPix);
 	    XSetTSOrigin(  display, FallenGC, x+fsnow->w, y+fsnow->h);
 	    XFillRectangle(display, SnowWin,  FallenGC, x,y, fsnow->w, fsnow->h);
+	    P("Fallensnow %d %d %d %d\n",x,y,fsnow->w,fsnow->h);
 	 }
       }
 }
@@ -423,7 +424,7 @@ void DrawFallen(FallenSnow *fsnow)
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
    P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
-   if (Flags.NoBlowSnow)
+   if (Flags.NoBlowSnow || Flags.NoSnowFlakes)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
@@ -433,7 +434,9 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
    int ilast  = x+w; if(ilast < 0) ilast = 0;
    if (ilast > fsnow->w) ilast = fsnow->w;
    P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<MaxSnowFlakeWidth?w:MaxSnowFlakeWidth);
-   for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
+   P("maxheight: %d maxw: %d\n",MaxSnowFlakeHeight,MaxSnowFlakeWidth);
+   //for (i=ifirst; i<ilast; i+=w<MaxSnowFlakeHeight?w:MaxSnowFlakeWidth)
+   for (i=ifirst; i<ilast; i+=1)
    {
       int j;
       for(j=0; j<fsnow->acth[i]; j++)
@@ -450,8 +453,10 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	    if (p < 0.15)
 	    {
 	       Snow *flake   = MakeFlake(-1);
-	       flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
-	       flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
+	       //flake->rx     = fsnow->x + i + 2*MaxSnowFlakeWidth*(drand48()-0.5);
+	       //flake->ry     = fsnow->y - j - MaxSnowFlakeHeight;
+	       flake->rx     = fsnow->x + i + 16*(drand48()-0.5);
+	       flake->ry     = fsnow->y - j - 8;
 	       if (Flags.NoWind)
 		  flake->vx     = 0;
 	       else
@@ -460,11 +465,9 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	       flake->cyclic     = 0;
 	       if (switches.UseGtk && drand48() > 0.25)
 	       {
-		  flake->fluff      = 1;
-		  flake->flufftimer = FLUFFTIME;
-		  flake->ry += 2*MaxSnowFlakeHeight*drand48();
+		  fluffify(flake,0.7);
+		  //flake->ry += 2*MaxSnowFlakeHeight*drand48();
 	       }
-	    add_flake_to_mainloop(flake);
 	    }
 	 }
       }
@@ -517,11 +520,10 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 	    {
 	       Snow *flake       = MakeFlake(0);
 	       flake->rx         = fsnow->x + i;
-	       flake->ry         = fsnow->y - fsnow->acth[i] - randint(MaxSnowFlakeWidth);
+	       flake->ry         = fsnow->y - fsnow->acth[i] - drand48()*8;// randint(MaxSnowFlakeWidth);
 	       flake->vx         = fsignf(NewWind)*WindMax;
 	       flake->vy         = -5;
 	       flake->cyclic     = (fsnow->win.id == 0); // not cyclic for Windows, cyclic for bottom
-	       add_flake_to_mainloop(flake);
 	       P("%d:\n",counter++);
 	    }
 	    EraseFallenPixel(fsnow,i);

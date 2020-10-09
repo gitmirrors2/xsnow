@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -116,7 +116,8 @@ int do_wupdate(UNUSED gpointer data)
       return TRUE;
    }
 
-   //I("%d:\n",counter++);printwindows(display,Windows,NWindows);
+   //P("%d:\n",counter++);printwindows(display,Windows,NWindows);
+   //P("%d:\n",counter++);PrintFallenSnow(FsnowFirst);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
@@ -366,10 +367,9 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
 
       P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
-      // if not possible to create transparent window:
-      if (*xwin == 0)
+      char *desktopsession = NULL;
+      if (DesktopSession == NULL)
       {
-	 char *desktopsession = NULL;
 	 const char *desktops[] = {
 	    "DESKTOP_SESSION",
 	    "XDG_SESSION_DESKTOP",
@@ -393,10 +393,17 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    desktopsession = (char *)"unknown_desktop_session";
 	 }
 
-	 if (DesktopSession)
-	    free(DesktopSession);
 	 DesktopSession = strdup(desktopsession);
 
+	 if (!strcasecmp(DesktopSession,"enlightenment"))
+	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	 else if(!strcasecmp(DesktopSession,"twm"))
+	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
+      }
+
+      // if not possible to create transparent window:
+      if (*xwin == 0)
+      {
 	 // convert DesktopSession to upper case
 	 char *a = DesktopSession;
 	 while (*a)
@@ -428,7 +435,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
    if(*IsDesktop)                                  
    {
       CWorkSpace = GetCurrentWorkspace();
-      P("CWorkSpace: %ld\n",CWorkSpace);
+      P("CWorkSpace: %d\n",CWorkSpace);
       if (CWorkSpace < 0)
 	 return FALSE;
    }

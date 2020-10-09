@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include "ixpm.h"
 #include "debug.h"
+#include "utils.h"
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
       Display	*display,
@@ -108,6 +109,8 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       {
 	 case 1:
 	    printf("XpmColorError\n");
+	    for (i=0; i<lines; i++)
+	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 case -1:
 	    printf("XpmOpenFailed\n");
@@ -119,7 +122,9 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 	    printf("XpmNoMemory\n");
 	    break;
 	 case -4:
-	    printf("XpmColorFaild\n");
+	    printf("XpmColorFailed\n");
+	    for (i=0; i<lines; i++)
+	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 default:
 	    printf("%d\n",rc);
@@ -154,10 +159,10 @@ Region regionfromxpm(const char **data, int flop)
    for(i=1; i<=nc; i++)
    {
       char s[100];
-      //printf("%d: %s\n",__LINE__,data[i]);
+      P("%s\n",data[i]);
       sscanf(data[i]+n,"%*s %100s",s);
-      //printf("%d: %s\n",__LINE__,s);
-      if(!strcmp(s,"None"))
+      P("%s\n",s);
+      if(!strcasecmp(s,"None"))
       {
 	 code = strndup(data[i],n);
 	 break;
@@ -188,6 +193,112 @@ Region regionfromxpm(const char **data, int flop)
    return r;
 }
 
+/*
+ * converts xpm data to bitmap
+ * xpm:        input xpm data
+ * bitsreturn: output bitmap, allocated by this function
+ * wreturn:    width of bitmap
+ * hreturn:    height of bitmap
+ * lreturn:    length of bitmap
+ *
+ * Return value: 1: OK, 0: not OK.
+ * BUGS: this code has not been tested on a big endian system
+ */
+int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn, int *lreturn)
+{
+   int nc,cpp,w,h;
+
+   unsigned char *bits = (unsigned char*) malloc(sizeof(unsigned char)*1);
+   if (sscanf(xpm[0],"%d %d %d %d",&w,&h,&nc,&cpp)!=4)
+      return 0;
+   if(cpp <=0 || w<0 || h<0 || nc<0)
+      return 0;
+   *wreturn = w;
+   *hreturn = h;
+   int l = ((int)w + 7)/8;   // # chars needed for this w
+   *lreturn = l*h;
+   bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*l*h);
+   *bitsreturn = bits;
+   int i;
+   for(i=0; i<l*h; i++)
+      bits[i] = 0;
+
+   char *code = (char *)malloc(sizeof(char)*cpp);
+   for (i=0; i<cpp; i++)
+      code[i] = ' ';
+
+   int offset = nc + 1;
+   for(i=1; i<=nc; i++)
+   {
+      char s[100];
+      if (strlen(xpm[i]) > (size_t)cpp + 6)
+      {
+	 sscanf(xpm[i]+cpp,"%*s %100s",s);
+	 if(!strcasecmp(s,"none"))
+	 {
+	    free(code);
+	    code = strndup(xpm[i],cpp);
+	    break;
+	 }
+      }
+   }
+   int y;
+   unsigned char c = 0;
+   int j = 0;
+   if (is_little_endian())
+      for (y=0; y<h; y++)         // little endian
+      {
+	 int x,k=0;
+	 const char *s = xpm[y+offset];
+	 int l = strlen(s);
+	 for(x=0; x<w; x++)
+	 {
+	    c >>= 1;
+	    if (cpp*x + cpp <= l)
+	    {
+	       if (strncmp(s+cpp*x,code,cpp))
+		  c |= 0x80;
+	    }
+	    k++;
+	    if (k == 8)
+	    {
+	       bits[j++] = c;
+	       k = 0;
+	    }
+	 }
+	 if (k)
+	    bits[j++] = c>>(8-k);
+      }
+   else  
+      for (y=0; y<h; y++)      // big endian  NOT tested
+      {
+	 int x,k=0;
+	 const char *s = xpm[y+offset];
+	 int l = strlen(s);
+	 for(x=0; x<w; x++)
+	 {
+	    c <<= 1;
+	    if (cpp*x + cpp <= l)
+	    {
+	       if (strncmp(s+cpp*x,code,cpp))
+		  c |= 0x01;
+	    }
+	    k++;
+	    if (k == 8)
+	    {
+	       bits[j++] = c;
+	       k = 0;
+	    }
+	 }
+	 if (k)
+	    bits[j++] = c<<(8-k);
+      }
+
+   free(code);
+   return 1;
+}
+
+
 // given color and xmpdata **data of a monocolored picture like:
 // 
 //XPM_TYPE *snow06_xpm[] = {
@@ -203,7 +314,7 @@ Region regionfromxpm(const char **data, int flop)
 // change the second color to color and put the result in out.
 // lines will become the number of lines in out, comes in handy
 // when wanteing to free out.
-void xpm_set_color(const char **data, char ***out, int *lines, const char *color)
+void xpm_set_color(char **data, char ***out, int *lines, const char *color)
 {
    int n;  
    sscanf(data[0],"%*d %d",&n);
@@ -226,11 +337,37 @@ void xpm_set_color(const char **data, char ***out, int *lines, const char *color
    *lines = n+3;
 }
 
-void xpm_destroy(char **data, int lines)
+void xpm_destroy(char **data)
 {
+   int h,nc;
+   sscanf(data[0],"%*d %d %d",&h,&nc);
    int i;
-   for (i=0; i<lines; i++)
+   for (i=0; i<h+nc+1; i++)
       free(data[i]);
    free(data);
+}
+
+void xpm_print(char **xpm)
+{
+   int w,h,nc;
+   sscanf(xpm[0],"%d %d %d",&w,&h,&nc);
+   int i,j;
+   printf("%s\n",xpm[0]);
+   for (i=1; i<1+nc; i++)
+      printf("%s\n",xpm[i]);
+   for (i=0; i<2*w+2; i++)
+      printf("_");
+   printf("\n");
+   for (i=0; i<h; i++)
+   {
+      printf("|");
+      for (j=0; j<w; j++)
+	 printf("%2c",xpm[i+nc+1][j]);
+      printf("|");
+      printf("\n");
+   }
+   for (i=0; i<2*w+2; i++)
+      printf("-");
+   printf("\n");
 }
 

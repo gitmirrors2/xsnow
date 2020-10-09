@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ static GC     ESantaGC = NULL;
 static int    OldSantaX = 0;  // the x value of Santa when he was last drawn
 static int    OldSantaY = 0;  // the y value of Santa when he was last drawn
 static GC     SantaGC = NULL;
-static int    SantaHeight;   
 static Pixmap SantaMaskPixmap[PIXINANIMATION];
 static Pixmap SantaPixmap[PIXINANIMATION];
 static Region SantaRegion;
@@ -65,6 +64,7 @@ static int    SantaYStep;
 
 float  ActualSantaSpeed;
 Region SantaPlowRegion;
+int    SantaHeight;   
 int    SantaWidth;
 int    SantaX;   // should always be lrintf(SantaYr)
 int    SantaY;   // should always be lrintf(SantaYr)
@@ -91,6 +91,8 @@ int Santa_ui()
       OldFlags.NoRudolf = Flags.NoRudolf;
       changes++;
       P("changes: %d\n",changes);
+      if(Flags.Noisy)
+	 printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, !Flags.NoRudolf);  // this for testing, see test2.sh and test3.sh
    }
    if (Flags.NoSanta != OldFlags.NoSanta)
    {
@@ -120,7 +122,7 @@ int Santa_draw(cairo_t *cr)
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);
-   cairo_paint_with_alpha(cr,ALPHA);
+   my_cairo_paint_with_alpha(cr,ALPHA);
    return TRUE;
 }
 

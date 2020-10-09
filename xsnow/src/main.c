@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -164,7 +164,6 @@ static int do_ui_check(gpointer data);
 static int do_stopafter(gpointer data);
 static int do_show_desktop_type(gpointer data);
 static int do_display_dimensions(UNUSED gpointer data);
-//static int do_restart_belowall(gpointer data);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 /**********************************************************************************************/
@@ -452,8 +451,6 @@ int main_c(int argc, char *argv[])
 
    SetGCFunctions();
 
-   //InitSnowColor();
-
    // events
    if(switches.Desktop)
       XSelectInput(display, SnowWin, 0);
@@ -461,17 +458,15 @@ int main_c(int argc, char *argv[])
       XSelectInput(display, SnowWin, 
 	    StructureNotifyMask);
 
-   ClearScreen();   // without this, no snow, scenery etc. in KDE
+   ClearScreen();   // without this, no snow, scenery etc. in KDE; this seems to be a vintage comment
 
    if(!Flags.NoMenu)
    {
       ui(&argc, &argv);
 
-      if (TransA)
-      {
-	 ui_gray_erase(switches.UseGtk);
-      }
-      else
+      ui_gray_erase(switches.UseGtk);
+
+      if (!TransA)
       {
 	 ui_gray_ww(1);
 	 ui_gray_below(1);
@@ -531,7 +526,7 @@ int myDetermineWindow()
 
    static char * SnowWinaName = NULL;
    static char * SnowWinbName = NULL;
-   int IsDesktop;
+   static int IsDesktop;
    if (!SnowWina)
    {
       if (SnowWinaName)
@@ -541,7 +536,7 @@ int myDetermineWindow()
       }
       if (!DetermineWindow(&SnowWina,&SnowWinaName,&TransA,"Xsnow-A", &IsDesktop))
       {
-	 printf("xsnow: cannot determine window, exiting...\n");
+	 printf("xsnow: Cannot run, probably missing a window manager. Exiting...\n");
 	 return 0;
       }
 
@@ -580,6 +575,7 @@ int myDetermineWindow()
 	 printf("Scenario: Use X11 for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWinb;
 	 SnowWinName        = SnowWinbName;
+	 gtk_widget_show_all(TransB);
 
 	 switches.UseGtk    = 0;
 	 switches.DrawBirds = 1;
@@ -593,6 +589,7 @@ int myDetermineWindow()
 	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWina;
 	 SnowWinName        = SnowWinaName;
+	 gtk_widget_hide(TransB);
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
@@ -605,7 +602,7 @@ int myDetermineWindow()
    {
       P("Scenario 4 Desktop: %d\n",IsDesktop);
       printf("Scenario: Use X11 for drawing snow in root window, no birds will fly.\n");
-      // im LXDE, SnowWin will be overwritten by id of windo pcmanfm
+      // in LXDE, SnowWin will be overwritten by id of window pcmanfm
       SnowWin            = SnowWina;
       SnowWinName        = SnowWinaName;
       switches.UseGtk    = 0;
@@ -633,6 +630,7 @@ int myDetermineWindow()
       drawconnect = g_signal_connect(TransA, "draw", G_CALLBACK(on_draw_event), NULL);
       P("connecting %ld\n",drawconnect);
       restart_do_draw_all();  // to (re-)establish the timeout for do_draw_all
+      set_below_above();
    }
    else
    {
@@ -681,6 +679,7 @@ int do_ui_check(UNUSED gpointer data)
       myDetermineWindow();
       ui_gray_erase(switches.UseGtk);
       changes++;
+      P("changes: %d\n",changes);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -734,6 +733,12 @@ int do_ui_check(UNUSED gpointer data)
       changes++;
       P("changes: %d %d\n",changes,Flags.OffsetS);
    }
+   if(Flags.OffsetY != OldFlags.OffsetY)
+   {
+      OldFlags.OffsetY = Flags.OffsetY;
+      changes++;
+      P("changes: %d %d\n",changes,Flags.OffsetY);
+   }
    if(Flags.NoFluffy != OldFlags.NoFluffy)
    {
       OldFlags.NoFluffy = Flags.NoFluffy;
@@ -741,16 +746,6 @@ int do_ui_check(UNUSED gpointer data)
       changes++;
       P("changes: %d\n",changes);
    }
-   // following button is hided in ui.c because setting to fullscreen
-   // results in putting the transparent windows above everything,
-   // and I could not force the windows to go below if Flags.BelowAll
-   // requests so. 
-   // Only when the user clicks on the 'below' button things are working
-   // as they should. Maybe I will find a solution, other than restart
-   // the whole program (Flags.Done = 1; DoRestart = 1;).
-   // Maybe the weird solution to simulate 2 clicks on the 'below' button,
-   // taking care that no confirmation is asked?
-   //
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;
@@ -821,6 +816,10 @@ int do_displaychanged(UNUSED gpointer data)
    // If the size has been changed, we restart the program
    if (Flags.Done)
       return FALSE;
+   P("UseGtk: %d Trans: %d Root: %d DrawBirds: %d Exposures: %d Desktop: %d\n",
+	 switches.UseGtk, switches.Trans, switches.Root, switches.DrawBirds, 
+	 switches.Exposures, switches.Desktop);
+
    if (!switches.Desktop)
       return TRUE;
    {
@@ -938,11 +937,15 @@ int do_testing(UNUSED gpointer data)
    counter++;
    if (Flags.Done)
       return FALSE;
+   return TRUE;
+   P("Flakecount: %d FluffCount: %d\n",FlakeCount,FluffCount);
+   if (FluffCount < 0 || FluffCount > FlakeCount)
+      Flags.Done = 1;
    /*
 #include "hashtable.h"
 #include "snow.h"
-   R("flakes: %d %d\n",set_size(),FlakeCount);
-   */
+P("flakes: %d %d\n",set_size(),FlakeCount);
+*/
    return TRUE;
    Flags.BelowAll = !Flags.BelowAll;
 }
@@ -986,7 +989,8 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
    char msg[1024];
    XGetErrorText(dpy, err->error_code, msg,sizeof(msg));
-   P("%s\n",msg);
+   if(Flags.Noisy)
+      I("%d %s\n",counter++,msg);
    return 0;
 }
 
@@ -1018,7 +1022,8 @@ void drawit(cairo_t *cr)
 
    scenery_draw(cr);
 
-   Santa_draw(cr);
+   if(!Flags.FollowSanta || !Flags.ShowBirds) // if Flags.FollowSanta: drawing of Santa is done in birds_draw()
+      Santa_draw(cr);
 
    treesnow_draw(cr);
 
@@ -1034,7 +1039,17 @@ int do_display_dimensions(UNUSED gpointer data)
       return FALSE;
    static int prevw = 0, prevh = 0;
    P("%d do_init_display_dimensions\n",counter);
+   static int first = 1;
+   if(first)
+   { 
+      // at the first call, nothing has to be done, except:
+      prevw = SnowWinWidth;
+      prevh = SnowWinHeight;
+      first = 0;
+      return TRUE;
+   }
    DisplayDimensions();
+   P("do_display_dim: prevw: %d SnowWinWidth: %d prevh: %d SnowWinHeight: %d\n",prevw,SnowWinWidth,prevh,SnowWinHeight);
    if (prevw != SnowWinWidth || prevh != SnowWinHeight)
    {
       if (prevw == SnowWinWidth)
@@ -1046,6 +1061,7 @@ int do_display_dimensions(UNUSED gpointer data)
       }
       else
 	 InitFallenSnow();
+      P("%d do_display_dimensions\n",counter++);
       init_stars();
       EraseTrees();
       ClearScreen();
@@ -1057,6 +1073,7 @@ int do_display_dimensions(UNUSED gpointer data)
 
 int do_draw_all(gpointer widget)
 {
+   // called via drawit()
    if (Flags.Done)
       return FALSE;
    P("do_draw_all %d %p\n",counter++,(void *)widget);
@@ -1077,8 +1094,6 @@ void HandleCpuFactor()
    else
       cpufactor = 100.0/Flags.CpuLoad;
 
-   //EraseTrees();
-
    if (fallen_id)
       g_source_remove(fallen_id);
 
@@ -1098,7 +1113,7 @@ void restart_do_draw_all()
    if (draw_all_id)
       g_source_remove(draw_all_id);
    draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
-   P("started do_draw_all %d %p\n",draw_all_id, (void *)TransA);
+   P("started do_draw_all %d %p %f\n",draw_all_id, (void *)TransA, time_draw_all);
 }
 
 

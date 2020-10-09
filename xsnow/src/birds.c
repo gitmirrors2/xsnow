@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <math.h>
 #include <signal.h>
 #include <string.h>
+#include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
 #include "debug.h"
@@ -48,17 +49,8 @@
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.ShowBirds || globals.freeze || !WorkspaceActive()) return TRUE
-// I("leave: %d %d %d\n",!Flags.ShowBirds,globals.freeze,!WorkspaceActive()); 
-
-//static gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer userdata);
-#if 0
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer userdata);
-#endif
 
 /* Surface to store current scribbles */
-#if 0
-static cairo_surface_t *globsurface = NULL;
-#endif
 
 static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static cairo_surface_t *attrsurface = NULL;
@@ -99,6 +91,7 @@ static void     main_window(void);
 static void     normalize_speed(BirdType *bird, float speed);
 static void     prefxyz(BirdType *bird, float d, float e, float x, float y, float z, float *prefx, float *prefy, float *prefz);
 static void     r2i(BirdType *bird);
+static void     i2r(BirdType *bird);
 
 
 static float time_update_pos_birds     = 0.01;
@@ -152,11 +145,13 @@ int birds_ui()
    {
       Flags.BirdsRestart = 0;
       init_birds(0);
+      birds_set_attraction_point_relative(0.5, 0.5, 0.5);
       P("changes: %d\n",changes);
    }
    if(Flags.ViewingDistance != OldFlags.ViewingDistance)
    {
       OldFlags.ViewingDistance = Flags.ViewingDistance;
+      attrbird2surface();
       changes++;
       P("changes: %d\n",changes);
    }
@@ -221,6 +216,15 @@ int birds_ui()
       P("changes: %d\n",changes);
       init_birds(start);
    }
+
+   if(Flags.FollowSanta != OldFlags.FollowSanta)
+   {
+      P("FollowSanta: %d->%d\n",OldFlags.FollowSanta,Flags.FollowSanta);
+      OldFlags.FollowSanta = Flags.FollowSanta;
+      if (!Flags.FollowSanta)
+	 birds_set_attraction_point_relative(0.5, 0.5, 0.5);
+      changes ++;
+   }
    return changes;
 }
 
@@ -249,15 +253,15 @@ static float scale(float y)
    return s;
 }
 
-static void r2i(BirdType *bird)
+//#define CO_REAL
+// given bird, compute screen coordinates ix and iz, and depth iy
+void r2i(BirdType *bird)
 {
    if(bird->y > Flags.ViewingDistance/8)
    {
       bird->drawable = 1;
       float f = scale(bird->y);
       P("%f %d %f\n",globals.maxy,Flags.ViewingDistance,f);
-      P("%f %f %f %f %f %d %d %d\n",f,globals.attrx,globals.attrz,globals.ox,globals.oz,bird->ix,bird->iy,bird->iz);
-      //#define CO_REAL
 #ifdef CO_REAL
       // classical camera obscura, inverted image:
       float x = f*(globals.xc-bird->x) + globals.xc;
@@ -278,6 +282,19 @@ static void r2i(BirdType *bird)
    P("r2i %d %d\n",counter++,bird->drawable);
 }
 
+// given bird, x,iy, z given ix, iz and y
+static void i2r(BirdType *bird)
+{
+   float f  = scale(bird->y);
+#ifdef CO_REAL
+   bird->x  = (globals.ax*globals.xc - bird->ix)/(globals.ax*f) + globals.xc;
+   bird->z  = (globals.az*globals.zc - bird->iz)/(globals.az*f) + globals.zc;
+#else
+   bird->x  = (bird->ix - globals.ax*globals.xc)/(globals.ax*f) + globals.xc;
+   bird->z  = (bird->iz - globals.az*globals.zc)/(globals.az*f) + globals.zc;
+#endif
+   bird->iy = globals.ay*bird->y;
+}
 
 // given:
 // bird
@@ -311,7 +328,7 @@ void attrbird2surface()
    P("attrbird2surface %d %f\n",counter++,f);
    attrsurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*f+2,2*f+2);
    cairo_t *cr = cairo_create(attrsurface);
-   cairo_set_source_rgba(cr,0.914,0.592,0.04,ALPHA);
+   cairo_set_source_rgba(cr,0.914,0.592,0.04,0.6);
    cairo_arc(cr,f+1,f+1,f,0,2*M_PI);
    cairo_fill(cr);
    cairo_destroy(cr);
@@ -423,9 +440,9 @@ int do_update_speed_birds(UNUSED gpointer data)
 
       // attraction of center:
 
-      float dx = globals.attrx - bird->x;
-      float dy = globals.attry - bird->y;
-      float dz = globals.attrz - bird->z;
+      float dx = attrbird.x - bird->x;
+      float dy = attrbird.y - bird->y;
+      float dz = attrbird.z - bird->z;
 
       float f = Flags.AttrFactor*0.01f*0.05f;
 
@@ -501,15 +518,38 @@ int birds_draw(cairo_t *cr)
 
    int before;
    int i;
+
    for (before=0; before<2; before++)
    {
+      if(before && Flags.FollowSanta && !Flags.BirdsOnly)
+      {
+	 static int prevSantasize = -1;
+	 Santa_draw(cr);
+	 attrbird.ix = SantaX+SantaWidth/2;
+	 attrbird.iz = SantaY+SantaHeight/2;
+	 switch(Flags.SantaSize)
+	 {
+	    case 0:  attrbird.y = globals.maxy*1.5; break;
+	    case 1:  attrbird.y = globals.maxy*1.0; break;
+	    default: attrbird.y = globals.maxy*0.5; break;
+	 }
+	 i2r(&attrbird);
+	 P("santasize: %d %d %d %f\n",prevSantasize,Flags.SantaSize,Flags.ViewingDistance,scale(attrbird.y));
+	 if (prevSantasize != Flags.SantaSize)
+	 {
+	    P("iy: %d %d\n",prevSantasize,Flags.SantaSize);
+	    prevSantasize = Flags.SantaSize;
+	    attrbird2surface();
+	 }
+      }
       if(before && Flags.ShowAttrPoint)
       {
 	 r2i(&attrbird);
+	 P("attrbird %f %f %f %d %d %d\n",attrbird.x,attrbird.y,attrbird.z,attrbird.ix,attrbird.iy,attrbird.iz);
 	 int mx = cairo_image_surface_get_width(attrsurface);
 	 int mz = cairo_image_surface_get_height(attrsurface);
 	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
-	 cairo_paint_with_alpha(cr,ALPHA);
+	 my_cairo_paint_with_alpha(cr,ALPHA);
 	 //#define TESTBIRDS
 #ifdef TESTBIRDS
 	 {
@@ -534,7 +574,7 @@ int birds_draw(cairo_t *cr)
 	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
 	       r2i(&testbird);
 	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
-	       my_paint(cr);
+	       my_cairo_paint_with_alpha(cr,ALPHA);
 	       g_clear_object(&pixbuf);
 	       cairo_surface_destroy(surface);
 	    }
@@ -605,11 +645,8 @@ int birds_draw(cairo_t *cr)
 
 	    P("%f %f %d\n",sxz,bird->sy,orient);
 	    GdkPixbuf *bird_pixbuf = bird_pixbufs[nw+orient];
-	    //iw = p*globals.bird_scale;
-	    // Flags.BirdsScale default 100
 	    iw = p*globals.bird_scale*Flags.BirdsScale*6.0e-6*globals.maxix;
 	    P("%d %d\n",Flags.BirdsScale,globals.maxix);
-	    //ih = p*globals.bird_scale*gdk_pixbuf_get_height(bird_pixbuf)/
 	    ih = (float)iw*gdk_pixbuf_get_height(bird_pixbuf)/
 	       (float)gdk_pixbuf_get_width(bird_pixbuf);
 	    // do not draw very large birds (would be bad for cache use)
@@ -644,7 +681,7 @@ int birds_draw(cairo_t *cr)
 	    int mx = cairo_image_surface_get_width(surface);
 	    int mz = cairo_image_surface_get_height(surface);
 	    cairo_set_source_surface (cr, surface, bird->ix-mx/2, bird->iz-mz/2);
-	    cairo_paint_with_alpha(cr,ALPHA);
+	    my_cairo_paint_with_alpha(cr,ALPHA);
 	    P("draw: %d %d\n",bird->ix-mx/2,bird->iz-mz/2);
 	 }
 	 else
@@ -732,13 +769,10 @@ float birds_get_mean_dist()
 
 void birds_set_attraction_point_relative(float x, float y, float z)
 {
-   globals.attrx = globals.maxx*x;
-   globals.attry = globals.maxy*y;
-   globals.attrz = globals.maxz*z;
 
-   attrbird.x = globals.attrx;
-   attrbird.y = globals.attry;
-   attrbird.z = globals.attrz;
+   attrbird.x = globals.maxx*x;
+   attrbird.y = globals.maxy*y;
+   attrbird.z = globals.maxz*z;
 }
 
 void clear_flags()
@@ -796,9 +830,9 @@ static void init_bird_pixbufs(const char *color)
    {
       char **x;
       int lines;
-      xpm_set_color(birds_xpm[i], &x, &lines, color);
+      xpm_set_color((char **)birds_xpm[i], &x, &lines, color);
       bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
-      xpm_destroy(x,lines);
+      xpm_destroy(x);
    }
 }
 
@@ -810,12 +844,16 @@ int do_change_attr(UNUSED gpointer data)
    // z: 0.3 .. 0.7
    if (Flags.Done)
       return FALSE;
+   if (Flags.FollowSanta && !Flags.BirdsOnly)
+      return TRUE;
    P("change attr\n");
    birds_set_attraction_point_relative(
 	 0.3+drand48()*0.4, 
 	 0.4+drand48()*0.2, 
 	 0.3+drand48()*0.4
 	 );
+   r2i(&attrbird);
+   attrbird2surface();
    return TRUE;
 }
 
@@ -851,13 +889,9 @@ void birds_init ()
    }
 
 
-   globals.attrx = globals.maxx/2;
-   globals.attry = globals.maxy/2;
-   globals.attrz = globals.maxz/2;
-
-   attrbird.x = globals.attrx;
-   attrbird.y = globals.attry;
-   attrbird.z = globals.attrz;
+   attrbird.x = globals.maxx/2;
+   attrbird.y = globals.maxy/2;
+   attrbird.z = globals.maxz/2;
 
    globals.meanspeed = 0;
 

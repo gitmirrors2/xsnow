@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -130,3 +130,17 @@ void remove_from_mainloop(guint tag)
    g_source_remove(tag);
 }
 
+int is_little_endian(void)
+{
+   int endiantest = 1;
+   return (*(char *)&endiantest) == 1;
+}
+
+void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
+{
+   if (alpha > 0.9)
+      cairo_paint(cr);
+   else
+      cairo_paint_with_alpha(cr,alpha);
+   P("%d alpha %f\n",counter++,alpha);
+}

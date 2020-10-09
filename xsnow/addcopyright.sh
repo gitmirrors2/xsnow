@@ -3,7 +3,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ cat << eof | sed 's/^/#-# /' > "$crfile"
 
 xsnow: let it snow on your desktop
 Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-              2019,2020 Willem Vermin
+	      2019,2020 Willem Vermin
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,7 +52,12 @@ while [ "$1" ] ; do
       echo "$f: no $txt"
       continue
    fi
-   sed -i "/^\s*#-#/d;/$txt/r $crfile" "$f"
+   # following 2 sed commands take care that only the first '-copyright-'
+   # will be followed by the copyright text
+   # Notice that sed requires a newline after the filename of the 'r' command
+   sed -i "/^\s*#-#/d" "$f"
+   sed -i "/$txt/{r $crfile
+   :a;n;ba}" "$f"
    n=`expr $n + 1`
 done
 echo "$n files copyrighted"

@@ -1,3 +1,63 @@
+version 3.1.0
+	1:change version number
+	  some trivia in transparent.c
+	2:take care that only generated flakes are used when snow->defaults
+	3:snow flakes size adjustable
+	4:limit snowsize
+	  start snowflake always above window
+	  all generated snow xpm's: width multiple of 8
+	  also all off the vintage xpm's in Pixmaps
+	  change defaults for max number of flakes and blow-off to more humane
+	      numbers
+	5:use effective width for flakes (weff in snow.c)
+	  small changes in GenerateFlakesFromFallen()
+	  it appears that the height of an xpm should be >=2 to prevent
+	    terrible degradation of performance. snow.c: genxpmflake()
+	6:snow.h, snow.c: remove w and h from type Snow, these were redundant
+	7:changed some defaults and ranges
+	8:snow.c: reduce extra_flakes to 300. I have the impression that this
+	     is beneficial for cramped systems
+	  correct bug: blowoff.c: do not generate blow-off snow if Flags.NoSnowFlakes
+	9:utils.c: wrapper for cairo_paint_with_alpha(). If alpha > 0.9, use
+	     cairo_paint(). Seems to have some performance gain (less stress
+	     on Xorg), but I am not sure.
+	  main.c: hide gtk_widget TransB when not used.
+	          gray out transparency when running in fvwm-like environment
+	  added test2.sh for 'make check' and 'autopkgtest'
+	  GetCurrentWorkspace now always returns 0 if there are problems 
+	10:added tests using simulated mouse clicks, test2.sh and test3.sh
+	   xsnow reports now which Santa is chosen, needed for 
+	     'make check' and autopkgtest
+	   in Pixmaps: changed snowtree.xpm, eland.xpm, polarbear.xpm,
+	      huis4.xpm, AltSanta*.xpm to use one char to encode color
+	      using 'convert in.xpm -colors nn out.xpm'
+	11:removed references to test2.sh and test3.sh
+	   add flag '-noisy'
+	   corrected non fatal bugs in xpmtobits
+	   implemented 'birds follow Santa'
+	12:main.c: do_display_dimensions(): restart stars etc. not in the
+	   first call
+	   add scale button for 'Lift snow windows' == OffsetY
+	13:corrected handling of fluff in snow.c
+	   corrected: if !ShowBirds, Santa should be shown (main.c)
+	14:some fine tuning snow on trees
+	15:trivia in snow.h
+	16:fixed serious bug in snow.c which caused freezing
+	   snow flakes when changing size of flakes
+version 3.0.10
+	1:Better icons
+	2:better flakes
+	3:more flakes, auto generate snow includes and macro's for pixmaps.c
+	4:more flakes
+	5:more flakes
+	  birds.c: made attraction point transparent again
+	  ui.xml: remove seperators from snow tab
+	7:get rid of snow??.xbm. Conversion from xpm is done with xpmtoxbm().
+	  rename snow*.xpm to flake*.xpm
+	8:next to the 7 archaic flakes, generate random flakes
+	  changed the addcopyright.sh script to only trigger on
+	  the first -copyright- line
+	9:some code clean up
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow

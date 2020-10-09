@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -26,18 +26,19 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "ui.h"
-#include "utils.h"
-#include "clocks.h"
-#include "ui_xml.h"
-#include "xsnow.h"
-#include "flags.h"
-#include "csvpos.h"
-#include "pixmaps.h"
-#include "version.h"
 #include "birds.h"
-#include "windows.h"
+#include "clocks.h"
+#include "csvpos.h"
+#include "flags.h"
+#include "pixmaps.h"
+#include "snow.h"
+#include "ui.h"
+#include "ui_xml.h"
+#include "utils.h"
 #include "varia.h"
+#include "version.h"
+#include "windows.h"
+#include "xsnow.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -466,13 +467,15 @@ static void init_tree_pixmaps()
 static void init_hello_pixmaps()
 {
    GtkImage *image; 
-   GdkPixbuf *pixbuf;
+   GdkPixbuf *pixbuf, *pixbuf1;
    pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
+   pixbuf1 = gdk_pixbuf_scale_simple(pixbuf,64,64,GDK_INTERP_BILINEAR);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image1"));
-   gtk_image_set_from_pixbuf(image,pixbuf);
+   gtk_image_set_from_pixbuf(image,pixbuf1);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image2"));
-   gtk_image_set_from_pixbuf(image,pixbuf);
+   gtk_image_set_from_pixbuf(image,pixbuf1);
    g_object_unref(pixbuf);
+   g_object_unref(pixbuf1);
    pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[0]);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image3"));
    gtk_image_set_from_pixbuf(image,pixbuf);
@@ -583,7 +586,8 @@ static struct _general_buttons
    general_button bgcolor;
    general_button exposures;
    general_button lift;
-   general_button fullscreen;   // is disabled in ui.xml.
+   general_button lift_windows;
+   general_button fullscreen;
    general_button below;
    general_button below_confirm;
    general_button allworkspaces;
@@ -601,6 +605,7 @@ static void init_general_buttons()
    HANDLE_INIT(general_buttons.bgcolor.button,            general-bgcolor);
    HANDLE_INIT(general_buttons.exposures.button,          general-exposures);
    HANDLE_INIT(general_buttons.lift.button,               general-lift);
+   HANDLE_INIT(general_buttons.lift_windows.button,       general-lift-windows);
    HANDLE_INIT(general_buttons.fullscreen.button,         general-fullscreen);
    HANDLE_INIT(general_buttons.below.button,              general-below);
    HANDLE_INIT(general_buttons.below_confirm.button,      general-below-confirm);
@@ -623,6 +628,7 @@ static void set_general_buttons()
    HANDLE_SET_RANGE(general_buttons.cpuload.button,CpuLoad,self);
    HANDLE_SET_RANGE(general_buttons.transparency.button,Transparency,self);
    HANDLE_SET_RANGE(general_buttons.lift.button,OffsetS,-self);
+   HANDLE_SET_RANGE(general_buttons.lift_windows.button,OffsetY,-self);
    HANDLE_SET_COLOR(general_buttons.bgcolor.button,BGColor);
    HANDLE_SET_TOGGLE(general_buttons.usebg.button,          UseBG);
    HANDLE_SET_TOGGLE(general_buttons.fullscreen.button,     FullScreen);
@@ -674,6 +680,7 @@ HANDLE_TOGGLE(button_fullscreen,              FullScreen,    1,0);
 //  This one gets some special code, see below.
 HANDLE_TOGGLE(button_allworkspaces,           AllWorkspaces, 1,0);
 HANDLE_RANGE(button_lift,                     OffsetS,       -value);
+HANDLE_RANGE(button_lift_windows,             OffsetY,       -value);
 
    MODULE_EXPORT
 void button_below(GtkWidget *w, UNUSED gpointer d)
@@ -734,20 +741,6 @@ void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
    remove_from_mainloop(bct_id);
 }
 
-#if 0
-#define HANDLE_TOGGLE(_name,_flag,_t,_f) \
-   MODULE_EXPORT \
-   void _name(GtkWidget *w, UNUSED gpointer d) \
-{ \
-   if(!human_interaction) return; \
-   gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
-   if(active) \
-   Flags._flag = _t; \
-   else \
-   Flags._flag = _f; \
-   P(#_name ": %d\n",Flags._flag); \
-} typedef int dummytype // to request a ;
-#endif
 
    MODULE_EXPORT
 void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
@@ -768,6 +761,7 @@ void general_default(int vintage)
    Flags.BGColor       = strdup(DEFAULT_BGColor);
    Flags.Exposures     = DEFAULT_Exposures;
    Flags.OffsetS       = DEFAULT_OffsetS;
+   Flags.OffsetY       = DEFAULT_OffsetY;
    Flags.FullScreen    = DEFAULT_FullScreen;
    Flags.BelowAll      = DEFAULT_BelowAll;
    Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
@@ -803,6 +797,7 @@ static struct _snow_buttons
    snow_button show_snow;
    snow_button show_snow_blowoff;
    snow_button intensity;
+   snow_button snow_size;
    snow_button blowoff_intensity;
    snow_button speed;
    snow_button countmax;
@@ -822,6 +817,7 @@ static void init_snow_buttons()
    HANDLE_INIT(snow_buttons.show_snow.button             ,snow-show);
    HANDLE_INIT(snow_buttons.show_snow_blowoff.button     ,snow-show-blowoff);
    HANDLE_INIT(snow_buttons.intensity.button             ,snow-intensity);
+   HANDLE_INIT(snow_buttons.snow_size.button             ,snow-size);
    HANDLE_INIT(snow_buttons.blowoff_intensity.button     ,snow-blowoff-intensity);
    HANDLE_INIT(snow_buttons.speed.button                 ,snow-speed);
    HANDLE_INIT(snow_buttons.countmax.button              ,flake-count-max);
@@ -846,6 +842,7 @@ static void set_snow_buttons()
    HANDLE_SET_TOGGLE_I(snow_buttons.fluff_show.button         ,NoFluffy);
 
    HANDLE_SET_RANGE(snow_buttons.intensity.button             ,SnowFlakesFactor ,self);
+   HANDLE_SET_RANGE(snow_buttons.snow_size.button             ,SnowSize         ,self);
    HANDLE_SET_RANGE(snow_buttons.blowoff_intensity.button     ,BlowOffFactor    ,self);
    HANDLE_SET_RANGE(snow_buttons.speed.button                 ,SnowSpeedFactor  ,self);
    HANDLE_SET_RANGE(snow_buttons.countmax.button              ,FlakeCountMax    ,self);
@@ -868,6 +865,7 @@ HANDLE_COLOR(button_snow_color          ,SnowColor);
 
 HANDLE_RANGE(button_snow_blowoff_intensity   , BlowOffFactor    ,value);
 HANDLE_RANGE(button_snow_intensity           , SnowFlakesFactor ,value);
+HANDLE_RANGE(button_snow_size                , SnowSize         ,value);
 HANDLE_RANGE(button_snow_speed               , SnowSpeedFactor  ,value);
 HANDLE_RANGE(button_flake_count_max          , FlakeCountMax    ,value);
 HANDLE_RANGE(button_snow_windows             , MaxWinSnowDepth  ,value);
@@ -881,6 +879,7 @@ void snow_default(int vintage)
    human_interaction = 0;
    Flags.NoBlowSnow        = DEFAULT_NoBlowSnow;
    Flags.SnowFlakesFactor  = DEFAULT_SnowFlakesFactor;
+   Flags.SnowSize          = DEFAULT_SnowSize;
    Flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
    free(Flags.SnowColor);
    Flags.SnowColor         = strdup(DEFAULT_SnowColor);
@@ -894,11 +893,17 @@ void snow_default(int vintage)
    Flags.NoKeepSBot        = DEFAULT_NoKeepSBot;
    Flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
    Flags.NoFluffy          = DEFAULT_NoFluffy;
+
+   UseVintageFlakes        = 0;
+
    if(vintage)
    {
       Flags.NoBlowSnow        = VINTAGE_NoBlowSnow;
       Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
       Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
+
+   UseVintageFlakes        = 1;
+
    }
    set_snow_buttons();
    human_interaction = h;
@@ -934,6 +939,7 @@ static struct _birds_buttons
    birds_button show_birds;
    birds_button birds_only;
    birds_button show_attr;
+   birds_button follow_santa;
 
    birds_button nbirds;
    birds_button neighbours;
@@ -953,6 +959,7 @@ static void init_birds_buttons()
    HANDLE_INIT(birds_buttons.show_birds.button         ,birds-show);
    HANDLE_INIT(birds_buttons.birds_only.button         ,birds-only);
    HANDLE_INIT(birds_buttons.show_attr.button          ,birds-show-attr);
+   HANDLE_INIT(birds_buttons.follow_santa.button       ,birds-follow-santa);
 
    HANDLE_INIT(birds_buttons.nbirds.button             ,birds-nbirds);
    HANDLE_INIT(birds_buttons.neighbours.button         ,birds-neighbours);
@@ -972,6 +979,7 @@ static void set_birds_buttons()
    HANDLE_SET_TOGGLE(birds_buttons.show_birds.button     ,ShowBirds);
    HANDLE_SET_TOGGLE(birds_buttons.birds_only.button     ,BirdsOnly);
    HANDLE_SET_TOGGLE(birds_buttons.show_attr.button      ,ShowAttrPoint);
+   HANDLE_SET_TOGGLE(birds_buttons.follow_santa.button   ,FollowSanta);
 
    HANDLE_SET_RANGE(birds_buttons.nbirds.button            ,Nbirds          ,self);
    HANDLE_SET_RANGE(birds_buttons.neighbours.button        ,Neighbours      ,self);
@@ -987,11 +995,12 @@ static void set_birds_buttons()
    HANDLE_SET_COLOR(birds_buttons.color.button,BirdsColor);
 }
 
-HANDLE_TOGGLE(button_birds_show        ,ShowBirds     ,1  ,0);
-HANDLE_TOGGLE(button_birds_only        ,BirdsOnly     ,1  ,0);
-HANDLE_TOGGLE(button_birds_attr        ,ShowAttrPoint ,1  ,0);
+HANDLE_TOGGLE(button_birds_show           ,ShowBirds     ,1  ,0);
+HANDLE_TOGGLE(button_birds_only           ,BirdsOnly     ,1  ,0);
+HANDLE_TOGGLE(button_birds_attr           ,ShowAttrPoint ,1  ,0);
+HANDLE_TOGGLE(button_birds_follow_santa   ,FollowSanta   ,1  ,0);
 
-HANDLE_COLOR(button_birds_color        ,BirdsColor);
+HANDLE_COLOR(button_birds_color           ,BirdsColor);
 
 HANDLE_RANGE(button_birds_nbirds          ,Nbirds              ,value);
 HANDLE_RANGE(button_birds_neighbours      ,Neighbours          ,value);
@@ -1010,8 +1019,8 @@ void birds_default(int vintage)
    human_interaction = 0;
    if(vintage)
    {
-      Flags.ShowBirds = VINTAGE_ShowBirds;
-      Flags.BirdsOnly = VINTAGE_BirdsOnly;
+      Flags.ShowBirds   = VINTAGE_ShowBirds;
+      Flags.BirdsOnly   = VINTAGE_BirdsOnly;
    }
    else
    {
@@ -1027,6 +1036,7 @@ void birds_default(int vintage)
       Flags.DisWeight        = DEFAULT_DisWeight;
       Flags.FollowWeight     = DEFAULT_FollowWeight;
       Flags.ShowAttrPoint    = DEFAULT_ShowAttrPoint;
+      Flags.FollowSanta      = DEFAULT_FollowSanta;
       Flags.BirdsScale       = DEFAULT_BirdsScale;
       free(Flags.BirdsColor);
       Flags.BirdsColor       = strdup(DEFAULT_BirdsColor);
@@ -1152,7 +1162,6 @@ static void set_buttons()
 void all_default(int vintage)
 {
    santa_default(vintage);
-   // general_default(vintage);
    scenery_default(vintage);
    snow_default(vintage);
    wind_default(vintage);
@@ -1203,7 +1212,6 @@ void ui_set_sticky(int x)
 void ui(UNUSED int *argc, UNUSED char **argv[])
 {
 
-   // gtk_init(argc, argv);
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
@@ -1213,6 +1221,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
 
    apply_standard_css();
+   gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();

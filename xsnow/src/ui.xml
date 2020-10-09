@@ -4,7 +4,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -164,9 +164,9 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="flake-count-max-adjustment">
     <property name="lower">10</property>
-    <property name="upper">4000</property>
-    <property name="value">1000</property>
-    <property name="step_increment">100</property>
+    <property name="upper">1000</property>
+    <property name="value">500</property>
+    <property name="step_increment">10</property>
     <property name="page_increment">100</property>
   </object>
   <object class="GtkAdjustment" id="general-transparency-adjuspment">
@@ -176,6 +176,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="lift-window-adjustment">
     <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="lift-windows-adjustment">
+    <property name="lower">-20</property>
+    <property name="upper">100</property>
+    <property name="value">-20</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -218,7 +225,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   </object>
   <object class="GtkAdjustment" id="snow-blow-adjustment">
     <property name="lower">10</property>
-    <property name="upper">200</property>
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -245,6 +252,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="snow-size-adjustment">
+    <property name="lower">2</property>
+    <property name="upper">20</property>
+    <property name="value">8</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
   </object>
   <object class="GtkAdjustment" id="snow-speed-adjustment">
     <property name="lower">10</property>
@@ -663,6 +677,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">center</property>
                 <child>
                   <object class="GtkImage" id="hello-image1">
                     <property name="visible">True</property>
@@ -680,8 +695,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">8</property>
-                    <property name="margin_right">8</property>
+                    <property name="margin_left">24</property>
+                    <property name="margin_right">24</property>
                     <property name="label" translatable="yes">Welcome at xsnow!</property>
                     <attributes>
                       <attribute name="scale" value="2"/>
@@ -1003,17 +1018,6 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1142,17 +1146,6 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
-                <property name="width">4</property>
               </packing>
             </child>
             <child>
@@ -1402,6 +1395,28 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkScale" id="snow-size">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">snow-size-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <signal name="value-changed" handler="button_snow_size" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkScale" id="snow-speed">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
@@ -1417,7 +1432,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1439,7 +1454,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -1452,8 +1467,14 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">4</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -1468,6 +1489,22 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Size</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkLabel">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
@@ -1477,7 +1514,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1491,7 +1528,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -1505,8 +1542,14 @@ Note: in Wayland, there is no snow on the windows.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">4</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -1585,6 +1628,30 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="left_attach">1</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3146,7 +3213,6 @@ Note: in Wayland, there is no snow on the windows.</property>
           <object class="GtkGrid" id="grid_birds">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">The range in use to get the desired number of neighbours.</property>
             <property name="halign">center</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
@@ -3415,7 +3481,8 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkScale" id="birds-viewingdistance">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Viewing distance.</property>
+                <property name="tooltip_text" translatable="yes">Viewing distance.
+NOTE: Santa has no knowledge of viewing distance, so when birds are following Santa, the relative positions of Santa and birds will be temporarely out of sync when you change the viewing distance. This is only noticeable when the birds are following Santa.</property>
                 <property name="adjustment">birds-vd-adjustment</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
@@ -3644,7 +3711,9 @@ point</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Follow neighbours</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Adjust speed to
+neighbours</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -3700,7 +3769,8 @@ point</property>
             </child>
             <child>
               <object class="GtkToggleButton" id="birds-show-attr">
-                <property name="label" translatable="yes">Show attraction point</property>
+                <property name="label" translatable="yes">Show 
+attr point</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3755,7 +3825,20 @@ point</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkToggleButton" id="birds-follow-santa">
+                <property name="label" translatable="yes">Follow 
+Santa</property>
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Birds are attracted by an attraction point. Here you can choose to let Santa be the attraction point.</property>
+                <signal name="toggled" handler="button_birds_follow_santa" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">7</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -3825,7 +3908,7 @@ point</property>
                 <property name="label" translatable="yes">version</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">0</property>
                 <property name="width">14</property>
               </packing>
@@ -3873,7 +3956,8 @@ workspaces</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.</property>
+                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.
+NOTE: this doesn't work properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_allworkspaces" swapped="no"/>
@@ -3891,7 +3975,8 @@ screen</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.</property>
+                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.
+NOTE: this doesn't work properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="toggled" handler="button_fullscreen" swapped="no"/>
@@ -4033,7 +4118,8 @@ confirm</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <property name="label" translatable="yes">Lift snow bottom</property>
+                    <property name="label" translatable="yes">Lift snow
+on bottom</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4064,6 +4150,46 @@ or fallen snow hides something that should not be hidden.</property>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Lift snow
+on windows</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="general-lift-windows">
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Use this if no snow collects on your windows, or if snow collects separated from your windows. 
+Some basic window managers need this setting (e.g. TWM needs in general a value of 25 .. 28).</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">lift-windows-adjustment</property>
+                    <property name="inverted">True</property>
+                    <property name="restrict_to_fill_level">False</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">right</property>
+                    <signal name="value-changed" handler="button_lift_windows" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </object>
@@ -4105,7 +4231,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="orientation">vertical</property>
               </object>
               <packing>
-                <property name="left_attach">15</property>
+                <property name="left_attach">16</property>
                 <property name="top_attach">10</property>
                 <property name="height">7</property>
               </packing>
@@ -4129,7 +4255,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">10</property>
               </packing>
             </child>
@@ -4141,7 +4267,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">17</property>
               </packing>
             </child>
@@ -4194,7 +4320,7 @@ or fallen snow hides something that should not be hidden.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">8</property>
+                <property name="left_attach">9</property>
                 <property name="top_attach">19</property>
                 <property name="width">8</property>
               </packing>
@@ -4282,7 +4408,7 @@ or fallen snow hides something that should not be hidden.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">8</property>
+                <property name="left_attach">9</property>
                 <property name="top_attach">18</property>
                 <property name="width">8</property>
               </packing>
@@ -4294,7 +4420,7 @@ or fallen snow hides something that should not be hidden.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">14</property>
               </packing>
             </child>
@@ -4360,7 +4486,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </style>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">13</property>
                 <property name="width">14</property>
               </packing>
@@ -4435,7 +4561,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </style>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">15</property>
                 <property name="width">14</property>
               </packing>
@@ -4485,7 +4611,7 @@ Drawing and erasing will be done by X11 functions.</property>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">3</property>
                 <property name="top_attach">11</property>
                 <property name="width">13</property>
               </packing>
@@ -4497,9 +4623,72 @@ Drawing and erasing will be done by X11 functions.</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">12</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

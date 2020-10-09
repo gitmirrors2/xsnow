@@ -1,2 +1,2 @@
-Tests:
-	test1.sh
+Tests: test1.sh
+Restrictions: superficial

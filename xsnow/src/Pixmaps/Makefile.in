@@ -115,7 +115,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/make.inc
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
@@ -224,7 +224,7 @@ top_srcdir = @top_srcdir@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -240,6 +240,7 @@ top_srcdir = @top_srcdir@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 EXTRA_DIST = \
+make.inc \
 AltSanta1.xpm \
 AltSanta2.xpm \
 AltSanta3.xpm \
@@ -264,47 +265,6 @@ BigSantaRudolf81.xpm \
 BigSantaRudolf82.xpm \
 BigSantaRudolf83.xpm \
 BigSantaRudolf84.xpm \
-eland.xpm \
-huis4.xpm \
-Makefile.am \
-MediumSanta1.xpm \
-MediumSanta2.xpm \
-MediumSanta3.xpm \
-MediumSanta4.xpm \
-MediumSantaRudolf1.xpm \
-MediumSantaRudolf2.xpm \
-MediumSantaRudolf3.xpm \
-MediumSantaRudolf4.xpm \
-RegularSanta1.xpm \
-RegularSanta2.xpm \
-RegularSanta3.xpm \
-RegularSanta4.xpm \
-RegularSantaRudolf1.xpm \
-RegularSantaRudolf2.xpm \
-RegularSantaRudolf3.xpm \
-RegularSantaRudolf4.xpm \
-rendier.xpm \
-snow00.xbm \
-snow01.xbm \
-snow02.xbm \
-snow03.xbm \
-snow04.xbm \
-snow05.xbm \
-snow06.xbm \
-snow00.xpm \
-snow01.xpm \
-snow02.xpm \
-snow03.xpm \
-snow04.xpm \
-snow05.xpm \
-snow06.xpm \
-snowtree.xpm \
-star.xbm \
-tannenbaum.xpm \
-tree-1_100px.xpm \
-polarbear.xpm \
-tree.xpm \
-xsnow.xpm \
 bird1.xpm \
 bird2.xpm \
 bird3.xpm \
@@ -328,12 +288,47 @@ birdl4.xpm \
 birdl5.xpm \
 birdl6.xpm \
 birdl7.xpm \
-birdl8.xpm
+birdl8.xpm \
+eland.xpm \
+flake0.xpm \
+flake1.xpm \
+flake2.xpm \
+flake3.xpm \
+flake4.xpm \
+flake5.xpm \
+flake6.xpm \
+huis4.xpm \
+MediumSanta1.xpm \
+MediumSanta2.xpm \
+MediumSanta3.xpm \
+MediumSanta4.xpm \
+MediumSantaRudolf1.xpm \
+MediumSantaRudolf2.xpm \
+MediumSantaRudolf3.xpm \
+MediumSantaRudolf4.xpm \
+polarbear.xpm \
+RegularSanta1.xpm \
+RegularSanta2.xpm \
+RegularSanta3.xpm \
+RegularSanta4.xpm \
+RegularSantaRudolf1.xpm \
+RegularSantaRudolf2.xpm \
+RegularSantaRudolf3.xpm \
+RegularSantaRudolf4.xpm \
+rendier.xpm \
+snowtree.xpm \
+star.xbm \
+tannenbaum.xpm \
+tree-1_100px.xpm \
+tree.xpm \
+xsnow.jpg \
+xsnow.png \
+xsnow.xpm 
 
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/make.inc $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -353,6 +348,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__maybe_remake_depfiles);; \
 	esac;
+$(srcdir)/make.inc $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -517,6 +513,26 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+# -copyright-
+#-# 
+#-# xsnow: let it snow on your desktop
+#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#-# 	      2019,2020 Willem Vermin
+#-# 
+#-# This program is free software: you can redistribute it and/or modify
+#-# it under the terms of the GNU General Public License as published by
+#-# the Free Software Foundation, either version 3 of the License, or
+#-# (at your option) any later version.
+#-# 
+#-# This program is distributed in the hope that it will be useful,
+#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#-# GNU General Public License for more details.
+#-# 
+#-# You should have received a copy of the GNU General Public License
+#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#-# 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

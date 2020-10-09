@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -18,6 +18,15 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+/*
+ * This works with EWHM/NetWM compatible X Window managers,
+ * so enlightenment (for example) is a problem.
+ * In enlightenment there is no way to tell if a window is minimized,
+ * and on which workspace the focus is.
+ * There would be one advantage of enlightenment: you can tell easily
+ * if a window is on the screen (minimized or not) by looking at __E_WINDOW_MAPPED
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
@@ -28,6 +37,48 @@
 #include "windows.h"
 #include "dsimple.h"
 #include "debug.h"
+
+static void FindWindows(Display *display,Window window, long unsigned int *nwindows,Window **windows);
+static void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows);
+
+void FindWindows(Display *display,Window window,long unsigned int *nwindows,Window **windows)
+{
+   *nwindows = 0;
+   *windows  = NULL;
+   FindWindows_r(display,window,nwindows,windows);
+   /*
+   int i;
+   for (i=0; i<(int)(*nwindows); i++)
+      printf("window: %#lx\n",(*windows)[i]);
+      */
+}
+void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows)
+{
+   Window root,parent,*children;
+   unsigned int nchildren;
+   int i;
+   static int generations = 0;
+
+   XQueryTree(display,window,&root,&parent,&children,&nchildren);
+
+   ++(*nwindows);
+   *windows = (Window *)realloc(*windows,(*nwindows)*sizeof(Window *));
+   (*windows)[*nwindows-1] = window;
+
+   if (nchildren) {
+      Window *child;
+
+      ++generations;
+
+      for (i = 0, child = children; i < (int)nchildren; ++i, ++child)
+	 FindWindows_r(display,*child,nwindows,windows);
+
+      --generations;
+      XFree(children);
+   }
+
+   return;
+}
 
 int GetCurrentWorkspace()
 {
@@ -83,6 +134,9 @@ int GetCurrentWorkspace()
 	    r = 0;
 	 else
 	    r = -1;
+	 r = 0; // second thought: always return 0 here
+	 //        so things will run in enlightenment also
+	 //        more or less ;-)
       }
       else
 	 r = *(long *)properties;        // see man XGetWindowProperty
@@ -107,11 +161,16 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_WINDOW)
    {
-      //printf("%d: nog eens ...\n",__LINE__);
+      P("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
       if(properties) XFree(properties);
       atom = XInternAtom(display,"_WIN_CLIENT_LIST",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+   }
+   if(type != XA_WINDOW)
+   {
+      P("No _WIN_CLIENT_LIST, trying XQueryTree\n");
+      FindWindows(display,RootWindow(display,DefaultScreen(display)),&nitems,(Window **)&properties);
    }
    //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
    (*nwin) = nitems;
@@ -122,11 +181,19 @@ int GetWindows(WinInfo **windows, int *nwin)
    static Atom net_atom = 0, gtk_atom = 0;
    if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
    if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
-   for (i=0; (unsigned long)i<nitems; i++,w++)
+   int k = 0;
+   for (i=0; (unsigned long)i<nitems; i++)
    {
       Window root,child_return;
       int x0,y0,xr,yr;
       unsigned int bw,depth;
+      char *name;
+      XFetchName(display, r[i], &name);
+      if (name)
+	 XFree(name);
+      else
+	 continue;
+
       w->id = r[i];
       XGetGeometry (display, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
@@ -243,8 +310,9 @@ int GetWindows(WinInfo **windows, int *nwin)
       nitems = 0;
 
       // first try to get adjustments for _GTK_FRAME_EXTENTS
-      XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
-	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (gtk_atom)
+	 XGetWindowProperty(display, w->id, gtk_atom, 0, 4, False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
       int wintype = GTK;
       // if not succesfull, try _NET_FRAME_EXTENTS
       if (nitems != 4)
@@ -261,7 +329,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       {
 	 long *r; // borderleft, borderright, top decoration, bottomdecoration
 	 r = (long*)properties;
-	 //printf("%d: RRRR: %ld %ld %ld %ld\n",__LINE__,r[0],r[1],r[2],r[3]);
+	 P("RRRR: %ld %ld %ld %ld\n",r[0],r[1],r[2],r[3]);
 	 switch(wintype)
 	 {
 	    case NET:
@@ -279,16 +347,25 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       w->h -= (r[2]+r[3]);
 	       break;
 	    default:
-	       //printf("%s:%d: dit kan niet\n",__FILE__,__LINE__);
+	       I("Xsnow encountered a serious problem, exiting ...\n");
 	       exit(1);
 	       break;
 	 }
 	 //printf("%d: NET/GTK: %#lx %d %d %d %d %d\n",__LINE__,
 	 //      w->id,w->ws,w->x,w->y,w->w,w->h);
       }
+      else
+      {
+	 // this is a problem....
+	 // In for example TWM, neither NET nor GTK is the case.
+	 // But, there is some window decoration, in 
+      }
       if(properties)XFree(properties);
+      w++;
+      k++;
    }
    if(properties) XFree(properties);
+   (*nwin) = k;
    //P("%d\n",counter++);printwindows(display,*windows,*nwin);
    return 1;
 }
@@ -386,6 +463,8 @@ void printwindows(Display *dpy,WinInfo *windows, int nwin)
    {
       char *name;
       XFetchName(dpy, w->id, &name);
+      if (!name)
+	 name = strdup("No name");
       if (strlen(name)>20)
 	 name[20] = '\0';
       printf("id:%#10lx ws:%3d x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",

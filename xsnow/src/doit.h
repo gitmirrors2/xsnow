@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
    DOIT_I(WindNow)  \
    DOIT_I(XWinInfoHandling) \
    DOIT_L(WindowId)  \
+   DOIT_I(Noisy) \
    DOIT
 
 // following flags are written to the config file and
@@ -73,6 +74,7 @@
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
    DOIT_I(SnowFlakesFactor) \
+   DOIT_I(SnowSize) \
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(TreeFill) \
    DOIT_I(UseBG) \
@@ -87,19 +89,20 @@
    DOIT_S(TreeType)   \
    \
    DOIT_I(Anarchy) \
-   DOIT_I(Neighbours) \
-   DOIT_I(Nbirds) \
-   DOIT_I(ShowBirds) \
+   DOIT_I(AttrFactor)  \
    DOIT_I(BirdsOnly) \
    DOIT_I(BirdsRestart)  \
-   DOIT_I(ViewingDistance)  \
+   DOIT_I(BirdsScale) \
    DOIT_I(BirdsSpeed)  \
-   DOIT_I(AttrFactor)  \
    DOIT_I(DisWeight)  \
    DOIT_I(FollowWeight)  \
+   DOIT_I(FollowSanta)  \
+   DOIT_I(Nbirds) \
+   DOIT_I(Neighbours) \
    DOIT_I(PrefDistance) \
    DOIT_I(ShowAttrPoint) \
-   DOIT_I(BirdsScale) \
+   DOIT_I(ShowBirds) \
+   DOIT_I(ViewingDistance)  \
    \
    DOIT_S(BirdsColor)
 

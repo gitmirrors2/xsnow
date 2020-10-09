@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -114,6 +114,7 @@ void docs_usage(int man)
    manout("-wantwindow"               ,"Specify your favorite window:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
+   manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
 
    if(doman)
    {
@@ -126,9 +127,10 @@ void docs_usage(int man)
    manout("-snowflakes <n>"           ,"The higher, the more snowflakes are generated per second. Default: " EQ(DEFAULT_SnowFlakesFactor) ".");
    manout("-noblowsnow"               ,"Do not animate blowing snow from trees or windows.");
    manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_SnowColor) ").");
-   manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default:" EQ(DEFAULT_SnowSpeedFactor) ").");
+   manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default: " EQ(DEFAULT_SnowSpeedFactor) ").");
+   manout("-snowsize <n>"             ,"Set size of (non-vintage) snow flakes (default: " EQ(DEFAULT_SnowSize) ").");
    manout("-nosnowflakes"             ,"Do not show falling snowflakes. (Weird!)");
-   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default " EQ(DEFAULT_FlakeCountMax) ").");
+   manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default: " EQ(DEFAULT_FlakeCountMax) ").");
    manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_BlowOffFactor) ").");
 
    if(doman)
@@ -139,7 +141,7 @@ void docs_usage(int man)
    {
       printf("\n  Tree options:\n\n");
    }
-   manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default " EQ(DEFAULT_TreeType) ").");
+   manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default: " EQ(DEFAULT_TreeType) ").");
    manout(" "                         ,"Thanks to Carla Vermin for numbers >=3!"); 
    manout(" "                         ,"Credits: Image by b0red on Pixabay.");
    manout("-treetype all"             ,"Use all available tree types.");
@@ -224,6 +226,7 @@ void docs_usage(int man)
    manout("-prefdistance <n>"      ,"Preferred distance to neighbours ( 0..100 default: " EQ(DEFAULT_PrefDistance) ").");
    manout("-showbirds <n>"         ,"Show birds ( 0/1 default: " EQ(DEFAULT_ShowBirds) ").");
    manout("-showattr <n>"          ,"Show attraction point ( 0/1 default: " EQ(DEFAULT_ShowAttrPoint) ").");
+   manout("-followsanta <n>"       ,"Birds like Santa ( 0/1 default: " EQ(DEFAULT_FollowSanta) ").");
    manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
    if(doman)

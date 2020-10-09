@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ int scenery_draw(cairo_t *cr)
       Treeinfo *tree = Trees[i];
       cairo_surface_t *surface = tree_surfaces[tree->type][tree->rev];
       cairo_set_source_surface (cr, surface, tree->x, tree->y);
-      cairo_paint_with_alpha(cr,ALPHA);
+      my_cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }
@@ -126,7 +126,7 @@ int scenery_ui()
    }
    if(strcmp(Flags.TreeColor, OldFlags.TreeColor))
    {
-      //P("%s %s\n",Flags.TreeColor,OldFlags.TreeColor);
+      P("%s %s\n",Flags.TreeColor,OldFlags.TreeColor);
       ReInitTree0();
       free(OldFlags.TreeColor);
       OldFlags.TreeColor = strdup(Flags.TreeColor);

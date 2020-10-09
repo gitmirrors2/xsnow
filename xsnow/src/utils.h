@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ extern float   sq3(float x, float y, float z);
 extern Pixel   IAllocNamedColor(const char *colorName, Pixel dfltPix);
 extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
 extern int     randint(int m);
+extern void    my_cairo_paint_with_alpha(cairo_t *cr, double alpha);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);
@@ -49,3 +50,5 @@ extern double gaussian (double mean, double standard_deviation, double min, doub
 extern void sgaussian(long int seed);
 
 extern Pixel   Black, White;
+
+extern int is_little_endian(void);

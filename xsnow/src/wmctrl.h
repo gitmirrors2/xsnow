@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -22,14 +22,21 @@
 #include <X11/Xlib.h>
 typedef struct _WinInfo
 {
-   Window id             ;
-   int x,y               ; // x,y coordinates
-   int xa,ya             ; // x,y coordinates absolute
-   unsigned int w,h      ; // width, height
-            int ws       ; // workspace
-   unsigned int sticky: 1; // is visible on all workspaces
-   unsigned int dock  : 1; // is a "dock" (panel)
-   unsigned int hidden: 1; // is hidden (iconified)
+   Window id              ;
+   int x,y                ; // x,y coordinates
+   int xa,ya              ; // x,y coordinates absolute
+   unsigned int w,h       ; // width, height
+            int ws        ; // workspace
+
+#ifdef NO_USE_BITS
+   unsigned int sticky    ; // is visible on all workspaces
+   unsigned int dock      ; // is a "dock" (panel)
+   unsigned int hidden    ; // is hidden (iconified)
+#else
+   unsigned int sticky:  1; // is visible on all workspaces
+   unsigned int dock  :  1; // is a "dock" (panel)
+   unsigned int hidden:  1; // is hidden (iconified)
+#endif
 } WinInfo;
 
 extern int          GetCurrentWorkspace();

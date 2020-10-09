@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh test2.sh  xsnow.desktop \
+		test1.sh test2.sh test3.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
 		transparent.c transparent.h debug.h \
 		mainstub.cpp mainstub.h \
@@ -41,11 +41,11 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		meteo.c meteo.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
-		varia.h
+		varia.h snow_includes.h
 
 nodist_xsnow_SOURCES = ui_xml.h
 
-BUILT_SOURCES = ui_xml.h
+BUILT_SOURCES = ui_xml.h snow_includes.h
 
 # create C code to get ui.xml in a string
 # ISO C stipulates that the length of a string constant should
@@ -55,26 +55,43 @@ BUILT_SOURCES = ui_xml.h
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
 	@echo "/* This file is generated from $< by Makefile */" > $@
+	@echo "/* -""copyright-" >> $@
+	@echo "*/" >> $@
 	@echo "#pragma once" >> $@
-	@echo "#define UI_XML_H" >> $@
 	@echo "char xsnow_xml[] = {" >> $@
 	@sed 's/^ *//' $< | awk -v FS="" \
 	'BEGIN{for(n=0;n<256;n++)ord[sprintf("%c",n)]=n;}'\
 	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
 	'printf "%d,\n",ord["\n"];}' >> $@
 	@echo "0};" >> $@
+	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
 
-TESTS = test1.sh # test2.sh # test2 will fail if no X11 environment
+snow_includes.h: Pixmaps
+	@echo "Creating $@"
+	@echo "#pragma once" > $@
+	@echo "/* -""copyright-" >> $@
+	@echo "*/" >> $@
+	@ls $(top_srcdir)/src/Pixmaps/flake*.xpm | sed "s/^/#include \"/;s/$$/\"/" >> $@
+	@echo "#define SNOW_ALL \\" >> $@
+	@for i in $$(seq `ls $(top_srcdir)/src/Pixmaps/flake*.xpm | wc -l`) ; do \
+	   printf 'SNOW(%d) \\\n' `expr $$i - 1` ;\
+	done >> $@
+	@echo >> $@
+	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
+
+TESTS = test1.sh
+# test2.sh and test3.sh are still available, they test xsnow using Xvfb and xdotool.
+# I am not satisfied with the quality of these tests, so I left them out here.
 
 desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop
 
 appicondir=$(datadir)/pixmaps
-appicon_DATA=Pixmaps/xsnow.xpm
+appicon_DATA=Pixmaps/xsnow.svg
 
 man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h .deps/* 
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3  
 

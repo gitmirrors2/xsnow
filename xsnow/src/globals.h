@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-#               2019,2020 Willem Vermin
+#-# 	      2019,2020 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ extern struct _globals {
    float ox, oy, oz;            // [m]           idem
    float maxrange;              // max distanc to look for other birds [m]
    float bird_scale;            // scale for drawing birds
-   float attrx, attry, attrz;   // [m]          attraction point
    float prefdweight;           // dimensionless
    float meanspeed;             // [m/s]      preferred mean speed of birds
    int neighbours_max;          // max number of neighbours to look at
@@ -35,7 +34,11 @@ extern struct _globals {
    float mean_distance;         // mean distance [m]
    //float vd;                    // viewing distance (camera obscura) [m]
    float xc, zc;                // coordinates of camera obscura lens
+#ifdef NO_USE_BITS 
+   unsigned int freeze   ;      // when true, system freezes
+#else
    unsigned int freeze :1;      // when true, system freezes
+#endif
 
 #define DOITB(what,type) \
    type what; \
@@ -43,15 +46,24 @@ extern struct _globals {
 
    DOITALLB()
 #undef DOITB
+#ifdef NO_USE_BITS 
 #define DOITB(what,type) \
-      unsigned int what ## _changed  :1;
+      unsigned int what ## _changed    ;
+#else
+#define DOITB(what,type) \
+      unsigned int what ## _changed  : 1;
+#endif
 
       DOITALLB()
 #undef DOITB
 
+#ifdef NO_USE_BITS 
 #define DOITB(what) \
-      unsigned int what ## _requested  :1;
-
+      unsigned int what ## _requested    ;
+#else
+#define DOITB(what) \
+      unsigned int what ## _requested  : 1;
+#endif
       BUTTONALL()
 #undef DOITB
 
