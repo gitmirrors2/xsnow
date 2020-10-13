@@ -20,6 +20,7 @@
 #-# 
 
 # Create make.inc for the Pixmaps folder
+# maybe better in configure.ac?
 
 (
 cd src/Pixmaps
