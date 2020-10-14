@@ -23,7 +23,7 @@ cd $dir || exit
 codename=`lsb_release -sc`
 rm -rf debian
 cp -r $curdir/../xsnow-debian/debian .
-cp $curdir/../xsnow-debian/debian.$codename/* debian || exit
+cp -r $curdir/../xsnow-debian/debian.$codename/* debian || exit
 #dh_make --yes -s -f $tar
 echo xxxxxxxxx dh_make
 dh_make --yes -s --createorig
