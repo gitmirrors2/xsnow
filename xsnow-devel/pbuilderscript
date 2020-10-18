@@ -19,10 +19,12 @@ apt source xsnow || exit 1
 cd xsnow-$oldversion || exit 1
 uupdate -v $newversion ../xsnow-$newversion.tar.gz || exit 1
 cd ../xsnow-$newversion
-if [ -d debian.upstream ] ; then       
-   rm -r debian
-   mv debian.upstream debian || exit 1
-fi
+rm -rf debian
+cp -r $workdir/debian . || exit 1
+#if [ -d debian.upstream ] ; then       
+#   rm -r debian
+#   mv debian.upstream debian || exit 1
+#fi
 echo quilt ...
 while quilt push; do quilt refresh; done
 #dch

@@ -21,8 +21,9 @@ cp $tar . || exit 1
 tar xf $tar || exit
 cd $dir || exit
 codename=`lsb_release -sc`
-rm -f debian/compat
-cp debian.$codename/* debian || exit
+rm -rf debian
+cp -r $curdir/../xsnow-debian/debian .
+cp -r $curdir/../xsnow-debian/debian.$codename/* debian || exit
 #dh_make --yes -s -f $tar
 echo xxxxxxxxx dh_make
 dh_make --yes -s --createorig
@@ -53,12 +54,14 @@ for dist in i386-stretch amd64-stretch ; do
    cd w || exit 1
    tar xf $tar || exit 1
    cd $dir || exit 1
+   rm -rf debian
+   cp -r $curdir/../xsnow-debian/debian .
    case $dist in
       *stretch*)
-	 cp debian.stretch/* debian || exit 1
+	 cp $curdir/../xsnow-debian/debian.stretch/* debian || exit 1
 	 ;;
       *sid*)
-	 cp debian.sid/* debian || exit 1
+	 cp $curdir/../xsnow-debian/debian.sid/* debian || exit 1
 	 ;;
    esac
    dh_make --yes -s --createorig

@@ -20,8 +20,8 @@
 #-# 
 
 # Create make.inc for the Pixmaps folder
-# maybe better in configure.ac?
 
+curdir=`pwd`
 (
 cd src/Pixmaps
 echo -n "# -copyright" > make.inc
@@ -51,6 +51,7 @@ sed -i "/^AC_INIT(\[xsnow]/s/^.*/AC_INIT([xsnow], [$version], [wvermin@gmail.com
 # the 'xsnow' line and the -- Willem line will be adapted to the
 # new version and date automatically
 
+cd $curdir/../xsnow-debian || exit 1
 for d in debian debian.eoan debian.focal debian.stretch debian.sid debian.tara ; do
    if [ -e $d/changelog ] ; then
       sed -i "1s/(.*)/(1:$version-1)/" $d/changelog       || exit 1
@@ -60,10 +61,13 @@ done
 
 cp debian.sid/* debian
 
-mkdir -p debian/tests
-for t in src/test1.sh ; do
-   cp $t debian/tests
-done
+cd $curdir
+
+#mkdir -p debian/tests
+#for t in src/test1.sh ; do
+#   cp $t debian/tests
+#done
+
 
 autoreconf -fvi || exit 1
 

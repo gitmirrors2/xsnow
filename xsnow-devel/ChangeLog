@@ -1,3 +1,9 @@
+version 3.1.2
+	1:hashtable.cpp: do not use 'auto'
+	2:docs.c: added note about no menu when files are present in
+	  $HOME/xsnow/pixmaps
+version 3.1.1
+	moved debian stuff out of the distribution
 version 3.1.0
 	1:change version number
 	  some trivia in transparent.c

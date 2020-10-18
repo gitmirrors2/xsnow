@@ -17,6 +17,7 @@ mkdir -p $uploaddir
 cd $uploaddir || exit 1
 cp -v $tar . || exit 1
 #apt source xsnow || exit 1
+cp -r $curdir/../xsnow-debian/debian . || exit 1
 sudo bash `which pbuilder` --execute --bindmounts $PWD \
    --configfile ~root/pbuilderrc.$dist  \
    -- $curdir/pbuilderscript $PWD $oldversion $newversion|| exit 1

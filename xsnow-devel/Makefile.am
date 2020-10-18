@@ -22,6 +22,5 @@ SUBDIRS = src
 
 EXTRA_DIST = bootstrap Changes getversion README.md \
 	     addcopyright.sh prevent-remakes \
-	     pbuilderscript makeupload makedeb debian dependencies \
-	     maketar debian.eoan debian.stretch debian.sid debian.tara \
-	     debian.focal
+	     pbuilderscript makeupload makedeb dependencies \
+	     maketar

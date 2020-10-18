@@ -257,10 +257,12 @@ void docs_usage(int man)
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
+   manout(".", "NOTE: when this file is present, no menu will appear.");
    manout("$HOME/xsnow/pixmaps/santa<n>.xpm", "where <n> = 1,2,3,4.");
    manout(" ", "If present, xsnow will try this files (4 of them) for displaying");
    manout(" ", "Santa. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
+   manout(".", "NOTE: when these files are present, no menu will appear.");
 
    if(doman)
    {
