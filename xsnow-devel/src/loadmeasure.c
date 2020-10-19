@@ -29,6 +29,7 @@
 #include "clocks.h"
 #include "xsnow.h"
 #include "varia.h"
+#include "flags.h"
 
 static int do_loadmeasure(gpointer data);
 
@@ -51,6 +52,8 @@ void loadmeasure_init()
 // changes background color of ui if load to high
 int do_loadmeasure(UNUSED gpointer data)
 {
+   if(Flags.NoMenu)
+      return TRUE;
    double tnow = wallclock();
    static double tprev;
    static int count = 0;

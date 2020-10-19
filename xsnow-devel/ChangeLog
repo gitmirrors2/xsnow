@@ -1,7 +1,9 @@
 version 3.1.2
 	1:hashtable.cpp: do not use 'auto'
-	2:docs.c: added note about no menu when files are present in
+	  docs.c: added note about no menu when files are present in
 	  $HOME/xsnow/pixmaps
+	  Check on version of GTK. If too low, give option to start
+	    without ui.
 version 3.1.1
 	moved debian stuff out of the distribution
 version 3.1.0

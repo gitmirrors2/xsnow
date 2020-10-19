@@ -1317,6 +1317,7 @@ void ui_gray_birds(int m)
    gtk_container_foreach(birdsgrid, birdscb, &m);
 }
 
+
 // next function is not used, I leave it here as a template, who knows...
 // see also ui.xml
 void ui_error_x11(UNUSED int *argc, UNUSED char **argv[])

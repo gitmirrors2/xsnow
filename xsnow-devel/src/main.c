@@ -118,6 +118,8 @@ GdkWindow       *gdkwindow = NULL;
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int HaltedByInterrupt = 0;
 
+static char **Argv;
+static int Argc;
 
 // timing stuff
 //static double       TotSleepTime = 0;
@@ -145,6 +147,11 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
+static void   restart_nomenu(GtkWidget *w, gpointer data);
+static void   ui_restart_nomenu(void);
+static void   set_below_above(void);
+static void   activate (GtkApplication *app, gpointer user_data);
+static void   leave(GtkWidget *w, gpointer data);
 
 
 static void Thanks(void)
@@ -281,15 +288,17 @@ int main_c(int argc, char *argv[])
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
    srand48((long int)(wallcl()*1.0e6));
+   printf("Xsnow running in GTK version: %d.%d.%d\n",gtk_get_major_version(),gtk_get_minor_version(),gtk_get_micro_version());
+
    int i;
    // make a copy of all flags, before gtk_init() maybe removes some.
    // we need this at a restart of the program.
 
-   char **Argv;
    Argv = (char**) malloc((argc+1)*sizeof(char**));
    for (i=0; i<argc; i++)
       Argv[i] = strdup(argv[i]);
    Argv[argc] = NULL;
+   Argc = argc;
 
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
@@ -346,6 +355,17 @@ int main_c(int argc, char *argv[])
    }
    if (!Flags.NoConfig)
       WriteFlags();
+
+   if (!Flags.NoMenu)
+   {
+      if (gtk_get_minor_version() < 20)
+      {
+	 printf("Xsnow needs gtk version >= 3.20, found version 3.%d.%d, restarting with -nomenu\n",
+	       gtk_get_minor_version(),gtk_get_micro_version());
+
+	 ui_restart_nomenu();
+      }
+   }
 
    display = XOpenDisplay(Flags.DisplayName);
    RootWindow = DefaultRootWindow(display);
@@ -491,12 +511,99 @@ int main_c(int argc, char *argv[])
    {
       sleep(0);
       printf("Xsnow restarting: %s\n",Argv[0]);
+      fflush(NULL);
       execvp(Argv[0],Argv);
    }
    else
       Thanks();
    return 0;
 }		/* End of snowing */
+
+void ui_restart_nomenu()
+{
+   GtkApplication *app;
+   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
+   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+   g_application_run (G_APPLICATION (app), 0, NULL);
+   g_object_unref (app);
+}
+
+static void activate (GtkApplication *app, UNUSED gpointer user_data)
+{
+   GtkWidget *window;
+   GtkWidget *grid;
+   GtkWidget *button;
+   GtkWidget *label;
+
+
+   /* create a new window, and set its title */
+   window = gtk_application_window_new (app);
+   gtk_window_set_title (GTK_WINDOW (window), "Xsnow");
+   gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
+   gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
+   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+
+   /* Here we construct the container that is going pack our buttons */
+   grid = gtk_grid_new ();
+
+   /* Pack the container in the window */
+   gtk_container_add (GTK_CONTAINER (window), grid);
+
+   char s[512];
+   snprintf(s,512,"You are using GTK-3.%d.%d, but you need at least GTK-3.20.0\n"
+	 "to view the user interface. You can choose to run with the option '-nomenu'.\n"
+	 "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
+	 "Alternatively, you could edit ~/.xsnowrc to set options.\n",
+	 gtk_get_minor_version(),gtk_get_micro_version());
+   label = gtk_label_new(s);
+
+   /* Place the label in cell (0,0) and make it fill 2 cells horizontally */
+
+   gtk_grid_attach(GTK_GRID(grid),label,0,0,2,1);
+   button = gtk_button_new_with_label ("Restart without user interface");
+   g_signal_connect (button, "clicked", G_CALLBACK (restart_nomenu), NULL);
+
+
+   /* Place the first button in the grid cell (0, 1), and make it fill
+    * just 1 cell horizontally and vertically (ie no spanning)
+    */
+   gtk_grid_attach (GTK_GRID (grid), button, 0, 1, 1, 1);
+
+   button = gtk_button_new_with_label ("Quit");
+   g_signal_connect (button, "clicked", G_CALLBACK (leave), NULL);
+
+   /* Place the second button in the grid cell (1, 2), and make it fill
+    * just 1 cell horizontally and vertically (ie no spanning)
+    */
+   gtk_grid_attach (GTK_GRID (grid), button, 1, 1, 1, 1);
+
+   /* Now that we are done packing our widgets, we show them all
+    * in one go, by calling gtk_widget_show_all() on the window.
+    * This call recursively calls gtk_widget_show() on all widgets
+    * that are contained in the window, directly or indirectly.
+    */
+   gtk_widget_show_all (window);
+}
+
+void leave(UNUSED GtkWidget *w, UNUSED gpointer data)
+{
+   Thanks();
+   exit(0);
+}
+
+void restart_nomenu(UNUSED GtkWidget *w, UNUSED gpointer data)
+{
+   char **Argv1;
+   Argv1 = (char**) malloc((Argc+2)*sizeof(char**));
+   Argv1[0] = strdup(Argv[0]);
+   Argv1[1] = strdup("-nomenu");
+   int i;
+   for (i=1; i<Argc; i++)
+      Argv1[i+1] = strdup(Argv[i]);
+   Argv1[Argc+1] = NULL;
+   fflush(NULL);
+   execvp(Argv1[0],Argv1);
+}
 
 void set_below_above()
 {
