@@ -4,6 +4,7 @@ version 3.1.2
 	  $HOME/xsnow/pixmaps
 	  Check on version of GTK. If too low, give option to start
 	    without ui.
+	2:simplify code for running without menu if level of GTK is too low
 version 3.1.1
 	moved debian stuff out of the distribution
 version 3.1.0

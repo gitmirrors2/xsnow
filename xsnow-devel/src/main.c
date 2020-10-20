@@ -147,8 +147,7 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
-static void   restart_nomenu(GtkWidget *w, gpointer data);
-static void   ui_restart_nomenu(void);
+static void   ui_run_nomenu(void);
 static void   set_below_above(void);
 static void   activate (GtkApplication *app, gpointer user_data);
 static void   leave(GtkWidget *w, gpointer data);
@@ -358,12 +357,12 @@ int main_c(int argc, char *argv[])
 
    if (!Flags.NoMenu)
    {
-      if (gtk_get_minor_version() < 20)
+      if (gtk_get_minor_version() < 25)
       {
 	 printf("Xsnow needs gtk version >= 3.20, found version 3.%d.%d, restarting with -nomenu\n",
 	       gtk_get_minor_version(),gtk_get_micro_version());
 
-	 ui_restart_nomenu();
+	 ui_run_nomenu();
       }
    }
 
@@ -519,13 +518,14 @@ int main_c(int argc, char *argv[])
    return 0;
 }		/* End of snowing */
 
-void ui_restart_nomenu()
+void ui_run_nomenu()
 {
    GtkApplication *app;
    app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
    g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
    g_application_run (G_APPLICATION (app), 0, NULL);
    g_object_unref (app);
+   Flags.NoMenu = 1;
 }
 
 static void activate (GtkApplication *app, UNUSED gpointer user_data)
@@ -538,9 +538,10 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
 
    /* create a new window, and set its title */
    window = gtk_application_window_new (app);
-   gtk_window_set_title (GTK_WINDOW (window), "Xsnow");
-   gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-   gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
+   gtk_window_set_position        (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+   gtk_window_set_title           (GTK_WINDOW (window), "Xsnow");
+   gtk_window_set_decorated       (GTK_WINDOW(window), FALSE);
+   gtk_window_set_keep_above      (GTK_WINDOW(window), TRUE);
    gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
    /* Here we construct the container that is going pack our buttons */
@@ -560,9 +561,9 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
    /* Place the label in cell (0,0) and make it fill 2 cells horizontally */
 
    gtk_grid_attach(GTK_GRID(grid),label,0,0,2,1);
-   button = gtk_button_new_with_label ("Restart without user interface");
-   g_signal_connect (button, "clicked", G_CALLBACK (restart_nomenu), NULL);
-
+   button = gtk_button_new_with_label ("Run without user interface");
+   // following causes a return from ui_run_nomenu:
+   g_signal_connect_swapped(button,"clicked",G_CALLBACK(gtk_widget_destroy),window);
 
    /* Place the first button in the grid cell (0, 1), and make it fill
     * just 1 cell horizontally and vertically (ie no spanning)
@@ -572,7 +573,7 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
    button = gtk_button_new_with_label ("Quit");
    g_signal_connect (button, "clicked", G_CALLBACK (leave), NULL);
 
-   /* Place the second button in the grid cell (1, 2), and make it fill
+   /* Place the second button in the grid cell (1, 1), and make it fill
     * just 1 cell horizontally and vertically (ie no spanning)
     */
    gtk_grid_attach (GTK_GRID (grid), button, 1, 1, 1, 1);
@@ -589,20 +590,6 @@ void leave(UNUSED GtkWidget *w, UNUSED gpointer data)
 {
    Thanks();
    exit(0);
-}
-
-void restart_nomenu(UNUSED GtkWidget *w, UNUSED gpointer data)
-{
-   char **Argv1;
-   Argv1 = (char**) malloc((Argc+2)*sizeof(char**));
-   Argv1[0] = strdup(Argv[0]);
-   Argv1[1] = strdup("-nomenu");
-   int i;
-   for (i=1; i<Argc; i++)
-      Argv1[i+1] = strdup(Argv[i]);
-   Argv1[Argc+1] = NULL;
-   fflush(NULL);
-   execvp(Argv1[0],Argv1);
 }
 
 void set_below_above()
