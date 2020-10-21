@@ -1,12 +1,9 @@
 Source: xsnow
-Maintainer: Willem Vermin <wvermin@gmail.com>
 Section: games
 Priority: optional
+Maintainer: Willem Vermin <wvermin@gmail.com>
 Build-Depends: debhelper (>= 13), libx11-dev, libxpm-dev, libxt-dev, pkg-config, libxml2-dev,libgtk-3-dev, debhelper-compat (=13)
 Standards-Version: 4.5.0
-Homepage: https://www.ratrabbit.nl/ratrabbit/content/sw/xsnow/introduction
-Vcs-Browser: https://sourceforge.net/p/xsnow/code/HEAD/tree
-Rules-Requires-Root: no
 
 Package: xsnow
 Architecture: any
