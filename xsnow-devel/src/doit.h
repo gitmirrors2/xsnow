@@ -38,6 +38,7 @@
    DOIT_I(XWinInfoHandling) \
    DOIT_L(WindowId)  \
    DOIT_I(Noisy) \
+   DOIT_I(CheckGtk) \
    DOIT
 
 // following flags are written to the config file and

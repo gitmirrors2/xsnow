@@ -143,6 +143,9 @@ static void apply_standard_css(void);
 static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(UNUSED gpointer data);
 static void show_bct_countdown(void);
+static void yesyes(GtkWidget *w, gpointer data);
+static void nono(GtkWidget *w, gpointer data);
+static void activate (GtkApplication *app, gpointer user_data);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -1317,6 +1320,123 @@ void ui_gray_birds(int m)
    gtk_container_foreach(birdsgrid, birdscb, &m);
 }
 
+char * ui_gtk_version()
+{
+   static char s[20];
+   snprintf(s,20,"%d.%d.%d",gtk_get_major_version(),gtk_get_minor_version(),gtk_get_micro_version());
+   return s;
+}
+
+char * ui_gtk_required()
+{
+   static char s[20];
+   snprintf(s,20,"%d.%d.%d",GTK_MAJOR,GTK_MINOR,GTK_MICRO);
+   return s;
+}
+
+// returns:
+// 0: gtk version in use too low
+// 1: gtk version in use OK
+int ui_checkgtk()
+{
+   if ((int)gtk_get_major_version() > GTK_MAJOR)
+      return 1;
+   if ((int)gtk_get_major_version() < GTK_MAJOR) 
+      return 0;
+   if ((int)gtk_get_minor_version() > GTK_MINOR)
+      return 1;
+   if ((int)gtk_get_minor_version() < GTK_MINOR)
+      return 0;
+   if ((int)gtk_get_micro_version() >= GTK_MICRO)
+      return 1;
+   return 0;
+}
+
+// to be used if gtk version is too low
+// returns 1: user clicked 'Run with ...'
+// returns 0: user clicked 'Quit'
+static int RC;
+int ui_run_nomenu()
+{
+   GtkApplication *app;
+   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
+   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+   g_application_run (G_APPLICATION (app), 0, NULL);
+   g_object_unref (app);
+   return RC;
+}
+
+static void activate (GtkApplication *app, UNUSED gpointer user_data)
+{
+   GtkWidget *window;
+   GtkWidget *grid;
+   GtkWidget *button;
+   GtkWidget *label;
+
+
+   /* create a new window, and set its title */
+   window = gtk_application_window_new (app);
+   gtk_window_set_position        (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+   gtk_window_set_title           (GTK_WINDOW (window), "Xsnow");
+   gtk_window_set_decorated       (GTK_WINDOW(window), FALSE);
+   gtk_window_set_keep_above      (GTK_WINDOW(window), TRUE);
+   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+
+   /* Here we construct the container that is going pack our buttons */
+   grid = gtk_grid_new ();
+
+   /* Pack the container in the window */
+   gtk_container_add (GTK_CONTAINER (window), grid);
+
+   char s[512];
+   snprintf(s,512,
+	 "You are using GTK-%s, but you need at least GTK-%s to view\n"
+	 "the user interface.\n"
+	 "Use the option '-nomenu' to disable the user interface.\n"
+	 "If you want to try the user interface anyway, use the flag '-checkgtk 0'.\n\n"
+	 "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
+	 "Alternatively, you could edit ~/.xsnowrc to set options.\n",
+	 ui_gtk_version(),ui_gtk_required());
+   label = gtk_label_new(s);
+
+   /* Place the label in cell (0,0) and make it fill 2 cells horizontally */
+
+   gtk_grid_attach(GTK_GRID(grid),label,0,0,2,1);
+   button = gtk_button_new_with_label ("Run without user interface");
+   g_signal_connect(button,"clicked",G_CALLBACK(yesyes),window);
+
+   /* Place the first button in the grid cell (0, 1), and make it fill
+    * just 1 cell horizontally and vertically (ie no spanning)
+    */
+   gtk_grid_attach (GTK_GRID (grid), button, 0, 1, 1, 1);
+
+   button = gtk_button_new_with_label ("Quit");
+   g_signal_connect(button, "clicked", G_CALLBACK (nono), window);
+
+   /* Place the second button in the grid cell (1, 1), and make it fill
+    * just 1 cell horizontally and vertically (ie no spanning)
+    */
+   gtk_grid_attach (GTK_GRID (grid), button, 1, 1, 1, 1);
+
+   /* Now that we are done packing our widgets, we show them all
+    * in one go, by calling gtk_widget_show_all() on the window.
+    * This call recursively calls gtk_widget_show() on all widgets
+    * that are contained in the window, directly or indirectly.
+    */
+   gtk_widget_show_all (window);
+}
+
+void yesyes(UNUSED GtkWidget *w, gpointer window)
+{
+   RC = 1;
+   gtk_widget_destroy(window);
+}
+
+void nono(UNUSED GtkWidget *w, gpointer window)
+{
+   RC = 0;
+   gtk_widget_destroy(window);
+}
 
 // next function is not used, I leave it here as a template, who knows...
 // see also ui.xml

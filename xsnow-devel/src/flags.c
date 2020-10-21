@@ -188,6 +188,7 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.BelowAll = 0;
 	 }
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
+	 handle_ia(-checkgtk            ,CheckGtk                         );
 	 handle_ia(-cpuload             ,CpuLoad                          );
 	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
 	 handle_ia(-id                  ,WindowId                         );

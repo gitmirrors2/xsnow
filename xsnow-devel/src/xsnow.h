@@ -28,6 +28,7 @@
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 40
 #define DEFAULT_CpuLoad 100
+#define DEFAULT_CheckGtk 1
 #define DEFAULT_Transparency 0
 #define DEFAULT_Defaults 0
 #define DEFAULT_DesiredNumberOfTrees 10

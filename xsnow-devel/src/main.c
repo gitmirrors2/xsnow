@@ -147,10 +147,7 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
-static void   ui_run_nomenu(void);
 static void   set_below_above(void);
-static void   activate (GtkApplication *app, gpointer user_data);
-static void   leave(GtkWidget *w, gpointer data);
 
 
 static void Thanks(void)
@@ -287,7 +284,7 @@ int main_c(int argc, char *argv[])
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
    srand48((long int)(wallcl()*1.0e6));
-   printf("Xsnow running in GTK version: %d.%d.%d\n",gtk_get_major_version(),gtk_get_minor_version(),gtk_get_micro_version());
+   printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
 
    int i;
    // make a copy of all flags, before gtk_init() maybe removes some.
@@ -355,14 +352,19 @@ int main_c(int argc, char *argv[])
    if (!Flags.NoConfig)
       WriteFlags();
 
-   if (!Flags.NoMenu)
+   if(Flags.CheckGtk && !ui_checkgtk() && !Flags.NoMenu)
    {
-      if (gtk_get_minor_version() < 25)
-      {
-	 printf("Xsnow needs gtk version >= 3.20, found version 3.%d.%d, restarting with -nomenu\n",
-	       gtk_get_minor_version(),gtk_get_micro_version());
+      printf("Xsnow needs gtk version >= %s, found version %s\n",ui_gtk_required(),ui_gtk_version());
 
-	 ui_run_nomenu();
+      if(!ui_run_nomenu())
+      {
+	 Thanks();
+	 return 0;
+      }
+      else
+      {
+	 Flags.NoMenu = 1;
+	 printf("Continuing with flag '-nomenu'\n");
       }
    }
 
@@ -518,79 +520,7 @@ int main_c(int argc, char *argv[])
    return 0;
 }		/* End of snowing */
 
-void ui_run_nomenu()
-{
-   GtkApplication *app;
-   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
-   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-   g_application_run (G_APPLICATION (app), 0, NULL);
-   g_object_unref (app);
-   Flags.NoMenu = 1;
-}
 
-static void activate (GtkApplication *app, UNUSED gpointer user_data)
-{
-   GtkWidget *window;
-   GtkWidget *grid;
-   GtkWidget *button;
-   GtkWidget *label;
-
-
-   /* create a new window, and set its title */
-   window = gtk_application_window_new (app);
-   gtk_window_set_position        (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-   gtk_window_set_title           (GTK_WINDOW (window), "Xsnow");
-   gtk_window_set_decorated       (GTK_WINDOW(window), FALSE);
-   gtk_window_set_keep_above      (GTK_WINDOW(window), TRUE);
-   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-
-   /* Here we construct the container that is going pack our buttons */
-   grid = gtk_grid_new ();
-
-   /* Pack the container in the window */
-   gtk_container_add (GTK_CONTAINER (window), grid);
-
-   char s[512];
-   snprintf(s,512,"You are using GTK-3.%d.%d, but you need at least GTK-3.20.0\n"
-	 "to view the user interface. You can choose to run with the option '-nomenu'.\n"
-	 "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
-	 "Alternatively, you could edit ~/.xsnowrc to set options.\n",
-	 gtk_get_minor_version(),gtk_get_micro_version());
-   label = gtk_label_new(s);
-
-   /* Place the label in cell (0,0) and make it fill 2 cells horizontally */
-
-   gtk_grid_attach(GTK_GRID(grid),label,0,0,2,1);
-   button = gtk_button_new_with_label ("Run without user interface");
-   // following causes a return from ui_run_nomenu:
-   g_signal_connect_swapped(button,"clicked",G_CALLBACK(gtk_widget_destroy),window);
-
-   /* Place the first button in the grid cell (0, 1), and make it fill
-    * just 1 cell horizontally and vertically (ie no spanning)
-    */
-   gtk_grid_attach (GTK_GRID (grid), button, 0, 1, 1, 1);
-
-   button = gtk_button_new_with_label ("Quit");
-   g_signal_connect (button, "clicked", G_CALLBACK (leave), NULL);
-
-   /* Place the second button in the grid cell (1, 1), and make it fill
-    * just 1 cell horizontally and vertically (ie no spanning)
-    */
-   gtk_grid_attach (GTK_GRID (grid), button, 1, 1, 1, 1);
-
-   /* Now that we are done packing our widgets, we show them all
-    * in one go, by calling gtk_widget_show_all() on the window.
-    * This call recursively calls gtk_widget_show() on all widgets
-    * that are contained in the window, directly or indirectly.
-    */
-   gtk_widget_show_all (window);
-}
-
-void leave(UNUSED GtkWidget *w, UNUSED gpointer data)
-{
-   Thanks();
-   exit(0);
-}
 
 void set_below_above()
 {

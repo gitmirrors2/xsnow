@@ -5,6 +5,7 @@ version 3.1.2
 	  Check on version of GTK. If too low, give option to start
 	    without ui.
 	2:simplify code for running without menu if level of GTK is too low
+	3:stratify above mentioned code
 version 3.1.1
 	moved debian stuff out of the distribution
 version 3.1.0
