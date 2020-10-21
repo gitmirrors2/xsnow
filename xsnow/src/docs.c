@@ -70,7 +70,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2019 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2020 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
@@ -97,6 +97,9 @@ void docs_usage(int man)
    manout("-defaults"                 ,"Do not read config file (see FILES).");
    manout("-noconfig"                 ,"Do not read or write config file (see FILES).");
    manout("-nomenu"                   ,"Do not show interactive menu.");
+   manout("-checkgtk <n>"             ,"0: Do not check gtk version before starting the user interface.");
+   manout(" "                         ,"1: Check gtk version before starting the user interface.");
+   manout(" "                         ,"(default: " EQ(DEFAULT_CheckGtk) ").");
    manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
@@ -257,10 +260,12 @@ void docs_usage(int man)
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
+   manout(".", "NOTE: when this file is present, no menu will appear.");
    manout("$HOME/xsnow/pixmaps/santa<n>.xpm", "where <n> = 1,2,3,4.");
    manout(" ", "If present, xsnow will try this files (4 of them) for displaying");
    manout(" ", "Santa. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
+   manout(".", "NOTE: when these files are present, no menu will appear.");
 
    if(doman)
    {

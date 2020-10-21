@@ -63,10 +63,10 @@ cp debian.sid/* debian
 
 cd $curdir
 
-mkdir -p debian/tests
-for t in src/test1.sh ; do
-   cp $t debian/tests
-done
+#mkdir -p debian/tests
+#for t in src/test1.sh ; do
+#   cp $t debian/tests
+#done
 
 
 autoreconf -fvi || exit 1

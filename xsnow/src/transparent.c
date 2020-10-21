@@ -188,6 +188,7 @@ static void size_to_screen(GtkWindow *window)
    //printf ("W: %u x H:%u\n", workarea.width, workarea.height);
    gtk_window_set_default_size(window, workarea.width, workarea.height);
    gtk_window_resize          (window, workarea.width, workarea.height);
+   gtk_widget_set_size_request(GTK_WIDGET(window), workarea.width, workarea.height);
    gtk_window_set_resizable   (window, FALSE);
 }
 #else

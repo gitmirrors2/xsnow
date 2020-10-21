@@ -118,6 +118,8 @@ GdkWindow       *gdkwindow = NULL;
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 static int HaltedByInterrupt = 0;
 
+static char **Argv;
+static int Argc;
 
 // timing stuff
 //static double       TotSleepTime = 0;
@@ -281,15 +283,17 @@ int main_c(int argc, char *argv[])
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
    srand48((long int)(wallcl()*1.0e6));
+   printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
+
    int i;
    // make a copy of all flags, before gtk_init() maybe removes some.
    // we need this at a restart of the program.
 
-   char **Argv;
    Argv = (char**) malloc((argc+1)*sizeof(char**));
    for (i=0; i<argc; i++)
       Argv[i] = strdup(argv[i]);
    Argv[argc] = NULL;
+   Argc = argc;
 
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
@@ -346,6 +350,22 @@ int main_c(int argc, char *argv[])
    }
    if (!Flags.NoConfig)
       WriteFlags();
+
+   if(Flags.CheckGtk && !ui_checkgtk() && !Flags.NoMenu)
+   {
+      printf("Xsnow needs gtk version >= %s, found version %s\n",ui_gtk_required(),ui_gtk_version());
+
+      if(!ui_run_nomenu())
+      {
+	 Thanks();
+	 return 0;
+      }
+      else
+      {
+	 Flags.NoMenu = 1;
+	 printf("Continuing with flag '-nomenu'\n");
+      }
+   }
 
    display = XOpenDisplay(Flags.DisplayName);
    RootWindow = DefaultRootWindow(display);
@@ -491,12 +511,15 @@ int main_c(int argc, char *argv[])
    {
       sleep(0);
       printf("Xsnow restarting: %s\n",Argv[0]);
+      fflush(NULL);
       execvp(Argv[0],Argv);
    }
    else
       Thanks();
    return 0;
 }		/* End of snowing */
+
+
 
 void set_below_above()
 {

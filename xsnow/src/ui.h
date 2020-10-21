@@ -19,17 +19,26 @@
 #-# 
 */
 #pragma once
-extern void ui (int *argc, char **argv[]);
-extern void ui_error_x11(int *argc, char **argv[]);
-extern void ui_show_nflakes(int n);
-extern void ui_set_birds_header(const char *text);
-//extern void ui_set_vd_scale(void);
-extern void ui_show_range_etc(void);
-extern void ui_show_desktop_type(const char *s);
-extern void ui_set_sticky(int x);
-extern void ui_background(int m);
 
-extern void ui_gray_ww(const int m);
-extern void ui_gray_erase(const int m);
-extern void ui_gray_below(const int m);
-extern void ui_gray_birds(int m);
+// required GTK version for running the ui. (from ui.xml, made using glade)
+#define GTK_MAJOR 3
+#define GTK_MINOR 20
+#define GTK_MICRO 0
+
+extern void  ui (int *argc, char **argv[]);
+extern void  ui_error_x11(int *argc, char **argv[]);
+extern void  ui_show_nflakes(int n);
+extern void  ui_set_birds_header(const char *text);
+extern void  ui_show_range_etc(void);
+extern void  ui_show_desktop_type(const char *s);
+extern void  ui_set_sticky(int x);
+extern void  ui_background(int m);
+
+extern void  ui_gray_ww(const int m);
+extern void  ui_gray_erase(const int m);
+extern void  ui_gray_below(const int m);
+extern void  ui_gray_birds(int m);
+extern int   ui_checkgtk(void);
+extern char *ui_gtk_version(void);
+extern char *ui_gtk_required(void);
+extern int   ui_run_nomenu(void);

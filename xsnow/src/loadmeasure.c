@@ -17,7 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -29,6 +29,7 @@
 #include "clocks.h"
 #include "xsnow.h"
 #include "varia.h"
+#include "flags.h"
 
 static int do_loadmeasure(gpointer data);
 
@@ -70,7 +71,8 @@ int do_loadmeasure(UNUSED gpointer data)
 	 printf("system is too busy, suggest to lower 'cpu load' in 'settings'\n");
 	 printf(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n");
 	 printf(" or specify a smaller number of birds in 'birds'\n");
-	 ui_background(1);
+	 if(!Flags.NoMenu)
+	    ui_background(1);
 	 status = 1;
       }
       count = 0;
@@ -80,7 +82,8 @@ int do_loadmeasure(UNUSED gpointer data)
       if (status == 1)
       {
 	 P("white %d %d %f %f\n",count,status,time_measure,tnow-tprev);
-	 ui_background(0);
+	 if(!Flags.NoMenu)
+	    ui_background(0);
 	 status = 0;
       }
       count = 0;

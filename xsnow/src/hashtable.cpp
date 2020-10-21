@@ -30,7 +30,7 @@
 #else
 #include <map>
 #define MAP std::map
-#pragma message(__FILE__ ":\nUsing map for the hash table, because unordered_map is not available.")
+#pragma message __FILE__ ": Using map for the hash table, because unordered_map is not available." 
 #endif
 
 static MAP<unsigned int,void*> table;
@@ -56,7 +56,7 @@ extern "C"
    }
    void table_clear(void(*destroy)(void *p))
    {
-      for ( auto it = table.begin(); it != table.end(); ++it )
+      for ( MAP<unsigned int, void *>::iterator it = table.begin(); it != table.end(); ++it )
       {
 	 P("%d %p\n",it->first,it->second);
 	 destroy(it->second);
@@ -70,7 +70,7 @@ extern "C"
 #define SET std::unordered_set
 #else
 #include <set>
-#pragma message(__FILE__ ":\nUsing set, because unordered_set is not available.")
+#pragma message __FILE__ ": Using set, because unordered_set is not available." 
 #define SET std::set
 #endif
 
