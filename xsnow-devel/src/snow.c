@@ -582,7 +582,7 @@ int do_UpdateSnowFlake(Snow *flake)
 		  grec.height = rec.height;
 		  cairo_region_union_rectangle(gSnowOnTreesRegion,&grec);
 
-		  if(!Flags.NoBlowSnow && OnTrees < Flags.MaxOnTrees)
+		  if(Flags.BlowSnow && OnTrees < Flags.MaxOnTrees)
 		  {
 		     SnowOnTrees[OnTrees].x = rec.x;
 		     SnowOnTrees[OnTrees].y = rec.y;

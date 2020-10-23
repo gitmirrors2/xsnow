@@ -83,16 +83,16 @@ int Santa_ui()
 {
    int changes  = 0;
    if (Flags.SantaSize != OldFlags.SantaSize || 
-	 Flags.NoRudolf != OldFlags.NoRudolf)
+	 Flags.Rudolf != OldFlags.Rudolf)
    {
       EraseSanta(OldSantaX,OldSantaY);
       InitSantaPixmaps();
       OldFlags.SantaSize = Flags.SantaSize;
-      OldFlags.NoRudolf = Flags.NoRudolf;
+      OldFlags.Rudolf = Flags.Rudolf;
       changes++;
       P("changes: %d\n",changes);
       if(Flags.Noisy)
-	 printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, !Flags.NoRudolf);  // this for testing, see test2.sh and test3.sh
+	 printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, Flags.Rudolf);  // this for testing, see test2.sh and test3.sh
    }
    if (Flags.NoSanta != OldFlags.NoSanta)
    {
@@ -120,7 +120,7 @@ int Santa_draw(cairo_t *cr)
    if (Flags.NoSanta)
       return TRUE;
    cairo_surface_t *surface;
-   surface = Santa_surfaces[Flags.SantaSize][!Flags.NoRudolf][CurrentSanta];
+   surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);
    my_cairo_paint_with_alpha(cr,ALPHA);
    return TRUE;
@@ -215,7 +215,7 @@ void init_Santa_surfaces()
 	 free(path[i]);
       }
       Flags.SantaSize = 0;
-      Flags.NoRudolf  = 1;
+      Flags.Rudolf    = 0;
    }
 }
 
@@ -292,7 +292,7 @@ void InitSantaPixmaps()
 
    int rc[PIXINANIMATION];
    int withRudolf;
-   withRudolf = !Flags.NoRudolf;
+   withRudolf = Flags.Rudolf;
 
    for(i=0; i<PIXINANIMATION; i++)
    {

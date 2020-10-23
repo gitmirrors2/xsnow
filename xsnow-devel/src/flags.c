@@ -160,33 +160,31 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSBot = 1;
 	    Flags.NoKeepSnowOnTrees = 1;
 	 }
+	 else if (strcmp(arg, "-keepsnow") == 0) 
+	 {
+	    Flags.NoKeepSnow = 0;
+	    Flags.NoKeepSWin = 0;
+	    Flags.NoKeepSBot = 0;
+	    Flags.NoKeepSnowOnTrees = 0;
+	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
 	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
-	    Flags.NoBlowSnow               = VINTAGE_NoBlowSnow;
+	    Flags.BlowSnow                 = VINTAGE_BlowSnow;
 	    Flags.NStars                   = VINTAGE_NStars;
 	    Flags.DesiredNumberOfTrees     = VINTAGE_DesiredNumberOfTrees;
 	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
 	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
-	    Flags.NoRudolf                 = VINTAGE_NoRudolf;
+	    Flags.Rudolf                   = VINTAGE_Rudolf;
 	    Flags.SantaSize                = VINTAGE_SantaSize;
 	    free(Flags.TreeType);
 	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
 	    Flags.ShowBirds                = 0;
 	    Flags.BirdsOnly                = 0;
 	 }
-	 else if (strcmp(arg, "-bg") == 0) {
-	    handlestring(BGColor);
-	    Flags.UseBG   = 1;
-	 }
 	 else if (strcmp(arg, "-desktop") == 0) {
 	    Flags.Desktop = 1;
 	 }
-	 else if (strcmp(arg, "-fullscreen") == 0) {
-	    Flags.FullScreen = 1;
-	 }
-	 else if (strcmp(arg, "-above") == 0) {
-	    Flags.BelowAll = 0;
-	 }
+	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
 	 handle_ia(-checkgtk            ,CheckGtk                         );
 	 handle_ia(-cpuload             ,CpuLoad                          );
@@ -207,34 +205,49 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-stopafter           ,StopAfter                        );
 	 handle_ia(-treefill            ,TreeFill                         );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
+	 handle_ia(-usebg               ,UseBG                            );
 	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
-	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
 
 
+	 handle_is(-bg                  ,BGColor                          );
 	 handle_is(-display             ,DisplayName                      );
 	 handle_is(-sc                  ,SnowColor                        );
 	 handle_is(-tc                  ,TreeColor                        );
 	 handle_is(-treetype            ,TreeType                         );
 
+	 handle_iv(-above               ,BelowAll                 ,0      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
 	 handle_iv(-exposures           ,Exposures                ,True   );
-	 handle_iv(-noblowsnow          ,NoBlowSnow               ,1      );
+	 handle_iv(-fullscreen          ,FullScreen               ,0      );
+	 handle_iv(-noblowsnow          ,BlowSnow                 ,0      );
+	 handle_iv(-blowsnow            ,BlowSnow                 ,1      );
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );
 	 handle_iv(-noexposures         ,Exposures                ,False  );
+	 handle_iv(-fluffy              ,NoFluffy                 ,0      );
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
 	 handle_iv(-noisy               ,Noisy                    ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
+	 handle_iv(-keepsnowonscreen    ,NoKeepSBot               ,0      );
 	 handle_iv(-nokeepsnowontrees   ,NoKeepSnowOnTrees        ,1      );
+	 handle_iv(-keepsnowontrees     ,NoKeepSnowOnTrees        ,0      );
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
+	 handle_iv(-keepsnowonwindows   ,NoKeepSWin               ,0      );
 	 handle_iv(-nomenu              ,NoMenu                   ,1      );
 	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
-	 handle_iv(-norudolph           ,NoRudolf                 ,1      );
+	 handle_iv(-meteorites          ,NoMeteorites             ,0      );
+	 handle_iv(-norudolph           ,Rudolf                   ,0      );
+	 handle_iv(-showrudolph         ,Rudolf                   ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
+	 handle_iv(-showsanta           ,NoSanta                  ,0      );
+	 handle_iv(-snow                ,NoSnowFlakes             ,0      );
+	 handle_iv(-nosnow              ,NoSnowFlakes             ,1      );
 	 handle_iv(-nosnowflakes        ,NoSnowFlakes             ,1      );
 	 handle_iv(-notrees             ,NoTrees                  ,1      );
+	 handle_iv(-showtrees           ,NoTrees                  ,0      );
 	 handle_iv(-nowind              ,NoWind                   ,1      );
+	 handle_iv(-wind                ,NoWind                   ,0      );
 	 handle_iv(-xwininfo            ,XWinInfoHandling         ,1      );
 
 	 // birds:

@@ -34,20 +34,29 @@ for f in                   \
    "-birdsonly 0"          \
    "-birdsspeed 20"        \
    "-blowofffactor 10"     \
+   "-blowsnow"             \
+   "-checkgtk 0"           \
    "-cpuload 80"           \
    "-desktop"              \
    "-display $DISPLAY"     \
    "-disweight 40"         \
    "-exposures"            \
    "-flakecountmax 800"    \
+   "-fluffy"               \
    "-focuscentre 30"       \
    "-followneighbours 20"  \
+   "-followsanta 1"        \
    "-fullscreen"           \
    "-h"                    \
    "-H"                    \
    "-help"                 \
+   "-keepsnow"             \
+   "-keepsnowonwindows"    \
+   "-keepsnowonscreen"     \
+   "-keepsnowontrees"      \
    "-manpage"              \
    "-maxontrees 250"       \
+   "-meteorites"           \
    "-nbirds 30"            \
    "-neighbours 8"         \
    "-noblowsnow"           \
@@ -63,6 +72,7 @@ for f in                   \
    "-nometeorites"         \
    "-norudolph"            \
    "-nosanta"              \
+   "-nosnow"               \
    "-nosnowflakes"         \
    "-notrees"              \
    "-nowind"               \
@@ -76,6 +86,10 @@ for f in                   \
    "-sc black"             \
    "-showattr 1"           \
    "-showbirds 1"          \
+   "-showrudolph"          \
+   "-showsanta"            \
+   "-showtrees"            \
+   "-snow"                 \
    "-snowflakes 30"        \
    "-snowsize 200"         \
    "-snowspeedfactor 80"   \
@@ -86,12 +100,14 @@ for f in                   \
    "-trees 20"             \
    "-treetype 2,3,4"       \
    "-treetype all"         \
+   "-usebg 0"              \
    "-v"                    \
    "-version"              \
    "-viewingdistance 20"   \
    "-vintage"              \
    "-wantwindow default"   \
    "-whirlfactor 120"      \
+   "-wind"                 \
    "-windtimer 40"         \
    "-wsnowdepth 20"        \
    " "                     \

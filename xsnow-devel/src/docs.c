@@ -110,11 +110,14 @@ void docs_usage(int man)
    manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
    manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
+   manout(" "                         ,"See also -usebg.");
+   manout("-usebg <n>"                ,"1: Use background color (see -bg) to erase. 0: Do not. (default:" EQ(DEFAULT_UseBG) ").");
+   manout (" "                        ,"Only works if not using GTK-Cairo for painting, see also -wantwindow.");
    manout("-exposures"                ,"Use XClearArea(...,exposures=True) when erasing.");
-   manout("-noexposures"              ,"Use XClearArea(...,exposures=False) when erasing.");
-   manout(" "                         ,"Exposures have effect with '-alpha 0' or '-xwininfo'.");
+   manout("-noexposures"              ,"(Default) Use XClearArea(...,exposures=False) when erasing.");
+   manout(" "                         ,"Exposures have effect with '-xwininfo'.");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
-   manout("-wantwindow"               ,"Specify your favorite window:");
+   manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
    manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
@@ -128,11 +131,13 @@ void docs_usage(int man)
       printf("\n  Snow options:\n\n");
    }
    manout("-snowflakes <n>"           ,"The higher, the more snowflakes are generated per second. Default: " EQ(DEFAULT_SnowFlakesFactor) ".");
-   manout("-noblowsnow"               ,"Do not animate blowing snow from trees or windows.");
+   manout("-blowsnow"                 ,"(Default) Animate blow-off snow.");
+   manout("-noblowsnow"               ,"Do not animate blowing snow from trees or windows");
    manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_SnowColor) ").");
    manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default: " EQ(DEFAULT_SnowSpeedFactor) ").");
    manout("-snowsize <n>"             ,"Set size of (non-vintage) snow flakes (default: " EQ(DEFAULT_SnowSize) ").");
-   manout("-nosnowflakes"             ,"Do not show falling snowflakes. (Weird!)");
+   manout("-snow"                     ,"(Default) Show snow.");
+   manout("-nosnow -nosnowflakes"     ,"Do not show snow.");
    manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default: " EQ(DEFAULT_FlakeCountMax) ").");
    manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_BlowOffFactor) ").");
 
@@ -147,10 +152,11 @@ void docs_usage(int man)
    manout("-treetype <n>[,<n> ...]"   ,"Choose tree types: minimum 0, maximum " EQ(MAXTREETYPE) " (default: " EQ(DEFAULT_TreeType) ").");
    manout(" "                         ,"Thanks to Carla Vermin for numbers >=3!"); 
    manout(" "                         ,"Credits: Image by b0red on Pixabay.");
-   manout("-treetype all"             ,"Use all available tree types.");
-   manout("-tc <c>"                   ,"Use the given string as the color for the default trees (default: " EQ(DEFAULT_TreeColor) ").");
+   manout("-treetype all"             ,"(Default) Use all non-vintage available tree types.");
+   manout("-tc <c>"                   ,"Use the given string as the color for the vintage tree (default: " EQ(DEFAULT_TreeColor) ").");
    manout(" "                         ,"Works only for treetype 0.");
    manout("-notrees"                  ,"Do not display the trees.");
+   manout("-showtrees"                ,"(Default) Display the trees.");
    manout("-trees <n>"                ,"Desired number of trees. Default " EQ(DEFAULT_DesiredNumberOfTrees) ".");
    manout("-treefill <n>"             ,"Region in percents of the height of the window where trees grow (default: " EQ(DEFAULT_TreeFill) ").");
 
@@ -162,7 +168,9 @@ void docs_usage(int man)
    {
       printf("\n  Santa options:\n\n");
    }
+   manout("-showsanta"                ,"(Default) Display Santa running all over the screen.");
    manout("-nosanta"                  ,"Do not display Santa running all over the screen.");
+   manout("-showrudolph"              ,"(Default) With Rudolph.");
    manout("-norudolph"                ,"No Rudolph.");
    manout("-santa <n>"                ,"The minimum size of Santa is 0, the maximum size is " EQ(MAXSANTA) ". Default is " EQ(DEFAULT_SantaSize) ".");
    manout(" "                         ,"Thanks to Thomas Linder for the (big) Santa 2!");
@@ -180,6 +188,7 @@ void docs_usage(int man)
    {
       printf("\n  Wind options:\n\n");
    }
+   manout("-wind"                     ,"(Default) It will get windy now and then.");
    manout("-nowind   "                ,"By default it gets windy now and then. If you prefer quiet weather");
    manout(" "                         ,"specify -nowind.");
    manout("-whirlfactor <n>"          ,"This sets the whirl factor, i.e. the maximum adjustment of the");
@@ -198,10 +207,15 @@ void docs_usage(int man)
    manout("-wsnowdepth <n>"           ,"Maximum thickness of snow on top of windows (default: " EQ(DEFAULT_MaxWinSnowDepth) ").");
    manout("-ssnowdepth <n>"           ,"Maximum thickness of snow at the bottom of the screen (default: " EQ(DEFAULT_MaxScrSnowDepth) ").");
    manout("-maxontrees <n>"           ,"Maximum number of flakes on trees. Default " EQ(DEFAULT_MaxOnTrees) ".");
+   manout("-keepsnowonwindows"        ,"(Default) Keep snow on top of the windows.");
    manout("-nokeepsnowonwindows"      ,"Do not keep snow on top of the windows.");
+   manout("-keepsnowonscreen"         ,"(Default) Keep snow at the bottom of the screen.");
    manout("-nokeepsnowonscreen"       ,"Do not keep snow at the bottom of the screen.");
+   manout("-keepsnowontrees"          ,"(Default) Keep snow on trees.");
    manout("-nokeepsnowontrees"        ,"Do not keep snow on trees.");
+   manout("-keepsnow"                 ,"(Default) Have snow sticking anywhere.");
    manout("-nokeepsnow"               ,"Do not have snow sticking anywhere.");
+   manout("-fluffy"                   ,"(Default) Create fluff on fallen snow.");
    manout("-nofluffy"                 ,"Do not create fluff on fallen snow.");
    manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
    manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
@@ -241,6 +255,7 @@ void docs_usage(int man)
       printf("\n  Other options:\n\n");
    }
    manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_NStars) ").");
+   manout("-meteorites"               ,"(Default) Show meteorites.");
    manout("-nometeorites"             ,"Do not show meteorites.");
    manout("-cpuload <n>"              ,"How busy is your system with xsnow:");
    manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_CpuLoad) ").");
@@ -256,16 +271,21 @@ void docs_usage(int man)
    }
    manout("$HOME/.xsnowrc", "Settings are read from and written to this file.");
    manout(" ","See flags -noconfig and -defaults how to influence this behaviour.");
-   manout (" "," ");
+   manout(".","    NOTE: the following settings are not read or written:");
+   manout(".","          -above  -defaults  -desktop  -fullscreen -noconfig -id");
+   manout(".","          -nomenu -stopafter -xwininfo -display    -noisy    -checkgtk");
+   manout(" "," ");
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
-   manout(".", "NOTE: when this file is present, no menu will appear.");
+   manout(".", "    NOTE: when this file is present, no menu will appear.");
+   manout(" "," ");
    manout("$HOME/xsnow/pixmaps/santa<n>.xpm", "where <n> = 1,2,3,4.");
    manout(" ", "If present, xsnow will try this files (4 of them) for displaying");
    manout(" ", "Santa. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
-   manout(".", "NOTE: when these files are present, no menu will appear.");
+   manout(".", "    NOTE: when these files are present, no menu will appear.");
+   manout(" "," ");
 
    if(doman)
    {
@@ -290,19 +310,20 @@ void docs_usage(int man)
       printf("\n   BUGS\n\n");
    }
    manout(".","- Xsnow needs a complete rewrite: the code is a mess.");
+   manout(".","- The flags are not consistent, caused by trying to be compatible with older versions.");
    manout(".","- Xsnow stresses the Xserver too much.");
    manout(".","- Xsnow does run in Wayland, but will not snow on all windows.");
    manout(".","- Remnants of fluffy snow can persist after removing the");
-   manout(" ","  fallen snow. These will gradually disappear, so no big deal.");
+   manout(" ","    fallen snow. These will gradually disappear, so no big deal.");
    manout(".","- Xsnow tries to adapt its snowing window if the display");
-   manout(" ","  settings are changed while xsnow is running.");
-   manout(" ","  This does not function always well.");
+   manout(" ","    settings are changed while xsnow is running.");
+   manout(" ","    This does not function always well.");
    manout(".","- In some combinations of display managers and compositors");
-   manout(" ","  the desktop is visible, but unclickable.");
-   manout(" ","  Known example is FVWM in combination with xcompmgr or compton.");
-   manout(" ","  Solution: xsnow -xwininfo, and click on the desktop.");
-   manout(" ","  This will result in stuttering Santa and snow flakes.");
-   manout(" ","  In FVWM, for xsnow it is better to run without compositor.");
+   manout(" ","    the desktop is visible, but unclickable.");
+   manout(" ","    Known example is FVWM in combination with xcompmgr or compton.");
+   manout(" ","    Solution: xsnow -xwininfo, and click on the desktop.");
+   manout(" ","    This will result in stuttering Santa and snow flakes.");
+   manout(" ","    In FVWM, for xsnow it is better to run without compositor.");
 
    if(doman)
    {

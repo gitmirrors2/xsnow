@@ -30,6 +30,7 @@
    DOIT_I(BelowAll) \
    DOIT_I(Defaults)  \
    DOIT_I(Desktop) \
+   DOIT_I(FullScreen) \
    DOIT_I(NoConfig)  \
    DOIT_I(NoMenu)  \
    DOIT_I(StopAfter)  \
@@ -39,6 +40,7 @@
    DOIT_L(WindowId)  \
    DOIT_I(Noisy) \
    DOIT_I(CheckGtk) \
+   DOIT_S(DisplayName) \
    DOIT
 
 // following flags are written to the config file and
@@ -46,23 +48,21 @@
 #define DOIT  \
    DOIT_I(AllWorkspaces) \
    DOIT_I(BlowOffFactor)  \
+   DOIT_I(BlowSnow) \
    DOIT_I(CpuLoad)  \
    DOIT_I(Transparency)  \
    DOIT_I(DesiredNumberOfTrees)  \
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
-   DOIT_I(FullScreen) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
-   DOIT_I(NoBlowSnow) \
    DOIT_I(NoFluffy) \
    DOIT_I(NoKeepSBot) \
    DOIT_I(NoKeepSnow) \
    DOIT_I(NoKeepSnowOnTrees) \
    DOIT_I(NoKeepSWin) \
    DOIT_I(NoMeteorites) \
-   DOIT_I(NoRudolf) \
    DOIT_I(NoSanta) \
    DOIT_I(NoSnowFlakes) \
    DOIT_I(NoTrees) \
@@ -72,6 +72,7 @@
    DOIT_I(OffsetW) \
    DOIT_I(OffsetX) \
    DOIT_I(OffsetY) \
+   DOIT_I(Rudolf) \
    DOIT_I(SantaSize) \
    DOIT_I(SantaSpeedFactor) \
    DOIT_I(SnowFlakesFactor) \
@@ -84,7 +85,6 @@
    DOIT_I(WindTimer) \
    \
    DOIT_S(BGColor) \
-   DOIT_S(DisplayName) \
    DOIT_S(SnowColor) \
    DOIT_S(TreeColor) \
    DOIT_S(TreeType)   \

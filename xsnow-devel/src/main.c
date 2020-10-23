@@ -147,7 +147,6 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
-static void   set_below_above(void);
 
 
 static void Thanks(void)

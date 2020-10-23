@@ -424,7 +424,7 @@ void DrawFallen(FallenSnow *fsnow)
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
    P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
-   if (Flags.NoBlowSnow || Flags.NoSnowFlakes)
+   if (!Flags.BlowSnow || Flags.NoSnowFlakes)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy

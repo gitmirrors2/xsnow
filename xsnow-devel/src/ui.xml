@@ -1052,7 +1052,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
             </child>
             <child>
               <object class="GtkToggleButton" id="snow-show">
-                <property name="label" translatable="yes">Show flakes</property>
+                <property name="label" translatable="yes">Show snow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
