@@ -40,5 +40,4 @@ extern FLAGS OldFlags;
 
 extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);
-extern void PrintVersion(void);
 extern void WriteFlags(void);

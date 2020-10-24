@@ -27,6 +27,7 @@
 #include "windows.h"
 #include "meteo.h"
 #include "debug.h"
+#include "version.h"
 
 
 Pixel Black, White;
@@ -144,3 +145,10 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
       cairo_paint_with_alpha(cr,alpha);
    P("%d alpha %f\n",counter++,alpha);
 }
+
+void PrintVersion()
+{
+   printf("Xsnow-%s\n%s\n"
+	 , VERSION, VERSIONBY);
+}
+

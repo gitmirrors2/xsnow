@@ -48,13 +48,6 @@ static long int S2PosInt(char *s)  //string to positive integer
    return x;
 }
 
-void PrintVersion()
-{
-   printf("Xsnow-%s\n" "December 14th 2001 by Rick Jansen \n"
-	 "February 2020 by Willem Vermin\n"
-	 , VERSION);
-}
-
 
 static char *FlagsFile          = NULL;
 static int   FlagsFileAvailable = 1;

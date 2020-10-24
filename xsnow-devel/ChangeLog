@@ -13,6 +13,8 @@ version 3.1.3
 	  add flag -keepsnow
 	  add flag -fluffy
 	  add flag -meteorites
+	  stratified version.h
+	  moved PrintVersion to utils.c
 version 3.1.2
 	1:hashtable.cpp: do not use 'auto'
 	  docs.c: added note about no menu when files are present in
