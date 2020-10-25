@@ -28,7 +28,6 @@
 #include "utils.h"
 #include "xsnow.h"
 #include "docs.h"
-#include "version.h"
 #include "doit.h"
 #include "birds.h"
 #include "windows.h"
