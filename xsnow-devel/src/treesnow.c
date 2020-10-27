@@ -175,7 +175,8 @@ void reinit_treesnow_region()
 
 void InitSnowOnTrees()
 {
-   SnowOnTrees = (XPoint *)realloc(SnowOnTrees,sizeof(*SnowOnTrees)*Flags.MaxOnTrees);
+   // Flags.MaxOnTrees+1: prevent allocation of zero bytes
+   SnowOnTrees = (XPoint *)realloc(SnowOnTrees,sizeof(*SnowOnTrees)*(Flags.MaxOnTrees+1));
    if (OnTrees > Flags.MaxOnTrees)
       OnTrees = Flags.MaxOnTrees;
 }

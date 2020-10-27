@@ -3,7 +3,8 @@
 # version numbers for upstream releases:
 newversion=`./getversion`
 #oldversion=2.0.19
-oldversion=3.0.7
+#oldversion=3.0.7
+oldversion=3.1.1
 curdir=`pwd`
 dist=sid
 tar=$curdir/../versions/xsnow-$newversion.tar.gz

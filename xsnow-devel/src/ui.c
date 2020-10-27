@@ -25,6 +25,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 
 #include "birds.h"
 #include "clocks.h"
@@ -325,6 +326,7 @@ static void report_tree_type(int p, gint active)
    int *a;
    int n;
    csvpos(Flags.TreeType,&a,&n);
+   assert(n>0);
    if(active)
    {
       a = (int *)realloc(a,sizeof(*a)*(n+1));

@@ -24,6 +24,7 @@
 #include <math.h>
 #include <signal.h>
 #include <string.h>
+#include <assert.h>
 #include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
@@ -699,7 +700,8 @@ void init_birds(int start)
 {
    int i;
    P("nbirds: %d %d\n",start,Flags.Nbirds);
-   birds = (BirdType *)realloc(birds,sizeof(BirdType)*Flags.Nbirds);
+   // Bbirds+1 to prevent allocating zero bytes:
+   birds = (BirdType *)realloc(birds,sizeof(BirdType)*(Flags.Nbirds+1));
    if (kd)
       kd_free(kd);
    kd = kd_create(3);

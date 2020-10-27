@@ -191,7 +191,8 @@ void UpdateFallenSnowRegions()
    }
    // remove fallensnow regions
    f = FsnowFirst; int nf = 0; while(f) { nf++; f = f->next; }
-   long int *toremove = (long int *)malloc(sizeof(*toremove)*nf);
+   // nf+1: prevent allocation of zero bytes
+   long int *toremove = (long int *)malloc(sizeof(*toremove)*(nf+1));
    int ntoremove = 0;
    f = FsnowFirst;
    //Atom wmState  = XInternAtom(display, "_NET_WM_STATE", True);

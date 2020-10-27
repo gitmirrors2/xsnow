@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <math.h>
+#include <assert.h>
 #include "debug.h"
 #include "xsnow.h"
 #include "pixmaps.h"
@@ -891,6 +892,7 @@ void genxpmflake(char ***xpm, int w, int h)
    if (nw == 1 && nh == 1)
       nh = 2;
 
+   assert(nh>0);
 
    P("allocating %d\n",(nh+3)*sizeof(char*));
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
@@ -905,6 +907,7 @@ void genxpmflake(char ***xpm, int w, int h)
 
    int offset = 3;
    P("allocating %d\n",nw+1);
+   assert(nw>=0);
    for (i=0; i<nh; i++)
       X[i+offset] = (char *) malloc((nw+1)*sizeof(char));
 

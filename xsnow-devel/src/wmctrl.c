@@ -47,8 +47,8 @@ void FindWindows(Display *display,Window window,long unsigned int *nwindows,Wind
    *windows  = NULL;
    FindWindows_r(display,window,nwindows,windows);
    /*
-   int i;
-   for (i=0; i<(int)(*nwindows); i++)
+      int i;
+      for (i=0; i<(int)(*nwindows); i++)
       printf("window: %#lx\n",(*windows)[i]);
       */
 }
@@ -175,7 +175,9 @@ int GetWindows(WinInfo **windows, int *nwin)
    //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
    (*nwin) = nitems;
    r = (long*)properties;
-   (*windows) = (WinInfo *)malloc(nitems*sizeof(WinInfo));
+   (*windows) = NULL;
+   if(nitems>0)
+      (*windows) = (WinInfo *)malloc(nitems*sizeof(WinInfo));
    int i;
    WinInfo *w = (*windows);
    static Atom net_atom = 0, gtk_atom = 0;

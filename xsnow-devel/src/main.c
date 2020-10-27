@@ -45,9 +45,6 @@
 #include <config.h>
 #endif
 #include <X11/Intrinsic.h>
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
 #include <ctype.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>

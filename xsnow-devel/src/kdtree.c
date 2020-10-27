@@ -52,8 +52,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <alloca.h>
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 #include "kdtree.h"
 
 #if defined(WIN32) || defined(__WIN32__)
@@ -192,6 +194,7 @@ static int insert_rec(struct kdnode **nptr, const double *pos, void *data, int d
       if(!(node = (struct kdnode *)malloc(sizeof *node))) {
 	 return -1;
       }
+      assert(dim>0);
       if(!(node->pos = (double *)malloc(dim * sizeof *node->pos))) {
 	 free(node);
 	 return -1;
@@ -232,6 +235,7 @@ int kd_insertf(struct kdtree *tree, const float *pos, void *data)
    static double sbuf[16];
    double *bptr, *buf = NULL;
    int res, dim = tree->dim;
+   assert(dim>0);
 
    if(dim > 16) {
 #ifndef NO_ALLOCA
@@ -481,6 +485,7 @@ struct kdres *kd_nearestf(struct kdtree *tree, const float *pos)
    double *bptr, *buf = NULL;
    int dim = tree->dim;
    struct kdres *res;
+   assert(dim>0);
 
    if(dim > 16) {
 #ifndef NO_ALLOCA
@@ -583,6 +588,7 @@ struct kdres *kd_nearest_rangef(struct kdtree *kd, const float *pos, float range
    double *bptr, *buf = NULL;
    int dim = kd->dim;
    struct kdres *res;
+   assert(dim>0);
 
    if(dim > 16) {
 #ifndef NO_ALLOCA
@@ -712,6 +718,7 @@ void *kd_res_item_data(struct kdres *set)
 /* ---- hyperrectangle helpers ---- */
 static struct kdhyperrect* hyperrect_create(int dim, const double *min, const double *max)
 {
+   assert(dim>0);
    size_t size = dim * sizeof(double);
    struct kdhyperrect* rect = NULL;
 

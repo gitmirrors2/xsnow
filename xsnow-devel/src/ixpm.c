@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "ixpm.h"
 #include "debug.h"
 #include "utils.h"
@@ -63,6 +64,7 @@ void paintit(XImage *img, long int color)
 // if you know what I mean
 static void strrevert(char*s, size_t l)
 {
+   assert(l>0);
    size_t n = strlen(s)/l;
    size_t i;
    char *c = (char *)malloc(l*sizeof(*c));
@@ -92,6 +94,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 
    sscanf(data[0],"%*s %d %d %d", &height, &ncolors, &w);
    lines = height+ncolors+1;
+   assert(lines>0);
    idata = (char **)malloc(lines*sizeof(*idata));
    for (i=0; i<lines; i++)
       idata[i] = strdup(data[i]);
@@ -217,7 +220,8 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
    *hreturn = h;
    int l = ((int)w + 7)/8;   // # chars needed for this w
    *lreturn = l*h;
-   bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*l*h);
+   // l*h+1: we do not want allocate 0 bytes
+   bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*(l*h+1));
    *bitsreturn = bits;
    int i;
    for(i=0; i<l*h; i++)
@@ -318,6 +322,7 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
 {
    int n;  
    sscanf(data[0],"%*d %d",&n);
+   assert(n+3>0);
    *out = (char**)malloc(sizeof(char *)*(n+3));
    char **x = *out;
    int j;
