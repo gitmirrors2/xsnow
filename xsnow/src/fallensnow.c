@@ -19,6 +19,7 @@
 #-# 
 */
 #include <stdio.h>
+#include <alloca.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <math.h>
@@ -312,7 +313,8 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
    // todo: takes too much cpu
    int j;
    int p = 0;
-   unsigned char *bitmap = (unsigned char *) alloca((f->w8*f->h/8)*sizeof(unsigned char));
+   // alloca((1+ ...) to be sure we are allocating at least 1 byte
+   unsigned char *bitmap = (unsigned char *) alloca((1+f->w8*f->h/8)*sizeof(unsigned char));
 
    for (j=0; j<f->h; j++)
    {
@@ -424,7 +426,7 @@ void DrawFallen(FallenSnow *fsnow)
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
    P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
-   if (Flags.NoBlowSnow || Flags.NoSnowFlakes)
+   if (!Flags.BlowSnow || Flags.NoSnowFlakes)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy

@@ -27,6 +27,7 @@
 #define DEFAULT_BelowAll 1
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 40
+#define DEFAULT_BlowSnow 1
 #define DEFAULT_CpuLoad 100
 #define DEFAULT_CheckGtk 1
 #define DEFAULT_Transparency 0
@@ -41,7 +42,6 @@
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
-#define DEFAULT_NoBlowSnow 0
 #define DEFAULT_NoConfig 0
 #define DEFAULT_NoFluffy 0
 #define DEFAULT_NoKeepSBot 0
@@ -50,7 +50,6 @@
 #define DEFAULT_NoKeepSWin 0
 #define DEFAULT_NoMenu 0
 #define DEFAULT_NoMeteorites 0
-#define DEFAULT_NoRudolf 0 
 #define DEFAULT_NoSanta 0
 #define DEFAULT_NoSnowFlakes 0
 #define DEFAULT_NoTrees 0
@@ -61,6 +60,7 @@
 #define DEFAULT_OffsetX 4
 #define DEFAULT_OffsetY 0 
 #define DEFAULT_Quiet 1
+#define DEFAULT_Rudolf 1 
 #define DEFAULT_SantaSize 3         // default santa size    
 #define DEFAULT_SantaSpeedFactor 100
 #define DEFAULT_SnowColor "snow"
@@ -84,12 +84,12 @@
 #define ALLTREETYPES "0" DEFAULT_TreeType
 
 
+#define VINTAGE_BlowSnow 0
 #define VINTAGE_DesiredNumberOfTrees 6
-#define VINTAGE_NoBlowSnow 1
 #define VINTAGE_NoKeepSnowOnTrees 1
 #define VINTAGE_NoMeteorites 1
-#define VINTAGE_NoRudolf 0 
 #define VINTAGE_NStars 0
+#define VINTAGE_Rudolf 1 
 #define VINTAGE_SantaSize 2 
 #define VINTAGE_SnowFlakesFactor 15
 #define VINTAGE_TreeType "0,"

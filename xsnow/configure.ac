@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.1.2], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.1.4], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -66,9 +66,12 @@ AC_TYPE_SIZE_T
 AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
-AC_FUNC_ALLOCA
+# check for AC_FUNC_MALLOC has detrimental effects on some systems
+#  symptom: undefined reference to rpl_malloc
+#  see also: https://github.com/maxmind/libmaxminddb/pull/152
+#AC_FUNC_MALLOC
+#AC_FUNC_REALLOC
+#AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile)

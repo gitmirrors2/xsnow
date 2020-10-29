@@ -52,9 +52,9 @@ int blowoff_ui()
       changes++;
       P("changes: %d\n",changes);
    }
-   if(Flags.NoBlowSnow != OldFlags.NoBlowSnow)
+   if(Flags.BlowSnow != OldFlags.BlowSnow)
    {
-      OldFlags.NoBlowSnow = Flags.NoBlowSnow;
+      OldFlags.BlowSnow = Flags.BlowSnow;
       changes++;
       P("changes: %d\n",changes);
    }
@@ -84,7 +84,7 @@ int do_blowoff(UNUSED gpointer data)
 {
    if (Flags.Done)
       return FALSE;
-   if (NOTACTIVE || Flags.NoBlowSnow)
+   if (NOTACTIVE || !Flags.BlowSnow)
       return TRUE;
    FallenSnow *fsnow = FsnowFirst;
    while(fsnow)

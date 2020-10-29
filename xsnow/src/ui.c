@@ -25,6 +25,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 
 #include "birds.h"
 #include "clocks.h"
@@ -225,7 +226,7 @@ static void init_santa_buttons()
 static void set_santa_buttons()
 {
    int n = 2*Flags.SantaSize;
-   if (!Flags.NoRudolf)
+   if (Flags.Rudolf)
       n++;
    if (n<NBUTTONS)
       HANDLE_SET_TOGGLE_(santa_barray[n]->button,TRUE);
@@ -244,7 +245,7 @@ void button_santa(GtkWidget *w, UNUSED gpointer d)
    int have_rudolf = ('r' == s[strlen(s)-1]);
    P("button_santa: Santa %d Rudolf %d s: %s name: %s\n",santa_type,have_rudolf,s,gtk_widget_get_name(w));
    Flags.SantaSize = santa_type;
-   Flags.NoRudolf  = !have_rudolf;
+   Flags.Rudolf  = have_rudolf;
 }
 
 HANDLE_TOGGLE(button_santa_show, NoSanta, 1, 0);
@@ -256,13 +257,13 @@ void santa_default(int vintage)
    int h = human_interaction;
    human_interaction      = 0;
    Flags.SantaSize        = DEFAULT_SantaSize;
-   Flags.NoRudolf         = DEFAULT_NoRudolf; 
+   Flags.Rudolf           = DEFAULT_Rudolf; 
    Flags.SantaSpeedFactor = DEFAULT_SantaSpeedFactor;
    Flags.NoSanta          = DEFAULT_NoSanta;
    if(vintage)
    {
       Flags.SantaSize = VINTAGE_SantaSize;
-      Flags.NoRudolf  = VINTAGE_NoRudolf; 
+      Flags.Rudolf    = VINTAGE_Rudolf; 
    }
    set_santa_buttons();
    human_interaction      = h;
@@ -325,6 +326,7 @@ static void report_tree_type(int p, gint active)
    int *a;
    int n;
    csvpos(Flags.TreeType,&a,&n);
+   assert(n>0);
    if(active)
    {
       a = (int *)realloc(a,sizeof(*a)*(n+1));
@@ -837,8 +839,8 @@ static void init_snow_buttons()
 
 static void set_snow_buttons()
 {
+   HANDLE_SET_TOGGLE  (snow_buttons.show_snow_blowoff.button  ,BlowSnow);
    HANDLE_SET_TOGGLE_I(snow_buttons.show_snow.button          ,NoSnowFlakes);
-   HANDLE_SET_TOGGLE_I(snow_buttons.show_snow_blowoff.button  ,NoBlowSnow);
    HANDLE_SET_TOGGLE_I(snow_buttons.windows_show.button       ,NoKeepSWin);
    HANDLE_SET_TOGGLE_I(snow_buttons.bottom_show.button        ,NoKeepSBot);
    HANDLE_SET_TOGGLE_I(snow_buttons.trees_show.button         ,NoKeepSnowOnTrees);
@@ -858,7 +860,7 @@ static void set_snow_buttons()
 
 
 HANDLE_TOGGLE(button_snow_show_snow     ,NoSnowFlakes       ,0,1);
-HANDLE_TOGGLE(button_snow_show_blowoff  ,NoBlowSnow         ,0,1);
+HANDLE_TOGGLE(button_snow_show_blowoff  ,BlowSnow           ,1,0);
 HANDLE_TOGGLE(button_snow_fluff_show    ,NoFluffy           ,0,1);
 HANDLE_TOGGLE(button_snow_trees_show    ,NoKeepSnowOnTrees  ,0,1);
 HANDLE_TOGGLE(button_snow_bottom_show   ,NoKeepSBot         ,0,1);
@@ -880,7 +882,7 @@ void snow_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
-   Flags.NoBlowSnow        = DEFAULT_NoBlowSnow;
+   Flags.BlowSnow          = DEFAULT_BlowSnow;
    Flags.SnowFlakesFactor  = DEFAULT_SnowFlakesFactor;
    Flags.SnowSize          = DEFAULT_SnowSize;
    Flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
@@ -901,7 +903,7 @@ void snow_default(int vintage)
 
    if(vintage)
    {
-      Flags.NoBlowSnow        = VINTAGE_NoBlowSnow;
+      Flags.BlowSnow          = VINTAGE_BlowSnow;
       Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
       Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
 

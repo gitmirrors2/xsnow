@@ -52,3 +52,4 @@ extern void sgaussian(long int seed);
 extern Pixel   Black, White;
 
 extern int is_little_endian(void);
+extern void PrintVersion(void);

@@ -1,3 +1,24 @@
+version 3.1.4
+	1:remove AC_FUNC_MALLOC AC_FUNC_REALLOC AC_FUNC_ALLOCA from
+	   configure.ac (see comment there)
+	  Checked all malloc's, alloca's and realloc's for allocating >0 bytes
+version 3.1.3
+	1:add flag -showrudolph
+	  add flag -blowsnow
+	  remove FullScreen from .xsnowrc
+	  add flag -usebg
+	  add flag -snow
+	  add flag -nosnow
+	  add flag -showtrees
+	  add flag -wind
+	  add flag -keepsnowonwindows
+	  add flag -keepsnowonscreen
+	  add flag -keepsnowontrees
+	  add flag -keepsnow
+	  add flag -fluffy
+	  add flag -meteorites
+	  stratified version.h
+	  moved PrintVersion to utils.c
 version 3.1.2
 	1:hashtable.cpp: do not use 'auto'
 	  docs.c: added note about no menu when files are present in

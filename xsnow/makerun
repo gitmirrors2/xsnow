@@ -4,10 +4,10 @@ rm -f core
 reset
 if true; then
    export CC=gcc-10 CXX=g++-10
-   export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O0 -g -DNO_USE_BITS'
+   export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O2 -g -DNO_USE_BITS'
 else
    export CC=g++-10 CXX=g++-10
-   export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O0 -g -DNO_USE_BITS' 
+   export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
 fi
 if [ ! -e Makefile ] ; then
    ./configure && make clean

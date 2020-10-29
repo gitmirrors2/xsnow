@@ -91,7 +91,8 @@ void init_stars()
    int i;
    NStars = Flags.NStars;
    P("initstars %d\n",NStars);
-   Stars = (Skoordinaten *) realloc(Stars,NStars*sizeof(Skoordinaten));
+   // Nstars+1: we do not allocate 0 bytes
+   Stars = (Skoordinaten *) realloc(Stars,(NStars+1)*sizeof(Skoordinaten));
    for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
