@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=xsnow
+Comment=Snow, Santa and birds on your desktop
 Exec=xsnow
 Icon=xsnow
 Type=Application
