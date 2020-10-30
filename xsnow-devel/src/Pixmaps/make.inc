@@ -102,7 +102,6 @@ tree-1_100px.xpm \
 tree.xpm \
 xsnow41x30.xpm \
 xsnow64x64.xpm \
-xsnow.jpg \
 xsnow.png \
 xsnow.svg \
 xsnow.xpm 
