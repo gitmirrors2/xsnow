@@ -1,3 +1,5 @@
+version 3.1.5
+	1: remove .png and .jpg from bootstrap and src/Pixmaps/
 version 3.1.4
 	1:remove AC_FUNC_MALLOC AC_FUNC_REALLOC AC_FUNC_ALLOCA from
 	   configure.ac (see comment there)

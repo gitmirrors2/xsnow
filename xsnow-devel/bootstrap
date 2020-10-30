@@ -28,7 +28,7 @@ echo -n "# -copyright" > make.inc
 echo "-" >> make.inc
 echo "EXTRA_DIST = \\" >> make.inc
 echo "make.inc \\" >> make.inc
-ls *.xpm *.xbm *.svg *.jpg *.png | sed 's/$/ \\/' | sed '$s/\\//' >> make.inc
+ls *.xpm *.xbm *.svg | sed 's/$/ \\/' | sed '$s/\\//' >> make.inc
 )
 
 ./addcopyright.sh Makefile.am addcopyright.sh bootstrap configure.ac getversion README

@@ -84,7 +84,6 @@ MediumSantaRudolf1.xpm \
 MediumSantaRudolf2.xpm \
 MediumSantaRudolf3.xpm \
 MediumSantaRudolf4.xpm \
-polarbear.png \
 polarbear.xpm \
 RegularSanta1.xpm \
 RegularSanta2.xpm \
@@ -102,6 +101,5 @@ tree-1_100px.xpm \
 tree.xpm \
 xsnow41x30.xpm \
 xsnow64x64.xpm \
-xsnow.png \
 xsnow.svg \
 xsnow.xpm 
