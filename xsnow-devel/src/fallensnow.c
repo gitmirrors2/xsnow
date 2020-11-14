@@ -447,11 +447,13 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	 for(k=0; k<kmax; k++)
 	 {
 	    float p = 0;
-	    if (!switches.UseGtk)
-	       p = drand48();
+	    //if (!switches.UseGtk)
+	    p = drand48();
 	    // In X11, (switches.UseGtk!=1) we want not too much
 	    // generated flakes
 	    // Otherwize, we go for more dramatic effects
+	    // But, it appeared that, if switches.UseGtk==1, too much snow
+	    // is generated, choking the x server. 
 	    if (p < 0.15)
 	    {
 	       Snow *flake   = MakeFlake(-1);
@@ -465,7 +467,9 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 		  flake->vx      = NewWind/8;
 	       flake->vy         = vy;
 	       flake->cyclic     = 0;
-	       if (switches.UseGtk && drand48() > 0.25)
+	       //if (switches.UseGtk && drand48() > 0.25)
+	       //if(drand48() > 0.25)
+	       if(0)  // next {} is not needed, it seems now
 	       {
 		  fluffify(flake,0.7);
 		  //flake->ry += 2*MaxSnowFlakeHeight*drand48();
