@@ -30,7 +30,7 @@
 # C compiler to compile .c sources:
 CC=gcc    
 # C++ compiler to compile .cpp sources:
-CXX=g++
+# CXX=g++
 # 
 # You can also use the C++ compiler for all sources:
 CC=$CXX
