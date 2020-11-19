@@ -1,4 +1,5 @@
-/* -copyright-
+#!/bin/sh
+# -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -17,9 +18,15 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#pragma once
-#define VERSION "3.1.5~pre4"
-#define VERSIONBY \
-   "December 14th 2001 by Rick Jansen \n" \
-   "November 2020 by Willem Vermin"
+root="${1:-..}"
+out="snow_includes.h"
+echo "#pragma once" > "$out"
+echo "/* -""copyright-" >> "$out"
+echo "*/" >> "$out"
+ls "$root/src/Pixmaps"/flake*.xpm | sed "s/^/#include \"/;s/$/\"/" >> "$out"
+echo "#define SNOW_ALL \\" >> "$out"
+for i in $(seq `ls "$root/src/Pixmaps"/flake*.xpm | wc -l`) ; do 
+   printf 'SNOW(%d) \\\n' `expr $i - 1` ;
+done >> "$out"
+echo >> "$out"
+if [ -x "$root/addcopyright.sh" ] ; then "$root/addcopyright.sh" "$out"  ; fi

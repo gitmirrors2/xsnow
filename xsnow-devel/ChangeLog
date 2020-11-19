@@ -1,9 +1,13 @@
 version 3.1.5
-	1: remove .png and .jpg from bootstrap and src/Pixmaps/ from tar.gz
-	2: main.c drawit(): draw stars and meteorites behind birds
-	3: fallensnow.c: GenerateFlakesFromFallen(): reduce the amount of
+	1:remove .png and .jpg from bootstrap and src/Pixmaps/ from tar.gz
+	2:main.c drawit(): draw stars and meteorites behind birds
+	3:fallensnow.c: GenerateFlakesFromFallen(): reduce the amount of
 	     generated snow 
-	   Changed info text by 'Blow off' slider.
+	  Changed info text by 'Blow off' slider.
+	4:src/Makefile.am: separate scripts for generating ui_xml.h and
+	     snow_includes.h
+	  Create script 'simplemake.sh', to be used on systems where the
+	    './configure;make;make install' suite does not work.
 version 3.1.4
 	1:remove AC_FUNC_MALLOC AC_FUNC_REALLOC AC_FUNC_ALLOCA from
 	   configure.ac (see comment there)

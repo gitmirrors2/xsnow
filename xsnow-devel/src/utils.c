@@ -19,11 +19,11 @@
 #-# 
 */
 #include <stdio.h>
-#include <utils.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
+#include "utils.h"
 #include "windows.h"
 #include "meteo.h"
 #include "debug.h"

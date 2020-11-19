@@ -43,41 +43,19 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
 		varia.h snow_includes.h
 
-nodist_xsnow_SOURCES = ui_xml.h
+nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
 BUILT_SOURCES = ui_xml.h snow_includes.h
 
-# create C code to get ui.xml in a string
-# ISO C stipulates that the length of a string constant should
-# not be larger than 4096, so we create a definition as in
-# char xsnow_xml[] = {60,63,120,109,108,32,118,101,0};
-#
+EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh
+
 ui_xml.h: ui.xml
 	@echo "Creating $@ from $<"
-	@echo "/* This file is generated from $< by Makefile */" > $@
-	@echo "/* -""copyright-" >> $@
-	@echo "*/" >> $@
-	@echo "#pragma once" >> $@
-	@echo "char xsnow_xml[] = {" >> $@
-	@sed 's/^ *//' $< | awk -v FS="" \
-	'BEGIN{for(n=0;n<256;n++)ord[sprintf("%c",n)]=n;}'\
-	'{for (i=1;i<=NF;i++) printf "%d,", ord[$$i];'\
-	'printf "%d,\n",ord["\n"];}' >> $@
-	@echo "0};" >> $@
-	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
+	$(top_srcdir)/src/gen_ui_xml.sh $(top_srcdir)
 
 snow_includes.h: Pixmaps
 	@echo "Creating $@"
-	@echo "#pragma once" > $@
-	@echo "/* -""copyright-" >> $@
-	@echo "*/" >> $@
-	@ls $(top_srcdir)/src/Pixmaps/flake*.xpm | sed "s/^/#include \"/;s/$$/\"/" >> $@
-	@echo "#define SNOW_ALL \\" >> $@
-	@for i in $$(seq `ls $(top_srcdir)/src/Pixmaps/flake*.xpm | wc -l`) ; do \
-	   printf 'SNOW(%d) \\\n' `expr $$i - 1` ;\
-	done >> $@
-	@echo >> $@
-	if [ -x $(top_srcdir)/addcopyright.sh ] ; then $(top_srcdir)/addcopyright.sh $@ ; fi
+	$(top_srcdir)/src/gen_snow_includes.sh $(top_srcdir)
 
 TESTS = test1.sh
 # test2.sh and test3.sh are still available, they test xsnow using Xvfb and xdotool.

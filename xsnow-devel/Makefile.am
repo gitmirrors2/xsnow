@@ -23,4 +23,4 @@ SUBDIRS = src
 EXTRA_DIST = bootstrap Changes getversion README.md \
 	     addcopyright.sh prevent-remakes \
 	     pbuilderscript makeupload makedeb dependencies \
-	     maketar
+	     maketar simplemake.sh
