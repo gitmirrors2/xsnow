@@ -99,7 +99,5 @@ star.xbm \
 tannenbaum.xpm \
 tree-1_100px.xpm \
 tree.xpm \
-xsnow.jpg \
-xsnow.png \
 xsnow.svg \
 xsnow.xpm 

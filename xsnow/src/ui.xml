@@ -1152,7 +1152,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <object class="GtkScale" id="snow-blowoff-intensity">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">When windy, snow will blow of trees and windows. The higher this setting, the more blown-off snow.</property>
+                <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will be generated because of Santa ploughing, wind or disappearing windows.</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-blow-adjustment</property>
                 <property name="round_digits">1</property>

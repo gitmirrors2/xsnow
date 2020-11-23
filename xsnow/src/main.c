@@ -1031,14 +1031,18 @@ void drawit(cairo_t *cr)
    if (Flags.Done)
       return;
 
+   int skipit = !switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive();
+
+   if (!skipit)
+   {
+      stars_draw(cr);
+      meteo_draw(cr);
+   }
+
    birds_draw(cr);
 
-   if (!switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive())
+   if (skipit)
       return;
-
-   stars_draw(cr);
-
-   meteo_draw(cr);
 
    scenery_draw(cr);
 

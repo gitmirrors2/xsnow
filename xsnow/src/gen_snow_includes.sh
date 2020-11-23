@@ -1,3 +1,4 @@
+#!/bin/sh
 # -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -17,10 +18,15 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-AUTOMAKE_OPTIONS = gnu
-SUBDIRS = src
-
-EXTRA_DIST = bootstrap Changes getversion README.md \
-	     addcopyright.sh prevent-remakes \
-	     pbuilderscript makeupload makedeb dependencies \
-	     maketar simplemake.sh
+root="${1:-..}"
+out="snow_includes.h"
+echo "#pragma once" > "$out"
+echo "/* -""copyright-" >> "$out"
+echo "*/" >> "$out"
+ls "$root/src/Pixmaps"/flake*.xpm | sed "s/^/#include \"/;s/$/\"/" >> "$out"
+echo "#define SNOW_ALL \\" >> "$out"
+for i in $(seq `ls "$root/src/Pixmaps"/flake*.xpm | wc -l`) ; do 
+   printf 'SNOW(%d) \\\n' `expr $i - 1` ;
+done >> "$out"
+echo >> "$out"
+if [ -x "$root/addcopyright.sh" ] ; then "$root/addcopyright.sh" "$out"  ; fi
