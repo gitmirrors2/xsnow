@@ -335,7 +335,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       *gtkwin = NULL;
    }
    // if -xscreensaver is used, the window is in $XSCREENSAVER_WINDOW:
-   else if (Flags.XScreenSaver)
+   else if (getenv("XSCREENSAVER_WINDOW"))
    {
       R("XScreenSaver\n");
       //*xwin      = Window_With_Name(display,RootWindow,"screensaver");

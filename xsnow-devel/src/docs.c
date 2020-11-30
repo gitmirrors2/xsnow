@@ -100,7 +100,7 @@ void docs_usage(int man)
    manout("-checkgtk <n>"             ,"0: Do not check gtk version before starting the user interface.");
    manout(" "                         ,"1: Check gtk version before starting the user interface.");
    manout(" "                         ,"(default: " EQ(DEFAULT_CheckGtk) ").");
-   manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
+   manout("-id <n>, -window-id <n>"   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
    manout("-fullscreen"               ,"Snow on full screen window: panels, task bars etc. will be not accessible.");
@@ -120,8 +120,6 @@ void docs_usage(int man)
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
-   manout("-xscreensaver"             ,"For usage with xscreensaver. Add an entry in ~/.xscreensaver:");
-   manout(" "                         ,"        xsnow -nomenu -xscreensaver");
    manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
 
    if(doman)

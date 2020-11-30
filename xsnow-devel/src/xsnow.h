@@ -77,7 +77,6 @@
 #define DEFAULT_WindNow 0
 #define DEFAULT_WindowId 0
 #define DEFAULT_WindTimer 30
-#define DEFAULT_XScreenSaver 0
 #define DEFAULT_XWinInfoHandling 0
 #define DEFAULT_WantWindow 0
 #define DEFAULTTREETYPE 2

@@ -242,7 +242,6 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-showtrees           ,NoTrees                  ,0      );
 	 handle_iv(-nowind              ,NoWind                   ,1      );
 	 handle_iv(-wind                ,NoWind                   ,0      );
-	 handle_iv(-xscreensaver        ,XScreenSaver             ,1      );
 	 handle_iv(-xwininfo            ,XWinInfoHandling         ,1      );
 
 	 // birds:

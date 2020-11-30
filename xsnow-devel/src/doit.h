@@ -38,7 +38,6 @@
    DOIT_I(WantWindow) \
    DOIT_I(WindNow)  \
    DOIT_I(XWinInfoHandling) \
-   DOIT_I(XScreenSaver) \
    DOIT_L(WindowId)  \
    DOIT_I(Noisy) \
    DOIT_I(CheckGtk) \
