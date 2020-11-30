@@ -656,6 +656,7 @@ int myDetermineWindow()
    {
       drawconnect = 0;
    }
+   fflush(NULL);
    return 1;
 }
 

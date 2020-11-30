@@ -120,6 +120,8 @@ void docs_usage(int man)
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
+   manout("-xscreensaver"             ,"For usage with xscreensaver. Add an entry in ~/.xscreensaver:");
+   manout(" "                         ,"        xsnow -nomenu -xscreensaver");
    manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
 
    if(doman)

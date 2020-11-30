@@ -131,20 +131,21 @@ int HandleFlags(int argc, char*argv[])
 	    return 1;
 	 }
 	 else if (!strcmp(arg, "-wantwindow"))
-	       {
-		  checkax;
-		  char *v = argv[++ax];
-		  if (!strcmp(v,"default"))
-		     Flags.WantWindow = UW_DEFAULT;
-		  else if (!strcmp(v,"transparent"))
-		     Flags.WantWindow = UW_TRANSPARENT;
-		  else
-		  {
-		     printf("** Invalid value for -wantwindow: %s\n",v);
-		     printf("** Expected on of: default, transparent\n");
-		     return -1;
-		  }
-	       }
+	 {
+	    R("setting wantwindow\n");
+	    checkax;
+	    char *v = argv[++ax];
+	    if (!strcmp(v,"default"))
+	       Flags.WantWindow = UW_DEFAULT;
+	    else if (!strcmp(v,"transparent"))
+	       Flags.WantWindow = UW_TRANSPARENT;
+	    else
+	    {
+	       printf("** Invalid value for -wantwindow: %s\n",v);
+	       printf("** Expected on of: default, transparent\n");
+	       return -1;
+	    }
+	 }
 	 else if (strcmp(arg, "-nokeepsnow") == 0) 
 	 {
 	    Flags.NoKeepSnow = 1;
@@ -182,6 +183,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-cpuload             ,CpuLoad                          );
 	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
 	 handle_ia(-id                  ,WindowId                         );
+	 handle_ia(-window-id           ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
 	 handle_im(-offsets             ,OffsetS                          );
 	 handle_im(-offsetw             ,OffsetW                          );
@@ -240,6 +242,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-showtrees           ,NoTrees                  ,0      );
 	 handle_iv(-nowind              ,NoWind                   ,1      );
 	 handle_iv(-wind                ,NoWind                   ,0      );
+	 handle_iv(-xscreensaver        ,XScreenSaver             ,1      );
 	 handle_iv(-xwininfo            ,XWinInfoHandling         ,1      );
 
 	 // birds:
