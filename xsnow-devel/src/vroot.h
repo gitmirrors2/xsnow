@@ -81,7 +81,7 @@ VirtualRootWindowOfScreen(screen)
       __SWM_VROOT = XInternAtom(dpy, "__SWM_VROOT", False);
       if (XQueryTree(dpy, root, &rootReturn, &parentReturn,
 	       &children, &numChildren)) {
-	 for (i = 0; i < numChildren; i++) {
+	 for (i = 0; i < (int)numChildren; i++) {
 	    Atom actual_type;
 	    int actual_format;
 	    unsigned long nitems, bytesafter;
