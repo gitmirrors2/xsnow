@@ -100,14 +100,14 @@ void docs_usage(int man)
    manout("-checkgtk <n>"             ,"0: Do not check gtk version before starting the user interface.");
    manout(" "                         ,"1: Check gtk version before starting the user interface.");
    manout(" "                         ,"(default: " EQ(DEFAULT_CheckGtk) ").");
-   manout("-id <n>"                   ,"Snow in window with id (for example from xwininfo).");
+   manout("-id <n>, -window-id <n>"   ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                  ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"        ,"0: use one desktop for snow, 1: use all desktops (default: " EQ(DEFAULT_AllWorkspaces) ").");
    manout("-fullscreen"               ,"Snow on full screen window: panels, task bars etc. will be not accessible.");
    manout("-above"                    ,"Snow above your windows. Default is to snow below your windows.");
    manout(" "                         ,"NOTE: in some environments this results in an un-clickable desktop.");
    manout("-xwininfo  "               ,"Use a cursor to point at the window you want the snow to be fallen in.");
-   manout("-bg <c>"                   ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
+   manout("-bg <c>    "               ,"Use color <c> to erase obsolete drawings (snow, santa, ...).");
    manout(" "                         ,"Useful in for example KDE: create mono colored background, and specify");
    manout(" "                         ,"the same color here, e.g: -bg \"#123456\" (default: " EQ(DEFAULT_BGColor) ".)");
    manout(" "                         ,"See also -usebg.");
@@ -117,6 +117,11 @@ void docs_usage(int man)
    manout("-noexposures"              ,"(Default) Use XClearArea(...,exposures=False) when erasing.");
    manout(" "                         ,"Exposures have effect with '-xwininfo'.");
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
+   manout("-root    "                 ,"Force to paint on (virtual) root window.");
+   manout("."                         ,"Use this for xscreensaver: in ~.xscreensaver add:");
+   manout("."                         ,"    xsnow -nomenu -root");
+   manout("."                         ,"Probably, you want to start xscreensaver as follows:");
+   manout("."                         ,"    xscreensaver -no-capture-stderr");
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
@@ -136,7 +141,7 @@ void docs_usage(int man)
    manout("-sc <c>  "                 ,"Use the given string as color for the flakes (default: " EQ(DEFAULT_SnowColor) ").");
    manout("-snowspeedfactor <n>"      ,"Multiply the speed of snow with this number/100 (default: " EQ(DEFAULT_SnowSpeedFactor) ").");
    manout("-snowsize <n>"             ,"Set size of (non-vintage) snow flakes (default: " EQ(DEFAULT_SnowSize) ").");
-   manout("-snow"                     ,"(Default) Show snow.");
+   manout("-snow       "              ,"(Default) Show snow.");
    manout("-nosnow -nosnowflakes"     ,"Do not show snow.");
    manout("-flakecountmax <n>"        ,"Maximum number of active flakes (default: " EQ(DEFAULT_FlakeCountMax) ").");
    manout("-blowofffactor <n>"        ,"The higher, the more snow is generated in blow-off scenarios (default: " EQ(DEFAULT_BlowOffFactor) ").");
@@ -188,7 +193,7 @@ void docs_usage(int man)
    {
       printf("\n  Wind options:\n\n");
    }
-   manout("-wind"                     ,"(Default) It will get windy now and then.");
+   manout("-wind     "                ,"(Default) It will get windy now and then.");
    manout("-nowind   "                ,"By default it gets windy now and then. If you prefer quiet weather");
    manout(" "                         ,"specify -nowind.");
    manout("-whirlfactor <n>"          ,"This sets the whirl factor, i.e. the maximum adjustment of the");
@@ -395,7 +400,7 @@ void manout(const char*flag, const char*txt)
       if (!strcmp(flag," "))
 	 printf("\t\t  %s\n",txt);
       else if(!strcmp(flag,"."))
-	 printf("%s\n",txt);
+	 printf("\t\t  %s\n",txt);
       else
 	 printf("%s\t: %s\n",flag,txt);
    }

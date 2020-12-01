@@ -44,7 +44,7 @@ extern int          CWorkSpace;  // int? Yes, in compiz we take the placement of
 //                                  which can easily be > 16 bits
 extern long         TransWorkSpace;  // workspace on which transparent window is placed
 extern char        *SnowWinName;
-extern Window       RootWindow;
+extern Window       Rootwindow;
 extern int          Xroot;
 extern int          Yroot;
 extern unsigned int Wroot;

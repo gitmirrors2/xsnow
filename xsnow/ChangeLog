@@ -1,3 +1,5 @@
+version 3.1.6
+	1:add xscreensaver support and vroot.h
 version 3.1.5
 	1:remove .png and .jpg from bootstrap and src/Pixmaps/ from tar.gz
 	2:main.c drawit(): draw stars and meteorites behind birds

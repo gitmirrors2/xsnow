@@ -25,16 +25,18 @@
 // DOIT_L is for x that should be output as 0x123456
 
 // these flags are not written to the config file and
-// are no part of the ui (except BelowAll)
+// are no part of the ui (except BelowAll and WantWindow)
 #define DOITALL \
    DOIT_I(BelowAll) \
    DOIT_I(Defaults)  \
    DOIT_I(Desktop) \
+   DOIT_I(ForceRoot) \
    DOIT_I(FullScreen) \
    DOIT_I(NoConfig)  \
    DOIT_I(NoMenu)  \
    DOIT_I(StopAfter)  \
    DOIT_I(Done)  \
+   DOIT_I(WantWindow) \
    DOIT_I(WindNow)  \
    DOIT_I(XWinInfoHandling) \
    DOIT_L(WindowId)  \
@@ -80,7 +82,6 @@
    DOIT_I(SnowSpeedFactor) \
    DOIT_I(TreeFill) \
    DOIT_I(UseBG) \
-   DOIT_I(WantWindow) \
    DOIT_I(WhirlFactor) \
    DOIT_I(WindTimer) \
    \

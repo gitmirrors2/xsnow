@@ -38,6 +38,8 @@
 #include "dsimple.h"
 #include "debug.h"
 
+#include "vroot.h"
+
 static void FindWindows(Display *display,Window window, long unsigned int *nwindows,Window **windows);
 static void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows);
 
@@ -199,7 +201,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       w->id = r[i];
       XGetGeometry (display, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
-      XTranslateCoordinates(display, w->id, RootWindow, 0, 0, &xr,     &yr,     &child_return);
+      XTranslateCoordinates(display, w->id, Rootwindow, 0, 0, &xr,     &yr,     &child_return);
       w->xa = xr - x0;
       w->ya = yr - y0;
 
