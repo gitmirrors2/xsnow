@@ -79,6 +79,8 @@
 #include "loadmeasure.h"
 #include "varia.h"
 
+#include "vroot.h"
+
 #ifdef DEBUG
 #undef DEBUG
 #endif
@@ -365,7 +367,7 @@ int main_c(int argc, char *argv[])
    }
 
    display = XOpenDisplay(Flags.DisplayName);
-   RootWindow = DefaultRootWindow(display);
+   Rootwindow = DefaultRootWindow(display);
    XSynchronize(display,dosync);
    XSetErrorHandler(XsnowErrors);
    screen = DefaultScreen(display);
@@ -408,7 +410,7 @@ int main_c(int argc, char *argv[])
    //   - clearing is done writing the same image, but with color black (0x00000000) 
    //   else
    //   - we will use XClearArea to erase flakes and the like. This works well
-   //     on fvwm-like desktops (desktop == RootWindow) with exposures set to 0
+   //     on fvwm-like desktops (desktop == Rootwindow) with exposures set to 0
    //     It works more or less in for example KDE, but exposures must be set to 1
    //     which severely stresses plasma shell (or nautilus-desktop in Gnome, 
    //     but we do not use XClearArea in Gnome).
@@ -535,7 +537,7 @@ void set_below_above()
 
 int myDetermineWindow()
 {
-   P("myDetermineWindow root: %#lx\n",RootWindow);
+   P("myDetermineWindow root: %#lx\n",Rootwindow);
 
    if (drawconnect)
    {
@@ -613,7 +615,7 @@ int myDetermineWindow()
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
-	 switches.Trans     = 0;
+	 switches.Trans     = 0;  // should be 1? todo
 	 switches.Root      = 0;
 	 switches.Desktop   = 1;
       }

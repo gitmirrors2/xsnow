@@ -30,6 +30,7 @@
    DOIT_I(BelowAll) \
    DOIT_I(Defaults)  \
    DOIT_I(Desktop) \
+   DOIT_I(ForceRoot) \
    DOIT_I(FullScreen) \
    DOIT_I(NoConfig)  \
    DOIT_I(NoMenu)  \

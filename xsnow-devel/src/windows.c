@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
 #include "debug.h"
@@ -34,6 +35,8 @@
 #include "dsimple.h"
 #include "varia.h"
 
+#include "vroot.h"
+
 static int    do_wupdate(gpointer data);
 static void   UpdateFallenSnowRegions(void);
 static Window XWinInfo(char **name);
@@ -44,7 +47,7 @@ static int          NWindows;
 char        *SnowWinName = NULL;
 int          SnowWinX; 
 int          SnowWinY; 
-Window       RootWindow;
+Window       Rootwindow;
 unsigned int Wroot;
 unsigned int Hroot;
 int          Xroot;
@@ -71,7 +74,7 @@ void windows_draw(UNUSED cairo_t *cr)
 void DestroyWindow(Window w)
 {
    return;
-   if (w && w != RootWindow)
+   if (w && w != Rootwindow)
       XDestroyWindow(display,w);
 }
 
@@ -141,7 +144,7 @@ int do_wupdate(UNUSED gpointer data)
    }
 
    P("do_wupdate: %p %p\n",(void *)TransA,(void *)winfo);
-   if (SnowWin != RootWindow)
+   if (SnowWin != Rootwindow)
       if (!TransA && !winfo)
       {
 	 I("No transparent window & no SnowWin %#lx found\n",SnowWin); 
@@ -306,7 +309,7 @@ void UpdateFallenSnowRegions()
 //  Spin-ins:
 //     Flags
 //     display
-//     RootWindow
+//     Rootwindow
 //     and maybe more ...
 
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
@@ -334,15 +337,36 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       *IsDesktop = 0;
       *gtkwin = NULL;
    }
-   // if -xscreensaver is used, the window is in $XSCREENSAVER_WINDOW:
-   else if (getenv("XSCREENSAVER_WINDOW"))
+   // maybe we are started by xscreensaver: the window is in $XSCREENSAVER_WINDOW:
+   //else if (getenv("XSCREENSAVER_WINDOW"))
+   else if(Flags.ForceRoot)
    {
-      R("XScreenSaver\n");
-      //*xwin      = Window_With_Name(display,RootWindow,"screensaver");
-      *xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
+      //*xwin      = Window_With_Name(display,Rootwindow,"screensaver");
+      //*xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
+      *xwin = DefaultRootWindow(display);
       *IsDesktop = 0;
       *gtkwin    = NULL;
-      R("xwin: %#lx\n",*xwin);
+      int x,y; unsigned int w,h,b,depth;
+      Window root;
+      XGetGeometry(display,*xwin,&root,
+	    &x, &y, &w, &h, &b, &depth);
+      printf("Force snow on root: window: %#lx, depth: %d\n",*xwin,depth);
+      if(0) // Trying to couple the virtual root window to gtk/cairo. No success ...
+      {
+	 GdkWindow *gdkwin;
+	 GdkDisplay *gdkdisplay;
+	 gdkdisplay = gdk_display_get_default();
+	 R("display: %p gdkdisplay: %p\n",(void*)display,(void*)gdkdisplay);
+	 gdkwin = gdk_x11_window_foreign_new_for_display(gdkdisplay,*xwin);
+	 *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	 //gtk_window_set_screen(GTK_WINDOW(*gtkwin),gdk_window_get_screen(gdkwin));
+	 gtk_widget_set_window(*gtkwin,gdkwin);
+	 GdkWindow *ww = gtk_widget_get_window(*gtkwin);
+	 R("ww: %p gdkwin: %p\n",(void*)ww,(void*)gdkwin);
+	 gtk_widget_show_all(*gtkwin);
+	 gdk_window_show(gdkwin);
+	 *IsDesktop = 1;
+      }
    }
    else
    {
@@ -352,7 +376,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       int x,y;
       unsigned int w,h,b,depth;
       Window root;
-      XGetGeometry(display,RootWindow,&root,
+      XGetGeometry(display,Rootwindow,&root,
 	    &x, &y, &w, &h, &b, &depth);
 
       if (*gtkwin)
@@ -438,7 +462,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	 else
 	 {
 	    printf("Using root window\n");
-	    *xwin = RootWindow;
+	    *xwin = Rootwindow;
 	 }
 	 printf("You may have to tweak 'Advanced snow settings' in the 'settings' panel.\n");
       }
@@ -479,7 +503,7 @@ void InitDisplayDimensions()
    unsigned int wroot,hroot,broot,droot;
    int xroot,yroot;
    Window root;
-   XGetGeometry(display,RootWindow,&root,
+   XGetGeometry(display,Rootwindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
    Xroot = xroot;
    Yroot = yroot;
@@ -496,7 +520,7 @@ void DisplayDimensions()
    Window root,child_return;
 
    XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
-   XTranslateCoordinates(display, SnowWin, RootWindow, 0, 0, &xr, &yr, &child_return);
+   XTranslateCoordinates(display, SnowWin, Rootwindow, 0, 0, &xr, &yr, &child_return);
    P("DisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
    SnowWinX           = xr;// - x;
    SnowWinY           = yr;// - y;

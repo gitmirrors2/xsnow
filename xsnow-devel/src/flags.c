@@ -132,7 +132,7 @@ int HandleFlags(int argc, char*argv[])
 	 }
 	 else if (!strcmp(arg, "-wantwindow"))
 	 {
-	    R("setting wantwindow\n");
+	    P("setting wantwindow\n");
 	    checkax;
 	    char *v = argv[++ax];
 	    if (!strcmp(v,"default"))
@@ -234,6 +234,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-norudolph           ,Rudolf                   ,0      );
 	 handle_iv(-showrudolph         ,Rudolf                   ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
+	 handle_iv(-root                ,ForceRoot                ,1      );
 	 handle_iv(-showsanta           ,NoSanta                  ,0      );
 	 handle_iv(-snow                ,NoSnowFlakes             ,0      );
 	 handle_iv(-nosnow              ,NoSnowFlakes             ,1      );

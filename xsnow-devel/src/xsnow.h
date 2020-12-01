@@ -38,6 +38,7 @@
 #define DEFAULT_Done 0
 #define DEFAULT_Exposures -SOMENUMBER
 #define DEFAULT_FlakeCountMax 300 
+#define DEFAULT_ForceRoot 0 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */

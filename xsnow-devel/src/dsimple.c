@@ -55,6 +55,8 @@ static int      screen = 0;
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
+#include "vroot.h"
 /*
  * Other_stuff.h: Definitions of routines in other_stuff.
  *
