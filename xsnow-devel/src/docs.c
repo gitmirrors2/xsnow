@@ -119,7 +119,7 @@ void docs_usage(int man)
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-root    "                 ,"Force to paint on (virtual) root window.");
    manout("."                         ,"Use this for xscreensaver: in ~.xscreensaver add:");
-   manout("."                         ,"    xsnow -nomenu -root");
+   manout("."                         ,"    xsnow -root");
    manout("."                         ,"Probably, you want to start xscreensaver as follows:");
    manout("."                         ,"    xscreensaver -no-capture-stderr");
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
