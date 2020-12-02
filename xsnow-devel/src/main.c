@@ -367,7 +367,8 @@ int main_c(int argc, char *argv[])
    }
 
    display = XOpenDisplay(Flags.DisplayName);
-   Rootwindow = DefaultRootWindow(display);
+   if(0)  // to prevent warning about unused function in vroot.h
+      Rootwindow = DefaultRootWindow(display);  // Rootwindow will be set in DetermineWindow() in windows.c 
    XSynchronize(display,dosync);
    XSetErrorHandler(XsnowErrors);
    screen = DefaultScreen(display);

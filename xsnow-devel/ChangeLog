@@ -1,3 +1,6 @@
+version 3.1.7
+	1:windows.c: take care of redfining Rootwindow if xscreensaver
+	  is detected
 version 3.1.6
 	1:add xscreensaver support and vroot.h
 version 3.1.5
