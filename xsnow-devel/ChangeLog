@@ -1,6 +1,7 @@
 version 3.1.8
 	1:use config.h to determine if alloca.h should be included
 	  configure.ac, Makefile.am: use pkg-config to locate X11 and Xpm
+	2:configure.ac: remove tests for libraries, relying on pkg-config now
 version 3.1.7
 	1:windows.c: take care of redfining Rootwindow if xscreensaver
 	  is detected
