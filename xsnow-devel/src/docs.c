@@ -120,6 +120,8 @@ void docs_usage(int man)
    manout("-root    "                 ,"Force to paint on (virtual) root window.");
    manout("."                         ,"Use this for xscreensaver: in ~.xscreensaver add:");
    manout("."                         ,"    xsnow -root");
+   manout("."                         ,"On some systems you need to add the flag -nomenu to disable the menu:");
+   manout("."                         ,"    xsnow -root -nomenu");
    manout("."                         ,"Probably, you want to start xscreensaver as follows:");
    manout("."                         ,"    xscreensaver -no-capture-stderr");
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");

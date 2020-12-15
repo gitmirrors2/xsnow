@@ -21,9 +21,6 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -318,8 +315,8 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
    // todo: takes too much cpu
    int j;
    int p = 0;
-   // alloca((1+ ...) to be sure we are allocating at least 1 byte
-   unsigned char *bitmap = (unsigned char *) alloca((1+f->w8*f->h/8)*sizeof(unsigned char));
+   // malloc((1+ ...) to be sure we are allocating at least 1 byte
+   unsigned char *bitmap = (unsigned char *) malloc((1+f->w8*f->h/8)*sizeof(unsigned char));
 
    for (j=0; j<f->h; j++)
    {
@@ -341,6 +338,7 @@ Pixmap CreatePixmapFromFallen(FallenSnow *f)
       }
    }
    Pixmap pixmap = XCreateBitmapFromData(display, SnowWin, (char *)bitmap, f->w, f->h);
+   free(bitmap);
    return pixmap;
 }
 

@@ -282,7 +282,6 @@ int main_c(int argc, char *argv[])
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
    srand48((long int)(wallcl()*1.0e6));
-   printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
 
    int i;
    // make a copy of all flags, before gtk_init() maybe removes some.
@@ -316,6 +315,7 @@ int main_c(int argc, char *argv[])
 	 return 0;
       }
    }
+   printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
 
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.

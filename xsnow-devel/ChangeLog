@@ -1,7 +1,16 @@
+version 3.1.9
+	1:place 'Xsnow running' to a place wher this does not appear in
+	  xsnow -h or xsnow-H
 version 3.1.8
 	1:use config.h to determine if alloca.h should be included
-	  configure.ac, Makefile.am: use pkg-config to locate X11 and Xpm
+	  configure.ac, Makefile.am: use pkg-config to locate 
+	  X11, Xpm, xt, xproto
 	2:configure.ac: remove tests for libraries, relying on pkg-config now
+	3:remove uses of alloca, except ik kdtree.c
+	  define USE_LIST_NODE_ALLOCATOR and  NO_ALLOCA in kdtree.c
+	  remove USE_LIST_NODE_ALLOCATOR from Makefile.am
+	  snow.c: free local variables in genxpmflake()
+
 version 3.1.7
 	1:windows.c: take care of redfining Rootwindow if xscreensaver
 	  is detected

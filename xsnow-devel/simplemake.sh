@@ -56,14 +56,10 @@ FLAGS="$FLAGS `pkg-config --cflags --libs gmodule-2.0`"
 # NOTE: on my system, pkg-config expands to:
 # -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -Wl,--export-dynamic -lgmodule-2.0 -pthread -lglib-2.0
 
-# comment out if your C++ compiler does not support unordered_map:
-FLAGS="$FLAGS -DHAVE_UNORDERED_MAP"
-
-# comment out if your C++ compiler does not support unordered_set:
-FLAGS="$FLAGS -DHAVE_UNORDERED_SET"
-
-# link flags for X11 and Xpm:
-FLAGS="$FLAGS -lXpm -lX11"
+# if you have pkg-config working for these: x11 xpm xt xproto
+FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xproto`"
+# NOTE: on my system, pkg-config expands to:
+# -lXpm -lXt -lX11
 
 # link flags for libmath:
 FLAGS="$FLAGS -lm"
@@ -73,6 +69,12 @@ FLAGS="$FLAGS -lm"
 # FLAGS="$FLAGS -Wl,--export-dynamic"
 # or:
 # FLAGS="$FLAGS -rdynamic"
+
+# comment out if your C++ compiler does not support unordered_map:
+FLAGS="$FLAGS -DHAVE_UNORDERED_MAP"
+
+# comment out if your C++ compiler does not support unordered_set:
+FLAGS="$FLAGS -DHAVE_UNORDERED_SET"
 
 cd src || exit 1
 echo "removing .o files :"
