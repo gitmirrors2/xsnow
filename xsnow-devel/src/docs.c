@@ -224,8 +224,8 @@ void docs_usage(int man)
    manout("-nokeepsnow"               ,"Do not have snow sticking anywhere.");
    manout("-fluffy"                   ,"(Default) Create fluff on fallen snow.");
    manout("-nofluffy"                 ,"Do not create fluff on fallen snow.");
-   manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
-   manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
+   manout("-offsetx <n>"              ,"Correction for window-manager provided x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
+   manout("-offsety <n>"              ,"Correction for window-manager provided  y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
    manout("-offsetw <n>"              ,"Correction for window-manager provided width of window. Default " EQ(DEFAULT_OffsetW) ".");
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");

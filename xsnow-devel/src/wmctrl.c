@@ -309,6 +309,25 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
       if(properties) XFree(properties);
 
+      // another check if window is hidden:
+      if(!w->hidden)
+      {
+	 properties = NULL;
+	 nitems = 0;
+	 atom  = XInternAtom(display, "WM_STATE", True);
+	 XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if(format == 32 && nitems >=1)
+	 {
+	    // see https://tronche.com/gui/x/icccm/sec-4.html#s-4.1.3.1
+	    // WithDrawnState: 0
+	    // NormalState:    1
+	    // IconicState:    3
+	    if(*(long*) properties != NormalState)
+	       w->hidden = 1;
+	 }
+	 if(properties) XFree(properties);
+      }
 
       properties = NULL;
       nitems = 0;
@@ -362,7 +381,9 @@ int GetWindows(WinInfo **windows, int *nwin)
       {
 	 // this is a problem....
 	 // In for example TWM, neither NET nor GTK is the case.
-	 // But, there is some window decoration, in 
+	 // Let us try this one:
+	 w->x = w->xa;
+	 w->y = w->ya;
       }
       if(properties)XFree(properties);
       w++;
