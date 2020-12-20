@@ -43,6 +43,7 @@
 static void FindWindows(Display *display,Window window, long unsigned int *nwindows,Window **windows);
 static void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows);
 
+/* this one is not needed any more, but I keep the source */
 void FindWindows(Display *display,Window window,long unsigned int *nwindows,Window **windows)
 {
    *nwindows = 0;
@@ -50,7 +51,7 @@ void FindWindows(Display *display,Window window,long unsigned int *nwindows,Wind
    FindWindows_r(display,window,nwindows,windows);
    int i;
    for (i=0; i<(int)(*nwindows); i++)
-      R("window: %#lx\n",(*windows)[i]);
+      P("window: %#lx\n",(*windows)[i]);
 }
 void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows)
 {
@@ -161,7 +162,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_WINDOW)
    {
-      R("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
+      P("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
       if(properties) XFree(properties);
       atom = XInternAtom(display,"_WIN_CLIENT_LIST",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
@@ -169,8 +170,8 @@ int GetWindows(WinInfo **windows, int *nwin)
    }
    if(type != XA_WINDOW)
    {
-      R("No _WIN_CLIENT_LIST, trying XQueryTree\n");
-      //FindWindows(display,RootWindow(display,DefaultScreen(display)),&nitems,(Window **)&properties);
+      P("No _WIN_CLIENT_LIST, trying XQueryTree\n");
+      if(0)FindWindows(display,RootWindow(display,DefaultScreen(display)),&nitems,(Window **)&properties);
       Window dummy;
       Window *children;
       unsigned int nchildren;
@@ -178,7 +179,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       nitems = nchildren;
       properties = (unsigned char *)children;
    }
-   R("wmctrl: %ld\n",nitems);
+   P("wmctrl: %ld\n",nitems);
    (*nwin) = nitems;
    r = (long*)properties;
    (*windows) = NULL;
@@ -195,20 +196,13 @@ int GetWindows(WinInfo **windows, int *nwin)
       Window root,child_return;
       int x0,y0,xr,yr;
       unsigned int bw,depth;
-      /*
-	 char *name;
-	 XFetchName(display, r[i], &name);
-	 if (name)
-	 XFree(name);
-	 else
-	 continue;
-	 */
 
       w->id = r[i];
+
       XGetGeometry (display, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
-      R("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
-      // examine if this window is showing something:
+      P("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
+      // examine if this window is showing something, otherwize we ignore it:
       if (depth == 0)
 	 continue;
 
@@ -300,7 +294,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 XWindowAttributes wa;
 	 XGetWindowAttributes(display,w->id,&wa);
 
-	 R("map_state: %#lx %d\n",w->id,wa.map_state);
+	 P("map_state: %#lx %d\n",w->id,wa.map_state);
 	 if (wa.map_state != IsViewable)
 	    w->hidden = 1;
       }
@@ -408,7 +402,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 // Let us try this one:
 	 w->x = x0;
 	 w->y = y0;
-	 R("%d %#lx %d %d\n",counter++,w->id,w->x,w->y);
+	 P("%d %#lx %d %d\n",counter++,w->id,w->x,w->y);
       }
       if(properties)XFree(properties);
       w++;
