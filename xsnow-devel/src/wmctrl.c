@@ -48,11 +48,9 @@ void FindWindows(Display *display,Window window,long unsigned int *nwindows,Wind
    *nwindows = 0;
    *windows  = NULL;
    FindWindows_r(display,window,nwindows,windows);
-   /*
-      int i;
-      for (i=0; i<(int)(*nwindows); i++)
-      printf("window: %#lx\n",(*windows)[i]);
-      */
+   int i;
+   for (i=0; i<(int)(*nwindows); i++)
+      R("window: %#lx\n",(*windows)[i]);
 }
 void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows)
 {
@@ -163,7 +161,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
    if(type != XA_WINDOW)
    {
-      P("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
+      R("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
       if(properties) XFree(properties);
       atom = XInternAtom(display,"_WIN_CLIENT_LIST",False);
       XGetWindowProperty(display, DefaultRootWindow(display), atom, 0, 1000000, False, 
@@ -171,10 +169,16 @@ int GetWindows(WinInfo **windows, int *nwin)
    }
    if(type != XA_WINDOW)
    {
-      P("No _WIN_CLIENT_LIST, trying XQueryTree\n");
-      FindWindows(display,RootWindow(display,DefaultScreen(display)),&nitems,(Window **)&properties);
+      R("No _WIN_CLIENT_LIST, trying XQueryTree\n");
+      //FindWindows(display,RootWindow(display,DefaultScreen(display)),&nitems,(Window **)&properties);
+      Window dummy;
+      Window *children;
+      unsigned int nchildren;
+      XQueryTree(display,DefaultRootWindow(display),&dummy,&dummy,&children,&nchildren);
+      nitems = nchildren;
+      properties = (unsigned char *)children;
    }
-   //printf("wmctrl: %d: %ld\n",__LINE__,nitems);
+   R("wmctrl: %ld\n",nitems);
    (*nwin) = nitems;
    r = (long*)properties;
    (*windows) = NULL;
@@ -191,16 +195,23 @@ int GetWindows(WinInfo **windows, int *nwin)
       Window root,child_return;
       int x0,y0,xr,yr;
       unsigned int bw,depth;
-      char *name;
-      XFetchName(display, r[i], &name);
-      if (name)
+      /*
+	 char *name;
+	 XFetchName(display, r[i], &name);
+	 if (name)
 	 XFree(name);
-      else
+	 else
 	 continue;
+	 */
 
       w->id = r[i];
       XGetGeometry (display, w->id, &root, &x0, &y0,
 	    &(w->w), &(w->h), &bw, &depth);
+      R("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
+      // examine if this window is showing something:
+      if (depth == 0)
+	 continue;
+
       XTranslateCoordinates(display, w->id, Rootwindow, 0, 0, &xr,     &yr,     &child_return);
       w->xa = xr - x0;
       w->ya = yr - y0;
@@ -285,33 +296,46 @@ int GetWindows(WinInfo **windows, int *nwin)
 
       // check if window is hidden
       w->hidden = 0;
-      properties = NULL;
-      nitems = 0;
-      atom  = XInternAtom(display, "_NET_WM_STATE", True);
-      XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
-	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
-      if(format == 32)
       {
-	 unsigned long i;
-	 for (i=0; i<nitems; i++)
-	 {
-	    char *s = NULL;
-	    s = XGetAtomName(display,((Atom*)properties)[i]);
-	    if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
-	    { 
-	       P("%#lx is hidden %d\n",f->id, counter++);
-	       w->hidden = 1;
-	       if(s) XFree(s);
-	       break;
-	    }
-	    if(s) XFree(s);
-	 }
-      }
-      if(properties) XFree(properties);
+	 XWindowAttributes wa;
+	 XGetWindowAttributes(display,w->id,&wa);
 
-      // another check if window is hidden:
+	 R("map_state: %#lx %d\n",w->id,wa.map_state);
+	 if (wa.map_state != IsViewable)
+	    w->hidden = 1;
+      }
+      // another check on hidden
+      if (!w->hidden)
+      {
+	 properties = NULL;
+	 nitems = 0;
+	 atom  = XInternAtom(display, "_NET_WM_STATE", True);
+	 XGetWindowProperty(display, w->id, atom, 0, (~0L), False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if(format == 32)
+	 {
+	    unsigned long i;
+	    for (i=0; i<nitems; i++)
+	    {
+	       char *s = NULL;
+	       s = XGetAtomName(display,((Atom*)properties)[i]);
+	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
+	       { 
+		  P("%#lx is hidden %d\n",f->id, counter++);
+		  w->hidden = 1;
+		  if(s) XFree(s);
+		  break;
+	       }
+	       if(s) XFree(s);
+	    }
+	 }
+	 if(properties) XFree(properties);
+      }
+
+      // yet another check if window is hidden:
       if(!w->hidden)
       {
+	 P("hidden2 %#lx\n",w->id);
 	 properties = NULL;
 	 nitems = 0;
 	 atom  = XInternAtom(display, "WM_STATE", True);
@@ -382,8 +406,9 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 // this is a problem....
 	 // In for example TWM, neither NET nor GTK is the case.
 	 // Let us try this one:
-	 w->x = w->xa;
-	 w->y = w->ya;
+	 w->x = x0;
+	 w->y = y0;
+	 R("%d %#lx %d %d\n",counter++,w->id,w->x,w->y);
       }
       if(properties)XFree(properties);
       w++;

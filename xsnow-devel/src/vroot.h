@@ -57,10 +57,13 @@
 #ifndef _VROOT_H_
 #define _VROOT_H_
 
+#define USE_VROOT
+
 #include <X11/X.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 
+#ifdef USE_VROOT
    static Window
 VirtualRootWindowOfScreen(screen)
    Screen *screen;
@@ -116,4 +119,5 @@ VirtualRootWindowOfScreen(screen)
 #undef DefaultRootWindow
 #define DefaultRootWindow(dpy) VirtualRootWindowOfScreen(DefaultScreenOfDisplay(dpy))
 
+#endif
 #endif /* _VROOT_H_ */

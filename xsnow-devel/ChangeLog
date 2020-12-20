@@ -4,6 +4,11 @@ version 3.1.9
 	2:wmctrl.c: a second check if window is hidden, based on WM_STATE
 	  see: https://tronche.com/gui/x/icccm/sec-4.html#s-4.1.3.1
 	3: typos in docs.c
+	5:wmctrl.c: use XQueryTree to find windows to snow on if
+	  _NET and _GTK are not available.
+	  Use also XGetWindowAttributes to determine if a window
+	  is visible.
+
 version 3.1.8
 	1:use config.h to determine if alloca.h should be included
 	  configure.ac, Makefile.am: use pkg-config to locate 
