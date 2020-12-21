@@ -193,7 +193,6 @@ int GetWindows(WinInfo **windows, int *nwin)
    int k = 0;
    for (i=0; (unsigned long)i<nitems; i++)
    {
-      //Window root;
       int x0,y0,xr,yr;
       unsigned int depth;
 
@@ -201,14 +200,11 @@ int GetWindows(WinInfo **windows, int *nwin)
 
       XWindowAttributes winattr;
       XGetWindowAttributes(display, w->id, &winattr);
-      //      XGetGeometry (display, w->id, &root, &x0, &y0,
-      //	    &(w->w), &(w->h), &bw, &depth);
 
       x0    = winattr.x;
       y0    = winattr.y;
       w->w  = winattr.width;
       w->h  = winattr.height;
-      //bw    = winattr.border_width;
       depth = winattr.depth;
 
       P("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
@@ -302,10 +298,6 @@ int GetWindows(WinInfo **windows, int *nwin)
       // check if window is hidden
       w->hidden = 0;
       {
-	 //XWindowAttributes wa;
-	 //XGetWindowAttributes(display,w->id,&wa);
-
-	 P("map_state: %#lx %d\n",w->id,winattr.map_state);
 	 if (winattr.map_state != IsViewable)
 	 {
 	    P("map_state: %#lx %d\n",w->id,winattr.map_state);

@@ -1,7 +1,7 @@
 #!/bin/bash
 ulimit -c unlimited
 rm -f core
-reset
+clear
 if true; then
    export CC=gcc-10 CXX=g++-10
    export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O2 -g -DNO_USE_BITS'

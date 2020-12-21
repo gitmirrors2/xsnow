@@ -185,6 +185,8 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-window-id           ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
+	 handle_ia(-moon                ,Moon                             );
+	 handle_ia(-moonspeed           ,MoonSpeed                        );
 	 handle_im(-offsets             ,OffsetS                          );
 	 handle_im(-offsetw             ,OffsetW                          );
 	 handle_im(-offsetx             ,OffsetX                          );

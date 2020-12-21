@@ -264,6 +264,8 @@ void docs_usage(int man)
    manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_NStars) ").");
    manout("-meteorites"               ,"(Default) Show meteorites.");
    manout("-nometeorites"             ,"Do not show meteorites.");
+   manout("-moon <n>"                 ,"1: show moon, 0: do not show moon (default: " EQ(DEFAULT_Moon) ").");
+   manout("-moonspeed <n>"            ,"Speed of moon in pixels/minute (default: " EQ(DEFAULT_MoonSpeed) ").");
    manout("-cpuload <n>"              ,"How busy is your system with xsnow:");
    manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_CpuLoad) ").");
 

@@ -2559,7 +2559,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <signal name="toggled" handler="button_meteo_show" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">4</property>
+                <property name="left_attach">2</property>
                 <property name="top_attach">1</property>
                 <property name="width">2</property>
               </packing>
@@ -2595,7 +2595,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Try clicking any picture!</property>
+                <property name="label" translatable="yes">Try and click any picture!</property>
                 <attributes>
                   <attribute name="scale" value="1.2"/>
                 </attributes>
@@ -2785,7 +2785,20 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkToggleButton" id="moon-show">
+                <property name="label" translatable="yes">Show moon</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">To show or not show moon</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <signal name="toggled" handler="button_moon_show" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

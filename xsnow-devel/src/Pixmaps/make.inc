@@ -84,6 +84,7 @@ MediumSantaRudolf1.xpm \
 MediumSantaRudolf2.xpm \
 MediumSantaRudolf3.xpm \
 MediumSantaRudolf4.xpm \
+moon1.xpm \
 polarbear.xpm \
 RegularSanta1.xpm \
 RegularSanta2.xpm \

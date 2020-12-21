@@ -61,6 +61,7 @@
 #include "flags.h"
 #include "mainstub.h"
 #include "meteo.h"
+#include "moon.h"
 #include "Santa.h"
 #include "scenery.h"
 #include "snow.h"
@@ -443,6 +444,7 @@ int main_c(int argc, char *argv[])
    blowoff_init();
    treesnow_init();
    loadmeasure_init();
+   moon_init();
 
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event                   ,NULL);
@@ -1040,6 +1042,7 @@ void drawit(cairo_t *cr)
    if (!skipit)
    {
       stars_draw(cr);
+      moon_draw(cr);
       meteo_draw(cr);
    }
 

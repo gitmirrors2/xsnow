@@ -43,6 +43,8 @@
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
+#define DEFAULT_Moon 1
+#define DEFAULT_MoonSpeed 120 
 #define DEFAULT_NoConfig 0
 #define DEFAULT_NoFluffy 0
 #define DEFAULT_NoKeepSBot 0
@@ -87,6 +89,7 @@
 
 #define VINTAGE_BlowSnow 0
 #define VINTAGE_DesiredNumberOfTrees 6
+#define VINTAGE_Moon 0
 #define VINTAGE_NoKeepSnowOnTrees 1
 #define VINTAGE_NoMeteorites 1
 #define VINTAGE_NStars 0
@@ -161,6 +164,7 @@
 #define time_star             0.50             /* time between drawing stars                 */ 
 #define time_testing          1.10             /* time between testing code                  */ 
 #define time_ui_check         0.25             /* time between checking values from ui       */ 
+#define time_umoon            0.02            /* time between update position of moon       */
 #define time_usanta           0.02             /* time between update of santa position      */
 #define time_ustar            2.00             /* time between updating stars                */ 
 #define time_wind             0.10             /* time between starting or ending wind       */

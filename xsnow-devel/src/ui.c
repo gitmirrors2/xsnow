@@ -140,6 +140,7 @@ static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void set_star_buttons(void);
 static void set_meteo_buttons(void);
+static void set_moon_buttons(void);
 static void apply_standard_css(void);
 static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(UNUSED gpointer data);
@@ -320,6 +321,16 @@ static struct _meteo_buttons
    meteo_button show;
 } meteo_buttons;
 
+typedef struct _moon_button
+{
+   GtkWidget *button;
+} moon_button;
+
+static struct _moon_buttons
+{
+   moon_button show;
+} moon_buttons;
+
 static void report_tree_type(int p, gint active)
 {
    P("Tree: %d %d %s\n",p,active,Flags.TreeType);
@@ -387,6 +398,7 @@ void scenery_default(int vintage)
    Flags.TreeType                = strdup(DEFAULT_TreeType);
    Flags.NStars                  = DEFAULT_NStars;
    Flags.NoMeteorites            = DEFAULT_NoMeteorites;
+   Flags.Moon                    = DEFAULT_Moon;
    Flags.NoTrees                 = DEFAULT_NoTrees;
    Flags.TreeFill                = DEFAULT_TreeFill;
    free(Flags.TreeColor);
@@ -398,10 +410,12 @@ void scenery_default(int vintage)
       Flags.TreeType             = strdup(VINTAGE_TreeType);
       Flags.NStars               = VINTAGE_NStars;
       Flags.NoMeteorites         = VINTAGE_NoMeteorites;
+      Flags.Moon                 = VINTAGE_Moon;
    }
    set_tree_buttons();
    set_star_buttons();
    set_meteo_buttons();
+   set_moon_buttons();
    human_interaction = h;
 }
 
@@ -565,6 +579,19 @@ static void init_meteo_buttons()
 static void set_meteo_buttons()
 {
    HANDLE_SET_TOGGLE_I(meteo_buttons.show.button,NoMeteorites);
+}
+
+
+HANDLE_TOGGLE(button_moon_show, Moon, 1,0);
+
+static void init_moon_buttons()
+{
+   HANDLE_INIT(moon_buttons.show.button,moon-show);
+}
+
+static void set_moon_buttons()
+{
+   HANDLE_SET_TOGGLE(moon_buttons.show.button,Moon);
 }
 
 typedef struct _general_button
@@ -1143,6 +1170,7 @@ static void init_buttons()
    init_tree_buttons();
    init_star_buttons();
    init_meteo_buttons();
+   init_moon_buttons();
    init_snow_buttons();
    init_birds_buttons();
    init_general_buttons();
@@ -1157,6 +1185,7 @@ static void set_buttons()
    set_tree_buttons();
    set_star_buttons();
    set_meteo_buttons();
+   set_moon_buttons();
    set_snow_buttons();
    set_birds_buttons();
    set_general_buttons();

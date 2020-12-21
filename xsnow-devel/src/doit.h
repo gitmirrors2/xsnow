@@ -59,6 +59,8 @@
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
+   DOIT_I(Moon) \
+   DOIT_I(MoonSpeed) \
    DOIT_I(NoFluffy) \
    DOIT_I(NoKeepSBot) \
    DOIT_I(NoKeepSnow) \

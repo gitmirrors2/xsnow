@@ -27,8 +27,11 @@
 
 //extern SnowMap       snowPix[];
 extern StarMap       starPix;
-extern const char    ***Santas[][2];
-extern const char    **xpmtrees[];
-extern const char    **xsnow_logo;
-extern const char    **birds_xpm[];
-extern const char    **snow_xpm[];
+extern XPM_TYPE    ***Santas[][2];
+extern XPM_TYPE    **xpmtrees[];
+extern XPM_TYPE    **xsnow_logo;
+extern XPM_TYPE    **birds_xpm[];
+extern XPM_TYPE    **snow_xpm[];
+extern XPM_TYPE    **moons_xpm[];
+
+extern int NMOONPIXBUFS;
