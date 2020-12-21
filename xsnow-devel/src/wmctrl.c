@@ -193,19 +193,30 @@ int GetWindows(WinInfo **windows, int *nwin)
    int k = 0;
    for (i=0; (unsigned long)i<nitems; i++)
    {
-      Window root,child_return;
+      //Window root;
       int x0,y0,xr,yr;
-      unsigned int bw,depth;
+      unsigned int depth;
 
       w->id = r[i];
 
-      XGetGeometry (display, w->id, &root, &x0, &y0,
-	    &(w->w), &(w->h), &bw, &depth);
+      XWindowAttributes winattr;
+      XGetWindowAttributes(display, w->id, &winattr);
+      //      XGetGeometry (display, w->id, &root, &x0, &y0,
+      //	    &(w->w), &(w->h), &bw, &depth);
+
+      x0    = winattr.x;
+      y0    = winattr.y;
+      w->w  = winattr.width;
+      w->h  = winattr.height;
+      //bw    = winattr.border_width;
+      depth = winattr.depth;
+
       P("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
-      // examine if this window is showing something, otherwize we ignore it:
+      // if this window is showing nothing, we ignore it:
       if (depth == 0)
 	 continue;
 
+      Window child_return;
       XTranslateCoordinates(display, w->id, Rootwindow, 0, 0, &xr,     &yr,     &child_return);
       w->xa = xr - x0;
       w->ya = yr - y0;
@@ -291,12 +302,15 @@ int GetWindows(WinInfo **windows, int *nwin)
       // check if window is hidden
       w->hidden = 0;
       {
-	 XWindowAttributes wa;
-	 XGetWindowAttributes(display,w->id,&wa);
+	 //XWindowAttributes wa;
+	 //XGetWindowAttributes(display,w->id,&wa);
 
-	 P("map_state: %#lx %d\n",w->id,wa.map_state);
-	 if (wa.map_state != IsViewable)
+	 P("map_state: %#lx %d\n",w->id,winattr.map_state);
+	 if (winattr.map_state != IsViewable)
+	 {
+	    P("map_state: %#lx %d\n",w->id,winattr.map_state);
 	    w->hidden = 1;
+	 }
       }
       // another check on hidden
       if (!w->hidden)

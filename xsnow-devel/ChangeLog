@@ -8,6 +8,8 @@ version 3.1.9
 	  _NET and _GTK are not available.
 	  Use also XGetWindowAttributes to determine if a window
 	  is visible.
+	6:change max number of scenery items to 60
+	  wmctrl.c: use XGetWindowAttributes in stead of XGetGeometry
 
 version 3.1.8
 	1:use config.h to determine if alloca.h should be included
