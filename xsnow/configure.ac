@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.1.6], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.1.9], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -34,23 +34,11 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 
-# Checks for libraries.
-
-AC_CHECK_LIB([X11], [XOpenDisplay], [],[
-	     echo "libX11 is required"
-	     exit -1])
-AC_CHECK_LIB([Xpm], [XpmCreatePixmapFromData], [], AC_MSG_ERROR([Exiting]))
-
-AC_CHECK_LIB([m], [sin], [], [
-	      echo "libm is required"
-	      exit -1])
-
 # Checks for header files.
 AC_PATH_X
 AC_CHECK_HEADERS([alloca.h])
 AC_CHECK_HEADERS([assert.h ctype.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
-AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h X11/cursorfont.h X11/Intrinsic.h],[],AC_MSG_ERROR([Exiting]))
-AC_CHECK_HEADERS([X11/Xatom.h X11/Xlib.h X11/Xos.h X11/xpm.h X11/Xutil.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h],[],AC_MSG_ERROR([Exiting]))
 
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([iostream],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
@@ -60,6 +48,7 @@ AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
+PKG_CHECK_MODULES(X11, [x11 xpm xt xproto])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T

@@ -305,15 +305,16 @@ void UpdateFallenSnowRegions()
 //  Spin-offs:
 //     sets IsCompiz:   is this a compiz system?
 //     sets CWorkSpace: current workspace
+//     Rootwindow
 //
 //  Spin-ins:
 //     Flags
 //     display
-//     Rootwindow
 //     and maybe more ...
 
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
+   Rootwindow = DefaultRootWindow(display);
    P("DetermineWindow\n");
    *IsDesktop = 1;
    // User supplies window id:
@@ -344,25 +345,30 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       //*xwin      = Window_With_Name(display,Rootwindow,"screensaver");
       //*xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
       *xwin = DefaultRootWindow(display);
+      if (getenv("XSCREENSAVER_WINDOW"))
+      {
+	 *xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
+	 Rootwindow = *xwin;
+      }
       *IsDesktop = 0;
       *gtkwin    = NULL;
       int x,y; unsigned int w,h,b,depth;
       Window root;
       XGetGeometry(display,*xwin,&root,
 	    &x, &y, &w, &h, &b, &depth);
+      P("geom: %d %d %d %d\n",x,y,w,h);
       printf("Force snow on root: window: %#lx, depth: %d\n",*xwin,depth);
       if(0) // Trying to couple the virtual root window to gtk/cairo. No success ...
       {
 	 GdkWindow *gdkwin;
 	 GdkDisplay *gdkdisplay;
 	 gdkdisplay = gdk_display_get_default();
-	 R("display: %p gdkdisplay: %p\n",(void*)display,(void*)gdkdisplay);
+	 P("display: %p gdkdisplay: %p\n",(void*)display,(void*)gdkdisplay);
 	 gdkwin = gdk_x11_window_foreign_new_for_display(gdkdisplay,*xwin);
 	 *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	 //gtk_window_set_screen(GTK_WINDOW(*gtkwin),gdk_window_get_screen(gdkwin));
 	 gtk_widget_set_window(*gtkwin,gdkwin);
-	 GdkWindow *ww = gtk_widget_get_window(*gtkwin);
-	 R("ww: %p gdkwin: %p\n",(void*)ww,(void*)gdkwin);
+	 P("ww: %p gdkwin: %p\n",(void*)ww,(void*)gdkwin);
 	 gtk_widget_show_all(*gtkwin);
 	 gdk_window_show(gdkwin);
 	 *IsDesktop = 1;
@@ -509,7 +515,7 @@ void InitDisplayDimensions()
    Yroot = yroot;
    Wroot = wroot;
    Hroot = hroot;
-   P("InitDisplayDimensions: %d %d %d %d %d %d\n",xroot,yroot,wroot,hroot,broot,droot);
+   P("InitDisplayDimensions: %p %d %d %d %d %d %d\n",(void*)Rootwindow,xroot,yroot,wroot,hroot,broot,droot);
    DisplayDimensions();
 }
 

@@ -21,8 +21,11 @@
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdio.h>
-#include <alloca.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
@@ -396,7 +399,7 @@ void ReInitTree0()
    int i;
    int n = TreeHeight[0]+3;
    //char *xpmtmp[n];
-   char **xpmtmp = (char **)alloca(n*sizeof(char *));
+   char **xpmtmp = (char **)malloc(n*sizeof(char *));
    int j;
    for (j=0; j<2; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
@@ -415,6 +418,7 @@ void ReInitTree0()
    }
    for (j=0; j<n; j++)
       free(xpmtmp[j]);
+   free(xpmtmp);
 }
 
 

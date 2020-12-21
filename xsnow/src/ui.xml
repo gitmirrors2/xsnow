@@ -187,7 +187,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="ntreesadjustment">
-    <property name="upper">30</property>
+    <property name="upper">60</property>
     <property name="value">10</property>
     <property name="step_increment">1</property>
     <property name="page_increment">1</property>

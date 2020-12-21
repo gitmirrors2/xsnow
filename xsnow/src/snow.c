@@ -924,6 +924,10 @@ void genxpmflake(char ***xpm, int w, int h)
       X[offset + (int)(ya[i]-ymin)] [(int)(xa[i]-xmin)] = c;
       P("%f %f\n",ya[i]-ymin,xa[i]-xmin);
    }
+   free(x);
+   free(y);
+   free(xa);
+   free(ya);
 }
 
 void add_random_flakes(int n)

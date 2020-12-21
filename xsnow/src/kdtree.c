@@ -46,13 +46,20 @@
    */
 /* single nearest neighbor search written by Tamas Nepusz <tamas@cs.rhul.ac.uk> */
 
+#define USE_LIST_NODE_ALLOCATOR
+#define NO_ALLOCA
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef NO_ALLOCA
+#ifdef HAVE_ALLOCA_H
 #include <alloca.h>
+#endif
+#endif
 #include <string.h>
 #include <math.h>
 #include <assert.h>

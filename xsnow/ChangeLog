@@ -1,3 +1,29 @@
+version 3.1.9
+	1:place 'Xsnow running' to a place wher this does not appear in
+	  xsnow -h or xsnow-H
+	2:wmctrl.c: a second check if window is hidden, based on WM_STATE
+	  see: https://tronche.com/gui/x/icccm/sec-4.html#s-4.1.3.1
+	3: typos in docs.c
+	5:wmctrl.c: use XQueryTree to find windows to snow on if
+	  _NET and _GTK are not available.
+	  Use also XGetWindowAttributes to determine if a window
+	  is visible.
+	6:change max number of scenery items to 60
+	  wmctrl.c: use XGetWindowAttributes in stead of XGetGeometry
+
+version 3.1.8
+	1:use config.h to determine if alloca.h should be included
+	  configure.ac, Makefile.am: use pkg-config to locate 
+	  X11, Xpm, xt, xproto
+	2:configure.ac: remove tests for libraries, relying on pkg-config now
+	3:remove uses of alloca, except ik kdtree.c
+	  define USE_LIST_NODE_ALLOCATOR and  NO_ALLOCA in kdtree.c
+	  remove USE_LIST_NODE_ALLOCATOR from Makefile.am
+	  snow.c: free local variables in genxpmflake()
+
+version 3.1.7
+	1:windows.c: take care of redfining Rootwindow if xscreensaver
+	  is detected
 version 3.1.6
 	1:add xscreensaver support and vroot.h
 version 3.1.5

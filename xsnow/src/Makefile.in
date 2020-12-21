@@ -118,7 +118,8 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
-xsnow_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+xsnow_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -511,6 +512,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+X11_CFLAGS = @X11_CFLAGS@
+X11_LIBS = @X11_LIBS@
 XMKMF = @XMKMF@
 XML_CFLAGS = @XML_CFLAGS@
 XML_LIBS = @XML_LIBS@
@@ -580,8 +583,8 @@ top_srcdir = @top_srcdir@
 #-# 
 SUBDIRS = Pixmaps
 gamesdir = $(exec_prefix)/games
-xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) -DUSE_LIST_NODE_ALLOCATOR 
-xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)  
+xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(X11_CFLAGS) 
+xsnow_LDADD = $(XML_LIBS)   $(GTK_LIBS)  $(X11_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\

@@ -119,7 +119,9 @@ void docs_usage(int man)
    manout("-stopafter <n>"            ,"Stop xsnow after so many seconds.");
    manout("-root    "                 ,"Force to paint on (virtual) root window.");
    manout("."                         ,"Use this for xscreensaver: in ~.xscreensaver add:");
-   manout("."                         ,"    xsnow -nomenu -root");
+   manout("."                         ,"    xsnow -root");
+   manout("."                         ,"On some systems you need to add the flag -nomenu to disable the menu:");
+   manout("."                         ,"    xsnow -root -nomenu");
    manout("."                         ,"Probably, you want to start xscreensaver as follows:");
    manout("."                         ,"    xscreensaver -no-capture-stderr");
    manout("-wantwindow default/transparent"               ,"Specify your favorite window for Santa:");
@@ -222,8 +224,8 @@ void docs_usage(int man)
    manout("-nokeepsnow"               ,"Do not have snow sticking anywhere.");
    manout("-fluffy"                   ,"(Default) Create fluff on fallen snow.");
    manout("-nofluffy"                 ,"Do not create fluff on fallen snow.");
-   manout("-offsetx <n>"              ,"Correction for window-manager provided of x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
-   manout("-offsety <n>"              ,"Correction for window-managr provided of y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
+   manout("-offsetx <n>"              ,"Correction for window-manager provided x-coordinate of window. Default " EQ(DEFAULT_OffsetX) ".");
+   manout("-offsety <n>"              ,"Correction for window-manager provided  y-coordinate of window. Default " EQ(DEFAULT_OffsetY) ".");
    manout("-offsetw <n>"              ,"Correction for window-manager provided width of window. Default " EQ(DEFAULT_OffsetW) ".");
    manout("-offsets <n>"              ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                         ,"the xsnow screen up. Default " EQ(DEFAULT_OffsetS) ".");
