@@ -2,6 +2,7 @@ version 3.1.10
 	1:add moon and show-noshow for moon
 	2:put wind, stars, moon, meteorites in celestials
 	  add slider for moon speed
+	3:add button for moon size
 
 version 3.1.9
 	1:place 'Xsnow running' to a place wher this does not appear in

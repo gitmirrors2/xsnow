@@ -330,6 +330,7 @@ static struct _moon_buttons
 {
    moon_button show;
    moon_button speed;
+   moon_button size;
 } moon_buttons;
 
 static void report_tree_type(int p, gint active)
@@ -574,18 +575,22 @@ static void set_meteo_buttons()
 }
 
 
-HANDLE_TOGGLE(button_moon_show, Moon, 1,0);
+HANDLE_TOGGLE(button_moon_show, Moon      ,1,0);
+HANDLE_RANGE(button_moon_speed, MoonSpeed ,value);
+HANDLE_RANGE(button_moon_size,  MoonSize  ,value);
 
 static void init_moon_buttons()
 {
    HANDLE_INIT(moon_buttons.show.button   ,moon-show);
    HANDLE_INIT(moon_buttons.speed.button  ,moon-speed);
+   HANDLE_INIT(moon_buttons.size.button   ,moon-size);
 }
 
 static void set_moon_buttons()
 {
-   HANDLE_SET_TOGGLE(moon_buttons.show.button,Moon);
-   HANDLE_SET_RANGE(moon_buttons.speed.button        ,MoonSpeed ,self);
+   HANDLE_SET_TOGGLE(moon_buttons.show.button  ,Moon);
+   HANDLE_SET_RANGE(moon_buttons.speed.button  ,MoonSpeed ,self);
+   HANDLE_SET_RANGE(moon_buttons.size.button   ,MoonSize  ,self);
 }
 
 typedef struct _general_button
@@ -1114,7 +1119,6 @@ static void init_wind_buttons()
 static void set_wind_buttons()
 {
    HANDLE_SET_TOGGLE_I(wind_buttons.windy.button     ,NoWind);
-
    HANDLE_SET_RANGE(wind_buttons.whirl.button        ,WhirlFactor ,self);
    HANDLE_SET_RANGE(wind_buttons.timer.button        ,WindTimer   ,self);
 }
@@ -1122,7 +1126,6 @@ static void set_wind_buttons()
 HANDLE_TOGGLE(button_wind_windy,NoWind   ,0           ,1);
 HANDLE_RANGE(button_wind_whirl           ,WhirlFactor ,value);
 HANDLE_RANGE(button_wind_timer           ,WindTimer   ,value);
-HANDLE_RANGE(button_moon_speed           ,MoonSpeed   ,value);
 
    MODULE_EXPORT
 void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
@@ -1142,6 +1145,7 @@ void celestials_default(int vintage)
    Flags.NoMeteorites  = DEFAULT_NoMeteorites;
    Flags.Moon          = DEFAULT_Moon;
    Flags.MoonSpeed     = DEFAULT_MoonSpeed;
+   Flags.MoonSize      = DEFAULT_MoonSize;
    if(vintage)
    {
       Flags.NStars         = VINTAGE_NStars;

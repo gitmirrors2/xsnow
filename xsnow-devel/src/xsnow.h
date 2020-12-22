@@ -45,6 +45,7 @@
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
 #define DEFAULT_Moon 1
 #define DEFAULT_MoonSpeed 120 
+#define DEFAULT_MoonSize 100 
 #define DEFAULT_NoConfig 0
 #define DEFAULT_NoFluffy 0
 #define DEFAULT_NoKeepSBot 0
