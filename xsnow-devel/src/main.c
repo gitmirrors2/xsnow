@@ -690,6 +690,7 @@ int do_ui_check(UNUSED gpointer data)
    changes += fallensnow_ui();
    changes += blowoff_ui();
    changes += treesnow_ui();
+   changes += moon_ui();
 
    if (Flags.WantWindow != OldFlags.WantWindow)
    {

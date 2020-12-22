@@ -64,27 +64,27 @@ int wind_ui()
       Wind    = 0;
       NewWind = 0;
       changes++;
-      P("changes: %d\n",changes);
+      R("NoWind: %d\n",Flags.NoWind);
    }
    if(Flags.WhirlFactor != OldFlags.WhirlFactor)
    {
       OldFlags.WhirlFactor = Flags.WhirlFactor;
       SetWhirl();
       changes++;
-      P("changes: %d\n",changes);
+      R("whirl: %d\n",Flags.WhirlFactor);
    }
    if(Flags.WindTimer != OldFlags.WindTimer)
    {
       OldFlags.WindTimer = Flags.WindTimer;
       SetWindTimer();
       changes++;
-      P("changes: %d\n",changes);
+      R("windtimer: %d\n",Flags.WindTimer);
    }
    if(Flags.WindNow)
    {
       Flags.WindNow = 0;
       Wind = 2;
-      P("changes: %d\n",changes);
+      R("Gust: %d\n",changes);
    }
    return changes;
 }

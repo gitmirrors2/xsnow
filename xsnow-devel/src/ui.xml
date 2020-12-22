@@ -186,6 +186,12 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="moonspeedadjustment">
+    <property name="upper">720</property>
+    <property name="value">120</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="ntreesadjustment">
     <property name="upper">60</property>
     <property name="value">10</property>
@@ -311,35 +317,6 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="lower">10</property>
     <property name="upper">50</property>
     <property name="value">30</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkTextBuffer" id="welcome-text">
-    <property name="text" translatable="yes"> If everything is ok, it is now snowing on your desktop.\n
-\n
-Using he tabs above (snow, Santa, scenery, wind) you are\n
-encouraged to define your own preferences.\n
-\n
-If xsnow misbehaves on your desktop, use the 'settings'\n
-tab to see if you can correct this.\n\n
-In every tab you find the following rescue buttons:\n
-Defaults: set default preferences for this tab.\n
-Vintage: set vintage preferences for this tab.\n
-All defaults: set default preferences for all (except settings) tabs.\n
-All vintage: set vintage preferences for all (except settings) tabs.\n\n
-Vintage preferences give the look and feel of the original\n
-xsnow, created in 1993 by Rick Jansen.\n
-
-</property>
-  </object>
-  <object class="GtkAdjustment" id="whirl-adjustment">
-    <property name="upper">300</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="wind-timer-adjustment">
-    <property name="lower">3</property>
-    <property name="upper">50</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -2515,56 +2492,6 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="stars-nstars">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Number of stars to twinkle.</property>
-                <property name="valign">center</property>
-                <property name="adjustment">staradjustment</property>
-                <property name="round_digits">1</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_star_nstars" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="margin_right">7</property>
-                <property name="label" translatable="yes">Number of stars</property>
-                <property name="wrap">True</property>
-                <property name="max_width_chars">8</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="meteo-show">
-                <property name="label" translatable="yes">Show meteorites</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">To show or not to show meteorites,</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="margin_left">8</property>
-                <signal name="toggled" handler="button_meteo_show" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2785,20 +2712,16 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="moon-show">
-                <property name="label" translatable="yes">Show moon</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">To show or not show moon</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <signal name="toggled" handler="button_moon_show" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="top_attach">1</property>
-              </packing>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -2925,7 +2848,7 @@ Note: in Wayland, there is no snow on the windows.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid_wind">
+          <object class="GtkGrid" id="grid_celestials">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -2936,7 +2859,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_bottom">83</property>
-                <property name="label" translatable="yes">Compose here your favorite wind conditions</property>
+                <property name="label" translatable="yes">Compose here your favorite celestial conditions</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
                 </attributes>
@@ -2948,101 +2871,6 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="wind-windy">
-                <property name="label" translatable="yes">Windy</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If set, there will be wind.</property>
-                <property name="valign">center</property>
-                <signal name="toggled" handler="button_wind_windy" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="wind-whirl">
-                <property name="height_request">107</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">The higher this setting, the more the wind will whirl.</property>
-                <property name="halign">center</property>
-                <property name="orientation">vertical</property>
-                <property name="adjustment">whirl-adjustment</property>
-                <property name="inverted">True</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <property name="value_pos">left</property>
-                <signal name="value-changed" handler="button_wind_whirl" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="label" translatable="yes">Whirl</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="wind-timer">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">This setting determines how many seconds pass between two gusts of wind.</property>
-                <property name="halign">center</property>
-                <property name="orientation">vertical</property>
-                <property name="adjustment">wind-timer-adjustment</property>
-                <property name="inverted">True</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <property name="value_pos">right</property>
-                <signal name="value-changed" handler="button_wind_timer" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="label" translatable="yes">Timer</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Gust wind now!</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Force a gust of wind immediately.</property>
-                <property name="valign">center</property>
-                <signal name="clicked" handler="button_wind_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -3051,7 +2879,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
@@ -3068,7 +2896,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="tooltip_text" translatable="yes">Apply default values for the preferences in this tab.</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="button_defaults_wind" swapped="no"/>
+                    <signal name="clicked" handler="button_defaults_celestials" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3085,7 +2913,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="tooltip_text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="button_vintage_wind" swapped="no"/>
+                    <signal name="clicked" handler="button_vintage_celestials" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3096,7 +2924,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">10</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3142,7 +2970,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">10</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3169,7 +2997,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">11</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3196,9 +3024,409 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">11</property>
                 <property name="width">2</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Wind</property>
+                    <property name="justify">center</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="wind-windy">
+                    <property name="label" translatable="yes">Windy</property>
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">If set, there will be wind.</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_wind_windy" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Whirl:</property>
+                    <property name="width_chars">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="wind-whirl">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">The higher this setting, the more the wind will whirl.</property>
+                    <property name="halign">center</property>
+                    <property name="adjustment">whirl-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">bottom</property>
+                    <signal name="value-changed" handler="button_wind_whirl" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Timer:</property>
+                    <property name="width_chars">7</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="wind-timer">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">This setting determines how many seconds pass between two gusts of wind.</property>
+                    <property name="halign">center</property>
+                    <property name="adjustment">wind-timer-adjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">bottom</property>
+                    <signal name="value-changed" handler="button_wind_timer" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Gust now!</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Force a gust of wind immediately.</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_wind_activate" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Stars</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes"> </property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Number:</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="stars-nstars">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Number of twinkling stars.</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">staradjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">bottom</property>
+                    <signal name="value-changed" handler="button_star_nstars" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">4</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Moon</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="moon-show">
+                    <property name="label" translatable="yes">Show</property>
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To show or not show moon</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_moon_show" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Speed:</property>
+                    <property name="width_chars">7</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="moon-speed">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Speed of moon in pixels/minute</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">moonspeedadjustment</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">bottom</property>
+                    <signal name="value-changed" handler="button_moon_speed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Size:</property>
+                    <property name="width_chars">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="value_pos">bottom</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Meteo</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="meteo-show">
+                    <property name="label" translatable="yes">Show</property>
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To show or not to show meteorites,</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_meteo_show" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+                <property name="width">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3218,7 +3446,7 @@ Note: in Wayland, there is no snow on the windows.</property>
           </object>
           <packing>
             <property name="name">page4</property>
-            <property name="title" translatable="yes">wind</property>
+            <property name="title" translatable="yes">celestials</property>
             <property name="position">4</property>
           </packing>
         </child>
@@ -5069,5 +5297,34 @@ Drawing and erasing will be done by X11 functions.</property>
         </style>
       </object>
     </child>
+  </object>
+  <object class="GtkTextBuffer" id="welcome-text">
+    <property name="text" translatable="yes"> If everything is ok, it is now snowing on your desktop.\n
+\n
+Using he tabs above (snow, Santa, scenery, wind) you are\n
+encouraged to define your own preferences.\n
+\n
+If xsnow misbehaves on your desktop, use the 'settings'\n
+tab to see if you can correct this.\n\n
+In every tab you find the following rescue buttons:\n
+Defaults: set default preferences for this tab.\n
+Vintage: set vintage preferences for this tab.\n
+All defaults: set default preferences for all (except settings) tabs.\n
+All vintage: set vintage preferences for all (except settings) tabs.\n\n
+Vintage preferences give the look and feel of the original\n
+xsnow, created in 1993 by Rick Jansen.\n
+
+</property>
+  </object>
+  <object class="GtkAdjustment" id="whirl-adjustment">
+    <property name="upper">300</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="wind-timer-adjustment">
+    <property name="lower">3</property>
+    <property name="upper">50</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>
