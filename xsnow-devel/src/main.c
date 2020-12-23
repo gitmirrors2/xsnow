@@ -1039,7 +1039,6 @@ void drawit(cairo_t *cr)
    if (Flags.Done)
       return;
 
-   moon_draw(cr);
 
    int skipit = !switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive();
 
@@ -1048,6 +1047,8 @@ void drawit(cairo_t *cr)
       stars_draw(cr);
       meteo_draw(cr);
    }
+
+   moon_draw(cr);
 
    birds_draw(cr);
 

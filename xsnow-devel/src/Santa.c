@@ -456,10 +456,10 @@ int do_usanta(UNUSED gpointer data)
       // time to change yspeed
       sdt = 0;
       yspeeddir = randint(3)-1;  //  -1, 0, 1
-      if (SantaYr < santayrmin)
+      if (SantaYr < santayrmin + 20)
 	 yspeeddir = 2;
 
-      if (SantaYr > santayrmax)
+      if (SantaYr > santayrmax - 20)
 	 yspeeddir = -2;
       //int mooncx = moonX+Flags.MoonSize/2;
       int mooncy = moonY+Flags.MoonSize/2;

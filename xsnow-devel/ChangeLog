@@ -6,6 +6,8 @@ version 3.2.0
 	  add show-stars button
 	  add grey-out for moon buttons if not compositing manager
 	  add notice about that in the celestials tab
+	3:fix bug in moon.c: show moon, independent of birds
+	  some experiments with halo colours
 
 version 3.1.10
 	1:add moon and show-noshow for moon
