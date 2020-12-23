@@ -1,8 +1,13 @@
+version 3.2.0
+	1:use 256x256 xpm for moon
+	  start Santa, aware of moon position
+	  adapt some trivial texts
 version 3.1.10
 	1:add moon and show-noshow for moon
 	2:put wind, stars, moon, meteorites in celestials
 	  add slider for moon speed
 	3:add button for moon size
+	4:let Santa like to hover the moon
 
 version 3.1.9
 	1:place 'Xsnow running' to a place wher this does not appear in

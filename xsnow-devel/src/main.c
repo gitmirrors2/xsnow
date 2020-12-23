@@ -433,6 +433,7 @@ int main_c(int argc, char *argv[])
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
    windows_init();
+   moon_init();
    Santa_init();
    birds_init();
    scenery_init();
@@ -444,7 +445,6 @@ int main_c(int argc, char *argv[])
    blowoff_init();
    treesnow_init();
    loadmeasure_init();
-   moon_init();
 
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged          ,NULL);
    add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event                   ,NULL);
@@ -626,7 +626,7 @@ int myDetermineWindow()
    else                          //  No transparent window: Scenario 4
    {
       P("Scenario 4 Desktop: %d\n",IsDesktop);
-      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly.\n");
+      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly, no moon will shine.\n");
       // in LXDE, SnowWin will be overwritten by id of window pcmanfm
       SnowWin            = SnowWina;
       SnowWinName        = SnowWinaName;
@@ -646,7 +646,7 @@ int myDetermineWindow()
    if (TransA)
       printf("Birds in window: %#lx - \"%s\"\n",SnowWina,SnowWinaName);
    else
-      printf("No birds (you need a compositing display manager to let birds fly).\n");
+      printf("No birds, no moon (you need a compositing display manager to let birds fly and monn shine).\n");
 
    if(TransA)
    {
@@ -706,7 +706,7 @@ int do_ui_check(UNUSED gpointer data)
       myDetermineWindow();
       ui_gray_erase(switches.UseGtk);
       changes++;
-      P("changes: %d\n",changes);
+      R("WantWindow: %d\n",Flags.WantWindow);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -729,7 +729,7 @@ int do_ui_check(UNUSED gpointer data)
       SetGCFunctions();
       ClearScreen();
       changes++;
-      P("changes: %d\n",changes);
+      R("UseBG: %d\n",Flags.UseBG);
    }
    if(strcmp(Flags.BGColor,OldFlags.BGColor))
    {

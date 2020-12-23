@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "wind.h"
 #include "ixpm.h"
+#include "moon.h"
 #include "varia.h"
 
 #define NOTACTIVE \
@@ -421,6 +422,10 @@ int do_usanta(UNUSED gpointer data)
    int oldy = SantaY;
 
    double dt = time_usanta;
+
+   double santayrmin = 0;
+   double santayrmax = SnowWinHeight*0.33;
+
    ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
    if (ActualSantaSpeed>3*SantaSpeed)
       ActualSantaSpeed = 3*SantaSpeed;
@@ -446,19 +451,39 @@ int do_usanta(UNUSED gpointer data)
 
    yspeed = ActualSantaSpeed/4;
    sdt += dt;
-   if (sdt > 2.0)
+   if (sdt > 2.0*50.0/SantaSpeed || sdt > 2.0)
    {
       // time to change yspeed
       sdt = 0;
       yspeeddir = randint(3)-1;  //  -1, 0, 1
+      if (SantaYr < santayrmin)
+	 yspeeddir = 2;
+
+      if (SantaYr > santayrmax)
+	 yspeeddir = -2;
+      int mooncx = moonX+Flags.MoonSize/2;
+      int mooncy = moonY+Flags.MoonSize/2;
+      if (switches.DrawBirds && Flags.Moon && SantaX+SantaWidth < moonX+Flags.MoonSize && SantaX+SantaWidth > moonX-200) // Santa likes to hover the moon
+      {
+	 int dy = SantaY+SantaHeight/2 - mooncy;
+	 if (dy < 0)
+	    yspeeddir = 1;
+	 else
+	    yspeeddir = -1;
+	 if (dy < -Flags.MoonSize/2)
+	    yspeeddir = 2;
+	 else if (dy > Flags.MoonSize/2)
+	    yspeeddir = -2;
+	 R("moon seeking %f %f %d %f\n",SantaYr, moonY, yspeeddir,SantaSpeed);
+      }
    }
 
    SantaYr += dt*yspeed*yspeeddir;
-   if (SantaYr < 0)
+   if (SantaYr < santayrmin)
       SantaYr = 0;
 
-   if (SantaYr > SnowWinHeight*0.33)
-      SantaYr = SnowWinHeight*0.33;
+   if (SantaYr > santayrmax)
+      SantaYr = santayrmax;
 
    SantaY = lrintf(SantaYr);
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
@@ -472,6 +497,13 @@ void ResetSanta()
    SantaX  = -SantaWidth - ActualSantaSpeed;
    SantaXr = SantaX;
    SantaY  = randint(SnowWinHeight / 3)+40;
+   if (Flags.Moon && switches.DrawBirds && moonX < 400)
+   {
+      R("moon seeking at start\n");
+      SantaY = randint(Flags.MoonSize + 40)+moonY-20;
+   }
+   else
+      SantaY  = randint(SnowWinHeight / 3)+40;
    SantaYr = SantaY;
    SantaYStep = 1;
    CurrentSanta = 0;

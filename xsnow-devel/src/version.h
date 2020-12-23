@@ -19,7 +19,7 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.1.10~pre3"
+#define VERSION "3.2.0~pre1"
 #define VERSIONBY \
    "December 14th 2001 by Rick Jansen \n" \
    "December 2020 by Willem Vermin"
