@@ -2894,10 +2894,10 @@ Note: in Wayland, there is no snow on the windows.</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="celestials-header">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">83</property>
+                <property name="margin_bottom">23</property>
                 <property name="label" translatable="yes">Compose here your favorite celestial conditions</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -3216,11 +3216,15 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkToggleButton" id="stars-show">
+                    <property name="label" translatable="yes">Show</property>
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes"> </property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To show or not show stars.</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_stars_show" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3373,6 +3377,24 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="halo-show">
+                    <property name="label" translatable="yes">Halo</property>
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To show or not to show halo around moon.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="toggled" handler="button_halo_show" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>

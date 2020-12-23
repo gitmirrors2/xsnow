@@ -2,6 +2,11 @@ version 3.2.0
 	1:use 256x256 xpm for moon
 	  start Santa, aware of moon position
 	  adapt some trivial texts
+	2:add halo around moon
+	  add show-stars button
+	  add grey-out for moon buttons if not compositing manager
+	  add notice about that in the celestials tab
+
 version 3.1.10
 	1:add moon and show-noshow for moon
 	2:put wind, stars, moon, meteorites in celestials

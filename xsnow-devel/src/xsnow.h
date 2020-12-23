@@ -40,6 +40,7 @@
 #define DEFAULT_FlakeCountMax 300 
 #define DEFAULT_ForceRoot 0 
 #define DEFAULT_FullScreen 0
+#define DEFAULT_Halo 1
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
@@ -67,6 +68,7 @@
 #define DEFAULT_Rudolf 1 
 #define DEFAULT_SantaSize 3         // default santa size    
 #define DEFAULT_SantaSpeedFactor 100
+#define DEFAULT_Stars 1
 #define DEFAULT_SnowColor "snow"
 #define DEFAULT_SnowFlakesFactor 100
 #define DEFAULT_SnowSize 8 
@@ -93,10 +95,10 @@
 #define VINTAGE_Moon 0
 #define VINTAGE_NoKeepSnowOnTrees 1
 #define VINTAGE_NoMeteorites 1
-#define VINTAGE_NStars 0
 #define VINTAGE_Rudolf 1 
 #define VINTAGE_SantaSize 2 
 #define VINTAGE_SnowFlakesFactor 15
+#define VINTAGE_Stars 0
 #define VINTAGE_TreeType "0,"
 
 #define FLAGSFILE ".xsnowrc"

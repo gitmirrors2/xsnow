@@ -461,9 +461,10 @@ int do_usanta(UNUSED gpointer data)
 
       if (SantaYr > santayrmax)
 	 yspeeddir = -2;
-      int mooncx = moonX+Flags.MoonSize/2;
+      //int mooncx = moonX+Flags.MoonSize/2;
       int mooncy = moonY+Flags.MoonSize/2;
-      if (switches.DrawBirds && Flags.Moon && SantaX+SantaWidth < moonX+Flags.MoonSize && SantaX+SantaWidth > moonX-200) // Santa likes to hover the moon
+      P("DrawBirds:%d\n",switches.DrawBirds);
+      if (switches.DrawBirds && Flags.Moon && SantaX+SantaWidth < moonX+Flags.MoonSize && SantaX+SantaWidth > moonX-300) // Santa likes to hover the moon
       {
 	 int dy = SantaY+SantaHeight/2 - mooncy;
 	 if (dy < 0)
@@ -471,10 +472,10 @@ int do_usanta(UNUSED gpointer data)
 	 else
 	    yspeeddir = -1;
 	 if (dy < -Flags.MoonSize/2)
-	    yspeeddir = 2;
+	    yspeeddir = 3;
 	 else if (dy > Flags.MoonSize/2)
-	    yspeeddir = -2;
-	 R("moon seeking %f %f %d %f\n",SantaYr, moonY, yspeeddir,SantaSpeed);
+	    yspeeddir = -3;
+	 P("moon seeking %f %f %d %f\n",SantaYr, moonY, yspeeddir,SantaSpeed);
       }
    }
 
@@ -499,7 +500,7 @@ void ResetSanta()
    SantaY  = randint(SnowWinHeight / 3)+40;
    if (Flags.Moon && switches.DrawBirds && moonX < 400)
    {
-      R("moon seeking at start\n");
+      P("moon seeking at start\n");
       SantaY = randint(Flags.MoonSize + 40)+moonY-20;
    }
    else

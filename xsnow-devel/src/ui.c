@@ -309,6 +309,7 @@ typedef struct _star_button
 static struct _star_buttons
 {
    star_button nstars;
+   star_button show;
 } star_buttons;
 
 typedef struct _meteo_button
@@ -331,6 +332,7 @@ static struct _moon_buttons
    moon_button show;
    moon_button speed;
    moon_button size;
+   moon_button halo;
 } moon_buttons;
 
 static void report_tree_type(int p, gint active)
@@ -551,15 +553,18 @@ static void set_tree_buttons()
 
 
 HANDLE_RANGE(button_star_nstars, NStars, value);
+HANDLE_TOGGLE(button_stars_show, Stars ,1     ,0);
 
 static void init_star_buttons()
 {
-   HANDLE_INIT(star_buttons.nstars.button,stars-nstars);
+   HANDLE_INIT(star_buttons.nstars.button  ,stars-nstars);
+   HANDLE_INIT(star_buttons.show.button    ,stars-show);
 }
 
 static void set_star_buttons()
 {
-   HANDLE_SET_RANGE(star_buttons.nstars.button,NStars,self);
+   HANDLE_SET_RANGE(star_buttons.nstars.button  ,NStars,self);
+   HANDLE_SET_TOGGLE(star_buttons.show.button   ,Stars);
 }
 
 HANDLE_TOGGLE(button_meteo_show, NoMeteorites, 0,1);
@@ -576,12 +581,14 @@ static void set_meteo_buttons()
 
 
 HANDLE_TOGGLE(button_moon_show, Moon      ,1,0);
+HANDLE_TOGGLE(button_halo_show, Halo      ,1,0);
 HANDLE_RANGE(button_moon_speed, MoonSpeed ,value);
 HANDLE_RANGE(button_moon_size,  MoonSize  ,value);
 
 static void init_moon_buttons()
 {
    HANDLE_INIT(moon_buttons.show.button   ,moon-show);
+   HANDLE_INIT(moon_buttons.halo.button   ,halo-show);
    HANDLE_INIT(moon_buttons.speed.button  ,moon-speed);
    HANDLE_INIT(moon_buttons.size.button   ,moon-size);
 }
@@ -589,6 +596,7 @@ static void init_moon_buttons()
 static void set_moon_buttons()
 {
    HANDLE_SET_TOGGLE(moon_buttons.show.button  ,Moon);
+   HANDLE_SET_TOGGLE(moon_buttons.halo.button  ,Halo);
    HANDLE_SET_RANGE(moon_buttons.speed.button  ,MoonSpeed ,self);
    HANDLE_SET_RANGE(moon_buttons.size.button   ,MoonSize  ,self);
 }
@@ -960,6 +968,17 @@ void ui_set_birds_header(const char *text)
    gtk_label_set_text(GTK_LABEL(birds_header),text);
 }
 
+void ui_set_celestials_header(const char *text)
+{
+   GtkWidget *celestials_header = GTK_WIDGET(gtk_builder_get_object(builder,"celestials-header")); 
+   char *a = strdup(gtk_label_get_text(GTK_LABEL(celestials_header)));
+   a = (char *) realloc(a,strlen(a)+2+strlen(text));
+   strcat(a,"\n");
+   strcat(a,text);
+   gtk_label_set_text(GTK_LABEL(celestials_header),a);
+   free(a);
+}
+
 typedef struct _birds_button
 {
    GtkWidget *button;
@@ -1142,13 +1161,16 @@ void celestials_default(int vintage)
    Flags.WhirlFactor   = DEFAULT_WhirlFactor;
    Flags.WindTimer     = DEFAULT_WindTimer;
    Flags.NStars        = DEFAULT_NStars;
+   Flags.Stars         = DEFAULT_Stars;
    Flags.NoMeteorites  = DEFAULT_NoMeteorites;
    Flags.Moon          = DEFAULT_Moon;
    Flags.MoonSpeed     = DEFAULT_MoonSpeed;
    Flags.MoonSize      = DEFAULT_MoonSize;
+   Flags.Halo          = DEFAULT_Halo;
    if(vintage)
    {
-      Flags.NStars         = VINTAGE_NStars;
+      Flags.Stars          = VINTAGE_Stars;
+      Flags.Stars          = VINTAGE_Stars;
       Flags.NoMeteorites   = VINTAGE_NoMeteorites;
       Flags.Moon           = VINTAGE_Moon;
    }
@@ -1358,6 +1380,10 @@ void birdscb(GtkWidget *w, void *m)
 void ui_gray_birds(int m)
 {
    gtk_container_foreach(birdsgrid, birdscb, &m);
+   gtk_widget_set_sensitive(moon_buttons.show.button,!m);
+   gtk_widget_set_sensitive(moon_buttons.speed.button,!m);
+   gtk_widget_set_sensitive(moon_buttons.size.button,!m);
+   gtk_widget_set_sensitive(moon_buttons.halo.button,!m);
 }
 
 char * ui_gtk_version()

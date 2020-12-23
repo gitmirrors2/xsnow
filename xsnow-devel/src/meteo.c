@@ -68,7 +68,7 @@ int meteo_ui()
    {
       OldFlags.NoMeteorites = Flags.NoMeteorites;
       changes++;
-      R("changes: %d %d\n",changes,Flags.NoMeteorites);
+      P("changes: %d %d\n",changes,Flags.NoMeteorites);
    }
    return changes;
 }

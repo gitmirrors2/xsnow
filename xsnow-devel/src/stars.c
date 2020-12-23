@@ -105,6 +105,8 @@ void init_stars()
 
 void stars_draw(cairo_t *cr)
 {
+   if (!Flags.Stars)
+      return;
    int i;
    cairo_save(cr);
    cairo_set_line_width(cr,1);
@@ -133,6 +135,13 @@ int stars_ui()
       ClearScreen();
       changes++;
    }
+   if(Flags.Stars != OldFlags.Stars)
+   {
+      P("changes Stars: %d %d %d\n",changes,OldFlags.Stars,Flags.Stars);
+      OldFlags.Stars = Flags.Stars;
+      ClearScreen();
+      changes++;
+   }
    return changes;
 }
 
@@ -144,6 +153,8 @@ int do_stars(UNUSED gpointer data)
    if (NOTACTIVE)
       return TRUE;
    if (switches.UseGtk)
+      return TRUE;
+   if (!Flags.Stars)
       return TRUE;
    P("do_stars %d %d\n",NStars,counter++);
    int i;

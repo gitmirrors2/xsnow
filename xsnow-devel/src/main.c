@@ -494,6 +494,7 @@ int main_c(int argc, char *argv[])
 	 ui_gray_below(1);
 	 ui_gray_birds(1);
 	 ui_set_birds_header("No alpha channel: no birds will fly.");
+	 ui_set_celestials_header("No alpha channel: no moon.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, NULL);
@@ -706,7 +707,7 @@ int do_ui_check(UNUSED gpointer data)
       myDetermineWindow();
       ui_gray_erase(switches.UseGtk);
       changes++;
-      R("WantWindow: %d\n",Flags.WantWindow);
+      P("WantWindow: %d\n",Flags.WantWindow);
    }
    if(Flags.CpuLoad != OldFlags.CpuLoad)
    {
@@ -729,7 +730,7 @@ int do_ui_check(UNUSED gpointer data)
       SetGCFunctions();
       ClearScreen();
       changes++;
-      R("UseBG: %d\n",Flags.UseBG);
+      P("UseBG: %d\n",Flags.UseBG);
    }
    if(strcmp(Flags.BGColor,OldFlags.BGColor))
    {
@@ -1038,12 +1039,13 @@ void drawit(cairo_t *cr)
    if (Flags.Done)
       return;
 
+   moon_draw(cr);
+
    int skipit = !switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive();
 
    if (!skipit)
    {
       stars_draw(cr);
-      moon_draw(cr);
       meteo_draw(cr);
    }
 

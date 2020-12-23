@@ -161,14 +161,15 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSnowOnTrees = 0;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
 	    Flags.BlowSnow                 = VINTAGE_BlowSnow;
-	    Flags.NStars                   = VINTAGE_NStars;
 	    Flags.DesiredNumberOfTrees     = VINTAGE_DesiredNumberOfTrees;
+	    Flags.Moon                     = VINTAGE_Moon;
 	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
 	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
 	    Flags.Rudolf                   = VINTAGE_Rudolf;
 	    Flags.SantaSize                = VINTAGE_SantaSize;
+	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
+	    Flags.Stars                    = VINTAGE_Stars;
 	    free(Flags.TreeType);
 	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
 	    Flags.ShowBirds                = 0;

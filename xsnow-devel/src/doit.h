@@ -56,6 +56,7 @@
    DOIT_I(DesiredNumberOfTrees)  \
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
+   DOIT_I(Halo) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
@@ -83,6 +84,7 @@
    DOIT_I(SnowFlakesFactor) \
    DOIT_I(SnowSize) \
    DOIT_I(SnowSpeedFactor) \
+   DOIT_I(Stars) \
    DOIT_I(TreeFill) \
    DOIT_I(UseBG) \
    DOIT_I(WhirlFactor) \
