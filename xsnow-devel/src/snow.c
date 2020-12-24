@@ -72,6 +72,7 @@ static void   DelFlake(Snow *flake);
 static void   DrawSnowFlake(Snow *flake);
 static void   genxpmflake(char ***xpm, int w, int h);
 static void   add_random_flakes(int n);
+static void   SetSnowSize(void);
 
 
 Region       NoSnowArea_dynamic;
@@ -150,62 +151,33 @@ void snow_set_gc()
    }
 }
 
+void SetSnowSize()
+{
+   add_random_flakes(EXTRA_FLAKES);
+   init_snow_surfaces();
+   init_snow_pix();
+   snow_set_gc();
+   ClearScreen();
+   // the following, otherwize we see often double flakes
+   // why? race condition in x server?
+   if (!switches.UseGtk)
+      add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow ,NULL);
+}
+
 int snow_ui()
 {
    int changes = 0;
 
-   if(Flags.NoSnowFlakes != OldFlags.NoSnowFlakes)
-   {
-      OldFlags.NoSnowFlakes = Flags.NoSnowFlakes;
-      if(Flags.NoSnowFlakes)
-	 ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.SnowFlakesFactor != OldFlags.SnowFlakesFactor)
-   {
-      OldFlags.SnowFlakesFactor = Flags.SnowFlakesFactor;
-      InitFlakesPerSecond();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.SnowColor, OldFlags.SnowColor))
-   {
-      InitSnowColor();
-      ClearScreen();
-      free(OldFlags.SnowColor);
-      OldFlags.SnowColor = strdup(Flags.SnowColor);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.SnowSpeedFactor != OldFlags.SnowSpeedFactor)
-   {
-      OldFlags.SnowSpeedFactor = Flags.SnowSpeedFactor;
-      InitSnowSpeedFactor();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.FlakeCountMax != OldFlags.FlakeCountMax)
-   {
-      OldFlags.FlakeCountMax = Flags.FlakeCountMax;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.SnowSize != OldFlags.SnowSize)
-   {
-      OldFlags.SnowSize = Flags.SnowSize;
-      add_random_flakes(EXTRA_FLAKES);
-      init_snow_surfaces();
-      init_snow_pix();
-      snow_set_gc();
-      ClearScreen();
-      // the following, otherwize we see often double flakes
-      // why? race condition in x server?
-      if (!switches.UseGtk)
-	 add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow ,NULL);
-      changes++;
-      P("changes: %d %d\n",changes,Flags.SnowSize);
-   }
+   UIDO (NoSnowFlakes, 
+	 if(Flags.NoSnowFlakes)
+	 ClearScreen();                                            );
+   UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
+   UIDOS(SnowColor                      ,
+	 InitSnowColor();
+	 ClearScreen();                                               );
+   UIDO (SnowSpeedFactor                , InitSnowSpeedFactor();   );
+   UIDO (FlakeCountMax                  ,                          );
+   UIDO (SnowSize                       , SetSnowSize();           );
 
    return changes;
 }
@@ -352,7 +324,7 @@ int do_UpdateSnowFlake(Snow *flake)
    if(NOTACTIVE)
       return TRUE;
    //P(" ");printflake(flake);
-   
+
    double FlakesDT = time_snowflakes;
    float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;

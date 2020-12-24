@@ -127,21 +127,8 @@ void stars_draw(cairo_t *cr)
 int stars_ui()
 {
    int changes = 0;
-   if(Flags.NStars != OldFlags.NStars)
-   {
-      P("changes NStars: %d %d %d\n",changes,OldFlags.NStars,Flags.NStars);
-      OldFlags.NStars = Flags.NStars;
-      init_stars();
-      ClearScreen();
-      changes++;
-   }
-   if(Flags.Stars != OldFlags.Stars)
-   {
-      P("changes Stars: %d %d %d\n",changes,OldFlags.Stars,Flags.Stars);
-      OldFlags.Stars = Flags.Stars;
-      ClearScreen();
-      changes++;
-   }
+   UIDO(NStars, init_stars(); ClearScreen(););
+   UIDO(Stars, ClearScreen(););
    return changes;
 }
 

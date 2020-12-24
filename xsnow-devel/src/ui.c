@@ -339,11 +339,10 @@ static struct _moon_buttons
 
 static void report_tree_type(int p, gint active)
 {
-   P("Tree: %d %d %s\n",p,active,Flags.TreeType);
+   R("Tree: %d %d %s\n",p,active,Flags.TreeType);
    int *a;
    int n;
    csvpos(Flags.TreeType,&a,&n);
-   assert(n>0);
    if(active)
    {
       a = (int *)realloc(a,sizeof(*a)*(n+1));

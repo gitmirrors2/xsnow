@@ -147,6 +147,7 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
+static void   change_ww(void);
 
 
 static void Thanks(void)
@@ -666,6 +667,20 @@ int myDetermineWindow()
    return 1;
 }
 
+void change_ww()
+{
+   ClearScreen();
+   P("WantWindow: %d\n",Flags.WantWindow);
+   if(draw_all_id)
+   {
+      g_source_remove(draw_all_id);
+      P("removed %d\n",draw_all_id);
+   }
+   draw_all_id = 0;
+   myDetermineWindow();
+   ui_gray_erase(switches.UseGtk);
+   P("WantWindow: %d\n",Flags.WantWindow);
+}
 
 // here we are handling the buttons in ui
 // Ok, this is a long list, and could be implemented more efficient.
@@ -693,87 +708,26 @@ int do_ui_check(UNUSED gpointer data)
    changes += treesnow_ui();
    changes += moon_ui();
 
-   if (Flags.WantWindow != OldFlags.WantWindow)
-   {
-      ClearScreen();
-      OldFlags.WantWindow = Flags.WantWindow;
-      P("WantWindow: %d\n",Flags.WantWindow);
-      if(draw_all_id)
-      {
-	 g_source_remove(draw_all_id);
-	 P("removed %d\n",draw_all_id);
-      }
-      draw_all_id = 0;
-      myDetermineWindow();
-      ui_gray_erase(switches.UseGtk);
-      changes++;
-      P("WantWindow: %d\n",Flags.WantWindow);
-   }
-   if(Flags.CpuLoad != OldFlags.CpuLoad)
-   {
-      OldFlags.CpuLoad = Flags.CpuLoad;
-      P("cpuload: %d %d\n",OldFlags.CpuLoad,Flags.CpuLoad);
-      HandleCpuFactor();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Transparency != OldFlags.Transparency)
-   {
-      OldFlags.Transparency = Flags.Transparency;
-      P("Transparency: %d %d\n",OldFlags.Transparency,Flags.Transparency);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.UseBG != OldFlags.UseBG)
-   {
-      OldFlags.UseBG = Flags.UseBG;
-      SetGCFunctions();
-      ClearScreen();
-      changes++;
-      P("UseBG: %d\n",Flags.UseBG);
-   }
-   if(strcmp(Flags.BGColor,OldFlags.BGColor))
-   {
-      free(OldFlags.BGColor);
-      OldFlags.BGColor = strdup(Flags.BGColor);
-      if(Flags.UseBG)
-      {
+   UIDO (WantWindow          , change_ww();                     );
+   UIDO (CpuLoad             , HandleCpuFactor();               );
+   UIDO (Transparency        ,                                  );
+   UIDO (UseBG               , SetGCFunctions(); ClearScreen(); );
+   UIDOS(BGColor             , 
+	 if(Flags.UseBG)
+	 {
 	 SetGCFunctions();
 	 ClearScreen();
-      }
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Exposures != OldFlags.Exposures)
-   {
-      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
-      OldFlags.Exposures = Flags.Exposures;
-      HandleExposures();
-      HandleCpuFactor();
-      ClearScreen();
-      changes++;
-      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
-      P("changes: %d\n",changes);
-   }
-   if(Flags.OffsetS != OldFlags.OffsetS)
-   {
-      OldFlags.OffsetS = Flags.OffsetS;
-      changes++;
-      P("changes: %d %d\n",changes,Flags.OffsetS);
-   }
-   if(Flags.OffsetY != OldFlags.OffsetY)
-   {
-      OldFlags.OffsetY = Flags.OffsetY;
-      changes++;
-      P("changes: %d %d\n",changes,Flags.OffsetY);
-   }
-   if(Flags.NoFluffy != OldFlags.NoFluffy)
-   {
-      OldFlags.NoFluffy = Flags.NoFluffy;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
+	 }
+	);
+   UIDO (Exposures           ,
+	 HandleExposures();
+	 HandleCpuFactor();
+	 ClearScreen();
+	);
+   UIDO (OffsetS             ,                                  );
+   UIDO (OffsetY             ,                                  );
+   UIDO (NoFluffy            , ClearScreen();                   );
+   //tot hier
    if(Flags.FullScreen != OldFlags.FullScreen)
    {
       OldFlags.FullScreen = Flags.FullScreen;

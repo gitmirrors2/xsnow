@@ -13,6 +13,7 @@ version 3.2.0
 	  ui.c: better way to grey out moon buttons 
 	  configure.ac: remove test for alloca, and tell kdtree.c not to use
 	     alloca
+	  ui.c: remove bad assert from report_tree_type()
 
 version 3.1.10
 	1:add moon and show-noshow for moon

@@ -97,46 +97,11 @@ int scenery_ui()
 {
    int changes = 0;
 
-   if(strcmp(Flags.TreeType, OldFlags.TreeType))
-   {
-      P("Treetype %s %s\n",Flags.TreeType,OldFlags.TreeType);
-      RedrawTrees();
-      free(OldFlags.TreeType);
-      OldFlags.TreeType = strdup(Flags.TreeType);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.DesiredNumberOfTrees != OldFlags.DesiredNumberOfTrees)
-   {
-      RedrawTrees();
-      OldFlags.DesiredNumberOfTrees = Flags.DesiredNumberOfTrees;
-      changes++;
-      P("NTREES: %d %d\n",OldFlags.DesiredNumberOfTrees,Flags.DesiredNumberOfTrees);
-      P("changes: %d\n",changes);
-   }
-   if(Flags.TreeFill != OldFlags.TreeFill)
-   {
-      RedrawTrees();
-      OldFlags.TreeFill = Flags.TreeFill;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoTrees != OldFlags.NoTrees)
-   {
-      RedrawTrees();
-      OldFlags.NoTrees = Flags.NoTrees;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.TreeColor, OldFlags.TreeColor))
-   {
-      P("%s %s\n",Flags.TreeColor,OldFlags.TreeColor);
-      ReInitTree0();
-      free(OldFlags.TreeColor);
-      OldFlags.TreeColor = strdup(Flags.TreeColor);
-      changes++;
-      P("changes: %d\n",changes);
-   }
+   UIDOS(TreeType               , RedrawTrees(););
+   UIDO (DesiredNumberOfTrees   , RedrawTrees(););
+   UIDO (TreeFill               , RedrawTrees(););
+   UIDO (NoTrees                , RedrawTrees(););
+   UIDOS(TreeColor              , ReInitTree0(););
 
    return changes;
 }
