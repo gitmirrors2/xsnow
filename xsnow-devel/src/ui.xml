@@ -3275,7 +3275,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkBox" id="moon-buttons">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>

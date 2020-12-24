@@ -132,6 +132,7 @@ static GtkWidget     *mean_distance;
 static GtkWidget     *range;
 static GtkWidget     *desktop_type;
 static GtkContainer  *birdsgrid;
+static GtkContainer  *moonbox;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -1284,6 +1285,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
    desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
+   moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-buttons"));
 
    apply_standard_css();
    gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
@@ -1380,10 +1382,7 @@ void birdscb(GtkWidget *w, void *m)
 void ui_gray_birds(int m)
 {
    gtk_container_foreach(birdsgrid, birdscb, &m);
-   gtk_widget_set_sensitive(moon_buttons.show.button,!m);
-   gtk_widget_set_sensitive(moon_buttons.speed.button,!m);
-   gtk_widget_set_sensitive(moon_buttons.size.button,!m);
-   gtk_widget_set_sensitive(moon_buttons.halo.button,!m);
+   gtk_container_foreach(moonbox, birdscb, &m);
 }
 
 char * ui_gtk_version()

@@ -128,6 +128,8 @@ void docs_usage(int man)
    manout("            default"       ,"If possible, use GTK-Cairo window for Santa snow and scenery.");
    manout("            transparent"   ,"If possible, use transparent X11-window for Santa, snow and scenery.");
    manout("-noisy"                    ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
+   manout("-cpuload <n>"              ,"How busy is your system with xsnow:");
+   manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_CpuLoad) ").");
 
    if(doman)
    {
@@ -189,11 +191,11 @@ void docs_usage(int man)
 
    if(doman)
    {
-      printf(".PP\n"); printf(".SS \"Wind options:\n");
+      printf(".PP\n"); printf(".SS \"Celestial options:\n");
    }
    else
    {
-      printf("\n  Wind options:\n\n");
+      printf("\n  Celestial options:\n\n");
    }
    manout("-wind     "                ,"(Default) It will get windy now and then.");
    manout("-nowind   "                ,"By default it gets windy now and then. If you prefer quiet weather");
@@ -202,6 +204,13 @@ void docs_usage(int man)
    manout(" "                         ,"horizontal speed. The default value is " EQ(DEFAULT_WhirlFactor) ".");
    manout("-windtimer <n>"            ,"With -windtimer you can specify how often it gets  windy. It's");
    manout(" "                         ,"sort of a period in seconds, default value is " EQ(DEFAULT_WindTimer) ".");
+   manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_NStars) ").");
+   manout("-meteorites"               ,"(Default) Show meteorites.");
+   manout("-nometeorites"             ,"Do not show meteorites.");
+   manout("-moon <n>"                 ,"1: show moon, 0: do not show moon (default: " EQ(DEFAULT_Moon) ").");
+   manout("-moonspeed <n>"            ,"Speed of moon in pixels/minute (default: " EQ(DEFAULT_MoonSpeed) ").");
+   manout("-moonsize <n>"             ,"Size of moon in pixels (default: " EQ(DEFAULT_MoonSize) ").");
+   manout("-halo <n>"                 ,"1: show halo around moon, 0: do not show halo (default: " EQ(DEFAULT_Halo) ").");
 
    if(doman)
    {
@@ -253,22 +262,6 @@ void docs_usage(int man)
    manout("-followsanta <n>"       ,"Birds like Santa ( 0/1 default: " EQ(DEFAULT_FollowSanta) ").");
    manout("-viewingdistance <n>"   ,"Viewing distance ( 0..95 default: " EQ(DEFAULT_ViewingDistance) ").");
 
-   if(doman)
-   {
-      printf(".PP\n"); printf(".SS \"Other options:\n");
-   }
-   else
-   {
-      printf("\n  Other options:\n\n");
-   }
-   manout("-stars <n>"                ,"The number of stars (default: " EQ(DEFAULT_NStars) ").");
-   manout("-meteorites"               ,"(Default) Show meteorites.");
-   manout("-nometeorites"             ,"Do not show meteorites.");
-   manout("-moon <n>"                 ,"1: show moon, 0: do not show moon (default: " EQ(DEFAULT_Moon) ").");
-   manout("-moonspeed <n>"            ,"Speed of moon in pixels/minute (default: " EQ(DEFAULT_MoonSpeed) ").");
-   manout("-moonsize <n>"             ,"Size of moon in pixels (default: " EQ(DEFAULT_MoonSize) ").");
-   manout("-cpuload <n>"              ,"How busy is your system with xsnow:");
-   manout(" "                         ,"the higher, the more load on the system (default: " EQ(DEFAULT_CpuLoad) ").");
 
    if(doman)
    {

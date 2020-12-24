@@ -189,6 +189,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-moon                ,Moon                             );
 	 handle_ia(-moonspeed           ,MoonSpeed                        );
 	 handle_ia(-moonsize            ,MoonSize                         );
+	 handle_ia(-halo                ,Halo                             );
 	 handle_im(-offsets             ,OffsetS                          );
 	 handle_im(-offsetw             ,OffsetW                          );
 	 handle_im(-offsetx             ,OffsetX                          );
