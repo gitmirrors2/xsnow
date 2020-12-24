@@ -211,6 +211,7 @@ void docs_usage(int man)
    manout("-moonspeed <n>"            ,"Speed of moon in pixels/minute (default: " EQ(DEFAULT_MoonSpeed) ").");
    manout("-moonsize <n>"             ,"Size of moon in pixels (default: " EQ(DEFAULT_MoonSize) ").");
    manout("-halo <n>"                 ,"1: show halo around moon, 0: do not show halo (default: " EQ(DEFAULT_Halo) ").");
+   manout("-halobrightness <n>"       ,"Brightness of halo (default: " EQ(DEFAULT_HaloBright) ").");
 
    if(doman)
    {

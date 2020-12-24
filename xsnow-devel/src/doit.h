@@ -57,6 +57,7 @@
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
    DOIT_I(Halo) \
+   DOIT_I(HaloBright) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \

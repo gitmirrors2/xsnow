@@ -334,6 +334,7 @@ static struct _moon_buttons
    moon_button speed;
    moon_button size;
    moon_button halo;
+   moon_button bright;
 } moon_buttons;
 
 static void report_tree_type(int p, gint active)
@@ -581,10 +582,11 @@ static void set_meteo_buttons()
 }
 
 
-HANDLE_TOGGLE(button_moon_show, Moon      ,1,0);
-HANDLE_TOGGLE(button_halo_show, Halo      ,1,0);
-HANDLE_RANGE(button_moon_speed, MoonSpeed ,value);
-HANDLE_RANGE(button_moon_size,  MoonSize  ,value);
+HANDLE_TOGGLE(button_moon_show  ,Moon        ,1,0);
+HANDLE_TOGGLE(button_halo_show  ,Halo        ,1,0);
+HANDLE_RANGE(button_moon_speed  ,MoonSpeed   ,value);
+HANDLE_RANGE(button_moon_size   ,MoonSize    ,value);
+HANDLE_RANGE(button_halo_bright ,HaloBright  ,value);
 
 static void init_moon_buttons()
 {
@@ -592,14 +594,16 @@ static void init_moon_buttons()
    HANDLE_INIT(moon_buttons.halo.button   ,halo-show);
    HANDLE_INIT(moon_buttons.speed.button  ,moon-speed);
    HANDLE_INIT(moon_buttons.size.button   ,moon-size);
+   HANDLE_INIT(moon_buttons.bright.button ,halo-bright);
 }
 
 static void set_moon_buttons()
 {
    HANDLE_SET_TOGGLE(moon_buttons.show.button  ,Moon);
    HANDLE_SET_TOGGLE(moon_buttons.halo.button  ,Halo);
-   HANDLE_SET_RANGE(moon_buttons.speed.button  ,MoonSpeed ,self);
-   HANDLE_SET_RANGE(moon_buttons.size.button   ,MoonSize  ,self);
+   HANDLE_SET_RANGE(moon_buttons.speed.button  ,MoonSpeed   ,self);
+   HANDLE_SET_RANGE(moon_buttons.size.button   ,MoonSize    ,self);
+   HANDLE_SET_RANGE(moon_buttons.bright.button ,HaloBright  ,self);
 }
 
 typedef struct _general_button
@@ -1168,6 +1172,7 @@ void celestials_default(int vintage)
    Flags.MoonSpeed     = DEFAULT_MoonSpeed;
    Flags.MoonSize      = DEFAULT_MoonSize;
    Flags.Halo          = DEFAULT_Halo;
+   Flags.HaloBright    = DEFAULT_HaloBright;
    if(vintage)
    {
       Flags.Stars          = VINTAGE_Stars;
@@ -1285,7 +1290,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
    desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
-   moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-buttons"));
+   moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
 
    apply_standard_css();
    gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");

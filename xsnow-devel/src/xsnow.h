@@ -41,6 +41,7 @@
 #define DEFAULT_ForceRoot 0 
 #define DEFAULT_FullScreen 0
 #define DEFAULT_Halo 1
+#define DEFAULT_HaloBright 25
 #define DEFAULT_MaxOnTrees 200
 #define DEFAULT_MaxScrSnowDepth 50    /* Will build up to MAXSRCSNOWDEPTH */
 #define DEFAULT_MaxWinSnowDepth 30  // wwvv
