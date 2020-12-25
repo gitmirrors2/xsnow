@@ -13,7 +13,10 @@ version 3.2.0
 	  ui.c: better way to grey out moon buttons 
 	  configure.ac: remove test for alloca, and tell kdtree.c not to use
 	     alloca
-	  ui.c: remove bad assert from report_tree_type()
+	  ui.c: remove malicious assert from report_tree_type()
+	  utils.h: create macros UIDO and UIDOS to better deal with
+	    if(Flags.x != OldFlags.x) ....
+	  many functions: replace construct above with UIDO or UIDOS
 
 version 3.1.10
 	1:add moon and show-noshow for moon

@@ -64,12 +64,7 @@ void meteo_init()
 int meteo_ui()
 {
    int changes = 0;
-   if(Flags.NoMeteorites != OldFlags.NoMeteorites)
-   {
-      OldFlags.NoMeteorites = Flags.NoMeteorites;
-      changes++;
-      P("changes: %d %d\n",changes,Flags.NoMeteorites);
-   }
+   UIDO(NoMeteorites   , );
    return changes;
 }
 

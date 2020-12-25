@@ -26,23 +26,23 @@
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 
-#define UIDO(x,y) \
-   if(Flags.x != OldFlags.x) \
+#define UIDO(_x,_y) \
+   if(Flags._x != OldFlags._x) \
 { \
-   {y} \
-   OldFlags.x = Flags.x; \
+   {_y} \
+   OldFlags._x = Flags._x; \
    changes++; \
-   R( #x ": %d\n", Flags.x); \
+   if(Flags.Noisy) R( #_x ": %d\n", Flags._x); \
 }
 
-#define UIDOS(x,y) \
-   if(strcmp(Flags.x, OldFlags.x)) \
+#define UIDOS(_x,_y) \
+   if(strcmp(Flags._x, OldFlags._x)) \
 { \
-   {y} \
-   free(OldFlags.x); \
-   OldFlags.x = strdup(Flags.x); \
+   {_y} \
+   free(OldFlags._x); \
+   OldFlags._x = strdup(Flags._x); \
    changes++; \
-   R( #x ":'%s'\n", Flags.x); \
+   if(Flags.Noisy) R( #_x ":'%s'\n", Flags._x); \
 }
 
 #include <stdio.h>

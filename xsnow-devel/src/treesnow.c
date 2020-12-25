@@ -89,20 +89,8 @@ void treesnow_draw(cairo_t *cr)
 int treesnow_ui()
 {
    int changes = 0;
-   if(Flags.MaxOnTrees != OldFlags.MaxOnTrees)
-   {
-      OldFlags.MaxOnTrees = Flags.MaxOnTrees;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSnowOnTrees != OldFlags.NoKeepSnowOnTrees)
-   {
-      OldFlags.NoKeepSnowOnTrees = Flags.NoKeepSnowOnTrees;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
+   UIDO(MaxOnTrees        , ClearScreen();   );
+   UIDO(NoKeepSnowOnTrees , ClearScreen();   );
    return changes;
 }
 

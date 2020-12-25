@@ -148,6 +148,8 @@ static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
 static void   change_ww(void);
+static void   UpdateFullScreen(void);
+static void   DoAllWorkspaces(void);
 
 
 static void Thanks(void)
@@ -682,6 +684,47 @@ void change_ww()
    P("WantWindow: %d\n",Flags.WantWindow);
 }
 
+void UpdateFullScreen()
+{
+   if(TransA)
+   {
+      if (Flags.FullScreen)
+      {
+	 gtk_window_fullscreen(GTK_WINDOW(TransA));
+	 gtk_window_fullscreen(GTK_WINDOW(TransB));
+      }
+      else
+      {
+	 gtk_window_unfullscreen(GTK_WINDOW(TransA));
+	 gtk_window_unfullscreen(GTK_WINDOW(TransB));
+      }
+      set_below_above();
+   }
+}
+
+void DoAllWorkspaces()
+{
+   if(Flags.AllWorkspaces)
+   {
+      P("stick\n");
+      if (switches.UseGtk||switches.Trans)
+      {
+	 gtk_window_stick(GTK_WINDOW(TransA));
+	 gtk_window_stick(GTK_WINDOW(TransB));
+      }
+   }
+   else
+   {
+      P("unstick\n");
+      if (switches.UseGtk||switches.Trans)
+      {
+	 gtk_window_unstick(GTK_WINDOW(TransA));
+	 gtk_window_unstick(GTK_WINDOW(TransB));
+      }
+   }
+   ui_set_sticky(Flags.AllWorkspaces);
+}
+
 // here we are handling the buttons in ui
 // Ok, this is a long list, and could be implemented more efficient.
 // But, do_ui_check is called not too frequently, so....
@@ -727,59 +770,9 @@ int do_ui_check(UNUSED gpointer data)
    UIDO (OffsetS             ,                                  );
    UIDO (OffsetY             ,                                  );
    UIDO (NoFluffy            , ClearScreen();                   );
-   //tot hier
-   if(Flags.FullScreen != OldFlags.FullScreen)
-   {
-      OldFlags.FullScreen = Flags.FullScreen;
-      if(TransA)
-      {
-	 if (Flags.FullScreen)
-	 {
-	    gtk_window_fullscreen(GTK_WINDOW(TransA));
-	    gtk_window_fullscreen(GTK_WINDOW(TransB));
-	 }
-	 else
-	 {
-	    gtk_window_unfullscreen(GTK_WINDOW(TransA));
-	    gtk_window_unfullscreen(GTK_WINDOW(TransB));
-	 }
-	 set_below_above();
-      }
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
-   {
-      if(Flags.AllWorkspaces)
-      {
-	 P("stick\n");
-	 if (switches.UseGtk||switches.Trans)
-	 {
-	    gtk_window_stick(GTK_WINDOW(TransA));
-	    gtk_window_stick(GTK_WINDOW(TransB));
-	 }
-      }
-      else
-      {
-	 P("unstick\n");
-	 if (switches.UseGtk||switches.Trans)
-	 {
-	    gtk_window_unstick(GTK_WINDOW(TransA));
-	    gtk_window_unstick(GTK_WINDOW(TransB));
-	 }
-      }
-      OldFlags.AllWorkspaces = Flags.AllWorkspaces;
-      ui_set_sticky(Flags.AllWorkspaces);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BelowAll != OldFlags.BelowAll)
-   {
-      OldFlags.BelowAll = Flags.BelowAll;
-      set_below_above();
-      changes++;
-      P("changes: %d %d\n",changes,Flags.BelowAll);
-   }
+   UIDO (FullScreen          , UpdateFullScreen();              );
+   UIDO (AllWorkspaces       , DoAllWorkspaces();               );
+   UIDO (BelowAll            , set_below_above();               );
 
    if (changes > 0)
    {
