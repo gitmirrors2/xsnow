@@ -208,6 +208,8 @@ void docs_usage(int man)
    manout("-meteorites"               ,"(Default) Show meteorites.");
    manout("-nometeorites"             ,"Do not show meteorites.");
    manout("-moon <n>"                 ,"1: show moon, 0: do not show moon (default: " EQ(DEFAULT_Moon) ").");
+   manout("."                         ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
+   manout("."                         ,"https://unsplash.com/photos/wCujVcf0JDw");
    manout("-moonspeed <n>"            ,"Speed of moon in pixels/minute (default: " EQ(DEFAULT_MoonSpeed) ").");
    manout("-moonsize <n>"             ,"Size of moon in pixels (default: " EQ(DEFAULT_MoonSize) ").");
    manout("-halo <n>"                 ,"1: show halo around moon, 0: do not show halo (default: " EQ(DEFAULT_Halo) ").");
