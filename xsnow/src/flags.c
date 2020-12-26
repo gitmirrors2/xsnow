@@ -161,14 +161,15 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSnowOnTrees = 0;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
 	    Flags.BlowSnow                 = VINTAGE_BlowSnow;
-	    Flags.NStars                   = VINTAGE_NStars;
 	    Flags.DesiredNumberOfTrees     = VINTAGE_DesiredNumberOfTrees;
+	    Flags.Moon                     = VINTAGE_Moon;
 	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
 	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
 	    Flags.Rudolf                   = VINTAGE_Rudolf;
 	    Flags.SantaSize                = VINTAGE_SantaSize;
+	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
+	    Flags.Stars                    = VINTAGE_Stars;
 	    free(Flags.TreeType);
 	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
 	    Flags.ShowBirds                = 0;
@@ -185,6 +186,11 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-window-id           ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
+	 handle_ia(-moon                ,Moon                             );
+	 handle_ia(-moonspeed           ,MoonSpeed                        );
+	 handle_ia(-moonsize            ,MoonSize                         );
+	 handle_ia(-halo                ,Halo                             );
+	 handle_ia(-halobrightness      ,HaloBright                       );
 	 handle_im(-offsets             ,OffsetS                          );
 	 handle_im(-offsetw             ,OffsetW                          );
 	 handle_im(-offsetx             ,OffsetX                          );

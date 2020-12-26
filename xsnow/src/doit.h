@@ -56,9 +56,14 @@
    DOIT_I(DesiredNumberOfTrees)  \
    DOIT_I(Exposures)  \
    DOIT_I(FlakeCountMax)  \
+   DOIT_I(Halo) \
+   DOIT_I(HaloBright) \
    DOIT_I(MaxOnTrees)  \
    DOIT_I(MaxScrSnowDepth)  \
    DOIT_I(MaxWinSnowDepth) \
+   DOIT_I(Moon) \
+   DOIT_I(MoonSpeed) \
+   DOIT_I(MoonSize) \
    DOIT_I(NoFluffy) \
    DOIT_I(NoKeepSBot) \
    DOIT_I(NoKeepSnow) \
@@ -80,6 +85,7 @@
    DOIT_I(SnowFlakesFactor) \
    DOIT_I(SnowSize) \
    DOIT_I(SnowSpeedFactor) \
+   DOIT_I(Stars) \
    DOIT_I(TreeFill) \
    DOIT_I(UseBG) \
    DOIT_I(WhirlFactor) \

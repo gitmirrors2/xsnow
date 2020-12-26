@@ -89,39 +89,14 @@ void fallensnow_draw(cairo_t *cr)
 int fallensnow_ui()
 {
    int changes = 0;
-   if(Flags.MaxWinSnowDepth != OldFlags.MaxWinSnowDepth)
-   {
-      OldFlags.MaxWinSnowDepth = Flags.MaxWinSnowDepth;
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.MaxScrSnowDepth != OldFlags.MaxScrSnowDepth)
-   {
-      OldFlags.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
+   UIDO(MaxWinSnowDepth   , InitFallenSnow(); ClearScreen(); );
+   UIDO(MaxScrSnowDepth   , 
       SetMaxScreenSnowDepth();
       InitFallenSnow();
       ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSBot != OldFlags.NoKeepSBot)
-   {
-      OldFlags.NoKeepSBot = Flags.NoKeepSBot;
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.NoKeepSWin != OldFlags.NoKeepSWin)
-   {
-      OldFlags.NoKeepSWin = Flags.NoKeepSWin;
-      InitFallenSnow();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
+      );
+   UIDO(NoKeepSBot        , InitFallenSnow(); ClearScreen(); );
+   UIDO(NoKeepSWin        , InitFallenSnow(); ClearScreen(); );
    return changes;
 }
 

@@ -61,6 +61,7 @@
 #include "flags.h"
 #include "mainstub.h"
 #include "meteo.h"
+#include "moon.h"
 #include "Santa.h"
 #include "scenery.h"
 #include "snow.h"
@@ -146,6 +147,9 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
+static void   change_ww(void);
+static void   UpdateFullScreen(void);
+static void   DoAllWorkspaces(void);
 
 
 static void Thanks(void)
@@ -432,6 +436,7 @@ int main_c(int argc, char *argv[])
    //                                          unpleasant things happen when a snowflake
    //                                          is in the trajectory of a meteorite
    windows_init();
+   moon_init();
    Santa_init();
    birds_init();
    scenery_init();
@@ -492,6 +497,7 @@ int main_c(int argc, char *argv[])
 	 ui_gray_below(1);
 	 ui_gray_birds(1);
 	 ui_set_birds_header("No alpha channel: no birds will fly.");
+	 ui_set_celestials_header("No alpha channel: no moon.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, NULL);
@@ -624,7 +630,7 @@ int myDetermineWindow()
    else                          //  No transparent window: Scenario 4
    {
       P("Scenario 4 Desktop: %d\n",IsDesktop);
-      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly.\n");
+      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly, no moon will shine.\n");
       // in LXDE, SnowWin will be overwritten by id of window pcmanfm
       SnowWin            = SnowWina;
       SnowWinName        = SnowWinaName;
@@ -644,7 +650,7 @@ int myDetermineWindow()
    if (TransA)
       printf("Birds in window: %#lx - \"%s\"\n",SnowWina,SnowWinaName);
    else
-      printf("No birds (you need a compositing display manager to let birds fly).\n");
+      printf("No birds, no moon (you need a compositing display manager to let birds fly and monn shine).\n");
 
    if(TransA)
    {
@@ -663,6 +669,61 @@ int myDetermineWindow()
    return 1;
 }
 
+void change_ww()
+{
+   ClearScreen();
+   P("WantWindow: %d\n",Flags.WantWindow);
+   if(draw_all_id)
+   {
+      g_source_remove(draw_all_id);
+      P("removed %d\n",draw_all_id);
+   }
+   draw_all_id = 0;
+   myDetermineWindow();
+   ui_gray_erase(switches.UseGtk);
+   P("WantWindow: %d\n",Flags.WantWindow);
+}
+
+void UpdateFullScreen()
+{
+   if(TransA)
+   {
+      if (Flags.FullScreen)
+      {
+	 gtk_window_fullscreen(GTK_WINDOW(TransA));
+	 gtk_window_fullscreen(GTK_WINDOW(TransB));
+      }
+      else
+      {
+	 gtk_window_unfullscreen(GTK_WINDOW(TransA));
+	 gtk_window_unfullscreen(GTK_WINDOW(TransB));
+      }
+      set_below_above();
+   }
+}
+
+void DoAllWorkspaces()
+{
+   if(Flags.AllWorkspaces)
+   {
+      P("stick\n");
+      if (switches.UseGtk||switches.Trans)
+      {
+	 gtk_window_stick(GTK_WINDOW(TransA));
+	 gtk_window_stick(GTK_WINDOW(TransB));
+      }
+   }
+   else
+   {
+      P("unstick\n");
+      if (switches.UseGtk||switches.Trans)
+      {
+	 gtk_window_unstick(GTK_WINDOW(TransA));
+	 gtk_window_unstick(GTK_WINDOW(TransB));
+      }
+   }
+   ui_set_sticky(Flags.AllWorkspaces);
+}
 
 // here we are handling the buttons in ui
 // Ok, this is a long list, and could be implemented more efficient.
@@ -688,140 +749,30 @@ int do_ui_check(UNUSED gpointer data)
    changes += fallensnow_ui();
    changes += blowoff_ui();
    changes += treesnow_ui();
+   changes += moon_ui();
 
-   if (Flags.WantWindow != OldFlags.WantWindow)
-   {
-      ClearScreen();
-      OldFlags.WantWindow = Flags.WantWindow;
-      P("WantWindow: %d\n",Flags.WantWindow);
-      if(draw_all_id)
-      {
-	 g_source_remove(draw_all_id);
-	 P("removed %d\n",draw_all_id);
-      }
-      draw_all_id = 0;
-      myDetermineWindow();
-      ui_gray_erase(switches.UseGtk);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.CpuLoad != OldFlags.CpuLoad)
-   {
-      OldFlags.CpuLoad = Flags.CpuLoad;
-      P("cpuload: %d %d\n",OldFlags.CpuLoad,Flags.CpuLoad);
-      HandleCpuFactor();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Transparency != OldFlags.Transparency)
-   {
-      OldFlags.Transparency = Flags.Transparency;
-      P("Transparency: %d %d\n",OldFlags.Transparency,Flags.Transparency);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.UseBG != OldFlags.UseBG)
-   {
-      OldFlags.UseBG = Flags.UseBG;
-      SetGCFunctions();
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.BGColor,OldFlags.BGColor))
-   {
-      free(OldFlags.BGColor);
-      OldFlags.BGColor = strdup(Flags.BGColor);
-      if(Flags.UseBG)
-      {
+   UIDO (WantWindow          , change_ww();                     );
+   UIDO (CpuLoad             , HandleCpuFactor();               );
+   UIDO (Transparency        ,                                  );
+   UIDO (UseBG               , SetGCFunctions(); ClearScreen(); );
+   UIDOS(BGColor             , 
+	 if(Flags.UseBG)
+	 {
 	 SetGCFunctions();
 	 ClearScreen();
-      }
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Exposures != OldFlags.Exposures)
-   {
-      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
-      OldFlags.Exposures = Flags.Exposures;
-      HandleExposures();
-      HandleCpuFactor();
-      ClearScreen();
-      changes++;
-      P("changes: %d %d %d\n",changes,OldFlags.Exposures,Flags.Exposures);
-      P("changes: %d\n",changes);
-   }
-   if(Flags.OffsetS != OldFlags.OffsetS)
-   {
-      OldFlags.OffsetS = Flags.OffsetS;
-      changes++;
-      P("changes: %d %d\n",changes,Flags.OffsetS);
-   }
-   if(Flags.OffsetY != OldFlags.OffsetY)
-   {
-      OldFlags.OffsetY = Flags.OffsetY;
-      changes++;
-      P("changes: %d %d\n",changes,Flags.OffsetY);
-   }
-   if(Flags.NoFluffy != OldFlags.NoFluffy)
-   {
-      OldFlags.NoFluffy = Flags.NoFluffy;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.FullScreen != OldFlags.FullScreen)
-   {
-      OldFlags.FullScreen = Flags.FullScreen;
-      if(TransA)
-      {
-	 if (Flags.FullScreen)
-	 {
-	    gtk_window_fullscreen(GTK_WINDOW(TransA));
-	    gtk_window_fullscreen(GTK_WINDOW(TransB));
 	 }
-	 else
-	 {
-	    gtk_window_unfullscreen(GTK_WINDOW(TransA));
-	    gtk_window_unfullscreen(GTK_WINDOW(TransB));
-	 }
-	 set_below_above();
-      }
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.AllWorkspaces != OldFlags.AllWorkspaces)
-   {
-      if(Flags.AllWorkspaces)
-      {
-	 P("stick\n");
-	 if (switches.UseGtk||switches.Trans)
-	 {
-	    gtk_window_stick(GTK_WINDOW(TransA));
-	    gtk_window_stick(GTK_WINDOW(TransB));
-	 }
-      }
-      else
-      {
-	 P("unstick\n");
-	 if (switches.UseGtk||switches.Trans)
-	 {
-	    gtk_window_unstick(GTK_WINDOW(TransA));
-	    gtk_window_unstick(GTK_WINDOW(TransB));
-	 }
-      }
-      OldFlags.AllWorkspaces = Flags.AllWorkspaces;
-      ui_set_sticky(Flags.AllWorkspaces);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BelowAll != OldFlags.BelowAll)
-   {
-      OldFlags.BelowAll = Flags.BelowAll;
-      set_below_above();
-      changes++;
-      P("changes: %d %d\n",changes,Flags.BelowAll);
-   }
+	);
+   UIDO (Exposures           ,
+	 HandleExposures();
+	 HandleCpuFactor();
+	 ClearScreen();
+	);
+   UIDO (OffsetS             ,                                  );
+   UIDO (OffsetY             ,                                  );
+   UIDO (NoFluffy            , ClearScreen();                   );
+   UIDO (FullScreen          , UpdateFullScreen();              );
+   UIDO (AllWorkspaces       , DoAllWorkspaces();               );
+   UIDO (BelowAll            , set_below_above();               );
 
    if (changes > 0)
    {
@@ -1035,6 +986,7 @@ void drawit(cairo_t *cr)
    if (Flags.Done)
       return;
 
+
    int skipit = !switches.UseGtk || Flags.BirdsOnly || !WorkspaceActive();
 
    if (!skipit)
@@ -1042,6 +994,8 @@ void drawit(cairo_t *cr)
       stars_draw(cr);
       meteo_draw(cr);
    }
+
+   moon_draw(cr);
 
    birds_draw(cr);
 

@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "wind.h"
 #include "ixpm.h"
+#include "moon.h"
 #include "varia.h"
 
 #define NOTACTIVE \
@@ -48,6 +49,7 @@ static void   init_Santa_surfaces(void);
 static Region RegionCreateRectangle(int x, int y, int w, int h);
 static void   ResetSanta(void);
 static void   SetSantaSpeed(void);
+static void   SetSantaType(void);
 
 static int    CurrentSanta;
 static GC     ESantaGC = NULL;
@@ -79,37 +81,22 @@ static float Speed[] = {SANTASPEED0,  /* Santa 0 */
    SANTASPEED4,  /* Santa 4 */
 };
 
+void SetSantaType()
+{
+   EraseSanta(OldSantaX,OldSantaY); 
+   InitSantaPixmaps();
+   if(Flags.Noisy)
+      printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, Flags.Rudolf);// this for testing, see test2.sh and test3.sh
+}
+
 int Santa_ui()
 {
    int changes  = 0;
-   if (Flags.SantaSize != OldFlags.SantaSize || 
-	 Flags.Rudolf != OldFlags.Rudolf)
-   {
-      EraseSanta(OldSantaX,OldSantaY);
-      InitSantaPixmaps();
-      OldFlags.SantaSize = Flags.SantaSize;
-      OldFlags.Rudolf = Flags.Rudolf;
-      changes++;
-      P("changes: %d\n",changes);
-      if(Flags.Noisy)
-	 printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, Flags.Rudolf);  // this for testing, see test2.sh and test3.sh
-   }
-   if (Flags.NoSanta != OldFlags.NoSanta)
-   {
-      //P("do_ui_check\n");
-      if (Flags.NoSanta)
-	 EraseSanta(OldSantaX, OldSantaY);
-      OldFlags.NoSanta = Flags.NoSanta;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.SantaSpeedFactor != OldFlags.SantaSpeedFactor)
-   {
-      SetSantaSpeed();
-      OldFlags.SantaSpeedFactor = Flags.SantaSpeedFactor;
-      changes++;
-      P("changes: %d\n",changes);
-   }
+   UIDO(SantaSize, SetSantaType(););
+   UIDO(Rudolf,    SetSantaType(););
+   UIDO(NoSanta,if(Flags.NoSanta)
+	 EraseSanta(OldSantaX, OldSantaY););
+   UIDO(SantaSpeedFactor, SetSantaSpeed(););
 
    return changes;
 }
@@ -421,6 +408,10 @@ int do_usanta(UNUSED gpointer data)
    int oldy = SantaY;
 
    double dt = time_usanta;
+
+   double santayrmin = 0;
+   double santayrmax = SnowWinHeight*0.33;
+
    ActualSantaSpeed += dt*(SANTASENS*NewWind+SantaSpeed - ActualSantaSpeed);
    if (ActualSantaSpeed>3*SantaSpeed)
       ActualSantaSpeed = 3*SantaSpeed;
@@ -446,19 +437,40 @@ int do_usanta(UNUSED gpointer data)
 
    yspeed = ActualSantaSpeed/4;
    sdt += dt;
-   if (sdt > 2.0)
+   if (sdt > 2.0*50.0/SantaSpeed || sdt > 2.0)
    {
       // time to change yspeed
       sdt = 0;
       yspeeddir = randint(3)-1;  //  -1, 0, 1
+      if (SantaYr < santayrmin + 20)
+	 yspeeddir = 2;
+
+      if (SantaYr > santayrmax - 20)
+	 yspeeddir = -2;
+      //int mooncx = moonX+Flags.MoonSize/2;
+      int mooncy = moonY+Flags.MoonSize/2;
+      P("DrawBirds:%d\n",switches.DrawBirds);
+      if (switches.DrawBirds && Flags.Moon && SantaX+SantaWidth < moonX+Flags.MoonSize && SantaX+SantaWidth > moonX-300) // Santa likes to hover the moon
+      {
+	 int dy = SantaY+SantaHeight/2 - mooncy;
+	 if (dy < 0)
+	    yspeeddir = 1;
+	 else
+	    yspeeddir = -1;
+	 if (dy < -Flags.MoonSize/2)
+	    yspeeddir = 3;
+	 else if (dy > Flags.MoonSize/2)
+	    yspeeddir = -3;
+	 P("moon seeking %f %f %d %f\n",SantaYr, moonY, yspeeddir,SantaSpeed);
+      }
    }
 
    SantaYr += dt*yspeed*yspeeddir;
-   if (SantaYr < 0)
+   if (SantaYr < santayrmin)
       SantaYr = 0;
 
-   if (SantaYr > SnowWinHeight*0.33)
-      SantaYr = SnowWinHeight*0.33;
+   if (SantaYr > santayrmax)
+      SantaYr = santayrmax;
 
    SantaY = lrintf(SantaYr);
    XOffsetRegion(SantaRegion, SantaX - oldx, SantaY - oldy);
@@ -472,6 +484,13 @@ void ResetSanta()
    SantaX  = -SantaWidth - ActualSantaSpeed;
    SantaXr = SantaX;
    SantaY  = randint(SnowWinHeight / 3)+40;
+   if (Flags.Moon && switches.DrawBirds && moonX < 400)
+   {
+      P("moon seeking at start\n");
+      SantaY = randint(Flags.MoonSize + 40)+moonY-20;
+   }
+   else
+      SantaY  = randint(SnowWinHeight / 3)+40;
    SantaYr = SantaY;
    SantaYStep = 1;
    CurrentSanta = 0;

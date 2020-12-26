@@ -110,121 +110,38 @@ int birds_ui()
 {
    int changes = 0;
 
-   if(Flags.ShowBirds != OldFlags.ShowBirds)
-   {
-      OldFlags.ShowBirds = Flags.ShowBirds;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsOnly != OldFlags.BirdsOnly)
-   {
-      P("BirdsOnly %d %d\n",Flags.BirdsOnly,OldFlags.BirdsOnly);
-      OldFlags.BirdsOnly = Flags.BirdsOnly;
-      ClearScreen();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Neighbours != OldFlags.Neighbours)
-   {
-      OldFlags.Neighbours = Flags.Neighbours;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.Anarchy != OldFlags.Anarchy)
-   {
-      OldFlags.Anarchy = Flags.Anarchy;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.PrefDistance != OldFlags.PrefDistance)
-   {
-      OldFlags.PrefDistance = Flags.PrefDistance;
-      changes++;
-      P("changes: %d\n",changes);
-   }
+   UIDO(ShowBirds         ,                       );
+   UIDO(BirdsOnly         , ClearScreen();        );
+   UIDO(Neighbours        ,                       );
+   UIDO(Anarchy           ,                       );
+   UIDO(PrefDistance      ,                       );
+   UIDO(ViewingDistance   , attrbird2surface();   );
+   UIDO(BirdsSpeed        , birds_set_speed();    );
+   UIDO(AttrFactor        ,                       );
+   UIDO(DisWeight         ,                       );
+   UIDO(FollowWeight      ,                       );
+   UIDO(BirdsScale        , birds_set_scale();    );
+   UIDO(ShowAttrPoint     ,                       );
+   UIDOS(BirdsColor       , 
+	 birds_init_color(); 
+	 ClearScreen(););
+   UIDO(Nbirds            ,
+	 int start = OldFlags.Nbirds;
+	 if (Flags.Nbirds <= 0)
+	 Flags.Nbirds = 1;
+	 if (Flags.Nbirds > NBIRDS_MAX)
+	 Flags.Nbirds = NBIRDS_MAX;
+	 init_birds(start););
+   UIDO(FollowSanta, 
+	 if (!Flags.FollowSanta)
+	 birds_set_attraction_point_relative(0.5, 0.5, 0.5););
+
    if(Flags.BirdsRestart)
    {
       Flags.BirdsRestart = 0;
       init_birds(0);
       birds_set_attraction_point_relative(0.5, 0.5, 0.5);
       P("changes: %d\n",changes);
-   }
-   if(Flags.ViewingDistance != OldFlags.ViewingDistance)
-   {
-      OldFlags.ViewingDistance = Flags.ViewingDistance;
-      attrbird2surface();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsSpeed != OldFlags.BirdsSpeed)
-   {
-      OldFlags.BirdsSpeed = Flags.BirdsSpeed;
-      birds_set_speed();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.AttrFactor != OldFlags.AttrFactor)
-   {
-      OldFlags.AttrFactor = Flags.AttrFactor;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.DisWeight != OldFlags.DisWeight)
-   {
-      OldFlags.DisWeight = Flags.DisWeight;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.FollowWeight != OldFlags.FollowWeight)
-   {
-      OldFlags.FollowWeight = Flags.FollowWeight;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BirdsScale != OldFlags.BirdsScale)
-   {
-      OldFlags.BirdsScale = Flags.BirdsScale;
-      birds_set_scale();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.ShowAttrPoint != OldFlags.ShowAttrPoint)
-   {
-      OldFlags.ShowAttrPoint = Flags.ShowAttrPoint;
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(strcmp(Flags.BirdsColor, OldFlags.BirdsColor))
-   {
-      P("%s %s\n",Flags.BirdsColor,OldFlags.BirdsColor);
-      birds_init_color();
-      ClearScreen();
-      free(OldFlags.BirdsColor);
-      OldFlags.BirdsColor = strdup(Flags.BirdsColor);
-      changes++;
-      P("changes: %d\n",changes);
-   }
-
-   if(Flags.Nbirds != OldFlags.Nbirds)
-   {
-      int start = OldFlags.Nbirds;
-      if (Flags.Nbirds <= 0)
-	 Flags.Nbirds = 1;
-      if (Flags.Nbirds > NBIRDS_MAX)
-	 Flags.Nbirds = NBIRDS_MAX;
-      OldFlags.Nbirds = Flags.Nbirds;
-      changes++;
-      P("changes: %d\n",changes);
-      init_birds(start);
-   }
-
-   if(Flags.FollowSanta != OldFlags.FollowSanta)
-   {
-      P("FollowSanta: %d->%d\n",OldFlags.FollowSanta,Flags.FollowSanta);
-      OldFlags.FollowSanta = Flags.FollowSanta;
-      if (!Flags.FollowSanta)
-	 birds_set_attraction_point_relative(0.5, 0.5, 0.5);
-      changes ++;
    }
    return changes;
 }

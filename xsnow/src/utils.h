@@ -17,7 +17,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #pragma once
 
 //#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
@@ -25,6 +25,25 @@
 #define SOMENUMBER 42
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
+
+#define UIDO(_x,_y) \
+   if(Flags._x != OldFlags._x) \
+{ \
+   {_y} \
+   OldFlags._x = Flags._x; \
+   changes++; \
+   if(Flags.Noisy) R( #_x ": %d\n", Flags._x); \
+}
+
+#define UIDOS(_x,_y) \
+   if(strcmp(Flags._x, OldFlags._x)) \
+{ \
+   {_y} \
+   free(OldFlags._x); \
+   OldFlags._x = strdup(Flags._x); \
+   changes++; \
+   if(Flags.Noisy) R( #_x ":'%s'\n", Flags._x); \
+}
 
 #include <stdio.h>
 #include <X11/Intrinsic.h>

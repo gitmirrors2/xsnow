@@ -65,8 +65,7 @@
 
 #ifdef USE_VROOT
    static Window
-VirtualRootWindowOfScreen(screen)
-   Screen *screen;
+VirtualRootWindowOfScreen(Screen *screen)
 {
    static Screen *save_screen = (Screen *)0;
    static Window root = (Window)0;

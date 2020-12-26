@@ -45,19 +45,8 @@ void blowoff_init()
 int blowoff_ui()
 {
    int changes = 0;
-   if(Flags.BlowOffFactor != OldFlags.BlowOffFactor)
-   {
-      OldFlags.BlowOffFactor = Flags.BlowOffFactor;
-      InitBlowOffFactor();
-      changes++;
-      P("changes: %d\n",changes);
-   }
-   if(Flags.BlowSnow != OldFlags.BlowSnow)
-   {
-      OldFlags.BlowSnow = Flags.BlowSnow;
-      changes++;
-      P("changes: %d\n",changes);
-   }
+   UIDO(BlowOffFactor    , InitBlowOffFactor();    );
+   UIDO(BlowSnow         ,                         );
    return changes;
 }
 

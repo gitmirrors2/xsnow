@@ -132,6 +132,7 @@ static GtkWidget     *mean_distance;
 static GtkWidget     *range;
 static GtkWidget     *desktop_type;
 static GtkContainer  *birdsgrid;
+static GtkContainer  *moonbox;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -140,6 +141,7 @@ static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void set_star_buttons(void);
 static void set_meteo_buttons(void);
+static void set_moon_buttons(void);
 static void apply_standard_css(void);
 static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(UNUSED gpointer data);
@@ -308,6 +310,7 @@ typedef struct _star_button
 static struct _star_buttons
 {
    star_button nstars;
+   star_button show;
 } star_buttons;
 
 typedef struct _meteo_button
@@ -320,13 +323,26 @@ static struct _meteo_buttons
    meteo_button show;
 } meteo_buttons;
 
+typedef struct _moon_button
+{
+   GtkWidget *button;
+} moon_button;
+
+static struct _moon_buttons
+{
+   moon_button show;
+   moon_button speed;
+   moon_button size;
+   moon_button halo;
+   moon_button bright;
+} moon_buttons;
+
 static void report_tree_type(int p, gint active)
 {
    P("Tree: %d %d %s\n",p,active,Flags.TreeType);
    int *a;
    int n;
    csvpos(Flags.TreeType,&a,&n);
-   assert(n>0);
    if(active)
    {
       a = (int *)realloc(a,sizeof(*a)*(n+1));
@@ -385,8 +401,6 @@ void scenery_default(int vintage)
    Flags.DesiredNumberOfTrees = DEFAULT_DesiredNumberOfTrees; 
    free(Flags.TreeType);
    Flags.TreeType                = strdup(DEFAULT_TreeType);
-   Flags.NStars                  = DEFAULT_NStars;
-   Flags.NoMeteorites            = DEFAULT_NoMeteorites;
    Flags.NoTrees                 = DEFAULT_NoTrees;
    Flags.TreeFill                = DEFAULT_TreeFill;
    free(Flags.TreeColor);
@@ -396,12 +410,8 @@ void scenery_default(int vintage)
       Flags.DesiredNumberOfTrees = VINTAGE_DesiredNumberOfTrees; 
       free(Flags.TreeType);
       Flags.TreeType             = strdup(VINTAGE_TreeType);
-      Flags.NStars               = VINTAGE_NStars;
-      Flags.NoMeteorites         = VINTAGE_NoMeteorites;
    }
    set_tree_buttons();
-   set_star_buttons();
-   set_meteo_buttons();
    human_interaction = h;
 }
 
@@ -544,15 +554,18 @@ static void set_tree_buttons()
 
 
 HANDLE_RANGE(button_star_nstars, NStars, value);
+HANDLE_TOGGLE(button_stars_show, Stars ,1     ,0);
 
 static void init_star_buttons()
 {
-   HANDLE_INIT(star_buttons.nstars.button,stars-nstars);
+   HANDLE_INIT(star_buttons.nstars.button  ,stars-nstars);
+   HANDLE_INIT(star_buttons.show.button    ,stars-show);
 }
 
 static void set_star_buttons()
 {
-   HANDLE_SET_RANGE(star_buttons.nstars.button,NStars,self);
+   HANDLE_SET_RANGE(star_buttons.nstars.button  ,NStars,self);
+   HANDLE_SET_TOGGLE(star_buttons.show.button   ,Stars);
 }
 
 HANDLE_TOGGLE(button_meteo_show, NoMeteorites, 0,1);
@@ -565,6 +578,31 @@ static void init_meteo_buttons()
 static void set_meteo_buttons()
 {
    HANDLE_SET_TOGGLE_I(meteo_buttons.show.button,NoMeteorites);
+}
+
+
+HANDLE_TOGGLE(button_moon_show  ,Moon        ,1,0);
+HANDLE_TOGGLE(button_halo_show  ,Halo        ,1,0);
+HANDLE_RANGE(button_moon_speed  ,MoonSpeed   ,value);
+HANDLE_RANGE(button_moon_size   ,MoonSize    ,value);
+HANDLE_RANGE(button_halo_bright ,HaloBright  ,value);
+
+static void init_moon_buttons()
+{
+   HANDLE_INIT(moon_buttons.show.button   ,moon-show);
+   HANDLE_INIT(moon_buttons.halo.button   ,halo-show);
+   HANDLE_INIT(moon_buttons.speed.button  ,moon-speed);
+   HANDLE_INIT(moon_buttons.size.button   ,moon-size);
+   HANDLE_INIT(moon_buttons.bright.button ,halo-bright);
+}
+
+static void set_moon_buttons()
+{
+   HANDLE_SET_TOGGLE(moon_buttons.show.button  ,Moon);
+   HANDLE_SET_TOGGLE(moon_buttons.halo.button  ,Halo);
+   HANDLE_SET_RANGE(moon_buttons.speed.button  ,MoonSpeed   ,self);
+   HANDLE_SET_RANGE(moon_buttons.size.button   ,MoonSize    ,self);
+   HANDLE_SET_RANGE(moon_buttons.bright.button ,HaloBright  ,self);
 }
 
 typedef struct _general_button
@@ -934,6 +972,17 @@ void ui_set_birds_header(const char *text)
    gtk_label_set_text(GTK_LABEL(birds_header),text);
 }
 
+void ui_set_celestials_header(const char *text)
+{
+   GtkWidget *celestials_header = GTK_WIDGET(gtk_builder_get_object(builder,"celestials-header")); 
+   char *a = strdup(gtk_label_get_text(GTK_LABEL(celestials_header)));
+   a = (char *) realloc(a,strlen(a)+2+strlen(text));
+   strcat(a,"\n");
+   strcat(a,text);
+   gtk_label_set_text(GTK_LABEL(celestials_header),a);
+   free(a);
+}
+
 typedef struct _birds_button
 {
    GtkWidget *button;
@@ -1093,7 +1142,6 @@ static void init_wind_buttons()
 static void set_wind_buttons()
 {
    HANDLE_SET_TOGGLE_I(wind_buttons.windy.button     ,NoWind);
-
    HANDLE_SET_RANGE(wind_buttons.whirl.button        ,WhirlFactor ,self);
    HANDLE_SET_RANGE(wind_buttons.timer.button        ,WindTimer   ,self);
 }
@@ -1109,32 +1157,47 @@ void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
    Flags.WindNow = 1;
 }
 
-void wind_default(int vintage)
+void celestials_default(int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
    Flags.NoWind        = DEFAULT_NoWind;
    Flags.WhirlFactor   = DEFAULT_WhirlFactor;
    Flags.WindTimer     = DEFAULT_WindTimer;
+   Flags.NStars        = DEFAULT_NStars;
+   Flags.Stars         = DEFAULT_Stars;
+   Flags.NoMeteorites  = DEFAULT_NoMeteorites;
+   Flags.Moon          = DEFAULT_Moon;
+   Flags.MoonSpeed     = DEFAULT_MoonSpeed;
+   Flags.MoonSize      = DEFAULT_MoonSize;
+   Flags.Halo          = DEFAULT_Halo;
+   Flags.HaloBright    = DEFAULT_HaloBright;
    if(vintage)
    {
+      Flags.Stars          = VINTAGE_Stars;
+      Flags.Stars          = VINTAGE_Stars;
+      Flags.NoMeteorites   = VINTAGE_NoMeteorites;
+      Flags.Moon           = VINTAGE_Moon;
    }
    set_wind_buttons();
+   set_star_buttons();
+   set_meteo_buttons();
+   set_moon_buttons();
    human_interaction = h;
 }
 
    MODULE_EXPORT
-void button_defaults_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_wind\n");
-   wind_default(0);
+   celestials_default(0);
 }
 
    MODULE_EXPORT
-void button_vintage_wind(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_wind\n");
-   wind_default(1);
+   celestials_default(1);
 }
 
 static void init_buttons()
@@ -1143,6 +1206,7 @@ static void init_buttons()
    init_tree_buttons();
    init_star_buttons();
    init_meteo_buttons();
+   init_moon_buttons();
    init_snow_buttons();
    init_birds_buttons();
    init_general_buttons();
@@ -1157,6 +1221,7 @@ static void set_buttons()
    set_tree_buttons();
    set_star_buttons();
    set_meteo_buttons();
+   set_moon_buttons();
    set_snow_buttons();
    set_birds_buttons();
    set_general_buttons();
@@ -1169,7 +1234,7 @@ void all_default(int vintage)
    santa_default(vintage);
    scenery_default(vintage);
    snow_default(vintage);
-   wind_default(vintage);
+   celestials_default(vintage);
    birds_default(vintage);
 }
    MODULE_EXPORT
@@ -1224,6 +1289,7 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
    desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
+   moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
 
    apply_standard_css();
    gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
@@ -1320,6 +1386,7 @@ void birdscb(GtkWidget *w, void *m)
 void ui_gray_birds(int m)
 {
    gtk_container_foreach(birdsgrid, birdscb, &m);
+   gtk_container_foreach(moonbox, birdscb, &m);
 }
 
 char * ui_gtk_version()

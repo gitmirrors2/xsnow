@@ -173,6 +173,11 @@ XPM_TYPE **birds_xpm[] =
    birdd1_xpm, birdd2_xpm, birdd3_xpm, birdd4_xpm, birdd5_xpm, birdd6_xpm, birdd7_xpm, birdd8_xpm
 };
 
+#include "Pixmaps/moon1.xpm"
+XPM_TYPE **moons_xpm[]=
+{
+   moon1_xpm
+};
 
 #define SNOW(x) snow##x##_xpm,
 XPM_TYPE **snow_xpm[] =

@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.1.9], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.2.0], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -36,7 +36,6 @@ AC_PROG_INSTALL
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([alloca.h])
 AC_CHECK_HEADERS([assert.h ctype.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
 AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h],[],AC_MSG_ERROR([Exiting]))
 

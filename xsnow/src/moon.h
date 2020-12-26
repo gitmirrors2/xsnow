@@ -17,21 +17,11 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ */
 #pragma once
-#define XPM_TYPE const char
+extern int      moon_draw(cairo_t *cr);
+extern void     moon_init(void);
+extern int      moon_ui(void);
 
-#include "xsnow.h"
-#include "snow.h"
-#include "stars.h"
-
-//extern SnowMap       snowPix[];
-extern StarMap       starPix;
-extern XPM_TYPE    ***Santas[][2];
-extern XPM_TYPE    **xpmtrees[];
-extern XPM_TYPE    **xsnow_logo;
-extern XPM_TYPE    **birds_xpm[];
-extern XPM_TYPE    **snow_xpm[];
-extern XPM_TYPE    **moons_xpm[];
-
-extern int NMOONPIXBUFS;
+extern int      NMOONPIXBUFS;
+extern double   moonX, moonY;
