@@ -32,7 +32,7 @@
    {_y} \
    OldFlags._x = Flags._x; \
    changes++; \
-   if(Flags.Noisy) R( #_x ": %d\n", Flags._x); \
+   if(Flags.Noisy) { R( #_x ":\t %d\n", Flags._x); fflush(NULL); } \
 }
 
 #define UIDOS(_x,_y) \
@@ -42,7 +42,7 @@
    free(OldFlags._x); \
    OldFlags._x = strdup(Flags._x); \
    changes++; \
-   if(Flags.Noisy) R( #_x ":'%s'\n", Flags._x); \
+   if(Flags.Noisy) { R( #_x ":\t'%s'\n", Flags._x); fflush(NULL); } \
 }
 
 #include <stdio.h>
