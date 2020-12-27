@@ -34,10 +34,15 @@
    if (!Flags.Moon || !WorkspaceActive()) return TRUE
 
 static int  do_umoon(gpointer data);
-static void init_moon_surface();
+static void init_moon_surface(void);
+static void init_halo_surface(void);
 static void halo_draw(cairo_t *cr);
 
 static cairo_surface_t *moon_surface = NULL;
+static cairo_surface_t *halo_surface = NULL;
+static double moonR;
+static double haloR;
+
 double moonX = 1000;
 double moonY = 80;
 
@@ -65,11 +70,11 @@ int moon_draw(cairo_t *cr)
 int moon_ui()
 {
    int changes = 0;
-   UIDO(MoonSpeed,);
-   UIDO(Halo,);
-   UIDO(Moon,);
-   UIDO(MoonSize,init_moon_surface();)
-   UIDO(HaloBright,);
+   UIDO(MoonSpeed,                         );
+   UIDO(Halo,                              );
+   UIDO(Moon,                              );
+   UIDO(MoonSize    ,init_moon_surface();  );
+   UIDO(HaloBright  ,init_halo_surface();  );
    return changes;
 }
 
@@ -87,6 +92,7 @@ static void init_moon_surface()
    moon_surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, gdkwindow);
    g_clear_object(&pixbuf);
    g_clear_object(&pixbufscaled);
+   init_halo_surface();
 }
 
 int do_umoon(UNUSED gpointer data)
@@ -114,17 +120,15 @@ int do_umoon(UNUSED gpointer data)
    return TRUE;
 }
 
-void halo_draw(cairo_t *cr)
+void init_halo_surface()
 {
-   if (!Flags.Halo)
-      return;
+   if (halo_surface)
+      cairo_surface_destroy(halo_surface);
    cairo_pattern_t *pattern;
-   double r = Flags.MoonSize/2;
-   double ru = 1.8*r;
-   P("halo_draw %f %f \n",r,ru);
-   double xc = moonX+r;
-   double yc = moonY+r;
-   pattern = cairo_pattern_create_radial(xc, yc, r, xc, yc, ru);  
+   moonR = Flags.MoonSize/2;
+   haloR = 1.8*moonR;
+   P("halo_draw %f %f \n",moonR,haloR);
+   pattern = cairo_pattern_create_radial(haloR, haloR, moonR, haloR, haloR, haloR);  
    double bright = Flags.HaloBright * ALPHA * 0.01;
    //cairo_pattern_add_color_stop_rgba(pattern, 0.0, 1.0, 1.0, 1.0, 0.4*ALPHA);
    //cairo_pattern_add_color_stop_rgba(pattern, 1.0, 1.0, 1.0, 1.0, 0.0);
@@ -140,11 +144,31 @@ void halo_draw(cairo_t *cr)
    //cairo_pattern_add_color_stop_rgba(pattern, 1.0, 245.0/255, 243.0/255, 206.0/255, 0.0);
    cairo_pattern_add_color_stop_rgba(pattern, 0.0, 234.0/255, 244.0/255, 252.0/255, bright);
    cairo_pattern_add_color_stop_rgba(pattern, 1.0, 234.0/255, 244.0/255, 252.0/255, 0.0);
-   cairo_set_source(cr, pattern);
-   cairo_arc(cr, xc, yc, ru, 0, M_PI * 2);
-   cairo_fill(cr);     
 
-   GdkPixbuf *pixbuf;
+   GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 2*haloR, 2*haloR);
+   halo_surface      = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2*haloR, 2*haloR);
+   cairo_t *halocr   = cairo_create(halo_surface);
+   gdk_cairo_set_source_pixbuf(halocr, pixbuf, 0, 0);
 
-   cairo_pattern_destroy(pattern);
+   cairo_set_source_rgba(halocr, 0, 0, 0, 0);
+   cairo_paint          (halocr);
+   cairo_set_source     (halocr, pattern);
+   cairo_arc            (halocr, haloR, haloR, haloR, 0, M_PI * 2);
+   cairo_fill           (halocr);     
+
+   cairo_destroy          (halocr);
+   cairo_pattern_destroy  (pattern);
+   g_clear_object         (&pixbuf);
+}
+
+void halo_draw(cairo_t *cr)
+{
+   if (!Flags.Halo)
+      return;
+   P("halo_draw %f %f \n", moonR, haloR);
+   double xc = moonX + moonR;
+   double yc = moonY + moonR;
+
+   cairo_set_source_surface(cr, halo_surface, xc-haloR, yc-haloR);
+   my_cairo_paint_with_alpha(cr, ALPHA);
 }
