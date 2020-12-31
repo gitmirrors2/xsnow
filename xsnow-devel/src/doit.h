@@ -28,6 +28,7 @@
 // are no part of the ui (except BelowAll and WantWindow)
 #define DOITALL \
    DOIT_I(BelowAll) \
+   DOIT_I(BelowConfirm) \
    DOIT_I(Defaults)  \
    DOIT_I(Desktop) \
    DOIT_I(ForceRoot) \

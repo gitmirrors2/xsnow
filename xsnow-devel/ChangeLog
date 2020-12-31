@@ -2,6 +2,8 @@ version 3.2.1
 	1:utils.h: add fflush(NULL) to UIDO and UIDOS
 	  moon.c: create halo surface for painting.
 	2:fine tuning of ui graphics
+	3:start simplifying ui.c
+	11:finished 3:
 version 3.2.0
 	1:use 256x256 xpm for moon
 	  start Santa, aware of moon position

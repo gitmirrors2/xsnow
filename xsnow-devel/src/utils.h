@@ -29,7 +29,7 @@
 #define UIDO(_x,_y) \
    if(Flags._x != OldFlags._x) \
 { \
-   if(Flags.Noisy) { R( #_x ":\t %d\n", Flags._x); fflush(NULL); } \
+   if(Flags.Noisy) { R( #_x ":\t %d ->  %d\n", OldFlags._x, Flags._x); fflush(NULL); } \
    {_y} \
    OldFlags._x = Flags._x; \
    changes++; \
@@ -38,7 +38,7 @@
 #define UIDOS(_x,_y) \
    if(strcmp(Flags._x, OldFlags._x)) \
 { \
-   if(Flags.Noisy) { R( #_x ":\t'%s'\n", Flags._x); fflush(NULL); } \
+   if(Flags.Noisy) { R( #_x ":\t'%s' -> '%s'\n", OldFlags._x, Flags._x); fflush(NULL); } \
    {_y} \
    free(OldFlags._x); \
    OldFlags._x = strdup(Flags._x); \
@@ -62,6 +62,7 @@ extern Pixel   IAllocNamedColor(const char *colorName, Pixel dfltPix);
 extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
 extern int     randint(int m);
 extern void    my_cairo_paint_with_alpha(cairo_t *cr, double alpha);
+extern void    rgba2color(GdkRGBA *c, char **s);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);

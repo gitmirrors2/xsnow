@@ -25,6 +25,7 @@
 
 #define DEFAULT_AllWorkspaces 1
 #define DEFAULT_BelowAll 1
+#define DEFAULT_BelowConfirm 0
 #define DEFAULT_BGColor "#000000"
 #define DEFAULT_BlowOffFactor 40
 #define DEFAULT_BlowSnow 1

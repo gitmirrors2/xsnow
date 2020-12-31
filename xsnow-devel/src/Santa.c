@@ -85,8 +85,6 @@ void SetSantaType()
 {
    EraseSanta(OldSantaX,OldSantaY); 
    InitSantaPixmaps();
-   if(Flags.Noisy)
-      printf("Santa: %d Rudolph: %d\n",Flags.SantaSize, Flags.Rudolf);// this for testing, see test2.sh and test3.sh
 }
 
 int Santa_ui()

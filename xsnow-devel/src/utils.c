@@ -152,3 +152,9 @@ void PrintVersion()
 	 , VERSION, VERSIONBY);
 }
 
+void rgba2color(GdkRGBA *c, char **s)
+{
+   *s = (char *)malloc(8);
+   sprintf(*s,"#%02lx%02lx%02lx",lrint(c->red*255),lrint(c->green*255),lrint(c->blue*255));
+}
+

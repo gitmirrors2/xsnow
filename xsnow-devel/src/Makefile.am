@@ -42,7 +42,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
 		varia.h snow_includes.h vroot.h \
-		moon.c moon.h
+		moon.c moon.h buttons.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
