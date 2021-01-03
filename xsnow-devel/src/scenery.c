@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+
+#define DEFAULTTREETYPE 2
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())

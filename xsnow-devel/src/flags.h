@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -22,12 +22,11 @@
 #include <X11/Xlib.h>
 #include "doit.h"
 
-#define DOIT_I(x) int x; 
-#define DOIT_L(x) unsigned long int x;
-#define DOIT_S(x) char *x;
+#define DOIT_I(x,d,v) int x; int default_##x; int vintage_##x;
+#define DOIT_L(x,d,v) unsigned long int x; unsigned long int default_##x; unsigned long int vintage_##x;
+#define DOIT_S(x,d,v) char *x; char *default_##x; char *vintage_##x;
 
-typedef struct flags {
-   //unsigned long int WindowId;
+typedef struct _flags {
    DOITALL
       int dummy;
 }FLAGS;

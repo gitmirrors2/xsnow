@@ -4,7 +4,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -1078,7 +1078,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-NoSnowFlakes">
+              <object class="GtkToggleButton" id="id-NoSnowFlakes">
                 <property name="label" translatable="yes">Show snow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1092,7 +1092,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-BlowSnow">
+              <object class="GtkToggleButton" id="id-BlowSnow">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1106,12 +1106,13 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-NoKeepSWin">
+              <object class="GtkToggleButton" id="id-NoKeepSWin">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fallen snow on windows.</property>
+                <property name="valign">center</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -1119,12 +1120,13 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-NoKeepSBot">
+              <object class="GtkToggleButton" id="id-NoKeepSBot">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fallen snow on bottom of the desktop.</property>
+                <property name="valign">center</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -1132,12 +1134,13 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-NoKeepSnowOnTrees">
+              <object class="GtkToggleButton" id="id-NoKeepSnowOnTrees">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, snow will collect on the trees.</property>
+                <property name="valign">center</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -1145,7 +1148,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-BlowOffFactor">
+              <object class="GtkScale" id="id-BlowOffFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will be generated because of Santa ploughing, wind or disappearing windows.</property>
@@ -1162,7 +1165,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-MaxWinSnowDepth">
+              <object class="GtkScale" id="id-MaxWinSnowDepth">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.
@@ -1179,7 +1182,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-MaxScrSnowDepth">
+              <object class="GtkScale" id="id-MaxScrSnowDepth">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the bottom of the desktop.</property>
@@ -1195,7 +1198,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-MaxOnTrees">
+              <object class="GtkScale" id="id-MaxOnTrees">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the trees.</property>
@@ -1387,7 +1390,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-SnowFlakesFactor">
+              <object class="GtkScale" id="id-SnowFlakesFactor">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1434,7 +1437,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkColorButton" id="snow-SnowColor">
+              <object class="GtkColorButton" id="id-SnowColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1475,7 +1478,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-SnowSize">
+              <object class="GtkScale" id="id-SnowSize">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1506,7 +1509,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-SnowSpeedFactor">
+              <object class="GtkScale" id="id-SnowSpeedFactor">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1539,7 +1542,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-FlakeCountMax">
+              <object class="GtkScale" id="id-FlakeCountMax">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1588,7 +1591,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-NoFluffy">
+              <object class="GtkToggleButton" id="id-NoFluffy">
                 <property name="label" translatable="yes">Show fluff</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2010,7 +2013,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="santa-SantaSpeedFactor">
+              <object class="GtkScale" id="id-SantaSpeedFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Santa's speed.</property>
@@ -2175,7 +2178,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="santa-NoSanta">
+              <object class="GtkToggleButton" id="id-NoSanta">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2234,7 +2237,7 @@ Note: in Wayland, there is no snow on the windows.</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkToggleButton" id="tree-NoTrees">
+              <object class="GtkToggleButton" id="id-NoTrees">
                 <property name="label" translatable="yes">Show  scenery</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2390,7 +2393,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkColorButton" id="tree-TreeColor">
+              <object class="GtkColorButton" id="id-TreeColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2657,7 +2660,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="tree-DesiredNumberOfTrees">
+                  <object class="GtkScale" id="id-DesiredNumberOfTrees">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -2692,7 +2695,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="tree-TreeFill">
+                  <object class="GtkScale" id="id-TreeFill">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3075,7 +3078,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="wind-NoWind">
+                  <object class="GtkToggleButton" id="id-NoWind">
                     <property name="label" translatable="yes">Windy</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3106,7 +3109,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="wind-WhirlFactor">
+                  <object class="GtkScale" id="id-WhirlFactor">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3141,7 +3144,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="wind-WindTimer">
+                  <object class="GtkScale" id="id-WindTimer">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3205,7 +3208,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="stars-Stars">
+                  <object class="GtkToggleButton" id="id-Stars">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3236,7 +3239,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="stars-NStars">
+                  <object class="GtkScale" id="id-NStars">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3317,7 +3320,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="meteo-NoMeteorites">
+                  <object class="GtkToggleButton" id="id-NoMeteorites">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3365,7 +3368,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="moon-Moon">
+                  <object class="GtkToggleButton" id="id-Moon">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3395,7 +3398,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="moon-MoonSpeed">
+                  <object class="GtkScale" id="id-MoonSpeed">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3413,7 +3416,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="moon-Halo">
+                  <object class="GtkToggleButton" id="id-Halo">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3445,7 +3448,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="moon-MoonSize">
+                  <object class="GtkScale" id="id-MoonSize">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3491,7 +3494,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="moon-HaloBright">
+                  <object class="GtkScale" id="id-HaloBright">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Brightness of moon's halo.</property>
@@ -3739,7 +3742,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-ShowBirds">
+              <object class="GtkToggleButton" id="id-ShowBirds">
                 <property name="label" translatable="yes">Show birds</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3754,7 +3757,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-BirdsOnly">
+              <object class="GtkToggleButton" id="id-BirdsOnly">
                 <property name="label" translatable="yes">Birds only</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3782,7 +3785,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-PrefDistance">
+              <object class="GtkScale" id="id-PrefDistance">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3811,7 +3814,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="birds-restart">
+              <object class="GtkButton" id="id-restart">
                 <property name="label" translatable="yes">Restart</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3840,7 +3843,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-ViewingDistance">
+              <object class="GtkScale" id="id-ViewingDistance">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Viewing distance.
@@ -3901,7 +3904,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-AttrFactor">
+              <object class="GtkScale" id="id-AttrFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Eagerness to concentrate on common attraction point</property>
@@ -3917,7 +3920,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-Nbirds">
+              <object class="GtkScale" id="id-Nbirds">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3950,7 +3953,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-Neighbours">
+              <object class="GtkScale" id="id-Neighbours">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3980,7 +3983,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkColorButton" id="birds-BirdsColor">
+              <object class="GtkColorButton" id="id-BirdsColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -4032,7 +4035,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-Anarchy">
+              <object class="GtkScale" id="id-Anarchy">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4062,7 +4065,7 @@ attraction point:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-DisWeight">
+              <object class="GtkScale" id="id-DisWeight">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4093,7 +4096,7 @@ neighbours:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-FollowWeight">
+              <object class="GtkScale" id="id-FollowWeight">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4123,7 +4126,7 @@ neighbours:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-BirdsSpeed">
+              <object class="GtkScale" id="id-BirdsSpeed">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4153,7 +4156,7 @@ neighbours:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-BirdsScale">
+              <object class="GtkScale" id="id-BirdsScale">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4170,7 +4173,7 @@ neighbours:</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-ShowAttrPoint">
+              <object class="GtkToggleButton" id="id-ShowAttrPoint">
                 <property name="label" translatable="yes">Show 
 attr point</property>
                 <property name="width_request">100</property>
@@ -4185,7 +4188,7 @@ attr point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-FollowSanta">
+              <object class="GtkToggleButton" id="id-FollowSanta">
                 <property name="label" translatable="yes">Follow 
 Santa</property>
                 <property name="width_request">100</property>
@@ -4261,7 +4264,7 @@ Santa</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkLabel" id="general-version">
+              <object class="GtkLabel" id="id-version">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">version</property>
@@ -4310,7 +4313,7 @@ Santa</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-AllWorkspaces">
+                  <object class="GtkToggleButton" id="id-AllWorkspaces">
                     <property name="label" translatable="yes">On all
 workspaces</property>
                     <property name="visible">True</property>
@@ -4328,7 +4331,7 @@ NOTE: this doesn't work properly in enlightenment.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-FullScreen">
+                  <object class="GtkToggleButton" id="id-FullScreen">
                     <property name="label" translatable="yes">Full
 screen</property>
                     <property name="visible">True</property>
@@ -4346,7 +4349,7 @@ NOTE: this doesn't work properly in enlightenment.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-BelowAll">
+                  <object class="GtkToggleButton" id="id-BelowAll">
                     <property name="label" translatable="yes">Below
 windows</property>
                     <property name="visible">True</property>
@@ -4368,7 +4371,7 @@ Therefore, you will be asked to click a button, to be sure that things are OK.</
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-BelowConfirm">
+                  <object class="GtkToggleButton" id="id-BelowConfirm">
                     <property name="label" translatable="yes">Click to
 confirm</property>
                     <property name="visible">True</property>
@@ -4402,7 +4405,7 @@ confirm</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-CpuLoad">
+                  <object class="GtkScale" id="id-CpuLoad">
                     <property name="name">general-cpuload</property>
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
@@ -4449,7 +4452,7 @@ confirm</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-Transparency">
+                  <object class="GtkScale" id="id-Transparency">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Transparency of painted items:
@@ -4485,7 +4488,7 @@ on bottom</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-OffsetS">
+                  <object class="GtkScale" id="id-OffsetS">
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4524,7 +4527,7 @@ on windows</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-OffsetY">
+                  <object class="GtkScale" id="id-OffsetY">
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4797,7 +4800,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="general-ww-0">
+                  <object class="GtkRadioButton" id="id-ww-0">
                     <property name="label" translatable="yes">GTK/Cairo</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4818,7 +4821,7 @@ buffer and paint this at about 25 times per second, along with the birds.</prope
                   <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="general-ww-2">
+                  <object class="GtkRadioButton" id="id-ww-2">
                     <property name="label" translatable="yes">X11</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4827,7 +4830,7 @@ buffer and paint this at about 25 times per second, along with the birds.</prope
 Drawing and erasing will be done by X11 functions.</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">False</property>
-                    <property name="group">general-ww-0</property>
+                    <property name="group">id-ww-0</property>
                     <signal name="toggled" handler="button_ww" swapped="no"/>
                   </object>
                   <packing>
@@ -4864,7 +4867,7 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-UseBG">
+                  <object class="GtkToggleButton" id="id-UseBG">
                     <property name="label" translatable="yes">Use color</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4878,7 +4881,7 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkColorButton" id="general-BGColor">
+                  <object class="GtkColorButton" id="id-BGColor">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -4894,7 +4897,7 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-Exposures">
+                  <object class="GtkToggleButton" id="id-Exposures">
                     <property name="label" translatable="yes">Use exposures</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>

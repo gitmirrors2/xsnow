@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #define UIDO(_x,_y) \
    if(Flags._x != OldFlags._x) \
 { \
-   if(Flags.Noisy) { R( #_x ":\t %d ->  %d\n", OldFlags._x, Flags._x); fflush(NULL); } \
+   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8d -> %8d\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
    {_y} \
    OldFlags._x = Flags._x; \
    changes++; \
@@ -38,7 +38,7 @@
 #define UIDOS(_x,_y) \
    if(strcmp(Flags._x, OldFlags._x)) \
 { \
-   if(Flags.Noisy) { R( #_x ":\t'%s' -> '%s'\n", OldFlags._x, Flags._x); fflush(NULL); } \
+   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8s -> %8s\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
    {_y} \
    free(OldFlags._x); \
    OldFlags._x = strdup(Flags._x); \

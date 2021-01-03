@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -71,6 +71,9 @@
 
 #define TREE_ALL TREE(0) TREE(1) TREE(2) TREE(3) TREE(4) TREE(5) TREE(6) TREE(7)
 
+#define DEFAULT(name) Flags.default_##name
+#define VINTAGE(name) Flags.vintage_##name
+
 static GtkBuilder    *builder;
 static GtkWidget     *mean_distance;
 static GtkWidget     *range;
@@ -90,6 +93,7 @@ static void show_bct_countdown(void);
 static void yesyes(GtkWidget *w, gpointer data);
 static void nono(GtkWidget *w, gpointer data);
 static void activate (GtkApplication *app, gpointer user_data);
+static void set_default_tab(int tab, int vintage);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -103,15 +107,15 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
    P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
 
    gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
-	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
-	 GTK_STYLE_PROVIDER_PRIORITY_USER );
+         GTK_STYLE_PROVIDER(cssstyleProvider) , 
+         GTK_STYLE_PROVIDER_PRIORITY_USER );
 
    // For container widgets, apply to every child widget on the container
    if (GTK_IS_CONTAINER (widget))
    {
       gtk_container_forall( GTK_CONTAINER (widget),
-	    (GtkCallback)apply_css_provider ,
-	    cssstyleProvider);
+            (GtkCallback)apply_css_provider ,
+            cssstyleProvider);
    }
 }
 
@@ -138,7 +142,7 @@ static struct _santa_buttons
 {
    SANTA_ALL
 } santa_buttons;
-#undef SANTA
+#include "undefall.inc"
 
 
 #define SANTA(x) NEWLINE &santa_buttons.santa_ ## x,
@@ -146,18 +150,18 @@ static santa_button *santa_barray[NBUTTONS]=
 {
    SANTA_ALL
 };
-#undef SANTA
+#include "undefall.inc"
 
 static void init_santa_buttons()
 {
 #define SANTA(x) \
    NEWLINE santa_buttons.santa_ ## x.button = GTK_WIDGET(gtk_builder_get_object(builder,PREFIX_SANTA #x)); 
    SANTA_ALL;
-#undef SANTA
+#include "undefall.inc"
 #define SANTA(x) \
    NEWLINE gtk_widget_set_name(santa_buttons.santa_ ## x.button,PREFIX_SANTA #x);
    SANTA_ALL;
-#undef SANTA
+#include "undefall.inc"
 
 }
 
@@ -184,35 +188,20 @@ void button_santa(GtkWidget *w, UNUSED gpointer d)
    Flags.Rudolf  = have_rudolf;
 }
 
-void santa_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction      = 0;
-   Flags.SantaSize        = DEFAULT_SantaSize;
-   Flags.Rudolf           = DEFAULT_Rudolf; 
-   Flags.SantaSpeedFactor = DEFAULT_SantaSpeedFactor;
-   Flags.NoSanta          = DEFAULT_NoSanta;
-   if(vintage)
-   {
-      Flags.SantaSize = VINTAGE_SantaSize;
-      Flags.Rudolf    = VINTAGE_Rudolf; 
-   }
-   set_buttons();
-   human_interaction      = h;
-}
-
    MODULE_EXPORT 
 void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa defaults\n");
-   santa_default(0);
+   //santa_default(0);
+   set_default_tab(xsnow_santa,0);
 }
 
    MODULE_EXPORT 
 void button_vintage_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa vintage\n");
-   santa_default(1);
+   //santa_default(1);
+   set_default_tab(xsnow_santa,1);
 }
 
 typedef struct _tree_button
@@ -225,7 +214,7 @@ static struct _tree_buttons
 {
    TREE_ALL
 } tree_buttons;
-#undef TREE
+#include "undefall.inc"
 
 
 // creating Button.NStars etc.
@@ -237,98 +226,100 @@ static struct _Button
 {
    ALL_BUTTONS
 } Button;
-#undef togglecode
-#undef rangecode
-#undef colorcode
+#include "undefall.inc"
 
 // create init_buttons: connect with glade-id
+// glade-id will be: "id-name", eg: "id-SnowFlakesFactor"
+#define ID "id"
 
 #define togglecode(type,name,m) \
-   NEWLINE P("%s %s\n",#name,#type "-" #name); \
-   NEWLINE Button.name = GTK_WIDGET(gtk_builder_get_object(builder,#type "-" #name));
+   NEWLINE P("%s %s\n",#name,#type); \
+   NEWLINE Button.name = GTK_WIDGET(gtk_builder_get_object(builder,ID "-" #name));
 #define rangecode togglecode
 #define colorcode togglecode
 
 static void init_buttons1()
 {
+   P("\nstart init_buttons1\n\n");
    ALL_BUTTONS
+      P("\nend init_buttons1\n\n");
 }
-#undef togglecode
-#undef rangecode
-#undef colorcode
+#include "undefall.inc"
 
 // define call backs
 
 #define buttoncb(type,name) button_##type##_##name
 #define togglecode(type,name,m) \
-   NEWLINE MODULE_EXPORT void button_##type##_##name(GtkWidget *w, UNUSED gpointer d) \
-NEWLINE   { \
-   NEWLINE    if(!human_interaction) return; \
-   NEWLINE    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
-   NEWLINE    if(active)  Flags.name = TRUE;  else  Flags.name = FALSE; \
-   NEWLINE    if(m<0) Flags.name = !Flags.name;  \
-NEWLINE   }
+   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d) \
+   NEWLINE   { \
+      NEWLINE    if(!human_interaction) return; \
+      NEWLINE    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
+      NEWLINE    if(active)  Flags.name = TRUE;  else  Flags.name = FALSE; \
+      NEWLINE    if(m<0) Flags.name = !Flags.name;  \
+      NEWLINE   }
 
 #define rangecode(type,name,m) \
    NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d)\
-NEWLINE {\
-   NEWLINE    if(!human_interaction) return; \
-   NEWLINE    gdouble value; \
-   NEWLINE    value = gtk_range_get_value(GTK_RANGE(w)); \
-   NEWLINE    Flags.name = m*lrint(value); \
-NEWLINE }
+   NEWLINE {\
+      NEWLINE    if(!human_interaction) return; \
+      NEWLINE    gdouble value; \
+      NEWLINE    value = gtk_range_get_value(GTK_RANGE(w)); \
+      NEWLINE    Flags.name = m*lrint(value); \
+      NEWLINE }
 
 #define colorcode(type,name,m) \
    NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d) \
-NEWLINE { \
-   NEWLINE    if(!human_interaction) return; \
-   NEWLINE    GdkRGBA color; \
-   NEWLINE    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w),&color); \
-   NEWLINE    free(Flags.name); \
-   NEWLINE    rgba2color(&color,&Flags.name); \
-NEWLINE }
+   NEWLINE { \
+      NEWLINE    if(!human_interaction) return; \
+      NEWLINE    GdkRGBA color; \
+      NEWLINE    gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w),&color); \
+      NEWLINE    free(Flags.name); \
+      NEWLINE    rgba2color(&color,&Flags.name); \
+      NEWLINE }
 
 ALL_BUTTONS
-#undef togglecode
-#undef rangecode
-#undef colorcode
+#include "undefall.inc"
 
 // define set_buttons
 //
 #define togglecode(type,name,m)\
-   NEWLINE if(m>0)gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),Flags.name);\
-   NEWLINE else gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),!Flags.name);
+   NEWLINE P("%s %s\n",#name,#type); \
+NEWLINE     if(m>0)gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),Flags.name);\
+NEWLINE        else gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),!Flags.name);
 #define rangecode(type,name,m) \
-   NEWLINE gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
+   NEWLINE P("%s %s\n",#name,#type); \
+NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
 #define colorcode(type,name,m) \
-   NEWLINE gdk_rgba_parse(&color,Flags.name); \
-NEWLINE gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(Button.name),&color); 
+   NEWLINE P("%s %s\n",#name,#type); \
+NEWLINE     gdk_rgba_parse(&color,Flags.name); \
+NEWLINE        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(Button.name),&color); 
 
 static void set_buttons1()
 {
    GdkRGBA color; 
    ALL_BUTTONS
 }
-#undef togglecode
-#undef rangecode
-#undef colorcode
+#include "undefall.inc"
 
 // define signal_connect
 
 #define togglecode(type,name,m) \
+   NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE g_signal_connect(G_OBJECT(Button.name),"toggled", G_CALLBACK(buttoncb(type,name)),NULL);
 #define rangecode(type,name,m) \
+   NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE g_signal_connect(G_OBJECT(Button.name),"value-changed", G_CALLBACK(buttoncb(type,name)),NULL);
 #define colorcode(type,name,m)  \
-  NEWLINE g_signal_connect(G_OBJECT(Button.name),"color-set", G_CALLBACK(buttoncb(type,name)),NULL);
+   NEWLINE P("%s %s\n",#name,#type); \
+   NEWLINE g_signal_connect(G_OBJECT(Button.name),"color-set", G_CALLBACK(buttoncb(type,name)),NULL);
 
 static void connect_signals()
 {
+   P("\nstart connect_signals\n\n");
    ALL_BUTTONS
+      P("\nend connect_signals\n\n");
 }
-#undef togglecode
-#undef rangecode
-#undef colorcode
+#include "undefall.inc"
 
 static void report_tree_type(int p, gint active)
 {
@@ -346,8 +337,8 @@ static void report_tree_type(int p, gint active)
    {
       int i;
       for (i=0; i<n; i++)
-	 if(a[i] == p)
-	    a[i] = -1;
+         if(a[i] == p)
+            a[i] = -1;
    }
    int *b = (int *)malloc(sizeof(*b)*n);
    int i,m=0;
@@ -356,16 +347,16 @@ static void report_tree_type(int p, gint active)
       int j;
       int unique = (a[i] >= 0);
       if(unique)
-	 for (j=0; j<m; j++)
-	    if(a[i] == b[j])
-	    {
-	       unique = 0;
-	       break;
-	    }
+         for (j=0; j<m; j++)
+            if(a[i] == b[j])
+            {
+               unique = 0;
+               break;
+            }
       if(unique)
       {
-	 b[m] = a[i];
-	 m++;
+         b[m] = a[i];
+         m++;
       }
    }
    free(Flags.TreeType);
@@ -386,39 +377,21 @@ MODULE_EXPORT void button_tree(GtkWidget *w, UNUSED gpointer d)
    P("button_tree: tree: %d active: %d\n",p,active);
 }
 
-void scenery_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction = 0;
-   Flags.DesiredNumberOfTrees = DEFAULT_DesiredNumberOfTrees; 
-   free(Flags.TreeType);
-   Flags.TreeType                = strdup(DEFAULT_TreeType);
-   Flags.NoTrees                 = DEFAULT_NoTrees;
-   Flags.TreeFill                = DEFAULT_TreeFill;
-   free(Flags.TreeColor);
-   Flags.TreeColor                 = strdup(DEFAULT_TreeColor);
-   if (vintage)
-   {
-      Flags.DesiredNumberOfTrees = VINTAGE_DesiredNumberOfTrees; 
-      free(Flags.TreeType);
-      Flags.TreeType             = strdup(VINTAGE_TreeType);
-   }
-   set_buttons();
-   human_interaction = h;
-}
 
    MODULE_EXPORT
 void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_scenery\n");
-   scenery_default(0);
+   //scenery_default(0);
+   set_default_tab(xsnow_scenery,0);
 }
 
    MODULE_EXPORT
 void button_vintage_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_scenery\n");
-   scenery_default(1);
+   //scenery_default(1);
+   set_default_tab(xsnow_scenery,1);
 }
 
 
@@ -428,18 +401,18 @@ static void init_tree_buttons()
 #define TREE(x) \
    NEWLINE tree_buttons.tree_##x.button = GTK_WIDGET(gtk_builder_get_object(builder,PREFIX_TREE #x));
    TREE_ALL;
-#undef TREE
+#include "undefall.inc"
 #define TREE(x) \
    NEWLINE gtk_widget_set_name(tree_buttons.tree_##x.button,PREFIX_TREE #x);
    TREE_ALL;
-#undef TREE
+#include "undefall.inc"
 }
 
 static void init_santa_pixmaps()
 {
 #define SANTA(x) NEWLINE santa_buttons.santa_ ## x.imid  = (char *)PREFIX_SANTA # x "-imid";
    SANTA_ALL;
-#undef SANTA
+#include "undefall.inc"
 
    int i;
    GtkImage *image; 
@@ -464,7 +437,7 @@ static void init_tree_pixmaps()
    NEWLINE g_object_unref(pixbuf);
 
    TREE_ALL;
-#undef TREE
+#include "undefall.inc"
 }
 
 static void init_hello_pixmaps()
@@ -500,7 +473,7 @@ static void set_tree_buttons()
 #define TREE(x)\
    NEWLINE gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),FALSE);
    TREE_ALL;
-#undef TREE
+#include "undefall.inc"
    int i;
    int *a,n;
    csvpos(Flags.TreeType,&a,&n);
@@ -511,10 +484,10 @@ static void set_tree_buttons()
       switch (a[i])
       {
 #define TREE(x) \
-	 NEWLINE case x: gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),TRUE);\
-		NEWLINE  break;
-	 TREE_ALL;
-#undef TREE
+         NEWLINE case x: gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),TRUE);\
+         NEWLINE  break;
+         TREE_ALL;
+#include "undefall.inc"
       }
    }
    free(a);
@@ -575,13 +548,13 @@ MODULE_EXPORT void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
 
 static void init_general_buttons()
 {
-   general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-0"));
-   general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"general-ww-2"));
+   general_buttons.ww_0.button = GTK_WIDGET(gtk_builder_get_object(builder,"id-ww-0"));
+   general_buttons.ww_2.button = GTK_WIDGET(gtk_builder_get_object(builder,"id-ww-2"));
 
    g_signal_connect(Button.BelowAll, "toggled", G_CALLBACK (button_below), NULL);
    g_signal_connect(Button.BelowConfirm, "toggled", G_CALLBACK(button_below_confirm), NULL);
 
-   gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"general-version")),"xsnow version " VERSION);
+   gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"id-version")),"xsnow version " VERSION);
 
    gtk_widget_set_name(general_buttons.ww_0.button,"ww-0"); 
    gtk_widget_set_name(general_buttons.ww_2.button,"ww-2"); 
@@ -631,42 +604,21 @@ void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
    P("button_quit: %d\n",Flags.Done);
 }
 
-void general_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction      = 0;
-
-   Flags.CpuLoad       = DEFAULT_CpuLoad;
-   Flags.Transparency  = DEFAULT_Transparency;
-   Flags.UseBG         = DEFAULT_UseBG;
-   free(Flags.BGColor);
-   Flags.BGColor       = strdup(DEFAULT_BGColor);
-   Flags.Exposures     = DEFAULT_Exposures;
-   Flags.OffsetS       = DEFAULT_OffsetS;
-   Flags.OffsetY       = DEFAULT_OffsetY;
-   Flags.FullScreen    = DEFAULT_FullScreen;
-   Flags.BelowAll      = DEFAULT_BelowAll;
-   Flags.AllWorkspaces = DEFAULT_AllWorkspaces;
-   Flags.WantWindow    = DEFAULT_WantWindow;
-   if (vintage)
-   {
-   }
-   set_buttons();
-   human_interaction      = h;
-}
 
    MODULE_EXPORT 
 void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general\n");
-   general_default(0);
+   //general_default(0);
+   set_default_tab(xsnow_settings,0);
 }
 
    MODULE_EXPORT 
 void button_vintage_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general vintage\n");
-   general_default(1);
+   //general_default(1);
+   set_default_tab(xsnow_settings,1);
 }
 
 typedef struct _snow_button
@@ -675,54 +627,20 @@ typedef struct _snow_button
 }snow_button;
 
 
-void snow_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction = 0;
-   Flags.BlowSnow          = DEFAULT_BlowSnow;
-   Flags.SnowFlakesFactor  = DEFAULT_SnowFlakesFactor;
-   Flags.SnowSize          = DEFAULT_SnowSize;
-   Flags.NoSnowFlakes      = DEFAULT_NoSnowFlakes;
-   free(Flags.SnowColor);
-   Flags.SnowColor         = strdup(DEFAULT_SnowColor);
-   Flags.SnowSpeedFactor   = DEFAULT_SnowSpeedFactor;
-   Flags.FlakeCountMax     = DEFAULT_FlakeCountMax;
-   Flags.BlowOffFactor     = DEFAULT_BlowOffFactor;
-   Flags.MaxWinSnowDepth   = DEFAULT_MaxWinSnowDepth;
-   Flags.MaxScrSnowDepth   = DEFAULT_MaxScrSnowDepth;
-   Flags.MaxOnTrees        = DEFAULT_MaxOnTrees;
-   Flags.NoKeepSWin        = DEFAULT_NoKeepSWin;
-   Flags.NoKeepSBot        = DEFAULT_NoKeepSBot;
-   Flags.NoKeepSnowOnTrees = DEFAULT_NoKeepSnowOnTrees;
-   Flags.NoFluffy          = DEFAULT_NoFluffy;
-
-   UseVintageFlakes        = 0;
-
-   if(vintage)
-   {
-      Flags.BlowSnow          = VINTAGE_BlowSnow;
-      Flags.SnowFlakesFactor  = VINTAGE_SnowFlakesFactor;
-      Flags.NoKeepSnowOnTrees = VINTAGE_NoKeepSnowOnTrees;
-
-      UseVintageFlakes        = 1;
-
-   }
-   set_buttons();
-   human_interaction = h;
-}
-
    MODULE_EXPORT
 void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_snow\n");
-   snow_default(0);
+   //snow_default(0);
+   set_default_tab(xsnow_snow,0);
 }
 
    MODULE_EXPORT
 void button_vintage_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_snow\n");
-   snow_default(1);
+   //snow_default(1);
+   set_default_tab(xsnow_snow,1);
 }
 
 void ui_set_birds_header(const char *text)
@@ -743,48 +661,18 @@ void ui_set_celestials_header(const char *text)
 }
 
 
-void birds_default(int vintage)
-{
-   int h = human_interaction;
-   human_interaction = 0;
-   if(vintage)
-   {
-      Flags.ShowBirds   = VINTAGE_ShowBirds;
-      Flags.BirdsOnly   = VINTAGE_BirdsOnly;
-   }
-   else
-   {
-      Flags.ShowBirds        = DEFAULT_ShowBirds;
-      Flags.BirdsOnly        = DEFAULT_BirdsOnly;
-      Flags.Nbirds           = DEFAULT_Nbirds;
-      Flags.Neighbours       = DEFAULT_Neighbours;
-      Flags.Anarchy          = DEFAULT_Anarchy;
-      Flags.PrefDistance     = DEFAULT_PrefDistance;
-      Flags.ViewingDistance  = DEFAULT_ViewingDistance;
-      Flags.BirdsSpeed       = DEFAULT_BirdsSpeed;
-      Flags.AttrFactor       = DEFAULT_AttrFactor;
-      Flags.DisWeight        = DEFAULT_DisWeight;
-      Flags.FollowWeight     = DEFAULT_FollowWeight;
-      Flags.ShowAttrPoint    = DEFAULT_ShowAttrPoint;
-      Flags.FollowSanta      = DEFAULT_FollowSanta;
-      Flags.BirdsScale       = DEFAULT_BirdsScale;
-      free(Flags.BirdsColor);
-      Flags.BirdsColor       = strdup(DEFAULT_BirdsColor);
-   }
-   set_buttons();
-   human_interaction = h;
-}
-
 MODULE_EXPORT void button_defaults_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_birds\n");
-   birds_default(0);
+   //birds_default(0);
+   set_default_tab(xsnow_birds,0);
 }
 
 MODULE_EXPORT void button_vintage_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_birds\n");
-   birds_default(1);
+   //birds_default(1);
+   set_default_tab(xsnow_birds,1);
 }
 
 MODULE_EXPORT void button_birds_restart(UNUSED GtkWidget *w, UNUSED gpointer p)
@@ -799,27 +687,60 @@ MODULE_EXPORT void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
    Flags.WindNow = 1;
 }
 
-void celestials_default(int vintage)
+void set_default_tab(int tab, int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
-   Flags.NoWind        = DEFAULT_NoWind;
-   Flags.WhirlFactor   = DEFAULT_WhirlFactor;
-   Flags.WindTimer     = DEFAULT_WindTimer;
-   Flags.NStars        = DEFAULT_NStars;
-   Flags.Stars         = DEFAULT_Stars;
-   Flags.NoMeteorites  = DEFAULT_NoMeteorites;
-   Flags.Moon          = DEFAULT_Moon;
-   Flags.MoonSpeed     = DEFAULT_MoonSpeed;
-   Flags.MoonSize      = DEFAULT_MoonSize;
-   Flags.Halo          = DEFAULT_Halo;
-   Flags.HaloBright    = DEFAULT_HaloBright;
    if(vintage)
    {
-      Flags.Stars          = VINTAGE_Stars;
-      Flags.Stars          = VINTAGE_Stars;
-      Flags.NoMeteorites   = VINTAGE_NoMeteorites;
-      Flags.Moon           = VINTAGE_Moon;
+#define togglecode(type,name,m) \
+      NEWLINE    if (type == tab) Flags.name = VINTAGE(name); 
+#define rangecode togglecode
+#define colorcode(type,name,m) \
+      NEWLINE    if (type == tab) \
+      NEWLINE       { free(Flags.name); Flags.name = strdup(VINTAGE(name)); } 
+
+      ALL_BUTTONS;
+#include "undefall.inc"
+      switch(tab)
+      {
+         case xsnow_scenery:
+            free(Flags.TreeType);
+            Flags.TreeType = strdup(VINTAGE(TreeType));
+            break;
+         case xsnow_snow:
+            Flags.VintageFlakes = 1;
+            break;
+         case xsnow_santa:
+            Flags.SantaSize = VINTAGE(SantaSize);
+            Flags.Rudolf    = VINTAGE(Rudolf);
+            break;
+      }
+   }
+   else
+#define togglecode(type,name,m) \
+      NEWLINE    if (type == tab) Flags.name = DEFAULT(name); 
+#define rangecode togglecode
+#define colorcode(type,name,m) \
+      NEWLINE    if (type == tab) \
+      NEWLINE       { free(Flags.name); Flags.name = strdup(DEFAULT(name)); } 
+   {
+      ALL_BUTTONS;
+#include "undefall.inc"
+      switch(tab)
+      {
+         case xsnow_scenery:
+            free(Flags.TreeType);
+            Flags.TreeType = strdup(DEFAULT(TreeType));
+            break;
+         case xsnow_snow:
+            Flags.VintageFlakes = 0;
+            break;
+         case xsnow_santa:
+            Flags.SantaSize = DEFAULT(SantaSize);
+            Flags.Rudolf    = DEFAULT(Rudolf);
+            break;
+      }
    }
    set_buttons();
    human_interaction = h;
@@ -829,14 +750,16 @@ void celestials_default(int vintage)
 void button_defaults_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_wind\n");
-   celestials_default(0);
+   //celestials_default(0);
+   set_default_tab(xsnow_celestials,0);
 }
 
    MODULE_EXPORT
 void button_vintage_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_wind\n");
-   celestials_default(1);
+   //celestials_default(1);
+   set_default_tab(xsnow_celestials,1);
 }
 
 static void init_buttons()
@@ -860,11 +783,11 @@ static void set_buttons()
 
 void all_default(int vintage)
 {
-   santa_default(vintage);
-   scenery_default(vintage);
-   snow_default(vintage);
-   celestials_default(vintage);
-   birds_default(vintage);
+   set_default_tab(xsnow_santa,vintage);
+   set_default_tab(xsnow_scenery,vintage);
+   set_default_tab(xsnow_snow,vintage);
+   set_default_tab(xsnow_celestials,vintage);
+   set_default_tab(xsnow_birds,vintage);
 }
 
 MODULE_EXPORT void button_all_defaults()
@@ -927,6 +850,9 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    connect_signals();
    init_pixmaps();
    set_buttons();
+
+   if (Flags.HideMenu)
+      gtk_window_iconify(GTK_WINDOW(hauptfenster));
 }
 
 void apply_standard_css()
@@ -1089,13 +1015,13 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
    gtk_container_add (GTK_CONTAINER (window), grid);
 
    snprintf(sbuffer,nsbuffer,
-	 "You are using GTK-%s, but you need at least GTK-%s to view\n"
-	 "the user interface.\n"
-	 "Use the option '-nomenu' to disable the user interface.\n"
-	 "If you want to try the user interface anyway, use the flag '-checkgtk 0'.\n\n"
-	 "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
-	 "Alternatively, you could edit ~/.xsnowrc to set options.\n",
-	 ui_gtk_version(),ui_gtk_required());
+         "You are using GTK-%s, but you need at least GTK-%s to view\n"
+         "the user interface.\n"
+         "Use the option '-nomenu' to disable the user interface.\n"
+         "If you want to try the user interface anyway, use the flag '-checkgtk 0'.\n\n"
+         "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
+         "Alternatively, you could edit ~/.xsnowrc to set options.\n",
+         ui_gtk_version(),ui_gtk_required());
    label = gtk_label_new(sbuffer);
 
    /* Place the label in cell (0,0) and make it fill 2 cells horizontally */

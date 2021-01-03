@@ -4,6 +4,16 @@ version 3.2.1
 	2:fine tuning of ui graphics
 	3:start simplifying ui.c
 	11:finished 3:
+	12:doit.h flags.h: change DOIT macro's
+	13:docs.c:make it better
+	14:add option -hidemenu, add this to xsnow.desktop
+	   better format noisy output
+	   use #include "undefall.inc" to undef frquently used macros
+	15:simplify glade-id's
+	16:stratify ui.c code
+	17:stratify ui.c code
+	18:stratify ui.c code
+
 version 3.2.0
 	1:use 256x256 xpm for moon
 	  start Santa, aware of moon position
