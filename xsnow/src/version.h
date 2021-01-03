@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #-# 
 */
 #pragma once
-#define VERSION "3.2.0"
+#define VERSION "3.2.1"
 #define VERSIONBY \
    "December 14th 2001 by Rick Jansen \n" \
-   "December 2020 by Willem Vermin"
+   "January 2021 by Willem Vermin"

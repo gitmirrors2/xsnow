@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -297,6 +297,7 @@ int main_c(int argc, char *argv[])
    Argv[argc] = NULL;
    Argc = argc;
 
+   InitFlags();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
    // gtk_init() would fail.
@@ -334,7 +335,6 @@ int main_c(int argc, char *argv[])
       IsWayland = 0;
 
    gtk_init(&argc, &argv);
-   InitFlags();
    int rc = HandleFlags(argc, argv);
    switch(rc)
    {
@@ -461,13 +461,11 @@ int main_c(int argc, char *argv[])
 
    HandleCpuFactor();
 
-#define DOIT_I(x) OldFlags.x = Flags.x;
-#define DOIT_L(x) DOIT_I(x);
-#define DOIT_S(x) OldFlags.x = strdup(Flags.x);
+#define DOIT_I(x,d,v) OldFlags.x = Flags.x;
+#define DOIT_L(x,d,v) DOIT_I(x,d,v);
+#define DOIT_S(x,d,v) OldFlags.x = strdup(Flags.x);
    DOITALL;
-#undef DOIT_I
-#undef DOIT_L
-#undef DOIT_S
+#include "undefall.inc"
 
 
    OldFlags.FullScreen = !Flags.FullScreen;

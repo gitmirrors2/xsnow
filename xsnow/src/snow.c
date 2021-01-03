@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -80,7 +80,6 @@ Pixel        SnowcPix;
 unsigned int MaxSnowFlakeHeight = 0;  /* Highest flake */
 unsigned int MaxSnowFlakeWidth  = 0;  /* Widest  flake */
 int          FlakeCount         = 0;  /* # active flakes */
-int          UseVintageFlakes   = 0;  /* whether to use only vintage flakes */
 int          FluffCount         = 0;
 
 void snow_init()
@@ -174,10 +173,12 @@ int snow_ui()
    UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
    UIDOS(SnowColor                      ,
 	 InitSnowColor();
-	 ClearScreen();                                               );
+	 ClearScreen();                                            );
    UIDO (SnowSpeedFactor                , InitSnowSpeedFactor();   );
    UIDO (FlakeCountMax                  ,                          );
-   UIDO (SnowSize                       , SetSnowSize();           );
+   UIDO (SnowSize                       , 
+	 SetSnowSize(); 
+	 Flags.VintageFlakes = 0;                                  );
 
    return changes;
 }
@@ -624,7 +625,7 @@ Snow *MakeFlake(int type)
    FlakeCount++; 
    if (type < 0)
    {
-      if (UseVintageFlakes)
+      if (Flags.VintageFlakes)
 	 type = drand48()*NFlakeTypesVintage;
       else
 	 type = NFlakeTypesVintage + drand48()*(MaxFlakeTypes - NFlakeTypesVintage);

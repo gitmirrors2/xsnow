@@ -4,7 +4,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -235,11 +235,11 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="santaspeedadjustment">
-    <property name="lower">1</property>
-    <property name="upper">3</property>
+    <property name="lower">20</property>
+    <property name="upper">400</property>
     <property name="value">2</property>
-    <property name="step_increment">0.01</property>
-    <property name="page_increment">0.10000000000000001</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">5</property>
   </object>
   <object class="GtkAdjustment" id="snow-blow-adjustment">
     <property name="lower">10</property>
@@ -695,13 +695,12 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
                 <child>
                   <object class="GtkImage" id="hello-image1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">60</property>
-                    <property name="stock">gtk-missing-image</property>
+                    <property name="pixel_size">64</property>
+                    <property name="icon_name">applications-games</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -715,6 +714,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">24</property>
                     <property name="margin_right">24</property>
+                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Welcome at xsnow!</property>
                     <attributes>
                       <attribute name="scale" value="2"/>
@@ -730,7 +730,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
+                    <property name="pixel_size">64</property>
+                    <property name="icon_name">applications-games</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -752,7 +753,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
+                    <property name="pixel_size">64</property>
+                    <property name="icon_name">applications-games</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -765,6 +767,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
+                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Vintage preferences: the look and feel of the original xsnow, created in 1993 by Rick Jansen.</property>
                     <property name="justify">fill</property>
                     <property name="wrap">True</property>
@@ -780,7 +783,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
+                    <property name="pixel_size">64</property>
+                    <property name="icon_name">applications-games</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1028,7 +1032,33 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Blow off </property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Blow off:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">On windows:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">On bottom:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -1039,135 +1069,86 @@ You could adapt some things in "snow", "birds" or "settings".</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">On windows</property>
+                <property name="label" translatable="yes">On scenery:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">On bottom</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">On scenery</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="snow-show">
+              <object class="GtkToggleButton" id="id-NoSnowFlakes">
                 <property name="label" translatable="yes">Show snow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show snowflakes.</property>
-                <property name="halign">start</property>
                 <property name="valign">center</property>
-                <signal name="toggled" handler="button_snow_show_snow" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">4</property>
-                <property name="width">2</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-show-blowoff">
+              <object class="GtkToggleButton" id="id-BlowSnow">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show snow blowing away.</property>
-                <property name="halign">start</property>
                 <property name="valign">center</property>
-                <signal name="toggled" handler="button_snow_show_blowoff" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">6</property>
-                <property name="width">2</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-windows-show">
+              <object class="GtkToggleButton" id="id-NoKeepSWin">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fallen snow on windows.</property>
-                <property name="halign">start</property>
-                <signal name="toggled" handler="button_snow_windows_show" swapped="no"/>
+                <property name="valign">center</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">8</property>
-                <property name="width">2</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-bottom-show">
+              <object class="GtkToggleButton" id="id-NoKeepSBot">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, show fallen snow on bottom of the desktop.</property>
-                <property name="halign">start</property>
-                <signal name="toggled" handler="button_snow_bottom_show" swapped="no"/>
+                <property name="valign">center</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">9</property>
-                <property name="width">2</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-trees-show">
+              <object class="GtkToggleButton" id="id-NoKeepSnowOnTrees">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">If set, snow will collect on the trees.</property>
-                <property name="halign">start</property>
-                <signal name="toggled" handler="button_snow_trees_show" swapped="no"/>
+                <property name="valign">center</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">10</property>
-                <property name="width">2</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="snow-fluff-show">
-                <property name="label" translatable="yes">Show fluff</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">If set, try to show fluff on fallen snow and trees if possible.</property>
-                <property name="halign">start</property>
-                <property name="margin_right">8</property>
-                <signal name="toggled" handler="button_snow_fluff_show" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="snow-blowoff-intensity">
+              <object class="GtkScale" id="id-BlowOffFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will be generated because of Santa ploughing, wind or disappearing windows.</property>
@@ -1176,15 +1157,15 @@ You could adapt some things in "snow", "birds" or "settings".</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_snow_blowoff_intensity" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-windows">
+              <object class="GtkScale" id="id-MaxWinSnowDepth">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the windows.
@@ -1193,15 +1174,15 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_snow_windows" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">8</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-bottom">
+              <object class="GtkScale" id="id-MaxScrSnowDepth">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the bottom of the desktop.</property>
@@ -1209,15 +1190,15 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_snow_bottom" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">9</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="snow-trees">
+              <object class="GtkScale" id="id-MaxOnTrees">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The higher this setting, the more snow will collect on the trees.</property>
@@ -1225,18 +1206,19 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_snow_trees" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">40</property>
                 <property name="label" translatable="yes">Choose your favorite snow</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -1258,7 +1240,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -1303,7 +1285,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1330,7 +1312,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">13</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1376,7 +1358,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">13</property>
+                <property name="top_attach">12</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -1403,181 +1385,12 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">14</property>
+                <property name="top_attach">13</property>
                 <property name="width">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkScale" id="snow-size">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.</property>
-                    <property name="valign">center</property>
-                    <property name="adjustment">snow-size-adjustment</property>
-                    <property name="round_digits">0</property>
-                    <property name="digits">0</property>
-                    <property name="has_origin">False</property>
-                    <signal name="value-changed" handler="button_snow_size" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="snow-speed">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Speed of the snowflakes.</property>
-                    <property name="valign">center</property>
-                    <property name="adjustment">snow-speed-adjustment</property>
-                    <property name="round_digits">0</property>
-                    <property name="digits">0</property>
-                    <property name="has_origin">False</property>
-                    <signal name="value-changed" handler="button_snow_speed" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="flake-count-max">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Maximum amount of snowflakes.</property>
-                    <property name="valign">center</property>
-                    <property name="adjustment">flake-count-max-adjustment</property>
-                    <property name="round_digits">0</property>
-                    <property name="digits">0</property>
-                    <property name="has_origin">False</property>
-                    <signal name="value-changed" handler="button_flake_count_max" swapped="no"/>
-                    <style>
-                      <class name="cpuload"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="nflakes">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">label</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Size</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Speed</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Max # flakes</property>
-                    <property name="justify">right</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">Actual # flakes</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="snow-intensity">
+              <object class="GtkScale" id="id-SnowFlakesFactor">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1587,52 +1400,55 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="round_digits">1</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_snow_intensity" swapped="no"/>
+                <property name="value_pos">left</property>
                 <style>
                   <class name="cpuload"/>
                 </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Intensity</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Intensity:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Color</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Color:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
-              <object class="GtkColorButton" id="snow-color">
+              <object class="GtkColorButton" id="id-SnowColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">The color of the snow.</property>
-                <property name="halign">start</property>
+                <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="show_editor">True</property>
-                <signal name="color-set" handler="button_snow_color" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -1644,8 +1460,152 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">12</property>
+                <property name="top_attach">11</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Size:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-SnowSize">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.</property>
+                <property name="valign">center</property>
+                <property name="adjustment">snow-size-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Speed:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-SnowSpeedFactor">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Speed of the snowflakes.</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="adjustment">snow-speed-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Max # flakes:</property>
+                <property name="justify">right</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-FlakeCountMax">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Maximum amount of snowflakes.</property>
+                <property name="valign">center</property>
+                <property name="adjustment">flake-count-max-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+                <style>
+                  <class name="cpuload"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="width_request">60</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes"># Flakes:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="nflakes">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="id-NoFluffy">
+                <property name="label" translatable="yes">Show fluff</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">If set, try to show fluff on fallen snow and trees if possible.</property>
+                <property name="valign">center</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -2012,7 +1972,8 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">40</property>
                 <property name="label" translatable="yes">Choose your favorite Santa</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -2037,34 +1998,14 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkRadioButton" id="santa-show">
-                <property name="label" translatable="yes">No Santa</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="halign">end</property>
-                <property name="margin_right">8</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">False</property>
-                <property name="group">santa-0</property>
-                <signal name="toggled" handler="button_santa_show" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="margin_right">8</property>
-                <property name="margin_top">8</property>
-                <property name="margin_bottom">8</property>
-                <property name="label" translatable="yes">Santa speed</property>
+                <property name="label" translatable="yes">Speed:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -2072,7 +2013,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="santa-speed">
+              <object class="GtkScale" id="id-SantaSpeedFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Santa's speed.</property>
@@ -2080,10 +2021,10 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="margin_left">8</property>
                 <property name="margin_right">8</property>
                 <property name="adjustment">santaspeedadjustment</property>
-                <property name="fill_level">3</property>
+                <property name="fill_level">1000</property>
                 <property name="round_digits">2</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_santa_speed" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -2237,6 +2178,22 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
+              <object class="GtkToggleButton" id="id-NoSanta">
+                <property name="label" translatable="yes">Show</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">end</property>
+                <property name="margin_right">8</property>
+                <property name="margin_top">1</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">8</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
               <placeholder/>
             </child>
             <child>
@@ -2280,76 +2237,7 @@ Note: in Wayland, there is no snow on the windows.</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="label" translatable="yes">Number of items</property>
-                <property name="wrap">True</property>
-                <property name="max_width_chars">10</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="tree-ntrees">
-                <property name="height_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Desired number of scenery items.</property>
-                <property name="halign">start</property>
-                <property name="orientation">vertical</property>
-                <property name="adjustment">ntreesadjustment</property>
-                <property name="inverted">True</property>
-                <property name="fill_level">100</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <property name="value_pos">right</property>
-                <signal name="value-changed" handler="button_ntrees" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">% Window fill</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="tree-fill">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Bottom percentage of screen available for scenery.</property>
-                <property name="halign">end</property>
-                <property name="orientation">vertical</property>
-                <property name="adjustment">treewindowfilladjustment</property>
-                <property name="inverted">True</property>
-                <property name="fill_level">100</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <property name="value_pos">left</property>
-                <signal name="value-changed" handler="button_tree_fill" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="tree-show">
+              <object class="GtkToggleButton" id="id-NoTrees">
                 <property name="label" translatable="yes">Show  scenery</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2357,7 +2245,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="tooltip_text" translatable="yes">To show or not to show scenery.</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <signal name="clicked" handler="button_show_trees" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">4</property>
@@ -2506,7 +2393,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkColorButton" id="tree-treecolor0">
+              <object class="GtkColorButton" id="id-TreeColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2514,7 +2401,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="show_editor">True</property>
-                <signal name="color-set" handler="button_tree_color" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -2547,7 +2433,8 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">40</property>
                 <property name="label" translatable="yes">Compose your favorite scenery</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -2583,7 +2470,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -2591,7 +2478,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Moose.</property>
+                <property name="tooltip_text" translatable="yes">Polar bear.</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage7">
@@ -2648,7 +2535,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">11</property>
                 <property name="width">3</property>
               </packing>
             </child>
@@ -2675,7 +2562,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">3</property>
               </packing>
             </child>
@@ -2721,7 +2608,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">10</property>
+                <property name="top_attach">11</property>
                 <property name="width">4</property>
               </packing>
             </child>
@@ -2748,9 +2635,104 @@ Note: in Wayland, there is no snow on the windows.</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">12</property>
                 <property name="width">4</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes"># Items:</property>
+                    <property name="wrap">True</property>
+                    <property name="max_width_chars">10</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-DesiredNumberOfTrees">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Desired number of scenery items.</property>
+                    <property name="halign">start</property>
+                    <property name="margin_left">8</property>
+                    <property name="adjustment">ntreesadjustment</property>
+                    <property name="fill_level">100</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="margin_left">12</property>
+                    <property name="label" translatable="yes">% Window fill:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-TreeFill">
+                    <property name="width_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Bottom percentage of screen available for scenery.</property>
+                    <property name="halign">end</property>
+                    <property name="margin_left">8</property>
+                    <property name="adjustment">treewindowfilladjustment</property>
+                    <property name="fill_level">100</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">7</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -3096,7 +3078,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="wind-windy">
+                  <object class="GtkToggleButton" id="id-NoWind">
                     <property name="label" translatable="yes">Windy</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3104,7 +3086,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">If set, there will be wind.</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_wind_windy" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3128,7 +3109,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="wind-whirl">
+                  <object class="GtkScale" id="id-WhirlFactor">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3139,7 +3120,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_wind_whirl" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3164,7 +3144,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="wind-timer">
+                  <object class="GtkScale" id="id-WindTimer">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3175,7 +3155,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_wind_timer" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3229,7 +3208,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="stars-show">
+                  <object class="GtkToggleButton" id="id-Stars">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3237,7 +3216,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">To show or not show stars.</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_stars_show" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3252,7 +3230,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="can_focus">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Number:</property>
-                    <property name="wrap">True</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -3262,7 +3239,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="stars-nstars">
+                  <object class="GtkScale" id="id-NStars">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3273,7 +3250,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_star_nstars" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3344,7 +3320,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="meteo-show">
+                  <object class="GtkToggleButton" id="id-NoMeteorites">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3353,7 +3329,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="tooltip_text" translatable="yes">To show or not to show meteorites,</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_meteo_show" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -3393,7 +3368,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="moon-show">
+                  <object class="GtkToggleButton" id="id-Moon">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3402,7 +3377,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="tooltip_text" translatable="yes">To show or not show moon</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_moon_show" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -3424,7 +3398,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="moon-speed">
+                  <object class="GtkScale" id="id-MoonSpeed">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3435,7 +3409,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_moon_speed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
@@ -3443,7 +3416,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="halo-show">
+                  <object class="GtkToggleButton" id="id-Halo">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
@@ -3452,7 +3425,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="tooltip_text" translatable="yes">To show or not to show halo around moon.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_halo_show" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -3476,7 +3448,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="moon-size">
+                  <object class="GtkScale" id="id-MoonSize">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3487,7 +3459,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_moon_size" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">5</property>
@@ -3523,7 +3494,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="halo-bright">
+                  <object class="GtkScale" id="id-HaloBright">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Brightness of moon's halo.</property>
@@ -3533,7 +3504,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">left</property>
-                    <signal name="value-changed" handler="button_halo_bright" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
@@ -3616,7 +3586,8 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel" id="birds-header">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">40</property>
                 <property name="label" translatable="yes">Birds settings</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -3771,7 +3742,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-show">
+              <object class="GtkToggleButton" id="id-ShowBirds">
                 <property name="label" translatable="yes">Show birds</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3779,7 +3750,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="tooltip_text" translatable="yes">If set: show birds.</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <signal name="toggled" handler="button_birds_show" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3787,7 +3757,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-only">
+              <object class="GtkToggleButton" id="id-BirdsOnly">
                 <property name="label" translatable="yes">Birds only</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3795,7 +3765,6 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="tooltip_text" translatable="yes">If set: show no Santa, snow or scenery.</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <signal name="toggled" handler="button_birds_only" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3806,9 +3775,9 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Preferred distance</property>
+                <property name="label" translatable="yes">Preferred distance:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3816,7 +3785,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-prefdistance">
+              <object class="GtkScale" id="id-PrefDistance">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3825,7 +3794,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_prefdistance" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3845,7 +3814,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="birds-restart">
+              <object class="GtkButton" id="id-restart">
                 <property name="label" translatable="yes">Restart</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3864,9 +3833,9 @@ Note: in Wayland, there is no snow on the windows.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Viewing distance</property>
+                <property name="label" translatable="yes">Viewing distance:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3874,7 +3843,7 @@ Note: in Wayland, there is no snow on the windows.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-viewingdistance">
+              <object class="GtkScale" id="id-ViewingDistance">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Viewing distance.
@@ -3883,7 +3852,7 @@ NOTE: Santa has no knowledge of viewing distance, so when birds are following Sa
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_viewingdistance" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3924,40 +3893,10 @@ NOTE: Santa has no knowledge of viewing distance, so when birds are following Sa
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Speed</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-speed">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Speed of birds in arbitrary units.</property>
-                <property name="adjustment">birds-speed-adjustment</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_speed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Focus to attraction
-point</property>
+                <property name="label" translatable="yes">Focus to 
+attraction point:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3965,7 +3904,7 @@ point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-attraction">
+              <object class="GtkScale" id="id-AttrFactor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Eagerness to concentrate on common attraction point</property>
@@ -3973,7 +3912,7 @@ point</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_attraction" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3981,37 +3920,7 @@ point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="birds-disweight">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Eagerness to keep desired distance to neighbours.</property>
-                <property name="adjustment">birds-distance-weight-adjustment</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_disweight" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Distance weight</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-nbirds">
+              <object class="GtkScale" id="id-Nbirds">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4020,7 +3929,7 @@ point</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_nbirds" swapped="no"/>
+                <property name="value_pos">left</property>
                 <style>
                   <class name="cpuload"/>
                 </style>
@@ -4034,9 +3943,9 @@ point</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Number of birds</property>
+                <property name="label" translatable="yes"># Birds:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -4044,37 +3953,7 @@ point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Anarchy</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-anarchy">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Anarchy level: the higher, the more anarchy</property>
-                <property name="adjustment">birds-anarchy-adjustment</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_anarchy" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-neighbours">
+              <object class="GtkScale" id="id-Neighbours">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -4083,7 +3962,7 @@ point</property>
                 <property name="round_digits">0</property>
                 <property name="digits">0</property>
                 <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_neighbours" swapped="no"/>
+                <property name="value_pos">left</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -4094,9 +3973,9 @@ point</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Neighbours</property>
+                <property name="label" translatable="yes">Neighbours:</property>
+                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -4104,37 +3983,7 @@ point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Adjust speed to
-neighbours</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-followweight">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Eagerness to adjust speed to neighbours.</property>
-                <property name="adjustment">birds-follow-adjustment</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_follow_weight" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkColorButton" id="birds-color">
+              <object class="GtkColorButton" id="id-BirdsColor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -4143,7 +3992,6 @@ neighbours</property>
                 <property name="valign">center</property>
                 <property name="rgba">rgb(0,0,0)</property>
                 <property name="show_editor">True</property>
-                <signal name="color-set" handler="button_birds_color" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -4154,58 +4002,11 @@ neighbours</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Bird color</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="birds-show-attr">
-                <property name="label" translatable="yes">Show 
-attr point</property>
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Show the point where the birds want to go.</property>
-                <signal name="toggled" handler="button_birds_attr" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Drawing scale</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="birds-scale">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Influence the size of the birds.</property>
-                <property name="adjustment">birds-scale-adjustment</property>
-                <property name="round_digits">0</property>
-                <property name="digits">0</property>
-                <property name="has_origin">False</property>
-                <signal name="value-changed" handler="button_birds_scale" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
                 <property name="top_attach">8</property>
               </packing>
             </child>
@@ -4221,7 +4022,173 @@ attr point</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="birds-follow-santa">
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Anarchy:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-Anarchy">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Anarchy level: the higher, the more anarchy</property>
+                <property name="adjustment">birds-anarchy-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Distance weight:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-DisWeight">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Eagerness to keep desired distance to neighbours.</property>
+                <property name="adjustment">birds-distance-weight-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Adjust speed to
+neighbours:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-FollowWeight">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Eagerness to adjust speed to neighbours.</property>
+                <property name="adjustment">birds-follow-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Speed:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-BirdsSpeed">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Speed of birds in arbitrary units.</property>
+                <property name="adjustment">birds-speed-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Drawing scale:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-BirdsScale">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Influence the size of the birds.</property>
+                <property name="adjustment">birds-scale-adjustment</property>
+                <property name="round_digits">0</property>
+                <property name="digits">0</property>
+                <property name="has_origin">False</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="id-ShowAttrPoint">
+                <property name="label" translatable="yes">Show 
+attr point</property>
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Show the point where the birds want to go.</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="id-FollowSanta">
                 <property name="label" translatable="yes">Follow 
 Santa</property>
                 <property name="width_request">100</property>
@@ -4229,11 +4196,10 @@ Santa</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Birds are attracted by an attraction point. Here you can choose to let Santa be the attraction point.</property>
-                <signal name="toggled" handler="button_birds_follow_santa" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">7</property>
+                <property name="top_attach">8</property>
               </packing>
             </child>
             <child>
@@ -4298,7 +4264,7 @@ Santa</property>
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <child>
-              <object class="GtkLabel" id="general-version">
+              <object class="GtkLabel" id="id-version">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">version</property>
@@ -4313,7 +4279,8 @@ Santa</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">8</property>
+                <property name="margin_bottom">20</property>
                 <property name="label" translatable="yes">Settings</property>
                 <attributes>
                   <attribute name="scale" value="1.5"/>
@@ -4346,7 +4313,7 @@ Santa</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkToggleButton" id="general-allworkspaces">
+                  <object class="GtkToggleButton" id="id-AllWorkspaces">
                     <property name="label" translatable="yes">On all
 workspaces</property>
                     <property name="visible">True</property>
@@ -4356,7 +4323,6 @@ workspaces</property>
 NOTE: this doesn't work properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_allworkspaces" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4365,7 +4331,7 @@ NOTE: this doesn't work properly in enlightenment.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-fullscreen">
+                  <object class="GtkToggleButton" id="id-FullScreen">
                     <property name="label" translatable="yes">Full
 screen</property>
                     <property name="visible">True</property>
@@ -4375,7 +4341,6 @@ screen</property>
 NOTE: this doesn't work properly in enlightenment.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_fullscreen" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4384,7 +4349,7 @@ NOTE: this doesn't work properly in enlightenment.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-below">
+                  <object class="GtkToggleButton" id="id-BelowAll">
                     <property name="label" translatable="yes">Below
 windows</property>
                     <property name="visible">True</property>
@@ -4395,7 +4360,6 @@ On some desktop environments, when snowing above your windows you will not be ab
 Therefore, you will be asked to click a button, to be sure that things are OK.</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_below" swapped="no"/>
                     <style>
                       <class name="below"/>
                     </style>
@@ -4407,13 +4371,13 @@ Therefore, you will be asked to click a button, to be sure that things are OK.</
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="general-below-confirm">
-                    <property name="label" translatable="yes">Click to 
+                  <object class="GtkToggleButton" id="id-BelowConfirm">
+                    <property name="label" translatable="yes">Click to
 confirm</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="button_below_confirm" swapped="no"/>
+                    <property name="tooltip_text" translatable="yes">To make sure you can click.</property>
                     <style>
                       <class name="confirm"/>
                     </style>
@@ -4429,9 +4393,10 @@ confirm</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">cpu
- factor</property>
+                    <property name="label" translatable="yes">Cpu
+ factor:</property>
                     <property name="width_chars">6</property>
+                    <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4440,9 +4405,9 @@ confirm</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-cpuload">
+                  <object class="GtkScale" id="id-CpuLoad">
                     <property name="name">general-cpuload</property>
-                    <property name="width_request">90</property>
+                    <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">The higher, the smoother xsnow will run, but will also use more cpu power.</property>
@@ -4451,7 +4416,7 @@ confirm</property>
                     <property name="round_digits">0</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
-                    <signal name="value-changed" handler="button_cpuload" swapped="no"/>
+                    <property name="value_pos">left</property>
                     <style>
                       <class name="cpuload"/>
                     </style>
@@ -4487,7 +4452,7 @@ confirm</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-transparency">
+                  <object class="GtkScale" id="id-Transparency">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Transparency of painted items:
@@ -4500,7 +4465,6 @@ confirm</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">right</property>
-                    <signal name="value-changed" handler="button_transparency" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4524,7 +4488,7 @@ on bottom</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-lift">
+                  <object class="GtkScale" id="id-OffsetS">
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4540,7 +4504,6 @@ or fallen snow hides something that should not be hidden.</property>
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">right</property>
-                    <signal name="value-changed" handler="button_lift" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4564,7 +4527,7 @@ on windows</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="general-lift-windows">
+                  <object class="GtkScale" id="id-OffsetY">
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4580,7 +4543,6 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                     <property name="digits">0</property>
                     <property name="has_origin">False</property>
                     <property name="value_pos">right</property>
-                    <signal name="value-changed" handler="button_lift_windows" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4716,7 +4678,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                 </child>
               </object>
               <packing>
-                <property name="left_attach">9</property>
+                <property name="left_attach">8</property>
                 <property name="top_attach">19</property>
                 <property name="width">8</property>
               </packing>
@@ -4804,7 +4766,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                 </child>
               </object>
               <packing>
-                <property name="left_attach">9</property>
+                <property name="left_attach">8</property>
                 <property name="top_attach">18</property>
                 <property name="width">8</property>
               </packing>
@@ -4838,7 +4800,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="general-ww-0">
+                  <object class="GtkRadioButton" id="id-ww-0">
                     <property name="label" translatable="yes">GTK/Cairo</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4859,7 +4821,7 @@ buffer and paint this at about 25 times per second, along with the birds.</prope
                   <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="general-ww-2">
+                  <object class="GtkRadioButton" id="id-ww-2">
                     <property name="label" translatable="yes">X11</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4868,7 +4830,7 @@ buffer and paint this at about 25 times per second, along with the birds.</prope
 Drawing and erasing will be done by X11 functions.</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">False</property>
-                    <property name="group">general-ww-0</property>
+                    <property name="group">id-ww-0</property>
                     <signal name="toggled" handler="button_ww" swapped="no"/>
                   </object>
                   <packing>
@@ -4905,13 +4867,12 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-usebg">
+                  <object class="GtkToggleButton" id="id-UseBG">
                     <property name="label" translatable="yes">Use color</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Use the specified color to erase.</property>
-                    <signal name="toggled" handler="button_use_bgcolor" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4920,7 +4881,7 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkColorButton" id="general-bgcolor">
+                  <object class="GtkColorButton" id="id-BGColor">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -4928,7 +4889,6 @@ Drawing and erasing will be done by X11 functions.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <property name="show_editor">True</property>
-                    <signal name="color-set" handler="button_bgcolor" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -4937,14 +4897,13 @@ Drawing and erasing will be done by X11 functions.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="general-exposures">
+                  <object class="GtkToggleButton" id="id-Exposures">
                     <property name="label" translatable="yes">Use exposures</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">If set, xsnow will ask the X server to generate exposure events when painting or erasing.</property>
                     <property name="valign">center</property>
-                    <signal name="toggled" handler="button_exposures" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

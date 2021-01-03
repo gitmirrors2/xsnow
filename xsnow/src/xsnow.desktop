@@ -9,8 +9,13 @@ Terminal=false
 Name[en_US]=xsnow
 Keywords=christmas;santa;snow
 Version=1.0
-Actions=new-window;
+StartupNotify=true
+Actions=start;nomenu;
 
-[Desktop Action new-window]
-Name=Open a New Window
+[Desktop Action start]
+Name=Start xsnow
 Exec=xsnow
+
+[Desktop Action nomenu]
+Name=Start without menu
+Exec=xsnow -hidemenu

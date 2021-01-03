@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020 Willem Vermin
+#-# 	      2019,2020,2021 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -53,13 +53,11 @@ static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
-#define DOIT_I(x) Flags.x = DEFAULT_ ## x ;
-#define DOIT_S(x) free(Flags.x); Flags.x = strdup(DEFAULT_ ## x);
-#define DOIT_L(x) DOIT_I(x)
+#define DOIT_I(x,d,v) Flags.x = Flags.default_## x ;
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.default_## x);
+#define DOIT_L(x,d,v) DOIT_I(x,d,v)
    DOITALL;
-#undef DOIT_I
-#undef DOIT_L
-#undef DOIT_S
+#include "undefall.inc"
 }
 
 // return value:
@@ -71,13 +69,11 @@ void SetDefaultFlags()
 void InitFlags()
 {
    // to make sure that strings in Flags are malloc'd
-#define DOIT_I(x)  Flags.x = 0;
-#define DOIT_S(x)  Flags.x = strdup("");
-#define DOIT_L(x) DOIT_I(x)
+#define DOIT_I(x,d,v)  Flags.x = 0; Flags.default_##x=d; Flags.vintage_##x=v;
+#define DOIT_L DOIT_I
+#define DOIT_S(x,d,v)  Flags.x = strdup(""); Flags.default_##x=strdup(d); Flags.vintage_##x=strdup(v);
    DOITALL;
-#undef DOIT_I
-#undef DOIT_L
-#undef DOIT_S
+#include "undefall.inc"
 }
 
 #define handlestring(x) checkax; free(Flags.x); Flags.x = strdup(argv[++ax])
@@ -161,19 +157,11 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSnowOnTrees = 0;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-	    Flags.BlowSnow                 = VINTAGE_BlowSnow;
-	    Flags.DesiredNumberOfTrees     = VINTAGE_DesiredNumberOfTrees;
-	    Flags.Moon                     = VINTAGE_Moon;
-	    Flags.NoKeepSnowOnTrees        = VINTAGE_NoKeepSnowOnTrees;
-	    Flags.NoMeteorites             = VINTAGE_NoMeteorites;
-	    Flags.Rudolf                   = VINTAGE_Rudolf;
-	    Flags.SantaSize                = VINTAGE_SantaSize;
-	    Flags.SnowFlakesFactor         = VINTAGE_SnowFlakesFactor;
-	    Flags.Stars                    = VINTAGE_Stars;
-	    free(Flags.TreeType);
-	    Flags.TreeType                 = strdup(VINTAGE_TreeType);
-	    Flags.ShowBirds                = 0;
-	    Flags.BirdsOnly                = 0;
+#define DOIT_I(x,d,v) Flags.x = Flags.vintage_##x;
+#define DOIT_L DOIT_I
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.vintage_##x);
+	    DOITALL
+#include "undefall.inc"
 	 }
 	 else if (strcmp(arg, "-desktop") == 0) {
 	    Flags.Desktop = 1;
@@ -226,6 +214,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );
 	 handle_iv(-noexposures         ,Exposures                ,False  );
 	 handle_iv(-fluffy              ,NoFluffy                 ,0      );
+	 handle_iv(-hidemenu            ,HideMenu                 ,1      );
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
 	 handle_iv(-noisy               ,Noisy                    ,1      );
 	 handle_iv(-nokeepsnowonscreen  ,NoKeepSBot               ,1      );
@@ -286,7 +275,9 @@ int HandleFlags(int argc, char*argv[])
    if (!strcmp(Flags.TreeType,"all"))
    {
       free(Flags.TreeType);
-      Flags.TreeType = strdup(ALLTREETYPES);
+      Flags.TreeType = (char*) malloc(1+2+sizeof(Flags.default_TreeType));
+      Flags.TreeType = strdup("0,");
+      strcat(Flags.TreeType,Flags.default_TreeType);
    }
    if (Flags.SnowSize > 40)
    {
@@ -353,7 +344,7 @@ void ReadFlags()
    if (!FlagsFileAvailable)
       return;
    doc = xmlParseFile(FlagsFile);
-#define DOIT_I(x) \
+#define DOIT_I(x,d,v) \
    /* printf("%d:DOIT_I:%s\n",__LINE__,#x); */ \
    result = getnodeset(doc, BAD_CAST "//" # x); \
    if (result) {\
@@ -368,8 +359,8 @@ void ReadFlags()
       xmlFree(value); \
       xmlXPathFreeObject(result); \
    } 
-#define DOIT_L(x) DOIT_I(x)
-#define DOIT_S(x) \
+#define DOIT_L(x,d,v) DOIT_I(x,d,v)
+#define DOIT_S(x,d,v) \
    /* printf("%d:DOIT_S:%s\n",__LINE__,#x); */ \
    result = getnodeset(doc, BAD_CAST "//" # x); \
    if (result) {\
@@ -386,9 +377,7 @@ void ReadFlags()
    } 
    DOIT;
    //printf("%d\n",__LINE__);
-#undef DOIT_I
-#undef DOIT_L
-#undef DOIT_S
+#include "undefall.inc"
    xmlFreeDoc(doc);
    xmlCleanupParser();
 }
@@ -408,13 +397,11 @@ void WriteFlags()
    root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
    xmlDocSetRootElement(doc, root_node);
 
-#define DOIT_I(x) myxmlNewChild(root_node,NULL,(char *)# x,Flags.x,(char *)"%d");
-#define DOIT_L(x) DOIT_I(x)
-#define DOIT_S(x) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
+#define DOIT_I(x,d,v) myxmlNewChild(root_node,NULL,(char *)# x,Flags.x,(char *)"%d");
+#define DOIT_L(x,d,v) DOIT_I(x,d,v)
+#define DOIT_S(x,d,v) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
    DOIT;
-#undef DOIT_I
-#undef DOIT_L
-#undef DOIT_S
+#include "undefall.inc"
 
    makeflagsfile();
    if (!FlagsFileAvailable) 

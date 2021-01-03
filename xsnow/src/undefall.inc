@@ -1,4 +1,3 @@
-/* XPM */
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -19,23 +18,13 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
-XPM_TYPE *RegularSanta2[] = {
-/* width height num_colors chars_per_pixel */
-"    56     8        6            1",
-/* colors */
-". c #ffffff",
-"# c #ff9999",
-"a c #ff0000",
-"b c None",
-"c c #663333",
-"d c #000000",
-/* pixels */
-"bbbaa.bbbbbbbbbbbbbbbbbbbbbcbbbbbbbbbbbbbcbbbbbbbbbbbbbc",
-"bb.b#bbbbbbbbbbbbbbbbbbbcbcbbbbbbbbbbbcbcbbbbbbbbbbbcbcb",
-"bbbb#ab.bbbbbbbbbbbbbbbbbcbbbbbbbbbbbbbcbbbbbbbbbbbbbcbb",
-"bdbbaaabddbbbbbbbbbbcbbbbcbbbbbbbbcbbbbcbbbbbbbbcbbbbcbb",
-"bdb...adbbddbdbbdbbbbcccccbbbdbdbbbcccccbbbdbdbbbcccccbb",
-"bddddadbbbdbbbbbbbbbbccbcbbbbbbbbbbccbcbbbbbbbbbbccbcbbb",
-"bbdbdbabbddbbbbbbbbbbcbbcbbbbbbbbbbcbbcbbbbbbbbbbcbbcbbb",
-"ddddddddddbbbbbbbbbbbcbbcbbbbbbbbbbcbbcbbbbbbbbbbcbbcbbb"
-};
+#undef colorcode
+#undef rangecode
+#undef togglecode
+#undef DOITB
+#undef DOIT_I
+#undef DOIT_L
+#undef DOIT_S
+#undef SANTA
+#undef SNOW
+#undef TREE
