@@ -171,7 +171,6 @@ static void set_santa_buttons()
    if (Flags.Rudolf)
       n++;
    if (n<NBUTTONS)
-      //HANDLE_SET_TOGGLE_(santa_barray[n]->button,TRUE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(santa_barray[n]->button),TRUE);
 }
 
@@ -192,7 +191,6 @@ void button_santa(GtkWidget *w, UNUSED gpointer d)
 void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa defaults\n");
-   //santa_default(0);
    set_default_tab(xsnow_santa,0);
 }
 
@@ -200,7 +198,6 @@ void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_vintage_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_santa vintage\n");
-   //santa_default(1);
    set_default_tab(xsnow_santa,1);
 }
 
@@ -382,7 +379,6 @@ MODULE_EXPORT void button_tree(GtkWidget *w, UNUSED gpointer d)
 void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_scenery\n");
-   //scenery_default(0);
    set_default_tab(xsnow_scenery,0);
 }
 
@@ -390,7 +386,6 @@ void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_vintage_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_scenery\n");
-   //scenery_default(1);
    set_default_tab(xsnow_scenery,1);
 }
 
@@ -480,7 +475,7 @@ static void set_tree_buttons()
 
    for (i=0; i<n; i++)
    {
-      // P("set_tree_buttons::::::::::::::::::::: %s %d %d\n",Flags.TreeType,n,a[i]);
+      P("set_tree_buttons::::::::::::::::::::: %s %d %d\n",Flags.TreeType,n,a[i]);
       switch (a[i])
       {
 #define TREE(x) \
@@ -609,7 +604,6 @@ void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general\n");
-   //general_default(0);
    set_default_tab(xsnow_settings,0);
 }
 
@@ -617,7 +611,6 @@ void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_vintage_general(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_general vintage\n");
-   //general_default(1);
    set_default_tab(xsnow_settings,1);
 }
 
@@ -631,7 +624,6 @@ typedef struct _snow_button
 void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_snow\n");
-   //snow_default(0);
    set_default_tab(xsnow_snow,0);
 }
 
@@ -639,7 +631,6 @@ void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_vintage_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_snow\n");
-   //snow_default(1);
    set_default_tab(xsnow_snow,1);
 }
 
@@ -664,14 +655,12 @@ void ui_set_celestials_header(const char *text)
 MODULE_EXPORT void button_defaults_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_birds\n");
-   //birds_default(0);
    set_default_tab(xsnow_birds,0);
 }
 
 MODULE_EXPORT void button_vintage_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_birds\n");
-   //birds_default(1);
    set_default_tab(xsnow_birds,1);
 }
 
@@ -750,7 +739,6 @@ void set_default_tab(int tab, int vintage)
 void button_defaults_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_defaults_wind\n");
-   //celestials_default(0);
    set_default_tab(xsnow_celestials,0);
 }
 
@@ -758,7 +746,6 @@ void button_defaults_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 void button_vintage_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    P("button_vintage_wind\n");
-   //celestials_default(1);
    set_default_tab(xsnow_celestials,1);
 }
 

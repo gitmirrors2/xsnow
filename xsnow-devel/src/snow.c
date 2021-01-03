@@ -173,10 +173,12 @@ int snow_ui()
    UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
    UIDOS(SnowColor                      ,
 	 InitSnowColor();
-	 ClearScreen();                                               );
+	 ClearScreen();                                            );
    UIDO (SnowSpeedFactor                , InitSnowSpeedFactor();   );
    UIDO (FlakeCountMax                  ,                          );
-   UIDO (SnowSize                       , SetSnowSize();           );
+   UIDO (SnowSize                       , 
+	 SetSnowSize(); 
+	 Flags.VintageFlakes = 0;                                  );
 
    return changes;
 }
