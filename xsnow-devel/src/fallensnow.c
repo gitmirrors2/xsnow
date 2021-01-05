@@ -86,9 +86,8 @@ void fallensnow_draw(cairo_t *cr)
    }
 }
 
-int fallensnow_ui()
+void fallensnow_ui()
 {
-   int changes = 0;
    UIDO(MaxWinSnowDepth   , InitFallenSnow(); ClearScreen(); );
    UIDO(MaxScrSnowDepth   , 
       SetMaxScreenSnowDepth();
@@ -97,7 +96,6 @@ int fallensnow_ui()
       );
    UIDO(NoKeepSBot        , InitFallenSnow(); ClearScreen(); );
    UIDO(NoKeepSWin        , InitFallenSnow(); ClearScreen(); );
-   return changes;
 }
 
 int do_fallen(UNUSED gpointer data)

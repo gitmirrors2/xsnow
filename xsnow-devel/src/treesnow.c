@@ -86,12 +86,10 @@ void treesnow_draw(cairo_t *cr)
    cairo_fill(cr);
 }
 
-int treesnow_ui()
+void treesnow_ui()
 {
-   int changes = 0;
    UIDO(MaxOnTrees        , ClearScreen();   );
    UIDO(NoKeepSnowOnTrees , ClearScreen();   );
-   return changes;
 }
 
 int do_snow_on_trees(UNUSED gpointer data)

@@ -106,10 +106,8 @@ static BirdType attrbird;
 
 
 
-int birds_ui()
+void birds_ui()
 {
-   int changes = 0;
-
    UIDO(ShowBirds         ,                       );
    UIDO(BirdsOnly         , ClearScreen();        );
    UIDO(Neighbours        ,                       );
@@ -141,9 +139,8 @@ int birds_ui()
       Flags.BirdsRestart = 0;
       init_birds(0);
       birds_set_attraction_point_relative(0.5, 0.5, 0.5);
-      P("changes: %d\n",changes);
+      P("Changes: %d\n",Flags.Changes);
    }
-   return changes;
 }
 
 static void normalize_speed(BirdType *bird, float speed)
@@ -489,7 +486,7 @@ int birds_draw(cairo_t *cr)
 	       GdkPixbuf       *pixbuf = 0;
 	       const GdkInterpType interpolation = GDK_INTERP_HYPER; 
 	       pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
-	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+	       cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, NULL);
 	       r2i(&testbird);
 	       cairo_set_source_surface (cr, surface, testbird.ix +(i-centerbird)*(iw+20), testbird.iz);
 	       my_cairo_paint_with_alpha(cr,ALPHA);
@@ -591,7 +588,7 @@ int birds_draw(cairo_t *cr)
 	       cache += iw*ih;
 	       P("Entries: %d Cache: %.0f MB width: %d Wing: %d orient: %d\n",table_counter,cache*4.0e-6,iw,nw,orient/8);
 	       GdkPixbuf *pixbuf = gdk_pixbuf_scale_simple(bird_pixbuf,iw,ih,interpolation); 
-	       table_insert(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow));
+	       table_insert(key,gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, NULL));
 	       g_clear_object(&pixbuf);
 	    }
 	    surface = (cairo_surface_t*) table_get(key);

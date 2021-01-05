@@ -42,12 +42,10 @@ void blowoff_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_blowoff, do_blowoff, NULL);
 }
 
-int blowoff_ui()
+void blowoff_ui()
 {
-   int changes = 0;
    UIDO(BlowOffFactor    , InitBlowOffFactor();    );
    UIDO(BlowSnow         ,                         );
-   return changes;
 }
 
 void blowoff_draw(UNUSED cairo_t *cr)

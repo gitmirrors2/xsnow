@@ -67,15 +67,13 @@ int moon_draw(cairo_t *cr)
 }
 
 
-int moon_ui()
+void moon_ui()
 {
-   int changes = 0;
    UIDO(MoonSpeed,                         );
    UIDO(Halo,                              );
    UIDO(Moon,                              );
    UIDO(MoonSize    ,init_moon_surface();  );
    UIDO(HaloBright  ,init_halo_surface();  );
-   return changes;
 }
 
 static void init_moon_surface()
@@ -89,7 +87,7 @@ static void init_moon_surface()
    if(moon_surface)
       cairo_surface_destroy(moon_surface);
    pixbufscaled = gdk_pixbuf_scale_simple(pixbuf,w,h,interpolation);
-   moon_surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, gdkwindow);
+   moon_surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, NULL);
    g_clear_object(&pixbuf);
    g_clear_object(&pixbufscaled);
    init_halo_surface();

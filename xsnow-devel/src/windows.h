@@ -34,7 +34,6 @@ extern char       *DesktopSession;
 extern int         IsCompiz;
 extern int         IsWayland;
 extern GtkWidget  *drawing_area;
-extern GdkWindow  *gdkwindow;
 extern Pixel        ErasePixel;
 extern int          Exposures;
 extern Pixel        BlackPix;
@@ -52,7 +51,7 @@ extern unsigned int Hroot;
 extern int          SnowWinX; 
 extern int          SnowWinY; 
 
-extern int          windows_ui(void);
+extern void         windows_ui(void);
 extern void         windows_draw(cairo_t *cr);
 extern void         windows_init(void);
 extern int          WorkspaceActive(void);  // defined in main.c

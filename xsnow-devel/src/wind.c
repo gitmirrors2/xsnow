@@ -55,9 +55,8 @@ void wind_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,NULL);
 }
 
-int wind_ui()
+void wind_ui()
 {
-   int changes = 0;
    UIDO(NoWind, Wind = 0; NewWind = 0;);
    UIDO(WhirlFactor, SetWhirl(););
    UIDO(WindTimer, SetWindTimer(););
@@ -65,9 +64,8 @@ int wind_ui()
    {
       Flags.WindNow = 0;
       Wind = 2;
-      P("Gust: %d\n",changes);
+      P("Gust: %d\n",Flags.Changes);
    }
-   return changes;
 }
 
 void draw_wind()

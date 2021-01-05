@@ -95,17 +95,13 @@ int scenery_draw(cairo_t *cr)
    return TRUE;
 }
 
-int scenery_ui()
+void scenery_ui()
 {
-   int changes = 0;
-
    UIDOS(TreeType               , RedrawTrees(););
    UIDO (DesiredNumberOfTrees   , RedrawTrees(););
    UIDO (TreeFill               , RedrawTrees(););
    UIDO (NoTrees                , RedrawTrees(););
    UIDOS(TreeColor              , ReInitTree0(););
-
-   return changes;
 }
 
 void RedrawTrees()
@@ -143,7 +139,7 @@ void create_tree_surface(int tt,int flip, const char **xpm)
    }
    else
       pixbuf = pixbuf1;
-   tree_surfaces[tt][flip] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+   tree_surfaces[tt][flip] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, NULL);
    g_clear_object(&pixbuf);
    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 

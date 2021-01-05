@@ -163,10 +163,8 @@ void SetSnowSize()
       add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow ,NULL);
 }
 
-int snow_ui()
+void snow_ui()
 {
-   int changes = 0;
-
    UIDO (NoSnowFlakes, 
 	 if(Flags.NoSnowFlakes)
 	 ClearScreen();                                            );
@@ -179,8 +177,6 @@ int snow_ui()
    UIDO (SnowSize                       , 
 	 SetSnowSize(); 
 	 Flags.VintageFlakes = 0;                                  );
-
-   return changes;
 }
 
 void init_snow_surfaces()
@@ -197,7 +193,7 @@ void init_snow_surfaces()
       xpm_destroy(x);
       if (snow_surfaces[i])
 	 cairo_surface_destroy(snow_surfaces[i]);
-      snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+      snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, NULL);
       //snow_surfaces[i] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 1, NULL);
       g_clear_object(&pixbuf);
       /*

@@ -61,11 +61,9 @@ void meteo_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_meteorite, do_meteorite, NULL);
 }
 
-int meteo_ui()
+void meteo_ui()
 {
-   int changes = 0;
    UIDO(NoMeteorites   , );
-   return changes;
 }
 
 void meteo_draw(cairo_t *cr)

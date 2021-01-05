@@ -6,3 +6,4 @@ if [ -d $usb ] ; then
 else
    echo "Cannot find usb stick"
 fi
+sync

@@ -30,7 +30,7 @@
 #define xsnow_birds      5
 #define xsnow_settings   6
 
-/*         code           type               name                 multiplier */
+/*         code           type               name              modifier */
 #define ALL_TOGGLES  \
    BUTTON(togglecode     ,xsnow_birds       ,BirdsOnly            ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,FollowSanta          ,1  )         \
@@ -38,7 +38,7 @@
    BUTTON(togglecode     ,xsnow_birds       ,ShowBirds            ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,AllWorkspaces        ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,BelowAll             ,1  )         \
-   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,1  )         \
+   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0 )         \
    BUTTON(togglecode     ,xsnow_settings    ,Exposures            ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,FullScreen           ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,UseBG                ,1  )         \

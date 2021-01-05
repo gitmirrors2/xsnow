@@ -33,6 +33,12 @@
 #include "windows.h"
 
 #include "debug.h"
+
+FLAGS Flags;
+FLAGS OldFlags;
+FLAGS DefaultFlags;
+FLAGS VintageFlags;
+
 static void ReadFlags(void);
 static void SetDefaultFlags(void);
 
@@ -53,8 +59,8 @@ static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
-#define DOIT_I(x,d,v) Flags.x = Flags.default_## x ;
-#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.default_## x);
+#define DOIT_I(x,d,v) Flags.x = DefaultFlags.x ;
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(DefaultFlags.x);
 #define DOIT_L(x,d,v) DOIT_I(x,d,v)
    DOITALL;
 #include "undefall.inc"
@@ -69,9 +75,9 @@ void SetDefaultFlags()
 void InitFlags()
 {
    // to make sure that strings in Flags are malloc'd
-#define DOIT_I(x,d,v)  Flags.x = 0; Flags.default_##x=d; Flags.vintage_##x=v;
+#define DOIT_I(x,d,v)  Flags.x = 0; DefaultFlags.x=d; VintageFlags.x=v;
 #define DOIT_L DOIT_I
-#define DOIT_S(x,d,v)  Flags.x = strdup(""); Flags.default_##x=strdup(d); Flags.vintage_##x=strdup(v);
+#define DOIT_S(x,d,v)  Flags.x = strdup(""); DefaultFlags.x=strdup(d); VintageFlags.x=strdup(v);
    DOITALL;
 #include "undefall.inc"
 }
@@ -157,9 +163,9 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSnowOnTrees = 0;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-#define DOIT_I(x,d,v) Flags.x = Flags.vintage_##x;
+#define DOIT_I(x,d,v) Flags.x = VintageFlags.x;
 #define DOIT_L DOIT_I
-#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.vintage_##x);
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(VintageFlags.x);
 	    DOITALL
 #include "undefall.inc"
 	 }
@@ -275,9 +281,9 @@ int HandleFlags(int argc, char*argv[])
    if (!strcmp(Flags.TreeType,"all"))
    {
       free(Flags.TreeType);
-      Flags.TreeType = (char*) malloc(1+2+sizeof(Flags.default_TreeType));
+      Flags.TreeType = (char*) malloc(1+2+sizeof(DefaultFlags.TreeType));
       Flags.TreeType = strdup("0,");
-      strcat(Flags.TreeType,Flags.default_TreeType);
+      strcat(Flags.TreeType,DefaultFlags.TreeType);
    }
    if (Flags.SnowSize > 40)
    {

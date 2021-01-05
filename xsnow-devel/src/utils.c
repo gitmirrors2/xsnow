@@ -126,9 +126,11 @@ guint add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap)
    return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,NULL);
 }
 
-void remove_from_mainloop(guint tag)
+void remove_from_mainloop(guint *tag)
 {
-   g_source_remove(tag);
+   if (*tag)
+      g_source_remove(*tag);
+   *tag = 0;
 }
 
 int is_little_endian(void)

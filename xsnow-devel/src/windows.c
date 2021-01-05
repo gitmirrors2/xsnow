@@ -60,10 +60,8 @@ Window       SnowWinb = 0;
 
 struct _switches switches;
 
-int windows_ui()
+void windows_ui()
 {
-   int changes = 0;
-   return changes;
 }
 
 void windows_draw(UNUSED cairo_t *cr)

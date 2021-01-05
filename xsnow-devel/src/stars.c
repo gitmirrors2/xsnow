@@ -124,12 +124,10 @@ void stars_draw(cairo_t *cr)
    cairo_restore(cr);
 }
 
-int stars_ui()
+void stars_ui()
 {
-   int changes = 0;
    UIDO(NStars, init_stars(); ClearScreen(););
    UIDO(Stars, ClearScreen(););
-   return changes;
 }
 
 

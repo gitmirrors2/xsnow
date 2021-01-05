@@ -88,10 +88,6 @@
 //#define DEBUG
 
 
-// from flags.h
-FLAGS Flags;
-FLAGS OldFlags;
-
 // from windows.h
 Display *display;
 int     screen;
@@ -110,9 +106,6 @@ double  cpufactor = 1.0;
 float   NewWind = 0;
 
 GtkWidget       *drawing_area = NULL;
-GdkWindow       *gdkwindow = NULL;
-
-
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
@@ -620,7 +613,7 @@ int myDetermineWindow()
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
-	 switches.Trans     = 0;  // should be 1? todo
+	 switches.Trans     = 1;  // should be 1? todo
 	 switches.Root      = 0;
 	 switches.Desktop   = 1;
       }
@@ -736,18 +729,17 @@ int do_ui_check(UNUSED gpointer data)
    if (Flags.NoMenu)
       return TRUE;
 
-   int changes = 0;
-   changes += Santa_ui();
-   changes += scenery_ui();
-   changes += birds_ui();
-   changes += snow_ui();
-   changes += meteo_ui();
-   changes += wind_ui();
-   changes += stars_ui();
-   changes += fallensnow_ui();
-   changes += blowoff_ui();
-   changes += treesnow_ui();
-   changes += moon_ui();
+   Santa_ui();
+   scenery_ui();
+   birds_ui();
+   snow_ui();
+   meteo_ui();
+   wind_ui();
+   stars_ui();
+   fallensnow_ui();
+   blowoff_ui();
+   treesnow_ui();
+   moon_ui();
 
    UIDO (WantWindow          , change_ww();                     );
    UIDO (CpuLoad             , HandleCpuFactor();               );
@@ -772,12 +764,13 @@ int do_ui_check(UNUSED gpointer data)
    UIDO (AllWorkspaces       , DoAllWorkspaces();               );
    UIDO (BelowAll            , set_below_above();               );
 
-   if (changes > 0)
+   if (Flags.Changes > 0)
    {
       P("WriteFlags\n");
       WriteFlags();
-      P("-----------changes: %d\n",changes);
+      P("-----------Changes: %d\n",Flags.Changes);
    }
+   Flags.Changes = 0;
    return TRUE;
 }
 

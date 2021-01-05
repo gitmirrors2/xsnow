@@ -27,6 +27,6 @@ extern int      birds_draw(cairo_t *cr);
 extern float    birds_get_mean_dist(void);
 extern float    birds_get_range(void);
 extern void     birds_init(void);
-extern int      birds_ui(void);
+extern void     birds_ui(void);
 
 

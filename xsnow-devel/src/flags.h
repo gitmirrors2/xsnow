@@ -22,9 +22,9 @@
 #include <X11/Xlib.h>
 #include "doit.h"
 
-#define DOIT_I(x,d,v) int x; int default_##x; int vintage_##x;
-#define DOIT_L(x,d,v) unsigned long int x; unsigned long int default_##x; unsigned long int vintage_##x;
-#define DOIT_S(x,d,v) char *x; char *default_##x; char *vintage_##x;
+#define DOIT_I(x,d,v) int x;
+#define DOIT_L(x,d,v) unsigned long int x;
+#define DOIT_S(x,d,v) char *x;
 
 typedef struct _flags {
    DOITALL
@@ -36,6 +36,8 @@ typedef struct _flags {
 
 extern FLAGS Flags;
 extern FLAGS OldFlags;
+extern FLAGS DefaultFlags;
+extern FLAGS VintageFlags;
 
 extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);

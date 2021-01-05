@@ -21,7 +21,7 @@
 #pragma once
 extern int      moon_draw(cairo_t *cr);
 extern void     moon_init(void);
-extern int      moon_ui(void);
+extern void     moon_ui(void);
 
 extern int      NMOONPIXBUFS;
 extern double   moonX, moonY;

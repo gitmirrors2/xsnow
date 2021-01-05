@@ -36,7 +36,7 @@ typedef struct Treeinfo {
 } Treeinfo;
 
 extern void scenery_init(void);
-extern int      scenery_ui(void);
+extern void     scenery_ui(void);
 extern void     EraseTrees(void);
 extern void     scenery_set_gc(void);
 extern int      scenery_draw(cairo_t *cr);

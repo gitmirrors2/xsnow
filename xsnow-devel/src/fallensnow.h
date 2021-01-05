@@ -50,7 +50,7 @@ extern int    HandleFallenSnow(FallenSnow *fsnow);
 
 extern void   fallensnow_init(void);
 extern void   fallensnow_draw(cairo_t *cr);
-extern int    fallensnow_ui(void);
+extern void   fallensnow_ui(void);
 extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 extern void   CleanFallen(Window id);
 extern void   DrawFallen(FallenSnow *fsnow);

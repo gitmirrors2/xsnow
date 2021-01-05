@@ -32,7 +32,7 @@
    if(Flags.Noisy) { printf("%-16s %6d: %-22s %8d -> %8d\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
    {_y} \
    OldFlags._x = Flags._x; \
-   changes++; \
+   Flags.Changes++; \
 }
 
 #define UIDOS(_x,_y) \
@@ -42,7 +42,7 @@
    {_y} \
    free(OldFlags._x); \
    OldFlags._x = strdup(Flags._x); \
-   changes++; \
+   Flags.Changes++; \
 }
 
 #include <stdio.h>
@@ -52,7 +52,7 @@
 #include <math.h>
 
 extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap);
-extern void    remove_from_mainloop(guint tag);
+extern void    remove_from_mainloop(guint *tag);
 extern void    ClearScreen(void);
 extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);

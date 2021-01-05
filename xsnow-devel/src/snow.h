@@ -75,6 +75,6 @@ extern Snow      *MakeFlake(int type);
 extern int        snow_draw(cairo_t *cr);
 extern void       snow_init(void);
 extern void       snow_set_gc(void);
-extern int        snow_ui();
+extern void       snow_ui();
 extern void       fluffify(Snow *flake, float t);
 extern void       printflake(Snow *flake);

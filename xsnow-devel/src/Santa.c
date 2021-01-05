@@ -87,16 +87,13 @@ void SetSantaType()
    InitSantaPixmaps();
 }
 
-int Santa_ui()
+void Santa_ui()
 {
-   int changes  = 0;
    UIDO(SantaSize, SetSantaType(););
    UIDO(Rudolf,    SetSantaType(););
    UIDO(NoSanta,if(Flags.NoSanta)
 	 EraseSanta(OldSantaX, OldSantaY););
    UIDO(SantaSpeedFactor, SetSantaSpeed(););
-
-   return changes;
 }
 
 int Santa_draw(cairo_t *cr)
@@ -154,7 +151,7 @@ void init_Santa_surfaces()
 	 {
 	    P("%d %d %d\n",i,j,k);
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)Santas[i][j][k]);
-	    Santa_surfaces[i][j][k] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+	    Santa_surfaces[i][j][k] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, NULL);
 	    g_clear_object(&pixbuf);
 	 }
    int ok = 1;
@@ -188,7 +185,7 @@ void init_Santa_surfaces()
 	 {
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
 	    cairo_surface_destroy( Santa_surfaces[0][0][i]);
-	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,gdkwindow);
+	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbuf,0,NULL);
 	    XpmFree(santaxpm);
 	    g_clear_object(&pixbuf);
 	 }

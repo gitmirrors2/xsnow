@@ -71,8 +71,8 @@
 
 #define TREE_ALL TREE(0) TREE(1) TREE(2) TREE(3) TREE(4) TREE(5) TREE(6) TREE(7)
 
-#define DEFAULT(name) Flags.default_##name
-#define VINTAGE(name) Flags.vintage_##name
+#define DEFAULT(name) DefaultFlags.name
+#define VINTAGE(name) VintageFlags.name
 
 static GtkBuilder    *builder;
 static GtkWidget     *mean_distance;
@@ -94,11 +94,12 @@ static void yesyes(GtkWidget *w, gpointer data);
 static void nono(GtkWidget *w, gpointer data);
 static void activate (GtkApplication *app, gpointer user_data);
 static void set_default_tab(int tab, int vintage);
+static void set_belowall_default();
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
 
-static int bct_id;
+static guint bct_id = 0;
 static int bct_countdown;
 
 // Set the style provider for the widgets
@@ -107,15 +108,15 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
    P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
 
    gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
-         GTK_STYLE_PROVIDER(cssstyleProvider) , 
-         GTK_STYLE_PROVIDER_PRIORITY_USER );
+	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
+	 GTK_STYLE_PROVIDER_PRIORITY_USER );
 
    // For container widgets, apply to every child widget on the container
    if (GTK_IS_CONTAINER (widget))
    {
       gtk_container_forall( GTK_CONTAINER (widget),
-            (GtkCallback)apply_css_provider ,
-            cssstyleProvider);
+	    (GtkCallback)apply_css_provider ,
+	    cssstyleProvider);
    }
 }
 
@@ -280,14 +281,16 @@ ALL_BUTTONS
 // define set_buttons
 //
 #define togglecode(type,name,m)\
-   NEWLINE P("%s %s\n",#name,#type); \
-NEWLINE     if(m>0)gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),Flags.name);\
-NEWLINE        else gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),!Flags.name);
+   NEWLINE P("toggle %s %s %d %d\n",#name,#type,m,Flags.name); \
+NEWLINE     if (m) { \
+   NEWLINE     if(m>0)  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),Flags.name);\
+   NEWLINE     else     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),!Flags.name);\
+   NEWLINE   }
 #define rangecode(type,name,m) \
-   NEWLINE P("%s %s\n",#name,#type); \
+   NEWLINE P("range %s %s %d %d\n",#name,#type,m,Flags.name); \
 NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
 #define colorcode(type,name,m) \
-   NEWLINE P("%s %s\n",#name,#type); \
+   NEWLINE P("color %s %s %d %s\n",#name,#type,m,Flags.name); \
 NEWLINE     gdk_rgba_parse(&color,Flags.name); \
 NEWLINE        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(Button.name),&color); 
 
@@ -334,8 +337,8 @@ static void report_tree_type(int p, gint active)
    {
       int i;
       for (i=0; i<n; i++)
-         if(a[i] == p)
-            a[i] = -1;
+	 if(a[i] == p)
+	    a[i] = -1;
    }
    int *b = (int *)malloc(sizeof(*b)*n);
    int i,m=0;
@@ -344,16 +347,16 @@ static void report_tree_type(int p, gint active)
       int j;
       int unique = (a[i] >= 0);
       if(unique)
-         for (j=0; j<m; j++)
-            if(a[i] == b[j])
-            {
-               unique = 0;
-               break;
-            }
+	 for (j=0; j<m; j++)
+	    if(a[i] == b[j])
+	    {
+	       unique = 0;
+	       break;
+	    }
       if(unique)
       {
-         b[m] = a[i];
-         m++;
+	 b[m] = a[i];
+	 m++;
       }
    }
    free(Flags.TreeType);
@@ -479,9 +482,9 @@ static void set_tree_buttons()
       switch (a[i])
       {
 #define TREE(x) \
-         NEWLINE case x: gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),TRUE);\
-         NEWLINE  break;
-         TREE_ALL;
+	 NEWLINE case x: gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),TRUE);\
+	 NEWLINE  break;
+	 TREE_ALL;
 #include "undefall.inc"
       }
    }
@@ -538,7 +541,7 @@ MODULE_EXPORT void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
 {
    gtk_widget_hide(Button.BelowConfirm);
    gtk_widget_show(Button.BelowAll);
-   remove_from_mainloop(bct_id);
+   remove_from_mainloop(&bct_id);
 }
 
 static void init_general_buttons()
@@ -582,12 +585,19 @@ int below_confirm_ticker(UNUSED gpointer data)
       return TRUE;
    else
    {
-      Flags.BelowAll = 1;
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.BelowAll),Flags.BelowAll);
-      gtk_widget_hide(Button.BelowConfirm);
-      gtk_widget_show(Button.BelowAll);
+      set_belowall_default();
       return FALSE;
    }
+}
+
+void set_belowall_default()
+{
+   P("set_belowall_default: %d\n",bct_id);
+   remove_from_mainloop(&bct_id);
+   Flags.BelowAll = 1;
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.BelowAll),Flags.BelowAll);
+   gtk_widget_hide(Button.BelowConfirm);
+   gtk_widget_show(Button.BelowAll);
 }
 
 
@@ -693,17 +703,20 @@ void set_default_tab(int tab, int vintage)
 #include "undefall.inc"
       switch(tab)
       {
-         case xsnow_scenery:
-            free(Flags.TreeType);
-            Flags.TreeType = strdup(VINTAGE(TreeType));
-            break;
-         case xsnow_snow:
-            Flags.VintageFlakes = 1;
-            break;
-         case xsnow_santa:
-            Flags.SantaSize = VINTAGE(SantaSize);
-            Flags.Rudolf    = VINTAGE(Rudolf);
-            break;
+	 case xsnow_scenery:
+	    free(Flags.TreeType);
+	    Flags.TreeType = strdup(VINTAGE(TreeType));
+	    break;
+	 case xsnow_snow:
+	    Flags.VintageFlakes = 1;
+	    break;
+	 case xsnow_santa:
+	    Flags.SantaSize = VINTAGE(SantaSize);
+	    Flags.Rudolf    = VINTAGE(Rudolf);
+	    break;
+	 case xsnow_settings:
+	    set_belowall_default();
+	    break;
       }
    }
    else
@@ -718,17 +731,20 @@ void set_default_tab(int tab, int vintage)
 #include "undefall.inc"
       switch(tab)
       {
-         case xsnow_scenery:
-            free(Flags.TreeType);
-            Flags.TreeType = strdup(DEFAULT(TreeType));
-            break;
-         case xsnow_snow:
-            Flags.VintageFlakes = 0;
-            break;
-         case xsnow_santa:
-            Flags.SantaSize = DEFAULT(SantaSize);
-            Flags.Rudolf    = DEFAULT(Rudolf);
-            break;
+	 case xsnow_scenery:
+	    free(Flags.TreeType);
+	    Flags.TreeType = strdup(DEFAULT(TreeType));
+	    break;
+	 case xsnow_snow:
+	    Flags.VintageFlakes = 0;
+	    break;
+	 case xsnow_santa:
+	    Flags.SantaSize = DEFAULT(SantaSize);
+	    Flags.Rudolf    = DEFAULT(Rudolf);
+	    break;
+	 case xsnow_settings:
+	    set_belowall_default();
+	    break;
       }
    }
    set_buttons();
@@ -770,11 +786,13 @@ static void set_buttons()
 
 void all_default(int vintage)
 {
+   /* xsnow_settings is deliberately not included here */
    set_default_tab(xsnow_santa,vintage);
    set_default_tab(xsnow_scenery,vintage);
    set_default_tab(xsnow_snow,vintage);
    set_default_tab(xsnow_celestials,vintage);
    set_default_tab(xsnow_birds,vintage);
+   set_belowall_default();
 }
 
 MODULE_EXPORT void button_all_defaults()
@@ -1002,13 +1020,13 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
    gtk_container_add (GTK_CONTAINER (window), grid);
 
    snprintf(sbuffer,nsbuffer,
-         "You are using GTK-%s, but you need at least GTK-%s to view\n"
-         "the user interface.\n"
-         "Use the option '-nomenu' to disable the user interface.\n"
-         "If you want to try the user interface anyway, use the flag '-checkgtk 0'.\n\n"
-         "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
-         "Alternatively, you could edit ~/.xsnowrc to set options.\n",
-         ui_gtk_version(),ui_gtk_required());
+	 "You are using GTK-%s, but you need at least GTK-%s to view\n"
+	 "the user interface.\n"
+	 "Use the option '-nomenu' to disable the user interface.\n"
+	 "If you want to try the user interface anyway, use the flag '-checkgtk 0'.\n\n"
+	 "See 'man xsnow' or 'xsnow -h' to see the command line options.\n"
+	 "Alternatively, you could edit ~/.xsnowrc to set options.\n",
+	 ui_gtk_version(),ui_gtk_required());
    label = gtk_label_new(sbuffer);
 
    /* Place the label in cell (0,0) and make it fill 2 cells horizontally */
