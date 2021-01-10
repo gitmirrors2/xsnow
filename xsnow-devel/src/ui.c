@@ -18,6 +18,113 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+
+/* How to implement a new button
+ *
+ * The generation of code to add a button and/or a flag is dependent
+ * on definitions in 'doit.h' and 'buttons.h'.
+ *
+ * doit.h
+ *   definition of names of flags, together with default values and vintage values
+ *   example:
+ *     DOIT_I(HaloBright           ,25         ,25         )
+ *
+ *   DOIT_I: for flags with an integer value
+ *   DOIT_L: for flags with a large value (for example a window-id)
+ *   DOIT_S: for flags with a char* value (colors, mostly)
+ *
+ *   Macro DOIT will call macro's that are not meant for read/write from .xsnowrc
+ *   Macro DOIT_ALL calls all DOIT_* macro's
+ *   This will result in:
+ *     see flags.h:
+ *       creation of member HaloBright in type FLAGS  (see flags.h)
+ *     see flags.c:
+ *       definition of default value in DefaultFlags.HaloBright  (25)
+ *       definition of vintage value in VintageFlags.Halobright  (0)
+ *       definition of WriteFlags() to write the flags to .xsnowrc
+ *       definition of ReadFlags() to read flags from .xsnowrc
+ *
+ *
+ * buttons.h
+ *   definition of button-related entities.
+ *   example:
+ *     BUTTON(scalecode      ,xsnow_celestials  ,HaloBright           ,1  )
+ *     this takes care that flag 'HaloBright' is associated with a button
+ *     in the 'celestials' tab with the glade-id 'id-HaloBright' and that a value
+ *     of 1 is used in the expansion of scalecode.
+ *     In this case, the button should be a GtkScale button.
+ *
+ *   The macro ALL_BUTTONS takes care that scalecode is called as
+ *     scalecode(xsnow_celestials,HaloBright,1)
+ *   and that all other BUTTON macro's are called
+ *
+ *   The following types of buttons are implemented:
+ *     GtkScale (macro scalecode)
+ *     GtkToggle(macro togglecode)
+ *     GtkColor (macro colorcode)
+ *
+ *   In this way, the following items are generated:
+ *
+ *     ui.c:
+ *       define type Buttons, containing all flags in buttons.h
+ *       associate the elements of Buttons with the corresponding 
+ *         glade-id's
+ *       define call-backs
+ *         these call backs have names like 'button_xsnow_celestials_HaloBright'
+ *         the code ensures that for example Flags.HaloBright gets the value
+ *         of the corresponding button.
+ *       create a function settings1(), that sets all buttons in the state
+ *         defined by the corresponding Flags. For example, if 
+ *         Flags.HaloBright = 40, the corresponding GtkScale button will be set
+ *         to this value.
+ *       connects signals of buttons to the corresponding call-backs, for example,
+ *         button with glade-id 'id-HaloBright', when changed, will result in
+ *         a call of button_xsnow_celestials_HaloBright().
+ *       create function set_default_tab(int tab, int vintage) that gives the
+ *         buttons in the given tab (for example 'xsnow_celestials') and the
+ *         corresponding flags their default (vintage = 0) or vintage (vintage=1) 
+ *         value. One will notice, that some buttons need extra care, for example
+ *         flag TreeType in xsnow_scenery.
+ *
+ *   glade, ui.xml
+ *
+ *     Glade is used to maintain 'ui.xml', where the creation of the tabs and the
+ *     placement of the buttons is arranged.
+*     For the buttons in 'buttons.h' a callback is arranged in 'ui.c', so in general
+*     there is no need to do something with the 'signals' properties of these buttons.
+*     Things that are needed:
+*       - button text, maybe using a GtkLabel
+*       - tooltip
+*       - for scale buttons: a GtkScale, defining for example min and max values
+*       - placement
+*       - for few buttons: a css class. Example: BelowConfirm
+*     In Makefile.am, ui.xml is converted to an include file: ui_xml.h
+*     So, when compiled, the program does not need an external file for it's GtkBuilder.
+*
+*
+*   Handling of changed flags.
+*
+*     In 'flags.h' the macros UIDO and UIDOS are defined. They take care of the
+*     standard action to be used when a flag has been changed: simply copy
+*     the new value to OldFlags and increment Flags.Changes. OldFlags is initialized 
+*     at the start of the program, and is used to check if a flag has been changed.
+*
+*     UIDO (for integer valued flags) and UIDOS (for char* valued flags) take
+*     two parameters:
+*     - the name of the flag to check
+*     - C-code to execute if the value of the flag has been changed.
+*
+*     In main.c the flags in the 'settings' tab are handled, and calls are
+*     made to for example scenery_ui() which is supposed to handle flags related
+*     with the 'scenery' tab.
+*     If Flags.Changes > 0, the flags are written to .xsnowrc.
+*
+*   Documentation of flags
+*
+*     This is take care of in 'docs.c'.
+*      
+*/
+
 #include "buttons.h"
 // undef NEWLINE if one wants to examine the by cpp generated code:
 // cpp  ui.c | sed 's/NEWLINE/\n/g'
@@ -86,7 +193,7 @@ static char sbuffer[nsbuffer];
 static void set_buttons(void);
 static void set_santa_buttons(void);
 static void set_tree_buttons(void);
-static void apply_standard_css(void);
+static void handle_css(void);
 static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(UNUSED gpointer data);
 static void show_bct_countdown(void);
@@ -95,12 +202,33 @@ static void nono(GtkWidget *w, gpointer data);
 static void activate (GtkApplication *app, gpointer user_data);
 static void set_default_tab(int tab, int vintage);
 static void set_belowall_default();
+static void handle_theme();
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
 
 static guint bct_id = 0;
 static int bct_countdown;
+
+static GtkWidget       *hauptfenster;
+static GtkStyleContext *hauptfenstersc;
+
+void ui_ui()
+{
+   UIDO (ThemeXsnow, handle_theme(););
+}
+
+void handle_theme()
+{
+   if (Flags.ThemeXsnow)
+   {
+      gtk_style_context_add_class(hauptfenstersc,"xsnow");
+   }
+   else
+   {
+      gtk_style_context_remove_class(hauptfenstersc,"xsnow");
+   }
+}
 
 // Set the style provider for the widgets
 static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
@@ -109,7 +237,7 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
 
    gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
 	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
-	 GTK_STYLE_PROVIDER_PRIORITY_USER );
+	 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION );
 
    // For container widgets, apply to every child widget on the container
    if (GTK_IS_CONTAINER (widget))
@@ -120,7 +248,6 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
    }
 }
 
-static GtkWidget *hauptfenster;
 
    MODULE_EXPORT
 void button_iconify(UNUSED GtkWidget *w, UNUSED gpointer p)
@@ -215,10 +342,10 @@ static struct _tree_buttons
 #include "undefall.inc"
 
 
-// creating Button.NStars etc.
+// creating type Buttons: Button.NStars etc.
 
 #define togglecode(type,name,m) NEWLINE GtkWidget *name;
-#define rangecode togglecode
+#define scalecode togglecode
 #define colorcode togglecode
 static struct _Button 
 {
@@ -233,7 +360,7 @@ static struct _Button
 #define togglecode(type,name,m) \
    NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE Button.name = GTK_WIDGET(gtk_builder_get_object(builder,ID "-" #name));
-#define rangecode togglecode
+#define scalecode togglecode
 #define colorcode togglecode
 
 static void init_buttons1()
@@ -256,7 +383,7 @@ static void init_buttons1()
       NEWLINE    if(m<0) Flags.name = !Flags.name;  \
       NEWLINE   }
 
-#define rangecode(type,name,m) \
+#define scalecode(type,name,m) \
    NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d)\
    NEWLINE {\
       NEWLINE    if(!human_interaction) return; \
@@ -286,7 +413,7 @@ NEWLINE     if (m) { \
    NEWLINE     if(m>0)  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),Flags.name);\
    NEWLINE     else     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.name),!Flags.name);\
    NEWLINE   }
-#define rangecode(type,name,m) \
+#define scalecode(type,name,m) \
    NEWLINE P("range %s %s %d %d\n",#name,#type,m,Flags.name); \
 NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
 #define colorcode(type,name,m) \
@@ -306,7 +433,7 @@ static void set_buttons1()
 #define togglecode(type,name,m) \
    NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE g_signal_connect(G_OBJECT(Button.name),"toggled", G_CALLBACK(buttoncb(type,name)),NULL);
-#define rangecode(type,name,m) \
+#define scalecode(type,name,m) \
    NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE g_signal_connect(G_OBJECT(Button.name),"value-changed", G_CALLBACK(buttoncb(type,name)),NULL);
 #define colorcode(type,name,m)  \
@@ -694,7 +821,7 @@ void set_default_tab(int tab, int vintage)
    {
 #define togglecode(type,name,m) \
       NEWLINE    if (type == tab) Flags.name = VINTAGE(name); 
-#define rangecode togglecode
+#define scalecode togglecode
 #define colorcode(type,name,m) \
       NEWLINE    if (type == tab) \
       NEWLINE       { free(Flags.name); Flags.name = strdup(VINTAGE(name)); } 
@@ -722,7 +849,7 @@ void set_default_tab(int tab, int vintage)
    else
 #define togglecode(type,name,m) \
       NEWLINE    if (type == tab) Flags.name = DEFAULT(name); 
-#define rangecode togglecode
+#define scalecode togglecode
 #define colorcode(type,name,m) \
       NEWLINE    if (type == tab) \
       NEWLINE       { free(Flags.name); Flags.name = strdup(DEFAULT(name)); } 
@@ -847,7 +974,9 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
    moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
 
-   apply_standard_css();
+   hauptfenstersc  = gtk_widget_get_style_context(hauptfenster);
+
+   handle_css();
    gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
    gtk_widget_show_all (hauptfenster);
 
@@ -860,23 +989,26 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
 }
 
-void apply_standard_css()
+void handle_css()
 {
    const char *css     = 
-      "scale                               { padding:          1em;     }"   // padding in slider buttons
-      "button.radio                        { min-width:        10px;    }"   // make window as small as possible
-      "button                              { background:       #CCF0D8; }"   // color of normal buttons
-      "button.radio,        button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
-      "radiobutton:active,  button:active  { background:       #0DAB44; }"   // color of buttons while being activated
-      "radiobutton:checked, button:checked { background:       #6AF69B; }"   // color of checked buttons
-      "headerbar                           { background:       #B3F4CA; }"   // color of headerbar
-      "scale slider                        { background:       #D4EDDD; }"   // color of sliders
-      "scale trough                        { background:       #0DAB44; }"   // color of trough of sliders
-      "stack                               { background-color: #EAFBF0; }"   // color of main area
-      "*                                   { color:            #065522; }"   // foreground color (text)
-      "*:disabled *                        { color:            #8FB39B; }"   // foreground color for disabled items
-      ".pink    { background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
-      "button.confirm { background-color: #FFFF00; }"
+      ".xsnow scale                                      { padding:          1em;     }"   // padding in slider buttons
+      ".xsnow button.radio                               { min-width:        10px;    }"   // make window as small as possible
+      ".xsnow button                                     { background:       #CCF0D8; }"   // color of normal buttons
+      ".xsnow button.radio,        .xsnow button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
+      ".xsnow radiobutton:active,  .xsnow button:active  { background:       #0DAB44; }"   // color of buttons while being activated
+      ".xsnow radiobutton:checked, .xsnow button:checked { background:       #6AF69B; }"   // color of checked buttons
+      ".xsnow headerbar                                  { background:       #B3F4CA; }"   // color of headerbar
+      ".xsnow scale slider                               { background:       #D4EDDD; }"   // color of sliders
+      ".xsnow scale trough                               { background:       #0DAB44; }"   // color of trough of sliders
+      ".xsnow stack                                      { background-color: #EAFBF0; }"   // color of main area
+      ".xsnow *                                          { color:            #065522; }"   // foreground color (text)
+      ".xsnow *:disabled *                               { color:            #8FB39B; }"   // foreground color for disabled items
+      "label.busymessage     { background: #FFC0CB; background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
+      "button.confirm        { background: #FFFF00; }"         //
+      ".xsnow button.confirm { background-color: #FFFF00; }"   // yes we need both, but why?
+      ".busy stack           { background: #FFC0CB; background-color: #FFC0CB; }"
+      ".busy .cpuload slider { background: #FF0000; background-color: #FF0000; }"
       ;
 
    static GtkCssProvider *cssProvider = NULL;
@@ -884,9 +1016,10 @@ void apply_standard_css()
    {
       cssProvider  = gtk_css_provider_new();
       gtk_css_provider_load_from_data (cssProvider, css,-1,NULL);
+      apply_css_provider(hauptfenster, cssProvider);
    }
 
-   apply_css_provider(hauptfenster, cssProvider);
+   handle_theme();
 
 }
 
@@ -895,20 +1028,11 @@ void apply_standard_css()
 
 void ui_background(int m)
 {
-   const char *colorbg =   // load alert colors
-      "stack                { background-color: #FFC0CB; }"   // color of main area
-      "scale.cpuload slider { background:       #FF0000; }"   // color of sliders with class cpuload
-      ;
-   static GtkCssProvider *cssProvidercolor = NULL;
-   if (!cssProvidercolor)
-   {
-      cssProvidercolor  = gtk_css_provider_new();
-      gtk_css_provider_load_from_data (cssProvidercolor, colorbg,-1,NULL);
-   }
-
-   apply_standard_css();
    if(m)
-      apply_css_provider(hauptfenster,cssProvidercolor);
+      gtk_style_context_add_class(hauptfenstersc,"busy");
+   else
+      gtk_style_context_remove_class(hauptfenstersc,"busy");
+
 }
 
 // m=0: make active

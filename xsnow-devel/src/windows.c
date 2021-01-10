@@ -110,6 +110,19 @@ int do_wupdate(UNUSED gpointer data)
 
    if(Windows) free(Windows);
 
+   // special hack too keep SnowWin below (needed for example in FVWM/xcompmgr, 
+   // where SnowWin is not click-through)
+   {
+      P("keep below %#lx\n",SnowWin);
+      if(Flags.BelowAll)
+      {
+	 XWindowChanges changes;
+	 changes.stack_mode = Below;
+	 XConfigureWindow(display,SnowWin,CWStackMode,&changes);
+      }
+   }
+
+
    if (GetWindows(&Windows, &NWindows)<0)
    {
       I("Cannot get windows\n");

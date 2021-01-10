@@ -54,10 +54,11 @@ int do_loadmeasure(UNUSED gpointer data)
 {
    double tnow = wallclock();
    static double tprev;
-   static int count = 0;
-   static int status   = 0;
+   static int count  = 0;
+   static int status = 0;
 
    if (tnow-tprev > 1.1*time_measure)
+   //if (tnow-tprev > 0.9*time_measure)
       count++;
    else 
       count --;

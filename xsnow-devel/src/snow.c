@@ -250,6 +250,7 @@ int snow_draw(cairo_t *cr)
 {
    if (Flags.NoSnowFlakes)
       return TRUE;
+   P("snow_draw %d\n",counter++);
 
    set_begin();
    Snow *flake;

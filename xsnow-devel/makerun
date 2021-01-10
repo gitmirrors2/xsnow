@@ -12,7 +12,7 @@ fi
 if [ ! -e Makefile ] ; then
    ./configure && make clean
 fi
-make   -j && src/xsnow -noisy  --g-fatal-warnings
+make   -j && src/xsnow -noisy  --g-fatal-warnings "$@"
 #make -j  && GDK_SYNCHRONIZE=1 GTK_DEBUG=interactive src/xsnow #--g-fatal-warnings
 #make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
 

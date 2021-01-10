@@ -185,6 +185,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-moonsize            ,MoonSize                         );
 	 handle_ia(-halo                ,Halo                             );
 	 handle_ia(-halobrightness      ,HaloBright                       );
+	 handle_ia(-movewindow          ,MoveWindow                       );
 	 handle_im(-offsets             ,OffsetS                          );
 	 handle_im(-offsetw             ,OffsetW                          );
 	 handle_im(-offsetx             ,OffsetX                          );
@@ -197,6 +198,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
 	 handle_ia(-stopafter           ,StopAfter                        );
+	 handle_ia(-theme               ,ThemeXsnow                       );
 	 handle_ia(-treefill            ,TreeFill                         );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
 	 handle_ia(-usebg               ,UseBG                            );
@@ -214,7 +216,6 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-above               ,BelowAll                 ,0      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
 	 handle_iv(-exposures           ,Exposures                ,True   );
-	 handle_iv(-fullscreen          ,FullScreen               ,0      );
 	 handle_iv(-noblowsnow          ,BlowSnow                 ,0      );
 	 handle_iv(-blowsnow            ,BlowSnow                 ,1      );
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );

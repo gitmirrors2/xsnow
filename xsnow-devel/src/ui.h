@@ -34,6 +34,7 @@ extern void  ui_show_range_etc(void);
 extern void  ui_show_desktop_type(const char *s);
 extern void  ui_set_sticky(int x);
 extern void  ui_background(int m);
+extern void  ui_ui();
 
 extern void  ui_gray_ww(const int m);
 extern void  ui_gray_erase(const int m);

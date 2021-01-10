@@ -30,7 +30,7 @@
 #define DOITALL \
    DOIT_I(BelowAll            ,1  ,1 ) \
    DOIT_I(BelowConfirm        ,0  ,0 ) /*not a button or parameter */ \
-   DOIT_I(Changes             ,0  ,0 ) /* not a flag or button */ \
+   DOIT_I(Changes             ,0  ,0 ) /* not a parameter or button */ \
    DOIT_I(CheckGtk            ,1  ,1 ) \
    DOIT_I(Defaults            ,0  ,0 ) \
    DOIT_I(Desktop             ,0  ,0 ) \
@@ -68,6 +68,7 @@
    DOIT_I(Moon                 ,1          ,0          ) \
    DOIT_I(MoonSpeed            ,120        ,120        ) \
    DOIT_I(MoonSize             ,100        ,100        ) \
+   DOIT_I(MoveWindow           ,1          ,1          ) \
    DOIT_I(NoFluffy             ,0          ,0          ) \
    DOIT_I(NoKeepSBot           ,0          ,0          ) \
    DOIT_I(NoKeepSnow           ,0          ,0          ) \
@@ -90,6 +91,7 @@
    DOIT_I(SnowSize             ,8          ,8          ) \
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
    DOIT_I(Stars                ,1          ,0          ) \
+   DOIT_I(ThemeXsnow           ,1          ,1          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
    DOIT_I(UseBG                ,0          ,0          ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\

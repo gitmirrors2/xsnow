@@ -902,7 +902,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
                 <property name="xalign">0.5</property>
                 <property name="yalign">0.5</property>
                 <style>
-                  <class name="pink"/>
+                  <class name="busymessage"/>
                 </style>
               </object>
               <packing>
@@ -4313,6 +4313,23 @@ Santa</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
+                  <object class="GtkToggleButton" id="id-ThemeXsnow">
+                    <property name="label" translatable="yes">Xsnow
+theme</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Toggle between xsnow's own theme and standard theme.
+Activated: use xsnow theme.
+Deactivated: use default theme.</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkToggleButton" id="id-AllWorkspaces">
                     <property name="label" translatable="yes">On all
 workspaces</property>
@@ -4327,25 +4344,26 @@ NOTE: this doesn't work properly in enlightenment.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="id-FullScreen">
-                    <property name="label" translatable="yes">Full
-screen</property>
+                  <object class="GtkToggleButton" id="id-MoveWindow">
+                    <property name="label" translatable="yes">Window to
+origin</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.
-NOTE: this doesn't work properly in enlightenment.</property>
+                    <property name="tooltip_text" translatable="yes">Move the snow window to the origin. When unset, 
+it is possible that in a multiscreen environment, 
+only part of the screens show snow.</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -4367,7 +4385,7 @@ Therefore, you will be asked to click a button, to be sure that things are OK.</
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -4385,7 +4403,7 @@ confirm</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
                 <child>
@@ -4401,7 +4419,7 @@ confirm</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
                 <child>
@@ -4424,7 +4442,7 @@ confirm</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>

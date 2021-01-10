@@ -38,10 +38,11 @@
    BUTTON(togglecode     ,xsnow_birds       ,ShowBirds            ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,AllWorkspaces        ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,BelowAll             ,1  )         \
-   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0 )         \
+   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0 )          \
    BUTTON(togglecode     ,xsnow_settings    ,Exposures            ,1  )         \
-   BUTTON(togglecode     ,xsnow_settings    ,FullScreen           ,1  )         \
+   BUTTON(togglecode     ,xsnow_settings    ,MoveWindow           ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,UseBG                ,1  )         \
+   BUTTON(togglecode     ,xsnow_settings    ,ThemeXsnow           ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,NoMeteorites         ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_celestials  ,Halo                 ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,Moon                 ,1  )         \
@@ -57,38 +58,38 @@
    BUTTON(togglecode     ,xsnow_celestials  ,NoWind               ,-1 )   /*i*/ \
 
 
-#define ALL_RANGES \
-   BUTTON(rangecode      ,xsnow_birds       ,Anarchy              ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,AttrFactor           ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,BirdsScale           ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,BirdsSpeed           ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,DisWeight            ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,FollowWeight         ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,Nbirds               ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,Neighbours           ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,PrefDistance         ,1  )         \
-   BUTTON(rangecode      ,xsnow_birds       ,ViewingDistance      ,1  )         \
-   BUTTON(rangecode      ,xsnow_settings    ,CpuLoad              ,1  )         \
-   BUTTON(rangecode      ,xsnow_settings    ,OffsetS              ,-1 )   /*i*/ \
-   BUTTON(rangecode      ,xsnow_settings    ,OffsetY              ,-1 )   /*i*/ \
-   BUTTON(rangecode      ,xsnow_settings    ,Transparency         ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,HaloBright           ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
-   BUTTON(rangecode      ,xsnow_santa       ,SantaSpeedFactor     ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,BlowOffFactor        ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,FlakeCountMax        ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,MaxOnTrees           ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,MaxScrSnowDepth      ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,MaxWinSnowDepth      ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,SnowFlakesFactor     ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,SnowSize             ,1  )         \
-   BUTTON(rangecode      ,xsnow_snow        ,SnowSpeedFactor      ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,NStars               ,1  )         \
-   BUTTON(rangecode      ,xsnow_scenery     ,DesiredNumberOfTrees ,1  )         \
-   BUTTON(rangecode      ,xsnow_scenery     ,TreeFill             ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,WhirlFactor          ,1  )         \
-   BUTTON(rangecode      ,xsnow_celestials  ,WindTimer            ,1  )         \
+#define ALL_SCALES \
+   BUTTON(scalecode      ,xsnow_birds       ,Anarchy              ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,AttrFactor           ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,BirdsScale           ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,BirdsSpeed           ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,DisWeight            ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,FollowWeight         ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,Nbirds               ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,Neighbours           ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,PrefDistance         ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,ViewingDistance      ,1  )         \
+   BUTTON(scalecode      ,xsnow_settings    ,CpuLoad              ,1  )         \
+   BUTTON(scalecode      ,xsnow_settings    ,OffsetS              ,-1 )   /*i*/ \
+   BUTTON(scalecode      ,xsnow_settings    ,OffsetY              ,-1 )   /*i*/ \
+   BUTTON(scalecode      ,xsnow_settings    ,Transparency         ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,HaloBright           ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
+   BUTTON(scalecode      ,xsnow_santa       ,SantaSpeedFactor     ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,BlowOffFactor        ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,FlakeCountMax        ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,MaxOnTrees           ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,MaxScrSnowDepth      ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,MaxWinSnowDepth      ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,SnowFlakesFactor     ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,SnowSize             ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,SnowSpeedFactor      ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,NStars               ,1  )         \
+   BUTTON(scalecode      ,xsnow_scenery     ,DesiredNumberOfTrees ,1  )         \
+   BUTTON(scalecode      ,xsnow_scenery     ,TreeFill             ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,WhirlFactor          ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,WindTimer            ,1  )         \
 
 
 #define ALL_COLORS \
@@ -102,6 +103,6 @@
 
 #define ALL_BUTTONS \
    ALL_TOGGLES      \
-   ALL_RANGES       \
+   ALL_SCALES       \
    ALL_COLORS
 

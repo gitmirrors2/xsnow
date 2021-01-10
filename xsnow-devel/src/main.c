@@ -141,7 +141,6 @@ static void   restart_do_draw_all(void);
 static int    myDetermineWindow(void);
 static void   set_below_above(void);
 static void   change_ww(void);
-static void   UpdateFullScreen(void);
 static void   DoAllWorkspaces(void);
 
 
@@ -521,15 +520,23 @@ int main_c(int argc, char *argv[])
 void set_below_above()
 {
    P("%d set_below_above\n",counter++);
+   XWindowChanges changes;
+   // to be sure: we do it in gtk mode and window mode
    if (Flags.BelowAll)
    {
       setbelow(GTK_WINDOW(TransA));
       setbelow(GTK_WINDOW(TransB));
+      changes.stack_mode = Below;
+      if(SnowWina)XConfigureWindow(display,SnowWina,CWStackMode,&changes);
+      if(SnowWinb)XConfigureWindow(display,SnowWinb,CWStackMode,&changes);
    }
    else
    {
       setabove(GTK_WINDOW(TransA));
       setabove(GTK_WINDOW(TransB));
+      changes.stack_mode = Above;
+      if(SnowWina)XConfigureWindow(display,SnowWina,CWStackMode,&changes);
+      if(SnowWinb)XConfigureWindow(display,SnowWinb,CWStackMode,&changes);
    }
 }
 
@@ -546,7 +553,32 @@ int myDetermineWindow()
 
    static char * SnowWinaName = NULL;
    static char * SnowWinbName = NULL;
-   static int IsDesktop;
+   static int IsDesktop = 0;
+
+   if(IsDesktop)
+      if(1)
+      {
+	 if (SnowWina)
+	 {
+	    XDestroyWindow(display,SnowWina);
+	    SnowWina = 0;
+	 }
+	 if (SnowWinb)
+	 {
+	    XDestroyWindow(display,SnowWinb);
+	    SnowWinb = 0;
+	 }
+	 if (TransA)
+	 {
+	    gtk_widget_destroy(TransA);
+	    TransA = NULL;
+	 }
+	 if (TransB)
+	 {
+	    gtk_widget_destroy(TransB);
+	    TransB = NULL;
+	 }
+      }
    if (!SnowWina)
    {
       if (SnowWinaName)
@@ -620,8 +652,8 @@ int myDetermineWindow()
    }
    else                          //  No transparent window: Scenario 4
    {
-      P("Scenario 4 Desktop: %d\n",IsDesktop);
-      printf("Scenario: Use X11 for drawing snow in root window, no birds will fly, no moon will shine.\n");
+      P("Scenario 4 IsDesktop: %d\n",IsDesktop);
+      printf("Scenario: Use X11 for drawing snow, no birds will fly, no moon will shine.\n");
       // in LXDE, SnowWin will be overwritten by id of window pcmanfm
       SnowWin            = SnowWina;
       SnowWinName        = SnowWinaName;
@@ -632,12 +664,6 @@ int myDetermineWindow()
       switches.Desktop   = IsDesktop;
    }
 
-   InitDisplayDimensions();
-
-   P("windows: SnowWin:%s SnowWina:%s SnowWinb:%s\n",SnowWinName,SnowWinaName,SnowWinbName);
-   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %s - exposures: %d\n",
-	 SnowWin,SnowWinName,SnowWinDepth,
-	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, TransA?"yes":"no",switches.Exposures);
    if (TransA)
       printf("Birds in window: %#lx - \"%s\"\n",SnowWina,SnowWinaName);
    else
@@ -656,9 +682,45 @@ int myDetermineWindow()
    {
       drawconnect = 0;
    }
+
+   InitDisplayDimensions();
+
+   static int first_call = 1;
+   static int xa = 0;
+   static int ya = 0;
+
+   if (first_call)
+   {
+      first_call = 0;
+      xa = SnowWinX;
+      ya = SnowWinY;
+   }
+
+
+   if(switches.Desktop)
+   {
+      if(Flags.MoveWindow)
+      {
+	 P("XM: %d %d\n",0,0);
+	 if(SnowWina)XMoveWindow(display,SnowWina,0,0);
+	 if(SnowWinb)XMoveWindow(display,SnowWinb,0,0);
+      }
+      else
+      {
+	 P("XM: %d %d\n",xa,ya);
+	 if(SnowWina)XMoveWindow(display,SnowWina,xa,ya);
+	 if(SnowWinb)XMoveWindow(display,SnowWinb,xa,ya);
+      }
+   }
+
+   P("windows: SnowWin:%s SnowWina:%s SnowWinb:%s\n",SnowWinName,SnowWinaName,SnowWinbName);
+   printf("Snowing in window: %#lx - \"%s\" - depth: %d - geom: %d %d %dx%d - alpha: %s - exposures: %d\n",
+	 SnowWin,SnowWinName,SnowWinDepth,
+	 SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight, TransA?"yes":"no",switches.Exposures);
    fflush(NULL);
    return 1;
 }
+
 
 void change_ww()
 {
@@ -675,23 +737,6 @@ void change_ww()
    P("WantWindow: %d\n",Flags.WantWindow);
 }
 
-void UpdateFullScreen()
-{
-   if(TransA)
-   {
-      if (Flags.FullScreen)
-      {
-	 gtk_window_fullscreen(GTK_WINDOW(TransA));
-	 gtk_window_fullscreen(GTK_WINDOW(TransB));
-      }
-      else
-      {
-	 gtk_window_unfullscreen(GTK_WINDOW(TransA));
-	 gtk_window_unfullscreen(GTK_WINDOW(TransB));
-      }
-      set_below_above();
-   }
-}
 
 void DoAllWorkspaces()
 {
@@ -740,6 +785,7 @@ int do_ui_check(UNUSED gpointer data)
    blowoff_ui();
    treesnow_ui();
    moon_ui();
+   ui_ui();
 
    UIDO (WantWindow          , change_ww();                     );
    UIDO (CpuLoad             , HandleCpuFactor();               );
@@ -760,7 +806,7 @@ int do_ui_check(UNUSED gpointer data)
    UIDO (OffsetS             ,                                  );
    UIDO (OffsetY             ,                                  );
    UIDO (NoFluffy            , ClearScreen();                   );
-   UIDO (FullScreen          , UpdateFullScreen();              );
+   UIDO (MoveWindow          , myDetermineWindow();             );
    UIDO (AllWorkspaces       , DoAllWorkspaces();               );
    UIDO (BelowAll            , set_below_above();               );
 
@@ -901,6 +947,8 @@ int do_show_desktop_type(UNUSED gpointer data)
 int do_testing(UNUSED gpointer data)
 {
    counter++;
+   //Flags.ThemeXsnow = 1-Flags.ThemeXsnow;
+   P("testing ThemeXsnow:%d\n",Flags.ThemeXsnow);
    if (Flags.Done)
       return FALSE;
    return TRUE;

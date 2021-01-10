@@ -5,6 +5,24 @@ version 3.2.2
 	    combo
 	3:flags.c flags.h: separate FLAGS for default and vintage
 	  docs.c: some minor additions
+	4:buttons.h: change togglecode into scalecode
+	  flags.h uitils.h: transport some macro's
+	  ui.c: add documention about flags and buttons
+	  main.c: optionally move windows to 0,0 (movewindow())
+	    Flags.MoveWindow --movewindow
+	5:some tweaks MoveWindow
+	6:more tweaks for MoveWindow
+	  Use also XConfigureWindow to set below or above. Now behaviour is
+	  OK when running in FVWM + xcompmgr or compton
+	  transparent.c: fixed 'show desktop' issue by re-adding:
+	     gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
+	  wmctrl.c: add check for _NET_SHOWING_DESKTOP for visibility of
+	     windows
+	  windows.c: keep SnowWin below if Flags.BelowAll. Needed when SnowWin
+	    is not click-through.
+	7:add -theme flag. No button: too complicated for me.
+	9:make theme chooseable with a button
+
 version 3.2.1
 	1:utils.h: add fflush(NULL) to UIDO and UIDOS
 	  moon.c: create halo surface for painting.

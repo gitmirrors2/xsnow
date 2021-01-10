@@ -439,7 +439,8 @@ int birds_draw(cairo_t *cr)
       if(before && Flags.FollowSanta && !Flags.BirdsOnly)
       {
 	 static int prevSantasize = -1;
-	 Santa_draw(cr);
+	 if (switches.UseGtk)
+	    Santa_draw(cr);
 	 attrbird.ix = SantaX+SantaWidth/2;
 	 attrbird.iz = SantaY+SantaHeight/2;
 	 switch(Flags.SantaSize)

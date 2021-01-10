@@ -26,24 +26,6 @@
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 
-#define UIDO(_x,_y) \
-   if(Flags._x != OldFlags._x) \
-{ \
-   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8d -> %8d\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
-   {_y} \
-   OldFlags._x = Flags._x; \
-   Flags.Changes++; \
-}
-
-#define UIDOS(_x,_y) \
-   if(strcmp(Flags._x, OldFlags._x)) \
-{ \
-   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8s -> %8s\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
-   {_y} \
-   free(OldFlags._x); \
-   OldFlags._x = strdup(Flags._x); \
-   Flags.Changes++; \
-}
 
 #include <stdio.h>
 #include <X11/Intrinsic.h>

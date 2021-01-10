@@ -103,13 +103,14 @@ void docs_usage(int man)
    manout("-noconfig"               ,"Do not read or write config file (see FILES).");
    manout("-hidemenu"               ,"Start with hidden interactive menu.");
    manout("-nomenu"                 ,"Do not start and show interactive menu.");
+   manout("-theme <n>"              ,"1: use xsnow theme for menu; 0: use system theme (default: %d)",F(ThemeXsnow));
    manout("-checkgtk <n>"           ,"0: Do not check gtk version before starting the user interface.");
    manout(" "                       ,"1: Check gtk version before starting the user interface.");
    manout(" "                       ,"(default: %d).",F(CheckGtk));
    manout("-id <n>, -window-id <n>" ,"Snow in window with id (for example from xwininfo).");
    manout("-desktop"                ,"Act as if window is a desktop.");
+   manout("-movewindow <n>"         ,"1: move snow window to position 0,0 (default: %d)",F(MoveWindow));
    manout("-allworkspaces <n>"      ,"0: use one desktop for snow, 1: use all desktops (default: %d).",F(AllWorkspaces));
-   manout("-fullscreen"             ,"Snow on full screen window: panels, task bars etc. will be not accessible.");
    manout("-above"                  ,"Snow above your windows. Default is to snow below your windows.");
    manout(" "                       ,"NOTE: in some environments this results in an un-clickable desktop.");
    manout("-xwininfo  "             ,"Use a cursor to point at the window you want the snow to be fallen in.");
@@ -326,6 +327,10 @@ void docs_usage(int man)
    manout(" ","    compatible with older versions.");
    manout(".","- Xsnow stresses the Xserver too much.");
    manout(".","- Xsnow does run in Wayland, but will not snow on all windows.");
+   manout(".","- Xsnow tries to create a click-through window. This is not successful");
+   manout(" ","  in for example FVWM/xcompmgr. In that case, xsnow tries to keep");
+   manout(" ","  the snow window below all others, resulting in a transient effect");
+   manout(" ","  when you click on the desktop. Sadly, no FVWM menu will appear...");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","    fallen snow. These will gradually disappear, so no big deal.");
    manout(".","- Remnants of meteorites can persist after passage of Santa.");
@@ -333,12 +338,6 @@ void docs_usage(int man)
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","    settings are changed while xsnow is running.");
    manout(" ","    This does not function always well.");
-   manout(".","- In some combinations of display managers and compositors");
-   manout(" ","    the desktop is visible, but unclickable.");
-   manout(" ","    Known example is FVWM in combination with xcompmgr or compton.");
-   manout(" ","    Solution: xsnow -xwininfo, and click on the desktop.");
-   manout(" ","    This will result in stuttering Santa and snow flakes.");
-   manout(" ","    In FVWM, for xsnow it is better to run without compositor.");
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");
 
@@ -367,16 +366,16 @@ char *replace_all(const char *s, const char *needle, const char *rep)
       const char *q = strstr(haystack,needle);
       if (q == NULL)  // no needle in haystack
       {            // cat haystack to result
-         result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
-         result = strcat(result,haystack);
-         break;
+	 result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
+	 result = strcat(result,haystack);
+	 break;
       }
       else      // needle is in haystack
       {         // cat first part of haystack + rep to result
-         result   = (char *)realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
-         result   = strncat(result, haystack, q-haystack);
-         result   = strcat(result, rep);
-         haystack = q+strlen(needle);
+	 result   = (char *)realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
+	 result   = strncat(result, haystack, q-haystack);
+	 result   = strcat(result, rep);
+	 haystack = q+strlen(needle);
       }
    }
    return result;
@@ -399,23 +398,23 @@ void manout(const char*flag, const char*txt, ...)
       char *manflag = replace_all(flag,"-","\\-");
       if (!strcmp(manflag," "))
       {
-         //printf("%s\n",mantxt);
-         vprintf(mantxt,args);
-         printf("\n");
+	 //printf("%s\n",mantxt);
+	 vprintf(mantxt,args);
+	 printf("\n");
       }
       else if(!strcmp(manflag,"."))
       {
-         //printf(".br\n%s\n",mantxt);
-         printf(".br\n");
-         vprintf(mantxt,args);
-         printf("\n");
+	 //printf(".br\n%s\n",mantxt);
+	 printf(".br\n");
+	 vprintf(mantxt,args);
+	 printf("\n");
       }
       else
       {
-         printf(".TP\n"); printf("\\fB%s\\fR\n",manflag);
-         //printf("%s\n",mantxt);
-         vprintf(mantxt,args);
-         printf("\n");
+	 printf(".TP\n"); printf("\\fB%s\\fR\n",manflag);
+	 //printf("%s\n",mantxt);
+	 vprintf(mantxt,args);
+	 printf("\n");
       }
       free(mantxt);
       free(manflag);
@@ -424,24 +423,24 @@ void manout(const char*flag, const char*txt, ...)
    {
       if (!strcmp(flag," "))
       {
-         //printf("\t\t  %s\n",txt);
-         printf("\t\t  ");
-         vprintf(txt,args);
-         printf("\n");
+	 //printf("\t\t  %s\n",txt);
+	 printf("\t\t  ");
+	 vprintf(txt,args);
+	 printf("\n");
       }
       else if(!strcmp(flag,"."))
       {
-         //printf("\t\t  %s\n",txt);
-         printf("\t\t  ");
-         vprintf(txt,args);
-         printf("\n");
+	 //printf("\t\t  %s\n",txt);
+	 printf("\t\t  ");
+	 vprintf(txt,args);
+	 printf("\n");
       }
       else
       {
-         //printf("%s\t: %s\n",flag,txt);
-         printf("%s\t: ",flag);
-         vprintf(txt,args);
-         printf("\n");
+	 //printf("%s\t: %s\n",flag,txt);
+	 printf("%s\t: ",flag);
+	 vprintf(txt,args);
+	 printf("\n");
       }
    }
 }

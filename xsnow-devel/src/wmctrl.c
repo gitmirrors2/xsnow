@@ -187,10 +187,34 @@ int GetWindows(WinInfo **windows, int *nwin)
       (*windows) = (WinInfo *)malloc(nitems*sizeof(WinInfo));
    int i;
    WinInfo *w = (*windows);
-   static Atom net_atom = 0, gtk_atom = 0;
-   if(gtk_atom == 0) gtk_atom = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
-   if(net_atom == 0) net_atom = XInternAtom(display, "_NET_FRAME_EXTENTS", True);
+   static Atom net_atom = 0, gtk_atom = 0, show_atom = 0;
+   if(gtk_atom == 0)  gtk_atom  = XInternAtom(display, "_GTK_FRAME_EXTENTS",   True);
+   if(net_atom == 0)  net_atom  = XInternAtom(display, "_NET_FRAME_EXTENTS",   True);
+   if(show_atom == 0) show_atom = XInternAtom(display, "_NET_SHOWING_DESKTOP", True);
    int k = 0;
+
+   // and yet another check if window is hidden (needed e.g. in KDE/plasma after 'hide all windows')
+   int globalhidden = 0;
+   {
+      P("hidden3 %d %#lx\n",counter++,w->id);
+      if (show_atom)
+      {
+	 Atom type;
+	 unsigned long nitems, b; int format;
+	 unsigned char *properties = NULL;
+	 P("hidden3 try _NET_SHOWING_DESKTOP\n");
+	 XGetWindowProperty(display, Rootwindow, show_atom, 0, (~0L), False, 
+	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if(format == 32 && nitems >=1)
+	 {
+	    if(*(long*) properties == 1)
+	       globalhidden = 1;
+	    P("hidden3 hidden:%d\n",globalhidden);
+	 }
+	 if(properties) XFree(properties);
+      }
+   }
+
    for (i=0; (unsigned long)i<nitems; i++)
    {
       int x0,y0,xr,yr;
@@ -296,7 +320,8 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(properties) XFree(properties);
 
       // check if window is hidden
-      w->hidden = 0;
+      w->hidden = globalhidden;
+      if(!w->hidden)
       {
 	 if (winattr.map_state != IsViewable)
 	 {

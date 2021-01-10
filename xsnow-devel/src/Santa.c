@@ -98,9 +98,9 @@ void Santa_ui()
 
 int Santa_draw(cairo_t *cr)
 {
-   P("Santa_draw %d\n",counter++);
    if (Flags.NoSanta)
       return TRUE;
+   P("Santa_draw %d\n",counter++);
    cairo_surface_t *surface;
    surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][CurrentSanta];
    cairo_set_source_surface (cr, surface, SantaX, SantaY);

@@ -65,7 +65,7 @@
 #define time_sfallen          2.30             /* time between smoothing of fallen snow      */
 #define time_snow_on_trees    0.50             /* time between redrawings of snow on trees   */
 #define time_star             0.50             /* time between drawing stars                 */ 
-#define time_testing          1.10             /* time between testing code                  */ 
+#define time_testing          2.10             /* time between testing code                  */ 
 #define time_ui_check         0.25             /* time between checking values from ui       */ 
 #define time_umoon            0.02            /* time between update position of moon       */
 #define time_usanta           0.02             /* time between update of santa position      */

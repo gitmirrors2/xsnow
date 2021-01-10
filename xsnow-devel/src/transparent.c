@@ -147,6 +147,8 @@ int create_transparent_window(int allworkspaces, int below,
    P("gdk_window %p\n",(void *)gdk_window);
    // keep xsnow visible after 'show desktop', and as a bonus, keep
    // xsnow visible on all workspaces in some desktops:
+   //if (allworkspaces) // this was present in older versions, why?
+   gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
 
@@ -155,9 +157,11 @@ int create_transparent_window(int allworkspaces, int below,
    // see comment at draw1()
    cairo_region_t *cairo_region = cairo_region_create();
    gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window), cairo_region, 0,0);
+   //gtk_widget_input_shape_combine_region(gtkwin, cairo_region);
    P("shape stuff: %p %p\n",(void *)gtkwin,(void*)gdk_window);
    cairo_region_destroy(cairo_region);
    //gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
+   //  This was to be expected: clicks are sent to parent window
 
    gdk_window_show                 (GDK_WINDOW(gdk_window));
 
@@ -170,6 +174,34 @@ int create_transparent_window(int allworkspaces, int below,
 
    // the X11 window:
    *xwin = gdk_x11_window_get_xid(gdk_window);
+
+
+#if 0
+   // normally, the window is click-through already, but not always, so
+   // we do it here the X11-way:
+   // We need to add xfixes in configure.ac:  PKG_CHECK_MODULES(X11,[.... xfixes])
+   // https://stackoverflow.com/questions/16400937/click-through-transparent-xlib-windows
+   // This code is commented out because it does not help in for example TWM+xcompmgr
+
+   {
+#include <X11/extensions/shape.h>
+#include <X11/extensions/Xfixes.h>
+      XRectangle rect; rect.width = 0; rect.height = 0;
+      XserverRegion region = XFixesCreateRegion(display, &rect, 1);
+      XFixesSetWindowShapeRegion(display, *xwin, ShapeInput, 0, 0, region);
+      XFixesDestroyRegion(display, region);
+   }
+#endif
+#if 0
+   // this solution needs xext. Does not work: nothing is drawn...
+   gdk_window_hide                 (GDK_WINDOW(gdk_window));
+#include <X11/extensions/shape.h>
+   Region region = XCreateRegion();
+   XShapeCombineRegion(display,*xwin,ShapeBounding,0,0,region,ShapeSet);
+   //XShapeCombineMask(display,*xwin,ShapeInput,0,0,None,ShapeSet);
+   XDestroyRegion(region);
+   gdk_window_show                 (GDK_WINDOW(gdk_window));
+#endif
 
    return TRUE;
 }
@@ -334,6 +366,7 @@ static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer use
       gdk_window_input_shape_combine_region(gdk_window1, cairo_region1, 0,0);
       cairo_region_destroy(cairo_region1);
       // gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
+      //  This was to be expected: clicks are sent to parent window
       P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
 
       if(below1)
