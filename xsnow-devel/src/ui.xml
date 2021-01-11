@@ -4315,13 +4315,13 @@ Santa</property>
                 <child>
                   <object class="GtkToggleButton" id="id-ThemeXsnow">
                     <property name="label" translatable="yes">Xsnow
-theme</property>
+colors</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Toggle between xsnow's own theme and standard theme.
-Activated: use xsnow theme.
-Deactivated: use default theme.</property>
+                    <property name="tooltip_text" translatable="yes">Toggle between xsnow's own colors and standard colors.
+Activated: use xsnow colors.
+Deactivated: use default colors.</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

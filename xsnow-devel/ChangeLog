@@ -22,6 +22,7 @@ version 3.2.2
 	    is not click-through.
 	7:add -theme flag. No button: too complicated for me.
 	9:make theme chooseable with a button
+	11:ui.c: minor tweaks
 
 version 3.2.1
 	1:utils.h: add fflush(NULL) to UIDO and UIDOS

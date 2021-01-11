@@ -230,24 +230,6 @@ void handle_theme()
    }
 }
 
-// Set the style provider for the widgets
-static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
-{
-   P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
-
-   gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
-	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
-	 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION );
-
-   // For container widgets, apply to every child widget on the container
-   if (GTK_IS_CONTAINER (widget))
-   {
-      gtk_container_forall( GTK_CONTAINER (widget),
-	    (GtkCallback)apply_css_provider ,
-	    cssstyleProvider);
-   }
-}
-
 
    MODULE_EXPORT
 void button_iconify(UNUSED GtkWidget *w, UNUSED gpointer p)
@@ -989,11 +971,44 @@ void ui(UNUSED int *argc, UNUSED char **argv[])
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
 }
 
+// Set the style provider for the widgets
+static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvider)
+{
+   P("apply_css_provider %s\n",gtk_widget_get_name(GTK_WIDGET(widget)));
+
+   gtk_style_context_add_provider ( gtk_widget_get_style_context(widget), 
+	 GTK_STYLE_PROVIDER(cssstyleProvider) , 
+	 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION );
+
+   // For container widgets, apply to every child widget on the container
+   if (GTK_IS_CONTAINER (widget))
+   {
+      gtk_container_forall( GTK_CONTAINER (widget),
+	    (GtkCallback)apply_css_provider ,
+	    cssstyleProvider);
+   }
+}
+
+
 void handle_css()
 {
    const char *css     = 
-      ".xsnow scale                                      { padding:          1em;     }"   // padding in slider buttons
-      ".xsnow button.radio                               { min-width:        10px;    }"   // make window as small as possible
+      // I wish how I could copy the Adwaita settings ...
+      //".xsnow button { padding-left: 16px; padding-right: 16px; padding-top: 4px; padding-bottom: 4px;}"
+      //".xsnow headerbar button { padding-left: 10px; padding-right: 10px; padding-top: 4px; padding-bottom: 4px;}"
+      //".xsnow headerbar.titlebar { border-color: rgb(213,208,204); border-style:solid; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 8px; border-top-right-radius: 8px;}"
+      //".xsnow headerbar label.title { padding-left: 12px; padding-right:12px;}"
+      //".xsnow button.color {padding: 4px; }"
+      //".xsnow headerbar stackswitcher button.radio label       { color: #065522;  }"   
+      //".xsnow headerbar stackswitcher button.radio        { box-shadow: 0px 0px; border-top-width: 0px;  }"   
+      
+      // These are not colors, but nevertheless I think we should do this always:
+      "scale              { padding:       1em;                    }"   // padding in slider buttons
+      "button.radio       { min-width:     10px;                   }"   // make window as narrow as possible
+      "label.busymessage  { border-radius: 4px;  min-height: 3.5em }"   // info message in welcome tab
+
+      // colors: (the buttons in the headerbar need some work)
+      ".xsnow *                                          { border-color:     #B4EEB4; }"   // border colors
       ".xsnow button                                     { background:       #CCF0D8; }"   // color of normal buttons
       ".xsnow button.radio,        .xsnow button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
       ".xsnow radiobutton:active,  .xsnow button:active  { background:       #0DAB44; }"   // color of buttons while being activated
@@ -1001,14 +1016,14 @@ void handle_css()
       ".xsnow headerbar                                  { background:       #B3F4CA; }"   // color of headerbar
       ".xsnow scale slider                               { background:       #D4EDDD; }"   // color of sliders
       ".xsnow scale trough                               { background:       #0DAB44; }"   // color of trough of sliders
-      ".xsnow stack                                      { background-color: #EAFBF0; }"   // color of main area
+      ".xsnow stack                                      { background:       #EAFBF0; }"   // color of main area
       ".xsnow *                                          { color:            #065522; }"   // foreground color (text)
       ".xsnow *:disabled *                               { color:            #8FB39B; }"   // foreground color for disabled items
-      "label.busymessage     { background: #FFC0CB; background-color: #FFC0CB; border-radius: 4px; min-height: 3.5em }"
-      "button.confirm        { background: #FFFF00; }"         //
-      ".xsnow button.confirm { background-color: #FFFF00; }"   // yes we need both, but why?
-      ".busy stack           { background: #FFC0CB; background-color: #FFC0CB; }"
-      ".busy .cpuload slider { background: #FF0000; background-color: #FF0000; }"
+      ".busy stack                                       { background:       #FFC0CB; }"   // background color when too busy
+      ".busy .cpuload slider                             { background:       #FF0000; }"   // color of some sliders when too busy
+      "button.confirm                                    { background:       #FFFF00; }"   // color for confirm above windows
+      ".xsnow button.confirm                             { background-color: #FFFF00; }"   // yes we need both, but why?
+      "label.busymessage                                 { background:       #FFC0CB; }"   // info message in welcome tab
       ;
 
    static GtkCssProvider *cssProvider = NULL;
