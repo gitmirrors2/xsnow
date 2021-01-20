@@ -2,6 +2,7 @@ version 3.2.3
 	1:minor adaption in simplemake.sh
 	 :make use of VERSION in config.h
 	  adapt simplemake.sh 
+	6:ixpm.c: correct stupid bug in xpm_set_color()
 
 version 3.2.2
 	1:change 'changes' into Flags.Changes

@@ -328,8 +328,8 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
    int j;
    for (j=0; j<2; j++)
       x[j] = strdup(data[j]);
-   x[2] = (char *)malloc(5+sizeof(color));
-   x[2][0] = 0;
+   x[2] = (char *)malloc(5+strlen(color));
+   x[2][0] = '\0';
    strcat(x[2],". c ");
    strcat(x[2],color);
    P("c: [%s]\n",x[2]);
