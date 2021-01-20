@@ -5,9 +5,11 @@ clear
 if true; then
    export CC=gcc-10 CXX=g++-10
    export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O2 -g -DNO_USE_BITS'
+   export CXXFLAGS='-Wextra                  -Wpedantic -Wall -O2 -g -DNO_USE_BITS'
 else
    export CC=g++-10 CXX=g++-10
    export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
+   export CXXFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
 fi
 if [ ! -e Makefile ] ; then
    ./configure && make clean

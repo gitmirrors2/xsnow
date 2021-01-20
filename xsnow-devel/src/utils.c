@@ -18,6 +18,9 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -150,8 +153,8 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
 
 void PrintVersion()
 {
-   printf("Xsnow-%s\n%s\n"
-	 , VERSION, VERSIONBY);
+   printf("%s\n%s\n",
+	 PACKAGE_STRING, VERSIONBY);
 }
 
 void rgba2color(GdkRGBA *c, char **s)
@@ -160,3 +163,9 @@ void rgba2color(GdkRGBA *c, char **s)
    sprintf(*s,"#%02lx%02lx%02lx",lrint(c->red*255),lrint(c->green*255),lrint(c->blue*255));
 }
 
+void Thanks(void)
+{
+   if (HaltedByInterrupt)
+      printf("\nXsnow: Caught signal %d\n",HaltedByInterrupt);
+   printf("\nThank you for using xsnow\n");
+}

@@ -59,6 +59,10 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 static gboolean draw1(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 #endif
 
+// to use gdk_window_set_pass_through, which does not work on my system
+// or I am misunderstanding something
+// #define USEPASSTHRU
+
 static gboolean supports_alpha = FALSE;
 static int below1;
 
@@ -93,7 +97,8 @@ int create_transparent_window(int allworkspaces, int below,
    // following prevents above/below:
    //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DESKTOP);
    // following prevents gtk_window_set_skip_taskbar_hint from working:
-   gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_NORMAL);
+   //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_NORMAL);
+   //
    // always above:
    //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DIALOG);
    // always above:
@@ -108,7 +113,6 @@ int create_transparent_window(int allworkspaces, int below,
    //gtk_window_set_type_hint        (GTK_WINDOW(gtkwin),GDK_WINDOW_TYPE_HINT_DOCK);
 
 
-
    gtk_window_set_decorated        (GTK_WINDOW(gtkwin),FALSE);
 
    // try to prevent window from showing up in taskbar: 
@@ -120,7 +124,8 @@ int create_transparent_window(int allworkspaces, int below,
 
    gtk_window_set_position         (GTK_WINDOW(gtkwin), GTK_WIN_POS_CENTER);
 
-   P("create_transparent_window %p\n",(void *)gtkwin);
+
+   R("create_transparent_window %p\n",(void *)gtkwin);
    gtk_window_set_title(GTK_WINDOW(gtkwin), name);
    gtk_widget_set_app_paintable(gtkwin, TRUE);
    // this callback we do not need:
@@ -141,13 +146,21 @@ int create_transparent_window(int allworkspaces, int below,
       return FALSE;
    }
 
-   gtk_widget_show_all(gtkwin);
+   if(0)if(!strcmp("Xsnow-B",name))
+   {
+      R("sleeping ...\n");
+      sleep(1000);
+      R("awake\n");
+   }
+   gtk_widget_show_all(gtkwin);    // here gets Xsnow-A the DOCK hint ...
 
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(gtkwin));
    P("gdk_window %p\n",(void *)gdk_window);
    // keep xsnow visible after 'show desktop', and as a bonus, keep
    // xsnow visible on all workspaces in some desktops:
    //if (allworkspaces) // this was present in older versions, why?
+
+
    gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
 
    gdk_window_hide                 (GDK_WINDOW(gdk_window));
@@ -155,13 +168,17 @@ int create_transparent_window(int allworkspaces, int below,
    gtk_window_set_resizable        (GTK_WINDOW(gtkwin), FALSE);
 
    // see comment at draw1()
+#ifdef USEPASSTHRU
+   //gdk_window_hide(gdk_window);
+   gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
+   //gdk_window_show(gdk_window);
+#else
    cairo_region_t *cairo_region = cairo_region_create();
    gdk_window_input_shape_combine_region(GDK_WINDOW(gdk_window), cairo_region, 0,0);
    //gtk_widget_input_shape_combine_region(gtkwin, cairo_region);
    P("shape stuff: %p %p\n",(void *)gtkwin,(void*)gdk_window);
    cairo_region_destroy(cairo_region);
-   //gdk_window_set_pass_through(gdk_window,TRUE); // does not work as expected
-   //  This was to be expected: clicks are sent to parent window
+#endif
 
    gdk_window_show                 (GDK_WINDOW(gdk_window));
 
@@ -175,6 +192,9 @@ int create_transparent_window(int allworkspaces, int below,
    // the X11 window:
    *xwin = gdk_x11_window_get_xid(gdk_window);
 
+   // apply the hints:
+   gtk_widget_hide(gtkwin);
+   gtk_widget_show(gtkwin);
 
 #if 0
    // normally, the window is click-through already, but not always, so
@@ -362,12 +382,16 @@ static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer use
       prev_widget[0] = prev_widget[1];
       prev_widget[1] = widget;
       GdkWindow *gdk_window1 = gtk_widget_get_window(widget);
+#ifdef USEPASSTHRU
+      //gdk_window_hide(gdk_window1);
+      gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
+      //gdk_window_show(gdk_window1);
+#else
       cairo_region_t *cairo_region1 = cairo_region_create();
       gdk_window_input_shape_combine_region(gdk_window1, cairo_region1, 0,0);
       cairo_region_destroy(cairo_region1);
-      // gdk_window_set_pass_through(gdk_window1,TRUE); // does not work as expected
-      //  This was to be expected: clicks are sent to parent window
-      P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
+#endif
+      R("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
 
       if(below1)
 	 setbelow(GTK_WINDOW(widget)); // see windows.c 

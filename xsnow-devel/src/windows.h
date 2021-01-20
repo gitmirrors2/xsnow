@@ -50,6 +50,7 @@ extern unsigned int Wroot;
 extern unsigned int Hroot;
 extern int          SnowWinX; 
 extern int          SnowWinY; 
+extern int          WindowsChanged;
 
 extern void         windows_ui(void);
 extern void         windows_draw(cairo_t *cr);

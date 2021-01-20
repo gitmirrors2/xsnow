@@ -90,6 +90,7 @@
 
 // from windows.h
 Display *display;
+int     WindowsChanged = 0;
 int     screen;
 int     SnowWinBorderWidth;
 int     SnowWinDepth;
@@ -109,7 +110,7 @@ GtkWidget       *drawing_area = NULL;
 
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
-static int HaltedByInterrupt = 0;
+int HaltedByInterrupt = 0;
 
 static char **Argv;
 static int Argc;
@@ -143,13 +144,6 @@ static void   set_below_above(void);
 static void   change_ww(void);
 static void   DoAllWorkspaces(void);
 
-
-static void Thanks(void)
-{
-   if (HaltedByInterrupt)
-      printf("\nXsnow: Caught signal %d\n",HaltedByInterrupt);
-   printf("\nThank you for using xsnow\n");
-}
 
 // callbacks
 static int do_displaychanged(gpointer data);
@@ -468,10 +462,9 @@ int main_c(int argc, char *argv[])
 
    // events
    if(switches.Desktop)
-      XSelectInput(display, SnowWin, 0);
+      XSelectInput(display, Rootwindow, /*StructureNotifyMask|*/ SubstructureNotifyMask);
    else
-      XSelectInput(display, SnowWin, 
-	    StructureNotifyMask);
+      XSelectInput(display, SnowWin, StructureNotifyMask);
 
    ClearScreen();   // without this, no snow, scenery etc. in KDE; this seems to be a vintage comment
 
@@ -524,16 +517,16 @@ void set_below_above()
    // to be sure: we do it in gtk mode and window mode
    if (Flags.BelowAll)
    {
-      setbelow(GTK_WINDOW(TransA));
-      setbelow(GTK_WINDOW(TransB));
+      if(TransA)setbelow(GTK_WINDOW(TransA));
+      if(TransB)setbelow(GTK_WINDOW(TransB));
       changes.stack_mode = Below;
       if(SnowWina)XConfigureWindow(display,SnowWina,CWStackMode,&changes);
       if(SnowWinb)XConfigureWindow(display,SnowWinb,CWStackMode,&changes);
    }
    else
    {
-      setabove(GTK_WINDOW(TransA));
-      setabove(GTK_WINDOW(TransB));
+      if(TransA)setabove(GTK_WINDOW(TransA));
+      if(TransB)setabove(GTK_WINDOW(TransB));
       changes.stack_mode = Above;
       if(SnowWina)XConfigureWindow(display,SnowWina,CWStackMode,&changes);
       if(SnowWinb)XConfigureWindow(display,SnowWinb,CWStackMode,&changes);
@@ -592,7 +585,7 @@ int myDetermineWindow()
 	 return 0;
       }
 
-      P("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
+      R("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
 
       // if user specified window, TransA will be 0
       if (TransA)
@@ -641,7 +634,7 @@ int myDetermineWindow()
 	 printf("Scenario: Use Gtk for drawing snow in transparent window, birds can fly.\n");
 	 SnowWin            = SnowWina;
 	 SnowWinName        = SnowWinaName;
-	 gtk_widget_hide(TransB);
+	 if(TransB)gtk_widget_hide(TransB);
 
 	 switches.UseGtk    = 1;
 	 switches.DrawBirds = 1;
@@ -854,6 +847,7 @@ int do_displaychanged(UNUSED gpointer data)
 
 int do_event(UNUSED gpointer data)
 {
+   P("do_event %d\n",counter++);
    if (Flags.Done)
       return FALSE;
    //if(switches.Trans) return; we are tempted, but if the event loop is escaped,
@@ -863,8 +857,14 @@ int do_event(UNUSED gpointer data)
    while (XPending(display)) 
    {
       XNextEvent(display, &ev);
-      if(!switches.Trans) 
+      //if(!switches.Trans) 
       {
+	 if (ev.type == ConfigureNotify || ev.type == MapNotify
+	       || ev.type == UnmapNotify) 
+	 {
+	    WindowsChanged++;
+	    R("WindowsChanged %d %d\n",counter++,WindowsChanged);
+	 }
 	 switch (ev.type) 
 	 {
 	    case ConfigureNotify:
@@ -883,9 +883,10 @@ int do_event(UNUSED gpointer data)
 		      ev.xconfigure.height != SnowWinHeight))
 	       {
 		  P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
-		  P("Calling RestartDisplay\n");
+		  R("Calling RestartDisplay %d\n",counter++);
 		  RestartDisplay();
 	       }
+
 	       break;
 	 } 
       }
@@ -893,7 +894,7 @@ int do_event(UNUSED gpointer data)
    return TRUE;
 }
 
-void RestartDisplay()    // todo
+void RestartDisplay()
 {
    P("Calling InitDisplayDimensions\n");
    InitDisplayDimensions();

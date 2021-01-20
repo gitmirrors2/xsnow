@@ -92,7 +92,7 @@ int WorkspaceActive()
 
 int do_wupdate(UNUSED gpointer data)
 {
-   P("do_wupdate %d\n",counter++);
+   P("do_wupdate %d %d\n",counter++,WindowsChanged);
    if (Flags.Done)
       return FALSE;
 
@@ -108,6 +108,13 @@ int do_wupdate(UNUSED gpointer data)
       return TRUE;
    }
 
+   if (!WindowsChanged)
+      return TRUE;
+
+   WindowsChanged = 0;
+
+   R("Update windows\n");
+
    if(Windows) free(Windows);
 
    // special hack too keep SnowWin below (needed for example in FVWM/xcompmgr, 
@@ -121,7 +128,6 @@ int do_wupdate(UNUSED gpointer data)
 	 XConfigureWindow(display,SnowWin,CWStackMode,&changes);
       }
    }
-
 
    if (GetWindows(&Windows, &NWindows)<0)
    {
@@ -325,6 +331,7 @@ void UpdateFallenSnowRegions()
 
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
+
    Rootwindow = DefaultRootWindow(display);
    P("DetermineWindow\n");
    *IsDesktop = 1;
@@ -390,6 +397,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       // default behaviour
       // try first to create a transparent window
       P("DetermineWindow %p\n",(void *)gtkwin);
+
       int x,y;
       unsigned int w,h,b,depth;
       Window root;
@@ -406,6 +414,12 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
       int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, 
 	    xwin, transname, *gtkwin, w, h);
+      if(0)if(!strcmp("Xsnow-B",transname))
+      {
+	 R("sleeping ...\n");
+	 sleep(1000);
+	 R("awake\n");
+      }
 
       // todo: use rc for testing on transparency later on, not TransA
 
@@ -418,7 +432,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       *xwinname = strdup(transname);
 
 
-      P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
+      R("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
       char *desktopsession = NULL;
       if (DesktopSession == NULL)
       {
@@ -464,6 +478,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    a++;
 	 }
 	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != NULL);
+	 P("IsCompiz %s %d\n",DesktopSession,IsCompiz);
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (DesktopSession != NULL && 
 	       !strncmp(DesktopSession,"LXDE",4) && 
@@ -536,20 +551,32 @@ void DisplayDimensions()
    int x,y,xr,yr;
    Window root,child_return;
 
-   XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
+   int rc = XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
+   if (rc == 0)
+   {
+      P("Oeps\n");
+      I("\nSnow window %#lx has disappeared, it seems. I quit.\n",SnowWin);
+      Thanks();
+      exit(1);
+      return;
+   }
+
    XTranslateCoordinates(display, SnowWin, Rootwindow, 0, 0, &xr, &yr, &child_return);
    P("DisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
    SnowWinX           = xr;// - x;
    SnowWinY           = yr;// - y;
-   SnowWinWidth       = Wroot - SnowWinX;
-   SnowWinHeight      = Hroot - SnowWinY + Flags.OffsetS;
-   P("DisplayDimensions: SnowWinX:%d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
    if(switches.UseGtk || switches.Trans)
    {
+      SnowWinWidth       = Wroot - SnowWinX;
+      SnowWinHeight      = Hroot - SnowWinY + Flags.OffsetS;
       //SnowWinHeight      = hroot + Flags.OffsetS;
    }
    else
+   {
       SnowWinHeight      = h + Flags.OffsetS;
+      SnowWinWidth       = w;
+   }
+   P("DisplayDimensions: SnowWinX: %d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
 
    SnowWinBorderWidth = b;
    SnowWinDepth       = d;

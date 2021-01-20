@@ -368,7 +368,7 @@ void EraseSanta(int x, int y)
 
 void DrawSanta1()
 {
-   P("DrawSanta1 %#lx %d\n",SnowWin,counter++);
+   P("DrawSanta1 %#lx %d %d %d\n",SnowWin,SnowWinWidth,SantaX,SantaY);
    XSetClipMask(display,
 	 SantaGC,
 	 SantaMaskPixmap[CurrentSanta]);

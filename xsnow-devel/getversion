@@ -18,4 +18,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-grep -w VERSION src/version.h | awk '{print $3}' | tr -d '"'
+#awk 'BEGIN{FS="'"'"'"}
+#/PACKAGE_VERSION=/{print $2;exit}' configure
+awk 'BEGIN {FS=","}
+/AC_INIT/{v=$2; gsub("\\[","",v); gsub("]","",v); gsub(/\s/,"",v); print v; exit }' configure.ac

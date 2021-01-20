@@ -18,8 +18,20 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+
+// VERSION is defined via the AC_INIT line in configure.ac
 #pragma once
-#define VERSION "3.2.2~pre11"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#else
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
+#ifndef PACKAGE_STRING
+#define PACKAGE_STRING "xsnow " VERSION
+#endif
+#endif
+
 #define VERSIONBY \
    "December 14th 2001 by Rick Jansen \n" \
    "January 2021 by Willem Vermin"

@@ -45,6 +45,7 @@ extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
 extern int     randint(int m);
 extern void    my_cairo_paint_with_alpha(cairo_t *cr, double alpha);
 extern void    rgba2color(GdkRGBA *c, char **s);
+extern void    Thanks(void);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);
@@ -55,3 +56,5 @@ extern Pixel   Black, White;
 
 extern int is_little_endian(void);
 extern void PrintVersion(void);
+
+extern int HaltedByInterrupt;

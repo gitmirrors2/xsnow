@@ -1,3 +1,8 @@
+version 3.2.3
+	1:minor adaption in simplemake.sh
+	 :make use of VERSION in config.h
+	  adapt simplemake.sh 
+
 version 3.2.2
 	1:change 'changes' into Flags.Changes
 	2:change gdkwindow -> NULL, several files
