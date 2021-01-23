@@ -113,7 +113,7 @@ int do_wupdate(UNUSED gpointer data)
 
    WindowsChanged = 0;
 
-   R("Update windows\n");
+   P("Update windows\n");
 
    if(Windows) free(Windows);
 
@@ -414,12 +414,6 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
       int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, 
 	    xwin, transname, *gtkwin, w, h);
-      if(0)if(!strcmp("Xsnow-B",transname))
-      {
-	 R("sleeping ...\n");
-	 sleep(1000);
-	 R("awake\n");
-      }
 
       // todo: use rc for testing on transparency later on, not TransA
 
@@ -432,7 +426,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       *xwinname = strdup(transname);
 
 
-      R("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
+      P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
       char *desktopsession = NULL;
       if (DesktopSession == NULL)
       {
@@ -471,11 +465,14 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       if (*xwin == 0)
       {
 	 // convert DesktopSession to upper case
-	 char *a = DesktopSession;
-	 while (*a)
+	 if(DesktopSession)
 	 {
-	    *a = toupper(*a);
-	    a++;
+	    char *a = DesktopSession;
+	    while (*a)
+	    {
+	       *a = toupper(*a);
+	       a++;
+	    }
 	 }
 	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != NULL);
 	 P("IsCompiz %s %d\n",DesktopSession,IsCompiz);

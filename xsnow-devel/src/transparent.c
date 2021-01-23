@@ -125,7 +125,7 @@ int create_transparent_window(int allworkspaces, int below,
    gtk_window_set_position         (GTK_WINDOW(gtkwin), GTK_WIN_POS_CENTER);
 
 
-   R("create_transparent_window %p\n",(void *)gtkwin);
+   P("create_transparent_window %p\n",(void *)gtkwin);
    gtk_window_set_title(GTK_WINDOW(gtkwin), name);
    gtk_widget_set_app_paintable(gtkwin, TRUE);
    // this callback we do not need:
@@ -146,12 +146,6 @@ int create_transparent_window(int allworkspaces, int below,
       return FALSE;
    }
 
-   if(0)if(!strcmp("Xsnow-B",name))
-   {
-      R("sleeping ...\n");
-      sleep(1000);
-      R("awake\n");
-   }
    gtk_widget_show_all(gtkwin);    // here gets Xsnow-A the DOCK hint ...
 
    GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(gtkwin));
@@ -391,7 +385,7 @@ static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer use
       gdk_window_input_shape_combine_region(gdk_window1, cairo_region1, 0,0);
       cairo_region_destroy(cairo_region1);
 #endif
-      R("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
+      P("draw1 %d widget: %p gdkwin: %p passthru: %d\n",counter++,(void *)widget,(void *)gdk_window1,gdk_window_get_pass_through(gdk_window1));
 
       if(below1)
 	 setbelow(GTK_WINDOW(widget)); // see windows.c 

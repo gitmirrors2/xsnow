@@ -311,10 +311,10 @@ int main_c(int argc, char *argv[])
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
 
+   setenv("GDK_BACKEND","x11",1);
    if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
    {
       printf("Detected Wayland desktop\n");
-      setenv("GDK_BACKEND","x11",1);
       IsWayland = 1;
    }
    else
@@ -585,7 +585,7 @@ int myDetermineWindow()
 	 return 0;
       }
 
-      R("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
+      P("SnowWina: %#lx %s TransA: %p\n",SnowWina,SnowWinaName,(void *)TransA);
 
       // if user specified window, TransA will be 0
       if (TransA)
@@ -863,7 +863,7 @@ int do_event(UNUSED gpointer data)
 	       || ev.type == UnmapNotify) 
 	 {
 	    WindowsChanged++;
-	    R("WindowsChanged %d %d\n",counter++,WindowsChanged);
+	    P("WindowsChanged %d %d\n",counter++,WindowsChanged);
 	 }
 	 switch (ev.type) 
 	 {
@@ -883,7 +883,7 @@ int do_event(UNUSED gpointer data)
 		      ev.xconfigure.height != SnowWinHeight))
 	       {
 		  P("init %d %d\n",ev.xconfigure.width, ev.xconfigure.height);
-		  R("Calling RestartDisplay %d\n",counter++);
+		  P("Calling RestartDisplay %d\n",counter++);
 		  RestartDisplay();
 	       }
 

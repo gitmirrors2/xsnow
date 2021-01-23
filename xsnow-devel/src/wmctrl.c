@@ -210,7 +210,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    }
    else
    {
-      R("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
+      P("No _NET_CLIENT_LIST, trying _WIN_CLIENT_LIST\n");
       if(children) 
       {
 	 XFree(children);
@@ -220,12 +220,12 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    AnyPropertyType, &type, &format, &nchildren, &b, (unsigned char**)&children);
       if(type == XA_WINDOW)
       {
-	 R("_WIN_CLIENT_LIST succeeded\n");
+	 P("_WIN_CLIENT_LIST succeeded\n");
       }
    }
    if(type != XA_WINDOW)
    {
-      R("No _WIN_CLIENT_LIST, trying XQueryTree\n");
+      P("No _WIN_CLIENT_LIST, trying XQueryTree\n");
       if(children) 
       {
 	 XFree(children);
@@ -400,7 +400,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       s = XGetAtomName(getdisplay,((Atom*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
-		  R("%#lx is hidden %d\n",w->id, counter++);
+		  P("%#lx is hidden %d\n",w->id, counter++);
 		  w->hidden = 1;
 		  if(s) XFree(s);
 		  break;
