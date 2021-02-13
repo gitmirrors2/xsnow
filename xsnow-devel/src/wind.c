@@ -30,7 +30,6 @@
 #include "windows.h"
 #include "clocks.h"
 #include "xsnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -44,15 +43,15 @@ float  WindMax = 100.0;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
-static int    do_wind(gpointer data);
-static int    do_newwind(gpointer data);
+static int    do_wind(void);
+static int    do_newwind(void);
 
 void wind_init()
 {
    SetWhirl();
    SetWindTimer();
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind );
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind    );
 }
 
 void wind_ui()
@@ -73,7 +72,7 @@ void draw_wind()
    // Nothing to draw
 }
 
-int do_newwind(UNUSED gpointer data)
+int do_newwind()
 {
    P("newwind\n");
    if (Flags.Done)
@@ -112,7 +111,7 @@ int do_newwind(UNUSED gpointer data)
    return TRUE;
 }
 
-int do_wind(UNUSED gpointer data)
+int do_wind()
 {
    P("wind\n");
    if (Flags.Done)

@@ -28,7 +28,6 @@
 #include "windows.h"
 #include "pixmaps.h"
 #include "utils.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -41,8 +40,8 @@ static GC               StarGC[STARANIMATIONS];
 static Skoordinaten    *Stars = NULL;
 static char            *StarColor[STARANIMATIONS] = { (char *)"gold", (char *)"gold1", 
    (char *)"gold4", (char *)"orange" };
-static int              do_stars(gpointer data);
-static int              do_ustars(gpointer data);
+static int              do_stars(void);
+static int              do_ustars(void);
 
 static cairo_surface_t *surfaces[STARANIMATIONS];
 
@@ -80,9 +79,9 @@ void stars_init()
       }
       starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
 	    (char *)starPix.starBits, starPix.width, starPix.height);
-      add_to_mainloop(PRIORITY_DEFAULT, time_star, do_stars, NULL);
+      add_to_mainloop(PRIORITY_DEFAULT, time_star, do_stars);
    }
-   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars, NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars);
 }
 
 
@@ -131,7 +130,7 @@ void stars_ui()
 }
 
 
-int do_stars(UNUSED gpointer data)
+int do_stars()
 {
    if (Flags.Done)
       return FALSE;
@@ -159,7 +158,7 @@ int do_stars(UNUSED gpointer data)
    return TRUE;
 }
 
-int do_ustars(UNUSED gpointer data)
+int do_ustars()
 {
    if (Flags.Done)
       return FALSE;

@@ -34,13 +34,12 @@
 #include "wind.h"
 #include "ixpm.h"
 #include "moon.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
-static int    do_santa(gpointer data);
-static int    do_santa1(gpointer data);
-static int    do_usanta(gpointer data);
+static int    do_santa(void);
+static int    do_santa1(void);
+static int    do_usanta(void);
 static void   EraseSanta(int x, int y);
 static void   DrawSanta(void);
 static void   DrawSanta1(void);
@@ -125,7 +124,7 @@ void Santa_init()
    SantaPlowRegion      = XCreateRegion();
    init_Santa_surfaces();
    ResetSanta();   
-   add_to_mainloop(PRIORITY_HIGH,    time_usanta,         do_usanta             ,NULL);
+   add_to_mainloop(PRIORITY_HIGH, time_usanta, do_usanta);
 }
 
 
@@ -310,11 +309,11 @@ void Santa_HandleCpuFactor()
    if (santa1_id)
       g_source_remove(santa1_id);
 
-   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa,  NULL);
-   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1, NULL);
+   santa_id  = add_to_mainloop(PRIORITY_DEFAULT, time_santa,  do_santa );
+   santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1);
 }
 
-int do_santa(UNUSED gpointer data)
+int do_santa()
 {
    if (Flags.Done)
       return FALSE;
@@ -327,7 +326,7 @@ int do_santa(UNUSED gpointer data)
    return TRUE;
 }
 
-int do_santa1(UNUSED gpointer data)
+int do_santa1()
 {
    if (Flags.Done)
       return FALSE;
@@ -384,7 +383,7 @@ void DrawSanta1()
 }
 
 // update santa's coordinates and speed
-int do_usanta(UNUSED gpointer data)
+int do_usanta()
 {
    P("do_usanta %d\n",counter++);
    if (Flags.Done)

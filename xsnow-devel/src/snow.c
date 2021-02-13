@@ -40,7 +40,6 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -59,12 +58,12 @@ static char            ***xsnow_xpm = NULL;
 static int                NFlakeTypesVintage;
 static int                MaxFlakeTypes;
 
-static int    do_genflakes(gpointer data);
+static int    do_genflakes(void);
 static void   InitFlake(Snow *flake);
 static void   InitFlakesPerSecond(void);
 static void   InitSnowColor(void);
 static void   InitSnowSpeedFactor(void);
-static int    do_show_flakecount(gpointer data);
+static int    do_show_flakecount(void);
 static void   init_snow_surfaces(void);
 static void   init_snow_pix(void);
 static void   EraseSnowFlake(Snow *flake);
@@ -120,8 +119,8 @@ void snow_init()
    InitSnowColor();
    InitSnowSpeedFactor();
    InitBlowOffFactor();
-   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes          ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount    ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes       );
+   add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount );
 
    // now we would like to be able to get rid of the snow xpms:
    /*
@@ -160,7 +159,7 @@ void SetSnowSize()
    // the following, otherwize we see often double flakes
    // why? race condition in x server?
    if (!switches.UseGtk)
-      add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow ,NULL);
+      add_to_mainloop(PRIORITY_DEFAULT, 0.1, do_initsnow);
 }
 
 void snow_ui()
@@ -271,7 +270,7 @@ int snow_draw(cairo_t *cr)
    return TRUE;
 }
 
-int do_genflakes(UNUSED gpointer data)
+int do_genflakes()
 {
    if (Flags.Done)
       return FALSE;
@@ -735,7 +734,7 @@ void InitSnowSpeedFactor()
 }
 
 
-int do_initsnow(UNUSED gpointer data)
+int do_initsnow()
 {
    P("initsnow %d %d\n",FlakeCount,counter++);
    if (Flags.Done)
@@ -753,7 +752,7 @@ int do_initsnow(UNUSED gpointer data)
    return FALSE;  // stop callback
 }
 
-int do_show_flakecount(UNUSED gpointer data)
+int do_show_flakecount()
 {
    if (Flags.Done)
       return FALSE;

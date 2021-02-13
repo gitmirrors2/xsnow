@@ -20,7 +20,7 @@
 */
 #pragma once
 
-#define add_flake_to_mainloop(f) add_to_mainloop(PRIORITY_HIGH,time_snowflakes,(GSourceFunc)do_UpdateSnowFlake,f)
+#define add_flake_to_mainloop(f) add_to_mainloop1(PRIORITY_HIGH,time_snowflakes,(GSourceFunc)do_UpdateSnowFlake,f)
 
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
@@ -69,7 +69,7 @@ extern unsigned int MaxSnowFlakeWidth;   /* Biggest flake */
 extern int          FlakeCount;          /* number of flakes */
 extern int          FluffCount;          /* number of fluff flakes */
 
-extern int        do_initsnow(gpointer data);
+extern int        do_initsnow(void);
 extern int        do_UpdateSnowFlake(Snow *flake);
 extern Snow      *MakeFlake(int type);
 extern int        snow_draw(cairo_t *cr);

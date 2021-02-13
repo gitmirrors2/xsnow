@@ -33,11 +33,10 @@
 #include "fallensnow.h"
 #include "transparent.h"
 #include "dsimple.h"
-#include "varia.h"
 
 #include "vroot.h"
 
-static int    do_wupdate(gpointer data);
+static int    do_wupdate(void);
 static void   UpdateFallenSnowRegions(void);
 static Window XWinInfo(char **name);
 
@@ -64,7 +63,7 @@ void windows_ui()
 {
 }
 
-void windows_draw(UNUSED cairo_t *cr)
+void windows_draw()
 {
    // nothing to draw
 }
@@ -79,7 +78,7 @@ void DestroyWindow(Window w)
 void windows_init()
 {
    if (switches.Desktop)
-      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, NULL);
+      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate);
 }
 
 int WorkspaceActive()
@@ -90,7 +89,7 @@ int WorkspaceActive()
    return Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace;
 }
 
-int do_wupdate(UNUSED gpointer data)
+int do_wupdate()
 {
    P("do_wupdate %d %d\n",counter++,WindowsChanged);
    if (Flags.Done)

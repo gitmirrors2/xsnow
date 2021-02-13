@@ -149,7 +149,6 @@
 #include "ui.h"
 #include "ui_xml.h"
 #include "utils.h"
-#include "varia.h"
 #include "version.h"
 #include "windows.h"
 #include "xsnow.h"
@@ -195,14 +194,14 @@ static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void handle_css(void);
 static void birdscb(GtkWidget *w, void *m);
-static int  below_confirm_ticker(UNUSED gpointer data);
+static int  below_confirm_ticker(void);
 static void show_bct_countdown(void);
 static void yesyes(GtkWidget *w, gpointer data);
 static void nono(GtkWidget *w, gpointer data);
-static void activate (GtkApplication *app, gpointer user_data);
+static void activate (GtkApplication *app);
 static void set_default_tab(int tab, int vintage);
 static void set_belowall_default();
-static void handle_theme();
+static void handle_theme(void);
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -232,7 +231,7 @@ void handle_theme()
 
 
    MODULE_EXPORT
-void button_iconify(UNUSED GtkWidget *w, UNUSED gpointer p)
+void button_iconify()
 {
    P("button_iconify\n");
    gtk_window_iconify(GTK_WINDOW(hauptfenster));
@@ -285,7 +284,7 @@ static void set_santa_buttons()
 }
 
    MODULE_EXPORT 
-void button_santa(GtkWidget *w, UNUSED gpointer d)
+void button_santa(GtkWidget *w)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -298,14 +297,14 @@ void button_santa(GtkWidget *w, UNUSED gpointer d)
 }
 
    MODULE_EXPORT 
-void button_defaults_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_santa()
 {
    P("button_defaults_santa defaults\n");
    set_default_tab(xsnow_santa,0);
 }
 
    MODULE_EXPORT 
-void button_vintage_santa(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_santa()
 {
    P("button_defaults_santa vintage\n");
    set_default_tab(xsnow_santa,1);
@@ -357,7 +356,7 @@ static void init_buttons1()
 
 #define buttoncb(type,name) button_##type##_##name
 #define togglecode(type,name,m) \
-   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d) \
+   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w) \
    NEWLINE   { \
       NEWLINE    if(!human_interaction) return; \
       NEWLINE    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)); \
@@ -366,7 +365,7 @@ static void init_buttons1()
       NEWLINE   }
 
 #define scalecode(type,name,m) \
-   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d)\
+   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w)\
    NEWLINE {\
       NEWLINE    if(!human_interaction) return; \
       NEWLINE    gdouble value; \
@@ -375,7 +374,7 @@ static void init_buttons1()
       NEWLINE }
 
 #define colorcode(type,name,m) \
-   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w, UNUSED gpointer d) \
+   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w) \
    NEWLINE { \
       NEWLINE    if(!human_interaction) return; \
       NEWLINE    GdkRGBA color; \
@@ -475,7 +474,7 @@ static void report_tree_type(int p, gint active)
    P("Tree_Type set to %s\n",Flags.TreeType);
 }
 
-MODULE_EXPORT void button_tree(GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_tree(GtkWidget *w)
 {
    if(!human_interaction) return;
    gint active;
@@ -488,14 +487,14 @@ MODULE_EXPORT void button_tree(GtkWidget *w, UNUSED gpointer d)
 
 
    MODULE_EXPORT
-void button_defaults_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_scenery()
 {
    P("button_defaults_scenery\n");
    set_default_tab(xsnow_scenery,0);
 }
 
    MODULE_EXPORT
-void button_vintage_scenery(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_scenery()
 {
    P("button_vintage_scenery\n");
    set_default_tab(xsnow_scenery,1);
@@ -605,7 +604,7 @@ typedef struct _general_button
    GtkWidget *button;
 }general_button;
 
-MODULE_EXPORT void button_ww(GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_ww(GtkWidget *w)
 {
    if(!human_interaction) return;
    if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w))) return;
@@ -621,7 +620,7 @@ static struct _general_buttons
    general_button ww_2;
 } general_buttons;
 
-MODULE_EXPORT void button_below(GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_below(GtkWidget *w)
 {
    /*
     * In some desktop environments putting our transparent click-through window
@@ -643,10 +642,10 @@ MODULE_EXPORT void button_below(GtkWidget *w, UNUSED gpointer d)
       show_bct_countdown();
       gtk_widget_hide(Button.BelowAll);
       gtk_widget_show(Button.BelowConfirm);
-      bct_id = add_to_mainloop(PRIORITY_DEFAULT,1.0,below_confirm_ticker,NULL);
+      bct_id = add_to_mainloop(PRIORITY_DEFAULT,1.0,below_confirm_ticker);
    }
 }
-MODULE_EXPORT void button_below_confirm(UNUSED GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_below_confirm()
 {
    gtk_widget_hide(Button.BelowConfirm);
    gtk_widget_show(Button.BelowAll);
@@ -686,7 +685,7 @@ void show_bct_countdown()
 
 }
 
-int below_confirm_ticker(UNUSED gpointer data)
+int below_confirm_ticker()
 {
    bct_countdown--;
    show_bct_countdown();
@@ -712,7 +711,7 @@ void set_belowall_default()
 
 
    MODULE_EXPORT
-void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_quit()
 {
    Flags.Done = 1;
    P("button_quit: %d\n",Flags.Done);
@@ -720,14 +719,14 @@ void button_quit(UNUSED GtkWidget *w, UNUSED gpointer d)
 
 
    MODULE_EXPORT 
-void button_defaults_general(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_general()
 {
    P("button_defaults_general\n");
    set_default_tab(xsnow_settings,0);
 }
 
    MODULE_EXPORT 
-void button_vintage_general(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_general()
 {
    P("button_defaults_general vintage\n");
    set_default_tab(xsnow_settings,1);
@@ -740,14 +739,14 @@ typedef struct _snow_button
 
 
    MODULE_EXPORT
-void button_defaults_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_snow()
 {
    P("button_defaults_snow\n");
    set_default_tab(xsnow_snow,0);
 }
 
    MODULE_EXPORT
-void button_vintage_snow(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_snow()
 {
    P("button_vintage_snow\n");
    set_default_tab(xsnow_snow,1);
@@ -771,25 +770,25 @@ void ui_set_celestials_header(const char *text)
 }
 
 
-MODULE_EXPORT void button_defaults_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_defaults_birds()
 {
    P("button_defaults_birds\n");
    set_default_tab(xsnow_birds,0);
 }
 
-MODULE_EXPORT void button_vintage_birds(UNUSED GtkWidget *w, UNUSED gpointer d)
+MODULE_EXPORT void button_vintage_birds()
 {
    P("button_vintage_birds\n");
    set_default_tab(xsnow_birds,1);
 }
 
-MODULE_EXPORT void button_birds_restart(UNUSED GtkWidget *w, UNUSED gpointer p)
+MODULE_EXPORT void button_birds_restart()
 {
    P("button_birds_restart\n");
    Flags.BirdsRestart = 1;
 }
 
-MODULE_EXPORT void button_wind_activate(UNUSED GtkWidget *w, UNUSED gpointer p)
+MODULE_EXPORT void button_wind_activate()
 {
    P("button_wind_activate\n");
    Flags.WindNow = 1;
@@ -861,14 +860,14 @@ void set_default_tab(int tab, int vintage)
 }
 
    MODULE_EXPORT
-void button_defaults_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_defaults_celestials()
 {
    P("button_defaults_wind\n");
    set_default_tab(xsnow_celestials,0);
 }
 
    MODULE_EXPORT
-void button_vintage_celestials(UNUSED GtkWidget *w, UNUSED gpointer d)
+void button_vintage_celestials()
 {
    P("button_vintage_wind\n");
    set_default_tab(xsnow_celestials,1);
@@ -944,7 +943,7 @@ void ui_set_sticky(int x)
       gtk_window_unstick(GTK_WINDOW(hauptfenster));
 }
 
-void ui(UNUSED int *argc, UNUSED char **argv[])
+void ui()
 {
 
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
@@ -1136,7 +1135,7 @@ int ui_run_nomenu()
    return RC;
 }
 
-static void activate (GtkApplication *app, UNUSED gpointer user_data)
+static void activate (GtkApplication *app)
 {
    GtkWidget *window;
    GtkWidget *grid;
@@ -1195,21 +1194,21 @@ static void activate (GtkApplication *app, UNUSED gpointer user_data)
    gtk_widget_show_all (window);
 }
 
-void yesyes(UNUSED GtkWidget *w, gpointer window)
+void yesyes(GtkWidget *w, gpointer window)
 {
-   RC = 1;
+   RC = (w != NULL);
    gtk_widget_destroy(GTK_WIDGET(window));
 }
 
-void nono(UNUSED GtkWidget *w, gpointer window)
+void nono(GtkWidget *w, gpointer window)
 {
-   RC = 0;
+   RC = (w == NULL);
    gtk_widget_destroy(GTK_WIDGET(window));
 }
 
 // next function is not used, I leave it here as a template, who knows...
 // see also ui.xml
-void ui_error_x11(UNUSED int *argc, UNUSED char **argv[])
+void ui_error_x11()
 {
    GtkWidget *errorfenster;
    GObject *button;

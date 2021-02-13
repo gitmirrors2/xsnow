@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <gdk/gdkx.h>
 #include <string.h>
-#include "varia.h"
 #include "windows.h"
 
 #include "transparent.h"
@@ -51,12 +50,12 @@
 //USEDRAW1 should certainly be set, see comment below at draw1()
 #define USEDRAW1
 
-static void screen_changed(GtkWidget *widget, GdkScreen *old_screen, gpointer user_data);
+static void screen_changed(GtkWidget *widget);
 #ifdef USEDRAW
-static gboolean draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+static gboolean draw(GtkWidget *widget, cairo_t *cr);
 #endif
 #ifdef USEDRAW1
-static gboolean draw1(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+static gboolean draw1(GtkWidget *widget);
 #endif
 
 // to use gdk_window_set_pass_through, which does not work on my system
@@ -138,7 +137,7 @@ int create_transparent_window(int allworkspaces, int below,
 
    g_signal_connect(G_OBJECT(gtkwin), "screen-changed", G_CALLBACK(screen_changed), NULL);
    gtk_widget_add_events(gtkwin, GDK_BUTTON_PRESS_MASK);
-   screen_changed(gtkwin, NULL, NULL);
+   screen_changed(gtkwin);
    if (!supports_alpha)
    {
       P("No alpha\n");
@@ -287,7 +286,7 @@ static void size_to_screen(GtkWindow *window) {
 }
 #endif
 
-static void screen_changed(GtkWidget *widget, UNUSED GdkScreen *old_screen, UNUSED gpointer userdata)
+static void screen_changed(GtkWidget *widget)
 {
    static int msg1 = 0, msg2 = 0;
    /* To check if the display supports alpha channels, get the visual */
@@ -314,7 +313,7 @@ static void screen_changed(GtkWidget *widget, UNUSED GdkScreen *old_screen, UNUS
 }
 
 #ifdef USEDRAW
-static gboolean draw(GtkWidget *widget, cairo_t *cr, UNUSED gpointer userdata)
+static gboolean draw(GtkWidget *widget, cairo_t *cr)
 {
    gtk_window_set_accept_focus(GTK_WINDOW(widget),FALSE);
    cairo_save (cr);
@@ -366,7 +365,7 @@ static gboolean draw(GtkWidget *widget, cairo_t *cr, UNUSED gpointer userdata)
 // NOTE: this code assumes that no more than two windows are created. If there are 
 //       more, some trivial changes in keeping track of these windows.
 //
-static gboolean draw1(GtkWidget *widget, UNUSED cairo_t *cr, UNUSED gpointer userdata)
+static gboolean draw1(GtkWidget *widget)
 {
    static GtkWidget *prev_widget[2] = {NULL,NULL};
 

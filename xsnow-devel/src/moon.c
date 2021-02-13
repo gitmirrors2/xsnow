@@ -26,14 +26,13 @@
 #include "moon.h"
 #include "pixmaps.h"
 #include "utils.h"
-#include "varia.h"
 #include "windows.h"
 
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.Moon || !WorkspaceActive()) return TRUE
 
-static int  do_umoon(gpointer data);
+static int  do_umoon(void);
 static void init_moon_surface(void);
 static void init_halo_surface(void);
 static void halo_draw(cairo_t *cr);
@@ -51,7 +50,7 @@ int NMOONPIXBUFS;
 void moon_init(void)
 {
    init_moon_surface();
-   add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon);
    if (SnowWinWidth > 400)
       moonX = 200+drand48()*(SnowWinWidth - 400 - Flags.MoonSize);
 }
@@ -93,7 +92,7 @@ static void init_moon_surface()
    init_halo_surface();
 }
 
-int do_umoon(UNUSED gpointer data)
+int do_umoon()
 {
    static int xdirection = 1;
    static int ydirection = 1;

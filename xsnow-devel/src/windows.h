@@ -53,7 +53,7 @@ extern int          SnowWinY;
 extern int          WindowsChanged;
 
 extern void         windows_ui(void);
-extern void         windows_draw(cairo_t *cr);
+extern void         windows_draw(void);
 extern void         windows_init(void);
 extern int          WorkspaceActive(void);  // defined in main.c
 extern int          DetermineWindow(Window *xtrans, char **xtransname, GtkWidget **gtrans,const char *transname, int *IsDesktop);

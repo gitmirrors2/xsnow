@@ -78,7 +78,6 @@
 #include "debug.h"
 #include "treesnow.h"
 #include "loadmeasure.h"
-#include "varia.h"
 
 #include "vroot.h"
 
@@ -146,15 +145,15 @@ static void   DoAllWorkspaces(void);
 
 
 // callbacks
-static int do_displaychanged(gpointer data);
+static int do_displaychanged(void);
 static int do_draw_all(gpointer widget);
-static int do_event(gpointer data);
-static int do_show_range_etc(gpointer data);
-static int do_testing(gpointer data);
-static int do_ui_check(gpointer data);
-static int do_stopafter(gpointer data);
-static int do_show_desktop_type(gpointer data);
-static int do_display_dimensions(UNUSED gpointer data);
+static int do_event(void);
+static int do_show_range_etc(void);
+static int do_testing(void);
+static int do_ui_check(void);
+static int do_stopafter(void);
+static int do_show_desktop_type(void);
+static int do_display_dimensions(void);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 /**********************************************************************************************/
@@ -435,15 +434,15 @@ int main_c(int argc, char *argv[])
    treesnow_init();
    loadmeasure_init();
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged          ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event                   ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing                 ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_display_dimensions      ,NULL);
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check                ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc          ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     );
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              );
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            );
+   add_to_mainloop(PRIORITY_DEFAULT, 1.0,                 do_display_dimensions );
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           );
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     );
 
    if (Flags.StopAfter > 0)
-      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter, NULL);
+      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
 
    HandleCpuFactor();
 
@@ -470,7 +469,7 @@ int main_c(int argc, char *argv[])
 
    if(!Flags.NoMenu)
    {
-      ui(&argc, &argv);
+      ui();
 
       ui_gray_erase(switches.UseGtk);
 
@@ -483,7 +482,7 @@ int main_c(int argc, char *argv[])
 	 ui_set_celestials_header("No alpha channel: no moon.");
       }
       ui_set_sticky(Flags.AllWorkspaces);
-      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type, NULL);
+      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type);
    }
 
    // main loop
@@ -759,7 +758,7 @@ void DoAllWorkspaces()
 // But, do_ui_check is called not too frequently, so....
 // Note: if changes != 0, the settings will be written to .xsnowrc
 //
-int do_ui_check(UNUSED gpointer data)
+int do_ui_check()
 {
    if (Flags.Done)
       gtk_main_quit();
@@ -814,7 +813,7 @@ int do_ui_check(UNUSED gpointer data)
 }
 
 
-int do_displaychanged(UNUSED gpointer data)
+int do_displaychanged()
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
@@ -845,7 +844,7 @@ int do_displaychanged(UNUSED gpointer data)
    }
 }
 
-int do_event(UNUSED gpointer data)
+int do_event()
 {
    P("do_event %d\n",counter++);
    if (Flags.Done)
@@ -915,7 +914,7 @@ void RestartDisplay()
 
 
 
-int do_show_range_etc(UNUSED gpointer data)
+int do_show_range_etc()
 {
    if (Flags.Done)
       return FALSE;
@@ -926,7 +925,7 @@ int do_show_range_etc(UNUSED gpointer data)
    return TRUE;
 }
 
-int do_show_desktop_type(UNUSED gpointer data)
+int do_show_desktop_type()
 {
    P("do_show_desktop_type %d\n",counter++);
    if (Flags.NoMenu)
@@ -945,7 +944,7 @@ int do_show_desktop_type(UNUSED gpointer data)
 }
 
 
-int do_testing(UNUSED gpointer data)
+int do_testing()
 {
    counter++;
    //Flags.ThemeXsnow = 1-Flags.ThemeXsnow;
@@ -1012,10 +1011,11 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 
 
 // the draw callback
-gboolean on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data) 
+gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
    P("Just to check who this is: %p %p\n",(void *)widget,(void *)TransA);
-   drawit(cr);
+   if (1||widget || user_data) // to avoid warnings
+      drawit(cr);
    return FALSE;
 }
 
@@ -1055,7 +1055,7 @@ void drawit(cairo_t *cr)
 
 }
 
-int do_display_dimensions(UNUSED gpointer data)
+int do_display_dimensions()
 {
    if (Flags.Done)
       return FALSE;
@@ -1121,9 +1121,9 @@ void HandleCpuFactor()
 
    Santa_HandleCpuFactor();
 
-   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen, NULL);
+   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen);
    P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
-   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow, NULL);  // remove flakes
+   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow);  // remove flakes
 
    restart_do_draw_all();
 }
@@ -1134,7 +1134,7 @@ void restart_do_draw_all()
       return;
    if (draw_all_id)
       g_source_remove(draw_all_id);
-   draw_all_id = add_to_mainloop(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
+   draw_all_id = add_to_mainloop1(PRIORITY_HIGH, time_draw_all, do_draw_all, TransA);
    P("started do_draw_all %d %p %f\n",draw_all_id, (void *)TransA, time_draw_all);
 }
 
@@ -1174,7 +1174,7 @@ void HandleExposures()
 }
 
 
-int do_stopafter(UNUSED gpointer data)
+int do_stopafter()
 {
    Flags.Done = 1;
    printf("Halting because of flag -stopafter\n");

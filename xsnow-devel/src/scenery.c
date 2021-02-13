@@ -42,10 +42,9 @@
 #include "fallensnow.h"
 #include "csvpos.h"
 #include "treesnow.h"
-#include "varia.h"
 
 static int      do_drawtree(Treeinfo *tree);
-static int      do_initbaum(gpointer data);
+static int      do_initbaum(void);
 static void     ReInitTree0(void);
 static void     InitTreePixmaps(void);
 static void     RedrawTrees(void);
@@ -70,7 +69,7 @@ void scenery_init()
    TreeGC        = XCreateGC(display, SnowWin, 0, NULL);
    TreeRegion    = XCreateRegion();
    InitTreePixmaps();
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum, do_initbaum);
 }
 
 void scenery_set_gc()
@@ -150,7 +149,7 @@ void create_tree_surface(int tt,int flip, const char **xpm)
 // of a changed window size
 // The function returns immediately if NTrees!=0, otherwize an attempt
 // is done to place the DesiredNumberOfTrees
-int do_initbaum(UNUSED gpointer data)
+int do_initbaum()
 {
    if (Flags.Done)
       return FALSE;
@@ -268,7 +267,7 @@ int do_initbaum(UNUSED gpointer data)
       tree->rev  = flop;
       P("tree: %d %d %d %d %d %p\n",tree->x, tree->y, tree->type, tree->rev, NTrees,(void *)tree);
 
-      add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
+      add_to_mainloop1(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
 
       Region r;
 

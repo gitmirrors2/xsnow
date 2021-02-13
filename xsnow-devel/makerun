@@ -6,14 +6,25 @@ clear
 #export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
 if true; then
    export CC=gcc-10 CXX=g++-10
-   export CFLAGS="$M32 -Wextra   -Wint-conversion -Wpedantic -Wall -O2 -g -DNO_USE_BITS"
-   export CXXFLAGS="$M32 -Wextra                  -Wpedantic -Wall -O2 -g -DNO_USE_BITS"
+   export CFLAGS="$M32 -Wextra   -Wint-conversion -Wpedantic -Wall -O2 -g -Werror -DNO_USE_BITS"
+   export CXXFLAGS="$M32 -Wextra                  -Wpedantic -Wall -O2 -g -Werror -DNO_USE_BITS"
    export LDFLAGS="$M32"
 else
    export CC=g++-10 CXX=g++-10
    export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
    export CXXFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
 fi
+
+if [ x$1 = xc ] ; then
+   rm -f Makefile
+   shift
+   if [ x$1 != x ] ; then
+      export CC=gcc-$1
+      export CXX=g++-$1
+      shift
+   fi
+fi
+
 if [ ! -e Makefile ] ; then
    ./configure && make clean
 fi

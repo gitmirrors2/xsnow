@@ -33,7 +33,6 @@
 #include "snow.h"
 #include "blowoff.h"
 #include "treesnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes || Flags.NoKeepSnowOnTrees || Flags.NoTrees)
@@ -46,15 +45,15 @@ static          GC SnowOnTreesGC;
 XPoint         *SnowOnTrees = NULL;
 int            OnTrees = 0;
 
-static int do_snow_on_trees(gpointer data);
-static void   ConvertOnTreeToFlakes(void);
+static int  do_snow_on_trees(void);
+static void ConvertOnTreeToFlakes(void);
 
 void treesnow_init()
 {
    SnowOnTreesGC        = XCreateGC(display, SnowWin,    0, NULL);
    SnowOnTreesRegion    = XCreateRegion();
    gSnowOnTreesRegion   = cairo_region_create();
-   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees      ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_snow_on_trees,  do_snow_on_trees);
 }
 
 void treesnow_draw(cairo_t *cr)
@@ -92,7 +91,7 @@ void treesnow_ui()
    UIDO(NoKeepSnowOnTrees , ClearScreen();   );
 }
 
-int do_snow_on_trees(UNUSED gpointer data)
+int do_snow_on_trees()
 {
    if (Flags.Done)
       return FALSE;

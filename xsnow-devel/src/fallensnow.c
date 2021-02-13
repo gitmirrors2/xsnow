@@ -36,7 +36,6 @@
 #include "blowoff.h"
 #include "wind.h"
 #include "debug.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -98,7 +97,7 @@ void fallensnow_ui()
    UIDO(NoKeepSWin        , InitFallenSnow(); ClearScreen(); );
 }
 
-int do_fallen(UNUSED gpointer data)
+int do_fallen()
 {
 
    if (Flags.Done)

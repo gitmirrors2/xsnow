@@ -124,9 +124,14 @@ void sgaussian(long int seed)
    srand48(seed);
 }
 
-guint add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap) 
+guint add_to_mainloop(gint prio,float time,int (*func)(void)) 
 {
-   return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,NULL);
+   return g_timeout_add_full(prio,(int)1000*(time),G_SOURCE_FUNC(func),NULL,NULL);
+}
+
+guint add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap) 
+{
+   return g_timeout_add_full(prio,(int)1000*(time),G_SOURCE_FUNC(func),datap,NULL);
 }
 
 void remove_from_mainloop(guint *tag)

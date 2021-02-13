@@ -31,13 +31,12 @@
 #include "meteo.h"
 #include "utils.h"
 #include "xsnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
 static int do_emeteorite(gpointer data);
-static int do_meteorite(gpointer data);
+static int do_meteorite(void);
 
 static GdkRGBA       color;
 static const char   *MeteoColor  = "orange";
@@ -57,8 +56,8 @@ void meteo_init()
       XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
       XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
    }
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite, do_emeteorite, NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite, do_meteorite, NULL);
+   add_to_mainloop1(PRIORITY_DEFAULT, time_emeteorite, do_emeteorite, NULL);
+   add_to_mainloop (PRIORITY_DEFAULT, time_meteorite,  do_meteorite);
 }
 
 void meteo_ui()
@@ -120,7 +119,7 @@ int do_emeteorite(gpointer data)
    return TRUE;
 }
 
-int do_meteorite(UNUSED gpointer data)
+int do_meteorite()
 {
    if (Flags.Done)
       return FALSE;
