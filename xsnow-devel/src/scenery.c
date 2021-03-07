@@ -44,7 +44,7 @@
 #include "treesnow.h"
 
 static int      do_drawtree(Treeinfo *tree);
-static int      do_initbaum(void);
+static int      do_initbaum(void *);
 static void     ReInitTree0(void);
 static void     InitTreePixmaps(void);
 static void     RedrawTrees(void);
@@ -149,7 +149,7 @@ void create_tree_surface(int tt,int flip, const char **xpm)
 // of a changed window size
 // The function returns immediately if NTrees!=0, otherwize an attempt
 // is done to place the DesiredNumberOfTrees
-int do_initbaum()
+int do_initbaum(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -290,6 +290,7 @@ int do_initbaum()
    }
    OnTrees = 0;
    return TRUE;
+   (void)d;
 }
 
 void InitTreePixmaps()

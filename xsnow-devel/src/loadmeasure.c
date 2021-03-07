@@ -30,7 +30,7 @@
 #include "xsnow.h"
 #include "flags.h"
 
-static int do_loadmeasure(void);
+static int do_loadmeasure(void *);
 
 int loadmeasure_ui()
 {
@@ -49,7 +49,7 @@ void loadmeasure_init()
 }
 
 // changes background color of ui if load to high
-int do_loadmeasure()
+int do_loadmeasure(void *d)
 {
    double tnow = wallclock();
    static double tprev;
@@ -90,4 +90,5 @@ int do_loadmeasure()
    }
    tprev = tnow;
    return TRUE;
+   (void)d;
 }

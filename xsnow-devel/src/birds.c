@@ -81,10 +81,10 @@ static void     birds_set_attraction_point_relative(float x, float y, float z);
 static void     birds_set_scale(void);
 static void     birds_set_speed(void);
 static void     clear_flags(void);
-static int      do_change_attr(void);
-static int      do_update_pos_birds(void); 
-static int      do_wings(void);
-static int      do_update_speed_birds(void);
+static int      do_change_attr(void *);
+static int      do_update_pos_birds(void *); 
+static int      do_wings(void *);
+static int      do_update_speed_birds(void *);
 static void     init_birds(int start);
 static void     init_bird_pixbufs(const char *color);
 static void     main_window(void);
@@ -253,7 +253,7 @@ void birds_set_scale()
    attrbird2surface();
 }
 
-int do_update_speed_birds()
+int do_update_speed_birds(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -398,9 +398,10 @@ int do_update_speed_birds()
       globals.range /=1.1;
 
    return TRUE;
+   (void)d;
 }
 
-int do_update_pos_birds()
+int do_update_pos_birds(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -423,6 +424,7 @@ int do_update_pos_birds()
       bird->z += dt*bird->sz;
    }
    return TRUE;
+   (void)d;
 }
 
 int birds_draw(cairo_t *cr)
@@ -655,7 +657,7 @@ void init_birds(int start)
 }
 
 
-static int do_wings()
+static int do_wings(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -671,6 +673,7 @@ static int do_wings()
 	 bird->wingstate = 0;
    }
    return TRUE;
+   (void)d;
 }
 
 float birds_get_range()
@@ -752,7 +755,7 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
-int do_change_attr()
+int do_change_attr(void *d)
 {
    // move attraction point in the range
    // x: 0.3 .. 0.7
@@ -771,6 +774,7 @@ int do_change_attr()
    r2i(&attrbird);
    attrbird2surface();
    return TRUE;
+   (void)d;
 }
 
 void birds_init ()

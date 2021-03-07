@@ -69,7 +69,7 @@ extern unsigned int MaxSnowFlakeWidth;   /* Biggest flake */
 extern int          FlakeCount;          /* number of flakes */
 extern int          FluffCount;          /* number of fluff flakes */
 
-extern int        do_initsnow(void);
+extern int        do_initsnow(void *);
 extern int        do_UpdateSnowFlake(Snow *flake);
 extern Snow      *MakeFlake(int type);
 extern int        snow_draw(cairo_t *cr);

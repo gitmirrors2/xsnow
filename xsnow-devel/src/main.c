@@ -145,15 +145,15 @@ static void   DoAllWorkspaces(void);
 
 
 // callbacks
-static int do_displaychanged(void);
+static int do_displaychanged(void *);
 static int do_draw_all(gpointer widget);
-static int do_event(void);
-static int do_show_range_etc(void);
-static int do_testing(void);
-static int do_ui_check(void);
-static int do_stopafter(void);
-static int do_show_desktop_type(void);
-static int do_display_dimensions(void);
+static int do_event(void *);
+static int do_show_range_etc(void *);
+static int do_testing(void *);
+static int do_ui_check(void *);
+static int do_stopafter(void *);
+static int do_show_desktop_type(void *);
+static int do_display_dimensions(void *);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 /**********************************************************************************************/
@@ -461,7 +461,9 @@ int main_c(int argc, char *argv[])
 
    // events
    if(switches.Desktop)
-      XSelectInput(display, Rootwindow, /*StructureNotifyMask|*/ SubstructureNotifyMask);
+   {
+      XSelectInput(display, Rootwindow, StructureNotifyMask| SubstructureNotifyMask);
+   }
    else
       XSelectInput(display, SnowWin, StructureNotifyMask);
 
@@ -758,7 +760,7 @@ void DoAllWorkspaces()
 // But, do_ui_check is called not too frequently, so....
 // Note: if changes != 0, the settings will be written to .xsnowrc
 //
-int do_ui_check()
+int do_ui_check(void *d)
 {
    if (Flags.Done)
       gtk_main_quit();
@@ -810,10 +812,11 @@ int do_ui_check()
    }
    Flags.Changes = 0;
    return TRUE;
+   (void)d;
 }
 
 
-int do_displaychanged()
+int do_displaychanged(void *d)
 {
    // if we are snowing in the desktop, we check if the size has changed,
    // this can happen after changing of the displays settings
@@ -842,9 +845,10 @@ int do_displaychanged()
       XCloseDisplay(display);
       return TRUE;
    }
+   (void)d;
 }
 
-int do_event()
+int do_event(void *d)
 {
    P("do_event %d\n",counter++);
    if (Flags.Done)
@@ -891,6 +895,7 @@ int do_event()
       }
    }  
    return TRUE;
+   (void)d;
 }
 
 void RestartDisplay()
@@ -914,7 +919,7 @@ void RestartDisplay()
 
 
 
-int do_show_range_etc()
+int do_show_range_etc(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -923,9 +928,10 @@ int do_show_range_etc()
       return TRUE;
    ui_show_range_etc();
    return TRUE;
+   (void)d;
 }
 
-int do_show_desktop_type()
+int do_show_desktop_type(void *d)
 {
    P("do_show_desktop_type %d\n",counter++);
    if (Flags.NoMenu)
@@ -941,10 +947,11 @@ int do_show_desktop_type()
    snprintf(t,64,"%s. Snow window: %#lx",s,SnowWin);
    ui_show_desktop_type(t);
    return TRUE;
+   (void)d;
 }
 
 
-int do_testing()
+int do_testing(void *d)
 {
    counter++;
    //Flags.ThemeXsnow = 1-Flags.ThemeXsnow;
@@ -962,6 +969,7 @@ P("flakes: %d %d\n",set_size(),FlakeCount);
 */
    return TRUE;
    Flags.BelowAll = !Flags.BelowAll;
+   (void)d;
 }
 
 
@@ -1014,9 +1022,10 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) 
 {
    P("Just to check who this is: %p %p\n",(void *)widget,(void *)TransA);
-   if (1||widget || user_data) // to avoid warnings
-      drawit(cr);
+   drawit(cr);
    return FALSE;
+   (void)widget;
+   (void)user_data;
 }
 
 void drawit(cairo_t *cr)
@@ -1055,7 +1064,7 @@ void drawit(cairo_t *cr)
 
 }
 
-int do_display_dimensions()
+int do_display_dimensions(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -1091,6 +1100,7 @@ int do_display_dimensions()
       prevh = SnowWinHeight;
    }
    return TRUE;
+   (void)d;
 }
 
 int do_draw_all(gpointer widget)
@@ -1174,9 +1184,10 @@ void HandleExposures()
 }
 
 
-int do_stopafter()
+int do_stopafter(void *d)
 {
    Flags.Done = 1;
    printf("Halting because of flag -stopafter\n");
    return FALSE;
+   (void)d;
 }

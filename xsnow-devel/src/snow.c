@@ -58,12 +58,12 @@ static char            ***xsnow_xpm = NULL;
 static int                NFlakeTypesVintage;
 static int                MaxFlakeTypes;
 
-static int    do_genflakes(void);
+static int    do_genflakes(void *);
 static void   InitFlake(Snow *flake);
 static void   InitFlakesPerSecond(void);
 static void   InitSnowColor(void);
 static void   InitSnowSpeedFactor(void);
-static int    do_show_flakecount(void);
+static int    do_show_flakecount(void *);
 static void   init_snow_surfaces(void);
 static void   init_snow_pix(void);
 static void   EraseSnowFlake(Snow *flake);
@@ -270,7 +270,7 @@ int snow_draw(cairo_t *cr)
    return TRUE;
 }
 
-int do_genflakes()
+int do_genflakes(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -313,6 +313,7 @@ int do_genflakes()
       MakeFlake(-1);
    }
    RETURN;
+   (void)d;
 #undef RETURN
 }
 
@@ -734,7 +735,7 @@ void InitSnowSpeedFactor()
 }
 
 
-int do_initsnow()
+int do_initsnow(void *d)
 {
    P("initsnow %d %d\n",FlakeCount,counter++);
    if (Flags.Done)
@@ -750,15 +751,17 @@ int do_initsnow()
    KillFlakes = 0;
 
    return FALSE;  // stop callback
+   (void)d;
 }
 
-int do_show_flakecount()
+int do_show_flakecount(void *d)
 {
    if (Flags.Done)
       return FALSE;
    if (!Flags.NoMenu)
       ui_show_nflakes(FlakeCount);
    return TRUE;
+   (void)d;
 }
 
 // generate random xpm for flake with dimensions wxh

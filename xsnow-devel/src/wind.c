@@ -43,8 +43,8 @@ float  WindMax = 100.0;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
-static int    do_wind(void);
-static int    do_newwind(void);
+static int    do_wind(void *);
+static int    do_newwind(void *);
 
 void wind_init()
 {
@@ -72,7 +72,7 @@ void draw_wind()
    // Nothing to draw
 }
 
-int do_newwind()
+int do_newwind(void *d)
 {
    P("newwind\n");
    if (Flags.Done)
@@ -109,9 +109,10 @@ int do_newwind()
 	 break;
    }
    return TRUE;
+   (void)d;
 }
 
-int do_wind()
+int do_wind(void *d)
 {
    P("wind\n");
    if (Flags.Done)
@@ -165,7 +166,9 @@ int do_wind()
       }
    }
    return TRUE;
+   (void)d;
 }
+
 void SetWhirl()
 {
    Whirl = 0.01*Flags.WhirlFactor*WHIRL;

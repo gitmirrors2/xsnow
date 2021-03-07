@@ -40,8 +40,8 @@ static GC               StarGC[STARANIMATIONS];
 static Skoordinaten    *Stars = NULL;
 static char            *StarColor[STARANIMATIONS] = { (char *)"gold", (char *)"gold1", 
    (char *)"gold4", (char *)"orange" };
-static int              do_stars(void);
-static int              do_ustars(void);
+static int              do_stars(void *);
+static int              do_ustars(void *);
 
 static cairo_surface_t *surfaces[STARANIMATIONS];
 
@@ -130,7 +130,7 @@ void stars_ui()
 }
 
 
-int do_stars()
+int do_stars(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -156,9 +156,10 @@ int do_stars()
    }
    XFlush(display);
    return TRUE;
+   (void)d;
 }
 
-int do_ustars()
+int do_ustars(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -169,6 +170,7 @@ int do_ustars()
       if (drand48() > 0.8)
 	 Stars[i].color = randint(STARANIMATIONS);
    return TRUE;
+   (void)d;
 }
 
 void stars_set_gc()

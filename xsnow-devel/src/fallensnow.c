@@ -97,7 +97,7 @@ void fallensnow_ui()
    UIDO(NoKeepSWin        , InitFallenSnow(); ClearScreen(); );
 }
 
-int do_fallen()
+int do_fallen(void *d)
 {
 
    if (Flags.Done)
@@ -114,6 +114,7 @@ int do_fallen()
    }
    XFlush(display);
    return TRUE;
+   (void)d;
 }
 
 void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1

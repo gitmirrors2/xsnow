@@ -194,7 +194,7 @@ static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void handle_css(void);
 static void birdscb(GtkWidget *w, void *m);
-static int  below_confirm_ticker(void);
+static int  below_confirm_ticker(void *);
 static void show_bct_countdown(void);
 static void yesyes(GtkWidget *w, gpointer data);
 static void nono(GtkWidget *w, gpointer data);
@@ -685,7 +685,7 @@ void show_bct_countdown()
 
 }
 
-int below_confirm_ticker()
+int below_confirm_ticker(void *d)
 {
    bct_countdown--;
    show_bct_countdown();
@@ -696,6 +696,7 @@ int below_confirm_ticker()
       set_belowall_default();
       return FALSE;
    }
+   (void)d;
 }
 
 void set_belowall_default()

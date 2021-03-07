@@ -35,7 +35,7 @@
    (Flags.BirdsOnly || !WorkspaceActive())
 
 static float BlowOffFactor;
-static int    do_blowoff(void);
+static int    do_blowoff(void *);
 
 void blowoff_init()
 {
@@ -67,7 +67,7 @@ void InitBlowOffFactor()
 }
 
 // determine if fallensnow should be handled for fsnow
-int do_blowoff()
+int do_blowoff(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -84,5 +84,6 @@ int do_blowoff()
       fsnow = fsnow->next;
    }
    return TRUE;
+   (void)d;
 }
 

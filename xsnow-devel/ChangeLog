@@ -4,6 +4,9 @@ version 3.2.3
 	  adapt simplemake.sh 
 	6:ixpm.c: correct stupid bug in xpm_set_color()
 	7:remove UNUSED
+	9:extended range of XSelectInput somewhat
+	  change timing of do_wupdate to look more frequently if 
+	  something has changed
 
 version 3.2.2
 	1:change 'changes' into Flags.Changes

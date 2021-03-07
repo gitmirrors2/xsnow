@@ -37,9 +37,9 @@
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
-static int    do_santa(void);
-static int    do_santa1(void);
-static int    do_usanta(void);
+static int    do_santa(void *);
+static int    do_santa1(void *);
+static int    do_usanta(void *);
 static void   EraseSanta(int x, int y);
 static void   DrawSanta(void);
 static void   DrawSanta1(void);
@@ -313,7 +313,7 @@ void Santa_HandleCpuFactor()
    santa1_id = add_to_mainloop(PRIORITY_HIGH,    time_santa1, do_santa1);
 }
 
-int do_santa()
+int do_santa(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -324,9 +324,10 @@ int do_santa()
    if (!Flags.NoSanta)
       DrawSanta();
    return TRUE;
+   (void)d;
 }
 
-int do_santa1()
+int do_santa1(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -337,6 +338,7 @@ int do_santa1()
    if (!Flags.NoSanta)
       DrawSanta1();
    return TRUE;
+   (void)d;
 }
 
 void DrawSanta() 
@@ -383,7 +385,7 @@ void DrawSanta1()
 }
 
 // update santa's coordinates and speed
-int do_usanta()
+int do_usanta(void *d)
 {
    P("do_usanta %d\n",counter++);
    if (Flags.Done)
@@ -471,6 +473,7 @@ int do_usanta()
    XOffsetRegion(SantaPlowRegion, SantaX - oldx, SantaY - oldy);
 
    RETURN;
+   (void) d;
 }
 
 void ResetSanta()      

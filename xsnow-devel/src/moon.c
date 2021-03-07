@@ -32,7 +32,7 @@
 #define LEAVE_IF_INACTIVE\
    if (!Flags.Moon || !WorkspaceActive()) return TRUE
 
-static int  do_umoon(void);
+static int  do_umoon(void *);
 static void init_moon_surface(void);
 static void init_halo_surface(void);
 static void halo_draw(cairo_t *cr);
@@ -92,7 +92,7 @@ static void init_moon_surface()
    init_halo_surface();
 }
 
-int do_umoon()
+int do_umoon(void *d)
 {
    static int xdirection = 1;
    static int ydirection = 1;
@@ -115,6 +115,7 @@ int do_umoon()
    else if (moonY < 20)
       ydirection = 1;
    return TRUE;
+   (void)d;
 }
 
 void init_halo_surface()

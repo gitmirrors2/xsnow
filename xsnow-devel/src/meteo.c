@@ -36,7 +36,7 @@
    (Flags.BirdsOnly || !WorkspaceActive())
 
 static int do_emeteorite(gpointer data);
-static int do_meteorite(void);
+static int do_meteorite(void *);
 
 static GdkRGBA       color;
 static const char   *MeteoColor  = "orange";
@@ -119,7 +119,7 @@ int do_emeteorite(gpointer data)
    return TRUE;
 }
 
-int do_meteorite()
+int do_meteorite(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -173,4 +173,5 @@ int do_meteorite()
 
    meteorite.starttime = wallclock();
    return TRUE;
+   (void)d;
 }

@@ -19,16 +19,20 @@ if [ x$1 = xc ] ; then
    rm -f Makefile
    shift
    if [ x$1 != x ] ; then
-      export CC=gcc-$1
-      export CXX=g++-$1
-      shift
+      if [ "$1" -eq "$1" ] ; then
+	 export CC=gcc-$1
+	 export CXX=g++-$1
+	 shift
+      fi
    fi
 fi
+#export CC="$CXX"
+#export CFLAGS="$CXXFLAGS"
 
 if [ ! -e Makefile ] ; then
    ./configure && make clean
 fi
-make   -j && src/xsnow -noisy  --g-fatal-warnings "$@"
+make   -j1 && src/xsnow -noisy  --g-fatal-warnings "$@"
 #make -j  && GDK_SYNCHRONIZE=1 GTK_DEBUG=interactive src/xsnow #--g-fatal-warnings
 #make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
 

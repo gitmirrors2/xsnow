@@ -36,7 +36,7 @@
 
 #include "vroot.h"
 
-static int    do_wupdate(void);
+static int    do_wupdate(void *);
 static void   UpdateFallenSnowRegions(void);
 static Window XWinInfo(char **name);
 
@@ -89,13 +89,19 @@ int WorkspaceActive()
    return Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace;
 }
 
-int do_wupdate()
+int do_wupdate(void *dummy)
 {
    P("do_wupdate %d %d\n",counter++,WindowsChanged);
    if (Flags.Done)
       return FALSE;
 
    if(Flags.NoKeepSWin) return TRUE;
+
+   if (!WindowsChanged)
+      return TRUE;
+
+   WindowsChanged = 0;
+
    long r;
    r = GetCurrentWorkspace();
    if(r>=0) 
@@ -107,10 +113,6 @@ int do_wupdate()
       return TRUE;
    }
 
-   if (!WindowsChanged)
-      return TRUE;
-
-   WindowsChanged = 0;
 
    P("Update windows\n");
 
@@ -169,6 +171,7 @@ int do_wupdate()
 
    UpdateFallenSnowRegions();
    return TRUE;
+   (void)dummy;
 }
 
 // Have a look at the windows we are snowing on

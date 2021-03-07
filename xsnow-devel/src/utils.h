@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-extern guint   add_to_mainloop(gint prio,float time,int (*func)(void));
+extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func);
 extern guint   add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap);
 extern void    remove_from_mainloop(guint *tag);
 extern void    ClearScreen(void);
