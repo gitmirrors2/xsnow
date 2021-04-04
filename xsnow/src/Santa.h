@@ -1,4 +1,3 @@
-#pragma once
 /* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -19,17 +18,12 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
-#include "xsnow.h"
-extern int    Santa_draw(cairo_t *cr);
-extern void   Santa_HandleCpuFactor(void);
-extern void   Santa_init(void);
-extern void   Santa_set_gc(void);
-extern int    Santa_ui(void);
+#pragma once
 
-extern float  ActualSantaSpeed;
-extern Region SantaPlowRegion;
-extern int    SantaHeight;
-extern int    SantaWidth;
-extern int    SantaX;
-extern int    SantaY;
+#include <gtk/gtk.h>
+
+extern int    Santa_draw(cairo_t *cr);
+extern void   Santa_erase(cairo_t *cr);
+extern void   Santa_init(void);
+extern void   Santa_ui(void);
 

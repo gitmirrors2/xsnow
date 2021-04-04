@@ -31,45 +31,33 @@
 #include "meteo.h"
 #include "utils.h"
 #include "xsnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
 static int do_emeteorite(gpointer data);
-static int do_meteorite(gpointer data);
+static int do_meteorite(void *);
 
 static GdkRGBA       color;
 static const char   *MeteoColor  = "orange";
-static Pixel         MeteoPix;
 static MeteoMap      meteorite;
 
 void meteo_init()
 {
-   {
-      if (!gdk_rgba_parse(&color, MeteoColor))
-	 gdk_rgba_parse(&color,"rgb(255,165,0)");
-   }
-   {
-      meteorite.gc  = XCreateGC(display, SnowWin, 0, NULL);
-      meteorite.egc = XCreateGC(display, SnowWin, 0, NULL);
-      MeteoPix = IAllocNamedColor(MeteoColor, White);
-      XSetLineAttributes(display, meteorite.gc,  1,LineSolid,CapRound,JoinMiter);
-      XSetLineAttributes(display, meteorite.egc, 1,LineSolid,CapRound,JoinMiter);
-   }
-   add_to_mainloop(PRIORITY_DEFAULT, time_emeteorite, do_emeteorite, NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_meteorite, do_meteorite, NULL);
+   if (!gdk_rgba_parse(&color, MeteoColor))
+      gdk_rgba_parse(&color,"rgb(255,165,0)");
+   add_to_mainloop1(PRIORITY_DEFAULT, time_emeteorite, do_emeteorite, NULL);
+   add_to_mainloop (PRIORITY_DEFAULT, time_meteorite,  do_meteorite);
 }
 
-int meteo_ui()
+void meteo_ui()
 {
-   int changes = 0;
    UIDO(NoMeteorites   , );
-   return changes;
 }
 
 void meteo_draw(cairo_t *cr)
 {
+   P("meteo_draw %d %d\n",counter++,meteorite.active);
    if (!meteorite.active)
       return;
    cairo_save(cr);
@@ -87,43 +75,49 @@ void meteo_draw(cairo_t *cr)
 
 void meteo_erase()
 {
-   int x=1;
-   do_emeteorite((gpointer)&x);
+   do_emeteorite(NULL);
 }
 
 int do_emeteorite(gpointer data)
 {
+   (void)data;
    if (Flags.Done)
       return FALSE;
    if (!meteorite.active || NOTACTIVE || Flags.NoMeteorites)
       return TRUE;
-   if (wallclock() - meteorite.starttime > 0.3 || data)
+   if (wallclock() - meteorite.starttime > 0.3)
    {
-      if (!switches.UseGtk)
+      if (!global.IsDouble)
       {
-	 if(switches.Trans)
+	 int x = meteorite.x1;
+	 int y = meteorite.y1;
+	 int w = meteorite.x2 - x;
+	 int h = meteorite.y2 - y;
+	 if (w<0)
 	 {
-	    XSetFunction(display,   meteorite.egc, GXcopy);
-	    XSetForeground(display, meteorite.egc, ErasePixel);
+	    x += w;
+	    w = -w;
 	 }
-	 else
+	 if (h<0)
 	 {
-	    XSetFunction(display,   meteorite.egc, GXxor);
-	    XSetForeground(display, meteorite.egc, MeteoPix);
+	    y += h;
+	    h = -h;
 	 }
-	 XDrawLine(display, SnowWin, meteorite.egc,  
-	       meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-	 XSubtractRegion(NoSnowArea_dynamic ,meteorite.r,NoSnowArea_dynamic);
-	 XDestroyRegion(meteorite.r);
-	 XFlush(display);
+	 x -= 1;
+	 y -= 1;
+	 w += 2;
+	 h += 2;
+	 myXClearArea(global.display,global.SnowWin,x,y,w,h,global.xxposures);
       }
       meteorite.active = 0;
    }
    return TRUE;
 }
 
-int do_meteorite(UNUSED gpointer data)
+int do_meteorite(void *d)
 {
+   (void)d;
+   P("do_meteorite %d\n",counter++);
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE)
@@ -132,47 +126,15 @@ int do_meteorite(UNUSED gpointer data)
    if(Flags.NoMeteorites) return TRUE;
    if (drand48() > 0.2) return TRUE;
 
-   meteorite.x1 = randint(SnowWinWidth);
-   meteorite.y1 = randint(SnowWinHeight/4);
-   meteorite.x2 = meteorite.x1 + SnowWinWidth/10 - randint(SnowWinWidth/5);
+   meteorite.x1 = randint(global.SnowWinWidth);
+   meteorite.y1 = randint(global.SnowWinHeight/4);
+   meteorite.x2 = meteorite.x1 + global.SnowWinWidth/10 - randint(global.SnowWinWidth/5);
    if (meteorite.x2 == meteorite.x1)
       meteorite.x2 +=5;
-   meteorite.y2 = meteorite.y1 + SnowWinHeight/5 - randint(SnowWinHeight/5);
+   meteorite.y2 = meteorite.y1 + global.SnowWinHeight/5 - randint(global.SnowWinHeight/5);
    if (meteorite.y2 == meteorite.y1)
       meteorite.y2 +=5;
    meteorite.active  = 1;
-   if(!switches.UseGtk)
-   {
-      if(switches.Trans)
-      {
-	 XSetFunction(display,   meteorite.gc,  GXcopy);
-	 XSetForeground(display, meteorite.gc,  MeteoPix);
-      }
-      else
-      {
-	 XSetFunction(display,   meteorite.gc,  GXxor);
-	 XSetForeground(display, meteorite.gc,  MeteoPix);
-      }
-      const int npoints = 5;
-      XPoint points[npoints];
-
-      points[0].x = meteorite.x1+1;
-      points[0].y = meteorite.y1-1;
-      points[1].x = meteorite.x2+1;
-      points[1].y = meteorite.y2-1;
-      points[2].x = meteorite.x2-1;
-      points[2].y = meteorite.y2+1;
-      points[3].x = meteorite.x1-1;
-      points[3].y = meteorite.y1+1;
-      points[4].x = meteorite.x1+1;
-      points[4].y = meteorite.y1-1;
-
-      meteorite.r = XPolygonRegion(points,npoints,EvenOddRule);
-      XUnionRegion(meteorite.r,NoSnowArea_dynamic,NoSnowArea_dynamic);
-      XDrawLine(display, SnowWin, meteorite.gc, 
-	    meteorite.x1,meteorite.y1,meteorite.x2,meteorite.y2);
-      XFlush(display);
-   }
 
    meteorite.starttime = wallclock();
    return TRUE;

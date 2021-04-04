@@ -19,7 +19,7 @@
 #-# 
 */
 #undef colorcode
-#undef rangecode
+#undef scalecode
 #undef togglecode
 #undef DOITB
 #undef DOIT_I

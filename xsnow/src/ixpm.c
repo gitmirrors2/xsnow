@@ -122,7 +122,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 	    printf("XpmFileInvalid\n");
 	    break;
 	 case -3:
-	    printf("XpmNoMemory\n");
+	    printf("XpmNoMemory: maybe issue with width of data: w=%d\n",w);
 	    break;
 	 case -4:
 	    printf("XpmColorFailed\n");
@@ -134,6 +134,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 	    break;
       }
       printf("exiting\n");
+      fflush(NULL);
       abort();
    }
    XAddPixel(ximage,0xff000000);
@@ -149,8 +150,9 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 }
 
 // given xpmdata **data, add the non-transparent pixels to Region r
-Region regionfromxpm(const char **data, int flop)
+Region regionfromxpm(const char **data, int flop, float scale)
 {
+   (void) scale;   // todo gdk_cairo_region_create_from_surface kan worden gebruikt
    int w,h,nc,n;
    Region r = XCreateRegion();
    // width, height, #colors, $chars to code color
@@ -194,6 +196,35 @@ Region regionfromxpm(const char **data, int flop)
    }
    free(code);
    return r;
+}
+
+cairo_region_t *gregionfromxpm(const char **data, int flop, float scale)
+{
+   int w,h;
+   sscanf(data[0],"%d %d",&w,&h);
+   P("gregionfromxpm: w:%d h:%d\n",w,h);
+
+   GdkPixbuf *pixbuf;
+   GdkPixbuf *pixbuf1 = gdk_pixbuf_new_from_xpm_data(data);
+   if (flop)
+   {
+      pixbuf = gdk_pixbuf_flip(pixbuf1,1);
+      g_clear_object(&pixbuf1);
+   }
+   else
+      pixbuf = pixbuf1;
+
+   int iw = w*scale; if(iw < 1) iw = 1;
+   int ih = h*scale; if(ih < 1) ih = 1;
+   if (iw == 1 && ih == 1) ih = 2;
+   GdkPixbuf *pixbufscaled  = gdk_pixbuf_scale_simple(pixbuf,iw,ih,GDK_INTERP_HYPER);
+   cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, NULL);
+   g_clear_object(&pixbuf);
+   g_clear_object(&pixbufscaled);
+
+   cairo_region_t *region = gdk_cairo_region_create_from_surface(surface);
+   cairo_surface_destroy(surface);
+   return region;
 }
 
 /*
@@ -328,8 +359,8 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
    int j;
    for (j=0; j<2; j++)
       x[j] = strdup(data[j]);
-   x[2] = (char *)malloc(5+sizeof(color));
-   x[2][0] = 0;
+   x[2] = (char *)malloc(5+strlen(color));
+   x[2][0] = '\0';
    strcat(x[2],". c ");
    strcat(x[2],color);
    P("c: [%s]\n",x[2]);

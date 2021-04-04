@@ -19,9 +19,8 @@
 #-# 
  */
 
-#include <gtk/gtk.h>
-#include <stdlib.h>
+#pragma once
 
 extern int loadmeasure_ui(void);
-extern void loadmeasure_draw(cairo_t *cr);
+extern void loadmeasure_draw(void);
 extern void loadmeasure_init(void);

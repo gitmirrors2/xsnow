@@ -42,87 +42,95 @@
 #include "fallensnow.h"
 #include "csvpos.h"
 #include "treesnow.h"
-#include "varia.h"
 
-static int      do_drawtree(Treeinfo *tree);
-static int      do_initbaum(gpointer data);
-static void     ReInitTree0(void);
-static void     InitTreePixmaps(void);
-static void     RedrawTrees(void);
-static void     create_tree_surface(int tt,int flip, const char **xpm);
-static int      NtreeTypes = 0;
-static int      TreeRead = 0;
-static char     **TreeXpm = NULL;
-static Pixmap   TreePixmap[MAXTREETYPE+1][2];
-static Pixmap   TreeMaskPixmap[MAXTREETYPE+1][2];
-static int      TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
-static int     *TreeType = NULL;
-static int      NTrees     = 0;  // actual number of trees
-static GC       TreeGC;
-static Treeinfo **Trees = NULL;
+static int              do_initbaum(void *);
+static void             ReInitTree0(void);
+static void             InitTreePixmaps(void);
+static void             RedrawTrees(void);
+static cairo_surface_t *tree_surface(int flip, const char **xpm, float scale);
+static void             create_tree_surfaces(void);
+static void             create_tree_surface(int tt,int flip, const char **xpm);
+static int              compartrees(const void *a, const void *b);
+static void             setTreeScale(void);
 
-Region TreeRegion;
+static int         NtreeTypes = 0;
+static int         TreeRead = 0;
+static char      **TreeXpm = NULL;
+static Pixmap      TreePixmap[MAXTREETYPE+1][2];
+static Pixmap      TreeMaskPixmap[MAXTREETYPE+1][2];
+static int         TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
+static int        *TreeType = NULL;
+static int         NTrees     = 0;  // actual number of trees
+static int         Newtrees   = 1;  // switch to determine if trees are to be repositioned
+static Treeinfo  **Trees = NULL;
+
+static float       treeScale  = 1.0;
+static const float LocalScale = 0.7;   // correction scale: if scenery is always too smnall, enlarge this and vice versa
+static float       MinScale   = 0.6;   // scale for items with low y-coordinate
+
 
 static cairo_surface_t *tree_surfaces[MAXTREETYPE+1][2];
 
 void scenery_init()
 {
-   TreeGC        = XCreateGC(display, SnowWin, 0, NULL);
-   TreeRegion    = XCreateRegion();
+   setTreeScale();
+   P("treeScale: %f\n",treeScale);
+   //global.TreeRegion = XCreateRegion();
+   global.TreeRegion = cairo_region_create();
    InitTreePixmaps();
-   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum,       (GSourceFunc)do_initbaum           ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_initbaum, do_initbaum);
 }
 
-void scenery_set_gc()
+void setTreeScale()
 {
-   XSetFunction(display,   TreeGC, GXcopy);
-   XSetForeground(display, TreeGC, BlackPix);
-   XSetFillStyle(display,  TreeGC, FillStippled);
+   treeScale         = LocalScale*0.01*Flags.Scale*global.WindowScale;
+}
+
+int compartrees(const void *a, const void *b)
+{
+   Treeinfo *ta = *(Treeinfo **)a;
+   Treeinfo *tb = *(Treeinfo **)b;
+   P("compartrees %d %d %d %d\n",ta->y, tb->y, ta->h, tb->h);
+   return ta->y + ta->h*ta->scale - tb->y - tb->h*tb->scale;
 }
 
 int scenery_draw(cairo_t *cr)
 {
    int i;
 
-
+   if(Flags.NoTrees)
+      return TRUE;
    for (i=0; i<NTrees; i++)
    {
       Treeinfo *tree = Trees[i];
-      cairo_surface_t *surface = tree_surfaces[tree->type][tree->rev];
-      cairo_set_source_surface (cr, surface, tree->x, tree->y);
+      P("scenery: %d\n",tree->y+tree->h);
+      cairo_set_source_surface (cr, tree->surface, tree->x, tree->y);
       my_cairo_paint_with_alpha(cr,ALPHA);
    }
    return TRUE;
 }
 
-int scenery_ui()
+void scenery_ui()
 {
-   int changes = 0;
-
    UIDOS(TreeType               , RedrawTrees(););
    UIDO (DesiredNumberOfTrees   , RedrawTrees(););
    UIDO (TreeFill               , RedrawTrees(););
-   UIDO (NoTrees                , RedrawTrees(););
+   UIDO (NoTrees                , if(!global.IsDouble) RedrawTrees(););
    UIDOS(TreeColor              , ReInitTree0(););
+   UIDO (Overlap                , RedrawTrees(););
 
-   return changes;
+   static int prev = 100;
+   if(ScaleChanged(&prev))
+   {
+      setTreeScale();
+      RedrawTrees();
+   }
+
 }
 
 void RedrawTrees()
 {
-   // remove trees from timeout callbacks:
-   int i;
-   for (i=0; i<NTrees; i++)
-   {
-      Treeinfo *tree = Trees[i];
-      int rc = g_source_remove_by_user_data(tree);
-      P("removed %d %d %p\n",i,rc,(void *)tree);
-      if (rc)
-	 free(tree);
-      else
-	I("This should not happen i=%d rc=%d tree=%p\n",i,rc,(void *)tree);
-   }
-   NTrees = 0;     // this signals initbaum to recreate the trees
+   Newtrees = 1;     // this signals initbaum to recreate the trees
    reinit_treesnow_region();
    ClearScreen();
 }
@@ -132,7 +140,7 @@ void EraseTrees()
    RedrawTrees();
 }
 
-void create_tree_surface(int tt,int flip, const char **xpm)
+cairo_surface_t *tree_surface(int flip, const char **xpm, float scale)
 {
    GdkPixbuf *pixbuf, *pixbuf1;
    pixbuf1 = gdk_pixbuf_new_from_xpm_data((const char **)xpm);
@@ -143,8 +151,25 @@ void create_tree_surface(int tt,int flip, const char **xpm)
    }
    else
       pixbuf = pixbuf1;
-   tree_surfaces[tt][flip] = gdk_cairo_surface_create_from_pixbuf (pixbuf, 0, gdkwindow);
+
+   int w,h;
+   sscanf(xpm[0],"%d %d",&w,&h);
+   P("tree_surface: %d %d %f\n",w,h,scale);
+   w *= scale;
+   h *= scale;
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
+   if (w == 1 && h == 1) h = 2;
+   GdkPixbuf *pixbufscaled  = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
+   cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, NULL);
    g_clear_object(&pixbuf);
+   g_clear_object(&pixbufscaled);
+   return surface;
+}
+
+void create_tree_surface(int tt,int flip, const char **xpm)
+{
+   tree_surfaces[tt][flip] = tree_surface(flip, xpm,1);
    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 
 }
@@ -152,24 +177,41 @@ void create_tree_surface(int tt,int flip, const char **xpm)
 // fallen snow and trees must have been initialized 
 // tree coordinates and so are recalculated here, in anticipation
 // of a changed window size
-// The function returns immediately if NTrees!=0, otherwize an attempt
+// The function returns immediately if Newtrees==0, otherwize an attempt
 // is done to place the DesiredNumberOfTrees
-int do_initbaum(UNUSED gpointer data)
+int do_initbaum(void *d)
 {
+   (void)d;
    if (Flags.Done)
       return FALSE;
-   P("initbaum %d %d\n",NTrees, counter++);
-   if (Flags.NoTrees || NTrees != 0)
+   P("%d initbaum %d %d\n",global.counter++,Newtrees, Flags.NoTrees);
+
+   static int count = 0;
+
+   if(global.RemoveFluff && count++ > 2)
+      global.RemoveFluff = 0;
+
+   if (Flags.NoTrees || Newtrees == 0)
       return TRUE;
+
+   Newtrees = 0;
+
    int i,h,w;
 
-   XDestroyRegion(SnowOnTreesRegion);
-   cairo_region_destroy(gSnowOnTreesRegion);
-   XDestroyRegion(TreeRegion);
+   for (i=0; i<NTrees; i++)
+      free(Trees[i]);
+   free(Trees);
+   Trees = NULL;
 
-   SnowOnTreesRegion = XCreateRegion();
-   gSnowOnTreesRegion = cairo_region_create();
-   TreeRegion        = XCreateRegion();
+   global.RemoveFluff = 1;
+   count              = 0;
+
+
+   cairo_region_destroy(global.gSnowOnTreesRegion);
+   cairo_region_destroy(global.TreeRegion);
+
+   global.gSnowOnTreesRegion = cairo_region_create();
+   global.TreeRegion         = cairo_region_create();
 
    // determine which trees are to be used
    //
@@ -243,65 +285,99 @@ int do_initbaum(UNUSED gpointer data)
    // determine placement of trees and NTrees:
 
    NTrees    = 0;
-   for (i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted
+   for (i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted in certain cases
    {
       if (NTrees >= Flags.DesiredNumberOfTrees)
 	 break;
 
       int tt = TreeType[randint(NtreeTypes)];
-      h = TreeHeight[tt];
       w = TreeWidth[tt];
+      h = TreeHeight[tt];
 
-      int y1 = SnowWinHeight - MaxScrSnowDepth - h;
-      int y2 = SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
+      int y1 = global.SnowWinHeight - global.MaxScrSnowDepth - h*treeScale;
+      int y2 = global.SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
       if (y2>y1) y1=y2+1;
 
-      int x = randint(SnowWinWidth-w);
+      int x = randint(global.SnowWinWidth-w*treeScale);
       int y = y1 - randint(y1-y2);
 
-      int in = XRectInRegion(TreeRegion,x,y,w,h);
-      if (in == RectangleIn || in == RectanglePart)
-	 continue;
+      float myScale = (1-MinScale)*(y - y2)/(y1 - y2) + MinScale;
+      P("%d myScale: %d %d %d %f\n",global.counter++,y,y1,y2,myScale);
+      myScale *=treeScale;
+      cairo_rectangle_int_t grect = {x-1,y-1,myScale*w+2,myScale*h+2};
+      cairo_region_overlap_t in   = cairo_region_contains_rectangle(global.TreeRegion,&grect);
+
+      // no overlap considerations if:
+
+      if(!global.IsDouble || !Flags.Overlap)
+	 if (in == CAIRO_REGION_OVERLAP_IN || in == CAIRO_REGION_OVERLAP_PART)
+	 {
+	    P("skiptree\n");
+	    continue;
+	 }
 
       int flop = (drand48()>0.5);
 
       Treeinfo *tree = (Treeinfo *)malloc(sizeof(Treeinfo));
-      tree->x    = x;
-      tree->y    = y;
-      tree->type = tt;
-      tree->rev  = flop;
+      tree->x     = x;
+      tree->y     = y;
+      tree->w     = w;
+      tree->h     = h;
+      tree->type  = tt;
+      tree->rev   = flop;
+      tree->scale = myScale;
+      tree->surface = NULL;
       P("tree: %d %d %d %d %d %p\n",tree->x, tree->y, tree->type, tree->rev, NTrees,(void *)tree);
 
-      add_to_mainloop(PRIORITY_DEFAULT, time_tree, (GSourceFunc)do_drawtree, tree);
-
-      Region r;
+      cairo_region_t *r;
 
       switch(tt)
       {
 	 case -SOMENUMBER:
-	    r = regionfromxpm((const char **)TreeXpm,tree->rev);
+	    r = gregionfromxpm((const char **)TreeXpm,tree->rev,tree->scale);
 	    break;
 	 default:
-	    r = regionfromxpm(xpmtrees[tt],tree->rev);
+	    r = gregionfromxpm(xpmtrees[tt],tree->rev,tree->scale);
 	    break;
       }
-      XOffsetRegion(r,x,y);
-      XUnionRegion(r,TreeRegion,TreeRegion);
-      XDestroyRegion(r);
+      cairo_region_translate(r,x,y);
+      cairo_region_union(global.TreeRegion,r);
+      cairo_region_destroy(r);
 
       NTrees++;
       Trees = (Treeinfo **)realloc(Trees,NTrees*sizeof(Treeinfo*));
       Trees[NTrees-1] = tree;
    }
-   OnTrees = 0;
+
+   // sort using y+h values of trees, so that higher trees are painted first
+   P("%d qsort: %d %ld\n",counter++,NTrees,sizeof(*Trees));
+   qsort(Trees,NTrees,sizeof(*Trees),compartrees); 
+   create_tree_surfaces();
+
+   global.OnTrees = 0;
    return TRUE;
+}
+
+void create_tree_surfaces()
+{
+   int i;
+   for (i=0; i<NTrees; i++)
+   {
+      Treeinfo *tree = Trees[i];
+      if(tree->surface)
+	 cairo_surface_destroy(tree->surface);
+      if(TreeRead)
+	 tree->surface = tree_surface(tree->rev, (const char **)TreeXpm,tree->scale);
+      else
+	 tree->surface = tree_surface(tree->rev, (const char **)xpmtrees[tree->type],tree->scale);
+   }
 }
 
 void InitTreePixmaps()
 {
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
-   attributes.depth     = SnowWinDepth;
+   attributes.depth     = global.SnowWinDepth;
    char *path = NULL;
    FILE *f = HomeOpen("xsnow/pixmaps/tree.xpm","r",&path);
    if (f)
@@ -317,11 +393,12 @@ void InitTreePixmaps()
 	 int i;
 	 for(i=0; i<2; i++)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, (const char **)TreeXpm, 
+	    iXpmCreatePixmapFromData(global.display, global.SnowWin, (const char **)TreeXpm, 
 		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
 	    create_tree_surface(0,i,(const char **)TreeXpm);
 	 }
 	 sscanf(*TreeXpm,"%d %d", &TreeWidth[0],&TreeHeight[0]);
+	 P("treexpm %d %d\n",TreeWidth[0],TreeHeight[0]);
 	 printf("using external tree: %s\n",path);
 	 if (!Flags.NoMenu)
 	    printf("Disabling menu.\n");
@@ -342,7 +419,7 @@ void InitTreePixmaps()
 	 int tt;
 	 for (tt=0; tt<=MAXTREETYPE; tt++)
 	 {
-	    iXpmCreatePixmapFromData(display, SnowWin, xpmtrees[tt],
+	    iXpmCreatePixmapFromData(global.display, global.SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
 	    sscanf(xpmtrees[tt][0],"%d %d",&TreeWidth[tt],&TreeHeight[tt]);
 	    create_tree_surface(tt,i,(const char **)xpmtrees[tt]);
@@ -352,7 +429,7 @@ void InitTreePixmaps()
    }
    if(path)
       free(path);
-   OnTrees = 0;
+   global.OnTrees = 0;
 }
 
 
@@ -360,12 +437,12 @@ void InitTreePixmaps()
 // apply TreeColor to xpmtree[0] and xpmtree[1]
 void ReInitTree0()
 {
+   P("Reinittree0\n");
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
-   attributes.depth     = SnowWinDepth;
+   attributes.depth     = global.SnowWinDepth;
    int i;
    int n = TreeHeight[0]+3;
-   //char *xpmtmp[n];
    char **xpmtmp = (char **)malloc(n*sizeof(char *));
    int j;
    for (j=0; j<2; j++)
@@ -377,8 +454,8 @@ void ReInitTree0()
       xpmtmp[j] = strdup(xpmtrees[0][j]);
    for(i=0; i<2; i++)
    {
-      XFreePixmap(display,TreePixmap[0][i]);
-      iXpmCreatePixmapFromData(display, SnowWin, (const char **)xpmtmp,
+      XFreePixmap(global.display,TreePixmap[0][i]);
+      iXpmCreatePixmapFromData(global.display, global.SnowWin, (const char **)xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
       cairo_surface_destroy(tree_surfaces[0][i]);
       create_tree_surface(0,i,(const char **)xpmtmp);
@@ -388,21 +465,3 @@ void ReInitTree0()
    free(xpmtmp);
 }
 
-
-int do_drawtree(Treeinfo *tree) 
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if (switches.UseGtk)
-      return TRUE;
-   int x = tree->x; int y = tree->y; int t = tree->type; int r = tree->rev;
-   P("t = %d %d\n",t,(int)wallclock());
-   if (t<0) t=0;
-   XSetClipMask(display, TreeGC, TreeMaskPixmap[t][r]);
-   XSetClipOrigin(display, TreeGC, x, y);
-   XCopyArea(display, TreePixmap[t][r], SnowWin, TreeGC, 
-	 0,0,TreeWidth[t],TreeHeight[t], x, y);
-   return TRUE;
-}

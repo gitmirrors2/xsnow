@@ -19,47 +19,29 @@
 #-# 
 */
 #pragma once
+
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
-#include "wmctrl.h"
+#include "xsnow.h"
 
-typedef struct _FallenSnow {
-   WinInfo             win;          // WinInfo of window, win.id == 0 if snow at bottom
-   int                 x,y;          // Coordinates of fallen snow, y for bottom of fallen snow
-   int                 w,h;          // width, max height of fallen snow
-   int                 w8;           // width rounded up to 8-fold
-   short int          *acth;         // actual heights
-   short int          *desh;         // desired heights
-   struct _FallenSnow *next;         // pointer to next item
-   cairo_surface_t    *surface;      // 
-
-#ifdef NO_USE_BITS 
-   unsigned int        clean     ;   // if True, this area has been cleaned
-#else
-   unsigned int        clean  : 1;   // if True, this area has been cleaned
-#endif
-} FallenSnow;
-
-extern FallenSnow *FsnowFirst;
 
 extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w); // used in snow.c
 extern int    HandleFallenSnow(FallenSnow *fsnow);
-
-
 extern void   fallensnow_init(void);
 extern void   fallensnow_draw(cairo_t *cr);
-extern int    fallensnow_ui(void);
+extern void   fallensnow_erase(void);
+extern void   fallensnow_ui(void);
 extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 extern void   CleanFallen(Window id);
 extern void   DrawFallen(FallenSnow *fsnow);
 extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
-extern int    do_fallen(gpointer data);
+extern int    do_fallen(void *);
 extern void   SetMaxScreenSnowDepth(void);
-extern void   fallensnow_set_gc(void);
+extern void   UpdateFallenSnowAtBottom(void);
 
 
 // insert a node at the start of the list
@@ -80,4 +62,3 @@ extern void FreeFallenSnow(FallenSnow *fallen);
 // find fallensnow with id
 extern FallenSnow *FindFallen(FallenSnow *first, Window id);
 
-extern int        MaxScrSnowDepth;

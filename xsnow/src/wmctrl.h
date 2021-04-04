@@ -19,29 +19,13 @@
 #-# 
 */
 #pragma once
-#include <X11/Xlib.h>
-typedef struct _WinInfo
-{
-   Window id              ;
-   int x,y                ; // x,y coordinates
-   int xa,ya              ; // x,y coordinates absolute
-   unsigned int w,h       ; // width, height
-            int ws        ; // workspace
 
-#ifdef NO_USE_BITS
-   unsigned int sticky    ; // is visible on all workspaces
-   unsigned int dock      ; // is a "dock" (panel)
-   unsigned int hidden    ; // is hidden (iconified)
-#else
-   unsigned int sticky:  1; // is visible on all workspaces
-   unsigned int dock  :  1; // is a "dock" (panel)
-   unsigned int hidden:  1; // is hidden (iconified)
-#endif
-} WinInfo;
+#include <X11/Xlib.h>
+#include "xsnow.h"
 
 extern int          GetCurrentWorkspace();
 extern int          GetWindows(WinInfo **w, int *nw);
-extern int          FindWindowWithName(const char* needle, Window *win, char **name);
+extern Window       FindWindowWithName(Display *dsp, const char* needle);
 extern WinInfo     *FindWindow(WinInfo *windows, int nwin, Window id);
 extern void         printwindows(Display *dpy,WinInfo *windows, int nwin);
 extern int          GetProperty32(Display *display, Window window, const char *atomname, 

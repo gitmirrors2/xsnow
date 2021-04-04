@@ -28,7 +28,6 @@
 #include "windows.h"
 #include "pixmaps.h"
 #include "utils.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -36,13 +35,14 @@
 
 static int              NStars;  // is copied from Flags.NStars in init_stars. We cannot have that
 //                               // NStars is changed outside init_stars
-static Pixel            StarcPix[STARANIMATIONS];
-static GC               StarGC[STARANIMATIONS];
 static Skoordinaten    *Stars = NULL;
 static char            *StarColor[STARANIMATIONS] = { (char *)"gold", (char *)"gold1", 
    (char *)"gold4", (char *)"orange" };
-static int              do_stars(gpointer data);
-static int              do_ustars(gpointer data);
+static int              do_ustars(void *);
+static void             set_star_surfaces(void);
+
+static const int   StarSize = 9;
+static const float LocalScale = 0.8;
 
 static cairo_surface_t *surfaces[STARANIMATIONS];
 
@@ -50,39 +50,40 @@ void stars_init()
 {
    int i;
    init_stars();
-   {
-      for(i=0; i<STARANIMATIONS; i++)
-      {
-	 surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,9,9);
-	 cairo_t *cr = cairo_create(surfaces[i]);
-	 cairo_set_line_width(cr,1);
-	 GdkRGBA color;
-	 gdk_rgba_parse(&color,StarColor[i]);
-	 cairo_set_source_rgba(cr,color.red, color.green, color.blue,color.alpha);
-	 cairo_move_to(cr, 0, 0 );
-	 cairo_line_to(cr, 9, 9 );
-	 cairo_move_to(cr, 0, 9 );
-	 cairo_line_to(cr, 9, 0 );
-	 cairo_move_to(cr, 1, 5 );
-	 cairo_line_to(cr, 8, 5 );
-	 cairo_move_to(cr, 5, 1 );
-	 cairo_line_to(cr, 5, 8 );
-	 cairo_stroke(cr);
+   for (i=0; i<STARANIMATIONS; i++)
+      surfaces[i] = NULL;
+   set_star_surfaces();
+   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars);
+}
 
-	 cairo_destroy(cr);
-      }
-   }
+void set_star_surfaces()
+{
+   int i;
+   for(i=0; i<STARANIMATIONS; i++)
    {
-      for (i=0; i<STARANIMATIONS; i++)
-      {
-	 StarGC[i]   = XCreateGC(display,SnowWin,0,NULL);
-	 StarcPix[i] = IAllocNamedColor(StarColor[i], Black);
-      }
-      starPix.pixmap = XCreateBitmapFromData(display, SnowWin,
-	    (char *)starPix.starBits, starPix.width, starPix.height);
-      add_to_mainloop(PRIORITY_DEFAULT, time_star, do_stars, NULL);
+      float size = LocalScale*global.WindowScale*0.01*Flags.Scale*StarSize;
+      size *= 0.2*(1+4*drand48());
+      if (size < 1 ) size = 1;
+      if(surfaces[i])
+	 cairo_surface_destroy(surfaces[i]);
+      surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,size,size);
+      cairo_t *cr = cairo_create(surfaces[i]);
+      cairo_set_line_width(cr,1.0*size/StarSize);
+      GdkRGBA color;
+      gdk_rgba_parse(&color,StarColor[i]);
+      cairo_set_source_rgba(cr,color.red, color.green, color.blue,color.alpha);
+      cairo_move_to(cr, 0           , 0 );
+      cairo_line_to(cr, size        , size );
+      cairo_move_to(cr, 0           , size );
+      cairo_line_to(cr, size        , 0 );
+      cairo_move_to(cr, 0           , size/2 );
+      cairo_line_to(cr, size        , size/2 );
+      cairo_move_to(cr, size/2      , 0 );
+      cairo_line_to(cr, size/2      , size );
+      cairo_stroke(cr);
+
+      cairo_destroy(cr);
    }
-   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars, NULL);
 }
 
 
@@ -96,11 +97,12 @@ void init_stars()
    for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
-      star->x     = randint(SnowWinWidth);
-      star->y     = randint(SnowWinHeight/4);
+      star->x     = randint(global.SnowWinWidth);
+      star->y     = randint(global.SnowWinHeight/4);
       star->color = randint(STARANIMATIONS);
       P("stars_init %d %d %d\n",star->x,star->y,star->color);
    }
+   //set_star_surfaces();
 }
 
 void stars_draw(cairo_t *cr)
@@ -124,44 +126,38 @@ void stars_draw(cairo_t *cr)
    cairo_restore(cr);
 }
 
-int stars_ui()
+void stars_erase()
 {
-   int changes = 0;
-   UIDO(NStars, init_stars(); ClearScreen(););
-   UIDO(Stars, ClearScreen(););
-   return changes;
-}
-
-
-int do_stars(UNUSED gpointer data)
-{
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if (switches.UseGtk)
-      return TRUE;
    if (!Flags.Stars)
-      return TRUE;
-   P("do_stars %d %d\n",NStars,counter++);
+      return;
    int i;
    for (i=0; i<NStars; i++)
    {
+      P("stars_erase i: %d %d %d\n",i,NStars,counter++);
       Skoordinaten *star = &Stars[i];
       int x = star->x;
       int y = star->y;
-      int k = star->color;
-      int w = starPix.width;
-      int h = starPix.height;
-      P("dostars %d %d %d %d %d %d\n",NStars,x,y,k,w,h);
-      XSetTSOrigin(display, StarGC[k],x+w, y+h);
-      XFillRectangle(display,SnowWin,StarGC[k],x,y,w,h);
+      myXClearArea(global.display,global.SnowWin,x,y,StarSize,StarSize,global.xxposures);
    }
-   XFlush(display);
-   return TRUE;
 }
 
-int do_ustars(UNUSED gpointer data)
+void stars_ui()
+{
+   UIDO(NStars, init_stars(); ClearScreen(););
+   UIDO(Stars, ClearScreen(););
+
+   static int prev = 100;
+   P("stars_ui %d\n",prev);
+   if(ScaleChanged(&prev))
+   {
+      set_star_surfaces();
+      init_stars();
+      P("stars_ui changed\n");
+   }
+}
+
+
+int do_ustars(void *d)
 {
    if (Flags.Done)
       return FALSE;
@@ -172,17 +168,6 @@ int do_ustars(UNUSED gpointer data)
       if (drand48() > 0.8)
 	 Stars[i].color = randint(STARANIMATIONS);
    return TRUE;
-}
-
-void stars_set_gc()
-{
-   int i;
-   for (i=0; i<STARANIMATIONS; i++)
-   {
-      XSetFunction(   display,StarGC[i],GXcopy);
-      XSetStipple(    display,StarGC[i],starPix.pixmap);
-      XSetForeground( display,StarGC[i],StarcPix[i]);
-      XSetFillStyle(  display,StarGC[i],FillStippled);
-   }
+   (void)d;
 }
 

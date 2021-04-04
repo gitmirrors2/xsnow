@@ -14,9 +14,10 @@ ssh $pi rm -rf $build || exit 1
 echo "create $build:"
 ssh $pi mkdir -p $build  || exit 1
 echo "scp ../versions/$tar:"
-scp ../versions/$tar $pi:$build  || exit 
+ssh $pi mkdir $build/versions
+scp ../versions/$tar $pi:$build/versions  || exit 
 echo "untar $tar:"
-ssh $pi "cd $build && tar xf $tar" || exit 1
+ssh $pi "cd $build && tar xf versions/$tar" || exit 1
 echo "copy debian/:"
 scp -r ../$app-debian $pi:$build/$dir/..
 echo "makedeb:"

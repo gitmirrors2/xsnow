@@ -20,39 +20,30 @@
 */
 #pragma once
 
-//#define add_to_mainloop(prio,time,func,datap) g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,0)
 
 #define SOMENUMBER 42
 #define PRIORITY_DEFAULT   G_PRIORITY_LOW
 #define PRIORITY_HIGH      G_PRIORITY_DEFAULT
 
-#define UIDO(_x,_y) \
-   if(Flags._x != OldFlags._x) \
-{ \
-   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8d -> %8d\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
-   {_y} \
-   OldFlags._x = Flags._x; \
-   changes++; \
-}
 
-#define UIDOS(_x,_y) \
-   if(strcmp(Flags._x, OldFlags._x)) \
-{ \
-   if(Flags.Noisy) { printf("%-16s %6d: %-22s %8s -> %8s\n",__FILE__,__LINE__,#_x,OldFlags._x, Flags._x); fflush(NULL); } \
-   {_y} \
-   free(OldFlags._x); \
-   OldFlags._x = strdup(Flags._x); \
-   changes++; \
-}
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include <stdio.h>
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
-#include <stdlib.h>
 #include <math.h>
 
-extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap);
-extern void    remove_from_mainloop(guint tag);
+#ifdef HAVE_EXECINFO_H
+#ifdef HAVE_BACKTRACE
+#include <execinfo.h>
+#define TRACEBACK_AVAILALBLE
+#endif
+#endif
+
+extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func);
+extern guint   add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap);
+extern void    remove_from_mainloop(guint *tag);
 extern void    ClearScreen(void);
 extern float   fsignf(float x);
 extern FILE   *HomeOpen(const char *file,const char *mode,char **path);
@@ -63,13 +54,18 @@ extern Pixel   AllocNamedColor(const char *colorName, Pixel dfltPix);
 extern int     randint(int m);
 extern void    my_cairo_paint_with_alpha(cairo_t *cr, double alpha);
 extern void    rgba2color(GdkRGBA *c, char **s);
+extern void    Thanks(void);
+extern void    myXClearArea(Display*display, Window win, int x, int y, int w, int h, int exposures);
+extern int     ScaleChanged(int *prev);
+#ifdef TRACEBACK_AVAILALBLE
+extern void    traceback(void);
+#endif
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);
 // seed the random generator (alternatively, srand48() can be used):
 extern void sgaussian(long int seed);
 
-extern Pixel   Black, White;
-
 extern int is_little_endian(void);
 extern void PrintVersion(void);
+

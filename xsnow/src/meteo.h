@@ -20,16 +20,10 @@
  */
 #pragma once
 
-typedef struct _MeteoMap {
-   int x1,x2,y1,y2,active;
-   double starttime;
-   GC gc,egc;
-   Region r;
-} MeteoMap;
-
+#include <gtk/gtk.h>
 
 extern void meteo_init(void);
-extern int  meteo_ui(void);
+extern void meteo_ui(void);
 extern void meteo_draw(cairo_t *cr);
 extern void meteo_erase(void);
 

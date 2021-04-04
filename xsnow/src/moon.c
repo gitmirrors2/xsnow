@@ -26,56 +26,94 @@
 #include "moon.h"
 #include "pixmaps.h"
 #include "utils.h"
-#include "varia.h"
 #include "windows.h"
 
 
 #define LEAVE_IF_INACTIVE\
    if (!Flags.Moon || !WorkspaceActive()) return TRUE
 
-static int  do_umoon(gpointer data);
+static int  do_umoon(void *);
 static void init_moon_surface(void);
 static void init_halo_surface(void);
 static void halo_draw(cairo_t *cr);
+static void halo_erase();
 
 static cairo_surface_t *moon_surface = NULL;
 static cairo_surface_t *halo_surface = NULL;
-static double moonR;
-static double haloR;
+static double haloR;  // radius of halo in pixels
 
-double moonX = 1000;
-double moonY = 80;
+static double OldmoonX;
+static double OldmoonY;
 
-int NMOONPIXBUFS;
+static float moonScale;
 
 void moon_init(void)
 {
+   moonScale = (float)Flags.Scale*0.01*global.WindowScale;
    init_moon_surface();
-   add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon ,NULL);
-   if (SnowWinWidth > 400)
-      moonX = 200+drand48()*(SnowWinWidth - 400 - Flags.MoonSize);
+   add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon);
+   if (global.SnowWinWidth > 400*moonScale)
+      global.moonX = moonScale*200+drand48()*(global.SnowWinWidth - 400*moonScale - 2*global.moonR);
 }
 
 int moon_draw(cairo_t *cr)
 {
    LEAVE_IF_INACTIVE;
-   P("moon_draw %d\n",counter++);
-   cairo_set_source_surface (cr, moon_surface, moonX, moonY);
+   P("moon_draw %d %d %d\n",counter++,(int)global.moonX,(int)global.moonY);
+   cairo_set_source_surface (cr, moon_surface, global.moonX, global.moonY);
    my_cairo_paint_with_alpha(cr,ALPHA);
+   OldmoonX = global.moonX;
+   OldmoonY = global.moonY;
    halo_draw(cr);
    return TRUE;
 }
 
-
-int moon_ui()
+int moon_erase(int force)
 {
-   int changes = 0;
+   if(global.IsDouble)
+      return 0;
+   if(!force)
+      LEAVE_IF_INACTIVE;
+   if (Flags.Halo)
+   {
+      halo_erase();
+   }
+   else
+   {
+      myXClearArea(global.display, global.SnowWin,
+	    OldmoonX, OldmoonY,     
+	    2*global.moonR+1,2*global.moonR+1,
+	    global.xxposures);
+   }
+   return 0;
+}
+
+
+void moon_ui()
+{
    UIDO(MoonSpeed,                         );
-   UIDO(Halo,                              );
-   UIDO(Moon,                              );
+   UIDO(Halo        ,halo_erase();         );
+   UIDO(Moon        ,moon_erase(1);        );
    UIDO(MoonSize    ,init_moon_surface();  );
    UIDO(HaloBright  ,init_halo_surface();  );
-   return changes;
+
+   static int prevw = 0;
+   static int prevh = 0;
+
+   static int prev;
+   if(ScaleChanged(&prev))
+   {
+      P("%d moonscale\n",global.counter);
+      moonScale       = 0.01*global.WindowScale*Flags.Scale;
+      init_moon_surface();
+      if(prevw>0 && prevh>0)
+      {
+	 global.moonX = (float)global.moonX/prevw*global.SnowWinWidth;
+	 global.moonY = (float)global.moonY/prevh*global.SnowWinHeight;
+      }
+      prevw = global.SnowWinWidth;
+      prevh = global.SnowWinHeight;
+   }
 }
 
 static void init_moon_surface()
@@ -84,19 +122,27 @@ static void init_moon_surface()
    int whichmoon = 0;
    static GdkPixbuf *pixbuf, *pixbufscaled;
    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)moons_xpm[whichmoon]);
-   int w = Flags.MoonSize;
-   int h = Flags.MoonSize;
+   // standard moon is some percentage of window width
+   const float p = 30.0;
+   global.moonR = p*Flags.MoonSize*0.01*moonScale;
+   int w = global.moonR*2;
+   int h = w;
    if(moon_surface)
       cairo_surface_destroy(moon_surface);
+   if (w < 1) { w = 1; h = 1;}
+   if (w == 1 && h == 1) h = 2;
    pixbufscaled = gdk_pixbuf_scale_simple(pixbuf,w,h,interpolation);
-   moon_surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, gdkwindow);
+   moon_surface = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, NULL);
    g_clear_object(&pixbuf);
    g_clear_object(&pixbufscaled);
    init_halo_surface();
+   if (!global.IsDouble)
+      ClearScreen();
 }
 
-int do_umoon(UNUSED gpointer data)
+int do_umoon(void *d)
 {
+   (void)d;
    static int xdirection = 1;
    static int ydirection = 1;
    if (Flags.Done)
@@ -105,18 +151,32 @@ int do_umoon(UNUSED gpointer data)
    if(!Flags.Moon)
       return TRUE;
 
-   moonX += xdirection*time_umoon*Flags.MoonSpeed/60.0;
-   moonY += 0.2*ydirection*time_umoon*Flags.MoonSpeed/60.0;
 
-   if (moonX > SnowWinWidth - 200 - Flags.MoonSize)
+   global.moonX += xdirection*time_umoon*Flags.MoonSpeed/60.0;
+   global.moonY += 0.2*ydirection*time_umoon*Flags.MoonSpeed/60.0;
+
+   if (global.moonX > global.SnowWinWidth - 2*global.moonR)
+   {
+      global.moonX = global.SnowWinWidth - 2*global.moonR;
       xdirection = -1;
-   else if (moonX < 200)
+   }
+   else if (global.moonX < 2*global.moonR)
+   {
+      global.moonX = 2*global.moonR;
       xdirection = 1;
+   }
 
-   if (moonY > 120)
+   if (global.moonY > 2*global.moonR)
+   {
+      global.moonY = 2*global.moonR;
       ydirection = -1;
-   else if (moonY < 20)
+   }
+   else if (global.moonY < 2*global.moonR)
+   {
+      global.moonY = 2*global.moonR;
       ydirection = 1;
+   }
+
    return TRUE;
 }
 
@@ -125,10 +185,9 @@ void init_halo_surface()
    if (halo_surface)
       cairo_surface_destroy(halo_surface);
    cairo_pattern_t *pattern;
-   moonR = Flags.MoonSize/2;
-   haloR = 1.8*moonR;
-   P("halo_draw %f %f \n",moonR,haloR);
-   pattern = cairo_pattern_create_radial(haloR, haloR, moonR, haloR, haloR, haloR);  
+   haloR = 1.8*global.moonR;
+   P("halo_draw %f %f \n",global.moonR,haloR);
+   pattern = cairo_pattern_create_radial(haloR, haloR, global.moonR, haloR, haloR, haloR);  
    double bright = Flags.HaloBright * ALPHA * 0.01;
    //cairo_pattern_add_color_stop_rgba(pattern, 0.0, 1.0, 1.0, 1.0, 0.4*ALPHA);
    //cairo_pattern_add_color_stop_rgba(pattern, 1.0, 1.0, 1.0, 1.0, 0.0);
@@ -165,10 +224,19 @@ void halo_draw(cairo_t *cr)
 {
    if (!Flags.Halo)
       return;
-   P("halo_draw %f %f \n", moonR, haloR);
-   double xc = moonX + moonR;
-   double yc = moonY + moonR;
+   P("halo_draw %f %f \n", global.moonR, haloR);
+   double xc = global.moonX + global.moonR;
+   double yc = global.moonY + global.moonR;
 
    cairo_set_source_surface(cr, halo_surface, xc-haloR, yc-haloR);
    my_cairo_paint_with_alpha(cr, ALPHA);
+}
+
+void halo_erase()
+{
+   int x = OldmoonX + global.moonR - haloR;
+   int y = OldmoonY + global.moonR - haloR;
+   int w = 2*haloR;
+   int h = w;
+   myXClearArea(global.display,global.SnowWin,x,y,w+1,h+1,global.xxposures);
 }

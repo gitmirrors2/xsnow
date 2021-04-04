@@ -19,4 +19,11 @@
 #-# 
  */
 #pragma once
-#define UNUSED __attribute__ ((unused))
+
+#include <gtk/gtk.h>
+#include <X11/Intrinsic.h>
+
+extern int make_trans_window(GtkWidget *Transwindow, int Fullscreen, int sticky, int below, int dock,
+      GdkWindow **gdk_window, Window *x11_window);
+extern void setbelow(GtkWindow *w);
+extern void setabove(GtkWindow *w);

@@ -45,6 +45,7 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="birds-nbirds-adjustment">
+    <property name="lower">1</property>
     <property name="upper">400</property>
     <property name="value">50</property>
     <property name="step_increment">5</property>
@@ -192,7 +193,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="moonsizeadjustment">
-    <property name="lower">50</property>
+    <property name="lower">20</property>
     <property name="upper">500</property>
     <property name="value">100</property>
     <property name="step_increment">1</property>
@@ -240,6 +241,12 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="value">2</property>
     <property name="step_increment">5</property>
     <property name="page_increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="scale-adjustment">
+    <property name="lower">30</property>
+    <property name="upper">300</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="snow-blow-adjustment">
     <property name="lower">10</property>
@@ -902,7 +909,7 @@ You could adapt some things in "snow", "birds" or "settings".</property>
                 <property name="xalign">0.5</property>
                 <property name="yalign">0.5</property>
                 <style>
-                  <class name="pink"/>
+                  <class name="busymessage"/>
                 </style>
               </object>
               <packing>
@@ -2715,6 +2722,22 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-Overlap">
+                    <property name="label" translatable="yes">Allow overlap</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To allow overlap or not when placing scenery.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -3452,7 +3475,7 @@ Note: in Wayland, there is no snow on the windows.</property>
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Size of moon in pixels</property>
+                    <property name="tooltip_text" translatable="yes">Relative size of the moon</property>
                     <property name="valign">center</property>
                     <property name="adjustment">moonsizeadjustment</property>
                     <property name="round_digits">0</property>
@@ -4293,149 +4316,8 @@ Santa</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Advanced snow settings</property>
-                <attributes>
-                  <attribute name="scale" value="1.2"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">8</property>
-                <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <object class="GtkToggleButton" id="id-AllWorkspaces">
-                    <property name="label" translatable="yes">On all
-workspaces</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.
-NOTE: this doesn't work properly in enlightenment.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToggleButton" id="id-FullScreen">
-                    <property name="label" translatable="yes">Full
-screen</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Xsnow will take as much of the desktop as it can. Depending on the desktop environment, in full-screen mode panels, taskbars etc. can become inaccessible.
-NOTE: this doesn't work properly in enlightenment.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToggleButton" id="id-BelowAll">
-                    <property name="label" translatable="yes">Below
-windows</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.
-On some desktop environments, when snowing above your windows you will not be able to click on any window.
-Therefore, you will be asked to click a button, to be sure that things are OK.</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <style>
-                      <class name="below"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToggleButton" id="id-BelowConfirm">
-                    <property name="label" translatable="yes">Click to
-confirm</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">To make sure you can click.</property>
-                    <style>
-                      <class name="confirm"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">Cpu
- factor:</property>
-                    <property name="width_chars">6</property>
-                    <property name="xalign">0.89999997615814209</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="id-CpuLoad">
-                    <property name="name">general-cpuload</property>
-                    <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">The higher, the smoother xsnow will run, but will also use more cpu power.</property>
-                    <property name="halign">start</property>
-                    <property name="adjustment">cpuload-adjustment</property>
-                    <property name="round_digits">0</property>
-                    <property name="digits">0</property>
-                    <property name="has_origin">False</property>
-                    <property name="value_pos">left</property>
-                    <style>
-                      <class name="cpuload"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
-                <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
+                <property name="height_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
@@ -4489,13 +4371,10 @@ on bottom</property>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-OffsetS">
-                    <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Use this if snow falls below the bottom of your screen,
 or fallen snow hides something that should not be hidden.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">lift-window-adjustment</property>
                     <property name="inverted">True</property>
@@ -4528,13 +4407,10 @@ on windows</property>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-OffsetY">
-                    <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Use this if no snow collects on your windows, or if snow collects separated from your windows. 
 Some basic window managers need this setting (e.g. TWM needs in general a value of 25 .. 28).</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">lift-windows-adjustment</property>
                     <property name="inverted">True</property>
@@ -4550,71 +4426,83 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
                     <property name="position">5</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Cpu factor</property>
+                    <property name="width_chars">6</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-CpuLoad">
+                    <property name="name">general-cpuload</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">The higher, the smoother xsnow will run, but will also use more cpu power.</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">cpuload-adjustment</property>
+                    <property name="inverted">True</property>
+                    <property name="restrict_to_fill_level">False</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">right</property>
+                    <style>
+                      <class name="cpuload"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Scale</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-Scale">
+                    <property name="name">general-scale</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Overll drawing scale</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">scale-adjustment</property>
+                    <property name="inverted">True</property>
+                    <property name="restrict_to_fill_level">False</property>
+                    <property name="round_digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has_origin">False</property>
+                    <property name="value_pos">right</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">9</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">6</property>
                 <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">9</property>
-                <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="orientation">vertical</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">10</property>
-                <property name="height">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="orientation">vertical</property>
-              </object>
-              <packing>
-                <property name="left_attach">16</property>
-                <property name="top_attach">10</property>
-                <property name="height">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">start</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">17</property>
-                <property name="width">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">10</property>
               </packing>
             </child>
             <child>
@@ -4626,7 +4514,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
               </object>
               <packing>
                 <property name="left_attach">2</property>
-                <property name="top_attach">17</property>
+                <property name="top_attach">11</property>
               </packing>
             </child>
             <child>
@@ -4652,7 +4540,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">13</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4679,7 +4567,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">19</property>
+                <property name="top_attach">13</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4723,7 +4611,7 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">12</property>
                 <property name="width">8</property>
               </packing>
             </child>
@@ -4767,180 +4655,8 @@ Some basic window managers need this setting (e.g. TWM needs in general a value 
               </object>
               <packing>
                 <property name="left_attach">8</property>
-                <property name="top_attach">18</property>
+                <property name="top_attach">12</property>
                 <property name="width">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Painting method: </property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="id-ww-0">
-                    <property name="label" translatable="yes">GTK/Cairo</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Use transparent GTK window and Cairo for drawing non-birds, i.e. use a double 
-buffer and paint this at about 25 times per second, along with the birds.</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">False</property>
-                    <signal name="toggled" handler="button_ww" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkRadioButton" id="id-ww-2">
-                    <property name="label" translatable="yes">X11</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Use transparent X11 window for Santa, snow and scenery. 
-Drawing and erasing will be done by X11 functions.</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">False</property>
-                    <property name="group">id-ww-0</property>
-                    <signal name="toggled" handler="button_ww" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <style>
-                  <class name="window-choice"/>
-                </style>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">13</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">How to erase: </property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToggleButton" id="id-UseBG">
-                    <property name="label" translatable="yes">Use color</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use the specified color to erase.</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkColorButton" id="id-BGColor">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Use this color for erasing.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="show_editor">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToggleButton" id="id-Exposures">
-                    <property name="label" translatable="yes">Use exposures</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">If set, xsnow will ask the X server to generate exposure events when painting or erasing.</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <style>
-                  <class name="erase-settings"/>
-                </style>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">15</property>
-                <property name="width">14</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">16</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -4967,7 +4683,7 @@ Drawing and erasing will be done by X11 functions.</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">11</property>
+                <property name="top_attach">10</property>
                 <property name="width">13</property>
               </packing>
             </child>
@@ -4975,48 +4691,115 @@ Drawing and erasing will be done by X11 functions.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="vexpand">True</property>
                 <property name="label" translatable="yes"> </property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">12</property>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkToggleButton" id="id-ThemeXsnow">
+                    <property name="label" translatable="yes">Xsnow
+colors</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Toggle between xsnow's own colors and standard colors.
+Activated: use xsnow colors.
+Deactivated: use default colors.</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-AllWorkspaces">
+                    <property name="label" translatable="yes">On all
+workspaces</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Use all workspaces to snow in.
+NOTE: this doesn't work properly in enlightenment.</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-BelowAll">
+                    <property name="label" translatable="yes">Below
+windows</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.
+On some desktop environments, when snowing above your windows you will not be able to click on any window.
+Therefore, you will be asked to click a button, to be sure that things are OK.</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <style>
+                      <class name="below"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-BelowConfirm">
+                    <property name="label" translatable="yes">Click to
+confirm</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">To make sure you can click.</property>
+                    <style>
+                      <class name="confirm"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">8</property>
+                <property name="width">17</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">  
+  </property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">7</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

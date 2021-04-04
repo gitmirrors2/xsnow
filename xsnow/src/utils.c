@@ -23,14 +23,25 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
+#include "xsnow.h"
 #include "utils.h"
 #include "windows.h"
 #include "meteo.h"
 #include "debug.h"
 #include "version.h"
+#include "flags.h"
 
 
-Pixel Black, White;
+#ifdef TRACEBACK_AVAILALBLE
+void traceback()
+{
+   // see man backtrace
+#define BT_BUF_SIZE 100
+   void *buffer[BT_BUF_SIZE];
+   int nptrs = backtrace(buffer, BT_BUF_SIZE);
+   backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO);
+}
+#endif
 
 FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
@@ -50,12 +61,25 @@ FILE *HomeOpen(const char *file,const char *mode, char **path)
 void ClearScreen()
 {
    // remove all our snow-related drawings
-   XClearArea(display, SnowWin, 0,0,0,0,True);
+   XClearArea(global.display, global.SnowWin, 0,0,0,0,True);
    // Yes this is hairy: also remove meteorite.
    // It could be that a meteor region is still hanging around
    meteo_erase();
-   XFlush(display);
+   XFlush(global.display);
 
+}
+
+void myXClearArea(Display*dsp, Window win, int x, int y, int w, int h, int exposures)
+{
+   if (w == 0 || h == 0 || w<0 || h<0 || w>20000 || h>20000)
+   {
+      P("myXClearArea: %d %d %d %d %d\n",x,y,w,h,exposures);
+#ifdef TRACEBACK_AVAILALBLE
+      traceback();
+#endif
+      return;
+   }
+   XClearArea(dsp, win, x,y,w,h,exposures);
 }
 
 float sq3(float x, float y, float z)
@@ -81,7 +105,8 @@ Pixel AllocNamedColor(const char *colorName, Pixel dfltPix)
 {
    XColor scrncolor;
    XColor exactcolor;
-   if (XAllocNamedColor(display, DefaultColormap(display, screen),
+   int scrn = DefaultScreen(global.display);
+   if (XAllocNamedColor(global.display, DefaultColormap(global.display, scrn),
 	    colorName, &scrncolor, &exactcolor)) 
       return scrncolor.pixel;
    else
@@ -100,7 +125,7 @@ int randint(int m)
    return drand48()*m;
 }
 // https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
-
+// Interesting but not used now in xsnow
 double gaussian (double mean, double std, double min, double max) 
 {
    double x;
@@ -121,14 +146,21 @@ void sgaussian(long int seed)
    srand48(seed);
 }
 
-guint add_to_mainloop(gint prio,float time,GSourceFunc func,gpointer datap) 
+guint add_to_mainloop(gint prio,float time,GSourceFunc func) 
 {
-   return g_timeout_add_full(prio,(int)1000*(time),(GSourceFunc)func,datap,NULL);
+   return g_timeout_add_full(prio,(int)1000*(time),func,NULL,NULL);
 }
 
-void remove_from_mainloop(guint tag)
+guint add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap) 
 {
-   g_source_remove(tag);
+   return g_timeout_add_full(prio,(int)1000*(time),func,datap,NULL);
+}
+
+void remove_from_mainloop(guint *tag)
+{
+   if (*tag)
+      g_source_remove(*tag);
+   *tag = 0;
 }
 
 int is_little_endian(void)
@@ -148,8 +180,8 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
 
 void PrintVersion()
 {
-   printf("Xsnow-%s\n%s\n"
-	 , VERSION, VERSIONBY);
+   printf("%s\n%s\n",
+	 PACKAGE_STRING, VERSIONBY);
 }
 
 void rgba2color(GdkRGBA *c, char **s)
@@ -158,3 +190,22 @@ void rgba2color(GdkRGBA *c, char **s)
    sprintf(*s,"#%02lx%02lx%02lx",lrint(c->red*255),lrint(c->green*255),lrint(c->blue*255));
 }
 
+void Thanks(void)
+{
+   if (global.HaltedByInterrupt)
+      printf("\nXsnow: Caught signal %d\n",global.HaltedByInterrupt);
+   if (strlen(global.Message))
+      printf("\n%s\n",global.Message);
+   printf("\nThank you for using xsnow\n");
+}
+
+int ScaleChanged(int *prevscale)
+{
+   int newscale;
+   if (*prevscale != (newscale=(int)(Flags.Scale*global.WindowScale)))
+   {
+      *prevscale = newscale;
+      return TRUE;
+   }
+   return FALSE;
+}

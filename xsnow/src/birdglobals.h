@@ -19,8 +19,11 @@
 #-# 
  */
 #pragma once
+
 #include "doitb.h"
-extern struct _globals {
+#include "xsnow.h"
+
+extern struct _blobals {
    int   maxix, maxiy, maxiz;   // [pixels]
    float maxx,  maxy,  maxz;    // [m]
    float ax, ay, az;            // [pixels/m]   see r2i in main.c for usage
@@ -32,13 +35,9 @@ extern struct _globals {
    int neighbours_max;          // max number of neighbours to look at
    float range;                 // range wherein neighbours are to be found [m]
    float mean_distance;         // mean distance [m]
-   //float vd;                    // viewing distance (camera obscura) [m]
    float xc, zc;                // coordinates of camera obscura lens
-#ifdef NO_USE_BITS 
-   unsigned int freeze   ;      // when true, system freezes
-#else
-   unsigned int freeze :1;      // when true, system freezes
-#endif
+
+   unsigned int freeze BITS(1);      // when true, system freezes
 
 #define DOITB(what,type) \
    type what; \
@@ -46,26 +45,16 @@ extern struct _globals {
 
    DOITALLB()
 #undef DOITB
-#ifdef NO_USE_BITS 
 #define DOITB(what,type) \
-      unsigned int what ## _changed    ;
-#else
-#define DOITB(what,type) \
-      unsigned int what ## _changed  : 1;
-#endif
+      unsigned int what ## _changed  BITS(1);
 
       DOITALLB()
 #undef DOITB
 
-#ifdef NO_USE_BITS 
 #define DOITB(what) \
-      unsigned int what ## _requested    ;
-#else
-#define DOITB(what) \
-      unsigned int what ## _requested  : 1;
-#endif
+      unsigned int what ## _requested  BITS(1);
       BUTTONALL()
 #undef DOITB
 
-} globals;
+} blobals;
 

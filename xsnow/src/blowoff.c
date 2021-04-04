@@ -30,61 +30,54 @@
 #include "debug.h"
 #include "windows.h"
 #include "fallensnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-static float BlowOffFactor;
+static int    do_blowoff(void *);
 
 void blowoff_init()
 {
-   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff, do_blowoff, NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_blowoff, do_blowoff);
 }
 
-int blowoff_ui()
+void blowoff_ui()
 {
-   int changes = 0;
-   UIDO(BlowOffFactor    , InitBlowOffFactor();    );
+   UIDO(BlowOffFactor    ,                         );
    UIDO(BlowSnow         ,                         );
-   return changes;
 }
 
-void blowoff_draw(UNUSED cairo_t *cr)
+void blowoff_draw()
 {
    // nothing to draw here
 }
 
 int BlowOff()
 {
-   float g = gaussian(BlowOffFactor,0.5*BlowOffFactor,0.0,2.0*MAXBLOWOFFFACTOR);
-   return lrint(g);
+   int r = 0.04*Flags.BlowOffFactor*drand48();
+   P("Blowoff: %d\n",r);
+   return r;
 }
 
-void InitBlowOffFactor()
-{
-   BlowOffFactor = 0.01*Flags.BlowOffFactor;
-   if (BlowOffFactor > MAXBLOWOFFFACTOR)
-      BlowOffFactor = MAXBLOWOFFFACTOR;
-}
 
 // determine if fallensnow should be handled for fsnow
-int do_blowoff(UNUSED gpointer data)
+int do_blowoff(void *d)
 {
    if (Flags.Done)
       return FALSE;
    if (NOTACTIVE || !Flags.BlowSnow)
       return TRUE;
-   FallenSnow *fsnow = FsnowFirst;
+   FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
    {
       P("blowoff ...\n");
       if (HandleFallenSnow(fsnow) && !Flags.NoSnowFlakes) 
 	 if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
-		  (fsnow->win.ws == CWorkSpace || fsnow->win.sticky)))
+		  (fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
 	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
       fsnow = fsnow->next;
    }
    return TRUE;
+   (void)d;
 }
 

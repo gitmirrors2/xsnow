@@ -20,26 +20,13 @@
 */
 #pragma once
 
-#include <X11/Intrinsic.h>
+#include <gtk/gtk.h>
 
 #define STARANIMATIONS 4
 
-typedef struct _StarMap {
-   unsigned char *starBits;
-   Pixmap pixmap;
-   int width;
-   int height;
-} StarMap;
-
-typedef struct _Skoordinaten {
-   int x; 
-   int y; 
-   int color; 
-} Skoordinaten;
-
-extern void    init_stars(void);
-extern void    stars_draw(cairo_t *cr);
-extern void    stars_init(void);
-extern void    stars_set_gc(void);
-extern int     stars_ui(void);
+extern void init_stars(void);
+extern void stars_draw(cairo_t *cr);
+extern void stars_erase(void);
+extern void stars_init(void);
+extern void stars_ui(void);
 

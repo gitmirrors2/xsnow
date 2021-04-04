@@ -31,42 +31,22 @@
 #include "xsnow.h"
 #include "wmctrl.h"
 #include "fallensnow.h"
-#include "transparent.h"
+#include "transwindow.h"
 #include "dsimple.h"
-#include "varia.h"
 
 #include "vroot.h"
-
-static int    do_wupdate(gpointer data);
-static void   UpdateFallenSnowRegions(void);
-static Window XWinInfo(char **name);
+static int    do_wupdate(void *);
+static int    do_sendevent(void *);
+static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 
 static WinInfo      *Windows = NULL;
 static int          NWindows;
 
-char        *SnowWinName = NULL;
-int          SnowWinX; 
-int          SnowWinY; 
-Window       Rootwindow;
-unsigned int Wroot;
-unsigned int Hroot;
-int          Xroot;
-int          Yroot;
-GtkWidget   *TransA   = NULL;
-GtkWidget   *TransB   = NULL;
-Window       SnowWin  = 0;
-Window       SnowWina = 0;
-Window       SnowWinb = 0;
-
-struct _switches switches;
-
-int windows_ui()
+void windows_ui()
 {
-   int changes = 0;
-   return changes;
 }
 
-void windows_draw(UNUSED cairo_t *cr)
+void windows_draw()
 {
    // nothing to draw
 }
@@ -74,35 +54,62 @@ void windows_draw(UNUSED cairo_t *cr)
 void DestroyWindow(Window w)
 {
    return;
-   if (w && w != Rootwindow)
-      XDestroyWindow(display,w);
+   if (w && w != global.Rootwindow)
+      XDestroyWindow(global.display,w);
 }
 
 void windows_init()
 {
-   if (switches.Desktop)
-      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate, NULL);
+   if (global.Desktop)
+      add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate);
+   if (!global.IsDouble)
+      add_to_mainloop(PRIORITY_DEFAULT, 0.5, do_sendevent);
 }
 
 int WorkspaceActive()
 {
-   P("switches.UseGtk etc %d %d %d %d\n",Flags.AllWorkspaces,switches.UseGtk,CWorkSpace == TransWorkSpace,
-	 Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace);
+   P("global.Trans etc %d %d %d %d\n",Flags.AllWorkspaces,global.Trans,global.CWorkSpace == TransWorkSpace,
+	 Flags.AllWorkspaces || !global.Trans || global.CWorkSpace == TransWorkSpace);
    // ah, so difficult ...
-   return Flags.AllWorkspaces || !switches.UseGtk || CWorkSpace == TransWorkSpace;
+   return Flags.AllWorkspaces || !global.Trans || global.CWorkSpace == TransWorkSpace;
 }
 
-int do_wupdate(UNUSED gpointer data)
+int do_sendevent(void *dummy)
 {
-   P("do_wupdate %d\n",counter++);
+   P("do_sendevent %d\n",counter++);
+   XExposeEvent event;
+
+   event.type        = Expose;
+   event.send_event  = True;
+   event.display     = global.display;
+   event.window      = global.SnowWin;
+   event.x           = 0;
+   event.y           = 0;
+   event.width       = global.SnowWinWidth;
+   event.height      = global.SnowWinHeight;
+
+   XSendEvent(global.display, global.SnowWin, True, Expose, (XEvent *) &event);
+   return TRUE;
+   (void)dummy;
+}
+
+int do_wupdate(void *dummy)
+{
+   P("do_wupdate %d %d\n",counter++,global.WindowsChanged);
    if (Flags.Done)
       return FALSE;
 
    if(Flags.NoKeepSWin) return TRUE;
+
+   if (!global.WindowsChanged)
+      return TRUE;
+
+   global.WindowsChanged = 0;
+
    long r;
    r = GetCurrentWorkspace();
    if(r>=0) 
-      CWorkSpace = r;
+      global.CWorkSpace = r;
    else
    {
       I("Cannot get current workspace\n");
@@ -110,7 +117,22 @@ int do_wupdate(UNUSED gpointer data)
       return TRUE;
    }
 
+
+   P("Update windows\n");
+
    if(Windows) free(Windows);
+
+   // special hack too keep global.SnowWin below (needed for example in FVWM/xcompmgr, 
+   // where global.SnowWin is not click-through)
+   {
+      P("keep below %#lx\n",global.SnowWin);
+      if(Flags.BelowAll)
+      {
+	 XWindowChanges changes;
+	 changes.stack_mode = Below;
+	 XConfigureWindow(global.display,global.SnowWin,CWStackMode,&changes);
+      }
+   }
 
    if (GetWindows(&Windows, &NWindows)<0)
    {
@@ -120,17 +142,17 @@ int do_wupdate(UNUSED gpointer data)
    }
 
    //P("%d:\n",counter++);printwindows(display,Windows,NWindows);
-   //P("%d:\n",counter++);PrintFallenSnow(FsnowFirst);
+   //P("%d:\n",counter++);PrintFallenSnow(global.FsnowFirst);
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
    WinInfo *winfo;
-   winfo = FindWindow(Windows,NWindows,SnowWin);
+   winfo = FindWindow(Windows,NWindows,global.SnowWin);
 
    // check also on valid winfo: after toggling 'below'
    // winfo is nil sometimes
 
-   if(switches.UseGtk && winfo)
+   if(global.Trans && winfo)
    {
       // in xfce and maybe others, workspace info is not to be found
       // in our transparent window. winfo->ws will be 0, and we keep
@@ -140,27 +162,29 @@ int do_wupdate(UNUSED gpointer data)
       {
 	 TransWorkSpace = winfo->ws;
       }
-      P("TransWorkSpace %#lx %#lx %#lx %#lx\n",TransWorkSpace,winfo->ws,SnowWin,GetCurrentWorkspace());
+      P("TransWorkSpace %#lx %#lx %#lx %#lx\n",TransWorkSpace,winfo->ws,global.SnowWin,GetCurrentWorkspace());
    }
 
-   P("do_wupdate: %p %p\n",(void *)TransA,(void *)winfo);
-   if (SnowWin != Rootwindow)
-      if (!TransA && !winfo)
+   P("do_wupdate: %d %p\n",global.Trans,(void *)winfo);
+   if (global.SnowWin != global.Rootwindow)
+      //if (!TransA && !winfo)  // let op
+      if (!global.Trans && !winfo)
       {
-	 I("No transparent window & no SnowWin %#lx found\n",SnowWin); 
+	 I("No transparent window & no SnowWin %#lx found\n",global.SnowWin); 
 	 Flags.Done = 1;
       }
 
    UpdateFallenSnowRegions();
    return TRUE;
+   (void)dummy;
 }
 
 // Have a look at the windows we are snowing on
 // Also update of fallensnow area's
 void UpdateFallenSnowRegions()
 {
-   typeof(Windows) w;
-   typeof(FsnowFirst) f;
+   WinInfo *w;
+   FallenSnow *f;
    int i;
    // add fallensnow regions:
    w = Windows;
@@ -168,13 +192,16 @@ void UpdateFallenSnowRegions()
    {
       //P("%d %#lx\n",i,w->id);
       {
-	 f = FindFallen(FsnowFirst,w->id);
+	 f = FindFallen(global.FsnowFirst,w->id);
 	 P("%#lx %d\n",w->id,w->dock);
 	 if(f)
 	 {
 	    f->win = *w;   // update window properties
-	    if ((!f->win.sticky) && f->win.ws != CWorkSpace)
+	    if ((!f->win.sticky) && f->win.ws != global.CWorkSpace)
+	    {
+	       P("CleanFallenArea\n");
 	       CleanFallenArea(f,0,f->w);
+	    }
 	 }
 	 if (!f)
 	 {
@@ -183,22 +210,28 @@ void UpdateFallenSnowRegions()
 	    // and also not if this window has y <= 0
 	    // and also not if this window is a "dock"
 	    P("               %#lx %d\n",w->id,w->dock);
-	    if (w->id != SnowWina && w->id != SnowWinb && w->y > 0 && !(w->dock))
-	       PushFallenSnow(&FsnowFirst, w,
+	    // if (w->id != SnowWin_a && w->id != SnowWinb && w->y > 0 && !(w->dock)) // let op
+	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock))
+	       PushFallenSnow(&global.FsnowFirst, w,
 		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
 		     Flags.MaxWinSnowDepth); 
-	    //P("UpdateFallenSnowRegions:\n");PrintFallenSnow(FsnowFirst);
+	    //P("UpdateFallenSnowRegions:\n");PrintFallenSnow(global.FsnowFirst);
 	 }
       }
       w++;
    }
    // remove fallensnow regions
-   f = FsnowFirst; int nf = 0; while(f) { nf++; f = f->next; }
+   f = global.FsnowFirst; 
+   int nf = 0; 
+   while(f) 
+   { 
+      nf++; 
+      f = f->next; 
+   }
    // nf+1: prevent allocation of zero bytes
    long int *toremove = (long int *)malloc(sizeof(*toremove)*(nf+1));
    int ntoremove = 0;
-   f = FsnowFirst;
-   //Atom wmState  = XInternAtom(display, "_NET_WM_STATE", True);
+   f = global.FsnowFirst;
    while(f)
    {
       if (f->win.id != 0)  // f->id=0: this is the snow at the bottom
@@ -218,6 +251,7 @@ void UpdateFallenSnowRegions()
 	 {
 	    P("%#lx is hidden %d\n",f->win.id, counter++);
 	    CleanFallenArea(f,0,f->w);
+	    P("CleanFallenArea\n");
 	 }
       }
       f = f->next;
@@ -229,7 +263,7 @@ void UpdateFallenSnowRegions()
    w = Windows;
    for(i=0; i<NWindows; i++)
    {
-      f = FindFallen(FsnowFirst,w->id);
+      f = FindFallen(global.FsnowFirst,w->id);
       if (f)
       {
 	 if ((unsigned int)f->w == w->w+Flags.OffsetW) // width has not changed
@@ -237,10 +271,11 @@ void UpdateFallenSnowRegions()
 	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
 	    {
 	       CleanFallenArea(f,0,f->w);
+	       P("CleanFallenArea\n");
 	       f->x = w->x + Flags.OffsetX;
 	       f->y = w->y + Flags.OffsetY;
 	       DrawFallen(f);
-	       XFlush(display);
+	       XFlush(global.display);
 	    }
 	 }
 	 else
@@ -254,7 +289,7 @@ void UpdateFallenSnowRegions()
    for (i=0; i<ntoremove; i++)
    {
       CleanFallen(toremove[i]);
-      RemoveFallenSnow(&FsnowFirst,toremove[i]);
+      RemoveFallenSnow(&global.FsnowFirst,toremove[i]);
    }
    free(toremove);
 }
@@ -314,7 +349,8 @@ void UpdateFallenSnowRegions()
 
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
-   Rootwindow = DefaultRootWindow(display);
+
+   global.Rootwindow = DefaultRootWindow(global.display);
    P("DetermineWindow\n");
    *IsDesktop = 1;
    // User supplies window id:
@@ -339,22 +375,21 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       *gtkwin = NULL;
    }
    // maybe we are started by xscreensaver: the window is in $XSCREENSAVER_WINDOW:
-   //else if (getenv("XSCREENSAVER_WINDOW"))
    else if(Flags.ForceRoot)
    {
-      //*xwin      = Window_With_Name(display,Rootwindow,"screensaver");
+      //*xwin      = Window_With_Name(global.display,global.Rootwindow,"screensaver");
       //*xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
-      *xwin = DefaultRootWindow(display);
+      *xwin = DefaultRootWindow(global.display);
       if (getenv("XSCREENSAVER_WINDOW"))
       {
 	 *xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
-	 Rootwindow = *xwin;
+	 global.Rootwindow = *xwin;
       }
       *IsDesktop = 0;
       *gtkwin    = NULL;
       int x,y; unsigned int w,h,b,depth;
       Window root;
-      XGetGeometry(display,*xwin,&root,
+      XGetGeometry(global.display,*xwin,&root,
 	    &x, &y, &w, &h, &b, &depth);
       P("geom: %d %d %d %d\n",x,y,w,h);
       printf("Force snow on root: window: %#lx, depth: %d\n",*xwin,depth);
@@ -363,12 +398,11 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	 GdkWindow *gdkwin;
 	 GdkDisplay *gdkdisplay;
 	 gdkdisplay = gdk_display_get_default();
-	 P("display: %p gdkdisplay: %p\n",(void*)display,(void*)gdkdisplay);
+	 P("display: %p gdkdisplay: %p\n",(void*)global.display,(void*)gdkdisplay);
 	 gdkwin = gdk_x11_window_foreign_new_for_display(gdkdisplay,*xwin);
 	 *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	 //gtk_window_set_screen(GTK_WINDOW(*gtkwin),gdk_window_get_screen(gdkwin));
 	 gtk_widget_set_window(*gtkwin,gdkwin);
-	 P("ww: %p gdkwin: %p\n",(void*)ww,(void*)gdkwin);
 	 gtk_widget_show_all(*gtkwin);
 	 gdk_window_show(gdkwin);
 	 *IsDesktop = 1;
@@ -379,10 +413,11 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       // default behaviour
       // try first to create a transparent window
       P("DetermineWindow %p\n",(void *)gtkwin);
+
       int x,y;
       unsigned int w,h,b,depth;
       Window root;
-      XGetGeometry(display,Rootwindow,&root,
+      XGetGeometry(global.display,global.Rootwindow,&root,
 	    &x, &y, &w, &h, &b, &depth);
 
       if (*gtkwin)
@@ -393,10 +428,17 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
       *gtkwin = gtk_window_new        (GTK_WINDOW_TOPLEVEL); 
 
-      int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, 
-	    xwin, transname, *gtkwin, w, h);
-
-      // todo: use rc for testing on transparency later on, not TransA
+      int rc = make_trans_window(*gtkwin,
+	    1,                   // full screen 
+	    Flags.AllWorkspaces, // sticky 
+	    Flags.BelowAll,      // below
+	    1,                   // dock
+	    NULL,                // gdk_window
+	    xwin                 // x11_window
+	    );
+      gtk_window_set_title(GTK_WINDOW(*gtkwin), transname);
+      //int rc = create_transparent_window(Flags.AllWorkspaces, Flags.BelowAll, 
+      //	    xwin, transname, *gtkwin, w, h);
 
       if (!rc)
       {
@@ -409,7 +451,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
       P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
       char *desktopsession = NULL;
-      if (DesktopSession == NULL)
+      if (global.DesktopSession == NULL)
       {
 	 const char *desktops[] = {
 	    "DESKTOP_SESSION",
@@ -434,11 +476,11 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	    desktopsession = (char *)"unknown_desktop_session";
 	 }
 
-	 DesktopSession = strdup(desktopsession);
+	 global.DesktopSession = strdup(desktopsession);
 
-	 if (!strcasecmp(DesktopSession,"enlightenment"))
+	 if (!strcasecmp(global.DesktopSession,"enlightenment"))
 	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
-	 else if(!strcasecmp(DesktopSession,"twm"))
+	 else if(!strcasecmp(global.DesktopSession,"twm"))
 	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
       }
 
@@ -446,42 +488,46 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       if (*xwin == 0)
       {
 	 // convert DesktopSession to upper case
-	 char *a = DesktopSession;
-	 while (*a)
+	 if(global.DesktopSession)
 	 {
-	    *a = toupper(*a);
-	    a++;
+	    char *a = global.DesktopSession;
+	    while (*a)
+	    {
+	       *a = toupper(*a);
+	       a++;
+	    }
 	 }
-	 IsCompiz = (strstr(DesktopSession,"COMPIZ") != NULL);
+	 global.IsCompiz = (strstr(global.DesktopSession,"COMPIZ") != NULL);
+	 P("IsCompiz %s %d\n",global.DesktopSession,global.IsCompiz);
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 if (DesktopSession != NULL && 
-	       !strncmp(DesktopSession,"LXDE",4) && 
-	       FindWindowWithName("pcmanfm",xwin,xwinname))
+	 if (global.DesktopSession != NULL && 
+	       !strncmp(global.DesktopSession,"LXDE",4) && 
+	       (*xwin = FindWindowWithName(global.display,"pcmanfm")))
 	 {
 	    printf("LXDE session found, using window 'pcmanfm'.\n");
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
-	 else if (FindWindowWithName("Desktop",xwin,xwinname))
+	 else if ((*xwin = FindWindowWithName(global.display,"Desktop")))
 	 {
 	    printf("Using window 'Desktop'.\n");
 	 }
 	 else
 	 {
 	    printf("Using root window\n");
-	    *xwin = Rootwindow;
+	    *xwin = global.Rootwindow;
 	 }
 	 printf("You may have to tweak 'Advanced snow settings' in the 'settings' panel.\n");
       }
    }
    if(*IsDesktop)                                  
    {
-      CWorkSpace = GetCurrentWorkspace();
-      P("CWorkSpace: %d\n",CWorkSpace);
-      if (CWorkSpace < 0)
+      global.CWorkSpace = GetCurrentWorkspace();
+      P("CWorkSpace: %d\n",global.CWorkSpace);
+      if (global.CWorkSpace < 0)
 	 return FALSE;
    }
    XTextProperty x;
-   int rc = XGetWMName(display,*xwin,&x);
+   int rc = XGetWMName(global.display,*xwin,&x);
    if (rc)
       *xwinname = strdup((const char *)x.value);
    else
@@ -493,14 +539,17 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 
 Window XWinInfo(char **name)
 {
-   Window win = Select_Window(display,1);
-   XTextProperty text_prop;
-   int rc = XGetWMName(display,win,&text_prop);
-   if (!rc)
-      (*name) = strdup("No Name");
-   else
-      (*name) = strndup((char *)text_prop.value,text_prop.nitems);
-   XFree(text_prop.value);  // cannot find this in the docs, but otherwise memory leak
+   Window win = Select_Window(global.display,1);
+   if(name)
+   {
+      XTextProperty text_prop;
+      int rc = XGetWMName(global.display,win,&text_prop);
+      if (!rc)
+	 (*name) = strdup("No Name");
+      else
+	 (*name) = strndup((char *)text_prop.value,text_prop.nitems);
+      XFree(text_prop.value);
+   }
    return win;
 }
 
@@ -509,13 +558,13 @@ void InitDisplayDimensions()
    unsigned int wroot,hroot,broot,droot;
    int xroot,yroot;
    Window root;
-   XGetGeometry(display,Rootwindow,&root,
+   XGetGeometry(global.display,global.Rootwindow,&root,
 	 &xroot, &yroot, &wroot, &hroot, &broot, &droot);
-   Xroot = xroot;
-   Yroot = yroot;
-   Wroot = wroot;
-   Hroot = hroot;
-   P("InitDisplayDimensions: %p %d %d %d %d %d %d\n",(void*)Rootwindow,xroot,yroot,wroot,hroot,broot,droot);
+   global.Xroot = xroot;
+   global.Yroot = yroot;
+   global.Wroot = wroot;
+   global.Hroot = hroot;
+   P("InitDisplayDimensions: %p %d %d %d %d %d %d\n",(void*)global.Rootwindow,xroot,yroot,wroot,hroot,broot,droot);
    DisplayDimensions();
 }
 
@@ -525,39 +574,39 @@ void DisplayDimensions()
    int x,y,xr,yr;
    Window root,child_return;
 
-   XGetGeometry(display,SnowWin,&root, &x, &y, &w, &h, &b, &d);
-   XTranslateCoordinates(display, SnowWin, Rootwindow, 0, 0, &xr, &yr, &child_return);
-   P("DisplayDimensions: %#lx %d %d %d %d %d %d %d %d\n",SnowWin,x,y,xr,yr,w,h,b,d);
-   SnowWinX           = xr;// - x;
-   SnowWinY           = yr;// - y;
-   SnowWinWidth       = Wroot - SnowWinX;
-   SnowWinHeight      = Hroot - SnowWinY + Flags.OffsetS;
-   P("DisplayDimensions: SnowWinX:%d Y:%d W:%d H:%d\n",SnowWinX,SnowWinY,SnowWinWidth,SnowWinHeight);
-   if(switches.UseGtk || switches.Trans)
+   int rc = XGetGeometry(global.display,global.SnowWin,&root, &x, &y, &w, &h, &b, &d);
+   if (rc == 0)
    {
-      //SnowWinHeight      = hroot + Flags.OffsetS;
+      P("Oeps\n");
+      I("\nSnow window %#lx has disappeared, it seems. I quit.\n",global.SnowWin);
+      Thanks();
+      exit(1);
+      return;
+   }
+
+   XTranslateCoordinates(global.display, global.SnowWin, global.Rootwindow, 0, 0, &xr, &yr, &child_return);
+   P("DisplayDimensions: %#lx %#lx x:%d y:%d xr:%d yr:%d w:%d h:%d b:%d d:%d tr:%d\n",global.SnowWin,global.Rootwindow,x,y,xr,yr,w,h,b,d,global.Trans);
+   global.SnowWinX           = xr;// - x;
+   global.SnowWinY           = yr;// - y;
+   if(global.Trans)
+   {
+      global.SnowWinWidth       = global.Wroot - global.SnowWinX;
+      global.SnowWinHeight      = global.Hroot - global.SnowWinY + Flags.OffsetS;
    }
    else
-      SnowWinHeight      = h + Flags.OffsetS;
+   {
+      global.SnowWinHeight      = h + Flags.OffsetS;
+      global.SnowWinWidth       = w;
+   }
+   P("DisplayDimensions: SnowWinX: %d Y:%d W:%d H:%d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
 
-   SnowWinBorderWidth = b;
-   SnowWinDepth       = d;
+   global.SnowWinBorderWidth = b;
+   global.SnowWinDepth       = d;
+
+   UpdateFallenSnowAtBottom();
 
    SetMaxScreenSnowDepth();
-}
-
-// Force window below or above other windows.
-// It appears that, to get a window below other windows, it often is necessary
-// to do first the opposite, and vice-versa.
-void setbelow(GtkWindow *w)
-{
-   gtk_window_set_keep_above(GTK_WINDOW(w), TRUE);
-   gtk_window_set_keep_below(GTK_WINDOW(w), TRUE);
-}
-
-void setabove(GtkWindow *w)
-{
-   gtk_window_set_keep_below(GTK_WINDOW(w), TRUE);
-   gtk_window_set_keep_above(GTK_WINDOW(w), TRUE);
+   if(!global.IsDouble)
+      ClearScreen();
 }
 

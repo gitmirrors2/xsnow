@@ -30,44 +30,35 @@
 #include "windows.h"
 #include "clocks.h"
 #include "xsnow.h"
-#include "varia.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-int    Wind = 0;
-int    Direction = 0;
-double WindTimer;
-double WindTimerStart;
-float  Whirl;
-float  WindMax = 100.0;
 
 static void   SetWhirl(void);
 static void   SetWindTimer(void);
-static int    do_wind(gpointer data);
-static int    do_newwind(gpointer data);
+static int    do_wind(void *);
+static int    do_newwind(void *);
 
 void wind_init()
 {
    SetWhirl();
    SetWindTimer();
-   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind            ,NULL);
-   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind               ,NULL);
+   add_to_mainloop(PRIORITY_DEFAULT, time_newwind,        do_newwind );
+   add_to_mainloop(PRIORITY_DEFAULT, time_wind,           do_wind    );
 }
 
-int wind_ui()
+void wind_ui()
 {
-   int changes = 0;
-   UIDO(NoWind, Wind = 0; NewWind = 0;);
+   UIDO(NoWind, global.Wind = 0; global.NewWind = 0;);
    UIDO(WhirlFactor, SetWhirl(););
    UIDO(WindTimer, SetWindTimer(););
    if(Flags.WindNow)
    {
       Flags.WindNow = 0;
-      Wind = 2;
-      P("Gust: %d\n",changes);
+      global.Wind = 2;
+      P("Gust: %d\n",Flags.Changes);
    }
-   return changes;
 }
 
 void draw_wind()
@@ -75,7 +66,7 @@ void draw_wind()
    // Nothing to draw
 }
 
-int do_newwind(UNUSED gpointer data)
+int do_newwind(void *d)
 {
    P("newwind\n");
    if (Flags.Done)
@@ -95,26 +86,27 @@ int do_newwind(UNUSED gpointer data)
    }
 
    float r;
-   switch (Wind)
+   switch (global.Wind)
    {
       case(0): 
       default:
-	 r = drand48()*Whirl;
-	 NewWind += r - Whirl/2;
-	 if(NewWind > WindMax) NewWind = WindMax;
-	 if(NewWind < -WindMax) NewWind = -WindMax;
+	 r = drand48()*global.Whirl;
+	 global.NewWind += r - global.Whirl/2;
+	 if(global.NewWind > global.WindMax) global.NewWind = global.WindMax;
+	 if(global.NewWind < -global.WindMax) global.NewWind = -global.WindMax;
 	 break;
       case(1): 
-	 NewWind = Direction*0.6*Whirl;
+	 global.NewWind = global.Direction*0.6*global.Whirl;
 	 break;
       case(2):
-	 NewWind = Direction*1.2*Whirl;
+	 global.NewWind = global.Direction*1.2*global.Whirl;
 	 break;
    }
    return TRUE;
+   (void)d;
 }
 
-int do_wind(UNUSED gpointer data)
+int do_wind(void *d)
 {
    P("wind\n");
    if (Flags.Done)
@@ -135,48 +127,51 @@ int do_wind(UNUSED gpointer data)
    // on the average, this function will do something
    // after WindTimer secs
 
-   if ((TNow - prevtime) < 2*WindTimer*drand48()) return TRUE;
+   if ((TNow - prevtime) < 2*global.WindTimer*drand48()) return TRUE;
 
    prevtime = TNow;
 
    if(drand48() > 0.65)  // Now for some of Rick's magic:
    {
       if(drand48() > 0.4)
-	 Direction = 1;
+	 global.Direction = 1;
       else
-	 Direction = -1;
-      Wind = 2;
-      WindTimer = 5;
+	 global.Direction = -1;
+      global.Wind = 2;
+      global.WindTimer = 5;
       //               next time, this function will be active 
       //               after on average 5 secs
    }
    else
    {
-      if(Wind == 2)
+      if(global.Wind == 2)
       {
-	 Wind = 1;
-	 WindTimer = 3;
+	 global.Wind = 1;
+	 global.WindTimer = 3;
 	 //                   next time, this function will be active 
 	 //                   after on average 3 secs
       }
       else
       {
-	 Wind = 0;
-	 WindTimer = WindTimerStart;
+	 global.Wind = 0;
+	 global.WindTimer = global.WindTimerStart;
 	 //                   next time, this function will be active 
 	 //                   after on average WindTimerStart secs
       }
    }
    return TRUE;
+   (void)d;
 }
+
 void SetWhirl()
 {
-   Whirl = 0.01*Flags.WhirlFactor*WHIRL;
+   global.Whirl = 0.01*Flags.WhirlFactor*WHIRL;
 }
+
 void SetWindTimer()
 {
-   WindTimerStart           = Flags.WindTimer;
-   if (WindTimerStart < 3) 
-      WindTimerStart = 3;
-   WindTimer                = WindTimerStart;
+   global.WindTimerStart    = Flags.WindTimer;
+   if (global.WindTimerStart < 3) 
+      global.WindTimerStart = 3;
+   global.WindTimer         = global.WindTimerStart;
 }

@@ -57,7 +57,7 @@ while [ "$1" ] ; do
    # Notice that sed requires a newline after the filename of the 'r' command
    sed -i "/^\s*#-#/d" "$f"
    sed -i "/$txt/{r $crfile
-   :a;n;ba}" "$f"
+:a;n;ba;}" "$f"
    n=`expr $n + 1`
 done
 echo "$n files copyrighted"

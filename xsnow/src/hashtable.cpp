@@ -43,16 +43,7 @@ extern "C"
    }
    void *table_get(unsigned int key)
    {
-      void *v;
-      try
-      {
-	 v = table[key];
-      }
-      catch(...)
-      {
-	 v = 0;
-      }
-      return v;
+      return(table[key]);
    }
    void table_clear(void(*destroy)(void *p))
    {

@@ -25,8 +25,8 @@
 #define GTK_MINOR 20
 #define GTK_MICRO 0
 
-extern void  ui (int *argc, char **argv[]);
-extern void  ui_error_x11(int *argc, char **argv[]);
+extern void  ui (void);
+extern void  ui_error_x11(void);
 extern void  ui_show_nflakes(int n);
 extern void  ui_set_birds_header(const char *text);
 extern void  ui_set_celestials_header(const char *text);
@@ -34,6 +34,7 @@ extern void  ui_show_range_etc(void);
 extern void  ui_show_desktop_type(const char *s);
 extern void  ui_set_sticky(int x);
 extern void  ui_background(int m);
+extern void  ui_ui(void);
 
 extern void  ui_gray_ww(const int m);
 extern void  ui_gray_erase(const int m);

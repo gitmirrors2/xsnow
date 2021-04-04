@@ -33,6 +33,12 @@
 #include "windows.h"
 
 #include "debug.h"
+
+FLAGS Flags;
+FLAGS OldFlags;
+FLAGS DefaultFlags;
+FLAGS VintageFlags;
+
 static void ReadFlags(void);
 static void SetDefaultFlags(void);
 
@@ -53,8 +59,8 @@ static int   FlagsFileAvailable = 1;
 
 void SetDefaultFlags()
 {
-#define DOIT_I(x,d,v) Flags.x = Flags.default_## x ;
-#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.default_## x);
+#define DOIT_I(x,d,v) Flags.x = DefaultFlags.x ;
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(DefaultFlags.x);
 #define DOIT_L(x,d,v) DOIT_I(x,d,v)
    DOITALL;
 #include "undefall.inc"
@@ -69,9 +75,9 @@ void SetDefaultFlags()
 void InitFlags()
 {
    // to make sure that strings in Flags are malloc'd
-#define DOIT_I(x,d,v)  Flags.x = 0; Flags.default_##x=d; Flags.vintage_##x=v;
+#define DOIT_I(x,d,v)  Flags.x = 0; DefaultFlags.x=d; VintageFlags.x=v;
 #define DOIT_L DOIT_I
-#define DOIT_S(x,d,v)  Flags.x = strdup(""); Flags.default_##x=strdup(d); Flags.vintage_##x=strdup(v);
+#define DOIT_S(x,d,v)  Flags.x = strdup(""); DefaultFlags.x=strdup(d); VintageFlags.x=strdup(v);
    DOITALL;
 #include "undefall.inc"
 }
@@ -126,22 +132,6 @@ int HandleFlags(int argc, char*argv[])
 	    PrintVersion();
 	    return 1;
 	 }
-	 else if (!strcmp(arg, "-wantwindow"))
-	 {
-	    P("setting wantwindow\n");
-	    checkax;
-	    char *v = argv[++ax];
-	    if (!strcmp(v,"default"))
-	       Flags.WantWindow = UW_DEFAULT;
-	    else if (!strcmp(v,"transparent"))
-	       Flags.WantWindow = UW_TRANSPARENT;
-	    else
-	    {
-	       printf("** Invalid value for -wantwindow: %s\n",v);
-	       printf("** Expected on of: default, transparent\n");
-	       return -1;
-	    }
-	 }
 	 else if (strcmp(arg, "-nokeepsnow") == 0) 
 	 {
 	    Flags.NoKeepSnow = 1;
@@ -157,9 +147,9 @@ int HandleFlags(int argc, char*argv[])
 	    Flags.NoKeepSnowOnTrees = 0;
 	 }
 	 else if (strcmp(arg, "-vintage") == 0) {
-#define DOIT_I(x,d,v) Flags.x = Flags.vintage_##x;
+#define DOIT_I(x,d,v) Flags.x = VintageFlags.x;
 #define DOIT_L DOIT_I
-#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(Flags.vintage_##x);
+#define DOIT_S(x,d,v) free(Flags.x); Flags.x = strdup(VintageFlags.x);
 	    DOITALL
 #include "undefall.inc"
 	 }
@@ -170,6 +160,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
 	 handle_ia(-checkgtk            ,CheckGtk                         );
 	 handle_ia(-cpuload             ,CpuLoad                          );
+	 handle_ia(-doublebuffer        ,UseDouble                        );
 	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-window-id           ,WindowId                         );
@@ -185,21 +176,21 @@ int HandleFlags(int argc, char*argv[])
 	 handle_im(-offsety             ,OffsetY                          );
 	 handle_ia(-santa               ,SantaSize                        );
 	 handle_ia(-santaspeedfactor    ,SantaSpeedFactor                 );
+	 handle_ia(-scale               ,Scale                            );
 	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
 	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
 	 handle_ia(-snowsize            ,SnowSize                         );
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
 	 handle_ia(-stopafter           ,StopAfter                        );
+	 handle_ia(-theme               ,ThemeXsnow                       );
 	 handle_ia(-treefill            ,TreeFill                         );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
-	 handle_ia(-usebg               ,UseBG                            );
 	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
 	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
 
 
-	 handle_is(-bg                  ,BGColor                          );
 	 handle_is(-display             ,DisplayName                      );
 	 handle_is(-sc                  ,SnowColor                        );
 	 handle_is(-tc                  ,TreeColor                        );
@@ -207,12 +198,9 @@ int HandleFlags(int argc, char*argv[])
 
 	 handle_iv(-above               ,BelowAll                 ,0      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
-	 handle_iv(-exposures           ,Exposures                ,True   );
-	 handle_iv(-fullscreen          ,FullScreen               ,0      );
 	 handle_iv(-noblowsnow          ,BlowSnow                 ,0      );
 	 handle_iv(-blowsnow            ,BlowSnow                 ,1      );
 	 handle_iv(-noconfig            ,NoConfig                 ,1      );
-	 handle_iv(-noexposures         ,Exposures                ,False  );
 	 handle_iv(-fluffy              ,NoFluffy                 ,0      );
 	 handle_iv(-hidemenu            ,HideMenu                 ,1      );
 	 handle_iv(-nofluffy            ,NoFluffy                 ,1      );
@@ -275,9 +263,9 @@ int HandleFlags(int argc, char*argv[])
    if (!strcmp(Flags.TreeType,"all"))
    {
       free(Flags.TreeType);
-      Flags.TreeType = (char*) malloc(1+2+sizeof(Flags.default_TreeType));
+      Flags.TreeType = (char*) malloc(1+2+sizeof(DefaultFlags.TreeType));
       Flags.TreeType = strdup("0,");
-      strcat(Flags.TreeType,Flags.default_TreeType);
+      strcat(Flags.TreeType,DefaultFlags.TreeType);
    }
    if (Flags.SnowSize > 40)
    {

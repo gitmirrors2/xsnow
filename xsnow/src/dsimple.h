@@ -59,36 +59,6 @@ from The Open Group.
  */
 #pragma once
 
-    /* Simple helper macros */
-#ifndef MAX
-#define MAX(a,b) (((a)>(b))?(a):(b))
-#endif /* MAX */
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif /* MIN */
-
-    /* Global variables used by routines in just_display.c */
-
-extern const char *program_name;             /* Name of this program */
-extern Display *dpy;                         /* The current display */
-extern int screen;                           /* The current screen */
-
-#define INIT_NAME program_name=argv[0]        /* use this in main to setup
-                                                 program_name */
-
-    /* Declarations for functions in just_display.c */
-
-char *Get_Display_Name(int *, char **);
-Display *Open_Display(const char *);
-void Setup_Display_And_Screen(int *, char **);
-void Close_Display(void);
-XFontStruct *Open_Font(const char *);
-Window Select_Window_Args(int *, char **);
-// removed:
-// void usage(void) _X_NORETURN;
-
-#define X_USAGE "[host:display]"              /* X arguments handled by
-						 Get_Display_Name */
 
 /*
  * Other_stuff.h: Definitions of routines in other_stuff.
@@ -98,7 +68,6 @@ Window Select_Window_Args(int *, char **);
  * Send bugs, etc. to chariot@athena.mit.edu.
  */
 
-Window Select_Window(Display *, int descend);
-Window Window_With_Name(Display *, Window, const char *);
+extern Window Select_Window(Display *, int descend);
+extern Window Window_With_Name(Display *, Window, const char *);
 
-void Fatal_Error(const char *, ...) _X_NORETURN _X_ATTRIBUTE_PRINTF(1,2);

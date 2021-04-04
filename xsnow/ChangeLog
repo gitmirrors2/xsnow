@@ -1,3 +1,46 @@
+version 3.3.0
+	1:replace transparent.{c,h} with maketrans.{c,h}
+	  add overall scale factor
+	  all drawings using cairo
+	  use xdbe (double buffer) when not using cairo
+	  moon and birds also when painting on root window
+
+version 3.2.3
+	1:minor adaption in simplemake.sh
+	 :make use of VERSION in config.h
+	  adapt simplemake.sh 
+	6:ixpm.c: correct stupid bug in xpm_set_color()
+	7:remove UNUSED
+	9:extended range of XSelectInput somewhat
+	  change timing of do_wupdate to look more frequently if 
+	  something has changed
+
+version 3.2.2
+	1:change 'changes' into Flags.Changes
+	2:change gdkwindow -> NULL, several files
+	  ui.c: better behaviour of 'below windows' - 'confirm to click'
+	    combo
+	3:flags.c flags.h: separate FLAGS for default and vintage
+	  docs.c: some minor additions
+	4:buttons.h: change togglecode into scalecode
+	  flags.h uitils.h: transport some macro's
+	  ui.c: add documention about flags and buttons
+	  main.c: optionally move windows to 0,0 (movewindow())
+	    Flags.MoveWindow --movewindow
+	5:some tweaks MoveWindow
+	6:more tweaks for MoveWindow
+	  Use also XConfigureWindow to set below or above. Now behaviour is
+	  OK when running in FVWM + xcompmgr or compton
+	  transparent.c: fixed 'show desktop' issue by re-adding:
+	     gdk_window_set_type_hint(gdk_window,GDK_WINDOW_TYPE_HINT_DOCK);
+	  wmctrl.c: add check for _NET_SHOWING_DESKTOP for visibility of
+	     windows
+	  windows.c: keep SnowWin below if Flags.BelowAll. Needed when SnowWin
+	    is not click-through.
+	7:add -theme flag. No button: too complicated for me.
+	9:make theme chooseable with a button
+	11:ui.c: minor tweaks
+
 version 3.2.1
 	1:utils.h: add fflush(NULL) to UIDO and UIDOS
 	  moon.c: create halo surface for painting.

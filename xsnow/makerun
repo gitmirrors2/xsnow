@@ -2,17 +2,50 @@
 ulimit -c unlimited
 rm -f core
 clear
+#bits="-DNO_USE_BITS"
+if false ; then
+   M32=-m32
+   export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+fi
 if true; then
    export CC=gcc-10 CXX=g++-10
-   export CFLAGS='-Wextra -Wint-conversion -Wpedantic -Wall -O2 -g -DNO_USE_BITS'
+   export CFLAGS="$M32 -Wextra   -Wint-conversion -Wpedantic -Wall -O0 -g -Werror $bits"
+   export CXXFLAGS="$M32 -Wextra                  -Wpedantic -Wall -O0 -g -Werror $bits"
+   export LDFLAGS="$M32"
 else
    export CC=g++-10 CXX=g++-10
-   export CFLAGS='-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O2 -g -DNO_USE_BITS' 
+   export CFLAGS="-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O0 -g $bits" 
+   export CXXFLAGS="-Wextra -Wzero-as-null-pointer-constant -Wpedantic -Wall -O0 -g $bits" 
 fi
+
+if [ x$1 = xc ] ; then
+   rm -f Makefile
+   shift
+   if [ x$1 != x ] ; then
+      if [ "$1" -eq "$1" ] ; then
+	 export CC=gcc-$1
+	 export CXX=g++-$1
+	 shift
+      fi
+      if [ x$1 = xintel ] ; then
+	 export CC=icx
+	 export CXX=icpx
+	 shift
+      fi
+      if [ x$1 = xclang ] ; then
+	 export CC=clang
+	 export CXX=clang++
+	 shift
+      fi
+   fi
+fi
+#export CC="$CXX"
+#export CFLAGS="$CXXFLAGS"
+
 if [ ! -e Makefile ] ; then
    ./configure && make clean
 fi
-make   -j && src/xsnow -noisy  --g-fatal-warnings
+make   -j && src/xsnow -noisy  --g-fatal-warnings "$@"
 #make -j  && GDK_SYNCHRONIZE=1 GTK_DEBUG=interactive src/xsnow #--g-fatal-warnings
 #make -j  && GTK_DEBUG=interactive src/xsnow --g-fatal-warnings
 

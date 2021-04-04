@@ -19,6 +19,7 @@
 #-# 
 */
 #pragma once
+
 // calls macro's for elements of FLAGS
 // DOIT_I is for x that should be output as 1234
 // DOIT_S is for x that is a char*
@@ -26,10 +27,11 @@
 // parameters are: name, default value, vintage value
 
 // these flags are not written to the config file and
-// are no part of the ui (except BelowAll and WantWindow)
+// are no part of the ui (except BelowAll)
 #define DOITALL \
    DOIT_I(BelowAll            ,1  ,1 ) \
    DOIT_I(BelowConfirm        ,0  ,0 ) /*not a button or parameter */ \
+   DOIT_I(Changes             ,0  ,0 ) /* not a parameter or button */ \
    DOIT_I(CheckGtk            ,1  ,1 ) \
    DOIT_I(Defaults            ,0  ,0 ) \
    DOIT_I(Desktop             ,0  ,0 ) \
@@ -41,7 +43,7 @@
    DOIT_I(NoMenu              ,0  ,0 ) \
    DOIT_I(Noisy               ,0  ,0 ) \
    DOIT_I(StopAfter           ,-1 ,-1) \
-   DOIT_I(WantWindow          ,0  ,0 ) \
+   DOIT_I(UseDouble           ,1  ,1 ) \
    DOIT_I(WindNow             ,0  ,0 ) \
    DOIT_I(XWinInfoHandling    ,0  ,0 ) \
    DOIT_L(WindowId            ,0  ,0 ) \
@@ -56,8 +58,8 @@
    DOIT_I(BlowSnow             ,1          ,0          ) \
    DOIT_I(CpuLoad              ,100        ,100        ) \
    DOIT_I(Transparency         ,0          ,0          ) \
+   DOIT_I(Scale                ,100        ,100        ) \
    DOIT_I(DesiredNumberOfTrees ,10         ,6          ) \
-   DOIT_I(Exposures            ,-SOMENUMBER,-SOMENUMBER) \
    DOIT_I(FlakeCountMax        ,300        ,300        ) \
    DOIT_I(Halo                 ,1          ,1          ) \
    DOIT_I(HaloBright           ,25         ,25         ) \
@@ -82,6 +84,7 @@
    DOIT_I(OffsetW              ,-8         ,-8         ) \
    DOIT_I(OffsetX              ,4          ,4          ) \
    DOIT_I(OffsetY              ,0          ,0          ) \
+   DOIT_I(Overlap              ,1          ,0          ) \
    DOIT_I(Rudolf               ,1          ,1          ) \
    DOIT_I(SantaSize            ,3          ,2          ) \
    DOIT_I(SantaSpeedFactor     ,100        ,100        ) \
@@ -89,13 +92,12 @@
    DOIT_I(SnowSize             ,8          ,8          ) \
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
    DOIT_I(Stars                ,1          ,0          ) \
+   DOIT_I(ThemeXsnow           ,1          ,1          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
-   DOIT_I(UseBG                ,0          ,0          ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \
    \
-   DOIT_S(BGColor              ,"#000000"        ,"#000000"   ) \
    DOIT_S(SnowColor            ,"snow"           ,"snow"      ) \
    DOIT_S(TreeColor            ,"chartreuse"     ,"chartreuse") \
    DOIT_S(TreeType             ,"1,2,3,4,5,6,7," ,"0,"        ) \
@@ -111,7 +113,7 @@
    DOIT_I(FollowSanta          ,1   ,1  ) \
    DOIT_I(Nbirds               ,70  ,70 ) \
    DOIT_I(Neighbours           ,7   ,7  ) \
-   DOIT_I(PrefDistance         ,20  ,20 ) \
+   DOIT_I(PrefDistance         ,40  ,40 ) \
    DOIT_I(ShowAttrPoint        ,0   ,0  ) \
    DOIT_I(ShowBirds            ,1   ,0  ) \
    DOIT_I(ViewingDistance      ,40  ,40 ) \

@@ -20,20 +20,5 @@
  */
 #pragma once
 
-extern int    Wind;
-// Wind = 0: no wind
-// Wind = 1: wind only affecting snow
-// Wind = 2: wind affecting snow and santa
-// Direction =  0: no wind direction I guess
-// Direction =  1: wind from left to right
-// Direction = -1: wind from right to left
-extern int    Direction;
-extern float  Whirl;
-extern double WindTimer;
-extern double WindTimerStart;
-extern float  NewWind;
-extern float  WindMax;
-
-
 extern void wind_init(void);
-extern int wind_ui(void);
+extern void wind_ui(void);

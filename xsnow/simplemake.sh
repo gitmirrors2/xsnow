@@ -40,7 +40,7 @@ CXX=g++
 
 # compile and link flags
 
-FLAGS="-O2 -DUSE_LIST_NODE_ALLOCATOR"
+FLAGS="-O2"
 # if you have pkg-config working for gtk3:
 FLAGS="$FLAGS `pkg-config --cflags --libs gtk+-3.0`"
 # NOTE: on my system, pkg-config expands to:
@@ -75,6 +75,13 @@ FLAGS="$FLAGS -DHAVE_UNORDERED_MAP"
 
 # comment out if your C++ compiler does not support unordered_set:
 FLAGS="$FLAGS -DHAVE_UNORDERED_SET"
+
+version=`./getversion`
+if [ "x$version" = x ]; then
+   version="Unknown"
+fi
+
+FLAGS="$FLAGS -DVERSION=\"$version\""
 
 cd src || exit 1
 echo "removing .o files :"

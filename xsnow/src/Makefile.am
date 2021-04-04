@@ -32,17 +32,18 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh test3.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
-		transparent.c transparent.h debug.h \
+		debug.h \
 		mainstub.cpp mainstub.h \
-		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
+		birds.c kdtree.c birds.h kdtree.h birdglobals.h doitb.h \
 		hashtable.cpp hashtable.h \
 		Santa.c Santa.h utils.c utils.h \
 		scenery.c scenery.h snow.c snow.h \
 		meteo.c meteo.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
-		varia.h snow_includes.h vroot.h \
-		moon.c moon.h buttons.h undefall.inc
+		snow_includes.h vroot.h \
+		moon.c moon.h buttons.h undefall.inc \
+		transwindow.c transwindow.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 

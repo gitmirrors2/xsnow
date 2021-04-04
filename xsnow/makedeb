@@ -13,7 +13,7 @@ debdir=$PWD/../debian/xsnow-$version-deb
 #      sed -i "1s/(.*)/($version-1)/" $d/changelog   || exit 1
 #   fi
 #done
-./maketar || exit 1
+#./maketar || exit 1
 rm -rf $debdir
 mkdir -p $debdir || exit 1
 cd $debdir || exit 1

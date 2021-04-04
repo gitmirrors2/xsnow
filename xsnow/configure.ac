@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.2.1], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.3.0], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -30,14 +30,16 @@ AM_INIT_AUTOMAKE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
-AC_PROG_CC
-AC_PROG_CXX
+AC_PROG_CC([cc gcc])
+AC_PROG_CXX([c++ g++])
 AC_PROG_INSTALL
 
+LIBS="-lm"
 # Checks for header files.
 AC_PATH_X
 AC_CHECK_HEADERS([assert.h ctype.h math.h pthread.h signal.h],[],AC_MSG_ERROR([Exiting]))
 AC_CHECK_HEADERS([stdarg.h stdio.h stdlib.h string.h unistd.h],[],AC_MSG_ERROR([Exiting]))
+AC_CHECK_HEADERS([execinfo.h])
 
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([iostream],[],AC_MSG_ERROR([Check your C++ compiler. Exiting]))
@@ -47,7 +49,12 @@ AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(XML, [libxml-2.0])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
-PKG_CHECK_MODULES(X11, [x11 xpm xt xproto])
+PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto])
+
+AC_CHECK_FUNCS([backtrace])
+LIBS="$X11_LIBS"
+# check for availability of double buffering
+AC_CHECK_FUNCS([XdbeAllocateBackBufferName])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -61,6 +68,8 @@ AC_CHECK_HEADER_STDBOOL
 #AC_FUNC_REALLOC
 #AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
+
+LIBS="-lm"
 
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile)
 

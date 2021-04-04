@@ -53,6 +53,7 @@
  * - free children list (suggested by Mark Martin <mmm@cetia.fr>), 5/16/91
  * - include X11/Xlib.h and support RootWindowOfScreen, too 9/17/91
  */
+#pragma once
 
 #ifndef _VROOT_H_
 #define _VROOT_H_
@@ -64,8 +65,7 @@
 #include <X11/Xlib.h>
 
 #ifdef USE_VROOT
-   static Window
-VirtualRootWindowOfScreen(Screen *screen)
+static Window VirtualRootWindowOfScreen(Screen *screen)
 {
    static Screen *save_screen = (Screen *)0;
    static Window root = (Window)0;

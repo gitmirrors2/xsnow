@@ -19,13 +19,9 @@
 #-# 
 */
 #pragma once
-#define XPM_TYPE const char
 
 #include "xsnow.h"
-#include "snow.h"
-#include "stars.h"
 
-//extern SnowMap       snowPix[];
 extern StarMap       starPix;
 extern XPM_TYPE    ***Santas[][2];
 extern XPM_TYPE    **xpmtrees[];
@@ -34,4 +30,3 @@ extern XPM_TYPE    **birds_xpm[];
 extern XPM_TYPE    **snow_xpm[];
 extern XPM_TYPE    **moons_xpm[];
 
-extern int NMOONPIXBUFS;

@@ -107,15 +107,15 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-pixmaps.$(OBJEXT) xsnow-windows.$(OBJEXT) \
 	xsnow-flags.$(OBJEXT) xsnow-csvpos.$(OBJEXT) \
 	xsnow-dsimple.$(OBJEXT) xsnow-clientwin.$(OBJEXT) \
-	xsnow-ui.$(OBJEXT) xsnow-transparent.$(OBJEXT) \
-	xsnow-mainstub.$(OBJEXT) xsnow-birds.$(OBJEXT) \
-	xsnow-kdtree.$(OBJEXT) xsnow-hashtable.$(OBJEXT) \
-	xsnow-Santa.$(OBJEXT) xsnow-utils.$(OBJEXT) \
-	xsnow-scenery.$(OBJEXT) xsnow-snow.$(OBJEXT) \
-	xsnow-meteo.$(OBJEXT) xsnow-wind.$(OBJEXT) \
-	xsnow-stars.$(OBJEXT) xsnow-blowoff.$(OBJEXT) \
-	xsnow-treesnow.$(OBJEXT) xsnow-loadmeasure.$(OBJEXT) \
-	xsnow-moon.$(OBJEXT)
+	xsnow-ui.$(OBJEXT) xsnow-mainstub.$(OBJEXT) \
+	xsnow-birds.$(OBJEXT) xsnow-kdtree.$(OBJEXT) \
+	xsnow-hashtable.$(OBJEXT) xsnow-Santa.$(OBJEXT) \
+	xsnow-utils.$(OBJEXT) xsnow-scenery.$(OBJEXT) \
+	xsnow-snow.$(OBJEXT) xsnow-meteo.$(OBJEXT) \
+	xsnow-wind.$(OBJEXT) xsnow-stars.$(OBJEXT) \
+	xsnow-blowoff.$(OBJEXT) xsnow-treesnow.$(OBJEXT) \
+	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
+	xsnow-transwindow.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -147,7 +147,7 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteo.Po \
 	./$(DEPDIR)/xsnow-moon.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
 	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-snow.Po \
-	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transparent.Po \
+	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transwindow.Po \
 	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
 	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
 	./$(DEPDIR)/xsnow-windows.Po ./$(DEPDIR)/xsnow-wmctrl.Po
@@ -593,17 +593,18 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh test2.sh test3.sh  xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
-		transparent.c transparent.h debug.h \
+		debug.h \
 		mainstub.cpp mainstub.h \
-		birds.c kdtree.c birds.h kdtree.h globals.h doitb.h \
+		birds.c kdtree.c birds.h kdtree.h birdglobals.h doitb.h \
 		hashtable.cpp hashtable.h \
 		Santa.c Santa.h utils.c utils.h \
 		scenery.c scenery.h snow.c snow.h \
 		meteo.c meteo.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
-		varia.h snow_includes.h vroot.h \
-		moon.c moon.h buttons.h undefall.inc
+		snow_includes.h vroot.h \
+		moon.c moon.h buttons.h undefall.inc \
+		transwindow.c transwindow.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 BUILT_SOURCES = ui_xml.h snow_includes.h
@@ -726,7 +727,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scenery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-stars.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transparent.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transwindow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-treesnow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-ui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-utils.Po@am__quote@ # am--include-marker
@@ -936,20 +937,6 @@ xsnow-ui.obj: ui.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-ui.obj `if test -f 'ui.c'; then $(CYGPATH_W) 'ui.c'; else $(CYGPATH_W) '$(srcdir)/ui.c'; fi`
 
-xsnow-transparent.o: transparent.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-transparent.o -MD -MP -MF $(DEPDIR)/xsnow-transparent.Tpo -c -o xsnow-transparent.o `test -f 'transparent.c' || echo '$(srcdir)/'`transparent.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-transparent.Tpo $(DEPDIR)/xsnow-transparent.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='transparent.c' object='xsnow-transparent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-transparent.o `test -f 'transparent.c' || echo '$(srcdir)/'`transparent.c
-
-xsnow-transparent.obj: transparent.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-transparent.obj -MD -MP -MF $(DEPDIR)/xsnow-transparent.Tpo -c -o xsnow-transparent.obj `if test -f 'transparent.c'; then $(CYGPATH_W) 'transparent.c'; else $(CYGPATH_W) '$(srcdir)/transparent.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-transparent.Tpo $(DEPDIR)/xsnow-transparent.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='transparent.c' object='xsnow-transparent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-transparent.obj `if test -f 'transparent.c'; then $(CYGPATH_W) 'transparent.c'; else $(CYGPATH_W) '$(srcdir)/transparent.c'; fi`
-
 xsnow-birds.o: birds.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-birds.o -MD -MP -MF $(DEPDIR)/xsnow-birds.Tpo -c -o xsnow-birds.o `test -f 'birds.c' || echo '$(srcdir)/'`birds.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-birds.Tpo $(DEPDIR)/xsnow-birds.Po
@@ -1131,6 +1118,20 @@ xsnow-moon.obj: moon.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='moon.c' object='xsnow-moon.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-moon.obj `if test -f 'moon.c'; then $(CYGPATH_W) 'moon.c'; else $(CYGPATH_W) '$(srcdir)/moon.c'; fi`
+
+xsnow-transwindow.o: transwindow.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-transwindow.o -MD -MP -MF $(DEPDIR)/xsnow-transwindow.Tpo -c -o xsnow-transwindow.o `test -f 'transwindow.c' || echo '$(srcdir)/'`transwindow.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-transwindow.Tpo $(DEPDIR)/xsnow-transwindow.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='transwindow.c' object='xsnow-transwindow.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-transwindow.o `test -f 'transwindow.c' || echo '$(srcdir)/'`transwindow.c
+
+xsnow-transwindow.obj: transwindow.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-transwindow.obj -MD -MP -MF $(DEPDIR)/xsnow-transwindow.Tpo -c -o xsnow-transwindow.obj `if test -f 'transwindow.c'; then $(CYGPATH_W) 'transwindow.c'; else $(CYGPATH_W) '$(srcdir)/transwindow.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-transwindow.Tpo $(DEPDIR)/xsnow-transwindow.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='transwindow.c' object='xsnow-transwindow.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-transwindow.obj `if test -f 'transwindow.c'; then $(CYGPATH_W) 'transwindow.c'; else $(CYGPATH_W) '$(srcdir)/transwindow.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1650,7 +1651,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
 	-rm -f ./$(DEPDIR)/xsnow-stars.Po
-	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
+	-rm -f ./$(DEPDIR)/xsnow-transwindow.Po
 	-rm -f ./$(DEPDIR)/xsnow-treesnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po
@@ -1725,7 +1726,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
 	-rm -f ./$(DEPDIR)/xsnow-stars.Po
-	-rm -f ./$(DEPDIR)/xsnow-transparent.Po
+	-rm -f ./$(DEPDIR)/xsnow-transwindow.Po
 	-rm -f ./$(DEPDIR)/xsnow-treesnow.Po
 	-rm -f ./$(DEPDIR)/xsnow-ui.Po
 	-rm -f ./$(DEPDIR)/xsnow-utils.Po

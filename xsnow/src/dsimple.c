@@ -47,7 +47,6 @@
 
 */
 
-static int      screen = 0;
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -65,6 +64,14 @@ static int      screen = 0;
 
 #include "clientwin.h"
 #include "dsimple.h"
+
+static int      screen = 0;
+static Display *dpy    = NULL;
+static void Fatal_Error(const char *, ...) _X_NORETURN _X_ATTRIBUTE_PRINTF(1,2);
+
+static char *Get_Display_Name(int *, char **);
+static Display *Open_Display(const char *);
+static void Close_Display(void);
 
 // added:
 static void usage()
@@ -85,8 +92,7 @@ static void usage()
 
 
 /* This stuff is defined in the calling program by just_display.h */
-const char *program_name = "unknown_program";
-Display *dpy = NULL;
+const char *program_name = "xsnow";
 
 /*
  * Get_Display_Name (argc, argv) Look for -display, -d, or host:dpy (obselete)
