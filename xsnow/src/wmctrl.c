@@ -494,7 +494,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    if(properties) XFree(properties);
    if(children) XFree(children);
    (*nwin) = k;
-   //P("%d\n",counter++);printwindows(getdisplay,*windows,*nwin);
+   P("%d\n",global.counter++);//printwindows(getdisplay,*windows,*nwin);
    return 1;
 }
 

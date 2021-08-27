@@ -30,7 +30,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh test2.sh test3.sh  xsnow.desktop \
+		test1.sh xsnow.desktop \
 		doit.h ui.c ui.h ui.xml \
 		debug.h \
 		mainstub.cpp mainstub.h \
@@ -60,8 +60,6 @@ snow_includes.h: Pixmaps
 	$(top_srcdir)/src/gen_snow_includes.sh $(top_srcdir)
 
 TESTS = test1.sh
-# test2.sh and test3.sh are still available, they test xsnow using Xvfb and xdotool.
-# I am not satisfied with the quality of these tests, so I left them out here.
 
 desktopdir = $(datadir)/applications
 desktop_DATA = xsnow.desktop

@@ -23,7 +23,7 @@ XPM_TYPE *tannenbaum_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "56 56 2 1 ",
 "  c None",
-". c green",
+". c black",
 /* pixels */
 "                                                        ",
 "                          .                             ",

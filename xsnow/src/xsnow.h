@@ -105,7 +105,7 @@ typedef struct _WinInfo
    int x,y                ; // x,y coordinates
    int xa,ya              ; // x,y coordinates absolute
    unsigned int w,h       ; // width, height
-   int ws        ; // workspace
+   int ws                 ; // workspace
 
    unsigned int sticky BITS(1); // is visible on all workspaces
    unsigned int dock   BITS(1); // is a "dock" (panel)

@@ -570,10 +570,16 @@ int StartWindow()
       // user specified to run on root window
       printf("Trying to snow in root window\n");
       global.SnowWin = global.Rootwindow;
+      if (getenv("XSCREENSAVER_WINDOW"))
+      {
+	 global.SnowWin    = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
+	 global.Rootwindow = global.SnowWin;
+      }
       X11cairo = 1;
    }
    else
    {
+      // default behaviour
       // try to create a transparent clickthrough window
       GtkWidget *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
       int rc = make_trans_window(gtkwin,
@@ -603,6 +609,39 @@ int StartWindow()
 	 X11cairo = 1;
 	 // use rootwindow, pcmanfm or Desktop:
 	 printf("Cannot create transparent window\n");
+	 if (global.DesktopSession == NULL)
+	 {
+	    char *desktopsession = NULL;
+	    const char *desktops[] = {
+	       "DESKTOP_SESSION",
+	       "XDG_SESSION_DESKTOP",
+	       "XDG_CURRENT_DESKTOP",
+	       "GDMSESSION",
+	       NULL
+	    };
+
+	    int i;
+	    for (i=0; desktops[i]; i++)
+	    {
+	       desktopsession = getenv(desktops[i]);
+	       if (desktopsession)
+		  break;
+	    }
+	    if (desktopsession)
+	       printf("Detected desktop session: %s\n",desktopsession);
+	    else
+	    {
+	       printf("Could not determine desktop session\n");
+	       desktopsession = (char *)"unknown_desktop_session";
+	    }
+
+	    global.DesktopSession = strdup(desktopsession);
+
+	    if (!strcasecmp(global.DesktopSession,"enlightenment"))
+	       printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	    else if(!strcasecmp(global.DesktopSession,"twm"))
+	       printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
+	 }
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (global.DesktopSession != NULL && 
 	       !strncmp(global.DesktopSession,"LXDE",4) && 

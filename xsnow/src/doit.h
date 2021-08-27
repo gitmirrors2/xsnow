@@ -110,7 +110,7 @@
    DOIT_I(BirdsSpeed           ,100 ,100) \
    DOIT_I(DisWeight            ,20  ,20 ) \
    DOIT_I(FollowWeight         ,30  ,30 ) \
-   DOIT_I(FollowSanta          ,1   ,1  ) \
+   DOIT_I(FollowSanta          ,0   ,0  ) \
    DOIT_I(Nbirds               ,70  ,70 ) \
    DOIT_I(Neighbours           ,7   ,7  ) \
    DOIT_I(PrefDistance         ,40  ,40 ) \

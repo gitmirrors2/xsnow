@@ -20,7 +20,6 @@
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src
 
-EXTRA_DIST = bootstrap Changes getversion README.md \
+EXTRA_DIST = bootstrap Changes README.md \
 	     addcopyright.sh prevent-remakes \
-	     pbuilderscript makeupload makedeb dependencies \
-	     maketar simplemake.sh
+	     dependencies simplemake.sh

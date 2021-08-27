@@ -211,10 +211,19 @@ void UpdateFallenSnowRegions()
 	    // and also not if this window is a "dock"
 	    P("               %#lx %d\n",w->id,w->dock);
 	    // if (w->id != SnowWin_a && w->id != SnowWinb && w->y > 0 && !(w->dock)) // let op
-	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock))
-	       PushFallenSnow(&global.FsnowFirst, w,
-		     w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
-		     Flags.MaxWinSnowDepth); 
+	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock)) 
+	    {
+	       if((int)(w->w) == global.SnowWinWidth && w->x == 0 && w->y <100) //maybe a transparent xpenguins window?
+	       {
+		  P("skipping: %d %#lx %d %d %d\n",global.counter++, w->id, w->w, w->x, w->y);
+	       }
+	       else
+	       {
+		  PushFallenSnow(&global.FsnowFirst, w,
+			w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
+			Flags.MaxWinSnowDepth); 
+	       }
+	    }
 	    //P("UpdateFallenSnowRegions:\n");PrintFallenSnow(global.FsnowFirst);
 	 }
       }
@@ -346,7 +355,8 @@ void UpdateFallenSnowRegions()
 //     Flags
 //     display
 //     and maybe more ...
-
+// and now it is not used any more... but we keep it here for future reference.
+//
 int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
 {
 

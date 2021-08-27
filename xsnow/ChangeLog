@@ -1,9 +1,14 @@
+version 3.3.1
+	1:fix issues with LXDE desktop and xscreensaver
 version 3.3.0
 	1:replace transparent.{c,h} with maketrans.{c,h}
 	  add overall scale factor
 	  all drawings using cairo
 	  use xdbe (double buffer) when not using cairo
 	  moon and birds also when painting on root window
+	45: doit.h:default followsanta = 0
+	    windows.c: do not snow on window with exactly width=SnowWinWidth, x=0, y<100
+	47: sanitize scenery.c with respect to color of the vintage tree
 
 version 3.2.3
 	1:minor adaption in simplemake.sh

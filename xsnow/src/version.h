@@ -35,4 +35,4 @@
 
 #define VERSIONBY \
    "December 14th 2001 by Rick Jansen \n" \
-   "January 2021 by Willem Vermin"
+   "August 2021 by Willem Vermin"
