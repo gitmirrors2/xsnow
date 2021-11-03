@@ -1,3 +1,5 @@
+version 3.3.2
+	remove redundand files maketar, makectags
 version 3.3.1
 	1:fix issues with LXDE desktop and xscreensaver
 version 3.3.0
