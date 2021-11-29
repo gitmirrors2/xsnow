@@ -1,8 +1,0 @@
-Warning: xsnow-devel is for development, you will find here
-the bleeding edge, but there is no gurantee whatsoever that
-it compiles and runs without flagrant errors. Also, it is
-possible that the xsnow in this directory emits tons of
-debugging data.
-
-The stable version is available in ../xsnow
-

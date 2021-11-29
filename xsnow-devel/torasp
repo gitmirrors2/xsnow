@@ -1,9 +1,0 @@
-#!/bin/bash
-rsync -auv ../versions pi@raspi.local:xsnow-versions
-usb=/media/willem/6CD0-EB2F/xsnow
-if [ -d $usb ] ; then
-   cp -urv ../versions $usb
-else
-   echo "Cannot find usb stick"
-fi
-sync
