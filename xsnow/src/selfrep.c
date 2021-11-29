@@ -34,7 +34,10 @@ void selfrep()
       printf("or use a pipe (e.g: xsnow -selfrep | tar zxf -).\n"); 
    }
    else
-      write(fileno(stdout),tarfile,sizeof(tarfile));
+   {
+      int unused = write(fileno(stdout),tarfile,sizeof(tarfile));
+      (void)unused;
+   }
 #else
    printf("Self replication is not compiled in.\n");
 #endif

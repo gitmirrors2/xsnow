@@ -20,7 +20,7 @@
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src data
 
-EXTRA_DIST = bootstrap Changes README.md \
+EXTRA_DIST = bootstrap Changes README README.md \
 	     addcopyright.sh prevent-remakes \
 	     dependencies simplemake.sh getversion 
 
