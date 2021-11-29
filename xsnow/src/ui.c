@@ -916,7 +916,6 @@ void ui_set_sticky(int x)
 
 void ui()
 {
-
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));

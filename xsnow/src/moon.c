@@ -21,6 +21,7 @@
 
 #include <gtk/gtk.h>
 #include <math.h>
+#include <stdlib.h>
 #include "debug.h"
 #include "flags.h"
 #include "moon.h"

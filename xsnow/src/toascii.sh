@@ -1,3 +1,4 @@
+#!/bin/sh
 # -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -17,14 +18,24 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-AUTOMAKE_OPTIONS = gnu
-SUBDIRS = src data
-
-EXTRA_DIST = bootstrap Changes README.md \
-	     addcopyright.sh prevent-remakes \
-	     dependencies simplemake.sh getversion 
-
-tarfile = $(abs_builddir)/xsnow-$(VERSION).tar.gz
-export tarfile
-DISTCLEANFILES = $(tarfile)
-
+cat << eof > toascii.c
+#include <stdio.h>
+int main()
+{
+   int c;
+   int i = 0;
+   while((c = getchar()) != EOF)
+   {
+      if (i>20)
+      {
+	 i = 1;
+	 printf("\n");
+      }
+      printf("%d,",c);
+      i++;
+   }
+}
+eof
+${CC:-cc} $CFLAGS -o toascii toascii.c >/dev/null 2>&1 
+./toascii
+rm -f toascii toascii.c

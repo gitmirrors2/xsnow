@@ -1,4 +1,4 @@
-# -copyright-
+/* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -17,39 +17,25 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-
-
-xsnow: let it snow on your desktop
-
-xsnow is derived from Rick Jansen's xsnow-1.42.
-It runs in many desktop environments: Gnome, KDE, FVWM, etc.
-
-The file 'dependencies' lists the dependencies. These should be
-installed before compiling xsnow.
-
-Compilation and installation:
-
-  tar xf xsnow-<version>.tar.gz
-  cd xsnow-<version>
-  ./configure
-  make
-  sudo make install
-
-xsnow will be installed in /usr/local/games.
-
-For users of debian distro's: you can download the appropriate 
-.deb file and install with:
-  
-  sudo apt install ./xsnow_<version>_<arch>.deb
-
-Raspberry pi - Raspian users: choose the .deb with arch='armhf' .
-
-If the above recipes do not work, you can try and run the
-script 'simplemake.sh':
-
-  ./simplemake.sh
-
-If problems persist, you can adapt simplemake.sh.
-
-Have fun!
-
+*/
+#include <stdio.h>
+#include <unistd.h>
+#include "selfrep.h"
+static unsigned char tarfile[] = {
+#include "tarfile.inc"
+};
+void selfrep()
+{
+#ifdef SELFREP
+   if(isatty(fileno(stdout)))
+   {
+      printf("Not sending tar file to terminal.\n");
+      printf("Try redirecting to a file (e.g: xsnow -selfrep > xsnow.tar.gz),\n");
+      printf("or use a pipe (e.g: xsnow -selfrep | tar zxf -).\n"); 
+   }
+   else
+      write(fileno(stdout),tarfile,sizeof(tarfile));
+#else
+   printf("Self replication is not compiled in.\n");
+#endif
+}

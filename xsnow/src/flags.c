@@ -21,9 +21,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
-#include <libxml/tree.h>
 #include "flags.h"
 #include "utils.h"
 #include "xsnow.h"
@@ -31,6 +28,7 @@
 #include "doit.h"
 #include "birds.h"
 #include "windows.h"
+#include "selfrep.h"
 
 #include "debug.h"
 
@@ -41,6 +39,7 @@ FLAGS VintageFlags;
 
 static void ReadFlags(void);
 static void SetDefaultFlags(void);
+static void findflag(FILE *f, const char *x, char **value);
 
 static long int S2Int(char *s)     // string to integer
 {
@@ -117,6 +116,7 @@ int HandleFlags(int argc, char*argv[])
       for (ax=1; ax<argc; ax++) 
       {
 	 arg = argv[ax];
+	 //  ------------------- handled in main, so not needed here --------------------
 	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
 	 {
 	    docs_usage(0);
@@ -132,6 +132,19 @@ int HandleFlags(int argc, char*argv[])
 	    PrintVersion();
 	    return 1;
 	 }
+	 else if (!strcmp(arg, "-changelog"))
+	 {
+	    docs_changelog();
+	    return 1;
+	 }
+#ifdef SELFREP
+	 else if (!strcmp(arg, "-selfrep"))
+	 {
+	    selfrep();
+	    return 1;
+	 }
+#endif
+	 //  ------------------- end of handled in main --------------------
 	 else if (strcmp(arg, "-nokeepsnow") == 0) 
 	 {
 	    Flags.NoKeepSnow = 1;
@@ -280,29 +293,6 @@ int HandleFlags(int argc, char*argv[])
 #undef handle_is
 #undef handle_ia
 
-static xmlXPathObjectPtr getnodeset (xmlDocPtr doc, xmlChar *xpath){
-
-   xmlXPathContextPtr context;
-   xmlXPathObjectPtr result;
-
-   context = xmlXPathNewContext(doc);
-   if (context == NULL) {
-      //printf("Error in xmlXPathNewContext\n");
-      return NULL;
-   }
-   result = xmlXPathEvalExpression(xpath, context);
-   xmlXPathFreeContext(context);
-   if (result == NULL) {
-      //printf("Error in xmlXPathEvalExpression\n");
-      return NULL;
-   }
-   if(xmlXPathNodeSetIsEmpty(result->nodesetval)){
-      xmlXPathFreeObject(result);
-      //printf("No result\n");
-      return NULL;
-   }
-   return result;
-}
 
 static void makeflagsfile()
 {
@@ -321,79 +311,100 @@ static void makeflagsfile()
    P("FlagsFile: %s\n",FlagsFile);
 }
 
+void findflag(FILE *f, const char *x, char **value)
+{
+   char *line = NULL;
+   char *flag = NULL;
+
+   *value = NULL;
+   rewind(f);
+   while(1)
+   {
+      if(line) {free(line);line = NULL;}
+      if(flag) {free(flag);flag = NULL;}
+      size_t n = 0;
+      int m = getline(&line,&n,f);
+      if (m < 0)
+	 break;
+      flag = (char*)malloc((strlen(line)+1)*sizeof(char));
+      m = sscanf(line, "%s", flag);
+      if (strcmp(flag,x))
+	 continue;
+      if (m == EOF || m == 0)
+	 continue;
+      char *rest = line + strlen(flag);
+      char *p;
+      p = rest;
+      while (*p == ' ' || *p == '\t' || *p == '\n')
+	 p++;
+      rest = p;
+      p = &line[strlen(line)-1];
+      while (*p == ' ' || *p == '\t' || *p == '\n')
+	 p--;
+      *(p+1) = 0;
+      *value = strdup(rest);
+      break;
+   }
+   if(line) free(line);
+   if(flag) free(flag);
+}
+
 void ReadFlags()
 {
-   xmlXPathObjectPtr result;
-   xmlChar *value;
-   xmlNodeSetPtr nodeset;
+   FILE *f;
    long int intval;
-   xmlDocPtr doc;
    makeflagsfile();
    if (!FlagsFileAvailable)
       return;
-   doc = xmlParseFile(FlagsFile);
-#define DOIT_I(x,d,v) \
-   /* printf("%d:DOIT_I:%s\n",__LINE__,#x); */ \
-   result = getnodeset(doc, BAD_CAST "//" # x); \
-   if (result) {\
-      nodeset = result->nodesetval; \
-      value = xmlNodeListGetString(doc, nodeset->nodeTab[0]->xmlChildrenNode, 1); \
-      if(value == NULL) \
-      intval = 0; \
-      else \
-      intval = strtol((char*)value,NULL,0); \
-      Flags.x = intval; \
-      /* printf(# x ": %ld\n",(long int)Flags.x); */ \
-      xmlFree(value); \
-      xmlXPathFreeObject(result); \
+   f=fopen(FlagsFile,"r");
+   if (f == NULL)
+   {
+      I("Cannot read %s\n",FlagsFile);
+      return;
+   }
+   char *value = NULL;;
+#define DOIT_I(x,d,v)                \
+   findflag(f,# x,&value);           \
+   if (value)                        \
+   {                                 \
+      intval = strtol(value,NULL,0); \
+      Flags.x = intval;              \
+      free(value);                   \
+      value = NULL;                  \
    } 
-#define DOIT_L(x,d,v) DOIT_I(x,d,v)
-#define DOIT_S(x,d,v) \
-   /* printf("%d:DOIT_S:%s\n",__LINE__,#x); */ \
-   result = getnodeset(doc, BAD_CAST "//" # x); \
-   if (result) {\
-      nodeset = result->nodesetval; \
-      value = xmlNodeListGetString(doc, nodeset->nodeTab[0]->xmlChildrenNode, 1); \
-      free(Flags.x); \
-      if (value == NULL) \
-      Flags.x = strdup(""); \
-      else \
-      Flags.x = strdup((char*)value); \
-      /* printf(# x ": %s\n",Flags.x); */  \
-      xmlFree(value); \
-      xmlXPathFreeObject(result); \
-   } 
-   DOIT;
-   //printf("%d\n",__LINE__);
-#include "undefall.inc"
-   xmlFreeDoc(doc);
-   xmlCleanupParser();
-}
 
-static void myxmlNewChild(xmlNodePtr node, xmlNsPtr p, char *name,long int value,char*fmt)
-{
-   char svalue[256];
-   sprintf(svalue,fmt,value);
-   xmlNewChild(node, p, BAD_CAST name, BAD_CAST svalue);
+#define DOIT_L(x,d,v) DOIT_I(x,d,v)
+#define DOIT_S(x,d,v)          \
+   findflag(f,# x,&value);     \
+   if (value)                  \
+   {                           \
+      free(Flags.x);           \
+      Flags.x = strdup(value); \
+      free(value);             \
+      value = NULL;            \
+   }
+
+   DOIT;
+#include "undefall.inc"
+   fclose(f);
 }
 
 void WriteFlags()
 {
-   xmlDocPtr doc = NULL;
-   xmlNodePtr root_node = NULL;
-   doc = xmlNewDoc(BAD_CAST "1.0");
-   root_node = xmlNewNode(NULL, BAD_CAST "xsnow_flags");
-   xmlDocSetRootElement(doc, root_node);
-
-#define DOIT_I(x,d,v) myxmlNewChild(root_node,NULL,(char *)# x,Flags.x,(char *)"%d");
-#define DOIT_L(x,d,v) DOIT_I(x,d,v)
-#define DOIT_S(x,d,v) xmlNewChild(root_node,NULL,BAD_CAST # x,BAD_CAST Flags.x);
-   DOIT;
-#include "undefall.inc"
-
+   FILE *f;
    makeflagsfile();
    if (!FlagsFileAvailable) 
       return;
-   xmlSaveFormatFileEnc(FlagsFile , doc, "UTF-8", 1);
-   xmlFreeDoc(doc);
+   f = fopen(FlagsFile,"w");
+   if (f == NULL)
+   {
+      I("Cannot write %s\n",FlagsFile);
+      return;
+   }
+#define DOIT_I(x,d,v) fprintf(f,"%s %d\n", # x,Flags.x);
+#define DOIT_L(x,d,v) fprintf(f,"%s %ld\n",# x,Flags.x);
+#define DOIT_S(x,d,v) fprintf(f,"%s %s\n", # x,Flags.x);
+   DOIT;
+#include "undefall.inc"
+   fclose(f);
 }

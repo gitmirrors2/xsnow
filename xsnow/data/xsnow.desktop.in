@@ -7,8 +7,8 @@ Type=Application
 Categories=Game;
 Terminal=false
 Name[en_US]=xsnow
-Keywords=christmas;santa;snow
-Version=1.0
+Keywords=christmas;santa;snow;xmas
+Version=XSNOW_VERSION
 StartupNotify=true
 Actions=start;nomenu;
 

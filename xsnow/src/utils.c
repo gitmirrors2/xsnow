@@ -101,6 +101,15 @@ float fsignf(float x)
    return 0.0f;
 }
 
+int ValidColor(const char *colorName)
+{
+   XColor scrncolor;
+   XColor exactcolor;
+   int scrn = DefaultScreen(global.display);
+   return (XAllocNamedColor(global.display, DefaultColormap(global.display, scrn),
+	    colorName, &scrncolor, &exactcolor));
+}
+
 Pixel AllocNamedColor(const char *colorName, Pixel dfltPix)
 {
    XColor scrncolor;

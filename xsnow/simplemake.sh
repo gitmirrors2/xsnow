@@ -45,11 +45,7 @@ FLAGS="-O2"
 FLAGS="$FLAGS `pkg-config --cflags --libs gtk+-3.0`"
 # NOTE: on my system, pkg-config expands to:
 # -pthread -I/usr/include/gtk-3.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/gtk-3.0 -I/usr/include/gio-unix-2.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -lgtk-3 -lgdk-3 -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -latk-1.0 -lcairo-gobject -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0
-
-# if you have pkg-config working for libxml2:
-FLAGS="$FLAGS `pkg-config --cflags --libs libxml-2.0`"
-# NOTE: on my system, pkg-config expands to:
-# -I/usr/include/libxml2 -lxml2
+# 
 
 # if you have pkg-config working for gmodule-2.0:
 FLAGS="$FLAGS `pkg-config --cflags --libs gmodule-2.0`"
@@ -57,9 +53,9 @@ FLAGS="$FLAGS `pkg-config --cflags --libs gmodule-2.0`"
 # -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -Wl,--export-dynamic -lgmodule-2.0 -pthread -lglib-2.0
 
 # if you have pkg-config working for these: x11 xpm xt xproto
-FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xproto`"
+FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xproto xext`"
 # NOTE: on my system, pkg-config expands to:
-# -lXpm -lXt -lX11
+# -lXpm -lXt -lX11 -lXext
 
 # link flags for libmath:
 FLAGS="$FLAGS -lm"
@@ -84,25 +80,31 @@ fi
 FLAGS="$FLAGS -DVERSION=\"$version\""
 
 cd src || exit 1
-echo "removing .o files :"
+echo "removing .o files:"
 rm -f *.o
 
-echo "Creating snow_includes.h"
+echo "creating changelog.inc:"
+./tocc.sh < ../ChangeLog > changelog.inc
+
+echo "creating tarfile.inc:"
+echo "No tar file available" | toascii.sh > tarfile.inc
+
+echo "Creating snow_includes.h:"
 ./gen_snow_includes.sh .. || exit 1
 
-echo "Creating ui_xml.h"
+echo "Creating ui_xml.h:"
 ./gen_ui_xml.sh .. || exit 1
 
-echo compiling C sources:
+echo "compiling C sources:"
 $CC -c *.c $FLAGS || exit 1
 
-echo compiling C++ sources:
+echo "compiling C++ sources":
 $CXX -c *.cpp $FLAGS || exit 1
 
-echo creating xsnow in directory $PWD:
+echo "creating xsnow in directory $PWD:"
 $CXX -o xsnow *.o $FLAGS || exit 1
 
-echo creating manpage in directory $PWD as xsnow.6:
+echo "creating manpage in directory $PWD as xsnow.6:"
 ./xsnow -H > xsnow.6 || exit 1
 
 echo

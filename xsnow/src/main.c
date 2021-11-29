@@ -80,6 +80,7 @@
 #include "debug.h"
 #include "treesnow.h"
 #include "loadmeasure.h"
+#include "selfrep.h"
 
 #include "vroot.h"
 
@@ -315,6 +316,18 @@ int main_c(int argc, char *argv[])
 	 PrintVersion();
 	 return 0;
       }
+      else if (!strcmp(arg, "-changelog"))
+      {
+	 docs_changelog();
+	 return 0;
+      }
+#ifdef SELFREP
+      else if (!strcmp(arg, "-selfrep"))
+      {
+	 selfrep();
+	 return 0;
+      }
+#endif
    }
    printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
 
@@ -372,6 +385,17 @@ int main_c(int argc, char *argv[])
    int screen = DefaultScreen(global.display);
    global.Black = BlackPixel(global.display, screen);
    global.White = WhitePixel(global.display, screen);
+
+
+   { // if somebody messed up colors in .xsnowrc:
+      if (!ValidColor(Flags.TreeColor))
+	 Flags.TreeColor = strdup(DefaultFlags.TreeColor); 
+      if (!ValidColor(Flags.SnowColor))
+	 Flags.SnowColor = strdup(DefaultFlags.SnowColor); 
+      if (!ValidColor(Flags.BirdsColor))
+	 Flags.BirdsColor = strdup(DefaultFlags.BirdsColor); 
+      WriteFlags();
+   }
 
 
    InitSnowOnTrees();
@@ -1055,7 +1079,6 @@ void drawit(cairo_t *cr)
    snow_draw(cr);
 
    XFlush(global.display);
-
 }
 
 void SetWindowScale()

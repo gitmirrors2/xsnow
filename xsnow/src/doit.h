@@ -98,8 +98,8 @@
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \
    \
-   DOIT_S(SnowColor            ,"snow"           ,"snow"      ) \
-   DOIT_S(TreeColor            ,"chartreuse"     ,"chartreuse") \
+   DOIT_S(SnowColor            ,"#fffafa"  ,"#fffafa"  ) /* "snow" */       \
+   DOIT_S(TreeColor            ,"#7fff00"  ,"#7fff00"  ) /* "chartreuse" */ \
    DOIT_S(TreeType             ,"1,2,3,4,5,6,7," ,"0,"        ) \
    \
    DOIT_I(Anarchy              ,50  ,50 ) \

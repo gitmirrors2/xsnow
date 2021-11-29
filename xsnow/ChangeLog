@@ -1,7 +1,37 @@
+version 3.3.5
+	1: docs.c: document XFCE compositing requirement
+	2: implemented -selfrep
+	   adapted simplemake.sh
+
+version 3.3.4
+	1: flags.c: remove dependency from libxml2, .xsnowrc has now different
+	   format
+	   main.c: add check for existing colors for TreeColor, BirdsColor and 
+	           SnowColor
+	   doit.h: change colors "snow" and "chartreuse" into hex
+	   scenery.c: scenery_init(): sanitize Flags.TreeType
+
+version 3.3.3
+	1: add metainfo: data/xsnow.appdata.xml
+	   mv src/xsnow.desktop to data/xsnow.desktop
+	   add flag '-b' to awk in gen_ui_xml.sh
+	2: implement flag -changelog
+	   add some old ChangeLogs, found in the README of version 1.42
+	   gen_ui_xml.sh: remove flag '-b' from awk ('-b' only valid for gawk)
+	       return exit code of awk command
+	3: docs.c: document xcompmgr problem
+	   scenery.c: explicit convert (myScale*w+2) and (myScale*h+2)
+	     to int, to keep g++ happy.
+	   dependencies: made up-to-date
+	   simplemake.sh: made up-to-date
+	   moon.c: add #include <stdlib.h> for drand48
+
 version 3.3.2
-	remove redundand files maketar, makectags
+	remove redundant files maketar, makectags
+
 version 3.3.1
 	1:fix issues with LXDE desktop and xscreensaver
+
 version 3.3.0
 	1:replace transparent.{c,h} with maketrans.{c,h}
 	  add overall scale factor
@@ -31,7 +61,7 @@ version 3.2.2
 	  docs.c: some minor additions
 	4:buttons.h: change togglecode into scalecode
 	  flags.h uitils.h: transport some macro's
-	  ui.c: add documention about flags and buttons
+	  ui.c: add documentation about flags and buttons
 	  main.c: optionally move windows to 0,0 (movewindow())
 	    Flags.MoveWindow --movewindow
 	5:some tweaks MoveWindow
@@ -214,7 +244,7 @@ version 3.0.10
 	4:more flakes
 	5:more flakes
 	  birds.c: made attraction point transparent again
-	  ui.xml: remove seperators from snow tab
+	  ui.xml: remove separators from snow tab
 	7:get rid of snow??.xbm. Conversion from xpm is done with xpmtoxbm().
 	  rename snow*.xpm to flake*.xpm
 	8:next to the 7 archaic flakes, generate random flakes
@@ -461,7 +491,7 @@ version 2.0.14
 	transparent.c: simplify creation of transparent window
 	main.c: removed use of SigHupHandler 
 	docs.c: corrected misspelled default values
-	test1.sh: check 'xsnow -h' if default values are subtituted
+	test1.sh: check 'xsnow -h' if default values are substituted
 	main.c, ui.glade: better algorithm to determine number of flakes
 	    to generate
 version 2.0.13
@@ -587,3 +617,42 @@ Solved in 2.01
 	changed algorithm for fallen snow
 	nosnowarea's
 	and some more ...
+
+version 1.42 
+	Xsnow now works with KDE
+version 1.41 
+	-santaupdatefactor, fix for X-servers that use backing store, new
+	  Santa by Thomas Linder
+version 1.40 
+	-solidbg for improved performance, memory leak fixed.
+version 1.39 
+	usSleep fixed for VMS. Bug resulted in using too much resources.
+version 1.38 
+	Santa is a real snow plough now.
+version 1.37 
+	Offset for certain window managers like twm, nokeepsnowonwindows
+	and nokeepsnowonscreen are back.
+version 1.35 
+	Snow really builds up on windows now, and does not snow on pop-ups.
+version 1.32 
+	unsigned long snowDelay changed to long, as strtoul is troublesome
+version 1.31 
+	Make.com and xsnow.hlp for VMS
+version 1.30 
+	Performance improved. Wind.
+version 1.27 
+	Bug with erasing snow on top of windows removed
+	Erasing of snow at bottom of screen improved in case of expose event
+version 1.25 
+	Rudolf's red nose. Silly. Grmbll.
+	Bug with -nokeepsnowonwindows removed
+version 1.24 
+	Deleted PaintSnowAtBottom. It's more of a surprise this way.
+	Bug removed with windows off-screen to the left
+version 1.23
+	Aaaargh! gnu C doesn't like the initialization of the new
+	Santa pixmaps. Extra braces do the trick, which is so often the case
+version 1.22
+	Really building up snow at bottom of screen
+	A choice of Santa's. Thanks to Holger Veit (Holger.Veit@gmd.de)
+	for Santa no. 2. Santa 1 was derived from 2 by scaling down.

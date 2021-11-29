@@ -22,12 +22,23 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.3.2], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.3.5], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 ./prevent-remakes
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+
+AC_ARG_ENABLE(selfrep, [AS_HELP_STRING([--enable-selfrep],[Build with self replicating mode @<:@default=yes@:>@])],[],[enable_selfrep=yes])
+AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
+
+AS_IF( [test "x$enable_selfrep" = "xyes"],
+      [AC_CONFIG_COMMANDS([create tar file], [make dist])])
+
+AC_SUBST([PACKAGE_VERSION])
+DATE=`date +"%Y-%m-%d"`
+AC_SUBST([DATE])
 
 # Checks for programs.
 AC_PROG_CC([cc gcc])
@@ -47,7 +58,6 @@ AC_CHECK_HEADERS([unordered_map])
 AC_CHECK_HEADERS([unordered_set])
 AC_LANG_POP([C++])
 
-PKG_CHECK_MODULES(XML, [libxml-2.0])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
 PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto])
 
@@ -71,6 +81,6 @@ AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
 LIBS="-lm"
 
-AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
 
 AC_OUTPUT

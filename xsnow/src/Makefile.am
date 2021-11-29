@@ -19,18 +19,27 @@
 #-# 
 SUBDIRS = Pixmaps
 
+TOCC     = $(top_srcdir)/src/tocc.sh
+TOASCII  = $(top_srcdir)/src/toascii.sh
+
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
-xsnow_CPPFLAGS = $(XML_CFLAGS) $(GTK_CFLAGS) $(X11_CFLAGS) 
-xsnow_LDADD    = $(XML_LIBS)   $(GTK_LIBS)  $(X11_LIBS)
+xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) 
+xsnow_LDADD    = $(GTK_LIBS)  $(X11_LIBS)
+
+
+if MAKESELFREP
+   xsnow_CPPFLAGS += -DSELFREP
+endif
+
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh xsnow.desktop \
+		test1.sh \
 		doit.h ui.c ui.h ui.xml \
 		debug.h \
 		mainstub.cpp mainstub.h \
@@ -43,15 +52,30 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
 		snow_includes.h vroot.h \
 		moon.c moon.h buttons.h undefall.inc \
-		transwindow.c transwindow.h
+		transwindow.c transwindow.h \
+		selfrep.c selfrep.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
-BUILT_SOURCES = ui_xml.h snow_includes.h
+BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
 
-EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh
+.PHONY: tarfile.inc
+if MAKESELFREP
+tarfile.inc: 
+	if test -f $(tarfile) ; then \
+		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
+		$(TOASCII) < $(tarfile) > $@; \
+		else \
+		echo "No tar file available" | $(TOASCII) > $@; \
+		fi
+else
+tarfile.inc: 
+	echo "No selfrep compiled in" | $(TOASCII) > $@
+endif
 
-ui_xml.h: ui.xml
+EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh
+
+ui_xml.h: ui.xml $(top_srcdir)/src/gen_ui_xml.sh
 	@echo "Creating $@ from $<"
 	$(top_srcdir)/src/gen_ui_xml.sh $(top_srcdir)
 
@@ -61,8 +85,10 @@ snow_includes.h: Pixmaps
 
 TESTS = test1.sh
 
-desktopdir = $(datadir)/applications
-desktop_DATA = xsnow.desktop
+changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
+	$(TOCC) < $(top_srcdir)/ChangeLog > $@
+
+xsnow-docs.$(OBJEXT): changelog.inc
 
 appicondir=$(datadir)/pixmaps
 appicon_DATA=Pixmaps/xsnow.svg
@@ -71,5 +97,6 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3  
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3 \
+	     changelog.inc tarfile.inc toascii toascii.c
 

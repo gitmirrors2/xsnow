@@ -71,6 +71,28 @@ static float       MinScale   = 0.6;   // scale for items with low y-coordinate
 
 void scenery_init()
 {
+   {
+      // sanitize Flags.TreeType
+      int *a;
+      int n;
+      csvpos(Flags.TreeType,&a,&n);
+      int i;
+      int *b = (int *)malloc(sizeof(int)*n);
+      int m = 0;
+      for (i=0; i<n; i++)
+      {
+	 if(a[i] >=0 && a[i] <= MAXTREETYPE) 
+	 {
+	    b[m] = a[i];
+	    m++;
+	 }
+      }
+      free(Flags.TreeType);
+      vsc(&Flags.TreeType,b,m);
+      WriteFlags();
+      free(a);
+      free(b);
+   }
    P("treecolor: %s\n",Flags.TreeColor);
    setTreeScale();
    P("treeScale: %f\n",treeScale);
@@ -302,7 +324,7 @@ int do_initbaum(void *d)
       float myScale = (1-MinScale)*(y - y2)/(y1 - y2) + MinScale;
       P("%d myScale: %d %d %d %f\n",global.counter++,y,y1,y2,myScale);
       myScale *=treeScale;
-      cairo_rectangle_int_t grect = {x-1,y-1,myScale*w+2,myScale*h+2};
+      cairo_rectangle_int_t grect = {x-1,y-1,(int)(myScale*w+2),(int)(myScale*h+2)};
       cairo_region_overlap_t in   = cairo_region_contains_rectangle(global.TreeRegion,&grect);
 
       // no overlap considerations if:

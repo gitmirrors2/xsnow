@@ -58,7 +58,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2020\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2021\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
@@ -75,7 +75,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2020 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2021 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
@@ -96,6 +96,11 @@ void docs_usage(int man)
    manout("-h, -help"               ,"print this text.");
    manout("-H, -manpage"            ,"print man page.");
    manout("-v, -version"            ,"prints version of xsnow.");
+   manout("-changelog"              ,"prints ChangeLog.");
+#ifdef SELFREP
+   manout("-selfrep"                ,"put tar ball on stdout, so you can do:");
+   manout("."                       ,"xsnow -selfrep > xsnow.tar.gz");
+#endif
    manout("-display name"           ,"Drop the snowflakes on the given display.");
    manout(" "                       ,"Make sure the display is nearby, so you can hear them enjoy...");
    manout("-vintage"                ,"Run xsnow in vintage settings.");
@@ -328,6 +333,16 @@ void docs_usage(int man)
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","    settings are changed while xsnow is running.");
    manout(" ","    This does not function always well.");
+   manout(".","- Xsnow does not play well with 'xcompmgr -a'. In some environments");
+   manout(" ","    (Raspberry 64 bit) xcompmgr is started with the flag '-a',");
+   manout(" ","    resulting in a black snow window. Remedy:");
+   manout(" ","    In a terminal window type:");
+   manout(" ","      killall xcompmgr");
+   manout(" ","      nohup xcompmgr -n &");
+   manout(" ","    and try again.");
+   manout(".","- In XFCE, compositing must be enabled for xsnow.");
+   manout(" ","    Settings -> Window Manager Tweaks -> Compositor -> Enable display compositing");
+
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");
 
@@ -435,3 +450,7 @@ void manout(const char*flag, const char*txt, ...)
    }
 }
 
+void docs_changelog()
+{
+#include "changelog.inc"
+}

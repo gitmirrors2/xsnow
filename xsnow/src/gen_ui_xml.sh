@@ -35,5 +35,11 @@ sed 's/^ *//' "$root/src/$in" | awk -v FS="" \
    'BEGIN{for(n=0;n<256;n++)ord[sprintf("%c",n)]=n;}
    {for (i=1;i<=NF;i++) printf "%d,", ord[$i];
       printf "%d,\n",ord["\n"];}' >> "$out"
+rc1=$?
 echo "0};">> "$out" 
 if [ -x "$root/addcopyright.sh" ] ; then "$root/addcopyright.sh" "$out" ; fi
+rc2=$?
+if [ "$rc1" -eq 0 ]; then
+   exit "$rc2"
+fi
+exit $rc1

@@ -21,6 +21,7 @@
 #pragma once
 
 extern void docs_usage(int man);
+extern void docs_changelog(void);
 
 #define Q(a) #a
 #define EQ(a) Q(a)
