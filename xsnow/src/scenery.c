@@ -72,6 +72,7 @@ static float       MinScale   = 0.6;   // scale for items with low y-coordinate
 void scenery_init()
 {
    {
+      P("scenery_init\n");
       // sanitize Flags.TreeType
       int *a;
       int n;
@@ -214,6 +215,8 @@ int do_initbaum(void *d)
    if (Flags.NoTrees || Newtrees == 0)
       return TRUE;
 
+   P("%d initbaum really...\n",global.counter++);
+   ClearScreen();
    Newtrees = 0;
 
    int i,h,w;

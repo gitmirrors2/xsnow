@@ -87,9 +87,11 @@ void docs_usage(int man)
       printf("General options:\n");
    }
 
-   manout(" ","Below: <n> denotes an unsigned decimal (e.g 123)");
+   manout(" ","Below:");
+   manout(".","<n> denotes an unsigned decimal (e.g 123)");
    manout(" ","or octal (e.g. 017) or hex (e.g. 0x50009) number.");
-   manout(" ","<c> denotes a string like \"red\" or \"#123456\".");
+   manout(".","<c> denotes a string like \"red\" or \"#123456\".");
+   manout(".","<f> denotes a file name, like \"/home/rick/Pictures/background.jpg\".");
    manout(" "," ");
    if (!doman)
       printf("\n");
@@ -107,10 +109,11 @@ void docs_usage(int man)
    manout("-defaults"               ,"Do not read config file (see FILES).");
    manout("-noconfig"               ,"Do not read or write config file (see FILES).");
    manout("-hidemenu"               ,"Start with hidden interactive menu.");
-   manout("-nomenu"                 ,"Do not start and show interactive menu.");
+   manout("-nomenu"                 ,"Do not show interactive menu.");
    manout("-scale <n>"              ,"Apply scalefactor (default: %d).",F(Scale));
    manout("-doublebuffer <n>"       ,"1: use double buffering; 0: do not use double buffering (default: %d).",F(UseDouble));
    manout(" "                       ,"Only effective with '-root' or '-id' or '-xwininfo'.");
+   manout("-transparency <n>"       ,"Transparency in % (default: %d)",F(Transparency));
    manout("-theme <n>"              ,"1: use xsnow theme for menu; 0: use system theme (default: %d)",F(ThemeXsnow));
    manout("-checkgtk <n>"           ,"0: Do not check gtk version before starting the user interface.");
    manout(" "                       ,"1: Check gtk version before starting the user interface.");
@@ -123,12 +126,18 @@ void docs_usage(int man)
    manout("-xwininfo  "             ,"Use a cursor to point at the window you want the snow to be fallen in.");
    manout("-stopafter <n>"          ,"Stop xsnow after so many seconds.");
    manout("-root    "               ,"Force to paint on (virtual) root window.");
-   manout("."                       ,"Use this for xscreensaver: in ~.xscreensaver add:");
+   manout("."                       ,"Use this for xscreensaver:");
+   manout("."                       ,"Make sure xscreensaver is running, either as a start-up application");
+   manout("."                       ,"or from the command line, e.g:");
+   manout("."                       ,"   nohup xscreensaver &");
+   manout("."                       ,"or");
+   manout("."                       ,"    nohup xscreensaver -no-capture-stderr &");
+   manout("."                       ,"Run the program xscreensaver-demo to create the file ~/.xscreensaver");
+   manout("."                       ,"In the file ~.xscreensaver add after the line 'programs:' this line:");
    manout("."                       ,"    xsnow -root");
-   manout("."                       ,"On some systems you need to add the flag -nomenu to disable the menu:");
-   manout("."                       ,"    xsnow -root -nomenu");
-   manout("."                       ,"Probably, you want to start xscreensaver as follows:");
-   manout("."                       ,"    xscreensaver -no-capture-stderr");
+   manout("."                       ,"Use the program xscreensaver-demo to select xsnow as screensaver.");
+   manout("."                       ,"You probably want to select: Mode: Only One Screen Saver.");
+   manout("-bg <f>     "            ,"file to be used as background when running under xscreensaver.");
    manout("-noisy     "             ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
    manout("-cpuload <n>"            ,"How busy is your system with xsnow:");
    manout(" "                       ,"the higher, the more load on the system (default: %d).",F(CpuLoad));
@@ -158,7 +167,7 @@ void docs_usage(int man)
    }
    else
    {
-      printf("\n  Tree options:\n\n");
+      printf("\n  Scenery options:\n\n");
    }
    manout("-treetype <n>[,<n> ...]" ,"Choose tree types: minimum 0, maximum %d (default: %s).", MAXTREETYPE,F(TreeType));
    manout(" "                       ,"Thanks to Carla Vermin for numbers >=3!"); 
@@ -170,6 +179,8 @@ void docs_usage(int man)
    manout("-showtrees"              ,"(Default) Display the trees.");
    manout("-trees <n>"              ,"Desired number of trees. Default %d.",F(DesiredNumberOfTrees));
    manout("-treefill <n>"           ,"Region in percents of the height of the window where trees grow (default: %d).",F(TreeFill));
+   manout("-treeoverlap"            ,"Allow scenery items to overlap each other (default).");
+   manout("-notreeoverlap"          ,"Do not allow scenery items to overlap each other.");
 
    if(doman)
    {
@@ -243,6 +254,10 @@ void docs_usage(int man)
    manout("-offsetw <n>"         ,"Correction for window-manager provided width of window. Default %d.",F(OffsetW));
    manout("-offsets <n>"         ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                    ,"the xsnow screen up. Default %d.",F(OffsetS));
+   manout("-ignoretop <n>"       ,"Do not collect snow on window > 0.8*width of screen and closer than");
+   manout(" "                    ,"<n> pixels from the top. Sometimes an hidden window is sitting there,");
+   manout(" "                    ,"but treated as a normal window by xsnow. Default %d.",F(IgnoreTop));
+   manout("-ignorebottom <n>"    ,"Analog to -ignoretop, but now for the bottom. Default %d.",F(IgnoreBottom));
 
    if(doman)
    {
@@ -266,6 +281,7 @@ void docs_usage(int man)
    manout("-showattr <n>"         ,"Show attraction point ( 0/1 default: %d).",F(ShowAttrPoint));
    manout("-followsanta <n>"      ,"Birds like Santa ( 0/1 default: %d).",F(FollowSanta));
    manout("-viewingdistance <n>"  ,"Viewing distance ( 0..95 default: %d).",F(ViewingDistance));
+   manout("-birdsscale <n>"       ,"Scalefactor used painting the birds (default: %d).",F(BirdsScale));
 
 
    if(doman)

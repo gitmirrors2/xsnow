@@ -462,12 +462,12 @@ int main_c(int argc, char *argv[])
    treesnow_init();
    loadmeasure_init();
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged, do_displaychanged     );
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,          do_event              );
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,        do_testing            );
-   add_to_mainloop(PRIORITY_DEFAULT, 0.5,                 do_display_dimensions );
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,       do_ui_check           );
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc, do_show_range_etc     );
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged     );
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event              );
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing            );
+   add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
 
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
@@ -495,12 +495,12 @@ int main_c(int argc, char *argv[])
 
    ClearScreen();   // without this, no snow, scenery etc. in KDE; this seems to be a vintage comment
 
-   if(!Flags.NoMenu)
+   if(!Flags.NoMenu && !global.XscreensaverMode)
    {
       ui();
       ui_gray_erase(global.Trans);
       ui_set_sticky(Flags.AllWorkspaces);
-      add_to_mainloop(PRIORITY_DEFAULT, 2.0, do_show_desktop_type);
+      add_to_mainloop(PRIORITY_DEFAULT, time_desktop_type, do_show_desktop_type);
    }
 
    // main loop
@@ -578,6 +578,7 @@ int StartWindow()
    global.Desktop   = 0;
    global.UseDouble = 0;
    global.IsDouble  = 0;
+   global.XscreensaverMode = 0;
 
    global.Rootwindow = DefaultRootWindow(global.display);
    Window xwin;
@@ -596,6 +597,7 @@ int StartWindow()
       global.SnowWin = global.Rootwindow;
       if (getenv("XSCREENSAVER_WINDOW"))
       {
+	 global.XscreensaverMode  = 1;
 	 global.SnowWin    = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
 	 global.Rootwindow = global.SnowWin;
       }
@@ -702,7 +704,7 @@ int StartWindow()
       SnowWinName = strdup("no name");
    XFree(x.value);
    InitDisplayDimensions();
-   I("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+   printf("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
 
    Xorig = global.SnowWinX;
    Yorig = global.SnowWinY;
@@ -710,6 +712,8 @@ int StartWindow()
    movewindow();
 
    SetWindowScale();
+   if (global.XscreensaverMode && !Flags.BlackBackground)
+      SetBackground();
 
    return TRUE;
 }
@@ -818,10 +822,11 @@ int do_ui_check(void *d)
    UIDO (NoFluffy            , ClearScreen();                   );
    UIDO (AllWorkspaces       , DoAllWorkspaces();               );
    UIDO (BelowAll            , set_below_above();               );
+   UIDOS(BackgroundFile      ,                                  );
+   UIDO (BlackBackground     ,                                  );
 
    if (Flags.Changes > 0)
    {
-      P("WriteFlags\n");
       WriteFlags();
       P("-----------Changes: %d\n",Flags.Changes);
    }
@@ -1148,7 +1153,7 @@ void HandleCpuFactor()
 
    fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen);
    P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
-   add_to_mainloop(PRIORITY_HIGH, 0.2 , do_initsnow);  // remove flakes
+   add_to_mainloop(PRIORITY_HIGH, time_init_snow , do_initsnow);  // remove flakes
 
    restart_do_draw_all();
 }

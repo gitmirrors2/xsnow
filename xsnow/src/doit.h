@@ -97,6 +97,8 @@
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \
+   DOIT_I(IgnoreTop            ,0          ,0          ) \
+   DOIT_I(IgnoreBottom         ,0          ,0          ) \
    \
    DOIT_S(SnowColor            ,"#fffafa"  ,"#fffafa"  ) /* "snow" */       \
    DOIT_S(TreeColor            ,"#7fff00"  ,"#7fff00"  ) /* "chartreuse" */ \
@@ -118,5 +120,7 @@
    DOIT_I(ShowBirds            ,1   ,0  ) \
    DOIT_I(ViewingDistance      ,40  ,40 ) \
    \
-   DOIT_S(BirdsColor           ,"#361A07" ,"#361A07")
+   DOIT_S(BirdsColor           ,"#361A07" ,"#361A07") \
+   DOIT_S(BackgroundFile       ," "        ," ") \
+   DOIT_I(BlackBackground      ,0   ,0 )
 

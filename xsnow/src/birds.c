@@ -884,7 +884,7 @@ void birds_init ()
       add_to_mainloop(PRIORITY_HIGH,time_update_speed_birds,   do_update_speed_birds );
       add_to_mainloop(PRIORITY_HIGH,time_wings,                do_wings              );
       add_to_mainloop(PRIORITY_DEFAULT,time_change_attr,       do_change_attr        );
-      add_to_mainloop(PRIORITY_DEFAULT,0.5,                    do_main_window        );
+      add_to_mainloop(PRIORITY_DEFAULT,time_main_window,       do_main_window        );
       main_window();
    }
 

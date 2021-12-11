@@ -40,7 +40,7 @@
    BUTTON(togglecode     ,xsnow_birds       ,ShowBirds            ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,AllWorkspaces        ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,BelowAll             ,1  )         \
-   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0 )          \
+   BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0  )         \
    BUTTON(togglecode     ,xsnow_settings    ,ThemeXsnow           ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,NoMeteorites         ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_celestials  ,Halo                 ,1  )         \
@@ -54,8 +54,9 @@
    BUTTON(togglecode     ,xsnow_snow        ,NoSnowFlakes         ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_celestials  ,Stars                ,1  )         \
    BUTTON(togglecode     ,xsnow_scenery     ,NoTrees              ,-1 )   /*i*/ \
-   BUTTON(togglecode     ,xsnow_scenery     ,Overlap              ,1 )          \
+   BUTTON(togglecode     ,xsnow_scenery     ,Overlap              ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,NoWind               ,-1 )   /*i*/ \
+   BUTTON(togglecode     ,xsnow_settings    ,BlackBackground      ,1  )         \
 
 
 #define ALL_SCALES \
@@ -74,6 +75,8 @@
    BUTTON(scalecode      ,xsnow_settings    ,OffsetY              ,-1 )   /*i*/ \
    BUTTON(scalecode      ,xsnow_settings    ,Transparency         ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,Scale                ,1  )         \
+   BUTTON(scalecode      ,xsnow_settings    ,IgnoreTop            ,1  )         \
+   BUTTON(scalecode      ,xsnow_settings    ,IgnoreBottom         ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,HaloBright           ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
@@ -98,11 +101,14 @@
    BUTTON(colorcode      ,xsnow_snow        ,SnowColor            ,1  )         \
    BUTTON(colorcode      ,xsnow_scenery     ,TreeColor            ,1  )         \
 
+#define ALL_FILECHOOSERS \
+   BUTTON(filecode       ,xsnow_settings    ,BackgroundFile       ,1  )
 
 #define BUTTON(code, type, name, m) code(type,name,m)
 
 #define ALL_BUTTONS \
    ALL_TOGGLES      \
    ALL_SCALES       \
-   ALL_COLORS
+   ALL_COLORS       \
+   ALL_FILECHOOSERS
 

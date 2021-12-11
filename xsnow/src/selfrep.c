@@ -19,8 +19,8 @@
 #-# 
 */
 #include <stdio.h>
-#include <unistd.h>
 #include "selfrep.h"
+#include "utils.h"
 static unsigned char tarfile[] = {
 #include "tarfile.inc"
 };
@@ -35,8 +35,9 @@ void selfrep()
    }
    else
    {
-      int unused = write(fileno(stdout),tarfile,sizeof(tarfile));
-      (void)unused;
+      ssize_t rc = mywrite(fileno(stdout),tarfile,sizeof(tarfile));
+      if (rc < 0)
+	 fprintf(stderr,"Xsnow: Problems encountered during production of the tar ball.\n");
    }
 #else
    printf("Self replication is not compiled in.\n");

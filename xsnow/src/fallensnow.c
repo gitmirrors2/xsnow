@@ -112,6 +112,8 @@ void fallensnow_ui()
        );
    UIDO(NoKeepSBot        , InitFallenSnow(); ClearScreen(); );
    UIDO(NoKeepSWin        , InitFallenSnow(); ClearScreen(); );
+   UIDO(IgnoreTop         ,                                  );
+   UIDO(IgnoreBottom      ,                                  );
 }
 
 int do_fallen(void *d)

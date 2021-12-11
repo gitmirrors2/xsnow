@@ -185,6 +185,7 @@ static GtkWidget     *range;
 static GtkWidget     *desktop_type;
 static GtkContainer  *birdsgrid;
 static GtkContainer  *moonbox;
+static GtkImage      *preview;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -194,6 +195,7 @@ static void set_tree_buttons(void);
 static void handle_css(void);
 static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(void *);
+static int  ui_running = False;
 static void show_bct_countdown(void);
 static void yesyes(GtkWidget *w, gpointer data);
 static void nono(GtkWidget *w, gpointer data);
@@ -201,6 +203,8 @@ static void activate (GtkApplication *app);
 static void set_default_tab(int tab, int vintage);
 static void set_belowall_default();
 static void handle_theme(void);
+static void update_preview_cb (GtkFileChooser *file_chooser, gpointer data);
+static void my_gtk_label_set_text(GtkLabel *label, const gchar *str); 
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -327,6 +331,7 @@ static struct _tree_buttons
 #define togglecode(type,name,m) NEWLINE GtkWidget *name;
 #define scalecode togglecode
 #define colorcode togglecode
+#define filecode  togglecode
 static struct _Button 
 {
    ALL_BUTTONS
@@ -342,6 +347,7 @@ static struct _Button
    NEWLINE Button.name = GTK_WIDGET(gtk_builder_get_object(builder,ID "-" #name));
 #define scalecode togglecode
 #define colorcode togglecode
+#define filecode  togglecode 
 
 static void init_buttons1()
 {
@@ -382,6 +388,17 @@ static void init_buttons1()
       NEWLINE    rgba2color(&color,&Flags.name); \
       NEWLINE }
 
+#define filecode(type,name,m) \
+   NEWLINE MODULE_EXPORT void buttoncb(type,name)(GtkWidget *w) \
+   NEWLINE { \
+      NEWLINE    if(!human_interaction) return; \
+      NEWLINE    gchar *filename; \
+      NEWLINE    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(w)); \
+      NEWLINE    free(Flags.name); \
+      NEWLINE    Flags.name = strdup(filename); \
+      NEWLINE    g_free(filename); \
+      NEWLINE }
+
 ALL_BUTTONS
 #include "undefall.inc"
 
@@ -400,6 +417,9 @@ NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name))
    NEWLINE P("color %s %s %d %s\n",#name,#type,m,Flags.name); \
 NEWLINE     gdk_rgba_parse(&color,Flags.name); \
 NEWLINE        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(Button.name),&color); 
+#define filecode(type,name,m) \
+   NEWLINE P("file %s %s %d %s\n",#name,#type,m,Flags.name); \
+NEWLINE  gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(Button.name),Flags.BackgroundFile);
 
 static void set_buttons1()
 {
@@ -419,6 +439,9 @@ static void set_buttons1()
 #define colorcode(type,name,m)  \
    NEWLINE P("%s %s\n",#name,#type); \
    NEWLINE g_signal_connect(G_OBJECT(Button.name),"color-set", G_CALLBACK(buttoncb(type,name)),NULL);
+#define filecode(type,name,m) \
+   NEWLINE P("%s %s\n",#name,#type); \
+   NEWLINE g_signal_connect(G_OBJECT(Button.name),"file-set", G_CALLBACK(buttoncb(type,name)),NULL);
 
 static void connect_signals()
 {
@@ -427,6 +450,7 @@ static void connect_signals()
       P("\nend connect_signals\n\n");
 }
 #include "undefall.inc"
+
 
 static void report_tree_type(int p, gint active)
 {
@@ -627,7 +651,7 @@ MODULE_EXPORT void button_below(GtkWidget *w)
       show_bct_countdown();
       gtk_widget_hide(Button.BelowAll);
       gtk_widget_show(Button.BelowConfirm);
-      bct_id = add_to_mainloop(PRIORITY_DEFAULT,1.0,below_confirm_ticker);
+      bct_id = add_to_mainloop(PRIORITY_DEFAULT,time_below_confirm,below_confirm_ticker);
    }
 }
 MODULE_EXPORT void button_below_confirm()
@@ -642,7 +666,7 @@ static void init_general_buttons()
    g_signal_connect(Button.BelowAll, "toggled", G_CALLBACK (button_below), NULL);
    g_signal_connect(Button.BelowConfirm, "toggled", G_CALLBACK(button_below_confirm), NULL);
 
-   gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"id-version")),"xsnow version " VERSION);
+   my_gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"id-version")),"xsnow version " VERSION);
 
    gtk_widget_hide(Button.BelowConfirm);
 }
@@ -727,7 +751,7 @@ void button_vintage_snow()
 void ui_set_birds_header(const char *text)
 {
    GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
-   gtk_label_set_text(GTK_LABEL(birds_header),text);
+   my_gtk_label_set_text(GTK_LABEL(birds_header),text);
 }
 
 void ui_set_celestials_header(const char *text)
@@ -737,7 +761,7 @@ void ui_set_celestials_header(const char *text)
    a = (char *) realloc(a,strlen(a)+2+strlen(text));
    strcat(a,"\n");
    strcat(a,text);
-   gtk_label_set_text(GTK_LABEL(celestials_header),a);
+   my_gtk_label_set_text(GTK_LABEL(celestials_header),a);
    free(a);
 }
 
@@ -766,10 +790,17 @@ MODULE_EXPORT void button_wind_activate()
    Flags.WindNow = 1;
 }
 
+MODULE_EXPORT void button_xscreensaver_activate()
+{
+   int rc = system("xscreensaver-command -activate");
+   (void) rc;
+}
+
 void set_default_tab(int tab, int vintage)
 {
    int h = human_interaction;
    human_interaction = 0;
+   char *background = strdup(Flags.BackgroundFile); // don't want to clear backgroundfile
    if(vintage)
    {
 #define togglecode(type,name,m) \
@@ -778,6 +809,7 @@ void set_default_tab(int tab, int vintage)
 #define colorcode(type,name,m) \
       NEWLINE    if (type == tab) \
       NEWLINE       { free(Flags.name); Flags.name = strdup(VINTAGE(name)); } 
+#define filecode colorcode
 
       ALL_BUTTONS;
 #include "undefall.inc"
@@ -796,6 +828,9 @@ void set_default_tab(int tab, int vintage)
 	    break;
 	 case xsnow_settings:
 	    set_belowall_default();
+	    free(Flags.BackgroundFile);
+	    Flags.BackgroundFile = strdup(background);
+	    free(background);
 	    break;
       }
    }
@@ -806,6 +841,7 @@ void set_default_tab(int tab, int vintage)
 #define colorcode(type,name,m) \
       NEWLINE    if (type == tab) \
       NEWLINE       { free(Flags.name); Flags.name = strdup(DEFAULT(name)); } 
+#define filecode colorcode
    {
       ALL_BUTTONS;
 #include "undefall.inc"
@@ -824,6 +860,9 @@ void set_default_tab(int tab, int vintage)
 	    break;
 	 case xsnow_settings:
 	    set_belowall_default();
+	    free(Flags.BackgroundFile);
+	    Flags.BackgroundFile = strdup(background);
+	    free(background);
 	    break;
       }
    }
@@ -889,21 +928,21 @@ MODULE_EXPORT void button_all_vintage()
 void ui_show_nflakes(int n)
 {
    snprintf(sbuffer,nsbuffer,"%6d",n);
-   gtk_label_set_text(GTK_LABEL(nflakeslabel),sbuffer);
+   my_gtk_label_set_text(GTK_LABEL(nflakeslabel),sbuffer);
 }
 
 void ui_show_range_etc()
 {
    snprintf(sbuffer,nsbuffer,"Range: %d\n",(int)birds_get_range());
-   gtk_label_set_text(GTK_LABEL(range),sbuffer);
+   my_gtk_label_set_text(GTK_LABEL(range),sbuffer);
    snprintf(sbuffer,nsbuffer,"Mean dist: %d\n",(int)birds_get_mean_dist());
-   gtk_label_set_text(GTK_LABEL(mean_distance),sbuffer);
+   my_gtk_label_set_text(GTK_LABEL(mean_distance),sbuffer);
 }
 
 void ui_show_desktop_type(const char *s)
 {
    snprintf(sbuffer,nsbuffer,"Desktop type: %s",s);
-   gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
+   my_gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
 }
 
 void ui_set_sticky(int x)
@@ -914,8 +953,40 @@ void ui_set_sticky(int x)
       gtk_window_unstick(GTK_WINDOW(hauptfenster));
 }
 
+// https://docs.gtk.org/gtk3/iface.FileChooser.html
+void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
+{
+  GtkWidget *preview;
+  char *filename;
+  GdkPixbuf *pixbuf;
+  gboolean have_preview;
+
+  preview = GTK_WIDGET (data);
+  filename = gtk_file_chooser_get_preview_filename (file_chooser);
+  if(!IsReadableFile(filename))
+  {
+     g_free(filename);
+     return;
+  }
+
+  int w = global.SnowWinWidth/10;
+
+  //pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+  pixbuf = gdk_pixbuf_new_from_file_at_size (filename, w, w, NULL);
+  have_preview = (pixbuf != NULL);
+  g_free (filename);
+
+  gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+  if (pixbuf)
+    g_object_unref (pixbuf);
+
+  gtk_file_chooser_set_use_preview_label(file_chooser, FALSE);
+  gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+}
+
 void ui()
 {
+   ui_running = True;
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
    gtk_builder_connect_signals (builder, builder);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
@@ -936,9 +1007,14 @@ void ui()
    connect_signals();
    init_pixmaps();
    set_buttons();
+   preview = GTK_IMAGE(gtk_image_new());
+   gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(Button.BackgroundFile), GTK_WIDGET(preview));
+   g_signal_connect (GTK_FILE_CHOOSER(Button.BackgroundFile), "update-preview",
+            G_CALLBACK (update_preview_cb), preview);
 
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
+
 }
 
 // Set the style provider for the widgets
@@ -971,7 +1047,7 @@ void handle_css()
       //".xsnow button.color {padding: 4px; }"
       //".xsnow headerbar stackswitcher button.radio label       { color: #065522;  }"   
       //".xsnow headerbar stackswitcher button.radio        { box-shadow: 0px 0px; border-top-width: 0px;  }"   
-      
+
       // These are not colors, but nevertheless I think we should do this always:
       "scale              { padding:       1em;                    }"   // padding in slider buttons
       "button.radio       { min-width:     10px;                   }"   // make window as narrow as possible
@@ -1189,4 +1265,10 @@ void ui_error_x11()
 
    gtk_widget_show_all (errorfenster);
    gtk_main();
+}
+
+void my_gtk_label_set_text(GtkLabel *label, const gchar *str)
+{
+   if(ui_running)
+      gtk_label_set_text(label, str);
 }

@@ -24,6 +24,7 @@
 #include <gdk/gdkx.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
+#include <byteswap.h>
 #include "debug.h"
 #include "windows.h"
 #include "flags.h"
@@ -35,12 +36,12 @@
 #include "dsimple.h"
 
 #include "vroot.h"
-static int    do_wupdate(void *);
 static int    do_sendevent(void *);
 static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 
 static WinInfo      *Windows = NULL;
 static int          NWindows;
+static int          do_wupdate(void *);
 
 void windows_ui()
 {
@@ -63,7 +64,7 @@ void windows_init()
    if (global.Desktop)
       add_to_mainloop(PRIORITY_DEFAULT, time_wupdate, do_wupdate);
    if (!global.IsDouble)
-      add_to_mainloop(PRIORITY_DEFAULT, 0.5, do_sendevent);
+      add_to_mainloop(PRIORITY_DEFAULT, time_sendevent, do_sendevent);
 }
 
 int WorkspaceActive()
@@ -93,6 +94,12 @@ int do_sendevent(void *dummy)
    (void)dummy;
 }
 
+void UpdateWindows()
+{
+   global.WindowsChanged = 1;
+   do_wupdate((void*)0);
+}
+
 int do_wupdate(void *dummy)
 {
    P("do_wupdate %d %d\n",counter++,global.WindowsChanged);
@@ -101,6 +108,14 @@ int do_wupdate(void *dummy)
 
    if(Flags.NoKeepSWin) return TRUE;
 
+   // once in a while, we force updating windows
+   static int wcounter = 0;
+   wcounter++;
+   if (wcounter > 9)
+   {
+      global.WindowsChanged = 1;
+      wcounter = 0;
+   }
    if (!global.WindowsChanged)
       return TRUE;
 
@@ -210,10 +225,9 @@ void UpdateFallenSnowRegions()
 	    // and also not if this window has y <= 0
 	    // and also not if this window is a "dock"
 	    P("               %#lx %d\n",w->id,w->dock);
-	    // if (w->id != SnowWin_a && w->id != SnowWinb && w->y > 0 && !(w->dock)) // let op
 	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock)) 
 	    {
-	       if((int)(w->w) == global.SnowWinWidth && w->x == 0 && w->y <100) //maybe a transparent xpenguins window?
+	       if(((int)(w->w) == global.SnowWinWidth && w->x == 0 && w->y <100)) //maybe a transparent xpenguins window?
 	       {
 		  P("skipping: %d %#lx %d %d %d\n",global.counter++, w->id, w->w, w->x, w->y);
 	       }
@@ -246,7 +260,13 @@ void UpdateFallenSnowRegions()
       if (f->win.id != 0)  // f->id=0: this is the snow at the bottom
       {
 	 w = FindWindow(Windows,NWindows,f->win.id);
-	 if(!w)   // this window is gone
+	 if(
+	       !w                                                       // this window is gone
+	       || ( w->w > 0.8*global.SnowWinWidth 
+		  && w->ya < Flags.IgnoreTop)                           // too wide&too close to top   
+	       || ( w->w > 0.8*global.SnowWinWidth 
+		  && global.SnowWinHeight - w->ya < Flags.IgnoreBottom) // too wide&too close to bottom
+	   )
 	 {
 	    GenerateFlakesFromFallen(f,0,f->w,-10.0);
 	    toremove[ntoremove++] = f->win.id;
@@ -620,3 +640,81 @@ void DisplayDimensions()
       ClearScreen();
 }
 
+void SetBackground()
+{
+   char *f = Flags.BackgroundFile;
+   if (!IsReadableFile(f))
+      return;
+
+   printf("Setting background from %s\n",f);
+
+   int w = global.SnowWinWidth;
+   int h = global.SnowWinHeight;
+   Display *display = global.display;
+   Window window = global.SnowWin;
+   int screen_num = DefaultScreen(display);
+   int depth = DefaultDepth(display, screen_num);
+
+   GdkPixbuf *pixbuf;
+   pixbuf = gdk_pixbuf_new_from_file_at_scale(f,w,h,FALSE,NULL);
+   if (!pixbuf)
+      return;
+   int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+   guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
+   P("pad: %d %d\n",XBitmapPad(display),depth);
+
+   unsigned char *pixels1 = (unsigned char*)malloc(w*h*4*sizeof(unsigned char));
+   // https://gnome.pages.gitlab.gnome.org/gdk-pixbuf/gdk-pixbuf/class.Pixbuf.html
+   //
+
+   int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+   P("rowstride: %d\n",rowstride);
+   int i,j;
+   int k = 0;
+   for (i=0; i<h; i++)
+      for(j=0; j<w; j++)
+      {
+	 guchar *p = &pixels[i*rowstride +j*n_channels];
+	 pixels1[k++] = p[2];
+	 pixels1[k++] = p[1];
+	 pixels1[k++] = p[0];
+	 pixels1[k++] = 0xff;
+      }
+   if (!is_little_endian())
+   {
+      I("Big endian system, swapping bytes in background.\n");
+      I("Let me know if this is not OK.\n");
+      int i;
+      for( i=0; i<w*h; i++)
+	 ((int*)pixels1)[i] = __bswap_32(((int*)pixels1)[i]);
+   }
+
+   XImage *ximage;
+   ximage = XCreateImage(display, 
+	 DefaultVisual(display, screen_num),
+	 depth,
+	 ZPixmap,
+	 0,
+	 (char*)pixels1,
+	 w,
+	 h,
+	 XBitmapPad(display),
+	 0
+	 );
+   XInitImage(ximage);
+   Pixmap pixmap;
+   pixmap = XCreatePixmap(display,window,w,h,DefaultDepth(display,screen_num));
+
+   GC gc;
+   gc = XCreateGC(display,pixmap,0,0);
+   XPutImage(display,pixmap,gc,ximage,0,0,0,0,w,h);
+
+   P("setwindowbackground\n");
+   XSetWindowBackgroundPixmap(display,window,pixmap);
+   g_object_unref(pixbuf);
+   XFreePixmap(display, pixmap);
+   XDestroyImage(ximage);
+   //free(pixels1);  //This is already freed by XDestroyImage
+   return;
+}

@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=xsnow
+# xsnow-XSNOW_VERSION
 Comment=Snow, Santa and birds on your desktop
 Exec=xsnow
 Icon=xsnow
@@ -8,7 +9,7 @@ Categories=Game;
 Terminal=false
 Name[en_US]=xsnow
 Keywords=christmas;santa;snow;xmas
-Version=XSNOW_VERSION
+Version=1.5
 StartupNotify=true
 Actions=start;nomenu;
 

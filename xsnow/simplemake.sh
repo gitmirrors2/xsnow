@@ -87,7 +87,7 @@ echo "creating changelog.inc:"
 ./tocc.sh < ../ChangeLog > changelog.inc
 
 echo "creating tarfile.inc:"
-echo "No tar file available" | toascii.sh > tarfile.inc
+echo "No tar file available" | ./toascii.sh > tarfile.inc || exit 1
 
 echo "Creating snow_includes.h:"
 ./gen_snow_includes.sh .. || exit 1

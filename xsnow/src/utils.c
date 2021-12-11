@@ -23,6 +23,8 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include "xsnow.h"
 #include "utils.h"
 #include "windows.h"
@@ -42,6 +44,15 @@ void traceback()
    backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO);
 }
 #endif
+
+int IsReadableFile(char *path)
+{
+   if (!path || access(path,R_OK) != 0)
+      return 0;
+   struct stat path_stat;
+   stat(path,&path_stat);
+   return S_ISREG(path_stat.st_mode);
+}
 
 FILE *HomeOpen(const char *file,const char *mode, char **path)
 {
@@ -67,6 +78,25 @@ void ClearScreen()
    meteo_erase();
    XFlush(global.display);
 
+}
+
+ssize_t mywrite(int fd, const void *buf, size_t count)
+{
+   const size_t m = 4096; // max per write
+   size_t w       = 0;    // # written chars           
+   char *b        = (char *)buf;
+
+   while (w < count)
+   {
+      size_t l = count - w;
+      if (l > m)
+	 l = m;
+      ssize_t x = write(fd, b+w, l);
+      if (x < 0)
+	 return -1;
+      w += x;
+   }
+   return 0;
 }
 
 void myXClearArea(Display*dsp, Window win, int x, int y, int w, int h, int exposures)
@@ -174,7 +204,7 @@ void remove_from_mainloop(guint *tag)
 
 int is_little_endian(void)
 {
-   int endiantest = 1;
+   volatile int endiantest = 1;
    return (*(char *)&endiantest) == 1;
 }
 

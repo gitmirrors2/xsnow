@@ -26,7 +26,7 @@ gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) 
-xsnow_LDADD    = $(GTK_LIBS)  $(X11_LIBS)
+xsnow_LDADD    = $(GTK_LIBS)  $(X11_LIBS) 
 
 
 if MAKESELFREP
@@ -62,7 +62,7 @@ BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
 .PHONY: tarfile.inc
 if MAKESELFREP
 tarfile.inc: 
-	if test -f $(tarfile) ; then \
+	@if test -f $(tarfile) ; then \
 		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
 		$(TOASCII) < $(tarfile) > $@; \
 		else \
@@ -97,6 +97,6 @@ man6_MANS = xsnow.6
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 
-CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3 \
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h xsnow_out_2 xsnow_out_3 \
 	     changelog.inc tarfile.inc toascii toascii.c
 

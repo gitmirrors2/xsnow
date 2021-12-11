@@ -108,7 +108,7 @@ void snow_init()
    InitSnowSpeedFactor();
    add_to_mainloop(PRIORITY_DEFAULT, time_genflakes,      do_genflakes       );
    add_to_mainloop(PRIORITY_DEFAULT, time_flakecount,     do_show_flakecount );
-   add_to_mainloop(PRIORITY_DEFAULT, 0.2,                 do_SwitchFlakes    );
+   add_to_mainloop(PRIORITY_DEFAULT, time_switchflakes,   do_SwitchFlakes    );
 
    // now we would like to be able to get rid of the snow xpms:
    /*
@@ -646,8 +646,7 @@ int do_show_flakecount(void *d)
 {
    if (Flags.Done)
       return FALSE;
-   if (!Flags.NoMenu)
-      ui_show_nflakes(global.FlakeCount);
+   ui_show_nflakes(global.FlakeCount);
    return TRUE;
    (void)d;
 }
@@ -669,8 +668,8 @@ void genxpmflake(char ***xpm, int w, int h)
    float w2 = 0.5*w;
    float h2 = 0.5*h;
 
-   y[0] = -w2;
-   x[0] = -h2;    // to have at least one pixel in the centre
+   y[0] = 0;
+   x[0] = 0;    // to have at least one pixel in the centre
    int n = 1;
    for (i=0; i<h; i++)
    {

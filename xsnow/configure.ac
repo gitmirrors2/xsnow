@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.3.5], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.4.0], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -32,9 +32,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_ARG_ENABLE(selfrep, [AS_HELP_STRING([--enable-selfrep],[Build with self replicating mode @<:@default=yes@:>@])],[],[enable_selfrep=yes])
 AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
-
-AS_IF( [test "x$enable_selfrep" = "xyes"],
-      [AC_CONFIG_COMMANDS([create tar file], [make dist])])
 
 AC_SUBST([PACKAGE_VERSION])
 DATE=`date +"%Y-%m-%d"`
@@ -84,3 +81,7 @@ LIBS="-lm"
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
 
 AC_OUTPUT
+
+AS_IF( [test "x$enable_selfrep" = "xyes"],
+      [make dist])
+

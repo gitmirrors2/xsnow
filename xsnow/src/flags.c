@@ -116,6 +116,9 @@ int HandleFlags(int argc, char*argv[])
       for (ax=1; ax<argc; ax++) 
       {
 	 arg = argv[ax];
+	 if(!strcmp(arg, "-bg"))
+	    Flags.BlackBackground = 0;
+
 	 //  ------------------- handled in main, so not needed here --------------------
 	 if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
 	 {
@@ -202,12 +205,16 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
 	 handle_ia(-wsnowdepth          ,MaxWinSnowDepth                  );
+	 handle_ia(-ignoretop           ,IgnoreTop                        );
+	 handle_ia(-ignorebottom        ,IgnoreBottom                     );
+	 handle_ia(-transparency        ,Transparency                     );
 
 
 	 handle_is(-display             ,DisplayName                      );
 	 handle_is(-sc                  ,SnowColor                        );
 	 handle_is(-tc                  ,TreeColor                        );
 	 handle_is(-treetype            ,TreeType                         );
+	 handle_is(-bg                  ,BackgroundFile                   );
 
 	 handle_iv(-above               ,BelowAll                 ,0      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
@@ -240,6 +247,9 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nowind              ,NoWind                   ,1      );
 	 handle_iv(-wind                ,NoWind                   ,0      );
 	 handle_iv(-xwininfo            ,XWinInfoHandling         ,1      );
+	 handle_iv(-treeoverlap         ,Overlap                  ,1      );
+	 handle_iv(-notreeoverlap       ,Overlap                  ,0      );
+
 
 	 // birds:
 
@@ -256,6 +266,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-showbirds           ,ShowBirds                        );
 	 handle_ia(-showattr            ,ShowAttrPoint                    );
 	 handle_ia(-viewingdistance     ,ViewingDistance                  );
+	 handle_ia(-birdsscale          ,BirdsScale                       );
 
 	 handle_is(-birdscolor          ,BirdsColor                       );
 

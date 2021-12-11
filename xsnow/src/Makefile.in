@@ -586,7 +586,7 @@ TOCC = $(top_srcdir)/src/tocc.sh
 TOASCII = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(am__append_1)
-xsnow_LDADD = $(GTK_LIBS)  $(X11_LIBS)
+xsnow_LDADD = $(GTK_LIBS)  $(X11_LIBS) 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
@@ -615,7 +615,7 @@ TESTS = test1.sh
 appicondir = $(datadir)/pixmaps
 appicon_DATA = Pixmaps/xsnow.svg
 man6_MANS = xsnow.6
-CLEANFILES = xsnow.6 ui_xml.h snow_includes.h .deps/* xsnow_out_2 xsnow_out_3 \
+CLEANFILES = xsnow.6 ui_xml.h snow_includes.h xsnow_out_2 xsnow_out_3 \
 	     changelog.inc tarfile.inc toascii toascii.c
 
 all: $(BUILT_SOURCES)
@@ -1773,7 +1773,7 @@ uninstall-man: uninstall-man6
 
 .PHONY: tarfile.inc
 @MAKESELFREP_TRUE@tarfile.inc: 
-@MAKESELFREP_TRUE@	if test -f $(tarfile) ; then \
+@MAKESELFREP_TRUE@	@if test -f $(tarfile) ; then \
 @MAKESELFREP_TRUE@		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
 @MAKESELFREP_TRUE@		$(TOASCII) < $(tarfile) > $@; \
 @MAKESELFREP_TRUE@		else \

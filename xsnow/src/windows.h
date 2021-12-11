@@ -34,4 +34,7 @@ extern void         setabove(GtkWindow *w);
 extern void         DisplayDimensions(void);
 extern Window       XWinInfo(char **name);
 extern void         UpdateFallenSnowRegions(void);
+extern void         UpdateWindows(void);
+extern void         SetBackground(void);
+
 

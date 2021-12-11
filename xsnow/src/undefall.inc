@@ -21,6 +21,7 @@
 #undef colorcode
 #undef scalecode
 #undef togglecode
+#undef filecode
 #undef DOITB
 #undef DOIT_I
 #undef DOIT_L
