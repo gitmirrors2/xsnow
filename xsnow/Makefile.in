@@ -327,7 +327,7 @@ EXTRA_DIST = bootstrap Changes README README.md \
 	     addcopyright.sh prevent-remakes \
 	     dependencies simplemake.sh getversion 
 
-tarfile = $(abs_builddir)/xsnow-$(VERSION).tar.gz
+tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
 DISTCLEANFILES = $(tarfile)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -809,7 +809,6 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
-export tarfile
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

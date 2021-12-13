@@ -489,11 +489,11 @@ uninstall-am: uninstall-appdataDATA uninstall-desktopDATA
 .PRECIOUS: Makefile
 
 
-xsnow.appdata.xml: xsnow.appdata.xml.in
-	sed "s/XSNOW_VERSION/$(PACKAGE_VERSION)/;s/XSNOW_DATE/$(DATE)/" $< > $@
+xsnow.appdata.xml: $(top_srcdir)/data/xsnow.appdata.xml.in
+	sed "s/XSNOW_VERSION/$(PACKAGE_VERSION)/;s/XSNOW_DATE/$(DATE)/" $(top_srcdir)/data/xsnow.appdata.xml.in > $@
 
-xsnow.desktop: xsnow.desktop.in
-	sed "s/XSNOW_VERSION/$(PACKAGE_VERSION)/;s/XSNOW_DATE/$(DATE)/" $< > $@
+xsnow.desktop: $(top_srcdir)/data/xsnow.desktop.in
+	sed "s/XSNOW_VERSION/$(PACKAGE_VERSION)/;s/XSNOW_DATE/$(DATE)/" $(top_srcdir)/data/xsnow.desktop.in > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -610,6 +610,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
+tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
 EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh
 TESTS = test1.sh
 appicondir = $(datadir)/pixmaps
@@ -1777,7 +1778,7 @@ uninstall-man: uninstall-man6
 @MAKESELFREP_TRUE@		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
 @MAKESELFREP_TRUE@		$(TOASCII) < $(tarfile) > $@; \
 @MAKESELFREP_TRUE@		else \
-@MAKESELFREP_TRUE@		echo "No tar file available" | $(TOASCII) > $@; \
+@MAKESELFREP_TRUE@		echo "No tar file available: $(tarfile)" | $(TOASCII) > $@; \
 @MAKESELFREP_TRUE@		fi
 @MAKESELFREP_FALSE@tarfile.inc: 
 @MAKESELFREP_FALSE@	echo "No selfrep compiled in" | $(TOASCII) > $@

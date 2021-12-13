@@ -22,7 +22,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.4.0], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.4.1], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -83,5 +83,5 @@ AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
 AC_OUTPUT
 
 AS_IF( [test "x$enable_selfrep" = "xyes"],
-      [make dist])
+      [${MAKE:=make} dist])
 

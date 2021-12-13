@@ -24,7 +24,7 @@
 #include <gdk/gdkx.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
-#include <byteswap.h>
+//#include <byteswap.h>
 #include "debug.h"
 #include "windows.h"
 #include "flags.h"
@@ -672,22 +672,29 @@ void SetBackground()
    P("rowstride: %d\n",rowstride);
    int i,j;
    int k = 0;
-   for (i=0; i<h; i++)
-      for(j=0; j<w; j++)
-      {
-	 guchar *p = &pixels[i*rowstride +j*n_channels];
-	 pixels1[k++] = p[2];
-	 pixels1[k++] = p[1];
-	 pixels1[k++] = p[0];
-	 pixels1[k++] = 0xff;
-      }
-   if (!is_little_endian())
+   if(is_little_endian())
+      for (i=0; i<h; i++)
+	 for(j=0; j<w; j++)
+	 {
+	    guchar *p = &pixels[i*rowstride +j*n_channels];
+	    pixels1[k++] = p[2];
+	    pixels1[k++] = p[1];
+	    pixels1[k++] = p[0];
+	    pixels1[k++] = 0xff;
+	 }
+   else
    {
       I("Big endian system, swapping bytes in background.\n");
       I("Let me know if this is not OK.\n");
-      int i;
-      for( i=0; i<w*h; i++)
-	 ((int*)pixels1)[i] = __bswap_32(((int*)pixels1)[i]);
+      for (i=0; i<h; i++)
+	 for(j=0; j<w; j++)
+	 {
+	    guchar *p = &pixels[i*rowstride +j*n_channels];
+	    pixels1[k++] = 0xff;
+	    pixels1[k++] = p[0];
+	    pixels1[k++] = p[1];
+	    pixels1[k++] = p[2];
+	 }
    }
 
    XImage *ximage;

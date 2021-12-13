@@ -59,6 +59,8 @@ nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
 BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
 
+tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
+
 .PHONY: tarfile.inc
 if MAKESELFREP
 tarfile.inc: 
@@ -66,7 +68,7 @@ tarfile.inc:
 		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
 		$(TOASCII) < $(tarfile) > $@; \
 		else \
-		echo "No tar file available" | $(TOASCII) > $@; \
+		echo "No tar file available: $(tarfile)" | $(TOASCII) > $@; \
 		fi
 else
 tarfile.inc: 

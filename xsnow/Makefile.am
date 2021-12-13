@@ -24,7 +24,6 @@ EXTRA_DIST = bootstrap Changes README README.md \
 	     addcopyright.sh prevent-remakes \
 	     dependencies simplemake.sh getversion 
 
-tarfile = $(abs_builddir)/xsnow-$(VERSION).tar.gz
-export tarfile
+tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
 DISTCLEANFILES = $(tarfile)
 

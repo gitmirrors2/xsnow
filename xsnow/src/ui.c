@@ -222,6 +222,8 @@ void ui_ui()
 
 void handle_theme()
 {
+   if(!ui_running)
+      return;
    if (Flags.ThemeXsnow)
    {
       gtk_style_context_add_class(hauptfenstersc,"xsnow");
@@ -750,12 +752,16 @@ void button_vintage_snow()
 
 void ui_set_birds_header(const char *text)
 {
+   if(!ui_running)
+      return;
    GtkWidget *birds_header = GTK_WIDGET(gtk_builder_get_object(builder,"birds-header")); 
    my_gtk_label_set_text(GTK_LABEL(birds_header),text);
 }
 
 void ui_set_celestials_header(const char *text)
 {
+   if(!ui_running)
+      return;
    GtkWidget *celestials_header = GTK_WIDGET(gtk_builder_get_object(builder,"celestials-header")); 
    char *a = strdup(gtk_label_get_text(GTK_LABEL(celestials_header)));
    a = (char *) realloc(a,strlen(a)+2+strlen(text));
@@ -927,12 +933,16 @@ MODULE_EXPORT void button_all_vintage()
 
 void ui_show_nflakes(int n)
 {
+   if(!ui_running)
+      return;
    snprintf(sbuffer,nsbuffer,"%6d",n);
    my_gtk_label_set_text(GTK_LABEL(nflakeslabel),sbuffer);
 }
 
 void ui_show_range_etc()
 {
+   if(!ui_running)
+      return;
    snprintf(sbuffer,nsbuffer,"Range: %d\n",(int)birds_get_range());
    my_gtk_label_set_text(GTK_LABEL(range),sbuffer);
    snprintf(sbuffer,nsbuffer,"Mean dist: %d\n",(int)birds_get_mean_dist());
@@ -941,12 +951,16 @@ void ui_show_range_etc()
 
 void ui_show_desktop_type(const char *s)
 {
+   if(!ui_running)
+      return;
    snprintf(sbuffer,nsbuffer,"Desktop type: %s",s);
    my_gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
 }
 
 void ui_set_sticky(int x)
 {
+   if(!ui_running)
+      return;
    if (x)
       gtk_window_stick(GTK_WINDOW(hauptfenster));
    else
@@ -1089,6 +1103,8 @@ void handle_css()
 
 void ui_background(int m)
 {
+   if(!ui_running)
+      return;
    if(m)
       gtk_style_context_add_class(hauptfenstersc,"busy");
    else
@@ -1121,6 +1137,8 @@ void birdscb(GtkWidget *w, void *m)
 
 void ui_gray_birds(int m)
 {
+   if(!ui_running)
+      return;
    gtk_container_foreach(birdsgrid, birdscb, &m);
    gtk_container_foreach(moonbox, birdscb, &m);
 }
