@@ -66,8 +66,6 @@ extern void    traceback(void);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);
-// seed the random generator (alternatively, srand48() can be used):
-extern void sgaussian(long int seed);
 
 extern int is_little_endian(void);
 extern void PrintVersion(void);

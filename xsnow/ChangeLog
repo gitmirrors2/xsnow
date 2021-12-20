@@ -1,3 +1,16 @@
+version 3.4.2
+	1: fallensnow.c: other algorithm for drawing fallen snow
+	   Santa.c: Santa is now moon-seeking, also when birds are not showing 
+	      but only half of the time
+	3: fallensnow.c: fallen snow at the bottom changes shape every few
+	   minutes
+	4: no spikes anymore on top of fallensnow
+	   define minimum height of bottom fallensnow
+	   ui.c: set_default_tab(): remove memory leak
+	   fallensnow.c: CreateSurfaceFromFallen(): some minor details
+	5: fix issue that 'make install' always remakes selfrep.o
+	   selfrep.c: if sizeof(tarfile) < 1000 characters, assume that this 
+	      can be safely send to a tty
 version 3.4.1
 	1: ui.c: more checks on ui_running
 	2: configure.ac, Makefile.am, data: some small adaptions for

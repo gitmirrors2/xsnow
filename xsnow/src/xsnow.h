@@ -98,7 +98,10 @@
 #define time_wind                 0.10   // time between starting or ending wind       
 #define time_wupdate              0.20   // time between getting windows information    
 
-#define time_fallen           (0.04 * global.cpufactor)  // time between redraw fallen snow
+#define time_change_bottom        300.0   // time between changing properties of bottom snow
+#define time_adjust_bottom        (time_change_bottom/20)// time between adjusting height of bottom snow
+//#define time_fallen           (0.04 * global.cpufactor)  // time between redraw fallen snow
+#define time_fallen                0.20   // time between recompute fallen snow surfaces
 #define time_snowflakes       (0.02 * global.cpufactor)  // time between updates of snowflakes positions etc
 #define time_draw_all         (0.04 * global.cpufactor)  // time between updates of screen 
 
@@ -128,6 +131,8 @@ typedef struct _FallenSnow {
    int                 w8;           // width rounded up to 8-fold
    short int          *acth;         // actual heights
    short int          *desh;         // desired heights
+   short int          *r;            // small random numbers used by drawing
+   short int          *pacth;        // painted actual heights
    struct _FallenSnow *next;         // pointer to next item
    cairo_surface_t    *surface;      // 
 } FallenSnow;
@@ -191,6 +196,7 @@ typedef struct _SnowMap {
 
 extern struct _global
 {
+   SnowMap        *fluffpix;
    int             counter;
    unsigned int    xxposures BITS(1);
    unsigned int    Desktop   BITS(1);

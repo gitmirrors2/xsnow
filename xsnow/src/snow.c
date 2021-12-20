@@ -136,6 +136,7 @@ void snow_ui()
    UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
    UIDOS(SnowColor                      ,
 	 InitSnowColor();
+         InitFallenSnow(); 
 	 ClearScreen();                                            );
    UIDO (SnowSpeedFactor                , InitSnowSpeedFactor();   );
    UIDO (FlakeCountMax                  ,                          );
@@ -178,6 +179,7 @@ void init_snow_pix()
       g_clear_object(&pixbuf);
       g_clear_object(&pixbufscaled);
    }
+   global.fluffpix = &snowPix[MaxFlakeTypes-1];
 }
 
 int snow_draw(cairo_t *cr)

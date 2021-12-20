@@ -56,6 +56,7 @@ static int          SantaYStep;
 static int          OldSantaX  = 0;  // the x value of Santa when he was last drawn
 static int          OldSantaY  = 0;  // the y value of Santa when he was last drawn
 static const float  LocalScale = 0.6;
+static int          MoonSeeking = 1;
 
 static cairo_surface_t *Santa_surfaces[MAXSANTA+1][2][PIXINANIMATION];
 
@@ -289,7 +290,8 @@ int do_usanta(void *d)
       if (SantaYr > santayrmax - 20)
 	 yspeeddir = -2;
       int mooncy = global.moonY+Flags.MoonSize/2;
-      if (Flags.ShowBirds && Flags.Moon && 
+      if (MoonSeeking &&
+	    Flags.Moon && 
 	    global.SantaX+global.SantaWidth < global.moonX+Flags.MoonSize && 
 	    global.SantaX+global.SantaWidth > global.moonX-300) // Santa likes to hover the moon
       {
@@ -325,7 +327,10 @@ void ResetSanta()
    global.SantaX  = -global.SantaWidth - global.ActualSantaSpeed;
    SantaXr = global.SantaX;
    global.SantaY  = randint(global.SnowWinHeight / 3)+40;
-   if (Flags.Moon && Flags.ShowBirds && global.moonX < 400)
+   // sometimes Santa is moon seeking, sometimes not
+   MoonSeeking = drand48() > 0.5;
+   P("MoonSeeking: %d\n",MoonSeeking);
+   if (MoonSeeking && Flags.Moon && global.moonX < 400)
    {
       P("moon seeking at start\n");
       global.SantaY = randint(Flags.MoonSize + 40)+global.moonY-20;

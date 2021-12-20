@@ -836,7 +836,6 @@ void set_default_tab(int tab, int vintage)
 	    set_belowall_default();
 	    free(Flags.BackgroundFile);
 	    Flags.BackgroundFile = strdup(background);
-	    free(background);
 	    break;
       }
    }
@@ -868,12 +867,12 @@ void set_default_tab(int tab, int vintage)
 	    set_belowall_default();
 	    free(Flags.BackgroundFile);
 	    Flags.BackgroundFile = strdup(background);
-	    free(background);
 	    break;
       }
    }
    set_buttons();
    human_interaction = h;
+   free(background);
 }
 
    MODULE_EXPORT
@@ -970,32 +969,32 @@ void ui_set_sticky(int x)
 // https://docs.gtk.org/gtk3/iface.FileChooser.html
 void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 {
-  GtkWidget *preview;
-  char *filename;
-  GdkPixbuf *pixbuf;
-  gboolean have_preview;
+   GtkWidget *preview;
+   char *filename;
+   GdkPixbuf *pixbuf;
+   gboolean have_preview;
 
-  preview = GTK_WIDGET (data);
-  filename = gtk_file_chooser_get_preview_filename (file_chooser);
-  if(!IsReadableFile(filename))
-  {
-     g_free(filename);
-     return;
-  }
+   preview = GTK_WIDGET (data);
+   filename = gtk_file_chooser_get_preview_filename (file_chooser);
+   if(!IsReadableFile(filename))
+   {
+      g_free(filename);
+      return;
+   }
 
-  int w = global.SnowWinWidth/10;
+   int w = global.SnowWinWidth/10;
 
-  //pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
-  pixbuf = gdk_pixbuf_new_from_file_at_size (filename, w, w, NULL);
-  have_preview = (pixbuf != NULL);
-  g_free (filename);
+   //pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+   pixbuf = gdk_pixbuf_new_from_file_at_size (filename, w, w, NULL);
+   have_preview = (pixbuf != NULL);
+   g_free (filename);
 
-  gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
-  if (pixbuf)
-    g_object_unref (pixbuf);
+   gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+   if (pixbuf)
+      g_object_unref (pixbuf);
 
-  gtk_file_chooser_set_use_preview_label(file_chooser, FALSE);
-  gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+   gtk_file_chooser_set_use_preview_label(file_chooser, FALSE);
+   gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
 }
 
 void ui()
@@ -1024,7 +1023,7 @@ void ui()
    preview = GTK_IMAGE(gtk_image_new());
    gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(Button.BackgroundFile), GTK_WIDGET(preview));
    g_signal_connect (GTK_FILE_CHOOSER(Button.BackgroundFile), "update-preview",
-            G_CALLBACK (update_preview_cb), preview);
+	 G_CALLBACK (update_preview_cb), preview);
 
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));

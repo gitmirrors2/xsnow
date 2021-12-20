@@ -1,4 +1,5 @@
 #                                               -*- Autoconf -*-
+
 # Process this file with autoconf to produce a configure script.
 #
 # -copyright-
@@ -22,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.4.1], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.4.2], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

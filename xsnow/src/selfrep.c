@@ -27,7 +27,7 @@ static unsigned char tarfile[] = {
 void selfrep()
 {
 #ifdef SELFREP
-   if(isatty(fileno(stdout)))
+   if(sizeof(tarfile) > 1000 && isatty(fileno(stdout)))
    {
       printf("Not sending tar file to terminal.\n");
       printf("Try redirecting to a file (e.g: xsnow -selfrep > xsnow.tar.gz),\n");
@@ -40,6 +40,8 @@ void selfrep()
 	 fprintf(stderr,"Xsnow: Problems encountered during production of the tar ball.\n");
    }
 #else
+   // Since the -selfrep flag is not recognized in this case,
+   // the following is somewhat superfluous:
    printf("Self replication is not compiled in.\n");
 #endif
 }

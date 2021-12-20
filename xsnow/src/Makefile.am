@@ -61,15 +61,13 @@ BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
 
 tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
 
-.PHONY: tarfile.inc
+$(tarfile):
+	echo "No tarfile available during build." > $@
+	echo "Run 'configure' or 'make dist' to make one, and run 'make' again." >> $@
+
 if MAKESELFREP
-tarfile.inc: 
-	@if test -f $(tarfile) ; then \
-		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
-		$(TOASCII) < $(tarfile) > $@; \
-		else \
-		echo "No tar file available: $(tarfile)" | $(TOASCII) > $@; \
-		fi
+tarfile.inc: $(tarfile)
+	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
 else
 tarfile.inc: 
 	echo "No selfrep compiled in" | $(TOASCII) > $@

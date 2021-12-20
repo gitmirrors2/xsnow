@@ -856,8 +856,8 @@ Flag: -defaults</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">If you feel the urge to make a donation to inspire the 
-maintainer of xsnow, here is a paypal link.</property>
+                    <property name="tooltip-text" translatable="yes">Donate one euro or so to inspire the 
+maintainer of xsnow, here is a paypal link. </property>
                     <property name="uri">https://paypal.me/wvermin</property>
                   </object>
                   <packing>

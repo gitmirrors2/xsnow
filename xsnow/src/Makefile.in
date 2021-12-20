@@ -1772,14 +1772,12 @@ uninstall-man: uninstall-man6
 .PRECIOUS: Makefile
 
 
-.PHONY: tarfile.inc
-@MAKESELFREP_TRUE@tarfile.inc: 
-@MAKESELFREP_TRUE@	@if test -f $(tarfile) ; then \
-@MAKESELFREP_TRUE@		export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; \
-@MAKESELFREP_TRUE@		$(TOASCII) < $(tarfile) > $@; \
-@MAKESELFREP_TRUE@		else \
-@MAKESELFREP_TRUE@		echo "No tar file available: $(tarfile)" | $(TOASCII) > $@; \
-@MAKESELFREP_TRUE@		fi
+$(tarfile):
+	echo "No tarfile available during build." > $@
+	echo "Run 'configure' or 'make dist' to make one, and run 'make' again." >> $@
+
+@MAKESELFREP_TRUE@tarfile.inc: $(tarfile)
+@MAKESELFREP_TRUE@	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
 @MAKESELFREP_FALSE@tarfile.inc: 
 @MAKESELFREP_FALSE@	echo "No selfrep compiled in" | $(TOASCII) > $@
 

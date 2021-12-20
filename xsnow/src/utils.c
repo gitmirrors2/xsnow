@@ -180,11 +180,6 @@ double gaussian (double mean, double std, double min, double max)
    return x;
 }
 
-void sgaussian(long int seed)
-{
-   srand48(seed);
-}
-
 guint add_to_mainloop(gint prio,float time,GSourceFunc func) 
 {
    return g_timeout_add_full(prio,(int)1000*(time),func,NULL,NULL);
@@ -214,7 +209,7 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
       cairo_paint(cr);
    else
       cairo_paint_with_alpha(cr,alpha);
-   P("%d alpha %f\n",counter++,alpha);
+   P("%d alpha %f\n",global.counter++,alpha);
 }
 
 void PrintVersion()

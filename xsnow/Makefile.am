@@ -25,5 +25,6 @@ EXTRA_DIST = bootstrap Changes README README.md \
 	     dependencies simplemake.sh getversion 
 
 tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
+
 DISTCLEANFILES = $(tarfile)
 

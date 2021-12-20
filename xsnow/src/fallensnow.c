@@ -17,7 +17,8 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ *
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -41,14 +42,19 @@
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
 
 
-
 static void   drawquartcircle(int n, short int *y);  // nb: dimension of y > n+1
 static void   CreateSurfaceFromFallen(FallenSnow *f);
 static void   EraseFallenPixel(FallenSnow *fsnow,int x);
+static void   CreateDeshBottom(short int *desh, int w, int h);
+static int    do_change_bottom(void *dummy);
+static int    do_adjust_bottom(void *dummy);
+static float  gaussf(float x, float mu, float sigma);
 
 void fallensnow_init()
 {
    InitFallenSnow();
+   add_to_mainloop(PRIORITY_DEFAULT, time_change_bottom, do_change_bottom);
+   add_to_mainloop(PRIORITY_DEFAULT, time_adjust_bottom, do_adjust_bottom);
    P(" \n");
 }
 
@@ -144,6 +150,71 @@ void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
       y[i] = lrintf(sqrtf(n2 - i*i));
 }
 
+// inspired by Mr. Gauss, and adapted for xsnow
+float gaussf(float x, float mu, float sigma)
+{
+   float y = (x-mu)/sigma;
+   float y2 = y*y;
+   return expf(-y2);
+}
+
+void CreateDeshBottom(short int *desh, int w, int h)
+{
+#if 0 
+   const float twopi = 2*355.0/113.0;
+   int i;
+   {
+      float p   = drand48()*4+1;  
+      int start = drand48()*w;
+      float a   = twopi/w;
+      for(i=0; i<w; i++)
+      {
+	 desh[i] = h*(0.45f*cosf(p*(i+start)*a)+0.55f);
+      }
+      P("desh: %f %d\n",p,start);
+   }
+#endif
+
+   float *y = (float*)malloc(sizeof(float)*w);
+   int i,j;
+
+   float base = 0.1;
+   for (i=0; i<w; i++)
+      y[i] = 0;
+   for (j=0; j<3; j++)
+   {
+      float sigma = (0.02+drand48()*0.2)*w;
+      float mu    = drand48()*w;
+      float z     = 1.0+drand48();
+      for (i=0; i<w; i++)
+	 y[i] += z*gaussf(i,mu,sigma);
+      P("desh: %d %d %d %f\n",j,(int)sigma,(int)mu,z);
+   }
+
+   float maxy = -1;
+   for (i=0; i<w; i++)
+      if(y[i]>maxy)
+	 maxy=y[i];
+
+   for(i=0; i<w; i++)
+   {
+      y[i] = y[i]/maxy;
+      if (y[i] < base)
+	 y[i] = base;
+   }
+
+   for (i=0; i<w; i++)
+      desh[i] = h*y[i];
+
+#if 0
+   FILE *ff = fopen("/tmp/desh","w");
+   for (i=0; i<w; i++)
+      fprintf(ff,"%d %d\n",i,desh[i]);
+   fclose(ff);
+#endif
+
+   free(y);
+}
 // insert a node at the start of the list 
 void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h) 
 {
@@ -160,6 +231,8 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    p->w8         = ((w-1)/8+1)*8;
    p->acth       = (short int *)malloc(sizeof(*(p->acth))*w);
    p->desh       = (short int *)malloc(sizeof(*(p->desh))*w);
+   p->r          = (short int *)malloc(sizeof(*(p->r))*w);
+   p->pacth      = (short int *)malloc(sizeof(*(p->pacth))*w);
    p->surface    = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
 
    cairo_t *cr = cairo_create(p->surface);
@@ -172,12 +245,18 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    for (i=0; i<w; i++)
    {
       p->acth[i] = 0; // specify l to get sawtooth effect
+      p->pacth[i] = 0;
       p->desh[i] = h;
       l++;
       if (l > h)
 	 l = 0;
+      p->r[i] = 0;  // no spikes 
+      //p->r[i] = drand48()*2;     //0,1 
+      //p->r[i] = drand48()*5-2;   // -2, -1, 0, 1, 2
    }
 
+   if (win->id == 0)
+      CreateDeshBottom(p->desh,w,h);
 
    if (w > h && win->id != 0)
    {
@@ -188,6 +267,41 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
 
    p->next  = *first;
    *first   = p;
+}
+
+// change bottom snow desired height
+int do_change_bottom(void *dummy)
+{
+   (void)dummy;
+   FallenSnow *fsnow = FindFallen(global.FsnowFirst, 0);
+   if (fsnow)
+      CreateDeshBottom(fsnow->desh, fsnow->w, fsnow->h);
+   return TRUE;
+}
+
+int do_adjust_bottom(void *dummy)
+{
+   (void)dummy;
+   FallenSnow *fsnow = FindFallen(global.FsnowFirst, 0);
+   if (fsnow)
+   {
+      int i;
+      int adjustments = 0;
+      for(i=0; i<fsnow->w; i++)
+      {
+	 int d = fsnow->acth[i] - fsnow->desh[i];
+	 if (d > 0)
+	 {
+	    int c = 1;
+	    if (d > 10)
+	       c=2;
+	    adjustments++;
+	    fsnow->acth[i] -= c;
+	 }
+      }
+      P("adjustments: %d\n",adjustments);
+   }
+   return TRUE;
 }
 
 // pop from list
@@ -242,6 +356,8 @@ void FreeFallenSnow(FallenSnow *fallen)
 {
    free(fallen->acth);
    free(fallen->desh);
+   free(fallen->r);
+   free(fallen->pacth);
    cairo_surface_destroy(fallen->surface);
    free(fallen);
 }
@@ -310,25 +426,43 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    int i;
    GdkRGBA color;
 
-   // clear the surface (NB: CAIRO_OPERATOR_SOURCE)
-   cairo_t *cr = cairo_create(f->surface);
-   cairo_set_source_rgba(cr,0,0,0,0);
-   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-   cairo_rectangle(cr,0,0,f->w,f->h);
-   cairo_fill(cr);
-   cairo_set_line_width(cr,1);
-   cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
-   gdk_rgba_parse(&color,Flags.SnowColor);
-   cairo_set_source_rgb(cr,color.red, color.green, color.blue);
-   int h = f->h;
-   short int *acth = f->acth;
+   cairo_t *cr      = cairo_create(f->surface);
+   int h            = f->h;
+   int w            = f->w;
+   short int *acth  = f->acth;
+   short int *pacth = f->pacth;
+   short int *r     = f->r;
 
-   for (i=0; i<f->w; i++)
+   cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+
+   cairo_set_source_rgba(cr,0,0,0,0);
+   cairo_set_line_width(cr,1);
+   for (i=0; i<w; i++) // remove
    {
-      cairo_move_to(cr,i,h-1);
-      cairo_line_to(cr,i,h-1-acth[i]);
+      if (acth[i] < pacth[i])
+      {
+	 cairo_move_to(cr,i,h-acth[i]+r[i]);
+	 cairo_line_to(cr,i,0);
+	 pacth[i] = acth[i];
+      }
    }
    cairo_stroke(cr);
+
+   gdk_rgba_parse(&color,Flags.SnowColor);
+   cairo_set_source_rgb(cr,color.red, color.green, color.blue);
+   cairo_set_line_width(cr,1);
+   for (i=0; i<w; i++)  // add
+   {
+      if (acth[i] > pacth[i])
+      {
+	 cairo_move_to(cr,i,h+2); // +2 because line_to to the same xy as move_to doesnt paint anything
+	 cairo_line_to(cr,i,h-acth[i]+r[i]);
+	 pacth[i] = acth[i];
+      }
+   }
+   cairo_stroke(cr);
+
    cairo_destroy(cr);
 }
 
@@ -348,7 +482,7 @@ void DrawFallen(FallenSnow *fsnow)
 	    int xfront = global.SantaX+global.SantaWidth - fsnow->x;
 	    // determine back of Santa in fsnow, Santa can move backwards in strong wind
 	    int xback = xfront - global.SantaWidth;
-	    const int clearing = 1;
+	    const int clearing = 3;
 	    float vy = -1.5*global.ActualSantaSpeed; 
 	    if(vy > 0) vy = -vy;
 	    if (vy < -100.0)
@@ -364,7 +498,7 @@ void DrawFallen(FallenSnow *fsnow)
 	 }
       }
       CreateSurfaceFromFallen(fsnow);
-      // drawing is handled in fallensnow-draw
+      // drawing is handled in fallensnow_draw
    }
 }
 

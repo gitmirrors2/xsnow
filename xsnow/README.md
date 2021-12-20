@@ -1,5 +1,4 @@
 # Xsnow: let it snow on your desktop
-
 ## General
 
 Xsnow is derived from Rick Jansen's [xsnow-1.42](https://janswaal.home.xs4all.nl/Xsnow/).
