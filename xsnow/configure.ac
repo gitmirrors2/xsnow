@@ -35,7 +35,9 @@ AC_ARG_ENABLE(selfrep, [AS_HELP_STRING([--enable-selfrep],[Build with self repli
 AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
 
 AC_SUBST([PACKAGE_VERSION])
-DATE=`date +"%Y-%m-%d"`
+DATE_FMT="+%Y-%m-%d"
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-`date +%s`}"
+DATE=`date -u -d "@$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u "$DATE_FMT"`
 AC_SUBST([DATE])
 
 # Checks for programs.
