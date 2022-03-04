@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -182,12 +182,12 @@ double gaussian (double mean, double std, double min, double max)
 
 guint add_to_mainloop(gint prio,float time,GSourceFunc func) 
 {
-   return g_timeout_add_full(prio,(int)1000*(time),func,NULL,NULL);
+   return g_timeout_add_full(prio,(int)1000*(time*(0.95+0.1*drand48())),func,NULL,NULL);
 }
 
 guint add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap) 
 {
-   return g_timeout_add_full(prio,(int)1000*(time),func,datap,NULL);
+   return g_timeout_add_full(prio,(int)1000*(time)*(0.95+0.1*drand48()),func,datap,NULL);
 }
 
 void remove_from_mainloop(guint *tag)

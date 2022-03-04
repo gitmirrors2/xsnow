@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@
 #define SANTASPEED2 50
 #define SANTASPEED3 50
 #define SANTASPEED4 70
-//#define SNOWFLAKEMAXTYPE 13  // type is 0..SNOWFLAKEMAXTYPE  
+//#define SNOWFLAKEMAXTYPE 13  // type is 0..SNOWFLAKEMAXTYPE
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150
@@ -66,44 +66,44 @@
 // timers
 
 #define time_below_confirm        1.0    // time between check of 'confirm' button (after 'below' button)
-#define time_blowoff              0.50   // time between blow snow off windows         
-#define time_change_attr          60.0   // time between changing attraction point     
-#define time_clean                1.00   // time between cleaning desktop              
-#define time_desktop_type         2.0    // time between showing desktop type          
-#define time_display_dimensions   0.5    // time between check of screen dimensions    
-#define time_displaychanged       1.00   // time between checks if display has changed 
-#define time_emeteorite           0.20   // time between meteorites erasures            
-#define time_event                0.50   // time between checking events               
-#define time_flakecount           1.00   // time between updates of show flakecount    
-#define time_fuse                 1.00   // time between testing on too much flakes    
-#define time_genflakes            0.10   // time between generation of flakes          
+#define time_blowoff              0.50   // time between blow snow off windows 
+#define time_change_attr         60.0    // time between changing attraction point
+#define time_clean                1.00   // time between cleaning desktop
+#define time_desktop_type         2.0    // time between showing desktop type
+#define time_display_dimensions   0.5    // time between check of screen dimensions
+#define time_displaychanged       1.00   // time between checks if display has changed
+#define time_emeteorite           0.20   // time between meteorites erasures
+#define time_event                0.50   // time between checking events
+#define time_flakecount           1.00   // time between updates of show flakecount
+#define time_fuse                 1.00   // time between testing on too much flakes
+#define time_genflakes            0.10   // time between generation of flakes
 #define time_init_snow            0.2    // time between killing flakes (used in emergency only)
-#define time_initbaum             0.30   // time between check for (re)create trees    
-#define time_initstars            1.00   // time between check for (re)create stars    
-#define time_main_window          0.5    // time between checks for birds window       
-#define time_measure              0.1    // time between cpu load measurements         
-#define time_meteorite            3.00   // time between meteorites                    
-#define time_newwind              1.00   // time between changing wind                 
+#define time_initbaum             0.30   // time between check for (re)create trees
+#define time_initstars            1.00   // time between check for (re)create stars
+#define time_main_window          0.5    // time between checks for birds window
+#define time_measure              0.1    // time between cpu load measurements
+#define time_meteorite            3.00   // time between meteorites
+#define time_newwind              1.00   // time between changing wind
 #define time_sendevent            0.5    // time between sendEvent() calls
-#define time_sfallen              2.30   // time between smoothing of fallen snow      
-#define time_show_range_etc       0.50   // time between showing range etc.            
-#define time_snow_on_trees        0.50   // time between redrawings of snow on trees   
-#define time_star                 0.50   // time between drawing stars                  
+#define time_sfallen              2.30   // time between smoothing of fallen snow
+#define time_show_range_etc       0.50   // time between showing range etc.
+#define time_snow_on_trees        0.50   // time between redrawings of snow on trees
+#define time_star                 0.50   // time between drawing stars
 #define time_switchflakes         0.2    // time between checks if flakes should be switched beteen default and vintage
-#define time_testing              2.10   // time between testing code                   
-#define time_ui_check             0.25   // time between checking values from ui        
-#define time_umoon                0.04   // time between update position of moon       
-#define time_usanta               0.04   // time between update of santa position      
-#define time_ustar                2.00   // time between updating stars                 
-#define time_wind                 0.10   // time between starting or ending wind       
-#define time_wupdate              0.20   // time between getting windows information    
+#define time_testing              2.10   // time between testing code
+#define time_ui_check             0.25   // time between checking values from ui
+#define time_umoon                0.04   // time between update position of moon
+#define time_usanta               0.04   // time between update of santa position
+#define time_ustar                2.00   // time between updating stars
+#define time_wind                 0.10   // time between starting or ending wind
+#define time_wupdate              0.20   // time between getting windows information
 
 #define time_change_bottom        300.0   // time between changing properties of bottom snow
 #define time_adjust_bottom        (time_change_bottom/20)// time between adjusting height of bottom snow
-//#define time_fallen           (0.04 * global.cpufactor)  // time between redraw fallen snow
+							 //#define time_fallen           (0.04 * global.cpufactor)  // time between redraw fallen snow
 #define time_fallen                0.20   // time between recompute fallen snow surfaces
 #define time_snowflakes       (0.02 * global.cpufactor)  // time between updates of snowflakes positions etc
-#define time_draw_all         (0.04 * global.cpufactor)  // time between updates of screen 
+#define time_draw_all         (0.04 * global.cpufactor)  // time between updates of screen
 
 #define ALPHA (0.01*(100 - Flags.Transparency))
 #define XPM_TYPE const char
@@ -232,7 +232,7 @@ extern struct _global
    int             IsCompiz;
    int             IsWayland;
    int             CWorkSpace;  // int? Yes, in compiz we take the placement of the desktop
-   //                                     which can easily be > 16 bits
+				//                                     which can easily be > 16 bits
    Window          Rootwindow;
    int             Xroot;
    int             Yroot;

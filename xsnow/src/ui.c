@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -643,17 +643,20 @@ MODULE_EXPORT void button_below(GtkWidget *w)
     */
    if(!human_interaction) return;
    gint active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
-   P("button_below: %d\n",Flags.BelowAll);
-   if(active)
-      Flags.BelowAll = 1;
-   else
+   P("button_below: %d %d\n",Flags.BelowAllForce, Flags.BelowAll);
+   if (!Flags.BelowAllForce)
    {
-      Flags.BelowAll = 0;
-      bct_countdown  = 9;
-      show_bct_countdown();
-      gtk_widget_hide(Button.BelowAll);
-      gtk_widget_show(Button.BelowConfirm);
-      bct_id = add_to_mainloop(PRIORITY_DEFAULT,time_below_confirm,below_confirm_ticker);
+      if(active)
+	 Flags.BelowAll = 1;
+      else
+      {
+	 Flags.BelowAll = 0;
+	 bct_countdown  = 9;
+	 show_bct_countdown();
+	 gtk_widget_hide(Button.BelowAll);
+	 gtk_widget_show(Button.BelowConfirm);
+	 bct_id = add_to_mainloop(PRIORITY_DEFAULT,time_below_confirm,below_confirm_ticker);
+      }
    }
 }
 MODULE_EXPORT void button_below_confirm()
@@ -1118,7 +1121,8 @@ void ui_background(int m)
 void ui_gray_erase(int m)
 {
    gtk_widget_set_sensitive(Button.BelowAll,                      m);
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.BelowAll),1);
+   if(!Flags.BelowAllForce)
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.BelowAll),1);
 }
 
 

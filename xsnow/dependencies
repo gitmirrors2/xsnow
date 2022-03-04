@@ -1,4 +1,6 @@
 #packages:
+
+# Debian
 libx11-dev
 libxpm-dev
 libxt-dev
@@ -6,7 +8,15 @@ libxext-dev
 libgtk-3-dev
 pkg-config
 
-#compilers:
 gcc
 g++
+
+# Suse
+libX11-devel
+libXt-devel
+libXext-devel
+libgtk-3-0
+pkg-config
+
+gcc-c++
 

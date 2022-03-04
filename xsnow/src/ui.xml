@@ -4,7 +4,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -22,6 +22,11 @@
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="attr-space-adjustment">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkFileFilter" id="backgroundchooserfilter">
     <patterns>
       <pattern>*.jpg</pattern>
@@ -3805,7 +3810,7 @@ Flag: -halobrightness</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=4 n-rows=14 -->
+          <!-- n-columns=5 n-rows=14 -->
           <object class="GtkGrid" id="grid_birds">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -4451,6 +4456,64 @@ Flags: -followsanta 0, -followsanta 1</property>
                 <property name="left-attach">3</property>
                 <property name="top-attach">8</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-AttrSpace">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Percentage of screen to be used for the attraction point.
+Flag: -attrspace</property>
+                <property name="orientation">vertical</property>
+                <property name="adjustment">attr-space-adjustment</property>
+                <property name="round-digits">1</property>
+                <property name="digits">0</property>
+                <property name="has-origin">False</property>
+                <property name="value-pos">bottom</property>
+              </object>
+              <packing>
+                <property name="left-attach">4</property>
+                <property name="top-attach">3</property>
+                <property name="height">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="valign">start</property>
+                <property name="label" translatable="yes">Attraction
+point
+range</property>
+              </object>
+              <packing>
+                <property name="left-attach">4</property>
+                <property name="top-attach">7</property>
+                <property name="height">2</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

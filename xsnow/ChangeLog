@@ -1,3 +1,25 @@
+version 3.4.4
+	1: birds.c: attraction point goes now from 0.1..0.9 of the horizontal 
+	   dimension of the screen
+	2: configure.ac: try to create a reproducible build:
+	   definition for DATE, re-timestamping the selfrep tar file
+	3: some enhancements with regard to 2:
+	4: main.c:  add some fflush(stdout)
+	   birds.c: take care that AttrSpace is always honored from the beginning
+	            When using as xscreensaver background, this was not the
+		    case
+	   xsnow.desktop.in: change Version into 1.0
+	
+version 3.4.3
+	1: enhance dependencies with Suse package names
+	   main.c, ui.c, flags,c, doit.h: solve bug concerning the flag -above
+	   Extend documentation about xsnow's behaviour in a few window
+	   managers.
+	   main.c: fix bug: Xsnow in TWM did start in non-existing window.
+	   utils.c: add some randomness to add_to_mainloop
+	2: implement -attrspace, including button and man page
+	   if Santa is not shown, let Him run anyway, so 'Follow Santa' has effect
+	3: somewhat better implementation of -attrspace
 version 3.4.2
 	1: fallensnow.c: other algorithm for drawing fallen snow
 	   Santa.c: Santa is now moon-seeking, also when birds are not showing 

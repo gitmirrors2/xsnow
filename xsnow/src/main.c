@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  *
-*/
+ */
 /*
    And in a vocoded voice it sounds:
    Xsnow zwei-tausend
@@ -139,6 +139,7 @@ static int    HandleX11Cairo(void);
 static int    StartWindow(void);
 static void   SetWindowScale(void);
 static void   movewindow(void);
+static void   GetDesktopSession(void);
 
 
 // callbacks
@@ -330,6 +331,12 @@ int main_c(int argc, char *argv[])
       }
 #endif
    }
+   GetDesktopSession();
+   if(!strncasecmp(global.DesktopSession,"bspwm",5))
+   {
+      printf("For optimal resuts, add to your bspwmrc:\n");
+      printf("   bspc rule -a Xsnow state=floating border=off\n");
+   }
    printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
 
    // Circumvent wayland problems:before starting gtk: make sure that the 
@@ -363,6 +370,9 @@ int main_c(int argc, char *argv[])
    }
    if (!Flags.NoConfig)
       WriteFlags();
+
+   if (Flags.BelowAllForce)
+      Flags.BelowAll = 0;
 
    if(Flags.CheckGtk && !ui_checkgtk() && !Flags.NoMenu)
    {
@@ -504,6 +514,7 @@ int main_c(int argc, char *argv[])
       add_to_mainloop(PRIORITY_DEFAULT, time_desktop_type, do_show_desktop_type);
    }
 
+   fflush(stdout);
    // main loop
    gtk_main();
 
@@ -530,7 +541,7 @@ int main_c(int argc, char *argv[])
 
 void set_below_above()
 {
-   P("%d set_below_above\n",global.counter++);
+   P("%d set_below_above %d\n",global.counter++,Flags.BelowAll);
    XWindowChanges changes;
    // to be sure: we do it in gtk mode and window mode
    if (Flags.BelowAll)
@@ -568,6 +579,38 @@ void X11WindowById(Window *xwin, char **xwinname)
       }
    }
    return;
+}
+
+void GetDesktopSession()
+{
+   if (global.DesktopSession == NULL)
+   {
+      char *desktopsession = NULL;
+      const char *desktops[] = {
+	 "DESKTOP_SESSION",
+	 "XDG_SESSION_DESKTOP",
+	 "XDG_CURRENT_DESKTOP",
+	 "GDMSESSION",
+	 NULL
+      };
+
+      int i;
+      for (i=0; desktops[i]; i++)
+      {
+	 desktopsession = getenv(desktops[i]);
+	 if (desktopsession)
+	    break;
+      }
+      if (desktopsession)
+	 printf("Detected desktop session: %s\n",desktopsession);
+      else
+      {
+	 printf("Could not determine desktop session\n");
+	 desktopsession = (char *)"unknown_desktop_session";
+      }
+
+      global.DesktopSession = strdup(desktopsession);
+   }
 }
 
 int StartWindow()
@@ -609,6 +652,12 @@ int StartWindow()
       // default behaviour
       // try to create a transparent clickthrough window
       GtkWidget *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+      gtk_widget_set_can_focus(gtkwin, TRUE);
+      gtk_window_set_decorated(GTK_WINDOW(gtkwin), FALSE);
+      gtk_window_set_type_hint(GTK_WINDOW(gtkwin), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
+
+
+      GdkWindow *gdkwin; (void)gdkwin;
       int rc = make_trans_window(gtkwin,
 	    1,                   // full screen 
 	    Flags.AllWorkspaces, // sticky 
@@ -626,9 +675,16 @@ int StartWindow()
 	 GtkWidget *drawing_area = gtk_drawing_area_new();
 	 gtk_container_add(GTK_CONTAINER(TransA), drawing_area);
 	 g_signal_connect(TransA, "draw", G_CALLBACK(on_draw_event), NULL);
+	 P("calling set_below_above\n");
 	 set_below_above();
 	 global.SnowWin = xwin;
 	 printf("Using transparent window\n");
+	 if(!strncasecmp(global.DesktopSession,"fvwm",4) ||
+	       !strncasecmp(global.DesktopSession,"lxqt",4))
+	 {
+	    printf("The transparent snow-window is probably not click-through, alas..\n");
+	 }
+
       }
       else
       {
@@ -636,42 +692,12 @@ int StartWindow()
 	 X11cairo = 1;
 	 // use rootwindow, pcmanfm or Desktop:
 	 printf("Cannot create transparent window\n");
-	 if (global.DesktopSession == NULL)
-	 {
-	    char *desktopsession = NULL;
-	    const char *desktops[] = {
-	       "DESKTOP_SESSION",
-	       "XDG_SESSION_DESKTOP",
-	       "XDG_CURRENT_DESKTOP",
-	       "GDMSESSION",
-	       NULL
-	    };
-
-	    int i;
-	    for (i=0; desktops[i]; i++)
-	    {
-	       desktopsession = getenv(desktops[i]);
-	       if (desktopsession)
-		  break;
-	    }
-	    if (desktopsession)
-	       printf("Detected desktop session: %s\n",desktopsession);
-	    else
-	    {
-	       printf("Could not determine desktop session\n");
-	       desktopsession = (char *)"unknown_desktop_session";
-	    }
-
-	    global.DesktopSession = strdup(desktopsession);
-
-	    if (!strcasecmp(global.DesktopSession,"enlightenment"))
-	       printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
-	    else if(!strcasecmp(global.DesktopSession,"twm"))
-	       printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
-	 }
+	 if (!strcasecmp(global.DesktopSession,"enlightenment"))
+	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	 if(!strcasecmp(global.DesktopSession,"twm"))
+	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 if (global.DesktopSession != NULL && 
-	       !strncmp(global.DesktopSession,"LXDE",4) && 
+	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
 	       (xwin = FindWindowWithName(global.display,"pcmanfm")))
 	 {
 	    printf("LXDE session found, using window 'pcmanfm'.\n");
@@ -706,6 +732,7 @@ int StartWindow()
    XFree(x.value);
    InitDisplayDimensions();
    printf("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+   fflush(stdout);
 
    Xorig = global.SnowWinX;
    Yorig = global.SnowWinY;
@@ -745,7 +772,7 @@ int HandleX11Cairo()
       CairoSurface = cairo_xlib_surface_create(global.display, backBuf, visual, w, h);
       global.UseDouble = 1;
       global.IsDouble  = 1;
-      printf("Using double buffer: %#lx.\n",backBuf);
+      printf("Using double buffer: %#lx. %dx%d\n",backBuf,w,h);
       rcv = TRUE;
    }
 #endif
@@ -917,12 +944,13 @@ int do_event(void *d)
 	 } 
       }
    }  
+
    return TRUE;
 }
 
 void RestartDisplay()
 {
-   P("Restartdisplay: %d W: %d H: %d\n",counter++,global.SnowWinWidth,global.SnowWinHeight);
+   P("Restartdisplay: %d W: %d H: %d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight);
    InitFallenSnow();
    init_stars();
    EraseTrees();
@@ -984,7 +1012,7 @@ int do_testing(void *d)
    XWindowAttributes attr;
    XGetWindowAttributes(global.display,global.SnowWin,&attr);
 
-   P("%d wxh %d %d %d %d    %d %d %d %d \n",counter,SnowWinX,SnowWinY,global.SnowWinWidth,global.SnowWinHeight,attr.x,attr.y,attr.width,attr.height);
+   P("%d wxh %d %d %d %d    %d %d %d %d \n",global.counter,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight,attr.x,attr.y,attr.width,attr.height);
 
    return TRUE;
 }
@@ -1057,6 +1085,16 @@ void drawit(cairo_t *cr)
       XFlush(global.display);
    }
 
+
+   /* clear snowwindow test */
+   /*
+      cairo_set_source_rgba(cr, 0, 0, 0, 1);
+      cairo_set_line_width(cr, 1);
+
+      cairo_rectangle(cr, 0, 0, global.SnowWinWidth, global.SnowWinHeight);
+      cairo_fill(cr);
+      */
+
    int skipit = Flags.BirdsOnly || !WorkspaceActive();
 
    if (!skipit)
@@ -1109,21 +1147,24 @@ int do_display_dimensions(void *d)
       return TRUE;
    SnowWinChanged = 0;
    static int prevw = 0, prevh = 0;
-   P("%d do_display_dimensions %d %d\n",counter++,global.SnowWinWidth,global.SnowWinHeight);
+   P("%d do_display_dimensions %dx%d %dx%d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight,prevw,prevh);
    DisplayDimensions();
    if (prevw != global.SnowWinWidth || prevh != global.SnowWinHeight)
    {
       // if(global.X11cairo) // let op
       if (!global.Trans)
       {
+	 P("global.Trans %d\n",global.Trans);
 	 HandleX11Cairo();
-	 RestartDisplay();
+	 //RestartDisplay();
       }
+      RestartDisplay();
       prevw = global.SnowWinWidth;
       prevh = global.SnowWinHeight;
       SetWindowScale();
    }
    return TRUE;
+   fflush(stdout);
 }
 
 int do_draw_all(gpointer widget)

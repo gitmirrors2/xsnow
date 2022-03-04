@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -56,21 +56,21 @@ static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static cairo_surface_t *attrsurface = NULL;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
-//                  // Nbirds is changed outside init_birds
+		    //                  // Nbirds is changed outside init_birds
 
 
 typedef struct _Birdtype
 {
    float x,y,z;        // position, meters
-   // x: horizontal
-   // y: in/out screen
-   // z: vertical
+		       // x: horizontal
+		       // y: in/out screen
+		       // z: vertical
    float sx,sy,sz;     // velocity, m/sec
    int ix,iy,iz,iw,ih; // pixels
-   // ix .. in pixels, used to store previous screen parameters
+		       // ix .. in pixels, used to store previous screen parameters
    int wingstate, orient;      
    int drawable;       // is in drawable range
-   // comes in handy at erasing a bird:
+		       // comes in handy at erasing a bird:
    int prevx, prevy, prevw, prevh, prevdrawable;
 } BirdType;
 
@@ -84,6 +84,8 @@ static void     birds_set_scale(void);
 static void     birds_set_speed(void);
 static void     clear_flags(void);
 static int      do_change_attr(void *);
+static void     show_attr(void);
+static float    attr_maxz(float y);
 static int      do_update_pos_birds(void *); 
 static int      do_wings(void *);
 static int      do_update_speed_birds(void *);
@@ -110,18 +112,19 @@ static BirdType attrbird;
 
 void birds_ui()
 {
-   UIDO(ShowBirds         , birds_erase(1); attrbird_erase(1); );
-   UIDO(BirdsOnly         , ClearScreen();                     );
-   UIDO(Neighbours        ,                                    );
-   UIDO(Anarchy           ,                                    );
-   UIDO(PrefDistance      ,                                    );
-   UIDO(ViewingDistance   , attrbird2surface();                );
-   UIDO(BirdsSpeed        , birds_set_speed();                 );
-   UIDO(AttrFactor        ,                                    );
-   UIDO(DisWeight         ,                                    );
-   UIDO(FollowWeight      ,                                    );
-   UIDO(BirdsScale        , birds_set_scale();                 );
-   UIDO(ShowAttrPoint     , attrbird_erase(1);                 );
+   UIDO(ShowBirds         , birds_erase(1); attrbird_erase(1);     );
+   UIDO(BirdsOnly         , ClearScreen();  do_change_attr(NULL);  );
+   UIDO(Neighbours        ,                                        );
+   UIDO(Anarchy           ,                                        );
+   UIDO(PrefDistance      ,                                        );
+   UIDO(ViewingDistance   , attrbird2surface();                    );
+   UIDO(BirdsSpeed        , birds_set_speed();                     );
+   UIDO(AttrFactor        ,                                        );
+   UIDO(DisWeight         ,                                        );
+   UIDO(FollowWeight      ,                                        );
+   UIDO(BirdsScale        , birds_set_scale();                     );
+   UIDO(ShowAttrPoint     , attrbird_erase(1);                     );
+   UIDO(AttrSpace         , show_attr();                           );
    UIDOS(BirdsColor       , 
 	 birds_init_color(); 
 	 ClearScreen(););
@@ -134,13 +137,13 @@ void birds_ui()
 	 init_birds(start););
    UIDO(FollowSanta, 
 	 if (!Flags.FollowSanta)
-	 birds_set_attraction_point_relative(0.5, 0.5, 0.5););
+	 do_change_attr(NULL););
 
    if(Flags.BirdsRestart)
    {
       Flags.BirdsRestart = 0;
       init_birds(0);
-      birds_set_attraction_point_relative(0.5, 0.5, 0.5);
+      do_change_attr(NULL);
       P("Changes: %d\n",Flags.Changes);
    }
 }
@@ -181,12 +184,12 @@ void r2i(BirdType *bird)
       P("%f %d %f\n",blobals.maxy,Flags.ViewingDistance,f);
 #ifdef CO_REAL
       // classical camera obscura, inverted image:
-      float x = f*(blobals.xc-bird->x) + blobals.xc;
-      float z = f*(blobals.zc-bird->z) + blobals.zc;
+      float x = f*(blobals.xc - bird->x) + blobals.xc;
+      float z = f*(blobals.zc - bird->z) + blobals.zc;
 #else
       // alternative camera obscura, not inverted image:
-      float x = f*(bird->x-blobals.xc) + blobals.xc;
-      float z = f*(bird->z-blobals.zc) + blobals.zc;
+      float x = f*(bird->x - blobals.xc) + blobals.xc;
+      float z = f*(bird->z - blobals.zc) + blobals.zc;
 #endif
       bird->ix = blobals.ax*x;
       bird->iy = blobals.ay*bird->y;
@@ -199,7 +202,7 @@ void r2i(BirdType *bird)
    P("r2i %d %d\n",counter++,bird->drawable);
 }
 
-// given bird, x,iy, z given ix, iz and y
+// compute bird(x,iy, z) given bird(ix, y, iz)
 static void i2r(BirdType *bird)
 {
    float f  = scale(bird->y);
@@ -465,8 +468,11 @@ int birds_draw(cairo_t *cr)
 	 int mx = cairo_image_surface_get_width(attrsurface);
 	 int mz = cairo_image_surface_get_height(attrsurface);
 	 P("mx: %d mz: %d\n",mx,mz);
-	 cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
-	 my_cairo_paint_with_alpha(cr,ALPHA);
+	 if (attrbird.drawable)
+	 {
+	    cairo_set_source_surface (cr, attrsurface, attrbird.ix-mx/2, attrbird.iz-mz/2);
+	    my_cairo_paint_with_alpha(cr,ALPHA);
+	 }
 	 attrbird.prevx = attrbird.ix-mx/2;
 	 attrbird.prevy = attrbird.iz-mz/2;
 	 attrbird.prevw = mx;
@@ -779,6 +785,7 @@ void birds_set_speed()
 int do_main_window(void *d)
 {
    (void) d;
+   P("do_main_window: %d %d %d %d\n",blobals.maxix,global.SnowWinWidth,blobals.maxiz,global.SnowWinHeight);
    if (blobals.maxix != global.SnowWinWidth || blobals.maxiz != global.SnowWinHeight)
    {
       P("do_main_window\n");
@@ -794,7 +801,7 @@ static void main_window()
    blobals.maxiz = global.SnowWinHeight;
    blobals.maxiy = (blobals.maxix+blobals.maxiz)/2;
 
-   P("%d %d %d\n",blobals.maxix,blobals.maxiy,blobals.maxiz);
+   P("in main_window: %d %d %d\n",blobals.maxix,blobals.maxiy,blobals.maxiz);
 
    blobals.maxz = blobals.maxx*(float)blobals.maxiz/(float)blobals.maxix;
    blobals.maxy = blobals.maxx*(float)blobals.maxiy/(float)blobals.maxix;
@@ -833,25 +840,70 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
+float attr_maxz(float y)
+{
+   // convert screen coordinate iz to fractional birds coordinate z
+   // Create a dummy bird:
+   BirdType bird;
+   bird.ix = 100;                                 // does not matter what
+   bird.y  = y;                                   // distance in the centre of maxy
+   bird.iz = blobals.maxiz*0.01*Flags.AttrSpace;  // the desired maximum vertical screen value
+   i2r(&bird);
+   return bird.z;
+}
+
+void show_attr()
+{
+   // used during update AttrSpace
+   attrbird_erase(1);
+
+   P("bird.z: %d %d %f %f\n",blobals.maxiz,bird.iz,bird.z,bird.z/blobals.maxz);
+   birds_set_attraction_point_relative(
+	 0.5, 
+	 0.5, 
+	 attr_maxz(0.5*blobals.maxy)/blobals.maxz
+	 );
+   r2i(&attrbird);
+   attrbird2surface();
+}
+
 int do_change_attr(void *d)
 {
    (void)d;
    // move attraction point in the range
-   // x: 0.3 .. 0.7
+   // x: 0.1 .. 0.8
    // y: 0.4 .. 0.6
-   // z: 0.3 .. 0.7
+   // z: dependent on Flags.AttrSpace
    if (Flags.Done)
       return FALSE;
    if (Flags.FollowSanta && !Flags.BirdsOnly)
       return TRUE;
-   P("change attr\n");
+   //
+   // determine random x, y and z values for the attraction point
+   // for x and y: determine screen coordinates and convert
+   // these to bird coordinates.
+   // Note that birds_set_attraction_point_relative() expects
+   // fractional coordinates
+   //
+
+
+   float y = 0.4+drand48()*0.2;
+
+   attrbird.ix = (0.1+drand48()*0.8)*blobals.maxix;
+   attrbird.y  = y*blobals.maxy;
+   attrbird.iz = 120;  // of no importance
+
+   float z = drand48()*attr_maxz(attrbird.y)/blobals.maxz;
+
+   i2r(&attrbird);
+
+   float x = attrbird.x/blobals.maxx;
+   P("attrbird.x: %f\n",attrbird.x/blobals.maxx);
+
    attrbird_erase(1);
-   birds_set_attraction_point_relative(
-	 0.3+drand48()*0.4, 
-	 0.4+drand48()*0.2, 
-	 0.3+drand48()*0.4
-	 );
+   birds_set_attraction_point_relative(x, y, z);
    r2i(&attrbird);
+   P("change attr %f %f %f , %d %d\n",x,y,z,attrbird.ix,attrbird.iz);
    attrbird2surface();
    return TRUE;
 }
@@ -907,6 +959,8 @@ void birds_init ()
 
    birds_set_speed();
    init_birds(0);
+   P("Calling do_change_attr():\n");
+   do_change_attr(NULL);
 
    attrbird2surface();
 

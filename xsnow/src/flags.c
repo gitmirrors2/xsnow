@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -216,7 +216,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_is(-treetype            ,TreeType                         );
 	 handle_is(-bg                  ,BackgroundFile                   );
 
-	 handle_iv(-above               ,BelowAll                 ,0      );
+	 handle_iv(-above               ,BelowAllForce            ,1      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
 	 handle_iv(-noblowsnow          ,BlowSnow                 ,0      );
 	 handle_iv(-blowsnow            ,BlowSnow                 ,1      );
@@ -267,6 +267,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-showattr            ,ShowAttrPoint                    );
 	 handle_ia(-viewingdistance     ,ViewingDistance                  );
 	 handle_ia(-birdsscale          ,BirdsScale                       );
+	 handle_ia(-attrspace           ,AttrSpace                        );
 
 	 handle_is(-birdscolor          ,BirdsColor                       );
 

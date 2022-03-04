@@ -6,7 +6,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.4.2], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.4.4], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -31,12 +31,80 @@ AM_INIT_AUTOMAKE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 
+
+# When creating a package (e.g. debian)
+# Get date from debian/changelog or something like that: (thanks to Bernhard M. Wiedemann)
+# First: check if SOURCE_DATE_EPOCH is already defined
+# if not: use the file 'bootdate' which should contain the output of 'date +%s'
+s="$SOURCE_DATE_EPOCH"
+if test "x$s" = x ; then
+   AC_MSG_WARN([SOURCE_DATE_EPOCH is not defined])
+   if test -f bootdate ; then
+      AC_MSG_NOTICE([Try to read SOURCE_DATE_EPOCH from file 'bootdate'])
+      s=`head -n1 bootdate`
+      xd=`date -u -d "@$s" 2>/dev/null || date -u -r "$s" 2>/dev/null || echo "Invalid date format"`
+      AC_MSG_NOTICE([Read SOURCE_DATE_EPOCH=$s, i.e: $xd ])
+   fi
+else
+   xd=`date -u -d "@$s" 2>/dev/null || date -u -r "$s" 2>/dev/null || echo "Invalid date format"`
+   AC_MSG_NOTICE([Given SOURCE_DATE_EPOCH=$s, i.e: $xd ])
+fi
+# final checks on the validity of SOURCE_DATE_EPOCH
+# - must be an positive integer
+# - date must be within -20 years and +1 year from current date
+# if these are not fulfilled, use `date +%s`
+x=$(echo "$s" | tr -dc "[0-9]" )
+good=no
+now=`date "+%s"`
+if test "x$x" != x ; then
+   firstdate=$( expr "$now" - 631152000 )
+   lastdate=$(  expr "$now" + 31536000  )
+   if test "$x" -gt "$firstdate" -a "$x" -lt "$lastdate" ; then
+      good=yes
+   fi
+fi
+
+if test x"$good" = xyes ; then
+   SOURCE_DATE_EPOCH="$x"
+else
+   SOURCE_DATE_EPOCH="$now"
+   AC_MSG_WARN([SOURCE_DATE_EPOCH set from current date])
+fi
+xd=`date -u -d "@$SOURCE_DATE_EPOCH" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" 2>/dev/null || echo "Invalid date format"`
+AC_MSG_NOTICE([Using SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH, i.e: $xd ])
+
+DATE_FMT="+%Y-%m-%d"
+DATE=`date -u -d "@$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u "$DATE_FMT"`
+AC_SUBST([DATE])
+
+
+
+
+# Check if we can create a reproducible 'make dist'.
+# If yes: replace the original am__tar (Make's recipe to make a tarball) by
+#  a recipe that creates a reproducible tarball
+tardir=conftestdir
+mkdir "$tardir"
+echo "foo" > $tardir/test
+AC_MSG_NOTICE([Checking the capabilities of the tar program...])
+"${TAR-tar}" --format=posix --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \ 
+	  --owner=0 --group=0 --numeric-owner --mtime="@${SOURCE_DATE_EPOCH}" --sort=name -cf - "$tardir" > /dev/null
+if test $? -eq 0 ; then
+   AC_MSG_NOTICE([The program tar is usable to create a reproducible tar ball.])
+   am__tar='$${TAR-tar} --format=posix --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \ 
+	  --owner=0 --group=0 --numeric-owner --mtime="'"@${SOURCE_DATE_EPOCH}"'" --sort=name -chf - "$$tardir"'
+else
+   AC_MSG_WARN([The program tar is not usable to create a reproducible build.])
+   AC_MSG_WARN([If a reproducible build is desired, use environment variable 'TAR' to point to a pax-enabled tar,])
+   AC_MSG_WARN([or use the flag '--disable-selfrep'.])
+fi
+rm -r "$tardir"
+
 AC_ARG_ENABLE(selfrep, [AS_HELP_STRING([--enable-selfrep],[Build with self replicating mode @<:@default=yes@:>@])],[],[enable_selfrep=yes])
 AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
 
 AC_SUBST([PACKAGE_VERSION])
-DATE=`date +"%Y-%m-%d"`
-AC_SUBST([DATE])
+
 
 # Checks for programs.
 AC_PROG_CC([cc gcc])
@@ -84,5 +152,4 @@ AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
 AC_OUTPUT
 
 AS_IF( [test "x$enable_selfrep" = "xyes"],
-      [${MAKE:=make} dist])
-
+      [${MAKE:=make} dist ])

@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 // are no part of the ui (except BelowAll)
 #define DOITALL \
    DOIT_I(BelowAll            ,1  ,1 ) \
+   DOIT_I(BelowAllForce       ,0  ,0 ) /* to know if the -above flag was used */\
    DOIT_I(BelowConfirm        ,0  ,0 ) /*not a button or parameter */ \
    DOIT_I(Changes             ,0  ,0 ) /* not a parameter or button */ \
    DOIT_I(CheckGtk            ,1  ,1 ) \
@@ -109,6 +110,7 @@
    DOIT_I(BirdsOnly            ,0   ,0  ) \
    DOIT_I(BirdsRestart         ,0   ,0  ) \
    DOIT_I(BirdsScale           ,100 ,100) \
+   DOIT_I(AttrSpace            ,40  ,40 ) \
    DOIT_I(BirdsSpeed           ,100 ,100) \
    DOIT_I(DisWeight            ,20  ,20 ) \
    DOIT_I(FollowWeight         ,30  ,30 ) \

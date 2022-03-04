@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@
    BUTTON(scalecode      ,xsnow_birds       ,Neighbours           ,1  )         \
    BUTTON(scalecode      ,xsnow_birds       ,PrefDistance         ,1  )         \
    BUTTON(scalecode      ,xsnow_birds       ,ViewingDistance      ,1  )         \
+   BUTTON(scalecode      ,xsnow_birds       ,AttrSpace            ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,CpuLoad              ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,OffsetS              ,-1 )   /*i*/ \
    BUTTON(scalecode      ,xsnow_settings    ,OffsetY              ,-1 )   /*i*/ \

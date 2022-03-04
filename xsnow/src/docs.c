@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021 Willem Vermin
+#-# 	      2019,2020,2021,2022 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2021\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2022\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
@@ -75,7 +75,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2021 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2022 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
@@ -279,6 +279,7 @@ void docs_usage(int man)
    manout("-prefdistance <n>"     ,"Preferred distance to neighbours ( 0..100 default: %d).",F(PrefDistance));
    manout("-showbirds <n>"        ,"Show birds ( 0/1 default: %d).",F(ShowBirds));
    manout("-showattr <n>"         ,"Show attraction point ( 0/1 default: %d).",F(ShowAttrPoint));
+   manout("-attrspace <n>"        ,"Vertical space to be used by the attraction point (default: %d).",F(AttrSpace));
    manout("-followsanta <n>"      ,"Birds like Santa ( 0/1 default: %d).",F(FollowSanta));
    manout("-viewingdistance <n>"  ,"Viewing distance ( 0..95 default: %d).",F(ViewingDistance));
    manout("-birdsscale <n>"       ,"Scalefactor used painting the birds (default: %d).",F(BirdsScale));
@@ -323,6 +324,60 @@ void docs_usage(int man)
    manout (".","    $ xsnow -defaults        # run with defaults.");
    manout (".","    $ xsnow                  # run using values from the config file.");
    manout (".","    $ xsnow -treetype 1,2    # use tree types 1 and 2.");
+
+   if(doman)
+   {
+      printf(".PP\n"); printf(".SS \"WINDOW MANAGER ISSUES\n");
+      printf(".br\n");
+   }
+   else
+   {
+      printf("\n   WINDOW MANAGER ISSUES\n\n");
+   }
+   manout(" ","In general, xsnow works better when using a compositing window manager");
+   manout(" ","like xcompmgr, compton or picom.");
+   manout(" ","However, with some window managers (FVWM for example), the xsnow-window");
+   manout(" ","is transparent, but not click-through.");
+   manout(" ","Flags to be tried in this case include: -root, -doublebuffer, -xwininfo, -id.");
+   manout("."," ");
+   manout(".","Here follow some window managers with their issues:");
+   manout("."," ");
+   manout("AWESOME","Without compositor: no issues.");
+   manout(" ","With compositor: no click-through xsnow window");
+   manout("BSPWM","No issues if you add to your bspwmrc (the bspwm configuration file):");
+   manout(".","    bspc rule -a Xsnow state=floating border=off");
+   manout("CINNAMON","No issues.");
+   manout("DWM","No issues, except the \"Below Windows\" setting in the \"settings\" panel.");
+   manout("ENLIGHTENMENT","No issuses.");
+   manout("FLUXBOX","Without compositor: no issues.");
+   manout(" ","With compositor: no click-through xsnow window");
+   manout("FVWM","Without compositor: no issues.");
+   manout(" ","With compositor: no click-through xsnow window");
+   manout("GNOME","No issues.");
+   manout("HERBSTLUFTWM","No issues.");
+   manout("I3","Without compositor: no issues, using the next line in \"config\":");
+   manout(".","    for_window [class=\"Xsnow\"] floating enable;border none");
+   manout(".","With compositor: unworkable.");
+   manout("JVM","No issues.");
+   manout("LXDE","With compositor: no issues.");
+   manout(" ","Without compositor: use: xsnow -xwininfo");
+   manout("LXQT","Without compositor: unworkable.");
+   manout(" ","With compositor: no click-through xsnow window.");
+   manout("MATE","No issues.");
+   manout("OPENBOX","No issues.");
+   manout("PLASMA (KDE)","No issues.");
+   manout("SPECTREWM","Without compositor: no snow on windows, use the next line in \"spetrewm.conf\":");
+   manout(".","    quirk[Xsnow] = FLOAT");
+   manout(".","With compositor: no satisfactorily results.");
+   manout("TWM","Without compositor: no issues.");
+   manout(" ","With compositor: no click-through xsnow window");
+   manout("WINDOW MAKER","Without compositor: no issues.");
+   manout(" ","With compositor: no click-through xsnow window");
+   manout("XFCE","No issues when compositing is on, unworkable when compositing is off."); 
+   manout(".","See settings -> Window Manager Tweaks -> Compositor");
+   manout("XMONAD","No issues if you add to your xmonad.hs in the ManageHook section:");
+   manout(".","    className = ? \"Xsnow\" --> doFloat");
+
 
    if(doman)
    {
