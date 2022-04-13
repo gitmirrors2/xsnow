@@ -46,6 +46,7 @@
    */
 /* single nearest neighbor search written by Tamas Nepusz <tamas@cs.rhul.ac.uk> */
 
+#include <pthread.h>
 #define USE_LIST_NODE_ALLOCATOR
 #define NO_ALLOCA
 
@@ -64,6 +65,7 @@
 #include <math.h>
 #include <assert.h>
 #include "kdtree.h"
+#include "safe_malloc.h"
 
 #if defined(WIN32) || defined(__WIN32__)
 #include <malloc.h>

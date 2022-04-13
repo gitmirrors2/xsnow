@@ -65,6 +65,7 @@
 
 // timers
 
+#define time_aurora               1.0    // time between update of aurora
 #define time_below_confirm        1.0    // time between check of 'confirm' button (after 'below' button)
 #define time_blowoff              0.50   // time between blow snow off windows 
 #define time_change_attr         60.0    // time between changing attraction point
@@ -141,6 +142,7 @@ typedef struct _MeteoMap {
    int x1,x2,y1,y2,active;
    double starttime;
 } MeteoMap;
+
 
 typedef struct _StarMap {
    unsigned char *starBits;

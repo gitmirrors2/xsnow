@@ -17,19 +17,23 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
+ * */
 #include <pthread.h>
-#include <gtk/gtk.h>
-#include <stdlib.h>
-#include "clocks.h"
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_spline.h>
+#include "spline_interpol.h"
 
-double wallcl() 
-{ 
-   return (double)g_get_real_time()*1.0e-6;
-}
-
-double wallclock()
+void spline_interpol(const double *px, int np, const double *py, const double *x, int nx, double *y)
 {
-   return (double)g_get_monotonic_time()*1.0e-6;
-}
+   int i;
+   gsl_interp_accel *acc = gsl_interp_accel_alloc();
+   gsl_spline *spline    = gsl_spline_alloc(gsl_interp_cspline, np);
+   gsl_spline_init(spline, px, py, np);
 
+
+   for(i=0; i<nx; i++)
+      y[i] = gsl_spline_eval(spline, x[i], acc);
+   
+   gsl_spline_free (spline);
+   gsl_interp_accel_free (acc);
+}

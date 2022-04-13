@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -27,6 +28,7 @@
 #include "version.h"
 #include "utils.h"
 #include "flags.h"
+#include "safe_malloc.h"
 
 // return char* with all occurences of needle in s replaced with rep
 // s, needle, rep will not be modified
@@ -210,23 +212,33 @@ void docs_usage(int man)
    {
       printf("\n  Celestial options:\n\n");
    }
-   manout("-wind     "          ,"(Default) It will get windy now and then.");
-   manout("-nowind   "          ,"By default it gets windy now and then. If you prefer quiet weather");
-   manout(" "                   ,"specify -nowind.");
-   manout("-whirlfactor <n>"    ,"This sets the whirl factor, i.e. the maximum adjustment of the");
-   manout(" "                   ,"horizontal speed. The default value is %d.",F(WhirlFactor));
-   manout("-windtimer <n>"      ,"With -windtimer you can specify how often it gets  windy. It's");
-   manout(" "                   ,"sort of a period in seconds, default value is %d.",F(WindTimer));
-   manout("-stars <n>"          ,"The number of stars (default: %d).",F(NStars));
-   manout("-meteorites"         ,"(Default) Show meteorites.");
-   manout("-nometeorites"       ,"Do not show meteorites.");
-   manout("-moon <n>"           ,"1: show moon, 0: do not show moon (default: %d).",F(Moon));
-   manout("."                   ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
-   manout("."                   ,"https://unsplash.com/photos/wCujVcf0JDw");
-   manout("-moonspeed <n>"      ,"Speed of moon in pixels/minute (default: %d).",F(MoonSpeed));
-   manout("-moonsize <n>"       ,"Realtive size of moon (default: %d).",F(MoonSize));
-   manout("-halo <n>"           ,"1: show halo around moon, 0: do not show halo (default: %d).",F(Halo));
-   manout("-halobrightness <n>" ,"Brightness of halo (default: %d).",F(HaloBright));
+   manout("-wind     "            ,"(Default) It will get windy now and then.");
+   manout("-nowind   "            ,"By default it gets windy now and then. If you prefer quiet weather");
+   manout(" "                     ,"specify -nowind.");
+   manout("-whirlfactor <n>"      ,"This sets the whirl factor, i.e. the maximum adjustment of the");
+   manout(" "                     ,"horizontal speed. The default value is %d.",F(WhirlFactor));
+   manout("-windtimer <n>"        ,"With -windtimer you can specify how often it gets  windy. It's");
+   manout(" "                     ,"sort of a period in seconds, default value is %d.",F(WindTimer));
+   manout("-stars <n>"            ,"The number of stars (default: %d).",F(NStars));
+   manout("-meteorites"           ,"(Default) Show meteorites.");
+   manout("-nometeorites"         ,"Do not show meteorites.");
+   manout("-moon <n>"             ,"1: show moon, 0: do not show moon (default: %d).",F(Moon));
+   manout("."                     ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
+   manout("."                     ,"https://unsplash.com/photos/wCujVcf0JDw");
+   manout("-moonspeed <n>"        ,"Speed of moon in pixels/minute (default: %d).",F(MoonSpeed));
+   manout("-moonsize <n>"         ,"Realtive size of moon (default: %d).",F(MoonSize));
+   manout("-halo <n>"             ,"1: show halo around moon, 0: do not show halo (default: %d).",F(Halo));
+   manout("-halobrightness <n>"   ,"Brightness of halo (default: %d).",F(HaloBright));
+   manout("-aurora <n>"           ,"To show (1) or not to show(0) aurora (default: %d).",F(Aurora));
+   manout("."                     ,"  On most desktops aurora works, but not on all. Try!");
+   manout("-auroraleft"           ,"Place aurora in top left of screen.");
+   manout("-auroramiddle"         ,"Place aurora in top middle of screen.");
+   manout("-auroraright"          ,"Place aurora in top right of screen (default).");
+   manout("-aurorawidth <n>"      ,"Width of aurora in percentage of screen width (default: %d).",F(AuroraWidth));
+   manout("-auroraheight <n>"     ,"Height of aurora in percentage of screen height (default: %d).",F(AuroraHeight));
+   manout("-auroraspeed <n>"      ,"Animation speed of aurora (default: %d).",F(AuroraSpeed));
+   manout("."                     ,"   10: about real value, 100: timelapse.");
+   manout("-aurorabrightness <n>" ,"Brightness of aurora (default: %d).",F(AuroraBrightness));
 
    if(doman)
    {
@@ -443,12 +455,14 @@ char *replace_all(const char *s, const char *needle, const char *rep)
       if (q == NULL)  // no needle in haystack
       {            // cat haystack to result
 	 result = (char *)realloc(result,strlen(result)+strlen(haystack)+1);
+	 REALLOC_CHECK(result);
 	 result = strcat(result,haystack);
 	 break;
       }
       else      // needle is in haystack
       {         // cat first part of haystack + rep to result
 	 result   = (char *)realloc(result,strlen(result)+strlen(haystack)+strlen(rep)+1);
+	 REALLOC_CHECK(result);
 	 result   = strncat(result, haystack, q-haystack);
 	 result   = strcat(result, rep);
 	 haystack = q+strlen(needle);
@@ -519,6 +533,7 @@ void manout(const char*flag, const char*txt, ...)
 	 printf("\n");
       }
    }
+   va_end(args);
 }
 
 void docs_changelog()

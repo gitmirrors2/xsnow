@@ -17,19 +17,8 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#include <pthread.h>
-#include <gtk/gtk.h>
-#include <stdlib.h>
-#include "clocks.h"
+ * */
+#pragma once
 
-double wallcl() 
-{ 
-   return (double)g_get_real_time()*1.0e-6;
-}
 
-double wallclock()
-{
-   return (double)g_get_monotonic_time()*1.0e-6;
-}
-
+void spline_interpol(const double *p, int np, const double *py, const double *x, int nx, double *y);

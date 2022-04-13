@@ -23,13 +23,12 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.4.4], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.5.0], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 ./prevent-remakes
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-
 
 
 # When creating a package (e.g. debian)
@@ -64,6 +63,7 @@ if test "x$x" != x ; then
    fi
 fi
 
+
 if test x"$good" = xyes ; then
    SOURCE_DATE_EPOCH="$x"
 else
@@ -76,7 +76,6 @@ AC_MSG_NOTICE([Using SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH, i.e: $xd ])
 DATE_FMT="+%Y-%m-%d"
 DATE=`date -u -d "@$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u "$DATE_FMT"`
 AC_SUBST([DATE])
-
 
 
 
@@ -126,6 +125,10 @@ AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
 PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto])
+PKG_CHECK_MODULES(GSL, [gsl])
+
+m4_include([m4/ax_pthread.m4])
+AX_PTHREAD()
 
 AC_CHECK_FUNCS([backtrace])
 LIBS="$X11_LIBS"
@@ -145,7 +148,7 @@ AC_CHECK_HEADER_STDBOOL
 #AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
-LIBS="-lm"
+#LIBS="-Wl,-Bstatic -lgsl -Wl,-Bdynamic -lm"
 
 AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
 

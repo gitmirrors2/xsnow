@@ -19,6 +19,7 @@
 #-# 
  *
  */
+#include <pthread.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -37,6 +38,7 @@
 #include "blowoff.h"
 #include "wind.h"
 #include "debug.h"
+#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -160,20 +162,6 @@ float gaussf(float x, float mu, float sigma)
 
 void CreateDeshBottom(short int *desh, int w, int h)
 {
-#if 0 
-   const float twopi = 2*355.0/113.0;
-   int i;
-   {
-      float p   = drand48()*4+1;  
-      int start = drand48()*w;
-      float a   = twopi/w;
-      for(i=0; i<w; i++)
-      {
-	 desh[i] = h*(0.45f*cosf(p*(i+start)*a)+0.55f);
-      }
-      P("desh: %f %d\n",p,start);
-   }
-#endif
 
    float *y = (float*)malloc(sizeof(float)*w);
    int i,j;
@@ -251,8 +239,8 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
       if (l > h)
 	 l = 0;
       p->r[i] = 0;  // no spikes 
-      //p->r[i] = drand48()*2;     //0,1 
-      //p->r[i] = drand48()*5-2;   // -2, -1, 0, 1, 2
+		    //p->r[i] = drand48()*2;     //0,1 
+		    //p->r[i] = drand48()*5-2;   // -2, -1, 0, 1, 2
    }
 
    if (win->id == 0)
@@ -396,7 +384,9 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
    P("CleanFallenArea %d %d\n",counter++,global.IsDouble);
    int x = fsnow->prevx;
    int y = fsnow->prevy;
-   myXClearArea(global.display, global.SnowWin, x+xstart, y, w, fsnow->h+global.MaxSnowFlakeHeight, global.xxposures);
+   if (!global.IsDouble)
+      myXClearArea(global.display, global.SnowWin, x+xstart, y, 
+	    w, fsnow->h+global.MaxSnowFlakeHeight, global.xxposures);
 }
 
 // clean area for fallensnow with id
@@ -433,7 +423,7 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    short int *pacth = f->pacth;
    short int *r     = f->r;
 
-   cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+   cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 
    cairo_set_source_rgba(cr,0,0,0,0);
@@ -557,7 +547,8 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
       {
 	 int x1 = fsnow->x + x;
 	 int y1 = fsnow->y - fsnow->acth[x];
-	 myXClearArea(global.display, global.SnowWin, x1 , y1, 1, 1, global.xxposures);     
+	 if(!global.IsDouble)
+	    myXClearArea(global.display, global.SnowWin, x1 , y1, 1, 1, global.xxposures);     
       }
       fsnow->acth[x]--;
    }

@@ -19,6 +19,7 @@
 #-# 
 */
 //
+#include <pthread.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <math.h>
@@ -98,6 +99,7 @@ static void     r2i(BirdType *bird);
 static void     i2r(BirdType *bird);
 static int      attrbird_erase(int force);
 static void     init_birds(int start);
+static void     init_bird(BirdType *bird);
 
 
 static float time_update_pos_birds     = 0.01;
@@ -685,6 +687,7 @@ void init_birds(int start)
    P("nbirds: %d %d\n",start,Flags.Nbirds);
    // Bbirds+1 to prevent allocating zero bytes:
    birds = (BirdType *)realloc(birds,sizeof(BirdType)*(Flags.Nbirds+1));
+   REALLOC_CHECK(birds);
    if (kd)
       kd_free(kd);
    kd = kd_create(3);
@@ -840,11 +843,35 @@ static void init_bird_pixbufs(const char *color)
    }
 }
 
+void init_bird(BirdType *bird)
+{
+   bird->x = 0;
+   bird->y = 0;
+   bird->z = 0;
+   bird->sx = 0;
+   bird->sy = 0;
+   bird->sz = 0;
+   bird->ix = 0;
+   bird->iy = 0;
+   bird->iz = 0;
+   bird->iw = 0;
+   bird->ih = 0;
+   bird->wingstate = 0;
+   bird->orient    = 0;
+   bird->drawable  = 0;
+   bird->prevx     = 0;
+   bird->prevy     = 0;
+   bird->prevw     = 0;
+   bird->prevh     = 0;
+   bird->prevdrawable = 0;
+}
+
 float attr_maxz(float y)
 {
    // convert screen coordinate iz to fractional birds coordinate z
    // Create a dummy bird:
    BirdType bird;
+   init_bird(&bird);                              // just to keep cppcheck happy
    bird.ix = 100;                                 // does not matter what
    bird.y  = y;                                   // distance in the centre of maxy
    bird.iz = blobals.maxiz*0.01*Flags.AttrSpace;  // the desired maximum vertical screen value

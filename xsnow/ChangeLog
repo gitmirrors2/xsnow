@@ -1,3 +1,40 @@
+version 3.5.0
+	1: add aurora
+	2: aurora.c: half implemented and disabled other method to handle sharp bends. 
+	3: windows.c: remove calls to DrawFallen()
+	   on second thought: use other method, combined with better code
+	4: optimized determining of fuzz somewhat
+	   set all horizontal scales to width 100
+	5: ui.xml: size all horizontal scales to 7 em
+	   aurora.c: add high frequency alpha to aurora 
+	6: implemented safe_malloc.{c.h} in a desperate try to get the 32 bit
+	   version running in amd64. No success.
+	   Add pthread.h at the start of every c,cpp file.
+	   main.c: initialize global.NewWind to 100.0
+	   Problems with 32 bit version were caused by optimization of the
+	      compiler and me not realizing the floating point arithmetic can 
+	      have some surprises, such as 64-bit and 80-bit compares.
+	      Problem solved by rearranging code in create_aurora_base().
+	7: aurora.c: allow arora surface to be somewhat wider than the screen
+	   and allow it start somewhat left of the screen
+	8: moon.c: randomize starting position from moon
+	   aurora.c: randomize starting theta and alpha of aurora
+	   aurora.c: adjust theta change, add slant change
+	   ixpm.c: correct two non fatal errors in scanf(... %100s...)
+	      thanks to dcb314 https://sourceforge.net/p/xsnow/tickets/11/
+	   docs.c: add va_end()
+	   wmctrl.c, birds.c: make cppcheck happy
+	   make all, except kdtree.c, cppcheck happy using a check after
+	      realloc()
+	   aurora.c: prevent too large vertical movements in position of aurora
+	10: add more random slant fo aurora
+	11: aurora.c: create aurora_erase(), to be called in main() and when 
+	       changing the look of the aurora when no double buffering is
+	       available.
+	    fallensnow.c: do not call XClearArea when double buffer is used.
+	    doit.h: Change aurora defaults.
+	   
+
 version 3.4.4
 	1: birds.c: attraction point goes now from 0.1..0.9 of the horizontal 
 	   dimension of the screen

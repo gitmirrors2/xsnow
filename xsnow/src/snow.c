@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -40,6 +41,7 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
+#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -193,7 +195,6 @@ int snow_draw(cairo_t *cr)
    while( (flake = (Snow *)set_next()) )
    {
       P("snow_draw %d %f\n",counter++,ALPHA);
-      //cairo_set_source_surface (cr, snow_surfaces[flake->whatFlake], flake->rx, flake->ry);
       cairo_set_source_surface (cr, snowPix[flake->whatFlake].surface, flake->rx, flake->ry);
       double alpha = ALPHA;
       if (flake->fluff)
@@ -558,6 +559,7 @@ void EraseSnowFlake1(Snow *flake)
    P("Erasesnowflake1\n");
    if(global.IsDouble)
       return;
+   P("Erasesnowflake++++++++\n");
    int x = flake->ix-1;
    int y = flake->iy-1;
    int flakew = snowPix[flake->whatFlake].width+2;

@@ -17,19 +17,28 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
-*/
-#include <pthread.h>
-#include <gtk/gtk.h>
-#include <stdlib.h>
-#include "clocks.h"
+ */
+#pragma once
+#include <stdio.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_spline.h>
+extern void *safe_malloc(size_t size);
+extern void *safe_realloc(void *ptr, size_t size);
+extern void safe_free(void *ptr);
+extern void safe_gsl_spline_free (gsl_spline *spline);
+extern void safe_gsl_interp_accel_free (gsl_interp_accel *acc);
+extern int safe_XFree(void *data);
 
-double wallcl() 
-{ 
-   return (double)g_get_real_time()*1.0e-6;
-}
+#define REALLOC_CHECK(x) \
+   if(x == NULL) \
+     {           \
+	fprintf(stderr,"Realloc error in %s:%d\n",__FILE__,__LINE__);  \
+	exit(1);  \
+     } struct dummy_to_require_semicolon
 
-double wallclock()
-{
-   return (double)g_get_monotonic_time()*1.0e-6;
-}
-
+#define MALLOC_CHECK(x) \
+   if(x == NULL) \
+     {           \
+	fprintf(stderr,"Malloc error in %s:%d\n",__FILE__,__LINE__);  \
+	exit(1);  \
+     } struct dummy_to_require_semicolon

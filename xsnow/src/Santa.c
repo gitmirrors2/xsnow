@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -34,6 +35,7 @@
 #include "wind.h"
 #include "ixpm.h"
 #include "moon.h"
+#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())

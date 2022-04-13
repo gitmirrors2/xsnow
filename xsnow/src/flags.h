@@ -22,6 +22,7 @@
 
 #include <X11/Xlib.h>
 #include "doit.h"
+#include "safe_malloc.h"
 
 #define UIDO(_x,_y) \
    if(Flags._x != OldFlags._x) \

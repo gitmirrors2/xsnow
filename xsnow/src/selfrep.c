@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include "selfrep.h"
 #include "utils.h"

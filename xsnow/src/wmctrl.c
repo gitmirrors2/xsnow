@@ -27,6 +27,7 @@
  * if a window is on the screen (minimized or not) by looking at __E_WINDOW_MAPPED
  */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
@@ -37,6 +38,7 @@
 #include "windows.h"
 #include "dsimple.h"
 #include "debug.h"
+#include "safe_malloc.h"
 
 #include "vroot.h"
 
@@ -149,8 +151,8 @@ int GetCurrentWorkspace()
 	 else
 	    r = -1;
 	 r = 0; // second thought: always return 0 here
-	 //        so things will run in enlightenment also
-	 //        more or less ;-)
+		//        so things will run in enlightenment also
+		//        more or less ;-)
       }
       else
 	 r = *(long *)properties;        // see man XGetWindowProperty
@@ -254,7 +256,11 @@ int GetWindows(WinInfo **windows, int *nwin)
    // and yet another check if window is hidden (needed e.g. in KDE/plasma after 'hide all windows')
    int globalhidden = 0;
    {
-      P("hidden3 %d %#lx\n",counter++,w->id);
+      if (w)
+      {P("hidden3 %d %#lx\n",counter++,w->id);}
+      else
+      {P("hidden3 %d %#lx\n",counter++,w);}
+
       if (atom_net_showing_desktop)
       {
 	 Atom type;
@@ -465,7 +471,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       w->h += r[2]+r[3];
 	       break;
 	    case GTK:
-	       P("%d: GTK\n");
+	       P("%d: GTK\n",global.counter++);
 	       w->x += r[0];
 	       w->y += r[2];
 	       w->w -= (r[0]+r[1]);
@@ -476,7 +482,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       exit(1);
 	       break;
 	 }
-	 P("%d: NET/GTK: %#lx %d %d %d %d %d\n",w->id,w->ws,w->x,w->y,w->w,w->h);
+	 P("%d: NET/GTK: %#lx %d %d %d %d\n",w->id,w->ws,w->x,w->y,w->w,w->h);
       }
       else
       {

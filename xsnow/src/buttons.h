@@ -34,6 +34,10 @@
 
 /*         code           type               name              modifier */
 #define ALL_TOGGLES  \
+   BUTTON(togglecode     ,xsnow_celestials  ,Aurora               ,1  )         \
+   BUTTON(togglecode     ,xsnow_celestials  ,AuroraLeft           ,1  )         \
+   BUTTON(togglecode     ,xsnow_celestials  ,AuroraMiddle         ,1  )         \
+   BUTTON(togglecode     ,xsnow_celestials  ,AuroraRight          ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,BirdsOnly            ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,FollowSanta          ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,ShowAttrPoint        ,1  )         \
@@ -78,6 +82,10 @@
    BUTTON(scalecode      ,xsnow_settings    ,Scale                ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreTop            ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreBottom         ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraWidth          ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraHeight         ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraBrightness     ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraSpeed          ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,HaloBright           ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \

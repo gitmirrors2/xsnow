@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
@@ -34,6 +35,7 @@
 #include "fallensnow.h"
 #include "transwindow.h"
 #include "dsimple.h"
+#include "safe_malloc.h"
 
 #include "vroot.h"
 static int    do_sendevent(void *);
@@ -303,7 +305,7 @@ void UpdateFallenSnowRegions()
 	       P("CleanFallenArea\n");
 	       f->x = w->x + Flags.OffsetX;
 	       f->y = w->y + Flags.OffsetY;
-	       DrawFallen(f);
+	       //DrawFallen(f);
 	       XFlush(global.display);
 	    }
 	 }

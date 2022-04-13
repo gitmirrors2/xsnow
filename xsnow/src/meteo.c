@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <X11/Intrinsic.h>

@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <stdlib.h>
@@ -53,8 +54,15 @@ void moon_init(void)
    moonScale = (float)Flags.Scale*0.01*global.WindowScale;
    init_moon_surface();
    add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon);
+   /*
    if (global.SnowWinWidth > 400*moonScale)
+   {
       global.moonX = moonScale*200+drand48()*(global.SnowWinWidth - 400*moonScale - 2*global.moonR);
+   }
+   */
+   global.moonX = (global.SnowWinWidth-2*global.moonR)*drand48();
+   global.moonY = global.moonR + drand48()*global.moonR;
+   P("moonX moonY: %f %f\n",global.moonX,global.moonY);
 }
 
 int moon_draw(cairo_t *cr)
@@ -205,10 +213,10 @@ void init_halo_surface()
    cairo_pattern_add_color_stop_rgba(pattern, 0.0, 234.0/255, 244.0/255, 252.0/255, bright);
    cairo_pattern_add_color_stop_rgba(pattern, 1.0, 234.0/255, 244.0/255, 252.0/255, 0.0);
 
-   GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 2*haloR, 2*haloR);
+   //GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 2*haloR, 2*haloR);
    halo_surface      = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2*haloR, 2*haloR);
    cairo_t *halocr   = cairo_create(halo_surface);
-   gdk_cairo_set_source_pixbuf(halocr, pixbuf, 0, 0);
+   //gdk_cairo_set_source_pixbuf(halocr, pixbuf, 0, 0);
 
    cairo_set_source_rgba(halocr, 0, 0, 0, 0);
    cairo_paint          (halocr);
@@ -218,7 +226,7 @@ void init_halo_surface()
 
    cairo_destroy          (halocr);
    cairo_pattern_destroy  (pattern);
-   g_clear_object         (&pixbuf);
+   //g_clear_object         (&pixbuf);
 }
 
 void halo_draw(cairo_t *cr)

@@ -18,10 +18,12 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "csvpos.h"
+#include "safe_malloc.h"
 // given s like "9,2,0" fill k with 9,2,0, set n to 3.
 // all values positive, if negative 0 is inserted
 // k is allocated in csvpos, free it with free(3)
@@ -54,7 +56,7 @@ void vsc(char **s, int *k, int n)
    int l = strlen(*s);
    for (i=0; i<n; i++)
    {
-      sprintf(p,"%d,",k[i]);
+      snprintf(p,250,"%d,",k[i]);
       l += strlen(p);
       *s = (char *)realloc(*s,l+1);
       strcat(*s,p);

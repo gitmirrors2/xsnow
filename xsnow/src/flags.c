@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,6 +30,7 @@
 #include "birds.h"
 #include "windows.h"
 #include "selfrep.h"
+#include "safe_malloc.h"
 
 #include "debug.h"
 
@@ -172,7 +174,27 @@ int HandleFlags(int argc, char*argv[])
 	 else if (strcmp(arg, "-desktop") == 0) {
 	    Flags.Desktop = 1;
 	 }
+	 else if (strcmp(arg, "-auroraleft") == 0) {
+	    Flags.AuroraLeft   = 1;
+	    Flags.AuroraRight  = 0;
+	    Flags.AuroraMiddle = 0;
+	 }
+	 else if (strcmp(arg, "-auroraright") == 0) {
+	    Flags.AuroraLeft   = 0;
+	    Flags.AuroraRight  = 1;
+	    Flags.AuroraMiddle = 0;
+	 }
+	 else if (strcmp(arg, "-auroramiddle") == 0) {
+	    Flags.AuroraLeft   = 0;
+	    Flags.AuroraRight  = 0;
+	    Flags.AuroraMiddle = 1;
+	 }
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
+	 handle_ia(-aurora              ,Aurora                           );
+	 handle_ia(-aurorawidth         ,AuroraWidth                      );
+	 handle_ia(-auroraheight        ,AuroraHeight                     );
+	 handle_ia(-auroraspeed         ,AuroraSpeed                      );
+	 handle_ia(-aurorabrightness    ,AuroraBrightness                 );
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
 	 handle_ia(-checkgtk            ,CheckGtk                         );
 	 handle_ia(-cpuload             ,CpuLoad                          );
@@ -357,8 +379,8 @@ void findflag(FILE *f, const char *x, char **value)
       *value = strdup(rest);
       break;
    }
-   if(line) free(line);
-   if(flag) free(flag);
+   if(line) {free(line);line = NULL;}
+   if(flag) {free(flag);line = NULL;}
 }
 
 void ReadFlags()
@@ -381,7 +403,7 @@ void ReadFlags()
    {                                 \
       intval = strtol(value,NULL,0); \
       Flags.x = intval;              \
-      free(value);                   \
+      free(value);              \
       value = NULL;                  \
    } 
 
@@ -390,7 +412,7 @@ void ReadFlags()
    findflag(f,# x,&value);     \
    if (value)                  \
    {                           \
-      free(Flags.x);           \
+      free(Flags.x);      \
       Flags.x = strdup(value); \
       free(value);             \
       value = NULL;            \

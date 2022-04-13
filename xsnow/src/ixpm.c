@@ -25,6 +25,8 @@
 #include "ixpm.h"
 #include "debug.h"
 #include "utils.h"
+#include "safe_malloc.h"
+
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
       Display	*display,
@@ -163,7 +165,7 @@ Region regionfromxpm(const char **data, int flop, float scale)
    int offset = nc + 1;
    for(i=1; i<=nc; i++)
    {
-      char s[100];
+      char s[101];
       P("%s\n",data[i]);
       sscanf(data[i]+n,"%*s %100s",s);
       P("%s\n",s);
@@ -242,7 +244,8 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
 {
    int nc,cpp,w,h;
 
-   unsigned char *bits = (unsigned char*) malloc(sizeof(unsigned char)*1);
+   //unsigned char *bits = (unsigned char*) malloc(sizeof(unsigned char)*1);
+   unsigned char *bits = NULL;
    if (sscanf(xpm[0],"%d %d %d %d",&w,&h,&nc,&cpp)!=4)
       return 0;
    if(cpp <=0 || w<0 || h<0 || nc<0)
@@ -253,6 +256,7 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
    *lreturn = l*h;
    // l*h+1: we do not want allocate 0 bytes
    bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*(l*h+1));
+   REALLOC_CHECK(bits);
    *bitsreturn = bits;
    int i;
    for(i=0; i<l*h; i++)
@@ -265,7 +269,7 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
    int offset = nc + 1;
    for(i=1; i<=nc; i++)
    {
-      char s[100];
+      char s[101];
       if (strlen(xpm[i]) > (size_t)cpp + 6)
       {
 	 sscanf(xpm[i]+cpp,"%*s %100s",s);
@@ -348,7 +352,7 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
 //};
 // change the second color to color and put the result in out.
 // lines will become the number of lines in out, comes in handy
-// when wanteing to free out.
+// when wanting to free out.
 void xpm_set_color(char **data, char ***out, int *lines, const char *color)
 {
    int n;  

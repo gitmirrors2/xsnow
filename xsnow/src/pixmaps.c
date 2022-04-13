@@ -19,6 +19,7 @@
 #-# 
 */
 
+#include <pthread.h>
 #include "xsnow.h"
 #include "snow.h"
 #include "pixmaps.h"

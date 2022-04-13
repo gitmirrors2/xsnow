@@ -40,6 +40,7 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
+#include <pthread.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 

@@ -54,6 +54,14 @@
 // following flags are written to the config file and
 // are part of the ui
 #define DOIT  \
+   DOIT_I(Aurora               ,1          ,0          ) \
+   DOIT_I(AuroraBrightness     ,15         ,15         ) \
+   DOIT_I(AuroraSpeed          ,50         ,50         ) \
+   DOIT_I(AuroraWidth          ,100        ,100        ) \
+   DOIT_I(AuroraHeight         ,50         ,50         ) \
+   DOIT_I(AuroraLeft           ,0          ,0          ) \
+   DOIT_I(AuroraMiddle         ,1          ,1          ) \
+   DOIT_I(AuroraRight          ,0          ,0          ) \
    DOIT_I(AllWorkspaces        ,1          ,1          ) \
    DOIT_I(BlowOffFactor        ,40         ,40         ) \
    DOIT_I(BlowSnow             ,1          ,0          ) \

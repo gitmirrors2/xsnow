@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -32,6 +33,7 @@
 #include "debug.h"
 #include "version.h"
 #include "flags.h"
+#include "safe_malloc.h"
 
 
 #ifdef TRACEBACK_AVAILALBLE
@@ -222,6 +224,7 @@ void rgba2color(GdkRGBA *c, char **s)
 {
    *s = (char *)malloc(8);
    sprintf(*s,"#%02lx%02lx%02lx",lrint(c->red*255),lrint(c->green*255),lrint(c->blue*255));
+   P("rgba2color %s %d\n",*s,strlen(*s));
 }
 
 void Thanks(void)

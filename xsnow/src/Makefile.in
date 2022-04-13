@@ -87,11 +87,14 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
 games_PROGRAMS = xsnow$(EXEEXT)
 @MAKESELFREP_TRUE@am__append_1 = -DSELFREP
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_pthread.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -116,11 +119,14 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-wind.$(OBJEXT) xsnow-stars.$(OBJEXT) \
 	xsnow-blowoff.$(OBJEXT) xsnow-treesnow.$(OBJEXT) \
 	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
-	xsnow-transwindow.$(OBJEXT) xsnow-selfrep.$(OBJEXT)
+	xsnow-transwindow.$(OBJEXT) xsnow-selfrep.$(OBJEXT) \
+	xsnow-aurora.$(OBJEXT) xsnow-spline_interpol.$(OBJEXT) \
+	xsnow-safe_malloc.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
-xsnow_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+xsnow_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -137,21 +143,22 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
-	./$(DEPDIR)/xsnow-birds.Po ./$(DEPDIR)/xsnow-blowoff.Po \
-	./$(DEPDIR)/xsnow-clientwin.Po ./$(DEPDIR)/xsnow-clocks.Po \
-	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
-	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
-	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-hashtable.Po \
-	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdtree.Po \
-	./$(DEPDIR)/xsnow-loadmeasure.Po ./$(DEPDIR)/xsnow-main.Po \
-	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteo.Po \
-	./$(DEPDIR)/xsnow-moon.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
+	./$(DEPDIR)/xsnow-aurora.Po ./$(DEPDIR)/xsnow-birds.Po \
+	./$(DEPDIR)/xsnow-blowoff.Po ./$(DEPDIR)/xsnow-clientwin.Po \
+	./$(DEPDIR)/xsnow-clocks.Po ./$(DEPDIR)/xsnow-csvpos.Po \
+	./$(DEPDIR)/xsnow-docs.Po ./$(DEPDIR)/xsnow-dsimple.Po \
+	./$(DEPDIR)/xsnow-fallensnow.Po ./$(DEPDIR)/xsnow-flags.Po \
+	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
+	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-loadmeasure.Po \
+	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
+	./$(DEPDIR)/xsnow-meteo.Po ./$(DEPDIR)/xsnow-moon.Po \
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-safe_malloc.Po \
 	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-selfrep.Po \
-	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-stars.Po \
-	./$(DEPDIR)/xsnow-transwindow.Po ./$(DEPDIR)/xsnow-treesnow.Po \
-	./$(DEPDIR)/xsnow-ui.Po ./$(DEPDIR)/xsnow-utils.Po \
-	./$(DEPDIR)/xsnow-wind.Po ./$(DEPDIR)/xsnow-windows.Po \
-	./$(DEPDIR)/xsnow-wmctrl.Po
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-spline_interpol.Po \
+	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transwindow.Po \
+	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
+	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
+	./$(DEPDIR)/xsnow-windows.Po ./$(DEPDIR)/xsnow-wmctrl.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -483,8 +490,12 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
+EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
+GREP = @GREP@
+GSL_CFLAGS = @GSL_CFLAGS@
+GSL_LIBS = @GSL_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 INSTALL = @INSTALL@
@@ -510,6 +521,11 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PTHREAD_CC = @PTHREAD_CC@
+PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
+PTHREAD_CXX = @PTHREAD_CXX@
+PTHREAD_LIBS = @PTHREAD_LIBS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -528,15 +544,24 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -585,8 +610,9 @@ SUBDIRS = Pixmaps
 TOCC = $(top_srcdir)/src/tocc.sh
 TOASCII = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
-xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(am__append_1)
-xsnow_LDADD = $(GTK_LIBS)  $(X11_LIBS) 
+xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) \
+	$(am__append_1)
+xsnow_LDADD = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS)
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
@@ -606,7 +632,10 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		snow_includes.h vroot.h \
 		moon.c moon.h buttons.h undefall.inc \
 		transwindow.c transwindow.h \
-		selfrep.c selfrep.h
+		selfrep.c selfrep.h \
+		aurora.c aurora.h \
+		spline_interpol.c spline_interpol.h \
+		safe_malloc.c safe_malloc.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
@@ -707,6 +736,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-Santa.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-aurora.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-birds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-blowoff.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-clientwin.Po@am__quote@ # am--include-marker
@@ -725,9 +755,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-meteo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-moon.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-safe_malloc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scenery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-selfrep.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snow.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-spline_interpol.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-stars.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-transwindow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-treesnow.Po@am__quote@ # am--include-marker
@@ -1148,6 +1180,48 @@ xsnow-selfrep.obj: selfrep.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='selfrep.c' object='xsnow-selfrep.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-selfrep.obj `if test -f 'selfrep.c'; then $(CYGPATH_W) 'selfrep.c'; else $(CYGPATH_W) '$(srcdir)/selfrep.c'; fi`
+
+xsnow-aurora.o: aurora.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-aurora.o -MD -MP -MF $(DEPDIR)/xsnow-aurora.Tpo -c -o xsnow-aurora.o `test -f 'aurora.c' || echo '$(srcdir)/'`aurora.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-aurora.Tpo $(DEPDIR)/xsnow-aurora.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='aurora.c' object='xsnow-aurora.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-aurora.o `test -f 'aurora.c' || echo '$(srcdir)/'`aurora.c
+
+xsnow-aurora.obj: aurora.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-aurora.obj -MD -MP -MF $(DEPDIR)/xsnow-aurora.Tpo -c -o xsnow-aurora.obj `if test -f 'aurora.c'; then $(CYGPATH_W) 'aurora.c'; else $(CYGPATH_W) '$(srcdir)/aurora.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-aurora.Tpo $(DEPDIR)/xsnow-aurora.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='aurora.c' object='xsnow-aurora.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-aurora.obj `if test -f 'aurora.c'; then $(CYGPATH_W) 'aurora.c'; else $(CYGPATH_W) '$(srcdir)/aurora.c'; fi`
+
+xsnow-spline_interpol.o: spline_interpol.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-spline_interpol.o -MD -MP -MF $(DEPDIR)/xsnow-spline_interpol.Tpo -c -o xsnow-spline_interpol.o `test -f 'spline_interpol.c' || echo '$(srcdir)/'`spline_interpol.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-spline_interpol.Tpo $(DEPDIR)/xsnow-spline_interpol.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='spline_interpol.c' object='xsnow-spline_interpol.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-spline_interpol.o `test -f 'spline_interpol.c' || echo '$(srcdir)/'`spline_interpol.c
+
+xsnow-spline_interpol.obj: spline_interpol.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-spline_interpol.obj -MD -MP -MF $(DEPDIR)/xsnow-spline_interpol.Tpo -c -o xsnow-spline_interpol.obj `if test -f 'spline_interpol.c'; then $(CYGPATH_W) 'spline_interpol.c'; else $(CYGPATH_W) '$(srcdir)/spline_interpol.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-spline_interpol.Tpo $(DEPDIR)/xsnow-spline_interpol.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='spline_interpol.c' object='xsnow-spline_interpol.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-spline_interpol.obj `if test -f 'spline_interpol.c'; then $(CYGPATH_W) 'spline_interpol.c'; else $(CYGPATH_W) '$(srcdir)/spline_interpol.c'; fi`
+
+xsnow-safe_malloc.o: safe_malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-safe_malloc.o -MD -MP -MF $(DEPDIR)/xsnow-safe_malloc.Tpo -c -o xsnow-safe_malloc.o `test -f 'safe_malloc.c' || echo '$(srcdir)/'`safe_malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-safe_malloc.Tpo $(DEPDIR)/xsnow-safe_malloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='safe_malloc.c' object='xsnow-safe_malloc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-safe_malloc.o `test -f 'safe_malloc.c' || echo '$(srcdir)/'`safe_malloc.c
+
+xsnow-safe_malloc.obj: safe_malloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-safe_malloc.obj -MD -MP -MF $(DEPDIR)/xsnow-safe_malloc.Tpo -c -o xsnow-safe_malloc.obj `if test -f 'safe_malloc.c'; then $(CYGPATH_W) 'safe_malloc.c'; else $(CYGPATH_W) '$(srcdir)/safe_malloc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-safe_malloc.Tpo $(DEPDIR)/xsnow-safe_malloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='safe_malloc.c' object='xsnow-safe_malloc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-safe_malloc.obj `if test -f 'safe_malloc.c'; then $(CYGPATH_W) 'safe_malloc.c'; else $(CYGPATH_W) '$(srcdir)/safe_malloc.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1625,6 +1699,7 @@ clean-am: clean-gamesPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-recursive
 		-rm -f ./$(DEPDIR)/xsnow-Santa.Po
+	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
 	-rm -f ./$(DEPDIR)/xsnow-blowoff.Po
 	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
@@ -1643,9 +1718,11 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-meteo.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
+	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
+	-rm -f ./$(DEPDIR)/xsnow-spline_interpol.Po
 	-rm -f ./$(DEPDIR)/xsnow-stars.Po
 	-rm -f ./$(DEPDIR)/xsnow-transwindow.Po
 	-rm -f ./$(DEPDIR)/xsnow-treesnow.Po
@@ -1700,6 +1777,7 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
 		-rm -f ./$(DEPDIR)/xsnow-Santa.Po
+	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
 	-rm -f ./$(DEPDIR)/xsnow-blowoff.Po
 	-rm -f ./$(DEPDIR)/xsnow-clientwin.Po
@@ -1718,9 +1796,11 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-meteo.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
+	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
+	-rm -f ./$(DEPDIR)/xsnow-spline_interpol.Po
 	-rm -f ./$(DEPDIR)/xsnow-stars.Po
 	-rm -f ./$(DEPDIR)/xsnow-transwindow.Po
 	-rm -f ./$(DEPDIR)/xsnow-treesnow.Po

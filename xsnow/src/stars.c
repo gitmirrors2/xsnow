@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+#include <pthread.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -28,6 +29,7 @@
 #include "windows.h"
 #include "pixmaps.h"
 #include "utils.h"
+#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -94,6 +96,7 @@ void init_stars()
    P("initstars %d\n",NStars);
    // Nstars+1: we do not allocate 0 bytes
    Stars = (Skoordinaten *) realloc(Stars,(NStars+1)*sizeof(Skoordinaten));
+   REALLOC_CHECK(Stars);
    for (i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];

@@ -57,6 +57,10 @@ FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xproto xext`"
 # NOTE: on my system, pkg-config expands to:
 # -lXpm -lXt -lX11 -lXext
 
+FLAGS="$FLAGS `pkg-config --cflags --libs gsl`"
+# NOTE: on my system, pkg-config expands to:
+# -lgsl -lgslcblas -lm
+
 # link flags for libmath:
 FLAGS="$FLAGS -lm"
 

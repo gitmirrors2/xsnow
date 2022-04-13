@@ -159,6 +159,7 @@ int do_wind(void *d)
 	 //                   after on average WindTimerStart secs
       }
    }
+   P("Wind: %d %f\n",global.Wind,global.NewWind);
    return TRUE;
    (void)d;
 }

@@ -125,6 +125,7 @@
 *      
 */
 
+#include <pthread.h>
 #include "buttons.h"
 // undef NEWLINE if one wants to examine the by cpp generated code:
 // cpp  ui.c | sed 's/NEWLINE/\n/g'
@@ -152,6 +153,7 @@
 #include "version.h"
 #include "windows.h"
 #include "xsnow.h"
+#include "safe_malloc.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -357,6 +359,7 @@ static void init_buttons1()
    ALL_BUTTONS
       P("\nend init_buttons1\n\n");
 }
+
 #include "undefall.inc"
 
 // define call backs
@@ -415,6 +418,8 @@ NEWLINE     if (m) { \
 #define scalecode(type,name,m) \
    NEWLINE P("range %s %s %d %d\n",#name,#type,m,Flags.name); \
 NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
+//NEWLINE     if(gtk_orientable_get_orientation(GTK_ORIENTABLE(Button.name)) == GTK_ORIENTATION_HORIZONTAL) 
+//NEWLINE         gtk_widget_set_size_request(GTK_WIDGET(Button.name),100,-1);
 #define colorcode(type,name,m) \
    NEWLINE P("color %s %s %d %s\n",#name,#type,m,Flags.name); \
 NEWLINE     gdk_rgba_parse(&color,Flags.name); \
@@ -463,6 +468,7 @@ static void report_tree_type(int p, gint active)
    if(active)
    {
       a = (int *)realloc(a,sizeof(*a)*(n+1));
+      REALLOC_CHECK(a);
       a[n] = p;
       n++;
    }
@@ -682,7 +688,6 @@ void show_bct_countdown()
 {
    sprintf(sbuffer,"Click to\nconfirm %d",bct_countdown);
    gtk_button_set_label(GTK_BUTTON(Button.BelowConfirm),sbuffer);
-
 }
 
 int below_confirm_ticker(void *d)
@@ -768,6 +773,7 @@ void ui_set_celestials_header(const char *text)
    GtkWidget *celestials_header = GTK_WIDGET(gtk_builder_get_object(builder,"celestials-header")); 
    char *a = strdup(gtk_label_get_text(GTK_LABEL(celestials_header)));
    a = (char *) realloc(a,strlen(a)+2+strlen(text));
+   REALLOC_CHECK(a);
    strcat(a,"\n");
    strcat(a,text);
    my_gtk_label_set_text(GTK_LABEL(celestials_header),a);

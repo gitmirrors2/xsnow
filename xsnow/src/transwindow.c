@@ -18,6 +18,7 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  */
+#include <pthread.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <X11/Intrinsic.h>

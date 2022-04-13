@@ -27,6 +27,29 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="aurorabrightnessadjustment">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="auroraheightadjustment">
+    <property name="lower">10</property>
+    <property name="upper">95</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="auroraspeedadjustment">
+    <property name="lower">10</property>
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="aurorawidthadjustment">
+    <property name="lower">10</property>
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkFileFilter" id="backgroundchooserfilter">
     <patterns>
       <pattern>*.jpg</pattern>
@@ -1277,6 +1300,7 @@ Flag: -blowofffactor</property>
                 <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the windows.
 Note: in Wayland, there is no snow on the windows.
 Flag: -wsnowdepth</property>
+                <property name="valign">center</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round-digits">1</property>
                 <property name="digits">0</property>
@@ -1294,6 +1318,7 @@ Flag: -wsnowdepth</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the bottom of the desktop.
 Flag: -ssnowdepth</property>
+                <property name="valign">center</property>
                 <property name="adjustment">snow-on-screen-adjustment</property>
                 <property name="round-digits">1</property>
                 <property name="digits">0</property>
@@ -1311,6 +1336,7 @@ Flag: -ssnowdepth</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the trees.
 Flag: -maxontrees</property>
+                <property name="valign">center</property>
                 <property name="adjustment">snow-on-trees-adjustment</property>
                 <property name="round-digits">1</property>
                 <property name="digits">0</property>
@@ -1503,70 +1529,6 @@ Flag: -vintage</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="id-SnowFlakesFactor">
-                <property name="width-request">100</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">The higher, the more snowflakes.
-Flag: -snowflakes</property>
-                <property name="valign">center</property>
-                <property name="adjustment">snow-intensity-adjustment</property>
-                <property name="round-digits">1</property>
-                <property name="digits">0</property>
-                <property name="has-origin">False</property>
-                <property name="value-pos">left</property>
-                <style>
-                  <class name="cpuload"/>
-                </style>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Intensity:</property>
-                <property name="xalign">0.89999997615814209</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Color:</property>
-                <property name="xalign">0.89999997615814209</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkColorButton" id="id-SnowColor">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">The color of the snow.
-Flag: -sc</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="show-editor">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">3</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -1594,7 +1556,6 @@ Flag: -sc</property>
             </child>
             <child>
               <object class="GtkScale" id="id-SnowSize">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.
@@ -1625,26 +1586,6 @@ Flag: -snowsize</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScale" id="id-SnowSpeedFactor">
-                <property name="width-request">100</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Speed of the snowflakes.
-Flag: -snowspeedfactor</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="adjustment">snow-speed-adjustment</property>
-                <property name="round-digits">0</property>
-                <property name="digits">0</property>
-                <property name="has-origin">False</property>
-                <property name="value-pos">left</property>
-              </object>
-              <packing>
-                <property name="left-attach">3</property>
-                <property name="top-attach">8</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="width-request">100</property>
                 <property name="visible">True</property>
@@ -1660,7 +1601,6 @@ Flag: -snowspeedfactor</property>
             </child>
             <child>
               <object class="GtkScale" id="id-FlakeCountMax">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Maximum amount of snowflakes.
@@ -1724,10 +1664,109 @@ Flags: -fluffy, -nofluffy</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                <property name="use-markup">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">9</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                <property name="use-markup">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-SnowSpeedFactor">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Speed of the snowflakes.
+Flag: -snowspeedfactor</property>
+                <property name="valign">center</property>
+                <property name="adjustment">snow-speed-adjustment</property>
+                <property name="round-digits">0</property>
+                <property name="digits">0</property>
+                <property name="has-origin">False</property>
+                <property name="value-pos">left</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Intensity:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-SnowFlakesFactor">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">The higher, the more snowflakes.
+Flag: -snowflakes</property>
+                <property name="valign">center</property>
+                <property name="adjustment">snow-intensity-adjustment</property>
+                <property name="round-digits">0</property>
+                <property name="digits">0</property>
+                <property name="has-origin">False</property>
+                <property name="value-pos">left</property>
+                <style>
+                  <class name="cpuload"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Color:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="id-SnowColor">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">The color of the snow.
+Flag: -sc</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="show-editor">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -2324,7 +2363,7 @@ Flag: -vintage</property>
             </child>
             <child>
               <object class="GtkToggleButton" id="id-NoSanta">
-                <property name="label" translatable="yes">Show</property>
+                <property name="label" translatable="yes">Show Santa</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -2352,7 +2391,16 @@ Flags: -showsanta, -nosanta</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                <property name="use-markup">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">8</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -2395,7 +2443,7 @@ Flags: -showsanta, -nosanta</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=7 n-rows=13 -->
+          <!-- n-columns=7 n-rows=14 -->
           <object class="GtkGrid" id="grid_scenery">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -2646,7 +2694,7 @@ Flag: -tc</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">8</property>
+                <property name="top-attach">9</property>
               </packing>
             </child>
             <child>
@@ -2712,7 +2760,7 @@ Flags: -treetype 7, -treetype all</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">11</property>
+                <property name="top-attach">12</property>
                 <property name="width">3</property>
               </packing>
             </child>
@@ -2740,7 +2788,7 @@ Flag: -nomenu</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">12</property>
+                <property name="top-attach">13</property>
                 <property name="width">3</property>
               </packing>
             </child>
@@ -2788,7 +2836,7 @@ Flag: -vintage</property>
               </object>
               <packing>
                 <property name="left-attach">3</property>
-                <property name="top-attach">11</property>
+                <property name="top-attach">12</property>
                 <property name="width">4</property>
               </packing>
             </child>
@@ -2815,12 +2863,39 @@ Flag: -vintage</property>
               </object>
               <packing>
                 <property name="left-attach">3</property>
-                <property name="top-attach">12</property>
+                <property name="top-attach">13</property>
                 <property name="width">4</property>
               </packing>
             </child>
             <child>
               <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">7</property>
+                <property name="width">7</property>
+              </packing>
+            </child>
+            <child>
+              <!-- n-columns=5 n-rows=2 -->
+              <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
@@ -2834,20 +2909,17 @@ Flag: -vintage</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-DesiredNumberOfTrees">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Desired number of scenery items.
 Flag: -trees</property>
-                    <property name="halign">start</property>
-                    <property name="margin-left">8</property>
+                    <property name="valign">center</property>
                     <property name="adjustment">ntreesadjustment</property>
                     <property name="fill-level">100</property>
                     <property name="round-digits">0</property>
@@ -2856,9 +2928,8 @@ Flag: -trees</property>
                     <property name="value-pos">left</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -2866,24 +2937,20 @@ Flag: -trees</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin-left">12</property>
                     <property name="label" translatable="yes">% Window fill:</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-TreeFill">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Bottom percentage of screen available for scenery.
 Flag: -treefill</property>
-                    <property name="halign">end</property>
-                    <property name="margin-left">8</property>
+                    <property name="valign">center</property>
                     <property name="adjustment">treewindowfilladjustment</property>
                     <property name="fill-level">100</property>
                     <property name="round-digits">0</property>
@@ -2892,9 +2959,8 @@ Flag: -treefill</property>
                     <property name="value-pos">left</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -2909,15 +2975,47 @@ Flags: -treeoverlap, -notreeoverlap</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">0</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                    <property name="use-markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                    <property name="use-markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">7</property>
+                <property name="top-attach">8</property>
                 <property name="width">7</property>
               </packing>
             </child>
@@ -3073,7 +3171,7 @@ Flags: -treeoverlap, -notreeoverlap</property>
           </packing>
         </child>
         <child>
-          <!-- n-columns=4 n-rows=12 -->
+          <!-- n-columns=4 n-rows=6 -->
           <object class="GtkGrid" id="grid_celestials">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -3106,7 +3204,7 @@ Flags: -treeoverlap, -notreeoverlap</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">9</property>
+                <property name="top-attach">3</property>
               </packing>
             </child>
             <child>
@@ -3151,7 +3249,7 @@ Flags: -treeoverlap, -notreeoverlap</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">10</property>
+                <property name="top-attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3199,7 +3297,7 @@ Flag: -vintage</property>
               </object>
               <packing>
                 <property name="left-attach">2</property>
-                <property name="top-attach">10</property>
+                <property name="top-attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3227,7 +3325,7 @@ Flag: -nomenu</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">11</property>
+                <property name="top-attach">5</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -3254,12 +3352,13 @@ Flag: -nomenu</property>
               </object>
               <packing>
                 <property name="left-attach">2</property>
-                <property name="top-attach">11</property>
+                <property name="top-attach">5</property>
                 <property name="width">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <!-- n-columns=7 n-rows=9 -->
+              <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
@@ -3276,9 +3375,8 @@ Flag: -nomenu</property>
                     </attributes>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3293,9 +3391,8 @@ Flags: -wind, -nowind</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3308,19 +3405,16 @@ Flags: -wind, -nowind</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-WhirlFactor">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">The higher this setting, the more the wind will whirl.
 Flag: -whirlfactor</property>
-                    <property name="halign">center</property>
                     <property name="adjustment">whirl-adjustment</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
@@ -3328,9 +3422,8 @@ Flag: -whirlfactor</property>
                     <property name="value-pos">left</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3344,19 +3437,16 @@ Flag: -whirlfactor</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-WindTimer">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">This setting determines how many seconds pass between two gusts of wind.
 Flag: -windtimer</property>
-                    <property name="halign">center</property>
                     <property name="adjustment">wind-timer-adjustment</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
@@ -3364,9 +3454,8 @@ Flag: -windtimer</property>
                     <property name="value-pos">left</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3380,22 +3469,10 @@ Flag: -windtimer</property>
                     <signal name="clicked" handler="button_wind_activate" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">6</property>
+                    <property name="left-attach">6</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">3</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="width-request">80</property>
@@ -3409,9 +3486,8 @@ Flag: -windtimer</property>
                     </attributes>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
@@ -3426,9 +3502,8 @@ Flag: -stars  (0 means: no stars)</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
@@ -3441,14 +3516,12 @@ Flag: -stars  (0 means: no stars)</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-NStars">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Number of twinkling stars.
@@ -3461,106 +3534,34 @@ Flag: -stars</property>
                     <property name="value-pos">left</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">1</property>
                   </packing>
                 </child>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">4</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="moon-buttons">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">5</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-top">1</property>
                 <child>
                   <object class="GtkLabel">
-                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="label" translatable="yes">Meteo</property>
-                    <property name="xalign">0.6000000238418579</property>
-                    <attributes>
-                      <attribute name="scale" value="1.5"/>
-                    </attributes>
+                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                    <property name="use-markup">True</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">8</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="id-NoMeteorites">
-                    <property name="label" translatable="yes">Show</property>
-                    <property name="width-request">80</property>
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">To show or not to show meteorites.
-Flags: -meteorites, -nometeorites</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                    <property name="use-markup">True</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">8</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">7</property>
-                <property name="width">4</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=6 n-rows=3 -->
-              <object class="GtkGrid" id="moon-box">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="width-request">80</property>
@@ -3575,7 +3576,7 @@ Flags: -meteorites, -nometeorites</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -3592,7 +3593,7 @@ Flags: -moon 1, -moon 0</property>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -3606,12 +3607,11 @@ Flags: -moon 1, -moon 0</property>
                   </object>
                   <packing>
                     <property name="left-attach">2</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-MoonSpeed">
-                    <property name="width-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Speed of moon in pixels/minute.
@@ -3625,7 +3625,56 @@ Flag: -moonspeed</property>
                   </object>
                   <packing>
                     <property name="left-attach">3</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">60</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Size:</property>
+                    <property name="width-chars">6</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-MoonSize">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Relative size of the moon.
+Flag: -moonsize</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">moonsizeadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Halo</property>
+                    <property name="xalign">0.6000000238418579</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -3642,57 +3691,7 @@ Flags: -halo 1, -halo 0</property>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="label" translatable="yes">Halo</property>
-                    <property name="xalign">0.6000000238418579</property>
-                    <attributes>
-                      <attribute name="scale" value="1.5"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="id-MoonSize">
-                    <property name="width-request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Relative size of the moon.
-Flag: -moonsize</property>
-                    <property name="valign">center</property>
-                    <property name="adjustment">moonsizeadjustment</property>
-                    <property name="round-digits">0</property>
-                    <property name="digits">0</property>
-                    <property name="has-origin">False</property>
-                    <property name="value-pos">left</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">5</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="width-request">60</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="label" translatable="yes">Size:</property>
-                    <property name="width-chars">6</property>
-                    <property name="xalign">0.89999997615814209</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">4</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -3705,7 +3704,7 @@ Flag: -moonsize</property>
                   </object>
                   <packing>
                     <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
+                    <property name="top-attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -3723,8 +3722,306 @@ Flag: -halobrightness</property>
                   </object>
                   <packing>
                     <property name="left-attach">3</property>
-                    <property name="top-attach">1</property>
+                    <property name="top-attach">3</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Meteo</property>
+                    <property name="xalign">0.6000000238418579</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-NoMeteorites">
+                    <property name="label" translatable="yes">Show</property>
+                    <property name="width-request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">To show or not to show meteorites.
+Flags: -meteorites, -nometeorites</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Aurora</property>
+                    <property name="xalign">0.6000000238418579</property>
+                    <attributes>
+                      <attribute name="scale" value="1.5"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-Aurora">
+                    <property name="label" translatable="yes">Show</property>
+                    <property name="width-request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">To show or not show aurora.
+Note: the aurora is best viewed using a dark background.
+Flags: -aurora 1, -aurora 0</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">60</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Width:</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-AuroraWidth">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Width of aurora in percentage of screen width.
+Flag: -aurorawidth</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">aurorawidthadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">60</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Height:</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-AuroraHeight">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Height of aurora, percentage of screen height.
+Flag: -auroraheight</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">auroraheightadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">60</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Speed:</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-AuroraSpeed">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Animantion speed of aurora: real: 10, time lapse: 100
+Flag: -auroraspeed</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">auroraspeedadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="width-request">60</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Bright:</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="id-AuroraBrightness">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Brightness of aurora.
+Flags: -aurorabrightness</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">aurorabrightnessadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="id-AuroraLeft">
+                    <property name="label" translatable="yes">Left</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Place aurora left on the screen.
+Flag: -auroraleft</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">False</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="id-AuroraMiddle">
+                    <property name="label" translatable="yes">Middle</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Place aurora in the middle of the screen.
+Flag: -auroramiddle</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">False</property>
+                    <property name="group">id-AuroraLeft</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="id-AuroraRight">
+                    <property name="label" translatable="yes">Right</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Place aurora in the right of the screen.
+Flag: -auroraright</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">False</property>
+                    <property name="group">id-AuroraLeft</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
@@ -3753,33 +4050,9 @@ Flag: -halobrightness</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">6</property>
+                <property name="top-attach">1</property>
                 <property name="width">4</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -4027,7 +4300,6 @@ Flags: -birdsonly 0, -birdsony 1</property>
             </child>
             <child>
               <object class="GtkScale" id="id-PrefDistance">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Preferred distance from other birds.
@@ -4165,7 +4437,6 @@ Flag: -focuscentre</property>
             </child>
             <child>
               <object class="GtkScale" id="id-Nbirds">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Desired number of birds. If zero, no birds are shown.
@@ -4199,7 +4470,6 @@ Flag: -nbirds</property>
             </child>
             <child>
               <object class="GtkScale" id="id-Neighbours">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Number of nearest neighbours the birds should look at.
@@ -4283,7 +4553,6 @@ Flag: -birdscolor</property>
             </child>
             <child>
               <object class="GtkScale" id="id-Anarchy">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Anarchy level: the higher, the more anarchy.
@@ -4314,7 +4583,6 @@ Flag: -anarchy</property>
             </child>
             <child>
               <object class="GtkScale" id="id-DisWeight">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Eagerness to keep desired distance to neighbours.
@@ -4346,7 +4614,6 @@ neighbours:</property>
             </child>
             <child>
               <object class="GtkScale" id="id-FollowWeight">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Eagerness to adjust speed to neighbours.
@@ -4377,7 +4644,6 @@ Flag: -followneighbours</property>
             </child>
             <child>
               <object class="GtkScale" id="id-BirdsSpeed">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Speed of birds in arbitrary units.
@@ -4408,7 +4674,6 @@ Flag: -birdsspeed</property>
             </child>
             <child>
               <object class="GtkScale" id="id-BirdsScale">
-                <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Influence the size of the birds.
@@ -4492,10 +4757,28 @@ range</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                <property name="use-markup">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
+                <property name="use-markup">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -5307,7 +5590,24 @@ Flag: -bg  (this button will be automatically desactivated when -bg is given)</p
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes"> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</property>
+              </object>
+              <packing>
+                <property name="left-attach">16</property>
+                <property name="top-attach">6</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

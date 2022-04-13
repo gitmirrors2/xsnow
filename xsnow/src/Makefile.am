@@ -25,8 +25,8 @@ TOASCII  = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
-xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) 
-xsnow_LDADD    = $(GTK_LIBS)  $(X11_LIBS) 
+xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS)
+xsnow_LDADD    = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS)
 
 
 if MAKESELFREP
@@ -53,7 +53,10 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		snow_includes.h vroot.h \
 		moon.c moon.h buttons.h undefall.inc \
 		transwindow.c transwindow.h \
-		selfrep.c selfrep.h
+		selfrep.c selfrep.h \
+		aurora.c aurora.h \
+		spline_interpol.c spline_interpol.h \
+		safe_malloc.c safe_malloc.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 

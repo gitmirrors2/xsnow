@@ -24,6 +24,7 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
+#include <pthread.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -42,6 +43,7 @@
 #include "fallensnow.h"
 #include "csvpos.h"
 #include "treesnow.h"
+#include "safe_malloc.h"
 
 static int              do_initbaum(void *);
 static void             ReInitTree0(void);
@@ -242,6 +244,7 @@ int do_initbaum(void *d)
    if(TreeRead)
    {
       TreeType = (int *)realloc(TreeType,1*sizeof(*TreeType));
+      REALLOC_CHECK(TreeType);
       TreeType[0] = 0;
    }
    else
@@ -291,6 +294,7 @@ int do_initbaum(void *d)
 	    if (unique) 
 	    {
 	       TreeType = (int *)realloc(TreeType,(NtreeTypes+1)*sizeof(*TreeType));
+	       REALLOC_CHECK(TreeType);
 	       TreeType[NtreeTypes] = tmptreetype[i];
 	       NtreeTypes++;
 	    }
@@ -299,6 +303,7 @@ int do_initbaum(void *d)
       if(NtreeTypes == 0)
       {
 	 TreeType = (int *)realloc(TreeType,sizeof(*TreeType));
+	 REALLOC_CHECK(TreeType);
 	 TreeType[0] = DEFAULTTREETYPE;
 	 NtreeTypes++;
       }
@@ -369,6 +374,7 @@ int do_initbaum(void *d)
 
       NTrees++;
       Trees = (Treeinfo **)realloc(Trees,NTrees*sizeof(Treeinfo*));
+      REALLOC_CHECK(Trees);
       Trees[NTrees-1] = tree;
    }
 
@@ -409,6 +415,7 @@ void InitTreePixmaps()
       // there seems to be a local definition of tree
       // set TreeType to some number, so we can respond accordingly
       TreeType = (int *)realloc(TreeType,sizeof(*TreeType));
+      REALLOC_CHECK(TreeType);
       NtreeTypes = 1;
       TreeRead = 1;
       int rc = XpmReadFileToData(path,&TreeXpm);
@@ -451,7 +458,10 @@ void InitTreePixmaps()
       }
    }
    if(path)
+   {
       free(path);
+      path = NULL;
+   }
    global.OnTrees = 0;
 }
 

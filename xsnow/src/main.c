@@ -42,6 +42,7 @@
  * Reals dealing with time are declared as double. 
  * Other reals as float
  */
+#include <pthread.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -56,6 +57,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "aurora.h"
 #include "birds.h"
 #include "clocks.h"
 #include "docs.h"
@@ -82,6 +84,7 @@
 #include "treesnow.h"
 #include "loadmeasure.h"
 #include "selfrep.h"
+#include "safe_malloc.h"
 
 #include "vroot.h"
 
@@ -170,6 +173,7 @@ static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_
  *   - moon + halo
  *   - meteorites
  *   - birds
+ *   - aurora
  *
  * Selection of window to draw in
  * ==============================
@@ -279,7 +283,7 @@ int main_c(int argc, char *argv[])
    global.Wind               = 0;
    global.Direction          = 0;
    global.WindMax            = 100.0;
-   global.NewWind = 0;
+   global.NewWind            = 100.0;
 
    global.HaltedByInterrupt  = 0;
    global.Message[0]         = 0;
@@ -361,7 +365,7 @@ int main_c(int argc, char *argv[])
 	 return 1;
 	 break;
       case 1:    // manpage or help
-	 //         Ok, this cannot happen, is already caught above
+		 //         Ok, this cannot happen, is already caught above
 	 return 0;
 	 break;
       default:  // ditto
@@ -461,6 +465,7 @@ int main_c(int argc, char *argv[])
    Flags.Done = 0;
    windows_init();
    moon_init();
+   aurora_init();
    Santa_init();
    birds_init();
    scenery_init();
@@ -784,6 +789,7 @@ int HandleX11Cairo()
 	 printf(" because double buffering is not available on this system\n");
       else
 	 printf(" on your request.\n");
+      printf("NOTE: expect some flicker.\n");
       rcv = FALSE;
    }
 
@@ -840,6 +846,7 @@ int do_ui_check(void *d)
    blowoff_ui();
    treesnow_ui();
    moon_ui();
+   aurora_ui();
    ui_ui();
 
    UIDO (CpuLoad             , HandleCpuFactor();               );
@@ -1082,6 +1089,7 @@ void drawit(cairo_t *cr)
       stars_erase(); // not really necessary
       birds_erase(0);
       snow_erase(1);
+      aurora_erase();
       XFlush(global.display);
    }
 
@@ -1100,10 +1108,11 @@ void drawit(cairo_t *cr)
    if (!skipit)
    {
       stars_draw(cr);
-      meteo_draw(cr);
 
       P("moon\n");
       moon_draw(cr);
+      aurora_draw(cr);
+      meteo_draw(cr);
       scenery_draw(cr);
    }
 
