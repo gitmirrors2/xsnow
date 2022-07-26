@@ -23,13 +23,12 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.5.0], [wvermin@gmail.com])
+AC_INIT([xsnow], [3.5.1], [wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 ./prevent-remakes
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-
 
 # When creating a package (e.g. debian)
 # Get date from debian/changelog or something like that: (thanks to Bernhard M. Wiedemann)
@@ -38,9 +37,9 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 s="$SOURCE_DATE_EPOCH"
 if test "x$s" = x ; then
    AC_MSG_WARN([SOURCE_DATE_EPOCH is not defined])
-   if test -f bootdate ; then
-      AC_MSG_NOTICE([Try to read SOURCE_DATE_EPOCH from file 'bootdate'])
-      s=`head -n1 bootdate`
+   if test -f "$srcdir/bootdate" ; then
+      AC_MSG_NOTICE([Try to read SOURCE_DATE_EPOCH from file '$srcdir/bootdate'])
+      s=`head -n1 "$srcdir/bootdate"`
       xd=`date -u -d "@$s" 2>/dev/null || date -u -r "$s" 2>/dev/null || echo "Invalid date format"`
       AC_MSG_NOTICE([Read SOURCE_DATE_EPOCH=$s, i.e: $xd ])
    fi
@@ -76,7 +75,6 @@ AC_MSG_NOTICE([Using SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH, i.e: $xd ])
 DATE_FMT="+%Y-%m-%d"
 DATE=`date -u -d "@$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u "$DATE_FMT"`
 AC_SUBST([DATE])
-
 
 
 # Check if we can create a reproducible 'make dist'.
@@ -146,13 +144,10 @@ AC_CHECK_HEADER_STDBOOL
 #AC_FUNC_MALLOC
 #AC_FUNC_REALLOC
 #AC_FUNC_ALLOCA
+
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
-#LIBS="-Wl,-Bstatic -lgsl -Wl,-Bdynamic -lm"
-
-AC_CONFIG_FILES([Makefile src/Makefile] src/Pixmaps/Makefile data/Makefile)
-
-AC_OUTPUT
+AC_OUTPUT(Makefile src/Makefile src/Pixmaps/Makefile data/Makefile)
 
 AS_IF( [test "x$enable_selfrep" = "xyes"],
       [${MAKE:=make} dist ])

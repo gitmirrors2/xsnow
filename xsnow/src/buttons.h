@@ -46,7 +46,7 @@
    BUTTON(togglecode     ,xsnow_settings    ,BelowAll             ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0  )         \
    BUTTON(togglecode     ,xsnow_settings    ,ThemeXsnow           ,1  )         \
-   BUTTON(togglecode     ,xsnow_celestials  ,NoMeteorites         ,-1 )   /*i*/ \
+   BUTTON(togglecode     ,xsnow_celestials  ,NoMeteors            ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_celestials  ,Halo                 ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,Moon                 ,1  )         \
    BUTTON(togglecode     ,xsnow_santa       ,NoSanta              ,-1 )   /*i*/ \
@@ -83,10 +83,12 @@
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreTop            ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreBottom         ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraWidth          ,1  )         \
-   BUTTON(scalecode      ,xsnow_celestials  ,AuroraHeight         ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraBase           ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraBrightness     ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraHeight         ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraSpeed          ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,HaloBright           ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,MeteorFrequency      ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
    BUTTON(scalecode      ,xsnow_santa       ,SantaSpeedFactor     ,1  )         \

@@ -88,8 +88,8 @@ void snow_init()
    NFlakeTypesVintage = MaxFlakeTypes;
 
    add_random_flakes(EXTRA_FLAKES);   // will change MaxFlakeTypes
-   //                            and create xsnow_xpm, containing
-   //                            vintage and new flakes
+				      //                            and create xsnow_xpm, containing
+				      //                            vintage and new flakes
 
 
    snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
@@ -138,7 +138,7 @@ void snow_ui()
    UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
    UIDOS(SnowColor                      ,
 	 InitSnowColor();
-         InitFallenSnow(); 
+	 //InitFallenSnow(); 
 	 ClearScreen();                                            );
    UIDO (SnowSpeedFactor                , InitSnowSpeedFactor();   );
    UIDO (FlakeCountMax                  ,                          );
@@ -322,11 +322,18 @@ int do_UpdateSnowFlake(Snow *flake)
    //
    if (!Flags.NoWind)
    {
-      flake->vx += FlakesDT*flake->wsens*(global.NewWind - flake->vx)/flake->m;
+      P("flakevx1: %p %f\n",(void*)flake,flake->vx);
+      float f = FlakesDT*flake->wsens/flake->m;
+      if (f > 0.9)  f =  0.9;
+      if (f < -0.9) f = -0.9;
+      flake->vx += f*(global.NewWind - flake->vx);
       static float speedxmaxes[] = {100.0, 300.0, 600.0,};
-      float speedxmax = speedxmaxes[global.Wind];
-      if(flake->vx > speedxmax) flake->vx = speedxmax;
+      float speedxmax = 2*speedxmaxes[global.Wind];
+      if(fabs(flake->vx)>speedxmax)
+	 P("flakevx:  %p %f %f %f %f %f %f\n",(void*)flake,flake->vx,FlakesDT,flake->wsens,global.NewWind,flake->vx,flake->m);
+      if(flake->vx > speedxmax)  flake->vx =  speedxmax;
       if(flake->vx < -speedxmax) flake->vx = -speedxmax;
+      P("vxa: %f\n",flake->vx);
    }
 
    flake->vy += INITIALYSPEED * (drand48()-0.4)*0.1 ;
@@ -388,7 +395,7 @@ int do_UpdateSnowFlake(Snow *flake)
 		  for (i = istart; i < imax; i++)
 		     if (ny > fsnow->y - fsnow->acth[i] - 1)
 		     {
-			if(fsnow->acth[i] < fsnow->h/2)
+			if(fsnow->acth[i] < fsnow->desh[i])
 			   UpdateFallenSnowPartial(fsnow,nx - fsnow->x, flakew);
 			if(HandleFallenSnow(fsnow))
 			{
@@ -470,20 +477,16 @@ int do_UpdateSnowFlake(Snow *flake)
 	    if(found) break;
 	    int ybot = y+flakeh;
 	    int xbot = x+i;
-	    //int in = XRectInRegion(global.TreeRegion,xbot,ybot,1,1);
 	    cairo_rectangle_int_t grect = {xbot,ybot,1,1};
 	    cairo_region_overlap_t in = cairo_region_contains_rectangle(global.TreeRegion,&grect);
-	    //if (in != RectangleIn) // if bottom pixel not in TreeRegion, skip
 	    if (in != CAIRO_REGION_OVERLAP_IN) // if bottom pixel not in TreeRegion, skip
 	       continue;
 	    // move upwards, until pixel is not in TreeRegion
 	    int j;
 	    for (j=ybot-1; j >= y; j--)
 	    {
-	       //int in = XRectInRegion(global.TreeRegion,xbot,j,1,1); 
 	       cairo_rectangle_int_t grect = {xbot,j,1,1};
 	       cairo_region_overlap_t in = cairo_region_contains_rectangle(global.TreeRegion,&grect); 
-	       //if (in != RectangleIn)
 	       if (in != CAIRO_REGION_OVERLAP_IN)
 	       {
 		  // pixel (xbot,j) is snow-on-tree
@@ -868,6 +871,6 @@ int do_SwitchFlakes(void *d)
 
 void printflake(Snow *flake)
 {
-   printf("flake: %p rx: %6.0f ry: %6.0f fluff: %d freeze: %d ftr: %8.3f ft: %8.3f\n",
-	 (void *)flake,flake->rx,flake->ry,flake->fluff,flake->freeze,flake->flufftimer,flake->flufftime);
+   printf("flake: %p rx: %6.0f ry: %6.0f vx: %6.0f vy: %6.0f ws: %6.0f fluff: %d freeze: %d ftr: %8.3f ft: %8.3f\n",
+	 (void *)flake,flake->rx,flake->ry,flake->vx,flake->vy,flake->wsens,flake->fluff,flake->freeze,flake->flufftimer,flake->flufftime);
 }

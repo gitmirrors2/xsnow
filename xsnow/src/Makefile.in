@@ -115,7 +115,7 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-birds.$(OBJEXT) xsnow-kdtree.$(OBJEXT) \
 	xsnow-hashtable.$(OBJEXT) xsnow-Santa.$(OBJEXT) \
 	xsnow-utils.$(OBJEXT) xsnow-scenery.$(OBJEXT) \
-	xsnow-snow.$(OBJEXT) xsnow-meteo.$(OBJEXT) \
+	xsnow-snow.$(OBJEXT) xsnow-meteor.$(OBJEXT) \
 	xsnow-wind.$(OBJEXT) xsnow-stars.$(OBJEXT) \
 	xsnow-blowoff.$(OBJEXT) xsnow-treesnow.$(OBJEXT) \
 	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
@@ -151,7 +151,7 @@ am__depfiles_remade = ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
 	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-loadmeasure.Po \
 	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
-	./$(DEPDIR)/xsnow-meteo.Po ./$(DEPDIR)/xsnow-moon.Po \
+	./$(DEPDIR)/xsnow-meteor.Po ./$(DEPDIR)/xsnow-moon.Po \
 	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-safe_malloc.Po \
 	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-selfrep.Po \
 	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-spline_interpol.Po \
@@ -626,7 +626,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		hashtable.cpp hashtable.h \
 		Santa.c Santa.h utils.c utils.h \
 		scenery.c scenery.h snow.c snow.h \
-		meteo.c meteo.h wind.c wind.h \
+		meteor.c meteor.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
 		snow_includes.h vroot.h \
@@ -752,7 +752,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-loadmeasure.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-mainstub.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-meteo.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-meteor.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-moon.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-safe_malloc.Po@am__quote@ # am--include-marker
@@ -1055,19 +1055,19 @@ xsnow-snow.obj: snow.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-snow.obj `if test -f 'snow.c'; then $(CYGPATH_W) 'snow.c'; else $(CYGPATH_W) '$(srcdir)/snow.c'; fi`
 
-xsnow-meteo.o: meteo.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-meteo.o -MD -MP -MF $(DEPDIR)/xsnow-meteo.Tpo -c -o xsnow-meteo.o `test -f 'meteo.c' || echo '$(srcdir)/'`meteo.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-meteo.Tpo $(DEPDIR)/xsnow-meteo.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='meteo.c' object='xsnow-meteo.o' libtool=no @AMDEPBACKSLASH@
+xsnow-meteor.o: meteor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-meteor.o -MD -MP -MF $(DEPDIR)/xsnow-meteor.Tpo -c -o xsnow-meteor.o `test -f 'meteor.c' || echo '$(srcdir)/'`meteor.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-meteor.Tpo $(DEPDIR)/xsnow-meteor.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='meteor.c' object='xsnow-meteor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-meteo.o `test -f 'meteo.c' || echo '$(srcdir)/'`meteo.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-meteor.o `test -f 'meteor.c' || echo '$(srcdir)/'`meteor.c
 
-xsnow-meteo.obj: meteo.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-meteo.obj -MD -MP -MF $(DEPDIR)/xsnow-meteo.Tpo -c -o xsnow-meteo.obj `if test -f 'meteo.c'; then $(CYGPATH_W) 'meteo.c'; else $(CYGPATH_W) '$(srcdir)/meteo.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-meteo.Tpo $(DEPDIR)/xsnow-meteo.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='meteo.c' object='xsnow-meteo.obj' libtool=no @AMDEPBACKSLASH@
+xsnow-meteor.obj: meteor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-meteor.obj -MD -MP -MF $(DEPDIR)/xsnow-meteor.Tpo -c -o xsnow-meteor.obj `if test -f 'meteor.c'; then $(CYGPATH_W) 'meteor.c'; else $(CYGPATH_W) '$(srcdir)/meteor.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-meteor.Tpo $(DEPDIR)/xsnow-meteor.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='meteor.c' object='xsnow-meteor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-meteo.obj `if test -f 'meteo.c'; then $(CYGPATH_W) 'meteo.c'; else $(CYGPATH_W) '$(srcdir)/meteo.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-meteor.obj `if test -f 'meteor.c'; then $(CYGPATH_W) 'meteor.c'; else $(CYGPATH_W) '$(srcdir)/meteor.c'; fi`
 
 xsnow-wind.o: wind.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-wind.o -MD -MP -MF $(DEPDIR)/xsnow-wind.Tpo -c -o xsnow-wind.o `test -f 'wind.c' || echo '$(srcdir)/'`wind.c
@@ -1715,7 +1715,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-loadmeasure.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
 	-rm -f ./$(DEPDIR)/xsnow-mainstub.Po
-	-rm -f ./$(DEPDIR)/xsnow-meteo.Po
+	-rm -f ./$(DEPDIR)/xsnow-meteor.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
@@ -1793,7 +1793,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-loadmeasure.Po
 	-rm -f ./$(DEPDIR)/xsnow-main.Po
 	-rm -f ./$(DEPDIR)/xsnow-mainstub.Po
-	-rm -f ./$(DEPDIR)/xsnow-meteo.Po
+	-rm -f ./$(DEPDIR)/xsnow-meteor.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
@@ -1856,7 +1856,7 @@ $(tarfile):
 	echo "No tarfile available during build." > $@
 	echo "Run 'configure' or 'make dist' to make one, and run 'make' again." >> $@
 
-@MAKESELFREP_TRUE@tarfile.inc: $(tarfile)
+@MAKESELFREP_TRUE@tarfile.inc: $(tarfile) $(TOASCII)
 @MAKESELFREP_TRUE@	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
 @MAKESELFREP_FALSE@tarfile.inc: 
 @MAKESELFREP_FALSE@	echo "No selfrep compiled in" | $(TOASCII) > $@

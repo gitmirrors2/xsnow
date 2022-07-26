@@ -55,10 +55,11 @@
 // are part of the ui
 #define DOIT  \
    DOIT_I(Aurora               ,1          ,0          ) \
+   DOIT_I(AuroraBase           ,50         ,50         ) \
    DOIT_I(AuroraBrightness     ,15         ,15         ) \
+   DOIT_I(AuroraHeight         ,80         ,80         ) \
    DOIT_I(AuroraSpeed          ,50         ,50         ) \
    DOIT_I(AuroraWidth          ,100        ,100        ) \
-   DOIT_I(AuroraHeight         ,50         ,50         ) \
    DOIT_I(AuroraLeft           ,0          ,0          ) \
    DOIT_I(AuroraMiddle         ,1          ,1          ) \
    DOIT_I(AuroraRight          ,0          ,0          ) \
@@ -75,6 +76,7 @@
    DOIT_I(MaxOnTrees           ,200        ,200        ) \
    DOIT_I(MaxScrSnowDepth      ,50         ,50         ) \
    DOIT_I(MaxWinSnowDepth      ,30         ,30         ) \
+   DOIT_I(MeteorFrequency      ,40         ,40         ) \
    DOIT_I(Moon                 ,1          ,0          ) \
    DOIT_I(MoonSpeed            ,120        ,120        ) \
    DOIT_I(MoonSize             ,100        ,100        ) \
@@ -83,7 +85,7 @@
    DOIT_I(NoKeepSnow           ,0          ,0          ) \
    DOIT_I(NoKeepSnowOnTrees    ,0          ,1          ) \
    DOIT_I(NoKeepSWin           ,0          ,0          ) \
-   DOIT_I(NoMeteorites         ,0          ,1          ) \
+   DOIT_I(NoMeteors            ,0          ,1          ) \
    DOIT_I(NoSanta              ,0          ,0          ) \
    DOIT_I(NoSnowFlakes         ,0          ,0          ) \
    DOIT_I(NoTrees              ,0          ,0          ) \

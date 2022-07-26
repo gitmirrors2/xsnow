@@ -73,7 +73,7 @@
  *         these call backs have names like 'button_xsnow_celestials_HaloBright'
  *         the code ensures that for example Flags.HaloBright gets the value
  *         of the corresponding button.
- *       create a function settings1(), that sets all buttons in the state
+ *       create a function set_buttons1(), that sets all buttons in the state
  *         defined by the corresponding Flags. For example, if 
  *         Flags.HaloBright = 40, the corresponding GtkScale button will be set
  *         to this value.
@@ -191,7 +191,7 @@ static GtkImage      *preview;
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
-static void set_buttons(void);
+static void set_buttons1(void);
 static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void handle_css(void);
@@ -907,7 +907,7 @@ static void init_buttons()
    nflakeslabel = GTK_WIDGET(gtk_builder_get_object(builder,"nflakes"));
 }
 
-static void set_buttons()
+void set_buttons()
 {
    human_interaction = 0;
    set_buttons1();
@@ -1010,7 +1010,7 @@ void ui()
 {
    ui_running = True;
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
-   gtk_builder_connect_signals (builder, builder);
+   gtk_builder_connect_signals  (builder, NULL);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
    mean_distance = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-mean-distance"));
    range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));

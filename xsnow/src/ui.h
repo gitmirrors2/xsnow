@@ -44,3 +44,5 @@ extern int   ui_checkgtk(void);
 extern char *ui_gtk_version(void);
 extern char *ui_gtk_required(void);
 extern int   ui_run_nomenu(void);
+
+extern void set_buttons(void);

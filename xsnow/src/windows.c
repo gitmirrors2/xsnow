@@ -110,6 +110,14 @@ int do_wupdate(void *dummy)
 
    if(Flags.NoKeepSWin) return TRUE;
 
+   static int lockcounter = 0;
+   if (lock_fallen_n(3,&lockcounter))
+   {
+      P("lock counter: %d\n",lockcounter);
+      return TRUE;
+   }
+   P("do_wupdate running %d\n",lockcounter);
+
    // once in a while, we force updating windows
    static int wcounter = 0;
    wcounter++;
@@ -119,7 +127,7 @@ int do_wupdate(void *dummy)
       wcounter = 0;
    }
    if (!global.WindowsChanged)
-      return TRUE;
+      goto end;
 
    global.WindowsChanged = 0;
 
@@ -131,7 +139,7 @@ int do_wupdate(void *dummy)
    {
       I("Cannot get current workspace\n");
       Flags.Done = 1;
-      return TRUE;
+      goto end;
    }
 
 
@@ -155,7 +163,7 @@ int do_wupdate(void *dummy)
    {
       I("Cannot get windows\n");
       Flags.Done = 1;
-      return TRUE;
+      goto end;
    }
 
    //P("%d:\n",counter++);printwindows(display,Windows,NWindows);
@@ -192,6 +200,9 @@ int do_wupdate(void *dummy)
       }
 
    UpdateFallenSnowRegions();
+
+end:
+   unlock_fallen();
    return TRUE;
    (void)dummy;
 }
@@ -200,6 +211,7 @@ int do_wupdate(void *dummy)
 // Also update of fallensnow area's
 void UpdateFallenSnowRegions()
 {
+   // locking by caller
    WinInfo *w;
    FallenSnow *f;
    int i;
@@ -602,6 +614,8 @@ void InitDisplayDimensions()
 
 void DisplayDimensions()
 {
+   P("Displaydimensions\n");
+   lock_fallen();
    unsigned int w,h,b,d;
    int x,y,xr,yr;
    Window root,child_return;
@@ -640,6 +654,7 @@ void DisplayDimensions()
    SetMaxScreenSnowDepth();
    if(!global.IsDouble)
       ClearScreen();
+   unlock_fallen();
 }
 
 void SetBackground()

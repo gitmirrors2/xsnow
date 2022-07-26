@@ -20,5 +20,10 @@
  * */
 #pragma once
 
+// steffen's method prevent overshoots:
+#define SPLINE_INTERP gsl_interp_steffen
+// classic spline with overshoots:
+//#define SPLINE_INTERP gsl_interp_cspline
+
 
 void spline_interpol(const double *p, int np, const double *py, const double *x, int nx, double *y);

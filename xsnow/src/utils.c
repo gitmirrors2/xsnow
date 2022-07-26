@@ -26,18 +26,20 @@
 #include <X11/Intrinsic.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <gsl/gsl_sort.h>
+#include <math.h>
 #include "xsnow.h"
 #include "utils.h"
 #include "windows.h"
-#include "meteo.h"
+#include "meteor.h"
 #include "debug.h"
 #include "version.h"
 #include "flags.h"
 #include "safe_malloc.h"
 
 
-#ifdef TRACEBACK_AVAILALBLE
 void traceback()
+#ifdef TRACEBACK_AVAILALBLE
 {
    // see man backtrace
 #define BT_BUF_SIZE 100
@@ -45,6 +47,8 @@ void traceback()
    int nptrs = backtrace(buffer, BT_BUF_SIZE);
    backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO);
 }
+#else
+{}
 #endif
 
 int IsReadableFile(char *path)
@@ -75,9 +79,9 @@ void ClearScreen()
 {
    // remove all our snow-related drawings
    XClearArea(global.display, global.SnowWin, 0,0,0,0,True);
-   // Yes this is hairy: also remove meteorite.
+   // Yes this is hairy: also remove meteor.
    // It could be that a meteor region is still hanging around
-   meteo_erase();
+   meteor_erase();
    XFlush(global.display);
 
 }
@@ -106,9 +110,7 @@ void myXClearArea(Display*dsp, Window win, int x, int y, int w, int h, int expos
    if (w == 0 || h == 0 || w<0 || h<0 || w>20000 || h>20000)
    {
       P("myXClearArea: %d %d %d %d %d\n",x,y,w,h,exposures);
-#ifdef TRACEBACK_AVAILALBLE
       traceback();
-#endif
       return;
    }
    XClearArea(dsp, win, x,y,w,h,exposures);
@@ -246,3 +248,93 @@ int ScaleChanged(int *prevscale)
    }
    return FALSE;
 }
+
+// create sorted n random numbers in interval [0.0, 1.0) such that
+// adjacent numbers differ at least d.
+// If the distance between two numers is initially less than d,
+// a new random number is drawn. this is repeated at most 100 times.
+// On failure, the array is filled with equidistant numbers.
+// parameters:
+// double *a: the array to be filled
+// int n:     number of items in array
+// double d:  minimum difference between items
+// unsigned short *seed: NULL: use drand48()
+//                       pointer to array of 3 unsigned shorts: use erand48()
+//                       see man drand48
+//
+void randomuniqarray(double *a, int n, double d, unsigned short *seed)
+{
+   const int debug = 0;
+   int i;
+   if (seed)
+   {
+
+      P("seed != NULL\n");
+      for (i=0; i<n; i++)
+	 a[i] = erand48(seed);
+   }
+   else
+   {
+      P("seed = NULL\n");
+      for (i=0; i<n; i++)
+	 a[i] = drand48();
+   }
+   gsl_sort(a,1,n);
+   if(debug)
+   {
+      printf("\n");
+      for (i=0; i<n; i++)
+	 printf("x %d %f\n",i,a[i]);
+   }
+
+   int changes = 0;
+   while (1)
+   {
+      int changed = 0;
+      for (i=0; i<n-1; i++)
+	 if (fabs(a[i+1] - a[i]) < d)
+	 {
+	    // draw a new random number for a[i]
+	    if(debug)
+	    {
+	       printf("changed %d %f %f\n",i,a[i+1],a[i]);
+	    }
+	    changed = 1;
+	    if(seed)
+	       a[i] = erand48(seed);
+	    else
+	       a[i] = drand48();
+	 }
+      if (!changed)
+	 return;
+      if (changed)
+      {
+	 changes++;
+	 if(changes > 100)
+	 {
+	    // failure to create proper array, fill it with
+	    // equidistant numbers in stead
+	    if(debug)
+	    {
+	       printf("changes %d\n",changes);
+	    }
+	    int i;
+	    double s = 1.0/n;
+	    for(i=0; i<n; i++)
+	       a[i] = i*s;
+	    return;
+	 }
+	 else
+	    gsl_sort(a,1,n);
+      }
+   }
+}
+
+// inspired by Mr. Gauss, and adapted for xsnow
+float gaussf(float x, float mu, float sigma)
+{
+   float y = (x-mu)/sigma;
+   float y2 = y*y;
+   return expf(-y2);
+}
+

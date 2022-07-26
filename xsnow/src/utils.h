@@ -60,13 +60,14 @@ extern int     ScaleChanged(int *prev);
 extern int     ValidColor(const char *color);
 extern ssize_t mywrite(int fd, const void *buf, size_t count);
 extern int     IsReadableFile(char *path);
-#ifdef TRACEBACK_AVAILALBLE
+extern float   gaussf(float x, float mu, float sigma);
 extern void    traceback(void);
-#endif
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);
 
 extern int is_little_endian(void);
 extern void PrintVersion(void);
+
+extern void randomuniqarray(double *a, int n, double d, unsigned short *seed);
 

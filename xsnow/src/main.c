@@ -65,7 +65,7 @@
 #include "fallensnow.h"
 #include "flags.h"
 #include "mainstub.h"
-#include "meteo.h"
+#include "meteor.h"
 #include "moon.h"
 #include "Santa.h"
 #include "scenery.h"
@@ -171,7 +171,7 @@ static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_
  *   - scenery (trees etc)
  *   - stars
  *   - moon + halo
- *   - meteorites
+ *   - meteors
  *   - birds
  *   - aurora
  *
@@ -251,10 +251,16 @@ int main_c(int argc, char *argv[])
    signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
-   srand48((long int)(wallcl()*1.0e6));
-
+   P("srand %d\n",(int)(fmod(wallcl()*1.0e6,1.0e8)));
+   srand48((int)(fmod(wallcl()*1.0e6,1.0e8)));
 
    memset((void *)&global,0,sizeof(global));
+
+   XInitThreads();
+
+   fallen_sem_init();
+   aurora_sem_init();
+   birds_sem_init();
 
    global.counter            = 0;
    global.cpufactor          = 1.0;
@@ -282,7 +288,8 @@ int main_c(int argc, char *argv[])
 
    global.Wind               = 0;
    global.Direction          = 0;
-   global.WindMax            = 100.0;
+   //global.WindMax            = 100.0;
+   global.WindMax            = 500.0;
    global.NewWind            = 100.0;
 
    global.HaltedByInterrupt  = 0;
@@ -462,33 +469,6 @@ int main_c(int argc, char *argv[])
       return 1;
    }
 
-   Flags.Done = 0;
-   windows_init();
-   moon_init();
-   aurora_init();
-   Santa_init();
-   birds_init();
-   scenery_init();
-   snow_init();
-   meteo_init();
-   wind_init();
-   stars_init();
-   fallensnow_init();
-   blowoff_init();
-   treesnow_init();
-   loadmeasure_init();
-
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged     );
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event              );
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing            );
-   add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
-
-   if (Flags.StopAfter > 0)
-      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
-
-   HandleCpuFactor();
 
 #define DOIT_I(x,d,v) OldFlags.x = Flags.x;
 #define DOIT_L(x,d,v) DOIT_I(x,d,v);
@@ -501,7 +481,6 @@ int main_c(int argc, char *argv[])
 
    BlackPix = AllocNamedColor(BlackColor, global.Black);
 
-   // events
    if(global.Desktop)
    {
       XSelectInput(global.display, global.Rootwindow, StructureNotifyMask| SubstructureNotifyMask);
@@ -518,11 +497,38 @@ int main_c(int argc, char *argv[])
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, time_desktop_type, do_show_desktop_type);
    }
+   Flags.Done = 0;
+   windows_init();
+   moon_init();
+   aurora_init();
+   Santa_init();
+   birds_init();
+   scenery_init();
+   snow_init();
+   meteor_init();
+   wind_init();
+   stars_init();
+   blowoff_init();
+   treesnow_init();
+   loadmeasure_init();
+   fallensnow_init();
+
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged     );
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event              );
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing            );
+   add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
+
+   if (Flags.StopAfter > 0)
+      add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
+
+   HandleCpuFactor();
 
    fflush(stdout);
+
    // main loop
    gtk_main();
-
 
    if (SnowWinName) free(SnowWinName);
 
@@ -839,7 +845,7 @@ int do_ui_check(void *d)
    scenery_ui();
    birds_ui();
    snow_ui();
-   meteo_ui();
+   meteor_ui();
    wind_ui();
    stars_ui();
    fallensnow_ui();
@@ -863,6 +869,7 @@ int do_ui_check(void *d)
    if (Flags.Changes > 0)
    {
       WriteFlags();
+      set_buttons();
       P("-----------Changes: %d\n",Flags.Changes);
    }
    Flags.Changes = 0;
@@ -1112,7 +1119,7 @@ void drawit(cairo_t *cr)
       P("moon\n");
       moon_draw(cr);
       aurora_draw(cr);
-      meteo_draw(cr);
+      meteor_draw(cr);
       scenery_draw(cr);
    }
 
@@ -1191,18 +1198,12 @@ int do_draw_all(gpointer widget)
 // handle callbacks for things whose timings depend on cpufactor
 void HandleCpuFactor()
 {
-   static guint fallen_id=0;
-
    // re-add things whose timing is dependent on cpufactor
    if (Flags.CpuLoad <= 0)
       global.cpufactor = 1;
    else
       global.cpufactor = 100.0/Flags.CpuLoad;
 
-   if (fallen_id)
-      g_source_remove(fallen_id);
-
-   fallen_id = add_to_mainloop(PRIORITY_DEFAULT, time_fallen, do_fallen);
    P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
    add_to_mainloop(PRIORITY_HIGH, time_init_snow , do_initsnow);  // remove flakes
 

@@ -27,7 +27,7 @@ void spline_interpol(const double *px, int np, const double *py, const double *x
 {
    int i;
    gsl_interp_accel *acc = gsl_interp_accel_alloc();
-   gsl_spline *spline    = gsl_spline_alloc(gsl_interp_cspline, np);
+   gsl_spline *spline    = gsl_spline_alloc(SPLINE_INTERP, np);
    gsl_spline_init(spline, px, py, np);
 
 

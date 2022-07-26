@@ -22,8 +22,8 @@
 
 #include <gtk/gtk.h>
 
-extern void meteo_init(void);
-extern void meteo_ui(void);
-extern void meteo_draw(cairo_t *cr);
-extern void meteo_erase(void);
+extern void meteor_init(void);
+extern void meteor_ui(void);
+extern void meteor_draw(cairo_t *cr);
+extern void meteor_erase(void);
 

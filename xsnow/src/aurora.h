@@ -42,7 +42,8 @@ typedef struct _fuzz_t
 } fuzz_t;
 
 typedef struct _AuroraMap {
-   int width, height;        // size of aurora surface
+   int width;                // size of aurora surface
+   int base;                 // base of aurora surface
    int x,y;                  // coordinates of aurora painting in screen coordinates
    int xoffset;              // value to add to x value of aurora
    int w;                    // width of aurora painting
@@ -71,4 +72,5 @@ extern void aurora_init(void);
 extern void aurora_ui(void);
 extern void aurora_draw(cairo_t *cr);
 extern void aurora_erase(void);
+extern void aurora_sem_init(void);
 

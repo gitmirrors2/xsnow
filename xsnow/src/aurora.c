@@ -20,6 +20,7 @@
 */
 
 #include <pthread.h>
+#include <semaphore.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <X11/Intrinsic.h>
@@ -43,14 +44,14 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 
-
-static int   do_aurora(void *);
-static void *do_aurora_real(void *);
+static void *do_aurora(void *);
+//static void *do_aurora_real(void *);
 static void  aurora_setparms(AuroraMap *a);
 static void  aurora_changeparms(AuroraMap *a);
 static void  aurora_computeparms(AuroraMap *a);
 static void  create_aurora_base(const double *y, int n, 
       double *slant, int nslant, double theta, int nw, int np, aurora_t **z, int *nz);
+static double cscale(double d, int imax, float ah, double az,double h);
 
 static GdkRGBA          color;
 static const char      *AuroraColor  = "green";
@@ -59,16 +60,24 @@ static const double turnfuzz = 0.015;
 static double alphamax       = 0.7;
 
 // do_aurora_real will paint using aurora_cr, which will be connected to aurora_surface1
-// Using a mutex, aurora_surface1 will be coped to aurora_surface which is put on the
+// Using a semaphore, aurora_surface1 will be coped to aurora_surface which is put on the
 // screen in aurora_draw
 //
 static cairo_surface_t *aurora_surface  = NULL;
 static cairo_surface_t *aurora_surface1 = NULL;
 static cairo_t         *aurora_cr       = NULL;
 
-static pthread_mutex_t copy_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t comp_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static sem_t copy_sem;
+static sem_t comp_sem;
+static sem_t init_sem;
+
+static int   lock_comp(void);
+static int unlock_comp(void);
+static int   lock_init(void);
+static int unlock_init(void);
+static int   lock_copy(void);
+static int unlock_copy(void);
 
 static unsigned short xsubi[3]; // this is used by erand48() in the compute thread
 
@@ -76,7 +85,7 @@ void aurora_init()
 {
    // lock everything
    P("init: 1\n");
-   pthread_mutex_lock(&init_mutex);
+   lock_init();
    P("init: 2\n");
 
    static int firstcall = 1;
@@ -91,16 +100,21 @@ void aurora_init()
       Flags.AuroraWidth = 100;
    else if (Flags.AuroraWidth < 10)
       Flags.AuroraWidth = 10;
-   if (Flags.AuroraHeight > 95)
-      Flags.AuroraHeight = 95;
-   else if (Flags.AuroraHeight < 10)
-      Flags.AuroraHeight = 10;
+   if (Flags.AuroraBase > 95)
+      Flags.AuroraBase = 95;
+   else if (Flags.AuroraBase < 10)
+      Flags.AuroraBase = 10;
+
+   if (Flags.AuroraHeight > 100)
+      Flags.AuroraHeight = 100;
+   else if (Flags.AuroraHeight < 0)
+      Flags.AuroraHeight = 0;
 
    // the aurora surface can be somewhat larger than SnowWinWidth
    // and will be placed somewhat to the left
    int f = turnfuzz * global.SnowWinWidth;
    a.width  = global.SnowWinWidth *Flags.AuroraWidth *0.01+f;
-   a.height = global.SnowWinHeight*Flags.AuroraHeight*0.01;
+   a.base   = global.SnowWinHeight*Flags.AuroraBase*0.01;
    aurora_setparms(&a);
    if(aurora_surface)
       cairo_surface_destroy(aurora_surface);
@@ -109,11 +123,12 @@ void aurora_init()
    if(aurora_cr)
       cairo_destroy(aurora_cr);
 
-   aurora_surface  = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a.width,a.height);
-   aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a.width,a.height);
+   aurora_surface  = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a.width,a.base);
+   aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a.width,a.base);
    aurora_cr       = cairo_create(aurora_surface1);
 
 
+   static pthread_t thread = 0; 
    if (firstcall)
    {
       firstcall = 0;
@@ -126,19 +141,56 @@ void aurora_init()
       xsubi[0] = drand48()*100;
       xsubi[1] = drand48()*100;
       xsubi[2] = drand48()*100;
-      add_to_mainloop1 (PRIORITY_DEFAULT, time_aurora,  do_aurora, &a);
+      pthread_create(&thread,NULL,do_aurora,&a);
    }
 
    P("end init 1\n");
-   pthread_mutex_unlock(&init_mutex);
+   unlock_init();
    P("end init 2\n");
 }
 
+void aurora_sem_init()
+{
+   sem_init(&comp_sem,0,1);
+   sem_init(&init_sem,0,1);
+   sem_init(&copy_sem,0,1);
+}
+
+int lock_comp()
+{
+   return sem_wait(&comp_sem);
+}
+
+int unlock_comp()
+{
+   return sem_post(&comp_sem);
+}
+
+int lock_init()
+{
+   return sem_wait(&init_sem);
+}
+
+int unlock_init()
+{
+   return sem_post(&init_sem);
+}
+
+int lock_copy()
+{
+   return sem_wait(&copy_sem);
+}
+
+int unlock_copy()
+{
+   return sem_post(&copy_sem);
+}
 
 void aurora_ui()
 {
    UIDO(Aurora            , );
    UIDO(AuroraWidth       , aurora_init(); );
+   UIDO(AuroraBase        , aurora_init(); );
    UIDO(AuroraHeight      , aurora_init(); );
    UIDO(AuroraLeft        , aurora_init(); );
    UIDO(AuroraMiddle      , aurora_init(); );
@@ -152,7 +204,7 @@ void aurora_draw(cairo_t *cr)
    P("aurora_draw %d %d\n",Flags.Aurora,global.counter++);
    if(Flags.Aurora == 0)
       return;
-   pthread_mutex_lock(&copy_mutex);
+   lock_copy();
    cairo_set_source_surface(cr,aurora_surface,a.x,0);
    double alpha = a.alpha*0.02*Flags.AuroraBrightness;
    if (alpha > 1)
@@ -161,7 +213,7 @@ void aurora_draw(cairo_t *cr)
       alpha = 0;
    P("alphas: %d %f %f %f\n",Flags.AuroraBrightness,alpha,a.alpha,ALPHA*alpha);
    cairo_paint_with_alpha(cr,ALPHA*alpha);
-   pthread_mutex_unlock(&copy_mutex);
+   unlock_copy();
 }
 
 void aurora_erase()
@@ -169,219 +221,210 @@ void aurora_erase()
    P("aurora_erase %d %d %d %d \n",a.x,a.y,a.width,a.height);
    myXClearArea(global.display, global.SnowWin,
 	 a.x, a.y,     
-	 a.width, a.height,
+	 a.width, a.base,
 	 global.xxposures);
 }
 
-int do_aurora(void *d)
+void *do_aurora(void *d)
 {
-   //(void)d;
-   static pthread_t thread = 0; 
+   (void)d;
    P("do_aurora %d %d\n",Flags.Aurora,global.counter++);
-   if (Flags.Done)
-      return FALSE;
-   if (NOTACTIVE)
-      return TRUE;
-   if(Flags.Aurora == 0) return TRUE;
-
-   //if (thread) // make sure previous call is ended
-   //  pthread_join(thread,NULL);
-   // instead: do not call do_aurora_real when it is busy
-   if (pthread_mutex_trylock(&comp_mutex) == EBUSY)
+   while(1)
    {
-      P("%d do_aurora busy\n",global.counter++);
-      return TRUE;
-   }
-   if(thread)
-      pthread_join(thread,NULL);
-   pthread_create(&thread,NULL,do_aurora_real,d);
-   P("thread %ld\n",thread);
-   P("speed %d %f\n",Flags.AuroraSpeed,time_aurora/(0.1*Flags.AuroraSpeed));
-   add_to_mainloop1 (PRIORITY_DEFAULT, time_aurora/(0.2*Flags.AuroraSpeed),  do_aurora, d);
-   return FALSE;
-}
+      if (Flags.Done)
+	 pthread_exit(NULL);
+      if (NOTACTIVE)
+	 goto end;
+      if(Flags.Aurora == 0) 
+	 goto end;
 
-void* do_aurora_real(void *d)
-{
-   pthread_mutex_lock(&init_mutex);
-   AuroraMap *a = (AuroraMap *) d;
-   int j;
-   aurora_changeparms(a);
-   //hier
+      lock_comp();
+      P("thread %ld\n",thread);
+      lock_init();
+      AuroraMap *a = (AuroraMap *) d;
+      int j;
+      aurora_changeparms(a);
 
-   cairo_save(aurora_cr);
+      cairo_save(aurora_cr);
 
-   cairo_set_antialias(aurora_cr,CAIRO_ANTIALIAS_NONE);
-   cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_BUTT);
-   cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_SQUARE);
-   cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_ROUND);
-   // clean the surface. Not needed with pthreads
-   //cairo_set_source_rgba(aurora_cr,0,0,0,0);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE);
-   //cairo_paint(aurora_cr);
-   //cairo_restore(aurora_cr);
-   //cairo_save(aurora_cr);
-   int    imax = 100;
+      cairo_set_antialias(aurora_cr,CAIRO_ANTIALIAS_NONE);
+      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_BUTT);
+      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_SQUARE);
+      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_ROUND);
+      // clean the surface. Not needed with pthreads
+      //cairo_set_source_rgba(aurora_cr,0,0,0,0);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE);
+      //cairo_paint(aurora_cr);
+      //cairo_restore(aurora_cr);
+      //cairo_save(aurora_cr);
+      int    imax = 100;
 
-   // see https://www.cairographics.org/operators/
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DARKEN);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_DODGE);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_BURN);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOFT_LIGHT);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_EXCLUSION);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE); // would be nice , but doesn't work ..
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_HUE);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_SATURATION);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_COLOR);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_LUMINOSITY);
+      // see https://www.cairographics.org/operators/
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DARKEN);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_DODGE);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_BURN);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOFT_LIGHT);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_EXCLUSION);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE); // would be nice , but doesn't work ..
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_HUE);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_SATURATION);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_COLOR);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_LUMINOSITY);
 
-   cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DIFFERENCE);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SCREEN);
-   //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_XOR);
+      cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DIFFERENCE);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SCREEN);
+      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_XOR);
 
-   // draw aurora surface rectangle
-   if(0)
-   {
-      cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
-      cairo_set_line_width(aurora_cr,4);
-      cairo_move_to(aurora_cr,0,        0);
-      cairo_line_to(aurora_cr,a->width, 0);
-      cairo_line_to(aurora_cr,a->width, a->height);
-      cairo_line_to(aurora_cr,0,        a->height);
-      cairo_line_to(aurora_cr,0,        0);
-
-      cairo_stroke(aurora_cr);
-   }
-
-   cairo_set_line_width(aurora_cr,a->step);
-   cairo_pattern_t *vpattern=cairo_pattern_create_linear(0,0,0,imax);
-
-   //                                         height r   g b a
-   cairo_pattern_add_color_stop_rgba(vpattern,0.0,   1,  0,1,0.05);  // purple top
-   cairo_pattern_add_color_stop_rgba(vpattern,0.2,   1,  0,1,0.15);  // purple top
-   cairo_pattern_add_color_stop_rgba(vpattern,0.3,   0,  1,0,0.2);   // green
-   cairo_pattern_add_color_stop_rgba(vpattern,0.7,   0,  1,0,0.6);
-   cairo_pattern_add_color_stop_rgba(vpattern,0.8,   0.2,1,0,0.8);   // yellow-ish
-   cairo_pattern_add_color_stop_rgba(vpattern,1.0,   0.1,1,0,0.0);
-
-   cairo_surface_t *vertsurf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->step,imax);
-   cairo_t *vertcr = cairo_create(vertsurf);
-   cairo_set_antialias(vertcr,CAIRO_ANTIALIAS_NONE);
-   cairo_set_source(vertcr,vpattern);
-   cairo_rectangle(vertcr,0,0,a->step,imax);
-   cairo_fill(vertcr);
-
-   int zmin = a->step*a->z[0].x;
-   int zmax = a->step*a->z[0].x;
-   for (j=0; j<a->nz; j++)
-   {
-      double alpha = 1.0;
-      double d = 100;
-      double scale = imax/d;
-      if(scale < 0.25)
-	 scale = 0.25;
-      if(scale > 4)
-	 scale = 4;
-
-      scale = imax/a->hmax/a->zh[j];
-
-      P("scale: %f\n",scale);
-      P("theta: %f\n",a->theta);
-      //P("scale: %d %f %f %f %f\n",k,p[k],h[k],d,scale);
-      cairo_surface_set_device_scale(vertsurf,1,scale);
-      P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
-      if(1)
-      {
-	 // draw aurora
-	 cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
-	 cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
-      }
+      // draw aurora surface rectangle
       if(0)
       {
-	 // draw one aurora pillar
-	 cairo_set_source_surface (aurora_cr, vertsurf, 2000, 400);
-	 cairo_paint(aurora_cr);
+	 cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
+	 cairo_set_line_width(aurora_cr,4);
+	 cairo_move_to(aurora_cr,0,        0);
+	 cairo_line_to(aurora_cr,a->width, 0);
+	 cairo_line_to(aurora_cr,a->width, a->base);
+	 cairo_line_to(aurora_cr,0,        a->base);
+	 cairo_line_to(aurora_cr,0,        0);
+
+	 cairo_stroke(aurora_cr);
       }
-      P("zj: %d\n",a->step*z[j].x);
-      if(a->step*a->z[j].x < zmin)
-	 zmin = a->z[j].x;
-      if(a->step*a->z[j].x > zmax)
-	 zmax = a->z[j].x;
-      //k++;
-   }
-   P("zmin: %d %d \n",zmin,zmax);
-   if(1)
-   {
-      // draw fuzz
-      for (j=0; j<a->nfuzz; j++)
+
+      cairo_set_line_width(aurora_cr,a->step);
+      cairo_pattern_t *vpattern=cairo_pattern_create_linear(0,0,0,imax);
+
+      //                                         height r   g b a
+      cairo_pattern_add_color_stop_rgba(vpattern,0.0,   1,  0,1,0.05);  // purple top
+      cairo_pattern_add_color_stop_rgba(vpattern,0.2,   1,  0,1,0.15);  // purple top
+      cairo_pattern_add_color_stop_rgba(vpattern,0.3,   0,  1,0,0.2);   // green
+      cairo_pattern_add_color_stop_rgba(vpattern,0.7,   0,  1,0,0.6);
+      cairo_pattern_add_color_stop_rgba(vpattern,0.8,   0.2,1,0,0.8);   // yellow-ish
+      cairo_pattern_add_color_stop_rgba(vpattern,1.0,   0.1,1,0,0.0);
+
+      cairo_surface_t *vertsurf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->step,imax);
+      cairo_t *vertcr = cairo_create(vertsurf);
+      cairo_set_antialias(vertcr,CAIRO_ANTIALIAS_NONE);
+      cairo_set_source(vertcr,vpattern);
+      cairo_rectangle(vertcr,0,0,a->step,imax);
+      cairo_fill(vertcr);
+
+      int zmin = a->step*a->z[0].x;
+      int zmax = a->step*a->z[0].x;
+      for (j=0; j<a->nz; j++)
       {
 	 double alpha = 1.0;
 	 double d = 100;
-	 double scale = imax/d;
-	 if(scale < 0.25)
-	    scale = 0.25;
-	 if(scale > 4)
-	    scale = 4;
+	 double scale = cscale(imax,d,a->hmax,a->zh[j],Flags.AuroraHeight);
 
-	 scale = imax/a->hmax/a->fuzz[j].h;
-
-	 P("fuzz[j]: %d %d %g %g %g\n",j,a->fuzz[j].x,a->fuzz[j].y,a->fuzz[j].a,a->fuzz[j].h);
-	 P("scale: %d %d %d %f\n",j,a->fuzz[j].x,a->nfuzz,scale);
+	 P("scale: %f\n",scale);
 	 P("theta: %f\n",a->theta);
+	 //P("scale: %d %f %f %f %f\n",k,p[k],h[k],d,scale);
 	 cairo_surface_set_device_scale(vertsurf,1,scale);
 	 P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
 	 if(1)
 	 {
-	    // draw fuzz
-	    cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
-	    cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
-	    // yes: draw it twice to get the same luminosity as aurora near turning points
-	    cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
-	    cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+	    // draw aurora
+	    cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
+	    cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
+	 }
+	 if(0)
+	 {
+	    // draw one aurora pillar
+	    cairo_set_source_surface (aurora_cr, vertsurf, 2000, 400);
+	    cairo_paint(aurora_cr);
+	 }
+	 P("zj: %d\n",a->step*z[j].x);
+	 if(a->step*a->z[j].x < zmin)
+	    zmin = a->z[j].x;
+	 if(a->step*a->z[j].x > zmax)
+	    zmax = a->z[j].x;
+	 //k++;
+      }
+      P("zmin: %d %d \n",zmin,zmax);
+      if(1)
+      {
+	 // draw fuzz
+	 for (j=0; j<a->nfuzz; j++)
+	 {
+	    double alpha = 1.0;
+	    double d = 100;
+	    double scale = cscale(imax,d,a->hmax,a->fuzz[j].h,Flags.AuroraHeight);
+	    P("fuzz[j]: %d %d %g %g %g\n",j,a->fuzz[j].x,a->fuzz[j].y,a->fuzz[j].a,a->fuzz[j].h);
+	    P("scale: %d %d %d %f\n",j,a->fuzz[j].x,a->nfuzz,scale);
+	    P("theta: %f\n",a->theta);
+	    cairo_surface_set_device_scale(vertsurf,1,scale);
+	    P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
+	    if(1)
+	    {
+	       // draw fuzz
+	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
+	       cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+	       // yes: draw it twice to get the same luminosity as aurora near turning points
+	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
+	       cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+	    }
 	 }
       }
-   }
-   if(0)
-   {
-      // draw base of aurora
-      cairo_save(aurora_cr);
-      cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
-      cairo_set_source_rgba(aurora_cr,1,1,0,1);
-      for(j=0; j<a->nz; j++)
+      if(0)
       {
-	 cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
+	 // draw base of aurora
+	 cairo_save(aurora_cr);
+	 cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
+	 cairo_set_source_rgba(aurora_cr,1,1,0,1);
+	 for(j=0; j<a->nz; j++)
+	 {
+	    cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
+	 }
+	 cairo_fill(aurora_cr);
+	 cairo_set_source_rgba(aurora_cr,1,0,0,1);
+	 for(j=0; j<a->nfuzz; j++)
+	 {
+	    cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
+	 }
+	 cairo_fill(aurora_cr);
+	 cairo_restore(aurora_cr);
       }
-      cairo_fill(aurora_cr);
-      cairo_set_source_rgba(aurora_cr,1,0,0,1);
-      for(j=0; j<a->nfuzz; j++)
-      {
-	 cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
-      }
-      cairo_fill(aurora_cr);
+
+      cairo_destroy(vertcr);
+      cairo_surface_destroy(vertsurf);
+      cairo_pattern_destroy(vpattern);
       cairo_restore(aurora_cr);
+      //free(p);
+
+      P("do_aurora xy %d %d %d %d\n",a.x1,a.x2,a.y1,a.y2);
+      // make available just created surface as aurora_surface
+      // and create a new aurora_surface1
+      lock_copy();
+      cairo_surface_destroy(aurora_surface);
+      cairo_destroy        (aurora_cr);
+      aurora_surface     = aurora_surface1;
+      unlock_copy();
+      aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->width,a->base);
+      aurora_cr       = cairo_create(aurora_surface1);
+      unlock_comp();
+      unlock_init();
+end:
+      P("%d speed %d %f\n",global.counter++,Flags.AuroraSpeed,1000000*time_aurora/(0.2*Flags.AuroraSpeed));
+      usleep((useconds_t)(1.0e6*time_aurora/(0.2*Flags.AuroraSpeed)));
    }
+   return NULL;
+}
 
-   cairo_destroy(vertcr);
-   cairo_surface_destroy(vertsurf);
-   cairo_pattern_destroy(vpattern);
-   cairo_restore(aurora_cr);
-   //free(p);
 
-   P("do_aurora xy %d %d %d %d\n",a.x1,a.x2,a.y1,a.y2);
-   // make available just created surface as aurora_surface
-   // and create a new aurora_surface1
-   pthread_mutex_lock   (&copy_mutex);
-   cairo_surface_destroy(aurora_surface);
-   cairo_destroy        (aurora_cr);
-   aurora_surface     = aurora_surface1;
-   pthread_mutex_unlock (&copy_mutex);
-   aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->width,a->height);
-   aurora_cr       = cairo_create(aurora_surface1);
-   pthread_mutex_unlock(&comp_mutex);
-   pthread_mutex_unlock(&init_mutex);
-   pthread_exit(NULL);
+double cscale(double d, int imax, float ah, double az, double h)
+{
+   double scale = imax/d;
+   double s = 1.8-0.016*h;
+
+   scale = s*imax/ah/az;
+
+   if(scale < 0.125)
+      scale = 0.125;
+   if(scale > 4)
+      scale = 4;
+   P("scale1: %f\n",scale);
+   return scale;
 }
 
 void aurora_setparms(AuroraMap *a)
@@ -398,7 +441,7 @@ void aurora_setparms(AuroraMap *a)
    else // AuroraRight assumed
       a->x = global.SnowWinWidth - a->width; // - f;
 
-   //a->y = Flags.AuroraHeight*global.SnowWinHeight*0.01;
+   //a->y = Flags.AuroraBase  *global.SnowWinHeight*0.01;
    a->y = 0;
 
    int i;
@@ -423,7 +466,7 @@ void aurora_setparms(AuroraMap *a)
    a->theta     = drand48()*360;
    a->dtheta    = 0.2;
 
-   a->hmax      = 0.6*a->height;
+   a->hmax      = 0.6*a->base;
    if (a->hmax < 3)
       a->hmax = 3;
    for (i=0; i<AURORA_H; i++)
@@ -669,11 +712,11 @@ void aurora_computeparms(AuroraMap *a)
    double d = ymax - ymin;
    if (d < 0.1)
       d = 0.1;
-   double s = (a->height-a->hmax)/d;
+   double s = (a->base-a->hmax)/d;
    P("ymin %f %f %f %f\n",ymin,ymax,d,s);
    for (i=0; i<a->nz; i++)
    {
-      a->z[i].y = a->height - (a->z[i].y-ymin)*s;
+      a->z[i].y = a->base - (a->z[i].y-ymin)*s;
       P("a->z[i].y: %d %f\n",i,z[i].y);
    }
 
@@ -689,9 +732,10 @@ void aurora_computeparms(AuroraMap *a)
    }
    double *x = (double *)malloc(a->nz*sizeof(double));
    a->zh     = (double *)malloc(a->nz*sizeof(double));
-   dx = (double)(AURORA_H-1)/(double)(a->nz);
+   dx = (double)(AURORA_H-1)/(double)(a->nz - 1);
    for (i=0; i<a->nz; i++)
       x[i] = i*dx;
+   x[a->nz-1] = px[AURORA_H-1];
    spline_interpol(px,AURORA_H,a->h,x,a->nz,a->zh);
 
    // alpha values
@@ -704,9 +748,10 @@ void aurora_computeparms(AuroraMap *a)
       a->za = NULL;
    }
    a->za     = (double *)malloc(a->nz*sizeof(double));
-   dx = (double)(AURORA_A-1)/(double)(a->nz);
+   dx = (double)(AURORA_A-1)/(double)(a->nz - 1);
    for (i=0; i<a->nz; i++)
       x[i] = i*dx;
+   x[a->nz - 1] = pa[AURORA_A - 1];
    spline_interpol(pa,AURORA_A,a->a,x,a->nz,a->za);
 
    // high frequency alpha
@@ -719,9 +764,10 @@ void aurora_computeparms(AuroraMap *a)
       a->zaa = NULL;
    }
    a->zaa    = (double *)malloc(a->nz*sizeof(double));
-   dx = (double)(AURORA_AA-1)/(double)(a->nz);
+   dx = (double)(AURORA_AA-1)/(double)(a->nz - 1);
    for (i=0; i<a->nz; i++)
       x[i] = i*dx;
+   x[a->nz - 1] = paa[AURORA_AA - 1];
    spline_interpol(paa,AURORA_AA,a->aa,x,a->nz,a->zaa);
 
    free(x);
@@ -979,29 +1025,33 @@ void create_aurora_base(const double *y, int n,
       s[i] = i;
 
    gsl_interp_accel *acc = gsl_interp_accel_alloc();
-   gsl_spline *spline    = gsl_spline_alloc(gsl_interp_cspline, n);
+   gsl_spline *spline    = gsl_spline_alloc(SPLINE_INTERP, n);
    gsl_spline_init(spline, x, y, n);
 
    gsl_interp_accel *accs = gsl_interp_accel_alloc();
-   gsl_spline *splines    = gsl_spline_alloc(gsl_interp_cspline, nslant);
+   gsl_spline *splines    = gsl_spline_alloc(SPLINE_INTERP, nslant);
    gsl_spline_init(splines, s, slant, nslant);
 
    if(nw <= 0)
       nw = np * n;
 
 
-   double dx = ((double)(n-1))/nw;
+   double dx = ((double)(n-1))/(nw-1);
    p = (struct pq*) malloc(nw*sizeof(struct pq));
    double costheta = cos(theta);
    double sintheta = sin(theta);
    struct pq *pp = p;
-   pp->x = -1.234;   // Compiler is afraid that pp->x will not be initialized ...
+   pp->x = -1.234;   // Compiler warns that possibly pp->x will not be initialized ...
    pp->y = -1.234;   // Same for this one.
 		     // so we give them values here, which will be overwritten later on.
 
    for (i=0; i<nw; i++)
    {
-      double xi = i*dx;
+      double xi;
+      if (i == nw-1)
+	 xi = x[n-1];
+      else
+	 xi = i*dx;
       double yi = gsl_spline_eval (spline, xi, acc);
       double sl = gsl_spline_eval (splines, xi, accs);
       double ai = xi - sl*yi;

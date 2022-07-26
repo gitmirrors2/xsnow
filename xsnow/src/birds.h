@@ -30,5 +30,6 @@ extern float    birds_get_mean_dist(void);
 extern float    birds_get_range(void);
 extern void     birds_init(void);
 extern void     birds_ui(void);
+extern void     birds_sem_init(void);
 
 

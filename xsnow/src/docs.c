@@ -220,8 +220,9 @@ void docs_usage(int man)
    manout("-windtimer <n>"        ,"With -windtimer you can specify how often it gets  windy. It's");
    manout(" "                     ,"sort of a period in seconds, default value is %d.",F(WindTimer));
    manout("-stars <n>"            ,"The number of stars (default: %d).",F(NStars));
-   manout("-meteorites"           ,"(Default) Show meteorites.");
-   manout("-nometeorites"         ,"Do not show meteorites.");
+   manout("-meteors"              ,"(Default) Show meteors.");
+   manout("-nometeors"            ,"Do not show meteors.");
+   manout("-meteorfrequency"      ,"Frequency of falling of meteors, 0..100 (default: %d).",F(MeteorFrequency));
    manout("-moon <n>"             ,"1: show moon, 0: do not show moon (default: %d).",F(Moon));
    manout("."                     ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
    manout("."                     ,"https://unsplash.com/photos/wCujVcf0JDw");
@@ -235,7 +236,8 @@ void docs_usage(int man)
    manout("-auroramiddle"         ,"Place aurora in top middle of screen.");
    manout("-auroraright"          ,"Place aurora in top right of screen (default).");
    manout("-aurorawidth <n>"      ,"Width of aurora in percentage of screen width (default: %d).",F(AuroraWidth));
-   manout("-auroraheight <n>"     ,"Height of aurora in percentage of screen height (default: %d).",F(AuroraHeight));
+   manout("-aurorabase <n>"       ,"Height of aurora's base line in percentage of screen height (default: %d).",F(AuroraBase));
+   manout("-auroraheight <n>"     ,"Height of aurora (default: %d).",F(AuroraHeight));
    manout("-auroraspeed <n>"      ,"Animation speed of aurora (default: %d).",F(AuroraSpeed));
    manout("."                     ,"   10: about real value, 100: timelapse.");
    manout("-aurorabrightness <n>" ,"Brightness of aurora (default: %d).",F(AuroraBrightness));
@@ -411,7 +413,7 @@ void docs_usage(int man)
    manout(" ","  when you click on the desktop. Sadly, no FVWM menu will appear...");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","    fallen snow. These will gradually disappear, so no big deal.");
-   manout(".","- Remnants of meteorites can persist after passage of Santa.");
+   manout(".","- Remnants of meteors can persist after passage of Santa.");
    manout(" ","    These will eventually be wiped out by snow or Santa.");
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","    settings are changed while xsnow is running.");

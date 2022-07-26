@@ -18,9 +18,11 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  *
-*/
+ */
 #pragma once
 
+#include <pthread.h>
+#include <semaphore.h>
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
@@ -40,16 +42,16 @@ extern void   DrawFallen(FallenSnow *fsnow);
 extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
-extern int    do_fallen(void *);
 extern void   SetMaxScreenSnowDepth(void);
 extern void   UpdateFallenSnowAtBottom(void);
+extern int    lock_fallen(void);
+extern int    unlock_fallen(void);
+extern int    lock_fallen_n(int n, int *c);
+extern void   fallen_sem_init(void);
 
 
 // insert a node at the start of the list
 extern void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h);
-
-// pop first element
-extern int PopFallenSnow(FallenSnow **list);
 
 // remove by id
 extern int RemoveFallenSnow(FallenSnow **list, Window id);

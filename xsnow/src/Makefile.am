@@ -47,7 +47,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		hashtable.cpp hashtable.h \
 		Santa.c Santa.h utils.c utils.h \
 		scenery.c scenery.h snow.c snow.h \
-		meteo.c meteo.h wind.c wind.h \
+		meteor.c meteor.h wind.c wind.h \
 		stars.c stars.h blowoff.c blowoff.h \
 		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
 		snow_includes.h vroot.h \
@@ -69,7 +69,7 @@ $(tarfile):
 	echo "Run 'configure' or 'make dist' to make one, and run 'make' again." >> $@
 
 if MAKESELFREP
-tarfile.inc: $(tarfile)
+tarfile.inc: $(tarfile) $(TOASCII)
 	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
 else
 tarfile.inc: 

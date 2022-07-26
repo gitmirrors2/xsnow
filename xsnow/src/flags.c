@@ -192,6 +192,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-aurora              ,Aurora                           );
 	 handle_ia(-aurorawidth         ,AuroraWidth                      );
+	 handle_ia(-aurorabase          ,AuroraBase                       );
 	 handle_ia(-auroraheight        ,AuroraHeight                     );
 	 handle_ia(-auroraspeed         ,AuroraSpeed                      );
 	 handle_ia(-aurorabrightness    ,AuroraBrightness                 );
@@ -203,6 +204,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-window-id           ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
+	 handle_ia(-meteorfrequency     ,MeteorFrequency                  );
 	 handle_ia(-moon                ,Moon                             );
 	 handle_ia(-moonspeed           ,MoonSpeed                        );
 	 handle_ia(-moonsize            ,MoonSize                         );
@@ -254,8 +256,8 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-nokeepsnowonwindows ,NoKeepSWin               ,1      );
 	 handle_iv(-keepsnowonwindows   ,NoKeepSWin               ,0      );
 	 handle_iv(-nomenu              ,NoMenu                   ,1      );
-	 handle_iv(-nometeorites        ,NoMeteorites             ,1      );
-	 handle_iv(-meteorites          ,NoMeteorites             ,0      );
+	 handle_iv(-nometeors           ,NoMeteors                ,1      );
+	 handle_iv(-meteors             ,NoMeteors                ,0      );
 	 handle_iv(-norudolph           ,Rudolf                   ,0      );
 	 handle_iv(-showrudolph         ,Rudolf                   ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );

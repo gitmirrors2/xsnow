@@ -27,14 +27,19 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="aurorabaseadjustment">
+    <property name="lower">10</property>
+    <property name="upper">95</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="aurorabrightnessadjustment">
     <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="auroraheightadjustment">
-    <property name="lower">10</property>
-    <property name="upper">95</property>
+    <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
@@ -244,6 +249,11 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="lower">-20</property>
     <property name="upper">100</property>
     <property name="value">-20</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="meteorfreqadjustment">
+    <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
@@ -3731,7 +3741,7 @@ Flag: -halobrightness</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="valign">center</property>
-                    <property name="label" translatable="yes">Meteo</property>
+                    <property name="label" translatable="yes">Meteors</property>
                     <property name="xalign">0.6000000238418579</property>
                     <attributes>
                       <attribute name="scale" value="1.5"/>
@@ -3743,14 +3753,14 @@ Flag: -halobrightness</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="id-NoMeteorites">
+                  <object class="GtkToggleButton" id="id-NoMeteors">
                     <property name="label" translatable="yes">Show</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">To show or not to show meteorites.
-Flags: -meteorites, -nometeorites</property>
+                    <property name="tooltip-text" translatable="yes">To show or not to show meteors.
+Flags: -meteors, -nometeors</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -3844,7 +3854,7 @@ Flag: -aurorawidth</property>
                   <object class="GtkScale" id="id-AuroraHeight">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Height of aurora, percentage of screen height.
+                    <property name="tooltip-text" translatable="yes">Vertical size of aurora.
 Flag: -auroraheight</property>
                     <property name="valign">center</property>
                     <property name="adjustment">auroraheightadjustment</property>
@@ -3934,7 +3944,7 @@ Flag: -auroraleft</property>
                     <property name="draw-indicator">False</property>
                   </object>
                   <packing>
-                    <property name="left-attach">2</property>
+                    <property name="left-attach">4</property>
                     <property name="top-attach">7</property>
                   </packing>
                 </child>
@@ -3951,7 +3961,7 @@ Flag: -auroramiddle</property>
                     <property name="group">id-AuroraLeft</property>
                   </object>
                   <packing>
-                    <property name="left-attach">3</property>
+                    <property name="left-attach">5</property>
                     <property name="top-attach">7</property>
                   </packing>
                 </child>
@@ -3968,21 +3978,69 @@ Flag: -auroraright</property>
                     <property name="group">id-AuroraLeft</property>
                   </object>
                   <packing>
-                    <property name="left-attach">4</property>
+                    <property name="left-attach">6</property>
                     <property name="top-attach">7</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Frequency:</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">4</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkScale" id="id-MeteorFrequency">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Frequency of meteors to appear.
+Flags: -meteorfrequency</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">meteorfreqadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">4</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Base:</property>
+                    <property name="xalign">0.89999997615814209</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">7</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkScale" id="id-AuroraBase">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Baseline height of aurora, in percentage of screen height.
+Flag: -aurorabase</property>
+                    <property name="valign">center</property>
+                    <property name="adjustment">aurorabaseadjustment</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="has-origin">False</property>
+                    <property name="value-pos">left</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">3</property>
+                    <property name="top-attach">7</property>
+                  </packing>
                 </child>
                 <child>
                   <placeholder/>

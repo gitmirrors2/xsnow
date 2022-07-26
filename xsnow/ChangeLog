@@ -1,3 +1,40 @@
+version 3.5.1
+	01: configure.ac: reproducible build is now complete, it seems, also
+	    when building outside the xsnow-tree
+	02: aurora.c, spline_interpol.c: use steffen's method for splines
+	    aurora.c: small correction in determining the points to
+	              evaluate the splne at
+	03: spline_interpol.{h,c}, aurora.c: use macro SPLINE_INTERP to choose
+	    for spline type (steffen, cspline)
+	04: change some meteor code: other call-back logic, other
+	    names for variables (meteorite -> meteor)
+	05: change filenames meteo.c, meteo.h into meteor.c, meteor.h
+	    change flags -meteorites, -nometeorites into -meteors, -nometeors
+	    meteor.c: some minor changes, including different colors
+	06: snow.c: do_UpdateSnowFlake(): fix non-fatal bug in updating
+	       horizontal speed of flakes
+	    xsnow.c, snow.c: change some parameters for a more dramatic
+	       dependency from wind on flakes
+	    flag 'auroraheight' is now height of aurora
+	    flag 'aurorabase' determines the vertical placement of the aurora
+	07: fallensnow.c, treesnow.c: use random flake for blowoff snow
+	    fallensnow.c: change initial velocity and position of blowoff snow
+	08: fallensnow.c: use spline for desh shape of bottom fallensnow
+	    main.c: correct non-fatal bug in using srand48() for 32 bit systems
+	    snow.c: correct not-fatal bug: compare acth[] with desh[] in stead
+		     of h
+	    xsnow.h: change time_change_bottom to 10 minutes
+	09: use splines to paint fallensnow 
+	10: try pthreads for computing fallensnow
+	11: finish pthreads for fallensnow
+	12: aurora.c: do not use mutexes, use semaphores
+	              fix bug that caused creation of new threads after
+		      resizing of corona
+	13: fallensnow.c: use splines for fallensnow also on windows
+	14: birds.c: make birds multithreading
+	15: fallensnow.c, utils.{c,h}: check on availability of traceback()
+	    fallensnow.h: threads.h -> pthread.h
+
 version 3.5.0
 	1: add aurora
 	2: aurora.c: half implemented and disabled other method to handle sharp bends. 
