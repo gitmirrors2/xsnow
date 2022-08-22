@@ -68,7 +68,7 @@ int do_blowoff(void *d)
    if (NOTACTIVE || !Flags.BlowSnow)
       return TRUE;
    static int lockcounter = 0;
-   if(lock_fallen_n(3,&lockcounter))
+   if(Lock_fallen_n(3,&lockcounter))
       return TRUE;
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
@@ -80,7 +80,7 @@ int do_blowoff(void *d)
 	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
       fsnow = fsnow->next;
    }
-   unlock_fallen();
+   Unlock_fallen();
    return TRUE;
    (void)d;
 }

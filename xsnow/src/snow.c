@@ -88,8 +88,8 @@ void snow_init()
    NFlakeTypesVintage = MaxFlakeTypes;
 
    add_random_flakes(EXTRA_FLAKES);   // will change MaxFlakeTypes
-				      //                            and create xsnow_xpm, containing
-				      //                            vintage and new flakes
+   //                            and create xsnow_xpm, containing
+   //                            vintage and new flakes
 
 
    snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
@@ -371,6 +371,7 @@ int do_UpdateSnowFlake(Snow *flake)
 
    if (!flake->fluff)
    {
+      Lock_fallen();
       // determine if non-fluffy-flake touches the fallen snow,
       // if so: make the flake inactive.
       // the bottom pixels of the snowflake are at y = NewY + (height of flake)
@@ -413,10 +414,14 @@ int do_UpdateSnowFlake(Snow *flake)
 			      fluffify(flake,0.1);
 			   }
 			   if (flake->fluff)
+			   {
+			      Unlock_fallen();
 			      return TRUE;
+			   }
 			   else
 			   {
 			      DelFlake(flake);
+			      Unlock_fallen();
 			      return FALSE;
 			   }
 			}
@@ -427,6 +432,7 @@ int do_UpdateSnowFlake(Snow *flake)
 	    }
 	 fsnow = fsnow->next;
       }
+      Unlock_fallen();
    }
 
    int x  = lrintf(flake->rx);

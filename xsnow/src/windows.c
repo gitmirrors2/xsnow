@@ -111,7 +111,7 @@ int do_wupdate(void *dummy)
    if(Flags.NoKeepSWin) return TRUE;
 
    static int lockcounter = 0;
-   if (lock_fallen_n(3,&lockcounter))
+   if (Lock_fallen_n(3,&lockcounter))
    {
       P("lock counter: %d\n",lockcounter);
       return TRUE;
@@ -202,18 +202,25 @@ int do_wupdate(void *dummy)
    UpdateFallenSnowRegions();
 
 end:
-   unlock_fallen();
+   Unlock_fallen();
    return TRUE;
    (void)dummy;
+}
+
+void UpdateFallenSnowRegionsWithLock()
+{
+   Lock_fallen();
+   UpdateFallenSnowRegions();
+   Unlock_fallen();
 }
 
 // Have a look at the windows we are snowing on
 // Also update of fallensnow area's
 void UpdateFallenSnowRegions()
 {
-   // locking by caller
+   // threads: locking by caller
    WinInfo *w;
-   FallenSnow *f;
+   FallenSnow *fsnow;
    int i;
    // add fallensnow regions:
    w = Windows;
@@ -221,18 +228,18 @@ void UpdateFallenSnowRegions()
    {
       //P("%d %#lx\n",i,w->id);
       {
-	 f = FindFallen(global.FsnowFirst,w->id);
+	 fsnow = FindFallen(global.FsnowFirst,w->id);
 	 P("%#lx %d\n",w->id,w->dock);
-	 if(f)
+	 if(fsnow)
 	 {
-	    f->win = *w;   // update window properties
-	    if ((!f->win.sticky) && f->win.ws != global.CWorkSpace)
+	    fsnow->win = *w;   // update window properties
+	    if ((!fsnow->win.sticky) && fsnow->win.ws != global.CWorkSpace)
 	    {
 	       P("CleanFallenArea\n");
-	       CleanFallenArea(f,0,f->w);
+	       CleanFallenArea(fsnow,0,fsnow->w);
 	    }
 	 }
-	 if (!f)
+	 if (!fsnow)
 	 {
 	    // window found in Windows, nut not in list of fallensnow,
 	    // add it, but not if we are snowing or birding in this window (Desktop for example)
@@ -258,22 +265,22 @@ void UpdateFallenSnowRegions()
       w++;
    }
    // remove fallensnow regions
-   f = global.FsnowFirst; 
+   fsnow = global.FsnowFirst; 
    int nf = 0; 
-   while(f) 
+   while(fsnow) 
    { 
       nf++; 
-      f = f->next; 
+      fsnow = fsnow->next; 
    }
    // nf+1: prevent allocation of zero bytes
    long int *toremove = (long int *)malloc(sizeof(*toremove)*(nf+1));
    int ntoremove = 0;
-   f = global.FsnowFirst;
-   while(f)
+   fsnow = global.FsnowFirst;
+   while(fsnow)
    {
-      if (f->win.id != 0)  // f->id=0: this is the snow at the bottom
+      if (fsnow->win.id != 0)  // fsnow->id=0: this is the snow at the bottom
       {
-	 w = FindWindow(Windows,NWindows,f->win.id);
+	 w = FindWindow(Windows,NWindows,fsnow->win.id);
 	 if(
 	       !w                                                       // this window is gone
 	       || ( w->w > 0.8*global.SnowWinWidth 
@@ -282,22 +289,22 @@ void UpdateFallenSnowRegions()
 		  && global.SnowWinHeight - w->ya < Flags.IgnoreBottom) // too wide&too close to bottom
 	   )
 	 {
-	    GenerateFlakesFromFallen(f,0,f->w,-10.0);
-	    toremove[ntoremove++] = f->win.id;
+	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+	    toremove[ntoremove++] = fsnow->win.id;
 	 }
 
-	 // test if f->win.id is hidden. If so: clear the area and notify in f
+	 // test if fsnow->win.id is hidden. If so: clear the area and notify in fsnow
 	 // we have to test that here, because the hidden status of the window
 	 // can change
-	 P("%#lx hidden:%d\n",f->win.id,f->win.hidden);
-	 if (f->win.hidden)
+	 P("%#lx hidden:%d\n",fsnow->win.id,fsnow->win.hidden);
+	 if (fsnow->win.hidden)
 	 {
-	    P("%#lx is hidden %d\n",f->win.id, counter++);
-	    CleanFallenArea(f,0,f->w);
+	    P("%#lx is hidden %d\n",fsnow->win.id, counter++);
+	    CleanFallenArea(fsnow,0,fsnow->w);
 	    P("CleanFallenArea\n");
 	 }
       }
-      f = f->next;
+      fsnow = fsnow->next;
    }
 
    // test if window has been moved or resized
@@ -306,24 +313,24 @@ void UpdateFallenSnowRegions()
    w = Windows;
    for(i=0; i<NWindows; i++)
    {
-      f = FindFallen(global.FsnowFirst,w->id);
-      if (f)
+      fsnow = FindFallen(global.FsnowFirst,w->id);
+      if (fsnow)
       {
-	 if ((unsigned int)f->w == w->w+Flags.OffsetW) // width has not changed
+	 if ((unsigned int)fsnow->w == w->w+Flags.OffsetW) // width has not changed
 	 {
-	    if (f->x != w->x + Flags.OffsetX || f->y != w->y + Flags.OffsetY)
+	    if (fsnow->x != w->x + Flags.OffsetX || fsnow->y != w->y + Flags.OffsetY)
 	    {
-	       CleanFallenArea(f,0,f->w);
+	       CleanFallenArea(fsnow,0,fsnow->w);
 	       P("CleanFallenArea\n");
-	       f->x = w->x + Flags.OffsetX;
-	       f->y = w->y + Flags.OffsetY;
-	       //DrawFallen(f);
+	       fsnow->x = w->x + Flags.OffsetX;
+	       fsnow->y = w->y + Flags.OffsetY;
+	       //DrawFallen(fsnow);
 	       XFlush(global.display);
 	    }
 	 }
 	 else
 	 {
-	    toremove[ntoremove++] = f->win.id;
+	    toremove[ntoremove++] = fsnow->win.id;
 	 }
       }
       w++;
@@ -615,7 +622,7 @@ void InitDisplayDimensions()
 void DisplayDimensions()
 {
    P("Displaydimensions\n");
-   lock_fallen();
+   Lock_fallen();
    unsigned int w,h,b,d;
    int x,y,xr,yr;
    Window root,child_return;
@@ -654,7 +661,7 @@ void DisplayDimensions()
    SetMaxScreenSnowDepth();
    if(!global.IsDouble)
       ClearScreen();
-   unlock_fallen();
+   Unlock_fallen();
 }
 
 void SetBackground()

@@ -855,16 +855,16 @@ int do_ui_check(void *d)
    aurora_ui();
    ui_ui();
 
-   UIDO (CpuLoad             , HandleCpuFactor();               );
-   UIDO (Transparency        ,                                  );
-   UIDO (Scale               ,                                  );
-   UIDO (OffsetS             , DisplayDimensions();             );
-   UIDO (OffsetY             , UpdateFallenSnowRegions();       );
-   UIDO (NoFluffy            , ClearScreen();                   );
-   UIDO (AllWorkspaces       , DoAllWorkspaces();               );
-   UIDO (BelowAll            , set_below_above();               );
-   UIDOS(BackgroundFile      ,                                  );
-   UIDO (BlackBackground     ,                                  );
+   UIDO (CpuLoad             , HandleCpuFactor();                 );
+   UIDO (Transparency        ,                                    );
+   UIDO (Scale               ,                                    );
+   UIDO (OffsetS             , DisplayDimensions();               );
+   UIDO (OffsetY             , UpdateFallenSnowRegionsWithLock(); );
+   UIDO (NoFluffy            , ClearScreen();                     );
+   UIDO (AllWorkspaces       , DoAllWorkspaces();                 );
+   UIDO (BelowAll            , set_below_above();                 );
+   UIDOS(BackgroundFile      ,                                    );
+   UIDO (BlackBackground     ,                                    );
 
    if (Flags.Changes > 0)
    {

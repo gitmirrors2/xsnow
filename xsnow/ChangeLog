@@ -1,3 +1,17 @@
+version 3.5.2
+	01: fallensnow.c: draw fallensnow only on regions where fallensnow is present,
+	    to prevent a continuously present line on regions where there is
+	    no fallensnow (yet)
+	02: main.c: when user changes offsety, call UpdateFallenSnowRegionsWithLock()
+	    in stead of UpdateFallenSnowRegions().
+	    fallensnow.c: on change of MaxScrSnowDepth, call
+	    SetMaxScreenSnowDepthWithLock() in stead of
+	    SetMaxScreenSnowDepth().
+	    snow.c: set fallensnow lock when examining fallensnow regions
+	       thus preventing prevents random crashes
+	    fallensnow.h a.o: create and use macros for semaphores to
+	    facilitate debugging
+
 version 3.5.1
 	01: configure.ac: reproducible build is now complete, it seems, also
 	    when building outside the xsnow-tree

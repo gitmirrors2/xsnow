@@ -29,6 +29,15 @@
 #include <stdlib.h>
 #include "xsnow.h"
 
+#ifdef __GNUC__
+#define Lock_fallen() __extension__({P("call lock_fallen\n");int retval = lock_fallen(); retval;})
+#define Unlock_fallen() __extension__({P("call unlock_fallen\n");int retval = unlock_fallen(); retval;})
+#define Lock_fallen_n(x,y) __extension__({P("call lock_fallen_n %d %d\n",x,*y); int retval=lock_fallen_n(x,y);retval;})
+#else
+#define Lock_fallen()  lock_fallen()
+#define Unlock_fallen() unlock_fallen()
+#define Lock_fallen_n(x,y) lock_fallen_n(x,y)
+#endif
 
 extern void   UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w); // used in snow.c
 extern int    HandleFallenSnow(FallenSnow *fsnow);
@@ -43,6 +52,7 @@ extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 extern void   SetMaxScreenSnowDepth(void);
+extern void   SetMaxScreenSnowDepthWithLock(void);
 extern void   UpdateFallenSnowAtBottom(void);
 extern int    lock_fallen(void);
 extern int    unlock_fallen(void);

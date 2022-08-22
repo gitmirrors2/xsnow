@@ -123,7 +123,7 @@ void fallensnow_ui()
 {
    UIDO(MaxWinSnowDepth   , InitFallenSnow(); ClearScreen(); );
    UIDO(MaxScrSnowDepth   , 
-	 SetMaxScreenSnowDepth();
+	 SetMaxScreenSnowDepthWithLock();
 	 InitFallenSnow();
 	 ClearScreen();
        );
@@ -133,13 +133,15 @@ void fallensnow_ui()
    UIDO(IgnoreBottom      ,                                  );
 }
 
-int lock_fallen()
+int lock_fallen() //Note: there is a macro Lock_fallen see fallensnow.h
 {
+   P("lock_fallen\n");
    return sem_wait(&fallen_sem);
 }
 
-int unlock_fallen()
+int unlock_fallen() //Note: there is a macro Unlock_fallen, see fallensnow.h
 {
+   P("unlock_fallen\n");
    return sem_post(&fallen_sem);
 }
 
@@ -150,7 +152,7 @@ int unlock_fallen()
 // if (*c)++ >n, sem_wait is used, the function returns 0 after getting
 // the lock. 
 // in both cases, *c is set to zero if the lock is obtained
-int lock_fallen_n(int n, int *c)
+int lock_fallen_n(int n, int *c)  // see fallensnow.h for the macro Lock_fallen_n
 {
    int rc;
    if (*c < 0) 
@@ -160,6 +162,7 @@ int lock_fallen_n(int n, int *c)
       rc = sem_wait(&fallen_sem);
    else
       rc = sem_trywait(&fallen_sem);
+   P("lock_fallen_n %d %d %d\n",n,*c,rc);
    if(rc == 0)
       *c = 0;
    return rc;
@@ -205,7 +208,7 @@ void *do_fallen(void *d)
       if (NOTACTIVE)
 	 goto end;
       P("%d do_fallen\n",global.counter++);
-      lock_fallen();
+      Lock_fallen();
 
       FallenSnow *fsnow = global.FsnowFirst;
       while(fsnow)
@@ -218,7 +221,7 @@ void *do_fallen(void *d)
 
       swapsurfaces();
 
-      unlock_fallen();
+      Unlock_fallen();
 end:
       usleep((useconds_t)(time_fallen*1000000));
    }
@@ -249,7 +252,7 @@ void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 
 void CreateDesh(FallenSnow *p)
 {
-   // threads: locks in caller
+   // threads: locking by caller
    int i;
    int w           = p->w;
    int h           = p->h;
@@ -363,7 +366,7 @@ int do_change_deshes(void *dummy)
 {
    (void)dummy;
    static int lockcounter;
-   if(lock_fallen_n(3,&lockcounter))
+   if(Lock_fallen_n(3,&lockcounter))
       return TRUE;
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
@@ -371,13 +374,14 @@ int do_change_deshes(void *dummy)
       CreateDesh(fsnow);
       fsnow = fsnow->next;
    }
-   unlock_fallen();
+   Unlock_fallen();
    return TRUE;
 }
 
 int do_adjust_deshes(void *dummy)
 {
-   // threads: probably no need for lock
+   // threads: probably no need for lock, but to be sure:
+   Lock_fallen();
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
    {
@@ -396,6 +400,7 @@ int do_adjust_deshes(void *dummy)
       P("adjustments: %d\n",adjustments);
       fsnow = fsnow->next;
    }
+   Unlock_fallen();
    return TRUE;
    (void)dummy;
 }
@@ -495,6 +500,7 @@ void PrintFallenSnow(FallenSnow *list)
 
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
+   // threads: locking by caller
    if(global.IsDouble)
       return;
    P("CleanFallenArea %d %d\n",counter++,global.IsDouble);
@@ -508,6 +514,7 @@ void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 // clean area for fallensnow with id
 void CleanFallen(Window id)
 {
+   // threads: locking by caller
    P("CleanFallen %#lx\n",id);
    FallenSnow *fsnow = global.FsnowFirst;
    // search the id
@@ -524,7 +531,7 @@ void CleanFallen(Window id)
 
 void CreateSurfaceFromFallen(FallenSnow *f)
 {
-   // threads: locking done by caller
+   // threads: locking by caller
    P("createsurface %#10lx %d %d %d %d %d %d\n",f->id,f->x,f->y,f->w,f->h,
 	 cairo_image_surface_get_width(f->surface1),
 	 cairo_image_surface_get_height(f->surface1));
@@ -598,19 +605,62 @@ void CreateSurfaceFromFallen(FallenSnow *f)
 
       cairo_set_line_width(cr,1);
 
-      cairo_move_to(cr,x[0],h-av[0]);
-
       cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
-      for(i=0; i<w; i++)
-	 cairo_line_to(cr,i,h-gsl_spline_eval(spline, i, acc));
-      cairo_line_to(cr,w-1,h);
-      cairo_line_to(cr,0,h);
-      cairo_close_path(cr);
-      cairo_stroke_preserve(cr);
-      cairo_fill(cr);
+
+      if(0)
+      {
+	 cairo_move_to(cr,x[0],h-av[0]);
+	 for(i=0; i<w; i++)
+	    cairo_line_to(cr,i,h-gsl_spline_eval(spline, i, acc));
+	 cairo_line_to(cr,w-1,h);
+	 cairo_line_to(cr,0,h);
+	 cairo_close_path(cr);
+	 cairo_stroke_preserve(cr);
+	 cairo_fill(cr);
+      }
+      else
+      {
+	 // draw fallensnow: a move_to, followed by line_to's, followed by close_path and fill.
+	 // to prevent a permanent bottom snow-line, even if there has no snow fallen on
+	 // certain parts, only handle regions where snow has been fallen.
+	 enum{searching, drawing};
+	 int state = searching; // searching for acth[] > 0
+	 int i;
+	 int startpos;
+	 for (i=0; i<w; ++i)
+	 {
+	    int val = gsl_spline_eval(spline,i,acc);
+	    switch(state)
+	    {
+	       case searching:
+		  if (val != 0)
+		  {
+		     startpos = i;
+		     cairo_move_to(cr, i, h);
+		     cairo_line_to(cr, i, h);
+		     cairo_line_to(cr, i, h - val);
+		     state = drawing;
+		  }
+		  break;
+	       case drawing:
+		  cairo_line_to(cr, i, h - val);
+		  if (val == 0 || i == w-1)
+		  {
+		     cairo_line_to(cr, i, h);
+		     cairo_line_to(cr, startpos, h);
+		     cairo_close_path(cr);
+		     cairo_stroke_preserve(cr);
+		     cairo_fill(cr);
+		     state = searching;
+		  }
+		  break;
+	    }
+	 }
+      }
       if(0)
       {
 	 // draw averages
+	 int i;
 	 cairo_save(cr);
 	 cairo_set_source_rgba(cr,1,0,0,1);
 	 for (i=0; i<nav; i++)
@@ -684,16 +734,23 @@ void DrawFallen(FallenSnow *fsnow)
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 {
+   // threads: locking by caller
    P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
    if (!Flags.BlowSnow || Flags.NoSnowFlakes)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
    int i;
-   int ifirst = x; if (ifirst < 0) ifirst = 0;
-   if (ifirst > fsnow->w) ifirst = fsnow->w;
-   int ilast  = x+w; if(ilast < 0) ilast = 0;
-   if (ilast > fsnow->w) ilast = fsnow->w;
+   int ifirst = x; 
+   if (ifirst < 0) 
+      ifirst = 0;
+   if (ifirst > fsnow->w) 
+      ifirst = fsnow->w;
+   int ilast  = x+w; 
+   if(ilast < 0) 
+      ilast = 0;
+   if (ilast > fsnow->w) 
+      ilast = fsnow->w;
    P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<global.MaxSnowFlakeWidth?w:global.MaxSnowFlakeWidth);
    P("maxheight: %d maxw: %d\n",global.MaxSnowFlakeHeight,global.MaxSnowFlakeWidth);
    //for (i=ifirst; i<ilast; i+=w<global.MaxSnowFlakeHeight?w:global.MaxSnowFlakeWidth)
@@ -731,6 +788,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 
 void EraseFallenPixel(FallenSnow *fsnow, int x)
 {
+   // threads: locking by caller
    if(fsnow->acth[x] > 0)
    {
       if(!global.IsDouble)
@@ -746,7 +804,7 @@ void EraseFallenPixel(FallenSnow *fsnow, int x)
 
 void InitFallenSnow()
 {
-   lock_fallen();
+   Lock_fallen();
    while (global.FsnowFirst)
       PopFallenSnow(&global.FsnowFirst);
    // create fallensnow on bottom of screen:
@@ -756,7 +814,7 @@ void InitFallenSnow()
    PushFallenSnow(&global.FsnowFirst, NullWindow, 0, global.SnowWinHeight, global.SnowWinWidth, global.MaxScrSnowDepth);
    free(NullWindow);
 
-   unlock_fallen();
+   Unlock_fallen();
    (void)check_fallen;  // to prevent warning about unused check_fallen
 }
 
@@ -764,6 +822,7 @@ void InitFallenSnow()
 // also add snowflakes
 void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
+   // threads: locking by caller
    int i;
    int x = randint(fsnow->w - w);
    for(i=x; i<x+w; i++)
@@ -788,8 +847,16 @@ void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
       }
 }
 
+void SetMaxScreenSnowDepthWithLock()
+{
+   Lock_fallen();
+   SetMaxScreenSnowDepth();
+   Unlock_fallen();
+}
+
 void SetMaxScreenSnowDepth()
 {
+   // threads: locking by caller
    global.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
    if (global.MaxScrSnowDepth> (global.SnowWinHeight-SNOWFREE)) {
       printf("** Maximum snow depth set to %d\n", global.SnowWinHeight-SNOWFREE);
