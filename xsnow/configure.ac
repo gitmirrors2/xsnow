@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow], [3.5.2], [wvermin@gmail.com])
+AC_INIT([xsnow],[3.5.3],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -147,7 +147,8 @@ AC_CHECK_HEADER_STDBOOL
 
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 
-AC_OUTPUT(Makefile src/Makefile src/Pixmaps/Makefile data/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile src/Pixmaps/Makefile data/Makefile])
+AC_OUTPUT
 
 AS_IF( [test "x$enable_selfrep" = "xyes"],
       [${MAKE:=make} dist ])

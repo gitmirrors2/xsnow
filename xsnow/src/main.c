@@ -372,7 +372,7 @@ int main_c(int argc, char *argv[])
 	 return 1;
 	 break;
       case 1:    // manpage or help
-		 //         Ok, this cannot happen, is already caught above
+	 //         Ok, this cannot happen, is already caught above
 	 return 0;
 	 break;
       default:  // ditto
@@ -1069,14 +1069,27 @@ gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
 int do_drawit(void *cr)
 {
-   P("do_drawit %d %p\n",counter++,cr);
+   P("do_drawit %d %p\n",global.counter++,cr);
    drawit((cairo_t*)cr);
    return TRUE;
 }
 
+
 void drawit(cairo_t *cr)
 {
-   P("drawit %d %p\n",counter++,(void *)cr);
+   static int counter = 0;
+   P("drawit %d %p\n",global.counter++,(void *)cr);
+   // Due to instabilities at the start of xsnow: spurious detection of
+   //   user intervention; resizing of screen; etc.
+   //   placement of scenery, stars etc is repeated a few times at the
+   //   start of xsnow.
+   // This is not harmful, but a bit annoying, so we do not draw anything 
+   //   the first few times this function is called.
+   if (counter*time_draw_all < 1.5)
+   {
+      counter++;
+      return;
+   }
 
    if (Flags.Done)
       return;
@@ -1187,7 +1200,7 @@ int do_draw_all(gpointer widget)
 {
    if (Flags.Done)
       return FALSE;
-   P("do_draw_all %d %p\n",counter++,(void *)widget);
+   P("do_draw_all %d %p\n",global.counter++,(void *)widget);
 
    // this will result in a call off on_draw_event():
    gtk_widget_queue_draw(GTK_WIDGET(widget));

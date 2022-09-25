@@ -233,178 +233,176 @@ void *do_aurora(void *d)
    {
       if (Flags.Done)
 	 pthread_exit(NULL);
-      if (NOTACTIVE)
-	 goto end;
-      if(Flags.Aurora == 0) 
-	 goto end;
-
-      lock_comp();
-      P("thread %ld\n",thread);
-      lock_init();
-      AuroraMap *a = (AuroraMap *) d;
-      int j;
-      aurora_changeparms(a);
-
-      cairo_save(aurora_cr);
-
-      cairo_set_antialias(aurora_cr,CAIRO_ANTIALIAS_NONE);
-      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_BUTT);
-      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_SQUARE);
-      cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_ROUND);
-      // clean the surface. Not needed with pthreads
-      //cairo_set_source_rgba(aurora_cr,0,0,0,0);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE);
-      //cairo_paint(aurora_cr);
-      //cairo_restore(aurora_cr);
-      //cairo_save(aurora_cr);
-      int    imax = 100;
-
-      // see https://www.cairographics.org/operators/
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DARKEN);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_DODGE);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_BURN);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOFT_LIGHT);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_EXCLUSION);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE); // would be nice , but doesn't work ..
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_HUE);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_SATURATION);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_COLOR);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_LUMINOSITY);
-
-      cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DIFFERENCE);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SCREEN);
-      //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_XOR);
-
-      // draw aurora surface rectangle
-      if(0)
+      if(!(Flags.Aurora == 0 || NOTACTIVE))
       {
-	 cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
-	 cairo_set_line_width(aurora_cr,4);
-	 cairo_move_to(aurora_cr,0,        0);
-	 cairo_line_to(aurora_cr,a->width, 0);
-	 cairo_line_to(aurora_cr,a->width, a->base);
-	 cairo_line_to(aurora_cr,0,        a->base);
-	 cairo_line_to(aurora_cr,0,        0);
 
-	 cairo_stroke(aurora_cr);
-      }
+	 lock_comp();
+	 P("thread %ld\n",thread);
+	 lock_init();
+	 AuroraMap *a = (AuroraMap *) d;
+	 int j;
+	 aurora_changeparms(a);
 
-      cairo_set_line_width(aurora_cr,a->step);
-      cairo_pattern_t *vpattern=cairo_pattern_create_linear(0,0,0,imax);
+	 cairo_save(aurora_cr);
 
-      //                                         height r   g b a
-      cairo_pattern_add_color_stop_rgba(vpattern,0.0,   1,  0,1,0.05);  // purple top
-      cairo_pattern_add_color_stop_rgba(vpattern,0.2,   1,  0,1,0.15);  // purple top
-      cairo_pattern_add_color_stop_rgba(vpattern,0.3,   0,  1,0,0.2);   // green
-      cairo_pattern_add_color_stop_rgba(vpattern,0.7,   0,  1,0,0.6);
-      cairo_pattern_add_color_stop_rgba(vpattern,0.8,   0.2,1,0,0.8);   // yellow-ish
-      cairo_pattern_add_color_stop_rgba(vpattern,1.0,   0.1,1,0,0.0);
+	 cairo_set_antialias(aurora_cr,CAIRO_ANTIALIAS_NONE);
+	 cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_BUTT);
+	 cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_SQUARE);
+	 cairo_set_line_cap(aurora_cr,CAIRO_LINE_CAP_ROUND);
+	 // clean the surface. Not needed with pthreads
+	 //cairo_set_source_rgba(aurora_cr,0,0,0,0);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE);
+	 //cairo_paint(aurora_cr);
+	 //cairo_restore(aurora_cr);
+	 //cairo_save(aurora_cr);
+	 int    imax = 100;
 
-      cairo_surface_t *vertsurf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->step,imax);
-      cairo_t *vertcr = cairo_create(vertsurf);
-      cairo_set_antialias(vertcr,CAIRO_ANTIALIAS_NONE);
-      cairo_set_source(vertcr,vpattern);
-      cairo_rectangle(vertcr,0,0,a->step,imax);
-      cairo_fill(vertcr);
+	 // see https://www.cairographics.org/operators/
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DARKEN);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_DODGE);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_COLOR_BURN);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOFT_LIGHT);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_EXCLUSION);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_LIGHTEN);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SOURCE); // would be nice , but doesn't work ..
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_HUE);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_SATURATION);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_COLOR);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_HSL_LUMINOSITY);
 
-      int zmin = a->step*a->z[0].x;
-      int zmax = a->step*a->z[0].x;
-      for (j=0; j<a->nz; j++)
-      {
-	 double alpha = 1.0;
-	 double d = 100;
-	 double scale = cscale(imax,d,a->hmax,a->zh[j],Flags.AuroraHeight);
+	 cairo_set_operator(aurora_cr,CAIRO_OPERATOR_DIFFERENCE);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SCREEN);
+	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_XOR);
 
-	 P("scale: %f\n",scale);
-	 P("theta: %f\n",a->theta);
-	 //P("scale: %d %f %f %f %f\n",k,p[k],h[k],d,scale);
-	 cairo_surface_set_device_scale(vertsurf,1,scale);
-	 P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
-	 if(1)
-	 {
-	    // draw aurora
-	    cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
-	    cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
-	 }
+	 // draw aurora surface rectangle
 	 if(0)
 	 {
-	    // draw one aurora pillar
-	    cairo_set_source_surface (aurora_cr, vertsurf, 2000, 400);
-	    cairo_paint(aurora_cr);
+	    cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
+	    cairo_set_line_width(aurora_cr,4);
+	    cairo_move_to(aurora_cr,0,        0);
+	    cairo_line_to(aurora_cr,a->width, 0);
+	    cairo_line_to(aurora_cr,a->width, a->base);
+	    cairo_line_to(aurora_cr,0,        a->base);
+	    cairo_line_to(aurora_cr,0,        0);
+
+	    cairo_stroke(aurora_cr);
 	 }
-	 P("zj: %d\n",a->step*z[j].x);
-	 if(a->step*a->z[j].x < zmin)
-	    zmin = a->z[j].x;
-	 if(a->step*a->z[j].x > zmax)
-	    zmax = a->z[j].x;
-	 //k++;
-      }
-      P("zmin: %d %d \n",zmin,zmax);
-      if(1)
-      {
-	 // draw fuzz
-	 for (j=0; j<a->nfuzz; j++)
+
+	 cairo_set_line_width(aurora_cr,a->step);
+	 cairo_pattern_t *vpattern=cairo_pattern_create_linear(0,0,0,imax);
+
+	 //                                         height r   g b a
+	 cairo_pattern_add_color_stop_rgba(vpattern,0.0,   1,  0,1,0.05);  // purple top
+	 cairo_pattern_add_color_stop_rgba(vpattern,0.2,   1,  0,1,0.15);  // purple top
+	 cairo_pattern_add_color_stop_rgba(vpattern,0.3,   0,  1,0,0.2);   // green
+	 cairo_pattern_add_color_stop_rgba(vpattern,0.7,   0,  1,0,0.6);
+	 cairo_pattern_add_color_stop_rgba(vpattern,0.8,   0.2,1,0,0.8);   // yellow-ish
+	 cairo_pattern_add_color_stop_rgba(vpattern,1.0,   0.1,1,0,0.0);
+
+	 cairo_surface_t *vertsurf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->step,imax);
+	 cairo_t *vertcr = cairo_create(vertsurf);
+	 cairo_set_antialias(vertcr,CAIRO_ANTIALIAS_NONE);
+	 cairo_set_source(vertcr,vpattern);
+	 cairo_rectangle(vertcr,0,0,a->step,imax);
+	 cairo_fill(vertcr);
+
+	 int zmin = a->step*a->z[0].x;
+	 int zmax = a->step*a->z[0].x;
+	 for (j=0; j<a->nz; j++)
 	 {
 	    double alpha = 1.0;
 	    double d = 100;
-	    double scale = cscale(imax,d,a->hmax,a->fuzz[j].h,Flags.AuroraHeight);
-	    P("fuzz[j]: %d %d %g %g %g\n",j,a->fuzz[j].x,a->fuzz[j].y,a->fuzz[j].a,a->fuzz[j].h);
-	    P("scale: %d %d %d %f\n",j,a->fuzz[j].x,a->nfuzz,scale);
+	    double scale = cscale(imax,d,a->hmax,a->zh[j],Flags.AuroraHeight);
+
+	    P("scale: %f\n",scale);
 	    P("theta: %f\n",a->theta);
+	    //P("scale: %d %f %f %f %f\n",k,p[k],h[k],d,scale);
 	    cairo_surface_set_device_scale(vertsurf,1,scale);
 	    P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
 	    if(1)
 	    {
-	       // draw fuzz
-	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
-	       cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
-	       // yes: draw it twice to get the same luminosity as aurora near turning points
-	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
-	       cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+	       // draw aurora
+	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
+	       cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
+	    }
+	    if(0)
+	    {
+	       // draw one aurora pillar
+	       cairo_set_source_surface (aurora_cr, vertsurf, 2000, 400);
+	       cairo_paint(aurora_cr);
+	    }
+	    P("zj: %d\n",a->step*z[j].x);
+	    if(a->step*a->z[j].x < zmin)
+	       zmin = a->z[j].x;
+	    if(a->step*a->z[j].x > zmax)
+	       zmax = a->z[j].x;
+	    //k++;
+	 }
+	 P("zmin: %d %d \n",zmin,zmax);
+	 if(1)
+	 {
+	    // draw fuzz
+	    for (j=0; j<a->nfuzz; j++)
+	    {
+	       double alpha = 1.0;
+	       double d = 100;
+	       double scale = cscale(imax,d,a->hmax,a->fuzz[j].h,Flags.AuroraHeight);
+	       P("fuzz[j]: %d %d %g %g %g\n",j,a->fuzz[j].x,a->fuzz[j].y,a->fuzz[j].a,a->fuzz[j].h);
+	       P("scale: %d %d %d %f\n",j,a->fuzz[j].x,a->nfuzz,scale);
+	       P("theta: %f\n",a->theta);
+	       cairo_surface_set_device_scale(vertsurf,1,scale);
+	       P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
+	       if(1)
+	       {
+		  // draw fuzz
+		  cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
+		  cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+		  // yes: draw it twice to get the same luminosity as aurora near turning points
+		  cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
+		  cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
+	       }
 	    }
 	 }
-      }
-      if(0)
-      {
-	 // draw base of aurora
-	 cairo_save(aurora_cr);
-	 cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
-	 cairo_set_source_rgba(aurora_cr,1,1,0,1);
-	 for(j=0; j<a->nz; j++)
+	 if(0)
 	 {
-	    cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
+	    // draw base of aurora
+	    cairo_save(aurora_cr);
+	    cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
+	    cairo_set_source_rgba(aurora_cr,1,1,0,1);
+	    for(j=0; j<a->nz; j++)
+	    {
+	       cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
+	    }
+	    cairo_fill(aurora_cr);
+	    cairo_set_source_rgba(aurora_cr,1,0,0,1);
+	    for(j=0; j<a->nfuzz; j++)
+	    {
+	       cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
+	    }
+	    cairo_fill(aurora_cr);
+	    cairo_restore(aurora_cr);
 	 }
-	 cairo_fill(aurora_cr);
-	 cairo_set_source_rgba(aurora_cr,1,0,0,1);
-	 for(j=0; j<a->nfuzz; j++)
-	 {
-	    cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
-	 }
-	 cairo_fill(aurora_cr);
+
+	 cairo_destroy(vertcr);
+	 cairo_surface_destroy(vertsurf);
+	 cairo_pattern_destroy(vpattern);
 	 cairo_restore(aurora_cr);
+	 //free(p);
+
+	 P("do_aurora xy %d %d %d %d\n",a.x1,a.x2,a.y1,a.y2);
+	 // make available just created surface as aurora_surface
+	 // and create a new aurora_surface1
+	 lock_copy();
+	 cairo_surface_destroy(aurora_surface);
+	 cairo_destroy        (aurora_cr);
+	 aurora_surface     = aurora_surface1;
+	 unlock_copy();
+	 aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->width,a->base);
+	 aurora_cr       = cairo_create(aurora_surface1);
+	 unlock_comp();
+	 unlock_init();
       }
-
-      cairo_destroy(vertcr);
-      cairo_surface_destroy(vertsurf);
-      cairo_pattern_destroy(vpattern);
-      cairo_restore(aurora_cr);
-      //free(p);
-
-      P("do_aurora xy %d %d %d %d\n",a.x1,a.x2,a.y1,a.y2);
-      // make available just created surface as aurora_surface
-      // and create a new aurora_surface1
-      lock_copy();
-      cairo_surface_destroy(aurora_surface);
-      cairo_destroy        (aurora_cr);
-      aurora_surface     = aurora_surface1;
-      unlock_copy();
-      aurora_surface1 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,a->width,a->base);
-      aurora_cr       = cairo_create(aurora_surface1);
-      unlock_comp();
-      unlock_init();
-end:
       P("%d speed %d %f\n",global.counter++,Flags.AuroraSpeed,1000000*time_aurora/(0.2*Flags.AuroraSpeed));
       usleep((useconds_t)(1.0e6*time_aurora/(0.2*Flags.AuroraSpeed)));
    }
@@ -1043,7 +1041,7 @@ void create_aurora_base(const double *y, int n,
    struct pq *pp = p;
    pp->x = -1.234;   // Compiler warns that possibly pp->x will not be initialized ...
    pp->y = -1.234;   // Same for this one.
-		     // so we give them values here, which will be overwritten later on.
+   // so we give them values here, which will be overwritten later on.
 
    for (i=0; i<nw; i++)
    {
@@ -1119,7 +1117,7 @@ void create_aurora_base(const double *y, int n,
       }
    }
    *nz = k;
-   *z = realloc(pz,k*sizeof(aurora_t));
+   *z = (aurora_t*)realloc(pz,k*sizeof(aurora_t));
    gsl_spline_free (spline);
    gsl_interp_accel_free (acc);
    gsl_spline_free (splines);

@@ -59,21 +59,21 @@ static GdkPixbuf       *bird_pixbufs[NBIRDPIXBUFS];
 static cairo_surface_t *attrsurface = NULL;
 
 static int Nbirds;  // is copied from Flags.Nbirds in init_birds. We cannot have that
-		    //                  // Nbirds is changed outside init_birds
+//                  // Nbirds is changed outside init_birds
 
 
 typedef struct _Birdtype
 {
    float x,y,z;        // position, meters
-		       // x: horizontal
-		       // y: in/out screen
-		       // z: vertical
+   // x: horizontal
+   // y: in/out screen
+   // z: vertical
    float sx,sy,sz;     // velocity, m/sec
    int ix,iy,iz,iw,ih; // pixels
-		       // ix .. in pixels, used to store previous screen parameters
+   // ix .. in pixels, used to store previous screen parameters
    int wingstate, orient;      
    int drawable;       // is in drawable range
-		       // comes in handy at erasing a bird:
+   // comes in handy at erasing a bird:
    int prevx, prevy, prevw, prevh, prevdrawable;
 } BirdType;
 
@@ -282,152 +282,150 @@ void *do_update_speed_birds(void *d)
 {
    while(1)
    {
-      if (Flags.Done)
-	 goto end;
-      if INACTIVE
-	 goto end;
-
-      lock();
-
-      P("do_update_speed_birds %d\n",global.counter++);
-
-      kd_free(kd);
-      kd = kd_create(3);
-
-      int i;
-
-      for (i=0; i<Nbirds; i++)
+      if (!(Flags.Done || INACTIVE))
       {
-	 BirdType *bird = &birds[i];
-	 kd_insert3f(kd, bird->x, bird->y, bird->z, bird);
-      }
 
-      int sumnum         = 0;
-      float summeandist  = 0;
-      for (i=0; i<Nbirds; i++)
-      {
-	 if (drand48() < Flags.Anarchy*0.01)
-	    continue;
-	 BirdType *bird = &birds[i];
+	 lock();
 
-	 struct kdres *result = kd_nearest_range3f(kd,bird->x,bird->y,bird->z,blobals.range);
-	 float sumsx    = 0;
-	 float sumsy    = 0;
-	 float sumsz    = 0;
-	 float sumprefx = 0;
-	 float sumprefy = 0;
-	 float sumprefz = 0;
-	 float sumdist  = 0;
-	 int   num      = 0;
-	 while (!kd_res_end(result))
+	 P("do_update_speed_birds %d\n",global.counter++);
+
+	 kd_free(kd);
+	 kd = kd_create(3);
+
+	 int i;
+
+	 for (i=0; i<Nbirds; i++)
 	 {
-	    float x,y,z;
-	    BirdType *b = (BirdType *)kd_res_item3f(result, &x, &y, &z);
-	    kd_res_next(result);
-	    if (bird == b)
+	    BirdType *bird = &birds[i];
+	    kd_insert3f(kd, bird->x, bird->y, bird->z, bird);
+	 }
+
+	 int sumnum         = 0;
+	 float summeandist  = 0;
+	 for (i=0; i<Nbirds; i++)
+	 {
+	    if (drand48() < Flags.Anarchy*0.01)
 	       continue;
-	    num++;
+	    BirdType *bird = &birds[i];
 
-	    // sum the speeds of neighbour birds:
+	    struct kdres *result = kd_nearest_range3f(kd,bird->x,bird->y,bird->z,blobals.range);
+	    float sumsx    = 0;
+	    float sumsy    = 0;
+	    float sumsz    = 0;
+	    float sumprefx = 0;
+	    float sumprefy = 0;
+	    float sumprefz = 0;
+	    float sumdist  = 0;
+	    int   num      = 0;
+	    while (!kd_res_end(result))
+	    {
+	       float x,y,z;
+	       BirdType *b = (BirdType *)kd_res_item3f(result, &x, &y, &z);
+	       kd_res_next(result);
+	       if (bird == b)
+		  continue;
+	       num++;
 
-	    sumsx += b->sx;
-	    sumsy += b->sy;
-	    sumsz += b->sz;
+	       // sum the speeds of neighbour birds:
 
-	    float dist = sqrtf((bird->x-x)*(bird->x-x)+
-		  (bird->y-y)*(bird->y-y)+(bird->z-z)*(bird->z-z));
+	       sumsx += b->sx;
+	       sumsy += b->sy;
+	       sumsz += b->sz;
 
-	    float prefx=0, prefy=0, prefz=0;
-	    P("prefxyz %f\n",dist);
-	    if (dist > 1e-6)
-	       prefxyz(bird, dist, Flags.PrefDistance, x, y, z, &prefx, &prefy, &prefz);
-	    sumprefx += prefx;
-	    sumprefy += prefy;
-	    sumprefz += prefz;
-	    sumdist  += dist;
+	       float dist = sqrtf((bird->x-x)*(bird->x-x)+
+		     (bird->y-y)*(bird->y-y)+(bird->z-z)*(bird->z-z));
 
+	       float prefx=0, prefy=0, prefz=0;
+	       P("prefxyz %f\n",dist);
+	       if (dist > 1e-6)
+		  prefxyz(bird, dist, Flags.PrefDistance, x, y, z, &prefx, &prefy, &prefz);
+	       sumprefx += prefx;
+	       sumprefy += prefy;
+	       sumprefz += prefz;
+	       sumdist  += dist;
+
+	    }
+	    kd_res_free(result);
+
+	    // meanprefx,y,z: mean optimal coordinates with respect to other birds
+	    float meanprefx, meanprefy, meanprefz, meandist;
+	    P("num: %d\n",num);
+	    if (num > 0)
+	    {
+	       meanprefx     = sumprefx / num;
+	       meanprefy     = sumprefy / num;
+	       meanprefz     = sumprefz / num;
+	       meandist      = sumdist  / num;
+	       summeandist  += meandist;
+	       P("prefx - x ... %f %f %f %f\n",meanprefx - bird->x, meanprefy - bird->y, meanprefz - bird->z, meandist);
+	    }
+	    sumnum +=num;
+	    // adjust speed to other birds, p is weight for own speed
+	    if (num > 0)
+	    {
+	       int p = (100-Flags.FollowWeight)*0.1;
+	       bird->sx = (sumsx + p*bird->sx)/(p+1+num);
+	       bird->sy = (sumsy + p*bird->sy)/(p+1+num);
+	       bird->sz = (sumsz + p*bird->sz)/(p+1+num);
+	    }
+	    // adjust speed to obtain desired distance to other birds
+	    if (num > 0)
+	    {
+	       float q = Flags.DisWeight*0.4;
+	       bird->sx += q*(meanprefx - bird->x);
+	       bird->sy += q*(meanprefy - bird->y);
+	       bird->sz += q*(meanprefz - bird->z);
+	       P("%d %f %f %f, %f %f %f\n",i,meanprefx,meanprefy,meanprefz,bird->x,bird->y,bird->z);
+	    }
+
+
+	    // attraction of center:
+
+	    float dx = attrbird.x - bird->x;
+	    float dy = attrbird.y - bird->y;
+	    float dz = attrbird.z - bird->z;
+
+	    float f = Flags.AttrFactor*0.01f*0.05f;
+
+	    bird->sx += f*dx;
+	    bird->sy += f*dy;
+	    bird->sz += f*dz;
+
+	    // limit vertical speed
+
+	    const float phs = 0.8;
+	    float hs = sqrtf(sq2(bird->sx, bird->sy));
+	    if (fabs(bird->sz) > phs*hs)
+	       bird->sz = fsignf(bird->sz)*phs*hs;
+
+	    // randomize:
+	    {
+	       const float p  = 0.4;  //  0<=p<=1 the higher the more random
+	       bird->sx += bird->sx*p*drand48();
+	       bird->sy += bird->sy*p*drand48();
+	       bird->sz += bird->sz*p*drand48();
+	    }
+
+	    normalize_speed(bird,blobals.meanspeed*(0.9+drand48()*0.2));
 	 }
-	 kd_res_free(result);
+	 float meannum = (float)sumnum/(float)Nbirds;
+	 blobals.mean_distance = summeandist/Nbirds;
+	 P("meannum %f %f\n",meannum,blobals.range);
 
-	 // meanprefx,y,z: mean optimal coordinates with respect to other birds
-	 float meanprefx, meanprefy, meanprefz, meandist;
-	 P("num: %d\n",num);
-	 if (num > 0)
+	 if (meannum < Flags.Neighbours)
 	 {
-	    meanprefx     = sumprefx / num;
-	    meanprefy     = sumprefy / num;
-	    meanprefz     = sumprefz / num;
-	    meandist      = sumdist  / num;
-	    summeandist  += meandist;
-	    P("prefx - x ... %f %f %f %f\n",meanprefx - bird->x, meanprefy - bird->y, meanprefz - bird->z, meandist);
+	    if (blobals.range < 0.1)
+	       blobals.range = 0.1;
+	    if (meannum < Nbirds-1)
+	       blobals.range *=1.1;
+	    if (blobals.range > blobals.maxrange)
+	       blobals.range /=1.1;
 	 }
-	 sumnum +=num;
-	 // adjust speed to other birds, p is weight for own speed
-	 if (num > 0)
-	 {
-	    int p = (100-Flags.FollowWeight)*0.1;
-	    bird->sx = (sumsx + p*bird->sx)/(p+1+num);
-	    bird->sy = (sumsy + p*bird->sy)/(p+1+num);
-	    bird->sz = (sumsz + p*bird->sz)/(p+1+num);
-	 }
-	 // adjust speed to obtain desired distance to other birds
-	 if (num > 0)
-	 {
-	    float q = Flags.DisWeight*0.4;
-	    bird->sx += q*(meanprefx - bird->x);
-	    bird->sy += q*(meanprefy - bird->y);
-	    bird->sz += q*(meanprefz - bird->z);
-	    P("%d %f %f %f, %f %f %f\n",i,meanprefx,meanprefy,meanprefz,bird->x,bird->y,bird->z);
-	 }
-
-
-	 // attraction of center:
-
-	 float dx = attrbird.x - bird->x;
-	 float dy = attrbird.y - bird->y;
-	 float dz = attrbird.z - bird->z;
-
-	 float f = Flags.AttrFactor*0.01f*0.05f;
-
-	 bird->sx += f*dx;
-	 bird->sy += f*dy;
-	 bird->sz += f*dz;
-
-	 // limit vertical speed
-
-	 const float phs = 0.8;
-	 float hs = sqrtf(sq2(bird->sx, bird->sy));
-	 if (fabs(bird->sz) > phs*hs)
-	    bird->sz = fsignf(bird->sz)*phs*hs;
-
-	 // randomize:
-	 {
-	    const float p  = 0.4;  //  0<=p<=1 the higher the more random
-	    bird->sx += bird->sx*p*drand48();
-	    bird->sy += bird->sy*p*drand48();
-	    bird->sz += bird->sz*p*drand48();
-	 }
-
-	 normalize_speed(bird,blobals.meanspeed*(0.9+drand48()*0.2));
-      }
-      float meannum = (float)sumnum/(float)Nbirds;
-      blobals.mean_distance = summeandist/Nbirds;
-      P("meannum %f %f\n",meannum,blobals.range);
-
-      if (meannum < Flags.Neighbours)
-      {
-	 if (blobals.range < 0.1)
-	    blobals.range = 0.1;
-	 if (meannum < Nbirds-1)
-	    blobals.range *=1.1;
-	 if (blobals.range > blobals.maxrange)
+	 else
 	    blobals.range /=1.1;
-      }
-      else
-	 blobals.range /=1.1;
 
-      unlock();
-end:
+	 unlock();
+      }
       usleep((useconds_t)(time_update_speed_birds*1.0e6));
    }
    return NULL;
@@ -663,7 +661,7 @@ int birds_draw(cairo_t *cr)
 	 }
       }    // i-loop
    }  // before-loop
-      
+
    unlock();
 
    return TRUE;

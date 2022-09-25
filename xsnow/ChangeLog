@@ -1,3 +1,15 @@
+version 3.5.3
+	01: main.c: drawit(): do now draw the first second or so to hide
+	    unstable configurations of scenery, stars, etc.
+	    fallensnow.c, birds.c, aurora.c: make them C++ compliant by
+	      rewriting goto and typecast pointer assignment
+	    meteor.c: rewrite goto
+	    santa.c: continue Santa animation, irrespective of His speed
+	    fallensnow.c: paint fallensnow one pixel higher
+	    fallensnow.c: generate more snow when Santa is ploughing
+	02: loadmeasure.c: maximum 5 warnings about to busy system
+	03: doit.h: change defaults for aurora_width/height to 60/30
+
 version 3.5.2
 	01: fallensnow.c: draw fallensnow only on regions where fallensnow is present,
 	    to prevent a continuously present line on regions where there is

@@ -40,7 +40,6 @@
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
 static int    do_usanta(void *);
-//static void   InitSantaPixmaps(void);
 static void   init_Santa_surfaces(void);
 static Region RegionCreateRectangle(int x, int y, int w, int h);
 static void   ResetSanta(void);
@@ -272,7 +271,7 @@ int do_usanta(void *d)
       SantaXr = -global.SantaWidth - global.ActualSantaSpeed; 
    global.SantaX = lrintf(SantaXr);
    dtt += dt;
-   if (dtt > 0.1 && fabs(global.ActualSantaSpeed) > 3)
+   if (dtt > 0.1)
    {
       dtt = 0;
       CurrentSanta++;

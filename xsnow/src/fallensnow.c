@@ -106,7 +106,7 @@ void fallensnow_draw(cairo_t *cr)
 	 P("fallensnow_draw %d %d\n",counter++,
 	       cairo_image_surface_get_width(fsnow->surface));
 	 P("fallensnow_draw: x:%d y:%d\n",fsnow->x,fsnow->y);
-	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h+1);
+	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h);
 	 my_cairo_paint_with_alpha(cr,ALPHA);
 	 fsnow->prevx = fsnow->x;
 	 fsnow->prevy = fsnow->y-fsnow->h+1;
@@ -205,24 +205,24 @@ void *do_fallen(void *d)
    {
       if (Flags.Done)
 	 pthread_exit(NULL);
-      if (NOTACTIVE)
-	 goto end;
-      P("%d do_fallen\n",global.counter++);
-      Lock_fallen();
-
-      FallenSnow *fsnow = global.FsnowFirst;
-      while(fsnow)
+      if (!NOTACTIVE)
       {
-	 if (HandleFallenSnow(fsnow)) 
-	    DrawFallen(fsnow);
-	 fsnow = fsnow->next;
+	 P("%d do_fallen\n",global.counter++);
+	 Lock_fallen();
+
+	 FallenSnow *fsnow = global.FsnowFirst;
+	 while(fsnow)
+	 {
+	    if (HandleFallenSnow(fsnow)) 
+	       DrawFallen(fsnow);
+	    fsnow = fsnow->next;
+	 }
+	 XFlush(global.display);
+
+	 swapsurfaces();
+
+	 Unlock_fallen();
       }
-      XFlush(global.display);
-
-      swapsurfaces();
-
-      Unlock_fallen();
-end:
       usleep((useconds_t)(time_fallen*1000000));
    }
    return NULL;
@@ -712,7 +712,8 @@ void DrawFallen(FallenSnow *fsnow)
 	    int xfront = global.SantaX+global.SantaWidth - fsnow->x;
 	    // determine back of Santa in fsnow, Santa can move backwards in strong wind
 	    int xback = xfront - global.SantaWidth;
-	    const int clearing = 3;
+	    // clearing determines the amount of generated ploughing snow
+	    const int clearing = 10;
 	    float vy = -1.5*global.ActualSantaSpeed; 
 	    if(vy > 0) vy = -vy;
 	    if (vy < -100.0)

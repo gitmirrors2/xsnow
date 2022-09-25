@@ -54,11 +54,12 @@ int do_loadmeasure(void *d)
 {
    double tnow = wallclock();
    static double tprev;
-   static int count  = 0;
-   static int status = 0;
+   static int count      = 0;
+   static int status     = 0;
+   static int warncount  = 0;
 
    if (tnow-tprev > 1.2*time_measure)
-   //if (tnow-tprev > 0.9*time_measure)   // for testing purposes
+      //if (tnow-tprev > 0.9*time_measure)   // for testing purposes
       count++;
    else 
       count --;
@@ -68,10 +69,14 @@ int do_loadmeasure(void *d)
    {
       if (status == 0)
       {
-	 P("pink %d %d %f %f\n",count,status,time_measure,tnow-tprev);
-	 printf("system is too busy, suggest to lower 'cpu load' in 'settings'\n");
-	 printf(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n");
-	 printf(" or specify a smaller number of birds in 'birds'\n");
+	 if(warncount < 5)
+	 {
+	    warncount++;
+	    P("pink %d %d %f %f\n",count,status,time_measure,tnow-tprev);
+	    printf("system is too busy, suggest to lower 'cpu load' in 'settings'\n");
+	    printf(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n");
+	    printf(" or specify a smaller number of birds in 'birds'\n");
+	 }
 	 if(!Flags.NoMenu)
 	    ui_background(1);
 	 status = 1;
