@@ -1191,6 +1191,7 @@ static int RC;
 int ui_run_nomenu()
 {
    GtkApplication *app;
+   // see https://fuchsia.googlesource.com/third_party/glib/+/refs/heads/upstream/main/NEWS
 #define MY_GLIB_VERSION (100000000*GLIB_MAJOR_VERSION + 10000*GLIB_MINOR_VERSION + GLIB_MICRO_VERSION)
 #if MY_GLIB_VERSION >= 200730003
 #define XXFLAGS G_APPLICATION_DEFAULT_FLAGS
@@ -1302,7 +1303,6 @@ void ui_error_x11()
 
 void my_gtk_label_set_text(GtkLabel *label, const gchar *str)
 {
-   R("MY_GLIB_VERSION %d\n",MY_GLIB_VERSION);
    if(ui_running)
       gtk_label_set_text(label, str);
 }
