@@ -1191,12 +1191,14 @@ static int RC;
 int ui_run_nomenu()
 {
    GtkApplication *app;
-#ifdef G_APPLICATION_DEFAULT_FLAGS
-   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_DEFAULT_FLAGS);
+#define MY_GLIB_VERSION (100000000*GLIB_MAJOR_VERSION + 10000*GLIB_MINOR_VERSION + GLIB_MICRO_VERSION)
+#if MY_GLIB_VERSION >= 200730003
+#define XXFLAGS G_APPLICATION_DEFAULT_FLAGS
 #else
-   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
+#define XXFLAGS G_APPLICATION_FLAGS_NONE
 #endif
 
+   app = gtk_application_new ("nl.ratrabbit.example", XXFLAGS);
    g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
    g_application_run (G_APPLICATION (app), 0, NULL);
    g_object_unref (app);
@@ -1209,7 +1211,6 @@ static void activate (GtkApplication *app)
    GtkWidget *grid;
    GtkWidget *button;
    GtkWidget *label;
-
 
    /* create a new window, and set its title */
    window = gtk_application_window_new (app);
@@ -1301,6 +1302,7 @@ void ui_error_x11()
 
 void my_gtk_label_set_text(GtkLabel *label, const gchar *str)
 {
+   R("MY_GLIB_VERSION %d\n",MY_GLIB_VERSION);
    if(ui_running)
       gtk_label_set_text(label, str);
 }
