@@ -1191,7 +1191,12 @@ static int RC;
 int ui_run_nomenu()
 {
    GtkApplication *app;
+#ifdef G_APPLICATION_DEFAULT_FLAGS
+   app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_DEFAULT_FLAGS);
+#else
    app = gtk_application_new ("nl.ratrabbit.example", G_APPLICATION_FLAGS_NONE);
+#endif
+
    g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
    g_application_run (G_APPLICATION (app), 0, NULL);
    g_object_unref (app);
