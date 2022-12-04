@@ -18,6 +18,18 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define to 1 if you have the `gsl_interp_akima' function. */
+#undef HAVE_GSL_INTERP_AKIMA
+
+/* Define to 1 if you have the `gsl_interp_cspline' function. */
+#undef HAVE_GSL_INTERP_CSPLINE
+
+/* Define to 1 if you have the `gsl_interp_linear' function. */
+#undef HAVE_GSL_INTERP_LINEAR
+
+/* Define to 1 if you have the `gsl_interp_steffen' function. */
+#undef HAVE_GSL_INTERP_STEFFEN
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -26,6 +38,9 @@
 
 /* Define to 1 if you have the <math.h> header file. */
 #undef HAVE_MATH_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
 
 /* Define if you have POSIX threads libraries and header files. */
 #undef HAVE_PTHREAD
@@ -90,6 +105,9 @@
 /* Define to 1 if you have the `XdbeAllocateBackBufferName' function. */
 #undef HAVE_XDBEALLOCATEBACKBUFFERNAME
 
+/* Define to 1 if you have the `XineramaQueryScreens' function. */
+#undef HAVE_XINERAMAQUERYSCREENS
+
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
@@ -118,9 +136,7 @@
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 
-/* Define to 1 if all of the C90 standard headers exist (not just the ones
-   required in a freestanding environment). This macro is provided for
-   backward compatibility; new code need not use it. */
+/* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
 /* Version number of package */

@@ -17,12 +17,14 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
- */
+*/
 #include <pthread.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <X11/Intrinsic.h>
+#include <X11/extensions/Xinerama.h>
 #include "transwindow.h"
+#include "windows.h"
 #include "debug.h"
 
 
@@ -31,7 +33,7 @@ static int setvaria(GtkWidget *widget);
 /*
  * creates transparent window using gtk3/cairo. 
  * transwindow: (input)  GtkWidget to create transparent window in
- * fullscreen:  (input)  full-screen or not full screen
+ * xscreen:     (input)  <0: full-screen  else xinerama screen number
  * sticky:      (input)  visible on all workspaces or not
  * below:       (input)  1: below all other windows 2: above all other windows 0: no action
  * dock:        (input)  make it a 'dock' window: no decoration and not interfering with xsnow, xpenguins
@@ -43,9 +45,10 @@ static int setvaria(GtkWidget *widget);
  * gdk_window:  (output) GdkWindow created
  * x11_window:  (output) Window X11 window created
  */
-int make_trans_window(GtkWidget *transwindow, int fullscreen, int sticky, int below, int dock,  
-      GdkWindow **gdk_window, Window *x11_window)
+int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int sticky, int below, int dock,  
+      GdkWindow **gdk_window, Window *x11_window, int *wantx, int *wanty)
 {
+   P("Entering make_trans_window...\n");
    if(gdk_window)
       *gdk_window = NULL;
    if(x11_window)
@@ -97,20 +100,32 @@ int make_trans_window(GtkWidget *transwindow, int fullscreen, int sticky, int be
    // Ensure the widget (the window, actually) can take RGBA
    gtk_widget_set_visual(transwindow, gdk_screen_get_rgba_visual(screen));
 
+   int winx, winy; // desired position of window
+   int winw, winh; // desired size of window
+   int wantxin = (xscreen >=0);
    // set full screen if so desired:
-   if(fullscreen)
+   P("xscreen: %d\n",xscreen);
+   if(xscreen < 0)
    {
       P("fullscreen\n");
       XWindowAttributes attr;
-      Display *display = XOpenDisplay(NULL);
       XGetWindowAttributes(display,DefaultRootWindow(display),&attr);
       P("width, height %d %d\n",attr.width,attr.height);
       gtk_widget_set_size_request(GTK_WIDGET(transwindow),attr.width,attr.height);
-      XCloseDisplay(display);
+      winx = 0;
+      winy = 0;
+      winw = attr.width;
+      winh = attr.height;
    }
    else
    {
-      P("NOT fullsscreen\n");
+      P("NOT fullscreen, but xineramascreen %d\n",xscreen);
+      wantxin = xinerama(display,xscreen,&winx,&winy,&winw,&winh);
+      if(wantxin)
+      {
+	 gtk_widget_set_size_request(GTK_WIDGET(transwindow),winw,winh);
+	 P("winx ... %d %d %d %d\n",winx,winy,winw,winh);
+      }
    }
 
    gtk_widget_show_all(transwindow);
@@ -120,21 +135,34 @@ int make_trans_window(GtkWidget *transwindow, int fullscreen, int sticky, int be
    if(dock)
       gdk_window_set_type_hint(gdkwin,GDK_WINDOW_TYPE_HINT_DOCK);
 
-   gdk_window_hide(gdkwin);
-   if(fullscreen)
-      gdk_window_move(gdkwin,0,0);
+   //gdk_window_hide(gdkwin);
+
    gdk_window_show(gdkwin);
 
    if (x11_window)
+   {
       *x11_window = gdk_x11_window_get_xid(gdkwin);
+      P("resize %p: %d %d\n",(void*)*x11_window,winw,winh);
+      XResizeWindow(display,*x11_window,winw,winh);  // necessary in xmonad, don't know why, 
+      XFlush(display);                               // in combination with this one
+   }
    if (gdk_window)
       *gdk_window = gdkwin;
 
+   *wantx = winx;
+   *wanty = winy;
    usleep(200000);  // seems sometimes to be necessary with nvidia
 
    // just to be sure all settings are communicated with the server
    gtk_widget_hide(transwindow);
    gtk_widget_show_all(transwindow);
+   if(xscreen < 0)
+      gtk_window_move(GTK_WINDOW(transwindow),0,0);
+   else if (wantxin)
+   {
+      P("Calling gtk_window_move %d %d\n",winx,winy);
+      gtk_window_move(GTK_WINDOW(transwindow),winx,winy);
+   }
 
    // set some things, but note that this has to be repeated in the gkt_main loop.
 
@@ -145,6 +173,7 @@ int make_trans_window(GtkWidget *transwindow, int fullscreen, int sticky, int be
 
    return TRUE;
 }
+
 
 // for some reason, in some environments the 'below' and 'stick' properties
 // disappear. It works again, if we express our wishes after starting gtk_main

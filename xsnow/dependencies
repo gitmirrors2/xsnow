@@ -5,6 +5,8 @@ libx11-dev
 libxpm-dev
 libxt-dev
 libxext-dev
+libxinerama-dev
+libxtst-dev
 libgtk-3-dev
 libgsl-dev
 pkg-config
@@ -14,8 +16,11 @@ g++
 
 # Suse
 libX11-devel
+libXpm-devel
 libXt-devel
 libXext-devel
+libXinerama-devel
+libXtst-devel
 libgtk-3-0
 gsl-devel
 pkg-config

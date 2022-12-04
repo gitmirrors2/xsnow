@@ -18,10 +18,12 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
  * */
+#define GSL_INTERP_MESSAGE
 #include <pthread.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
 #include "spline_interpol.h"
+#include "debug.h"
 
 void spline_interpol(const double *px, int np, const double *py, const double *x, int nx, double *y)
 {

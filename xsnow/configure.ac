@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.5.3],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.6.0],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -107,6 +107,7 @@ AC_SUBST([PACKAGE_VERSION])
 AC_PROG_CC([cc gcc])
 AC_PROG_CXX([c++ g++])
 AC_PROG_INSTALL
+AC_PROG_RANLIB
 
 LIBS="-lm"
 # Checks for header files.
@@ -122,16 +123,18 @@ AC_CHECK_HEADERS([unordered_set])
 AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
-PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto])
+PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto xinerama xtst xkbcommon])
 PKG_CHECK_MODULES(GSL, [gsl])
 
 m4_include([m4/ax_pthread.m4])
 AX_PTHREAD()
 
 AC_CHECK_FUNCS([backtrace])
-LIBS="$X11_LIBS"
+LIBS="$X11_LIBS $GSL_LIBS"
 # check for availability of double buffering
 AC_CHECK_FUNCS([XdbeAllocateBackBufferName])
+#check for availability of xinerama
+AC_CHECK_FUNCS([XineramaQueryScreens])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -146,6 +149,7 @@ AC_CHECK_HEADER_STDBOOL
 #AC_FUNC_ALLOCA
 
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
+AC_CHECK_FUNCS([gsl_interp_steffen gsl_interp_akima gsl_interp_cspline gsl_interp_linear])
 
 AC_CONFIG_FILES([Makefile src/Makefile src/Pixmaps/Makefile data/Makefile])
 AC_OUTPUT

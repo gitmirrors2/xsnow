@@ -232,6 +232,8 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-ignoretop           ,IgnoreTop                        );
 	 handle_ia(-ignorebottom        ,IgnoreBottom                     );
 	 handle_ia(-transparency        ,Transparency                     );
+	 handle_im(-screen              ,Screen                           );
+	 handle_ia(-outline             ,Outline                          );
 
 
 	 handle_is(-display             ,DisplayName                      );

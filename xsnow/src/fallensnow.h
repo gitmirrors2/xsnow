@@ -58,6 +58,7 @@ extern int    lock_fallen(void);
 extern int    unlock_fallen(void);
 extern int    lock_fallen_n(int n, int *c);
 extern void   fallen_sem_init(void);
+extern int    IsVisibleFallen(FallenSnow *fsnow);
 
 
 // insert a node at the start of the list

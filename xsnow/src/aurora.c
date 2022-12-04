@@ -45,7 +45,6 @@
    (Flags.BirdsOnly || !WorkspaceActive())
 
 static void *do_aurora(void *);
-//static void *do_aurora_real(void *);
 static void  aurora_setparms(AuroraMap *a);
 static void  aurora_changeparms(AuroraMap *a);
 static void  aurora_computeparms(AuroraMap *a);
@@ -237,7 +236,7 @@ void *do_aurora(void *d)
       {
 
 	 lock_comp();
-	 P("thread %ld\n",thread);
+	 P("%d do_aurora\n",global.counter++);
 	 lock_init();
 	 AuroraMap *a = (AuroraMap *) d;
 	 int j;
@@ -390,7 +389,7 @@ void *do_aurora(void *d)
 	 cairo_restore(aurora_cr);
 	 //free(p);
 
-	 P("do_aurora xy %d %d %d %d\n",a.x1,a.x2,a.y1,a.y2);
+	 P("%d do_aurora surface %d %d\n",global.counter++,a->width,a->base);
 	 // make available just created surface as aurora_surface
 	 // and create a new aurora_surface1
 	 lock_copy();
@@ -439,6 +438,7 @@ void aurora_setparms(AuroraMap *a)
    else // AuroraRight assumed
       a->x = global.SnowWinWidth - a->width; // - f;
 
+   P("a-> a->width %d %d %d\n",a->w,a->width,a->x);
    //a->y = Flags.AuroraBase  *global.SnowWinHeight*0.01;
    a->y = 0;
 
@@ -520,7 +520,7 @@ void aurora_changeparms(AuroraMap *a)
 
    if(1)
    {
-      // rotation angle
+      // rotation angle, including some not used methods
       if(0)
       {
 	 if (a->theta > -8 && a->theta < 8)
@@ -784,77 +784,6 @@ void aurora_computeparms(AuroraMap *a)
       a->za[i] *= alpha;
    }
 
-   if(0)
-   {
-      // add fuzz when aurora turns direction, not creating extra points
-      // take care not to add fuzz when this change of direction ('fold')
-      // is soon followed by another one in the opposite direction
-      // Not using this implementation any more.
-
-      int f = turnfuzz * global.SnowWinWidth;
-      int d0   = a->z[1].x - a->z[0].x;
-      i = 0;
-      while(1)
-      {
-	 i++;
-	 if (i >= a->nz-1)
-	    break;
-	 // derivative is z[i].x - z[i-1].x
-	 int d = a->z[i].x - a->z[i-1].x;
-	 if (d0 != d)
-	 {
-	    int jmax = i + f;
-	    if (jmax > a->nz-1) jmax = a->nz-1;
-	    int jmin = i - f;
-	    if (jmin < 1) jmin = 1;
-	    P("d: %d %d %d\n",i,d,a->z[i].x);
-	    int j;
-	    int cut = 0;
-	    for (j = i; j<jmax; j++)
-	    {
-	       int dd = a->z[j+1].x - a->z[j].x;
-	       P("dd: %d %d %d %d n%d\n",j,d0,d,dd,d!=dd); 
-	       if(d != dd)
-	       {
-		  cut = j;
-		  break;
-	       }
-	    }
-	    if(cut)
-	    {
-	       // do not paint parts of aurora that are between to folds
-	       // close to each other
-	       int j;
-	       for (j=i; j<cut; j++)
-		  a->za[j] = 0;
-	       P("cut0 %d\n",i);
-	       i = cut;
-	       P("cut1 %d\n",i);
-	       continue;
-	    }
-
-	    if(1)
-	    {
-	       int j;
-	       for (j = i; j < jmax; j++)
-	       {
-		  P("jmax: %d %d %d %d %f\n",i,j,a->z[j].x - a->z[j-1].x,d,(double)(j - i)/(jmax - i));
-		  a->za[j] *= (double)(j - i)/(jmax - i);
-	       }
-	    }
-	    if(1)
-	    {
-	       int j;
-	       for (j = i; j>jmin; j--)
-	       {
-		  P("jmin: %d %d %d %d %f\n",i,j,a->z[j].x - a->z[j+1].x,d,(double)(i - j)/(i - jmin));
-		  a->za[j] *= (double)(i - j)/(i - jmin);
-	       }
-	    }
-	 }
-	 d0 = d;
-      }
-   }
    if(1)
    {
       // add fuzz on turning points, second method
@@ -1041,7 +970,7 @@ void create_aurora_base(const double *y, int n,
    struct pq *pp = p;
    pp->x = -1.234;   // Compiler warns that possibly pp->x will not be initialized ...
    pp->y = -1.234;   // Same for this one.
-   // so we give them values here, which will be overwritten later on.
+		     // so we give them values here, which will be overwritten later on.
 
    for (i=0; i<nw; i++)
    {

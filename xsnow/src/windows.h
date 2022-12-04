@@ -26,9 +26,9 @@
 extern void         windows_ui(void);
 extern void         windows_draw(void);
 extern void         windows_init(void);
-extern int          WorkspaceActive(void);  // defined in main.c
+extern int          WorkspaceActive(void);
 extern int          DetermineWindow(Window *xtrans, char **xtransname, GtkWidget **gtrans,const char *transname, int *IsDesktop);
-extern void         InitDisplayDimensions(void);
+extern void         InitDisplayDimensions();
 extern void         DestroyWindow(Window w);
 extern void         setabove(GtkWindow *w);
 extern void         DisplayDimensions(void);
@@ -37,5 +37,5 @@ extern void         UpdateFallenSnowRegions(void);
 extern void         UpdateFallenSnowRegionsWithLock(void);
 extern void         UpdateWindows(void);
 extern void         SetBackground(void);
-
-
+extern int          xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h);
+extern int          IsVisibleWindow(Window wid);

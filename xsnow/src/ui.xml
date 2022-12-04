@@ -952,8 +952,8 @@ Flag: -vintage</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">If the system is too busy, all panels get this color.
-You could adapt some things in "snow", "birds" or "settings".</property>
+                <property name="label" translatable="yes">If the system is too busy, all panels get this color, in which case
+you could adapt some things in "snow", "birds" or "settings", "celestials"</property>
                 <property name="justify">center</property>
                 <property name="xalign">0.5</property>
                 <property name="yalign">0.5</property>
@@ -3830,6 +3830,9 @@ Flag: -aurorawidth</property>
                     <property name="digits">0</property>
                     <property name="has-origin">False</property>
                     <property name="value-pos">left</property>
+                    <style>
+                      <class name="cpuload"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left-attach">3</property>
@@ -3862,6 +3865,9 @@ Flag: -auroraheight</property>
                     <property name="digits">0</property>
                     <property name="has-origin">False</property>
                     <property name="value-pos">left</property>
+                    <style>
+                      <class name="cpuload"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left-attach">5</property>
@@ -5517,6 +5523,48 @@ confirm</property>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="id-Screen">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">If you have more than one monitor, choose where you want snow falling. Choose 'all monitors' if you want snow in all monitors. 
+NOTE: when changing monitor, xsnow will restart.
+Flag: -screen</property>
+                    <property name="active">1</property>
+                    <items>
+                      <item translatable="yes">all monitors</item>
+                      <item translatable="yes">monitor 1</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="id-Outline">
+                    <property name="label" translatable="yes">Draw
+outline</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">To draw an outline around the snow window.
+Flag: -outline 1/0</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="margin-start">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">7</property>
                   </packing>
                 </child>
               </object>

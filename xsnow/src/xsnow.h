@@ -24,6 +24,7 @@
 #include <X11/Xutil.h>
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
+#include "xdo.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -61,6 +62,7 @@
 #define SNOWFREE 25  /* Must stay snowfree on display :) */
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150
+#define MAXVISWORKSPACES 100   // should be enough...
 
 
 // timers
@@ -115,7 +117,7 @@ typedef struct _WinInfo
    int x,y                ; // x,y coordinates
    int xa,ya              ; // x,y coordinates absolute
    unsigned int w,h       ; // width, height
-   int ws                 ; // workspace
+   long ws                ; // workspace
 
    unsigned int sticky BITS(1); // is visible on all workspaces
    unsigned int dock   BITS(1); // is a "dock" (panel)
@@ -221,16 +223,27 @@ extern struct _global
    int             FluffCount;          /* number of fluff flakes */
 
    Display        *display;
+   xdo_t          *xdo;
+   int             Screen;
    Window          SnowWin;
    int             SnowWinBorderWidth;
    int             SnowWinWidth;
    int             SnowWinHeight;
+   int             WindowOffsetX;    // when using the root window for drawing, we need
+   //                                   these offsets to correct for the position of the
+   //                                   windows.
+   int             WindowOffsetY;
    int             SnowWinDepth;
    char           *DesktopSession;
    int             IsCompiz;
    int             IsWayland;
-   int             CWorkSpace;  // int? Yes, in compiz we take the placement of the desktop
-				//                                     which can easily be > 16 bits
+   long            CWorkSpace;  // long? Yes, in compiz we take the placement of the desktop
+   //                                     which can easily be > 16 bits
+   long            VisWorkSpaces[MAXVISWORKSPACES];  // these workspaces are visible. In bspwm (and possibly other tiling
+   //                                 widowmanagers) when xsnow is running full-screen, the different
+   //                                 xinerama screens each cover another workspace.
+   int             NVisWorkSpaces;  // number of VisWorkSpaces
+   long            ChosenWorkSpace; // workspace that is chosen as workspace to snow in
    Window          Rootwindow;
    int             Xroot;
    int             Yroot;
@@ -239,6 +252,7 @@ extern struct _global
    int             SnowWinX; 
    int             SnowWinY; 
    int             WindowsChanged;
+   int             ForceRestart;
 
    FallenSnow     *FsnowFirst;
    int             MaxScrSnowDepth;
@@ -276,4 +290,4 @@ extern struct _global
    char            Message[256];
 } global;
 
-
+extern int set_sticky(int s);

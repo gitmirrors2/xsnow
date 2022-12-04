@@ -68,7 +68,7 @@ void moon_init(void)
 int moon_draw(cairo_t *cr)
 {
    LEAVE_IF_INACTIVE;
-   P("moon_draw %d %d %d\n",counter++,(int)global.moonX,(int)global.moonY);
+   P("moon_draw %d %d %d\n",global.counter++,(int)global.moonX,(int)global.moonY);
    cairo_set_source_surface (cr, moon_surface, global.moonX, global.moonY);
    my_cairo_paint_with_alpha(cr,ALPHA);
    OldmoonX = global.moonX;
@@ -186,6 +186,7 @@ int do_umoon(void *d)
       ydirection = 1;
    }
 
+   P("Moon pos: %d %d\n",(int)global.moonX,(int)global.moonY);
    return TRUE;
 }
 

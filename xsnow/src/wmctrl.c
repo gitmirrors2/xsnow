@@ -83,13 +83,13 @@ void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Wi
    return;
 }
 
-int GetCurrentWorkspace()
+long int GetCurrentWorkspace()
 {
    Atom type;
    int format;
    unsigned long nitems,b;
    unsigned char *properties;
-   int r;
+   long int r;
    Display *getdisplay;
 
    static Atom atom_net_desktop_viewport;
@@ -122,7 +122,7 @@ int GetCurrentWorkspace()
       {
 	 // we have the x-y coordinates of the workspace, we hussle this
 	 // into one long number:
-	 r = ((long *)properties)[0]+(((long *)properties)[1]<<16);
+	 r = ((long *)(void*)properties)[0]+(((long *)(void*)properties)[1]<<16);
       }
       if(properties) XFree(properties);
    }
@@ -155,7 +155,7 @@ int GetCurrentWorkspace()
 		//        more or less ;-)
       }
       else
-	 r = *(long *)properties;        // see man XGetWindowProperty
+	 r = *(long *)(void*)properties;        // see man XGetWindowProperty
       if(properties) XFree(properties);
    }
    P("wmctrl: nitems: %ld ws: %d\n",nitems,r);
@@ -271,7 +271,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
 	 if(format == 32 && nitems >=1)
 	 {
-	    if(*(long*) properties == 1)
+	    if(*(long*) (void*)properties == 1)
 	       globalhidden = 1;
 	    P("hidden3 hidden:%d\n",globalhidden);
 	 }
@@ -322,7 +322,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
       if(properties)
       {
-	 w->ws = *(long*) properties;
+	 w->ws = *(long*) (void*)properties;
 	 if(properties) XFree(properties);
       }
       else
@@ -339,7 +339,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = NULL;
-	    s = XGetAtomName(getdisplay,((Atom*)properties)[i]);
+	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_STATE_STICKY"))
 	    { 
 	       P("%#lx is sticky\n",w->id);
@@ -367,7 +367,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 for(i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = NULL;
-	    s = XGetAtomName(getdisplay,((Atom*)properties)[i]);
+	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_WINDOW_TYPE_DOCK"))
 	    { 
 	       P("%#lx is dock %d\n",w->id, counter++);
@@ -403,7 +403,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    for (i=0; i<nitems; i++)
 	    {
 	       char *s = NULL;
-	       s = XGetAtomName(getdisplay,((Atom*)properties)[i]);
+	       s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
 		  P("%#lx is hidden %d\n",w->id, counter++);
@@ -431,7 +431,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    // WithDrawnState: 0
 	    // NormalState:    1
 	    // IconicState:    3
-	    if(*(long*) properties != NormalState)
+	    if(*(long*) (void*)properties != NormalState)
 	       w->hidden = 1;
 	 }
 	 if(properties) XFree(properties);
@@ -459,7 +459,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       if(nitems == 4 && format == 32 && type) // adjust x,y,w,h of window
       {
 	 long *r; // borderleft, borderright, top decoration, bottomdecoration
-	 r = (long*)properties;
+	 r = (long*)(void*)properties;
 	 P("RRRR: %ld %ld %ld %ld\n",r[0],r[1],r[2],r[3]);
 	 switch(wintype)
 	 {
@@ -537,7 +537,7 @@ int GetProperty32(Display *display, Window window, const char *atomname,
 	 for(i=0; i<(int)nitems; i++)
 	 {
 	    char *s = NULL;
-	    s = XGetAtomName(display,((Atom*)properties)[i]);
+	    s = XGetAtomName(display,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,needle))
 	    { 
 	       if(s) XFree(s);
@@ -553,7 +553,7 @@ int GetProperty32(Display *display, Window window, const char *atomname,
 	 {
 	    int i;
 	    for (i=0; i<(int)nitems && i<nprops; i++)
-	       props[i] = ((long *)properties)[i];
+	       props[i] = ((long *)(void*)properties)[i];
 	 }
 	 rc = nitems;
       }
@@ -595,7 +595,7 @@ void printwindows(Display *dpy,WinInfo *windows, int nwin)
 	 name = strdup("No name");
       if (strlen(name)>20)
 	 name[20] = '\0';
-      printf("id:%#10lx ws:%3d x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",
+      printf("id:%#10lx ws:%3ld x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",
 	    w->id,w->ws,w->x,w->y,w->xa,w->ya,w->w,w->h,w->sticky,w->dock,w->hidden,name);
       XFree(name);
       w++;

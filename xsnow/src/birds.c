@@ -102,6 +102,8 @@ static void     i2r(BirdType *bird);
 static int      attrbird_erase(int force);
 static void     init_birds(int start);
 static void     init_bird(BirdType *bird);
+static int      lock(void);
+static int      unlock(void);
 
 
 static float time_update_pos_birds     = 0.01;
@@ -117,7 +119,7 @@ static sem_t sem;
 
 void birds_ui()
 {
-   UIDO(ShowBirds         , birds_erase(1); attrbird_erase(1);     );
+   UIDO(ShowBirds         , lock(); birds_erase(1); unlock(); attrbird_erase(1);     );
    UIDO(BirdsOnly         , ClearScreen();  do_change_attr(NULL);  );
    UIDO(Neighbours        ,                                        );
    UIDO(Anarchy           ,                                        );
@@ -669,12 +671,11 @@ int birds_draw(cairo_t *cr)
 
 int birds_erase(int force)
 {
+   // locking by caller
    if(global.IsDouble)
       return TRUE;
    if(!force)
       LEAVE_IF_INACTIVE;
-
-   lock();
 
    P("birds_erase %d\n",counter++);
    int i;
@@ -693,8 +694,6 @@ int birds_erase(int force)
    P("clearattr: %d %d %d %d\n", attrbird.prevx, attrbird.prevy, attrbird.prevw, attrbird.prevh);
 
    attrbird_erase(0);
-
-   unlock();
 
    return TRUE;
 }
@@ -840,7 +839,7 @@ int do_main_window(void *d)
 {
    (void) d;
    P("do_main_window: %d %d %d %d\n",blobals.maxix,global.SnowWinWidth,blobals.maxiz,global.SnowWinHeight);
-   if (blobals.maxix != global.SnowWinWidth || blobals.maxiz != global.SnowWinHeight)
+   if (blobals.maxix != (int)global.SnowWinWidth || blobals.maxiz != (int)global.SnowWinHeight)
    {
       P("do_main_window\n");
       main_window();
@@ -986,7 +985,7 @@ int do_change_attr(void *d)
    return TRUE;
 }
 
-void birds_init ()
+void birds_init()
 {
    init_bird_pixbufs("black"); // just to have pixbufs we can throw away
    birds_init_color();

@@ -218,8 +218,17 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
 
 void PrintVersion()
 {
-   printf("%s\n%s\n",
-	 PACKAGE_STRING, VERSIONBY);
+   int l = 4 + strlen(PACKAGE_STRING);
+   int i;
+   printf("   ");
+   for (i=0; i<l; i++)
+      printf("*");
+   printf("\n   * %s *\n",
+	 PACKAGE_STRING);
+   printf("   ");
+   for (i=0; i<l; i++)
+      printf("*");
+   printf("\n%s\n",VERSIONBY);
 }
 
 void rgba2color(GdkRGBA *c, char **s)
@@ -236,6 +245,7 @@ void Thanks(void)
    if (strlen(global.Message))
       printf("\n%s\n",global.Message);
    printf("\nThank you for using xsnow\n");
+   fflush(stdout);
 }
 
 int ScaleChanged(int *prevscale)

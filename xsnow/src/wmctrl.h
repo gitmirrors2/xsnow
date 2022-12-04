@@ -23,7 +23,7 @@
 #include <X11/Xlib.h>
 #include "xsnow.h"
 
-extern int          GetCurrentWorkspace();
+extern long int     GetCurrentWorkspace();
 extern int          GetWindows(WinInfo **w, int *nw);
 extern Window       FindWindowWithName(Display *dsp, const char* needle);
 extern WinInfo     *FindWindow(WinInfo *windows, int nwin, Window id);

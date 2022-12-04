@@ -53,9 +53,9 @@ FLAGS="$FLAGS `pkg-config --cflags --libs gmodule-2.0`"
 # -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -Wl,--export-dynamic -lgmodule-2.0 -pthread -lglib-2.0
 
 # if you have pkg-config working for these: x11 xpm xt xproto
-FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xproto xext`"
+FLAGS="$FLAGS `pkg-config --cflags --libs x11 xpm xt xext xproto xinerama xtst xkbcommon`"
 # NOTE: on my system, pkg-config expands to:
-# -lXpm -lXt -lX11 -lXext
+# -lXpm -lXt -lX11 -lXext -lXinerama -lXtst -lxkbcommon
 
 FLAGS="$FLAGS `pkg-config --cflags --libs gsl`"
 # NOTE: on my system, pkg-config expands to:

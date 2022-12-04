@@ -1,3 +1,19 @@
+version 3.6.0
+	01: implement xinerama-awareness
+	   implement -outline
+	   introduce usage of libxdo, make it g++ compliant, fix some non-fatal
+	       issues
+	   fallensnow.c: fix bug that causes crash when snowing on a window
+	       less than 10 pixels width
+	   birds.c: fix bug that caused a hang when using -doublebuffer 0
+	   docs.c: update window manager/desktop issues
+	   main.c: print info when snow window changes size (thanks to Gim Kami)
+	   configure.ac: chack for availability of gsl_interp_steffen, 
+	       gsl_interp_akima, gsl_interp_cspline and gsl_interp_linear
+	       (Thanks to Joachim Ruebenschuss)
+	   utils.c: somewhat nicer print-out of version
+	
+
 version 3.5.3
 	01: main.c: drawit(): do now draw the first second or so to hide
 	    unstable configurations of scenery, stars, etc.

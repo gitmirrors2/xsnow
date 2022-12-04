@@ -308,6 +308,8 @@ void CreateDesh(FallenSnow *p)
 void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h) 
 {
    // threads: locking by caller
+   if(w<3) return;  // too narrow windows results in complications with regard to 
+   //                  computing splines etc.
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
    p->win        = *win;
    p->x          = x;
@@ -323,15 +325,6 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    p->surface    = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
    //p->surface1   = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
    p->surface1   = cairo_surface_create_similar (p->surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
-
-   if(0)
-   {
-      cairo_t *cr = cairo_create(p->surface);
-      cairo_set_source_rgba(cr,1,0,0,0.0);
-      cairo_rectangle(cr,0,0,w,h);  // todo: surface is already clear?
-      cairo_fill(cr);
-      cairo_destroy(cr);
-   }
 
    int l = 0,i;
    for (i=0; i<w; i++)
@@ -492,7 +485,7 @@ void PrintFallenSnow(FallenSnow *list)
       int i;
       for(i=0; i<fallen->w; i++)
 	 sumact += fallen->acth[i];
-      printf("id:%#10lx ws:%4d x:%6d y:%6d w:%6d sty:%2d hid:%2d sum:%8d\n", fallen->win.id, fallen->win.ws,
+      printf("id:%#10lx ws:%4ld x:%6d y:%6d w:%6d sty:%2d hid:%2d sum:%8d\n", fallen->win.id, fallen->win.ws,
 	    fallen->x, fallen->y, fallen->w, fallen->win.sticky, fallen->win.hidden, sumact);
       fallen = fallen->next;
    }
@@ -675,7 +668,7 @@ void CreateSurfaceFromFallen(FallenSnow *f)
       free(av);
    }
 
-   if(0)
+   if(0) // for debugging
    {
       // draw max height of fallensnow (using f->desh)
       cairo_save(cr);
@@ -699,38 +692,39 @@ void DrawFallen(FallenSnow *fsnow)
 {
    // threads: locking done by caller
    if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
-	    (fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
-   {
-      // do not interfere with Santa
-      if(!Flags.NoSanta)
+	    //(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
+      (IsVisibleFallen(fsnow) || fsnow->win.sticky)))
       {
-	 int in = XRectInRegion(global.SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
-	       fsnow->w, fsnow->h);
-	 if (in == RectangleIn || in == RectanglePart)
+	 // do not interfere with Santa
+	 if(!Flags.NoSanta)
 	 {
-	    // determine front of Santa in fsnow
-	    int xfront = global.SantaX+global.SantaWidth - fsnow->x;
-	    // determine back of Santa in fsnow, Santa can move backwards in strong wind
-	    int xback = xfront - global.SantaWidth;
-	    // clearing determines the amount of generated ploughing snow
-	    const int clearing = 10;
-	    float vy = -1.5*global.ActualSantaSpeed; 
-	    if(vy > 0) vy = -vy;
-	    if (vy < -100.0)
-	       vy = -100;
-	    if (global.ActualSantaSpeed > 0)
-	       GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
-	    CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
-	    int i;
-	    for (i=0; i<fsnow->w; i++)
-	       if (i < xfront+clearing && i>=xback-clearing)
-		  fsnow->acth[i] = 0;
-	    XFlush(global.display);
+	    int in = XRectInRegion(global.SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
+		  fsnow->w, fsnow->h);
+	    if (in == RectangleIn || in == RectanglePart)
+	    {
+	       // determine front of Santa in fsnow
+	       int xfront = global.SantaX+global.SantaWidth - fsnow->x;
+	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
+	       int xback = xfront - global.SantaWidth;
+	       // clearing determines the amount of generated ploughing snow
+	       const int clearing = 10;
+	       float vy = -1.5*global.ActualSantaSpeed; 
+	       if(vy > 0) vy = -vy;
+	       if (vy < -100.0)
+		  vy = -100;
+	       if (global.ActualSantaSpeed > 0)
+		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
+	       CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
+	       int i;
+	       for (i=0; i<fsnow->w; i++)
+		  if (i < xfront+clearing && i>=xback-clearing)
+		     fsnow->acth[i] = 0;
+	       XFlush(global.display);
+	    }
 	 }
+	 CreateSurfaceFromFallen(fsnow);
+	 // drawing is handled in fallensnow_draw
       }
-      CreateSurfaceFromFallen(fsnow);
-      // drawing is handled in fallensnow_draw
-   }
 }
 
 void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
@@ -754,7 +748,6 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
       ilast = fsnow->w;
    P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<global.MaxSnowFlakeWidth?w:global.MaxSnowFlakeWidth);
    P("maxheight: %d maxw: %d\n",global.MaxSnowFlakeHeight,global.MaxSnowFlakeWidth);
-   //for (i=ifirst; i<ilast; i+=w<global.MaxSnowFlakeHeight?w:global.MaxSnowFlakeWidth)
    for (i=ifirst; i<ilast; i+=1)
    {
       int j;
@@ -813,7 +806,7 @@ void InitFallenSnow()
    memset(NullWindow,0,sizeof(WinInfo));
 
    PushFallenSnow(&global.FsnowFirst, NullWindow, 0, global.SnowWinHeight, global.SnowWinWidth, global.MaxScrSnowDepth);
-   free(NullWindow);
+   free(NullWindow);  // todo: is free correct?
 
    Unlock_fallen();
    (void)check_fallen;  // to prevent warning about unused check_fallen
@@ -859,7 +852,7 @@ void SetMaxScreenSnowDepth()
 {
    // threads: locking by caller
    global.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
-   if (global.MaxScrSnowDepth> (global.SnowWinHeight-SNOWFREE)) {
+   if (global.MaxScrSnowDepth > (int)(global.SnowWinHeight-SNOWFREE)) {
       printf("** Maximum snow depth set to %d\n", global.SnowWinHeight-SNOWFREE);
       global.MaxScrSnowDepth = global.SnowWinHeight-SNOWFREE;
    }
@@ -939,10 +932,33 @@ int HandleFallenSnow(FallenSnow *fsnow)
       return 0;
    if (!fsnow->win.sticky)
    {
-      if (fsnow->win.ws != global.CWorkSpace)
+      //if (fsnow->win.ws != global.CWorkSpace)
+      if (!IsVisibleFallen(fsnow))
 	 return 0;
    }
    return !Flags.NoKeepSWin;
 }
 
+int IsVisibleFallen(FallenSnow *fsnow)
+{
+   if (!fsnow)
+   {
+      P("fsnow: %p\n",(void*)fsnow);
+      return 0;
+   }
+   long ws = fsnow->win.ws;
+
+   int i;
+   for (i=0; i<global.NVisWorkSpaces; i++)
+   {
+      P("%d examining %d %ld %ld\n",global.counter++,i,ws,global.VisWorkSpaces[i]);
+      if (global.VisWorkSpaces[i] == ws)
+      {
+	 P("fallensnow    visible  %ld %ld\n",fsnow->win.id,ws);
+	 return 1;
+      }
+   }
+   P("desktop not visible %ld %ld\n",fsnow->win.id,ws);
+   return 0;
+}
 

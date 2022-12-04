@@ -126,6 +126,7 @@ void stars_draw(cairo_t *cr)
       cairo_set_source_surface (cr, surfaces[color], x, y);
       my_cairo_paint_with_alpha(cr,ALPHA);
    }
+
    cairo_restore(cr);
 }
 

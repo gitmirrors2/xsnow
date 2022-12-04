@@ -76,7 +76,8 @@ int do_blowoff(void *d)
       P("blowoff ...\n");
       if (HandleFallenSnow(fsnow) && !Flags.NoSnowFlakes) 
 	 if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
-		  (fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
+		  //(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
+		  (IsVisibleFallen(fsnow) || fsnow->win.sticky)))
 	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
       fsnow = fsnow->next;
    }

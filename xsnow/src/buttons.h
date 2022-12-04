@@ -61,6 +61,7 @@
    BUTTON(togglecode     ,xsnow_scenery     ,Overlap              ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,NoWind               ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_settings    ,BlackBackground      ,1  )         \
+   BUTTON(togglecode     ,xsnow_settings    ,Outline              ,1  )         \
 
 
 #define ALL_SCALES \

@@ -140,6 +140,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+#include <X11/extensions/Xinerama.h>
 
 #include "birds.h"
 #include "clocks.h"
@@ -188,6 +189,9 @@ static GtkWidget     *desktop_type;
 static GtkContainer  *birdsgrid;
 static GtkContainer  *moonbox;
 static GtkImage      *preview;
+static int Nscreens;
+static int HaveXinerama;
+
 #define nsbuffer 512
 static char sbuffer[nsbuffer];
 
@@ -205,6 +209,7 @@ static void activate (GtkApplication *app);
 static void set_default_tab(int tab, int vintage);
 static void set_belowall_default();
 static void handle_theme(void);
+static void handle_screen(void);
 static void update_preview_cb (GtkFileChooser *file_chooser, gpointer data);
 static void my_gtk_label_set_text(GtkLabel *label, const gchar *str); 
 
@@ -220,6 +225,8 @@ static GtkStyleContext *hauptfenstersc;
 void ui_ui()
 {
    UIDO (ThemeXsnow, handle_theme(););
+   UIDO (Screen, handle_screen(););
+   UIDO (Outline, ClearScreen(););
 }
 
 void handle_theme()
@@ -236,6 +243,12 @@ void handle_theme()
    }
 }
 
+void handle_screen()
+{
+   P("handle_screen:%d\n",Flags.Screen);
+   if (HaveXinerama && Nscreens > 1)
+      global.ForceRestart = 1;
+}
 
    MODULE_EXPORT
 void button_iconify()
@@ -672,6 +685,16 @@ MODULE_EXPORT void button_below_confirm()
    remove_from_mainloop(&bct_id);
 }
 
+
+MODULE_EXPORT void combo_screen(GtkComboBoxText *combo, gpointer data)
+{
+   (void)data;
+   int num = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+   P("combo_screen:%d\n",num);
+   Flags.Screen = num-1;
+}
+
+
 static void init_general_buttons()
 {
    g_signal_connect(Button.BelowAll, "toggled", G_CALLBACK (button_below), NULL);
@@ -681,7 +704,6 @@ static void init_general_buttons()
 
    gtk_widget_hide(Button.BelowConfirm);
 }
-
 
 
 void show_bct_countdown()
@@ -713,7 +735,6 @@ void set_belowall_default()
    gtk_widget_hide(Button.BelowConfirm);
    gtk_widget_show(Button.BelowAll);
 }
-
 
 
    MODULE_EXPORT
@@ -845,6 +866,7 @@ void set_default_tab(int tab, int vintage)
 	    set_belowall_default();
 	    free(Flags.BackgroundFile);
 	    Flags.BackgroundFile = strdup(background);
+	    Flags.Screen = VINTAGE(Screen);
 	    break;
       }
    }
@@ -876,6 +898,7 @@ void set_default_tab(int tab, int vintage)
 	    set_belowall_default();
 	    free(Flags.BackgroundFile);
 	    Flags.BackgroundFile = strdup(background);
+	    Flags.Screen = DEFAULT(Screen);
 	    break;
       }
    }
@@ -1034,6 +1057,49 @@ void ui()
    g_signal_connect (GTK_FILE_CHOOSER(Button.BackgroundFile), "update-preview",
 	 G_CALLBACK (update_preview_cb), preview);
 
+
+   XineramaScreenInfo *xininfo = XineramaQueryScreens(global.display,&Nscreens);
+   if (xininfo == NULL)
+   {
+      P("No xinerama...\n");
+      HaveXinerama = 0;
+   }
+   else
+   {
+      HaveXinerama = 1;
+   }
+
+   GtkComboBoxText *ScreenButton;
+   ScreenButton = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder,"id-Screen"));
+
+   if (Nscreens < 2)
+   {
+      gtk_widget_set_sensitive(GTK_WIDGET(ScreenButton),FALSE);
+      Flags.Screen = -1;
+   }
+   if (Flags.Screen < -1)
+      Flags.Screen = -1;
+   if (Flags.Screen >= Nscreens)
+      Flags.Screen = Nscreens - 1;
+
+   gtk_combo_box_text_remove_all(ScreenButton);
+   gtk_combo_box_text_append_text(ScreenButton,"all monitors");
+
+   char *s = NULL;
+   int p = 0;
+   int i;
+   for (i=0; i<Nscreens; i++)
+   {
+      snprintf(sbuffer,nsbuffer,"monitor %d",i);
+      s = (char*) realloc(s,p+1+strlen(sbuffer));
+      strcpy(&s[p],sbuffer);
+      gtk_combo_box_text_append_text(ScreenButton,&s[p]);
+      p += 1+strlen(sbuffer);
+   }
+   XFree(xininfo);
+   gtk_combo_box_set_active(GTK_COMBO_BOX(ScreenButton),Flags.Screen+1);
+   g_signal_connect (ScreenButton,"changed",G_CALLBACK(combo_screen),NULL);
+
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
 
@@ -1079,6 +1145,7 @@ void handle_css()
       ".xsnow *                                          { border-color:     #B4EEB4; }"   // border colors
       ".xsnow button                                     { background:       #CCF0D8; }"   // color of normal buttons
       ".xsnow button.radio,        .xsnow button.toggle  { background:       #E2FDEC; }"   // color of radio and toggle buttons
+      ".xsnow combobox > window.popup *                  { background:       #E2FDEC; }"   // does not work, somebody?
       ".xsnow radiobutton:active,  .xsnow button:active  { background:       #0DAB44; }"   // color of buttons while being activated
       ".xsnow radiobutton:checked, .xsnow button:checked { background:       #6AF69B; }"   // color of checked buttons
       ".xsnow headerbar                                  { background:       #B3F4CA; }"   // color of headerbar

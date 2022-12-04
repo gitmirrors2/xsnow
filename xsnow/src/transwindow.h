@@ -23,7 +23,8 @@
 #include <gtk/gtk.h>
 #include <X11/Intrinsic.h>
 
-extern int make_trans_window(GtkWidget *Transwindow, int Fullscreen, int sticky, int below, int dock,
-      GdkWindow **gdk_window, Window *x11_window);
+extern int make_trans_window(Display *display, GtkWidget *Transwindow, int Xscreen,
+      int sticky, int below, int dock,
+      GdkWindow **gdk_window, Window *x11_window, int *wantx, int *wanty);
 extern void setbelow(GtkWindow *w);
 extern void setabove(GtkWindow *w);

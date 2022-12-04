@@ -48,9 +48,11 @@
 #endif
 #include <X11/Intrinsic.h>
 #include <X11/extensions/Xdbe.h>
+#include <X11/extensions/Xinerama.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
 #include <cairo-xlib.h>
+#include <gsl/gsl_version.h>
 #include <stdlib.h>
 #include <math.h>
 #include <signal.h>
@@ -85,6 +87,7 @@
 #include "loadmeasure.h"
 #include "selfrep.h"
 #include "safe_malloc.h"
+#include "xdo.h"
 
 #include "vroot.h"
 
@@ -119,10 +122,11 @@ static int Argc;
 static int          DoRestart      = 0;
 static guint        draw_all_id    = 0;
 static guint        drawit_id      = 0;
-static int          Xorig;
-static int          Yorig;
 static GtkWidget   *TransA         = NULL;
 static char        *SnowWinName    = NULL;
+static int          wantx          = 0;
+static int          wanty          = 0;
+static int          IsSticky       = 0;
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -137,13 +141,15 @@ static void   drawit(cairo_t *cr);
 static void   restart_do_draw_all(void);
 static void   set_below_above(void);
 static void   DoAllWorkspaces(void);
-static void   X11WindowById(Window *xwin, char **xwinname);
+static void   X11WindowById(Window *xwin);
 static int    HandleX11Cairo(void);
 static int    StartWindow(void);
 static void   SetWindowScale(void);
-static void   movewindow(void);
 static void   GetDesktopSession(void);
-
+static void   rectangle_draw(cairo_t *cr);
+static int    X11cairo = 0;
+static int    PrevW = 0;
+static int    PrevH = 0;
 
 // callbacks
 static int do_displaychanged(void *);
@@ -254,7 +260,7 @@ int main_c(int argc, char *argv[])
    P("srand %d\n",(int)(fmod(wallcl()*1.0e6,1.0e8)));
    srand48((int)(fmod(wallcl()*1.0e6,1.0e8)));
 
-   memset((void *)&global,0,sizeof(global));
+   memset(&global,0,sizeof(global));
 
    XInitThreads();
 
@@ -272,9 +278,15 @@ int main_c(int argc, char *argv[])
    global.FluffCount         = 0;
 
    global.SnowWin            = 0;
+   global.WindowOffsetX      = 0;
+   global.WindowOffsetY      = 0;
    global.DesktopSession     = NULL;
    global.CWorkSpace         = 0;
+   global.ChosenWorkSpace    = 0;
+   global.NVisWorkSpaces     = 1;
+   global.VisWorkSpaces[0]   = 0;
    global.WindowsChanged     = 0;
+   global.ForceRestart       = 0;
 
    global.FsnowFirst         = NULL;
    global.MaxScrSnowDepth    = 0;
@@ -288,7 +300,6 @@ int main_c(int argc, char *argv[])
 
    global.Wind               = 0;
    global.Direction          = 0;
-   //global.WindMax            = 100.0;
    global.WindMax            = 500.0;
    global.NewWind            = 100.0;
 
@@ -298,14 +309,6 @@ int main_c(int argc, char *argv[])
    global.SantaPlowRegion    = 0;
 
    int i;
-   // make a copy of all flags, before gtk_init() maybe removes some.
-   // we need this at a restart of the program.
-
-   Argv = (char**) malloc((argc+1)*sizeof(char**));
-   for (i=0; i<argc; i++)
-      Argv[i] = strdup(argv[i]);
-   Argv[argc] = NULL;
-   Argc = argc;
 
    InitFlags();
    // we search for flags that only produce output to stdout,
@@ -342,13 +345,35 @@ int main_c(int argc, char *argv[])
       }
 #endif
    }
+   PrintVersion();
+   // make a copy of all flags, before gtk_init() maybe removes some.
+   // we need this at a restart of the program.
+   // we need to remove 
+   //   -screen n
+
+   Argv = (char**) malloc((argc+1)*sizeof(char**));
+   Argc = 0;
+   for (i=0; i<argc; i++)
+   {
+      if (strcmp("-screen",argv[i]))
+	 Argv[Argc++] = strdup(argv[i]);
+      else // found -screen
+	 i++;
+   }
+   Argv[Argc] = NULL;
    GetDesktopSession();
    if(!strncasecmp(global.DesktopSession,"bspwm",5))
    {
       printf("For optimal resuts, add to your bspwmrc:\n");
       printf("   bspc rule -a Xsnow state=floating border=off\n");
    }
-   printf("Xsnow running in GTK version: %s\n",ui_gtk_version());
+   printf("GTK version: %s\n",ui_gtk_version());
+   printf("GSL version: ");
+#ifdef GSL_VERSION
+   printf("%s\n",GSL_VERSION);
+#else
+   printf("unknown\n");
+#endif
 
    // Circumvent wayland problems:before starting gtk: make sure that the 
    // gdk-x11 backend is used.
@@ -367,7 +392,7 @@ int main_c(int argc, char *argv[])
    switch(rc)
    {
       case -1:   // wrong flag
-	 PrintVersion();
+	 //PrintVersion();
 	 Thanks();
 	 return 1;
 	 break;
@@ -376,7 +401,7 @@ int main_c(int argc, char *argv[])
 	 return 0;
 	 break;
       default:  // ditto
-	 PrintVersion();
+	 //PrintVersion();
 	 break;
    }
    if (!Flags.NoConfig)
@@ -402,9 +427,18 @@ int main_c(int argc, char *argv[])
    }
 
    global.display = XOpenDisplay(Flags.DisplayName);
+   global.xdo = xdo_new_with_opened_display(global.display,NULL,0);
+   if(global.xdo == NULL)
+   {
+      I("xdo problems\n");
+      exit(1);
+   }
+   global.xdo->debug = 0;
+
    XSynchronize(global.display,dosync);
    XSetErrorHandler(XsnowErrors);
    int screen = DefaultScreen(global.display);
+   global.Screen = screen;
    global.Black = BlackPixel(global.display, screen);
    global.White = WhitePixel(global.display, screen);
 
@@ -490,6 +524,7 @@ int main_c(int argc, char *argv[])
 
    ClearScreen();   // without this, no snow, scenery etc. in KDE; this seems to be a vintage comment
 
+
    if(!Flags.NoMenu && !global.XscreensaverMode)
    {
       ui();
@@ -527,6 +562,9 @@ int main_c(int argc, char *argv[])
 
    fflush(stdout);
 
+   DoAllWorkspaces(); // to set global.ChosenWorkSpace
+
+   P("Entering main loop\n");
    // main loop
    gtk_main();
 
@@ -539,7 +577,11 @@ int main_c(int argc, char *argv[])
    if (DoRestart)
    {
       sleep(0);
-      printf("Xsnow restarting: %s\n",Argv[0]);
+      printf("Xsnow restarting: ");
+      int k = 0;
+      while (Argv[k])
+	 printf("%s ",Argv[k++]);
+      printf("\n");
       fflush(NULL);
       execvp(Argv[0],Argv);
    }
@@ -569,7 +611,7 @@ void set_below_above()
    }
 }
 
-void X11WindowById(Window *xwin, char **xwinname)
+void X11WindowById(Window *xwin)
 {
    *xwin = 0;
    // user supplied window id:
@@ -582,8 +624,10 @@ void X11WindowById(Window *xwin, char **xwinname)
    {
       // user ask to point to a window
       printf("Click on a window ...\n");
-      *xwin = XWinInfo(xwinname);
-      if (*xwin == 0)
+      fflush(stdout);
+      int rc;
+      rc = xdo_select_window_with_click(global.xdo,xwin);
+      if (rc == XDO_ERROR)
       {
 	 fprintf(stderr,"XWinInfo failed\n");
 	 exit(1);
@@ -626,7 +670,7 @@ void GetDesktopSession()
 
 int StartWindow()
 {
-   int X11cairo     = 0;
+   P("Entering StartWindow...\n");
 
    global.Trans     = 0;
    global.xxposures = 0;
@@ -638,7 +682,7 @@ int StartWindow()
    global.Rootwindow = DefaultRootWindow(global.display);
    Window xwin;
    // see if user chooses window
-   X11WindowById(&xwin, NULL);
+   X11WindowById(&xwin);
    if (xwin)
    {
       P("StartWindow xwin%#lx\n",xwin);
@@ -669,13 +713,16 @@ int StartWindow()
 
 
       GdkWindow *gdkwin; (void)gdkwin;
-      int rc = make_trans_window(gtkwin,
-	    1,                   // full screen 
+      int rc = make_trans_window(global.display, gtkwin,
+	    Flags.Screen,        // full screen or xinerama
 	    Flags.AllWorkspaces, // sticky 
 	    Flags.BelowAll,      // below
 	    1,                   // dock
 	    NULL,                // gdk_window
-	    &xwin                // x11_window
+	    &xwin,               // x11_window
+	    &wantx,              // make_trans_window tries to place the window here,
+	    //                      but, depending on window manager that does not always succeed
+	    &wanty
 	    );
       if (rc)
       {
@@ -690,6 +737,7 @@ int StartWindow()
 	 set_below_above();
 	 global.SnowWin = xwin;
 	 printf("Using transparent window\n");
+	 P("wantx, wanty: %d %d\n",wantx,wanty);
 	 if(!strncasecmp(global.DesktopSession,"fvwm",4) ||
 	       !strncasecmp(global.DesktopSession,"lxqt",4))
 	 {
@@ -724,6 +772,9 @@ int StartWindow()
 	    xwin = global.Rootwindow;
 	 }
 	 global.SnowWin = xwin;
+	 int winw,winh;
+	 if (Flags.Screen >=0 && global.Desktop)
+	    xinerama(global.display,Flags.Screen,&wantx,&wanty,&winw,&winh);
       }
    }
 
@@ -731,6 +782,14 @@ int StartWindow()
    {
       HandleX11Cairo();
       drawit_id = add_to_mainloop1(PRIORITY_HIGH, time_draw_all, do_drawit, CairoDC);
+      global.WindowOffsetX = 0;
+      global.WindowOffsetY = 0;
+   }
+   else
+   {
+      // see also windows.c
+      global.WindowOffsetX = wantx;
+      global.WindowOffsetY = wanty;
    }
 
    global.IsDouble = global.Trans || global.UseDouble; // just to be sure ...
@@ -741,28 +800,43 @@ int StartWindow()
    else
       SnowWinName = strdup("no name");
    XFree(x.value);
+
+   if(!X11cairo)
+   {
+      xdo_move_window(global.xdo,global.SnowWin,wantx,wanty);
+      P("wantx wanty: %d %d\n",wantx,wanty);
+   }
+   xdo_wait_for_window_map_state(global.xdo,global.SnowWin,IsViewable);
    InitDisplayDimensions();
+
+   global.SnowWinX = wantx;
+   global.SnowWinY = wanty;
+
    printf("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+   PrevW = global.SnowWinWidth;
+   PrevH = global.SnowWinHeight;
+
+   P("woffx: %d %d\n",global.WindowOffsetX,global.WindowOffsetY);
+
    fflush(stdout);
-
-   Xorig = global.SnowWinX;
-   Yorig = global.SnowWinY;
-
-   movewindow();
 
    SetWindowScale();
    if (global.XscreensaverMode && !Flags.BlackBackground)
       SetBackground();
 
+   /*
+    * to remove titlebar in mwm. Alas, this results in no visuals at all in xfce.
+    XSetWindowAttributes attr;
+    attr.override_redirect = True;
+    XChangeWindowAttributes(global.display,global.SnowWin,CWOverrideRedirect,&attr);
+    */
    return TRUE;
 }
 
 int HandleX11Cairo()
 {
-   XWindowAttributes attr;
-   XGetWindowAttributes(global.display,global.SnowWin,&attr);
-   int w = attr.width;
-   int h = attr.height;
+   unsigned int w,h;
+   xdo_get_window_size(global.xdo, global.SnowWin, &w, &h);
    Visual *visual = DefaultVisual(global.display,DefaultScreen(global.display));
    int rcv;
    P("double: %d\n",Flags.UseDouble);
@@ -796,6 +870,7 @@ int HandleX11Cairo()
       else
 	 printf(" on your request.\n");
       printf("NOTE: expect some flicker.\n");
+      fflush(stdout);
       rcv = FALSE;
    }
 
@@ -804,6 +879,24 @@ int HandleX11Cairo()
 
    CairoDC = cairo_create(CairoSurface);
    cairo_xlib_surface_set_size(CairoSurface,w,h);
+   global.SnowWinWidth  = w;
+   global.SnowWinHeight = h;
+   if (Flags.Screen >= 0 && global.Desktop)
+   {
+      int winx, winy, winw, winh;
+      int rc = xinerama(global.display,Flags.Screen,&winx, &winy, &winw, &winh);
+      //if (rc && winx==0 && winy==0)
+      if(rc)
+      {
+	 global.SnowWinX      = winx;
+	 global.SnowWinY      = winy;
+	 global.SnowWinWidth  = winw;
+	 global.SnowWinHeight = winh;
+      }
+      cairo_rectangle(CairoDC,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      P("clipsnow %d %d %d %d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      cairo_clip(CairoDC);
+   }
    return rcv;
 }
 
@@ -812,20 +905,37 @@ void DoAllWorkspaces()
    if(Flags.AllWorkspaces)
    {
       P("stick\n");
-      if (global.Trans)
-      {
-	 gtk_window_stick(GTK_WINDOW(TransA));
-      }
+      set_sticky(1);
    }
    else
    {
       P("unstick\n");
-      if (global.Trans)
+      set_sticky(0);
+      if (Flags.Screen >=0)
+	 global.ChosenWorkSpace = global.VisWorkSpaces[Flags.Screen];
+      else
+	 global.ChosenWorkSpace = global.VisWorkSpaces[0];
+   }
+   ui_set_sticky(Flags.AllWorkspaces);
+}
+
+int set_sticky(int s)
+{
+   int r = IsSticky;
+   if (global.Trans)
+   {
+      if(s)
       {
+	 IsSticky = 1;
+	 gtk_window_stick(GTK_WINDOW(TransA));
+      }
+      else
+      {
+	 IsSticky = 0;
 	 gtk_window_unstick(GTK_WINDOW(TransA));
       }
    }
-   ui_set_sticky(Flags.AllWorkspaces);
+   return r;
 }
 
 // here we are handling the buttons in ui
@@ -878,15 +988,6 @@ int do_ui_check(void *d)
 }
 
 
-void movewindow()
-{
-   if(!global.Desktop)
-      return;
-   XMoveWindow(global.display,global.SnowWin,0,0);
-   //InitDisplayDimensions();
-   P("movewindow: Orig: %d %d %d %d\n",Xorig,Yorig,global.SnowWinWidth,global.SnowWinHeight);
-}
-
 int do_displaychanged(void *d)
 {
    // if we are snowing in the desktop, we check if the size has changed,
@@ -901,22 +1002,30 @@ int do_displaychanged(void *d)
 
    if (!global.Desktop)
       return TRUE;
+
+   if (global.ForceRestart)
+   {
+      DoRestart = 1;
+      Flags.Done = 1;
+      I("Restart due to change of screen settings...\n");
+   }
+   else
    {
       unsigned int w,h;
       Display* display = XOpenDisplay(Flags.DisplayName);
       Screen* screen   = DefaultScreenOfDisplay(display);
       w = WidthOfScreen(screen);
       h = HeightOfScreen(screen);
-      P("width height: %d %d\n",w,h);
+      P("width height: %d %d %d %d\n",w,h,global.Wroot,global.Hroot);
       if(global.Wroot != w || global.Hroot != h)
       {
 	 DoRestart = 1;
 	 Flags.Done = 1;
-	 printf("Restart due to change of display settings...\n");
+	 I("Restart due to change of display settings...\n");
       }
       XCloseDisplay(display);
-      return TRUE;
    }
+   return TRUE;
 }
 
 int do_event(void *d)
@@ -965,6 +1074,7 @@ int do_event(void *d)
 void RestartDisplay()
 {
    P("Restartdisplay: %d W: %d H: %d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight);
+   fflush(stdout);
    InitFallenSnow();
    init_stars();
    EraseTrees();
@@ -1020,17 +1130,28 @@ int do_testing(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
-
    return TRUE;
+   int xret,yret;
+   unsigned int wret,hret;
+   xdo_get_window_location(global.xdo, global.SnowWin,&xret,&yret,NULL);
+   xdo_get_window_size(global.xdo, global.SnowWin, &wret, &hret);
+   P("%d wxh %d %d %d %d    %d %d %d %d \n",global.counter++,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight,xret,yret,wret,hret);
+   P("WorkspaceActive, chosen: %d %ld\n",WorkspaceActive(),global.ChosenWorkSpace);
+   P("vis:");
+   int i;
+   for (i=0; i<global.NVisWorkSpaces; i++)
+      printf(" %ld",global.VisWorkSpaces[i]);
+   printf("\n");
+   printf("offsets: %d %d\n",global.WindowOffsetX,global.WindowOffsetY);
    global.counter++;
-   XWindowAttributes attr;
-   XGetWindowAttributes(global.display,global.SnowWin,&attr);
 
-   P("%d wxh %d %d %d %d    %d %d %d %d \n",global.counter,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight,attr.x,attr.y,attr.width,attr.height);
+   for (i=0; i<global.NVisWorkSpaces; i++)
+      printf("%d: visible: %d %ld\n",global.counter,i,global.VisWorkSpaces[i]);
+
+   P("current workspace: %ld\n",global.CWorkSpace);
 
    return TRUE;
 }
-
 
 void SigHandler(int signum)
 {
@@ -1123,6 +1244,17 @@ void drawit(cairo_t *cr)
       cairo_fill(cr);
       */
 
+   cairo_save(cr);
+   int tx = 0;
+   int ty = 0;
+   if (X11cairo)
+   {
+      tx = global.SnowWinX;
+      ty = global.SnowWinY;
+   }
+   P("tx ty: %d %d\n",tx,ty);
+   cairo_translate(cr,tx,ty);
+
    int skipit = Flags.BirdsOnly || !WorkspaceActive();
 
    if (!skipit)
@@ -1140,7 +1272,7 @@ void drawit(cairo_t *cr)
    birds_draw(cr);
 
    if (skipit)
-      return;
+      goto end;;
 
    fallensnow_draw(cr);
 
@@ -1150,6 +1282,12 @@ void drawit(cairo_t *cr)
    treesnow_draw(cr);
 
    snow_draw(cr);
+
+end:
+   if (Flags.Outline)
+      rectangle_draw(cr);
+
+   cairo_restore(cr);
 
    XFlush(global.display);
 }
@@ -1175,21 +1313,18 @@ int do_display_dimensions(void *d)
    if (!SnowWinChanged)
       return TRUE;
    SnowWinChanged = 0;
-   static int prevw = 0, prevh = 0;
-   P("%d do_display_dimensions %dx%d %dx%d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight,prevw,prevh);
+
+   P("%d do_display_dimensions %dx%d %dx%d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight,PrevW,PrevH);
    DisplayDimensions();
-   if (prevw != global.SnowWinWidth || prevh != global.SnowWinHeight)
+   if (!global.Trans)
+      HandleX11Cairo();
+   if (PrevW != global.SnowWinWidth || PrevH != global.SnowWinHeight)
    {
-      // if(global.X11cairo) // let op
-      if (!global.Trans)
-      {
-	 P("global.Trans %d\n",global.Trans);
-	 HandleX11Cairo();
-	 //RestartDisplay();
-      }
+      printf("Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      P("Calling RestartDisplay\n");
       RestartDisplay();
-      prevw = global.SnowWinWidth;
-      prevh = global.SnowWinHeight;
+      PrevW = global.SnowWinWidth;
+      PrevH = global.SnowWinHeight;
       SetWindowScale();
    }
    return TRUE;
@@ -1240,7 +1375,16 @@ void restart_do_draw_all()
       P("started do_drawit %d %p %f\n",drawit_id, (void *)CairoDC, time_draw_all);
    }
 }
-
+void rectangle_draw(cairo_t *cr)
+{
+   const int lw = 8;
+   cairo_save(cr);
+   cairo_set_source_rgba(cr,1,1,0,0.5);
+   cairo_rectangle(cr,lw/2,lw/2,global.SnowWinWidth-lw,global.SnowWinHeight-lw); 
+   cairo_set_line_width(cr,lw);
+   cairo_stroke(cr);
+   cairo_restore(cr);
+}
 
 int do_stopafter(void *d)
 {

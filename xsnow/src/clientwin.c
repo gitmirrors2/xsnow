@@ -165,7 +165,7 @@ Find_Roots(Display * dpy, Window root, unsigned int *num)
 
     if (prop_ret && type_ret == XA_WINDOW && format_ret == 32) {
         *num = num_ret;
-        return ((unsigned long *) prop_ret);
+        return ((unsigned long *) (void*)prop_ret);
     }
     if (prop_ret)
         XFree(prop_ret);

@@ -105,8 +105,13 @@ void docs_usage(int man)
    manout("-selfrep"                ,"put tar ball on stdout, so you can do:");
    manout("."                       ,"xsnow -selfrep > xsnow.tar.gz");
 #endif
-   manout("-display name"           ,"Drop the snowflakes on the given display.");
+   manout("-display <c>"            ,"Drop the snowflakes on the given display.");
    manout(" "                       ,"Make sure the display is nearby, so you can hear them enjoy...");
+   manout("-screen <n>"             ,"If you have multiple monitors: snow in monitor n.");
+   manout("."                       ,"-1: use all monitors (default: %d)",F(Screen));
+   manout("."                       ,"Note: for this to work, Xinerama has to be functional.");
+   manout("-outline <n>"            ,"1: draw outline around snow window. 0: no outline.");
+   manout("."                       ,"Default: %d.",F(Outline));
    manout("-vintage"                ,"Run xsnow in vintage settings.");
    manout("-defaults"               ,"Do not read config file (see FILES).");
    manout("-noconfig"               ,"Do not read or write config file (see FILES).");
@@ -298,7 +303,6 @@ void docs_usage(int man)
    manout("-viewingdistance <n>"  ,"Viewing distance ( 0..95 default: %d).",F(ViewingDistance));
    manout("-birdsscale <n>"       ,"Scalefactor used painting the birds (default: %d).",F(BirdsScale));
 
-
    if(doman)
    {
       printf(".PP\n"); printf(".SS \"FILES\n");
@@ -353,43 +357,50 @@ void docs_usage(int man)
    manout(" ","However, with some window managers (FVWM for example), the xsnow-window");
    manout(" ","is transparent, but not click-through.");
    manout(" ","Flags to be tried in this case include: -root, -doublebuffer, -xwininfo, -id.");
-   manout("."," ");
    manout(".","Here follow some window managers with their issues:");
    manout("."," ");
+   manout("Tiling window managers","Here you need to float windows with class=Xsnow.");
    manout("AWESOME","Without compositor: no issues.");
-   manout(" ","With compositor: no click-through xsnow window");
+   manout(".","With compositor: no click-through xsnow window,");
+   manout(" ","and issues with multi-monitor setup.");
    manout("BSPWM","No issues if you add to your bspwmrc (the bspwm configuration file):");
    manout(".","    bspc rule -a Xsnow state=floating border=off");
    manout("CINNAMON","No issues.");
    manout("DWM","No issues, except the \"Below Windows\" setting in the \"settings\" panel.");
-   manout("ENLIGHTENMENT","No issuses.");
+   manout("ENLIGHTENMENT","With one monitor: no issuses.");
+   manout(".","With more montors: probems with showing in 'all monitors'");
    manout("FLUXBOX","Without compositor: no issues.");
-   manout(" ","With compositor: no click-through xsnow window");
+   manout(".","With compositor: no click-through xsnow window");
    manout("FVWM","Without compositor: no issues.");
-   manout(" ","With compositor: no click-through xsnow window");
-   manout("GNOME","No issues.");
+   manout(".","With compositor: no click-through xsnow window");
+   manout("GNOME on Xorg","No issues.");
+   manout("GNOME on Wayland","Most windows don't catch snow.");
    manout("HERBSTLUFTWM","No issues.");
-   manout("I3","Without compositor: no issues, using the next line in \"config\":");
+   manout("I3","Without compositor: windows don't catch snow, use the next line in \"config\":");
    manout(".","    for_window [class=\"Xsnow\"] floating enable;border none");
    manout(".","With compositor: unworkable.");
    manout("JVM","No issues.");
    manout("LXDE","With compositor: no issues.");
-   manout(" ","Without compositor: use: xsnow -xwininfo");
+   manout(".","Without compositor: works with one monitor.");
+   manout(".","Maybe you need to run with the flag -xwininfo");
    manout("LXQT","Without compositor: unworkable.");
-   manout(" ","With compositor: no click-through xsnow window.");
+   manout(" ","With compositor: no issues.");
    manout("MATE","No issues.");
    manout("OPENBOX","No issues.");
    manout("PLASMA (KDE)","No issues.");
-   manout("SPECTREWM","Without compositor: no snow on windows, use the next line in \"spetrewm.conf\":");
+   manout("SPECTRWM","Various issues. In any case you need in spectrwm.conf:");
    manout(".","    quirk[Xsnow] = FLOAT");
-   manout(".","With compositor: no satisfactorily results.");
    manout("TWM","Without compositor: no issues.");
-   manout(" ","With compositor: no click-through xsnow window");
+   manout(".","With compositor: no click-through xsnow window and");
+   manout(".","you need to tweak settings->lift snow on windows.");
    manout("WINDOW MAKER","Without compositor: no issues.");
    manout(" ","With compositor: no click-through xsnow window");
    manout("XFCE","No issues when compositing is on, unworkable when compositing is off."); 
    manout(".","See settings -> Window Manager Tweaks -> Compositor");
-   manout("XMONAD","No issues if you add to your xmonad.hs in the ManageHook section:");
+   manout("XMONAD","No issues if you add to your xmonad.hs:");
+   manout("."," import XMonad.Hooks.EwmhDesktops");
+   manout("."," xmonad $ ewmh $ defaultConfig");
+   manout("."," in the ManageHook section:");
    manout(".","    className = ? \"Xsnow\" --> doFloat");
 
 

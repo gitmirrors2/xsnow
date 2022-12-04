@@ -50,7 +50,6 @@
 
 #define add_flake_to_mainloop(f) add_to_mainloop1(PRIORITY_HIGH,time_snowflakes,(GSourceFunc)do_UpdateSnowFlake,f)
 
-//static cairo_surface_t **snow_surfaces;
 static float      FlakesPerSecond;
 static int        KillFlakes = 0;  // 1: signal to flakes to kill themselves, and do not generate flakes
 static float      SnowSpeedFactor;
@@ -98,7 +97,6 @@ void snow_init()
 
    for (i=0; i<MaxFlakeTypes; i++)
    {
-      //snow_surfaces[i] = NULL;
       snowPix[i].surface = NULL;
    }
 
@@ -383,7 +381,8 @@ int do_UpdateSnowFlake(Snow *flake)
       while(fsnow && !found)
       {
 	 if(!fsnow->win.hidden)
-	    if(fsnow->win.id == 0 ||(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky))
+	    //if(fsnow->win.id == 0 ||(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky))
+	    if(fsnow->win.id == 0 ||(IsVisibleFallen(fsnow) || fsnow->win.sticky))
 	    {
 	       if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
 		     ny < fsnow->y+2)

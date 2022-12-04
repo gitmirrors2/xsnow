@@ -53,6 +53,7 @@
 
 // following flags are written to the config file and
 // are part of the ui
+// Note: Screen should not be included in the command line parameters at restart
 #define DOIT  \
    DOIT_I(Aurora               ,1          ,0          ) \
    DOIT_I(AuroraBase           ,50         ,50         ) \
@@ -68,6 +69,7 @@
    DOIT_I(BlowSnow             ,1          ,0          ) \
    DOIT_I(CpuLoad              ,100        ,100        ) \
    DOIT_I(Transparency         ,0          ,0          ) \
+   DOIT_I(Screen               ,-1         ,-1         ) \
    DOIT_I(Scale                ,100        ,100        ) \
    DOIT_I(DesiredNumberOfTrees ,10         ,6          ) \
    DOIT_I(FlakeCountMax        ,300        ,300        ) \
@@ -104,6 +106,7 @@
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
    DOIT_I(Stars                ,1          ,0          ) \
    DOIT_I(ThemeXsnow           ,1          ,1          ) \
+   DOIT_I(Outline              ,0          ,0          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \

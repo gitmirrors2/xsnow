@@ -19,11 +19,33 @@
 #-# 
  * */
 #pragma once
+#include "config.h"
 
+#ifdef HAVE_GSL_INTERP_STEFFEN
 // steffen's method prevent overshoots:
 #define SPLINE_INTERP gsl_interp_steffen
+
+#elif HAVE_GSL_INTERP_AKIMA
+// akima's method tries to prevent overshoots:
+#ifdef GSL_INTERP_MESSAGE
+#pragma message "Using interpolation with Akima's method"
+#endif
+#define SPLINE_INTERP gsl_interp_akima
+
+#elif HAVE_GSL_INTERP_CSPLINE
 // classic spline with overshoots:
-//#define SPLINE_INTERP gsl_interp_cspline
+#ifdef GSL_INTERP_MESSAGE
+#pragma message "Using interpolation with classic spline"
+#endif
+#define SPLINE_INTERP gsl_interp_cspline
+
+#else
+// linear interpolation:
+#ifdef GSL_INTERP_MESSAGE
+#pragma message "Using linear interpolation"
+#endif
+#define SPLINE_INTERP gsl_interp_linear
+#endif
 
 
 void spline_interpol(const double *p, int np, const double *py, const double *x, int nx, double *y);

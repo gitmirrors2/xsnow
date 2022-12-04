@@ -25,14 +25,16 @@ TOASCII  = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
-xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS)
-xsnow_LDADD    = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS)
-
+xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS)
+xsnow_LDADD       = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) libxdo.a
+libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
 if MAKESELFREP
    xsnow_CPPFLAGS += -DSELFREP
 endif
 
+noinst_LIBRARIES = libxdo.a
+libxdo_a_SOURCES = xdo.c xdo.h xdo_util.h xdo_version.h
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
@@ -56,7 +58,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		selfrep.c selfrep.h \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
-		safe_malloc.c safe_malloc.h
+		safe_malloc.c safe_malloc.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
@@ -76,7 +78,7 @@ tarfile.inc:
 	echo "No selfrep compiled in" | $(TOASCII) > $@
 endif
 
-EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh
+EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright
 
 ui_xml.h: ui.xml $(top_srcdir)/src/gen_ui_xml.sh
 	@echo "Creating $@ from $<"
