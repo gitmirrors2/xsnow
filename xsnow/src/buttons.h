@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@
    BUTTON(togglecode     ,xsnow_celestials  ,NoWind               ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_settings    ,BlackBackground      ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,Outline              ,1  )         \
+   BUTTON(togglecode     ,xsnow_celestials  ,MoonColor            ,1  )         \
 
 
 #define ALL_SCALES \
@@ -93,6 +94,7 @@
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
    BUTTON(scalecode      ,xsnow_santa       ,SantaSpeedFactor     ,1  )         \
+   BUTTON(scalecode      ,xsnow_santa       ,SantaScale           ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,BlowOffFactor        ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,FlakeCountMax        ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,MaxOnTrees           ,1  )         \
@@ -104,6 +106,7 @@
    BUTTON(scalecode      ,xsnow_celestials  ,NStars               ,1  )         \
    BUTTON(scalecode      ,xsnow_scenery     ,DesiredNumberOfTrees ,1  )         \
    BUTTON(scalecode      ,xsnow_scenery     ,TreeFill             ,1  )         \
+   BUTTON(scalecode      ,xsnow_scenery     ,TreeScale            ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,WhirlFactor          ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,WindTimer            ,1  )         \
 

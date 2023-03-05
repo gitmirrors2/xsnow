@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -703,22 +703,53 @@ void DrawFallen(FallenSnow *fsnow)
 	    if (in == RectangleIn || in == RectanglePart)
 	    {
 	       // determine front of Santa in fsnow
-	       int xfront = global.SantaX+global.SantaWidth - fsnow->x;
+	       int xfront;
+	       if (global.SantaDirection == 0)
+		  xfront = global.SantaX+global.SantaWidth - fsnow->x;
+	       else
+		  xfront = global.SantaX                   - fsnow->x;
+
 	       // determine back of Santa in fsnow, Santa can move backwards in strong wind
-	       int xback = xfront - global.SantaWidth;
+	       int xback;
+	       if (global.SantaDirection == 0)
+		  xback = xfront - global.SantaWidth;
+	       else
+		  xback = xfront + global.SantaWidth;
+
 	       // clearing determines the amount of generated ploughing snow
 	       const int clearing = 10;
 	       float vy = -1.5*global.ActualSantaSpeed; 
 	       if(vy > 0) vy = -vy;
 	       if (vy < -100.0)
 		  vy = -100;
+
 	       if (global.ActualSantaSpeed > 0)
-		  GenerateFlakesFromFallen(fsnow,xfront,clearing,vy);
-	       CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
-	       int i;
-	       for (i=0; i<fsnow->w; i++)
-		  if (i < xfront+clearing && i>=xback-clearing)
-		     fsnow->acth[i] = 0;
+	       {
+		  if (global.SantaDirection == 0)
+		  {
+		     GenerateFlakesFromFallen(fsnow,xfront,         clearing,vy);
+		     CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
+		  }
+		  else
+		  {
+		     GenerateFlakesFromFallen(fsnow,xfront-clearing,clearing,vy);
+		     CleanFallenArea(fsnow,xback+clearing,global.SantaWidth+2*clearing);
+		  }
+	       }
+	       if(global.SantaDirection == 0)
+	       {
+		  int i;
+		  for (i=0; i<fsnow->w; i++)
+		     if (i < xfront+clearing && i>=xback-clearing)
+			fsnow->acth[i] = 0;
+	       }
+	       else
+	       {
+		  int i;
+		  for (i=0; i<fsnow->w; i++)
+		     if (i > xfront-clearing && i<=xback+clearing)
+			fsnow->acth[i] = 0;
+	       }
 	       XFlush(global.display);
 	    }
 	 }

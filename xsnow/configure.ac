@@ -6,7 +6,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.6.0],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.7.1],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -76,6 +76,11 @@ DATE_FMT="+%Y-%m-%d"
 DATE=`date -u -d "@$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "$DATE_FMT" 2>/dev/null || date -u "$DATE_FMT"`
 AC_SUBST([DATE])
 
+# gettext
+AM_GNU_GETTEXT([external])
+#AM_GNU_GETTEXT_VERSION([0.21])
+AC_SUBST([LOCALEDIR],[$localedir])
+AM_CONDITIONAL([USE_NLS],[test "x$USE_NLS" = "xyes"])
 
 # Check if we can create a reproducible 'make dist'.
 # If yes: replace the original am__tar (Make's recipe to make a tarball) by
@@ -102,6 +107,8 @@ AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
 
 AC_SUBST([PACKAGE_VERSION])
 
+# ar:
+AM_PROG_AR
 
 # Checks for programs.
 AC_PROG_CC([cc gcc])
@@ -151,8 +158,5 @@ AC_CHECK_HEADER_STDBOOL
 AC_CHECK_FUNCS([alarm gettimeofday sqrt strchr strdup strstr strtol])
 AC_CHECK_FUNCS([gsl_interp_steffen gsl_interp_akima gsl_interp_cspline gsl_interp_linear])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/Pixmaps/Makefile data/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/Pixmaps/Makefile data/Makefile po/Makefile.in afterburner/Makefile])
 AC_OUTPUT
-
-AS_IF( [test "x$enable_selfrep" = "xyes"],
-      [${MAKE:=make} dist ])

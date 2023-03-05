@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
 #define MAXBLOWOFFFACTOR 100
 #define MAXSANTA	4    // santa types 0..4
 #define MAXTANNENPLACES 10   // number of trees
-#define MAXTREETYPE 7        // treetypes: 0..MAXTREETYPE
+#define MAXTREETYPE 8        // treetypes: 0..MAXTREETYPE Note that the last one is for extratree ;-)
 #define MAXWSENS 0.4        // sensibility of flakes for wind
 #define MAXXSTEP 2             /* drift speed max */
 #define MAXYSTEP 10             /* falling speed max */
@@ -63,6 +63,7 @@
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150
 #define MAXVISWORKSPACES 100   // should be enough...
+#define USE_EXTRATREE
 
 
 // timers
@@ -214,6 +215,7 @@ extern struct _global
    int             SantaWidth;
    int             SantaX;
    int             SantaY;
+   int             SantaDirection;  // 0: left to right, 1: right to left
 
    float           WindowScale;
 
@@ -288,6 +290,8 @@ extern struct _global
 
    int             HaltedByInterrupt;
    char            Message[256];
+
+   char           *Language;
 } global;
 
 extern int set_sticky(int s);

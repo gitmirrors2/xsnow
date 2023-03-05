@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ extern ssize_t mywrite(int fd, const void *buf, size_t count);
 extern int     IsReadableFile(char *path);
 extern float   gaussf(float x, float mu, float sigma);
 extern void    traceback(void);
+extern char   *guess_language(void);
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);

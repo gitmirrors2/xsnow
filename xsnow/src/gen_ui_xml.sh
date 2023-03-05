@@ -3,7 +3,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 # char xsnow_xml[] = {60,63,120,109,108,32,118,101,0};
 #
 root="${1:-..}"
-in="ui.xml"
+in="ui.glade"
 out="ui_xml.h"
 echo "/* This file is generated from '$in' by '$0' */" > "$out"
 echo "/* -copyright-" >> "$out"

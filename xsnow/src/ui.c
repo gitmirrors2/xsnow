@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -86,19 +86,20 @@
  *         value. One will notice, that some buttons need extra care, for example
  *         flag TreeType in xsnow_scenery.
  *
- *   glade, ui.xml
+ *   glade, ui.glade
  *
- *     Glade is used to maintain 'ui.xml', where the creation of the tabs and the
+ *     Glade is used to maintain 'ui.glade', where the creation of the tabs and the
  *     placement of the buttons is arranged.
 *     For the buttons in 'buttons.h' a callback is arranged in 'ui.c', so in general
 *     there is no need to do something with the 'signals' properties of these buttons.
 *     Things that are needed:
+*       - the id, for example: id-HaloBright
 *       - button text, maybe using a GtkLabel
 *       - tooltip
 *       - for scale buttons: a GtkScale, defining for example min and max values
 *       - placement
 *       - for few buttons: a css class. Example: BelowConfirm
-*     In Makefile.am, ui.xml is converted to an include file: ui_xml.h
+*     In Makefile.am, ui.glade is converted to an include file: ui_xml.h
 *     So, when compiled, the program does not need an external file for it's GtkBuilder.
 *
 *
@@ -142,10 +143,14 @@
 #include <assert.h>
 #include <X11/extensions/Xinerama.h>
 
+
+
+#include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
 #include "csvpos.h"
 #include "flags.h"
+#include "mygettext.h"
 #include "pixmaps.h"
 #include "snow.h"
 #include "ui.h"
@@ -192,7 +197,7 @@ static GtkImage      *preview;
 static int Nscreens;
 static int HaveXinerama;
 
-#define nsbuffer 512
+#define nsbuffer 1024
 static char sbuffer[nsbuffer];
 
 static void set_buttons1(void);
@@ -222,11 +227,15 @@ static int bct_countdown;
 static GtkWidget       *hauptfenster;
 static GtkStyleContext *hauptfenstersc;
 
+static char* lang[100];
+static int   nlang;
+
 void ui_ui()
 {
    UIDO (ThemeXsnow, handle_theme(););
    UIDO (Screen, handle_screen(););
    UIDO (Outline, ClearScreen(););
+   UIDOS (Language, handle_language(1););
 }
 
 void handle_theme()
@@ -247,6 +256,17 @@ void handle_screen()
 {
    P("handle_screen:%d\n",Flags.Screen);
    if (HaveXinerama && Nscreens > 1)
+      global.ForceRestart = 1;
+}
+
+void handle_language(int restart)
+{
+   P("handle_language: %s\n",Flags.Language);
+   if (!strcmp(Flags.Language,"sys"))
+      unsetenv("LANGUAGE");
+   else
+      setenv("LANGUAGE",Flags.Language,1);
+   if(restart)
       global.ForceRestart = 1;
 }
 
@@ -314,6 +334,7 @@ void button_santa(GtkWidget *w)
    P("button_santa: Santa %d Rudolf %d s: %s name: %s\n",santa_type,have_rudolf,s,gtk_widget_get_name(w));
    Flags.SantaSize = santa_type;
    Flags.Rudolf  = have_rudolf;
+   SantaVisible();
 }
 
    MODULE_EXPORT 
@@ -694,13 +715,21 @@ MODULE_EXPORT void combo_screen(GtkComboBoxText *combo, gpointer data)
    Flags.Screen = num-1;
 }
 
+MODULE_EXPORT void combo_language(GtkComboBoxText *combo, gpointer data)
+{
+   (void)data;
+   int num = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
+   P("combo_language:%d\n",num);
+   Flags.Language = strdup(lang[num]);
+}
+
 
 static void init_general_buttons()
 {
    g_signal_connect(Button.BelowAll, "toggled", G_CALLBACK (button_below), NULL);
    g_signal_connect(Button.BelowConfirm, "toggled", G_CALLBACK(button_below_confirm), NULL);
 
-   my_gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"id-version")),"xsnow version " VERSION);
+   my_gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(builder,"id-version")),"xsnow-" VERSION);
 
    gtk_widget_hide(Button.BelowConfirm);
 }
@@ -974,9 +1003,9 @@ void ui_show_range_etc()
 {
    if(!ui_running)
       return;
-   snprintf(sbuffer,nsbuffer,"Range: %d\n",(int)birds_get_range());
+   snprintf(sbuffer,nsbuffer,_("Range: %d\n"),(int)birds_get_range());
    my_gtk_label_set_text(GTK_LABEL(range),sbuffer);
-   snprintf(sbuffer,nsbuffer,"Mean dist: %d\n",(int)birds_get_mean_dist());
+   snprintf(sbuffer,nsbuffer,_("Mean distance: %3d\n"),(int)birds_get_mean_dist());
    my_gtk_label_set_text(GTK_LABEL(mean_distance),sbuffer);
 }
 
@@ -984,7 +1013,7 @@ void ui_show_desktop_type(const char *s)
 {
    if(!ui_running)
       return;
-   snprintf(sbuffer,nsbuffer,"Desktop type: %s",s);
+   snprintf(sbuffer,nsbuffer,_("Desktop type: %s"),s);
    my_gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
 }
 
@@ -1032,7 +1061,12 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 void ui()
 {
    ui_running = True;
+
    builder = gtk_builder_new_from_string (xsnow_xml, -1);
+#ifdef HAVE_GETTEXT
+   gtk_builder_set_translation_domain(builder,TEXTDOMAIN);
+#endif
+
    gtk_builder_connect_signals  (builder, NULL);
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
    mean_distance = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-mean-distance"));
@@ -1046,6 +1080,8 @@ void ui()
    handle_css();
 
    gtk_window_set_title(GTK_WINDOW(hauptfenster),"XsnoW");
+   if (getenv("XSNOW_RESTART"))
+      gtk_window_set_position(GTK_WINDOW(hauptfenster), GTK_WIN_POS_CENTER_ALWAYS);
    gtk_widget_show_all (hauptfenster);
 
    init_buttons();
@@ -1069,6 +1105,8 @@ void ui()
       HaveXinerama = 1;
    }
 
+   // handle number of screens/monitors
+
    GtkComboBoxText *ScreenButton;
    ScreenButton = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder,"id-Screen"));
 
@@ -1083,22 +1121,68 @@ void ui()
       Flags.Screen = Nscreens - 1;
 
    gtk_combo_box_text_remove_all(ScreenButton);
-   gtk_combo_box_text_append_text(ScreenButton,"all monitors");
+   gtk_combo_box_text_append_text(ScreenButton,_("all monitors"));
 
    char *s = NULL;
    int p = 0;
    int i;
    for (i=0; i<Nscreens; i++)
    {
-      snprintf(sbuffer,nsbuffer,"monitor %d",i);
+      snprintf(sbuffer,nsbuffer,_("monitor %d"),i);
       s = (char*) realloc(s,p+1+strlen(sbuffer));
       strcpy(&s[p],sbuffer);
       gtk_combo_box_text_append_text(ScreenButton,&s[p]);
       p += 1+strlen(sbuffer);
    }
+
    XFree(xininfo);
    gtk_combo_box_set_active(GTK_COMBO_BOX(ScreenButton),Flags.Screen+1);
    g_signal_connect (ScreenButton,"changed",G_CALLBACK(combo_screen),NULL);
+
+   // handle languages
+
+   P("LANGUAGES %s\n",LANGUAGES);
+
+   GtkComboBoxText *LangButton;
+   LangButton =  GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder,"id-Lang"));
+
+   strcpy(sbuffer,_("Available languages are: "));
+   strcat(sbuffer,LANGUAGES);
+   strcat(sbuffer,".\n");
+   strcat(sbuffer,_("Use \"sys\" for your default language.\n"));
+   strcat(sbuffer,_("See also the man page."));
+   gtk_widget_set_tooltip_text(GTK_WIDGET(LangButton),sbuffer);
+
+   gtk_combo_box_text_remove_all(LangButton);
+   gtk_combo_box_text_append_text(LangButton,"sys");
+   lang[0] = "sys";
+
+   char *languages = strdup(LANGUAGES);
+   char *token = strtok(languages," ");
+   nlang = 1;
+   while(token != NULL)
+   {
+      P("token: %s\n",token);
+      lang[nlang] = strdup(token);
+      gtk_combo_box_text_append_text(LangButton, lang[nlang]);
+      nlang++;
+      token=strtok(NULL, " ");
+   }
+
+   gtk_combo_box_set_active(GTK_COMBO_BOX(LangButton),0);
+   for (i=0; i<nlang; i++)
+   {
+      if (!strcmp(lang[i],Flags.Language))
+      {
+	 gtk_combo_box_set_active(GTK_COMBO_BOX(LangButton),i);
+	 break;
+      }
+   }
+
+   g_signal_connect(LangButton,"changed",G_CALLBACK(combo_language),NULL);
+
+   if (strlen(LANGUAGES) == 0)
+      gtk_widget_destroy(GTK_WIDGET(LangButton));
 
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));

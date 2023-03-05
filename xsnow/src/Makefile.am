@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -19,18 +19,27 @@
 #-# 
 SUBDIRS = Pixmaps
 
+
 TOCC     = $(top_srcdir)/src/tocc.sh
 TOASCII  = $(top_srcdir)/src/toascii.sh
 
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
-xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS)
-xsnow_LDADD       = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) libxdo.a
+xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
+		    -DLANGUAGES='"$(LANGUAGES)"'
+xsnow_LDADD       = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL) libxdo.a 
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
+if USE_NLS
+   LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
+   xsnow_CPPFLAGS += -DENABLE_NLS=1
+else
+   LANGUAGES = 
+endif
+
 if MAKESELFREP
-   xsnow_CPPFLAGS += -DSELFREP
+xsnow_CPPFLAGS += -DSELFREP
 endif
 
 noinst_LIBRARIES = libxdo.a
@@ -42,7 +51,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh \
-		doit.h ui.c ui.h ui.xml \
+		doit.h ui.c ui.h ui.glade \
 		debug.h \
 		mainstub.cpp mainstub.h \
 		birds.c kdtree.c birds.h kdtree.h birdglobals.h doitb.h \
@@ -58,29 +67,32 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		selfrep.c selfrep.h \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
-		safe_malloc.c safe_malloc.h 
+		safe_malloc.c safe_malloc.h mygettext.h gettext.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
 BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
 
-tarfile = $(top_builddir)/xsnow-$(VERSION).tar.gz
+
+tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 
 $(tarfile):
-	echo "No tarfile available during build." > $@
-	echo "Run 'configure' or 'make dist' to make one, and run 'make' again." >> $@
+	echo "Dummy tarfile." > $@
 
 if MAKESELFREP
 tarfile.inc: $(tarfile) $(TOASCII)
+	@echo "Converting tarfile:"
+	ls -l $(tarfile)
 	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
 else
-tarfile.inc: 
+	tarfile.inc: 
 	echo "No selfrep compiled in" | $(TOASCII) > $@
 endif
 
-EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright
 
-ui_xml.h: ui.xml $(top_srcdir)/src/gen_ui_xml.sh
+EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright 
+
+ui_xml.h: ui.glade $(top_srcdir)/src/gen_ui_xml.sh
 	@echo "Creating $@ from $<"
 	$(top_srcdir)/src/gen_ui_xml.sh $(top_srcdir)
 
@@ -88,12 +100,15 @@ snow_includes.h: Pixmaps
 	@echo "Creating $@"
 	$(top_srcdir)/src/gen_snow_includes.sh $(top_srcdir)
 
+
 TESTS = test1.sh
 
 changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
 	$(TOCC) < $(top_srcdir)/ChangeLog > $@
 
 xsnow-docs.$(OBJEXT): changelog.inc
+
+xsnow-selfrep.$(OBJEXT): tarfile.inc
 
 appicondir=$(datadir)/pixmaps
 appicon_DATA=Pixmaps/xsnow.svg

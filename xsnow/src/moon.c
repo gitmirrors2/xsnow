@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ void moon_ui()
    UIDO(Halo        ,halo_erase();         );
    UIDO(Moon        ,moon_erase(1);        );
    UIDO(MoonSize    ,init_moon_surface();  );
+   UIDO(MoonColor   ,init_moon_surface();  );
    UIDO(HaloBright  ,init_halo_surface();  );
 
    static int prevw = 0;
@@ -127,8 +128,14 @@ void moon_ui()
 
 static void init_moon_surface()
 {
+   P("init_moon_surface %d\n",Flags.MoonColor);
    const GdkInterpType interpolation = GDK_INTERP_HYPER; 
-   int whichmoon = 0;
+
+   if (Flags.MoonColor < 0)
+      Flags.MoonColor = 0;
+   if (Flags.MoonColor > 1)
+      Flags.MoonColor = 1;
+   int whichmoon = Flags.MoonColor;
    static GdkPixbuf *pixbuf, *pixbufscaled;
    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)moons_xpm[whichmoon]);
    // standard moon is some percentage of window width

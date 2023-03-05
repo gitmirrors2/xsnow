@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <gsl/gsl_sort.h>
 #include <math.h>
+#include "mygettext.h"
 #include "xsnow.h"
 #include "utils.h"
 #include "windows.h"
@@ -36,7 +37,6 @@
 #include "version.h"
 #include "flags.h"
 #include "safe_malloc.h"
-
 
 void traceback()
 #ifdef TRACEBACK_AVAILALBLE
@@ -241,10 +241,10 @@ void rgba2color(GdkRGBA *c, char **s)
 void Thanks(void)
 {
    if (global.HaltedByInterrupt)
-      printf("\nXsnow: Caught signal %d\n",global.HaltedByInterrupt);
+      printf(_("\nXsnow: Caught signal %d\n"),global.HaltedByInterrupt);
    if (strlen(global.Message))
       printf("\n%s\n",global.Message);
-   printf("\nThank you for using xsnow\n");
+   printf(_("\nThanks for using xsnow\n"));
    fflush(stdout);
 }
 
@@ -346,5 +346,35 @@ float gaussf(float x, float mu, float sigma)
    float y = (x-mu)/sigma;
    float y2 = y*y;
    return expf(-y2);
+}
+// guess language. return string like "en", "nl" or NULL if no language can
+// be found
+char *guess_language()
+{
+   char *tries[] = {"LANGUAGE","LANG","LC_ALL","LC_MESSAGES","LC_NAME","LC_TIME",NULL};
+   char *a, *b;
+   int i = 0;
+   char *try = tries[i];
+   while (try)
+   {
+      a = getenv(try);
+      if (a && strlen(a)>0)
+      {
+	 b = strdup(a);
+	 char *p = strchr(b,'_');
+	 if (p)
+	 {
+	    *p = 0;
+	    return b;
+	 }
+	 else
+	 {
+	    return b;
+	 }
+	 free(b);
+      }
+      try = tries[++i];
+   }
+   return NULL;
 }
 

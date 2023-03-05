@@ -1,3 +1,53 @@
+version 3.7.1
+	01: choose between two moon colors (as suggested by Lewis Smith)
+	02: xsnow.h, Santa.c, Fallensnow.c: make Santa bidirectional
+	03: Makefile.am: add -DENABLE_NLS=1 where appropriate
+	04: correct moonseeking behaviour if Santa rides from right to left
+	    correct wind-dependency for R-L Santa
+	05: Santa.c: call init_Santa_surfaces only at initialisation
+	    scenery.c: fix bug which caused core dump when using external tree
+	06: Santa.c: reorder indices of Santa_surfaces.
+	07: Implement -treescale
+	08: Implement -santascale
+	09: ui.glade: avoid use of deprecated settings
+	10: adapt languages to changes, change ee.po in et.po
+	11: scenery.c: some code cleaning
+
+version 3.7.0
+	01: add contact button on welcome page and ratrabbit url in man page
+	    add gettext (using gettextize) (thanks to suggestion by
+	      Albano Battistella)
+	    add languages de en es fi fr it nl pt
+	    re-arrange programming of selfrep capability
+	    add 2023 to copyright
+	04: add more languages
+	    m4/gettext.m4: Upgrade to gettext-0.21.
+	    m4/host-cpu-c-abi.m4: New file, from gettext-0.21.
+	    m4/iconv.m4: Upgrade to gettext-0.21.
+	    m4/intlmacosx.m4: Upgrade to gettext-0.21.
+	    m4/lib-ld.m4: Upgrade to gettext-0.21.
+	    m4/lib-link.m4: Upgrade to gettext-0.21.
+	    m4/lib-prefix.m4: Upgrade to gettext-0.21.
+	    m4/nls.m4: Upgrade to gettext-0.21.
+	    m4/po.m4: Upgrade to gettext-0.21.
+	    m4/progtest.m4: Upgrade to gettext-0.21.
+	    configure.ac (AM_GNU_GETTEXT_VERSION): remove
+	    add gettext.h
+	    take appropriate action if no languages are available
+	       : no language button
+	    configure.ac, src/Makefile.am: trigger on USE_NLS macro
+	    simplemake.sh: some improvements
+	05: Santa.c: ResetSanta(): let Santa start somewhat left of the screen so
+	      that His (re-)appearance is a surprise, more or less
+	    ui.c: button_santa(), Santa.c: SantaVisible: when changing Santa,
+	      place Santa on a visibla area.
+
+
+version 3.6.1
+	01: add centos deps to file dependencies
+	    (thanks to Joachim Ruebenschuss)
+	02: src/Makefile.am: add PTHREAD_CFLAGS and PTHREAD_LIBS
+
 version 3.6.0
 	01: implement xinerama-awareness
 	   implement -outline
@@ -12,7 +62,6 @@ version 3.6.0
 	       gsl_interp_akima, gsl_interp_cspline and gsl_interp_linear
 	       (Thanks to Joachim Ruebenschuss)
 	   utils.c: somewhat nicer print-out of version
-	
 
 version 3.5.3
 	01: main.c: drawit(): do now draw the first second or so to hide
@@ -106,7 +155,7 @@ version 3.5.0
 	   make all, except kdtree.c, cppcheck happy using a check after
 	      realloc()
 	   aurora.c: prevent too large vertical movements in position of aurora
-	10: add more random slant fo aurora
+	10: add more random slant for aurora
 	11: aurora.c: create aurora_erase(), to be called in main() and when 
 	       changing the look of the aurora when no double buffering is
 	       available.

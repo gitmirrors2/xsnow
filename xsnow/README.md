@@ -1,4 +1,5 @@
 # Xsnow: let it snow on your desktop
+
 ## General
 
 Xsnow is derived from Rick Jansen's [xsnow-1.42](https://janswaal.home.xs4all.nl/Xsnow/).
@@ -34,6 +35,15 @@ script 'simplemake.sh':
 
 If problems persist, you can adapt simplemake.sh.
 
+## Maintainers:
+
+The bootstrap script
+
+  ./bootstrap
+
+puts everything in place and performs a autoreconf -fvi.
+See also: Languages.
+
 ## Self replication
 
 When not disabled in `./configure`, xsnow will be build as a self-replicating
@@ -49,6 +59,11 @@ To create the source ball directly:
 
 If you changed something, run `./configure` or `make dist` to refresh the tar ball, 
 otherwise `xsnow -selfrep` will create the old version of the source.
+
+## Languages
+
+Since the autoconf suite changes the .po files in po/, I placed the .po files in
+pofiles/. In bootstrap these files are copied over .po files in po/.
 
 
 Have fun!

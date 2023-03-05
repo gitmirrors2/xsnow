@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -125,9 +125,11 @@ XPM_TYPE ***Santas[MAXSANTA+1][2] =
 #include "Pixmaps/eland.xpm"
 #include "Pixmaps/snowtree.xpm"
 #include "Pixmaps/polarbear.xpm"
+#include "Pixmaps/extratree.xpm"
 
 XPM_TYPE **xpmtrees[MAXTREETYPE+1] =
-{tannenbaum_xpm, tree_xpm, tree_1_100px, huis4_xpm, reindeer_xpm, eland_xpm, snowtree_xpm, polarbear_xpm};
+{tannenbaum_xpm, tree_xpm, tree_1_100px, huis4_xpm, reindeer_xpm, eland_xpm, 
+   snowtree_xpm, polarbear_xpm, extratree_xpm};
 
 #include "Pixmaps/star.xbm"
 
@@ -175,9 +177,11 @@ XPM_TYPE **birds_xpm[] =
 };
 
 #include "Pixmaps/moon1.xpm"
+#include "Pixmaps/moon2.xpm"
 XPM_TYPE **moons_xpm[]=
 {
-   moon1_xpm
+   moon1_xpm,
+   moon2_xpm
 };
 
 #define SNOW(x) snow##x##_xpm,

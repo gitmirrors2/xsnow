@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include "mygettext.h"
 
 #include "aurora.h"
 #include "birds.h"
@@ -127,6 +128,9 @@ static char        *SnowWinName    = NULL;
 static int          wantx          = 0;
 static int          wanty          = 0;
 static int          IsSticky       = 0;
+static int          X11cairo       = 0;
+static int          PrevW          = 0;
+static int          PrevH          = 0;
 
 /* Colo(u)rs */
 static const char *BlackColor  = "black";
@@ -147,9 +151,7 @@ static int    StartWindow(void);
 static void   SetWindowScale(void);
 static void   GetDesktopSession(void);
 static void   rectangle_draw(cairo_t *cr);
-static int    X11cairo = 0;
-static int    PrevW = 0;
-static int    PrevH = 0;
+static void   mybindtestdomain(void);
 
 // callbacks
 static int do_displaychanged(void *);
@@ -310,6 +312,7 @@ int main_c(int argc, char *argv[])
 
    int i;
 
+
    InitFlags();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
@@ -345,50 +348,13 @@ int main_c(int argc, char *argv[])
       }
 #endif
    }
-   PrintVersion();
-   // make a copy of all flags, before gtk_init() maybe removes some.
-   // we need this at a restart of the program.
-   // we need to remove 
-   //   -screen n
-
-   Argv = (char**) malloc((argc+1)*sizeof(char**));
-   Argc = 0;
-   for (i=0; i<argc; i++)
-   {
-      if (strcmp("-screen",argv[i]))
-	 Argv[Argc++] = strdup(argv[i]);
-      else // found -screen
-	 i++;
-   }
-   Argv[Argc] = NULL;
-   GetDesktopSession();
-   if(!strncasecmp(global.DesktopSession,"bspwm",5))
-   {
-      printf("For optimal resuts, add to your bspwmrc:\n");
-      printf("   bspc rule -a Xsnow state=floating border=off\n");
-   }
-   printf("GTK version: %s\n",ui_gtk_version());
-   printf("GSL version: ");
-#ifdef GSL_VERSION
-   printf("%s\n",GSL_VERSION);
-#else
-   printf("unknown\n");
-#endif
-
-   // Circumvent wayland problems:before starting gtk: make sure that the 
-   // gdk-x11 backend is used.
-
-   setenv("GDK_BACKEND","x11",1);
-   if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
-   {
-      printf("Detected Wayland desktop\n");
-      global.IsWayland = 1;
-   }
-   else
-      global.IsWayland = 0;
-
-   gtk_init(&argc, &argv);
    int rc = HandleFlags(argc, argv);
+
+   handle_language(0); // the langues used is from flags or .xsnowrc
+   //                     this changes env LANGUAGE accordingly
+   //                     so that the desired translation is in effect
+
+   mybindtestdomain();
    switch(rc)
    {
       case -1:   // wrong flag
@@ -404,6 +370,56 @@ int main_c(int argc, char *argv[])
 	 //PrintVersion();
 	 break;
    }
+   PrintVersion();
+
+   printf(_("Available languages are: %s\n"),LANGUAGES);
+   /* Eskimo warning */
+   if (strstr(Flags.SnowColor,"yellow") != NULL)
+      printf("\n%s\n\n",_("Warning: don't eat yellow snow!"));
+
+   // make a copy of all flags, before gtk_init() maybe removes some.
+   // we need this at a restart of the program.
+   // we need to remove 
+   //   -screen n
+   //   -lang c
+
+   Argv = (char**) malloc((argc+1)*sizeof(char**));
+   Argc = 0;
+   for (i=0; i<argc; i++)
+   {
+      if ((strcmp("-screen",argv[i])==0) || (strcmp("-lang",argv[i])==0))
+	 i++; // found -screen or -lang
+      else 
+	 Argv[Argc++] = strdup(argv[i]);
+   }
+   Argv[Argc] = NULL;
+   GetDesktopSession();
+   if(!strncasecmp(global.DesktopSession,"bspwm",5))
+   {
+      printf(_("For optimal resuts, add to your %s:\n"),"bspwmrc");
+      printf("   bspc rule -a Xsnow state=floating border=off\n");
+   }
+   printf("GTK version: %s\n",ui_gtk_version());
+   printf("GSL version: ");
+#ifdef GSL_VERSION
+   printf("%s\n",GSL_VERSION);
+#else
+   printf(_("unknown\n"));
+#endif
+
+   // Circumvent wayland problems:before starting gtk: make sure that the 
+   // gdk-x11 backend is used.
+
+   setenv("GDK_BACKEND","x11",1);
+   if (getenv("WAYLAND_DISPLAY")&&getenv("WAYLAND_DISPLAY")[0])
+   {
+      printf(_("Detected Wayland desktop\n"));
+      global.IsWayland = 1;
+   }
+   else
+      global.IsWayland = 0;
+
+   gtk_init(&argc, &argv);
    if (!Flags.NoConfig)
       WriteFlags();
 
@@ -412,7 +428,7 @@ int main_c(int argc, char *argv[])
 
    if(Flags.CheckGtk && !ui_checkgtk() && !Flags.NoMenu)
    {
-      printf("Xsnow needs gtk version >= %s, found version %s\n",ui_gtk_required(),ui_gtk_version());
+      printf(_("Xsnow needs gtk version >= %s, found version %s \n"),ui_gtk_required(),ui_gtk_version());
 
       if(!ui_run_nomenu())
       {
@@ -422,7 +438,7 @@ int main_c(int argc, char *argv[])
       else
       {
 	 Flags.NoMenu = 1;
-	 printf("Continuing with flag '-nomenu'\n");
+	 printf("%s %s",_("Continuing with flag"),"'-nomenu'\n");
       }
    }
 
@@ -458,8 +474,8 @@ int main_c(int argc, char *argv[])
 
    if (global.display == NULL) {
       if (Flags.DisplayName == NULL) Flags.DisplayName = getenv("DISPLAY");
-      (void) fprintf(stderr, "%s: cannot connect to X server %s\n", argv[0],
-	    Flags.DisplayName ? Flags.DisplayName : "(default)");
+      fprintf(stderr, _("%s: cannot connect to X server %s\n"), argv[0],
+	    Flags.DisplayName ? Flags.DisplayName : _("(default)"));
       exit(1);
    }
    //
@@ -577,12 +593,13 @@ int main_c(int argc, char *argv[])
    if (DoRestart)
    {
       sleep(0);
-      printf("Xsnow restarting: ");
+      printf("Xsnow %s: ",_("restarting"));
       int k = 0;
       while (Argv[k])
 	 printf("%s ",Argv[k++]);
       printf("\n");
       fflush(NULL);
+      setenv("XSNOW_RESTART","yes",1);
       execvp(Argv[0],Argv);
    }
    else
@@ -623,7 +640,7 @@ void X11WindowById(Window *xwin)
    if (Flags.XWinInfoHandling)
    {
       // user ask to point to a window
-      printf("Click on a window ...\n");
+      printf(_("Click on a window ...\n"));
       fflush(stdout);
       int rc;
       rc = xdo_select_window_with_click(global.xdo,xwin);
@@ -657,10 +674,10 @@ void GetDesktopSession()
 	    break;
       }
       if (desktopsession)
-	 printf("Detected desktop session: %s\n",desktopsession);
+	 printf(_("Detected desktop session: %s\n"),desktopsession);
       else
       {
-	 printf("Could not determine desktop session\n");
+	 printf(_("Could not determine desktop session\n"));
 	 desktopsession = (char *)"unknown_desktop_session";
       }
 
@@ -692,7 +709,7 @@ int StartWindow()
    else if(Flags.ForceRoot)
    {
       // user specified to run on root window
-      printf("Trying to snow in root window\n");
+      printf(_("Trying to snow in root window\n"));
       global.SnowWin = global.Rootwindow;
       if (getenv("XSCREENSAVER_WINDOW"))
       {
@@ -736,12 +753,12 @@ int StartWindow()
 	 P("calling set_below_above\n");
 	 set_below_above();
 	 global.SnowWin = xwin;
-	 printf("Using transparent window\n");
+	 printf(_("Using transparent window\n"));
 	 P("wantx, wanty: %d %d\n",wantx,wanty);
 	 if(!strncasecmp(global.DesktopSession,"fvwm",4) ||
 	       !strncasecmp(global.DesktopSession,"lxqt",4))
 	 {
-	    printf("The transparent snow-window is probably not click-through, alas..\n");
+	    printf(_("The transparent snow-window is probably not click-through, alas..\n"));
 	 }
 
       }
@@ -750,25 +767,25 @@ int StartWindow()
 	 global.Desktop  = 1;
 	 X11cairo = 1;
 	 // use rootwindow, pcmanfm or Desktop:
-	 printf("Cannot create transparent window\n");
+	 printf(_("Cannot create transparent window\n"));
 	 if (!strcasecmp(global.DesktopSession,"enlightenment"))
-	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	    printf(_("NOTE: xsnow will probably run, but some glitches are to be expected.\n"));
 	 if(!strcasecmp(global.DesktopSession,"twm"))
 	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
 	       (xwin = FindWindowWithName(global.display,"pcmanfm")))
 	 {
-	    printf("LXDE session found, using window 'pcmanfm'.\n");
+	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
 	 else if ((xwin = FindWindowWithName(global.display,"Desktop")))
 	 {
-	    printf("Using window 'Desktop'.\n");
+	    printf(_("Using window 'Desktop'.\n"));
 	 }
 	 else
 	 {
-	    printf("Using root window\n");
+	    printf(_("Using root window\n"));
 	    xwin = global.Rootwindow;
 	 }
 	 global.SnowWin = xwin;
@@ -812,7 +829,7 @@ int StartWindow()
    global.SnowWinX = wantx;
    global.SnowWinY = wanty;
 
-   printf("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+   printf(_("Snowing in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
    PrevW = global.SnowWinWidth;
    PrevH = global.SnowWinHeight;
 
@@ -857,19 +874,19 @@ int HandleX11Cairo()
       CairoSurface = cairo_xlib_surface_create(global.display, backBuf, visual, w, h);
       global.UseDouble = 1;
       global.IsDouble  = 1;
-      printf("Using double buffer: %#lx. %dx%d\n",backBuf,w,h);
+      printf(_("Using double buffer: %#lx. %dx%d\n"),backBuf,w,h);
       rcv = TRUE;
    }
 #endif
    if(!dodouble)
    {
       CairoSurface = cairo_xlib_surface_create(global.display, global.SnowWin, visual, w, h);
-      printf("NOT using double buffering:");
+      printf(_("NOT using double buffering:"));
       if (Flags.UseDouble)
-	 printf(" because double buffering is not available on this system\n");
+	 printf(_(" because double buffering is not available on this system\n"));
       else
-	 printf(" on your request.\n");
-      printf("NOTE: expect some flicker.\n");
+	 printf(_(" on your request.\n"));
+      printf(_("NOTE: expect some flicker.\n"));
       fflush(stdout);
       rcv = FALSE;
    }
@@ -1007,7 +1024,7 @@ int do_displaychanged(void *d)
    {
       DoRestart = 1;
       Flags.Done = 1;
-      I("Restart due to change of screen settings...\n");
+      I(_("Restart due to change of screen or language settings ...\n"));
    }
    else
    {
@@ -1021,7 +1038,7 @@ int do_displaychanged(void *d)
       {
 	 DoRestart = 1;
 	 Flags.Done = 1;
-	 I("Restart due to change of display settings...\n");
+	 I(_("Restart due to change of display settings...\n"));
       }
       XCloseDisplay(display);
    }
@@ -1112,13 +1129,13 @@ int do_show_desktop_type(void *d)
       return TRUE;
    char *s;
    if (global.IsWayland)
-      s = (char *)"Wayland (Expect some slugginess)";
+      s = (char *)_("Wayland (Expect some slugginess)");
    else if (global.IsCompiz)
       s = (char *)"Compiz";
    else
-      s = (char *)"Probably X11";
+      s = (char *)_("Probably X11");
    char t[128];
-   snprintf(t,64,"%s. Snow window: %#lx",s,global.SnowWin);
+   snprintf(t,64,_("%s. Snow window: %#lx"),s,global.SnowWin);
    ui_show_desktop_type(t);
    return TRUE;
    (void)d;
@@ -1170,7 +1187,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
 
    if (++count > countmax)
    {
-      snprintf(global.Message,sizeof(global.Message),"More than %d errors, I quit!",countmax);
+      snprintf(global.Message,sizeof(global.Message),_("More than %d errors, I quit!"),countmax);
       Flags.Done = 1;
    }
    return 0;
@@ -1320,7 +1337,7 @@ int do_display_dimensions(void *d)
       HandleX11Cairo();
    if (PrevW != global.SnowWinWidth || PrevH != global.SnowWinHeight)
    {
-      printf("Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      printf(_("Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
       P("Calling RestartDisplay\n");
       RestartDisplay();
       PrevW = global.SnowWinWidth;
@@ -1389,7 +1406,142 @@ void rectangle_draw(cairo_t *cr)
 int do_stopafter(void *d)
 {
    Flags.Done = 1;
-   printf("Halting because of flag -stopafter\n");
+   printf(_("Halting because of flag %s\n"),"-stopafter");
    return FALSE;
    (void)d;
+}
+
+void mybindtestdomain()
+{
+   global.Language = guess_language();
+#ifdef HAVE_GETTEXT
+   // One would assume that gettext() uses the environment variable LOCPATH
+   // to find locales, but no, it does not.
+   // So, we scan LOCPATH for paths, use them and see if gettext gets a translation
+   // for a text that is known to exist in the ui and should be translated to
+   // something different.
+
+   char *startlocale;
+   (void) startlocale;
+   char *r = setlocale(LC_ALL,"");
+   if (r)
+      startlocale = strdup(r); 
+   else
+      startlocale = NULL;
+   P("startlc: %s\n",startlocale);
+   //if (startlocale == NULL)
+   //  startlocale = strdup("en_US.UTF-8");
+   P("startlc: %s\n",startlocale);
+   P("LC_ALL: %s\n",getenv("LC_ALL"));
+   P("LANG: %s\n",getenv("LANG"));
+   P("LANGUAGE: %s\n",getenv("LANGUAGE"));
+   textdomain (TEXTDOMAIN);
+   char *textd = bindtextdomain(TEXTDOMAIN,LOCALEDIR);
+   (void) textd;
+   P("textdomain:%s\n",textd);
+
+   char *locpath = getenv("LOCPATH");
+   P("LOCPATH: %s\n",locpath);
+   P("LOCALEDIR: %s\n",LOCALEDIR);
+   if (locpath)
+   {
+      char *initial_textdomain = strdup(bindtextdomain(TEXTDOMAIN,NULL));
+      char *mylocpath          = strdup(locpath);
+      int  translation_found   = False;
+      P("Initial textdomain: %s\n",initial_textdomain);
+
+      char *q = mylocpath;
+      while(1)
+      {
+	 char *p = strsep(&q,":");
+	 if (!p)
+	    break;
+	 bindtextdomain(TEXTDOMAIN, p);
+	 //char *trans = _(TESTSTRING);
+	 P("trying '%s' '%s' '%s'\n",p,TESTSTRING,trans);
+	 if(strcmp(_(TESTSTRING),TESTSTRING))
+	 {
+	    // translation found, we are happy
+	    P("Translation: %s\n",trans);
+	    translation_found = True;
+	    break;
+	 }
+      }
+      if (!translation_found)
+      {
+	 P("No translation found in %s\n",locpath);
+	 bindtextdomain(TEXTDOMAIN,initial_textdomain);
+      }
+      free(mylocpath);
+      free(initial_textdomain);
+   }
+
+
+   // todo: naar restart of ui?
+
+   if(0)
+   {
+      if (strcmp(Flags.Language,"sys")) // if "sys" , do not change locale
+      {  // Language != sys
+	 char lc[100];
+	 if (!strcmp(Flags.Language,"en"))
+	    strcpy(lc,"en_US.UTF-8");
+	 else
+	 {
+	    strcpy(lc,Flags.Language);
+	    strcat(lc,"_");
+
+	    int i;
+	    int l = strlen(lc);
+	    for (i=0; i<(int)strlen(Flags.Language); i++)
+	       lc[l+i] = toupper(lc[i]);
+	    lc[l+i] = 0;
+
+	    strcat(lc,".UTF-8");
+	 }
+
+	 // in order for this to work, no gettext call must have been
+	 // made yet:
+
+	 //setenv("LC_ALL",lc,1);
+	 //setenv("LANG",lc,1);
+	 setenv("LANGUAGE",Flags.Language,1);
+	 P("LC_ALL: %s\n",getenv("LC_ALL"));
+	 P("LANG: %s\n",getenv("LANG"));
+	 P("LANGUAGE: %s\n",getenv("LANGUAGE"));
+      }
+      else // Language == sys
+      {
+	 unsetenv("LANGUAGE");
+	 unsetenv("LC_ALL");
+	 if(0)
+	 {
+	    char *l=getenv("LANG");
+	    if(l && !getenv("LANGUAGE"))
+	    {
+	       char *lang = strdup(l);
+	       P("lang: %s\n",lang);
+	       char *p = strchr(lang,'_');
+	       if(p)
+	       {
+		  *p = 0;  // TODO: wrong
+		  P("lang: %s\n",lang);
+		  setenv("LANGUAGE",lang,1);
+	       }
+	       free(lang);
+	    }
+	 }
+	 P("LC_ALL: %s\n",getenv("LC_ALL"));
+	 P("LANG: %s\n",getenv("LANG"));
+	 P("LANGUAGE: %s\n",getenv("LANGUAGE"));
+      }
+      //setenv("LANG","nl_NL.UTF8",1);
+      //setenv("LANGUAGE","nl",1);
+   }
+
+   P("textdomain: %s\n",textdomain(NULL));
+   P("bindtextdomain: %s\n",bindtextdomain(TEXTDOMAIN,NULL));
+   //bind_textdomain_codeset(TEXTDOMAIN,"UTF-8");
+
+#endif
 }

@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ static cairo_surface_t *tree_surface(int flip, const char **xpm, float scale);
 static void             create_tree_surfaces(void);
 static void             create_tree_dimensions(int tt);
 static int              compartrees(const void *a, const void *b);
-static void             setTreeScale(void);
+static void             setScale(void);
 
 static int         NtreeTypes = 0;
 static int         TreeRead = 0;
@@ -65,9 +65,10 @@ static int        *TreeType = NULL;
 static int         NTrees     = 0;  // actual number of trees
 static int         Newtrees   = 1;  // switch to determine if trees are to be repositioned
 static Treeinfo  **Trees = NULL;
+static int         ExternalTree = False;
 
 static float       treeScale  = 1.0;
-static const float LocalScale = 0.7;   // correction scale: if scenery is always too smnall, enlarge this and vice versa
+static const float LocalScale = 0.7;   // correction scale: if scenery is always too small, enlarge this and vice versa
 static float       MinScale   = 0.6;   // scale for items with low y-coordinate
 
 
@@ -84,7 +85,7 @@ void scenery_init()
       int m = 0;
       for (i=0; i<n; i++)
       {
-	 if(a[i] >=0 && a[i] <= MAXTREETYPE) 
+	 if(a[i] >=0 && a[i] <= MAXTREETYPE-1) 
 	 {
 	    b[m] = a[i];
 	    m++;
@@ -97,7 +98,7 @@ void scenery_init()
       free(b);
    }
    P("treecolor: %s\n",Flags.TreeColor);
-   setTreeScale();
+   setScale();
    P("treeScale: %f\n",treeScale);
    //global.TreeRegion = XCreateRegion();
    global.TreeRegion = cairo_region_create();
@@ -105,7 +106,7 @@ void scenery_init()
    add_to_mainloop(PRIORITY_DEFAULT, time_initbaum, do_initbaum);
 }
 
-void setTreeScale()
+void setScale()
 {
    treeScale         = LocalScale*0.01*Flags.Scale*global.WindowScale;
 }
@@ -139,6 +140,7 @@ void scenery_ui()
    UIDOS(TreeType               , RedrawTrees(););
    UIDO (DesiredNumberOfTrees   , RedrawTrees(););
    UIDO (TreeFill               , RedrawTrees(););
+   UIDO (TreeScale              , RedrawTrees(););
    UIDO (NoTrees                , if(!global.IsDouble) RedrawTrees(););
    UIDOS(TreeColor              , ReInitTree0(););
    UIDO (Overlap                , RedrawTrees(););
@@ -146,7 +148,7 @@ void scenery_ui()
    static int prev = 100;
    if(ScaleChanged(&prev))
    {
-      setTreeScale();
+      setScale();
       RedrawTrees();
    }
 
@@ -259,9 +261,9 @@ int do_initbaum(void *d)
 	    tmptreetype[i] = i;
       }
       else if (strlen(Flags.TreeType) == 0) 
-	 // default: use 1..MAXTREETYPE 
+	 // default: use 1..MAXTREETYPE-1 
       {
-	 ntemp = MAXTREETYPE;
+	 ntemp = MAXTREETYPE-1;
 	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
 	 int i;
 	 for (i=0; i<ntemp; i++)
@@ -276,7 +278,7 @@ int do_initbaum(void *d)
       NtreeTypes = 0;
       for (i=0; i<ntemp; i++)
       {
-	 if (tmptreetype[i] >=0 && tmptreetype[i]<=MAXTREETYPE)
+	 if (tmptreetype[i] >=0 && tmptreetype[i]<=MAXTREETYPE-1)
 	 {
 	    int j;
 	    int unique = 1;
@@ -319,6 +321,12 @@ int do_initbaum(void *d)
 	 break;
 
       int tt = TreeType[randint(NtreeTypes)];
+#ifdef USE_EXTRATREE
+      if (global.Language && !strcmp(global.Language,"ru") && drand48() < 0.3)
+	 tt = MAXTREETYPE;
+      if (drand48() < 0.02)
+	 tt = MAXTREETYPE;
+#endif
       w = TreeWidth[tt];
       h = TreeHeight[tt];
 
@@ -331,7 +339,7 @@ int do_initbaum(void *d)
 
       float myScale = (1-MinScale)*(y - y2)/(y1 - y2) + MinScale;
       P("%d myScale: %d %d %d %f\n",global.counter++,y,y1,y2,myScale);
-      myScale *=treeScale;
+      myScale *=treeScale*0.01*Flags.TreeScale;
       cairo_rectangle_int_t grect = {x-1,y-1,(int)(myScale*w+2),(int)(myScale*h+2)};
       cairo_region_overlap_t in   = cairo_region_contains_rectangle(global.TreeRegion,&grect);
 
@@ -424,6 +432,7 @@ void InitTreePixmaps()
 	 int i;
 	 for(i=0; i<2; i++)
 	 {
+	    P("iXpmCreatePixmapFromData %d\n",i);
 	    iXpmCreatePixmapFromData(global.display, global.SnowWin, (const char **)TreeXpm, 
 		  &TreePixmap[0][i], &TreeMaskPixmap[0][i], &attributes,i);
 	    create_tree_dimensions(0);
@@ -431,9 +440,13 @@ void InitTreePixmaps()
 	 sscanf(*TreeXpm,"%d %d", &TreeWidth[0],&TreeHeight[0]);
 	 P("treexpm %d %d\n",TreeWidth[0],TreeHeight[0]);
 	 printf("using external tree: %s\n",path);
-	 if (!Flags.NoMenu)
+	 fflush(stdout);
+	 ExternalTree = True;
+	 /*
+	    if (!Flags.NoMenu)
 	    printf("Disabling menu.\n");
-	 Flags.NoMenu = 1;
+	    Flags.NoMenu = 1;
+	    */
       }
       else
       {
@@ -470,6 +483,8 @@ void InitTreePixmaps()
 // apply TreeColor to xpmtree[0] and xpmtree[1]
 void ReInitTree0()
 {
+   if (ExternalTree)
+      return ;
    P("Reinittree0 %s\n",Flags.TreeColor);
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;

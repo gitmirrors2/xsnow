@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@
    DOIT_I(Moon                 ,1          ,0          ) \
    DOIT_I(MoonSpeed            ,120        ,120        ) \
    DOIT_I(MoonSize             ,100        ,100        ) \
+   DOIT_I(MoonColor            ,0          ,0          ) \
    DOIT_I(NoFluffy             ,0          ,0          ) \
    DOIT_I(NoKeepSBot           ,0          ,0          ) \
    DOIT_I(NoKeepSnow           ,0          ,0          ) \
@@ -101,6 +102,7 @@
    DOIT_I(Rudolf               ,1          ,1          ) \
    DOIT_I(SantaSize            ,3          ,2          ) \
    DOIT_I(SantaSpeedFactor     ,100        ,100        ) \
+   DOIT_I(SantaScale           ,100        ,100        ) \
    DOIT_I(SnowFlakesFactor     ,100        ,15         ) \
    DOIT_I(SnowSize             ,8          ,8          ) \
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
@@ -108,6 +110,7 @@
    DOIT_I(ThemeXsnow           ,1          ,1          ) \
    DOIT_I(Outline              ,0          ,0          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
+   DOIT_I(TreeScale            ,100        ,100        ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \
@@ -137,5 +140,7 @@
    \
    DOIT_S(BirdsColor           ,"#361A07" ,"#361A07") \
    DOIT_S(BackgroundFile       ," "        ," ") \
-   DOIT_I(BlackBackground      ,0   ,0 )
+   DOIT_I(BlackBackground      ,0   ,0 )  \
+   \
+   DOIT_S(Language             ,"sys" ,"sys")
 

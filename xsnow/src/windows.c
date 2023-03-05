@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <X11/Intrinsic.h>
 #include <X11/extensions/Xinerama.h>
 #include <ctype.h>
+#include "mygettext.h"
 //#include <byteswap.h>
 #include "debug.h"
 #include "windows.h"
@@ -563,11 +564,11 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       else
       {
 	 // user ask to point to a window
-	 printf("Click on a window ...\n");
+	 printf(_("Click on a window ...\n"));
 	 *xwin = XWinInfo(xwinname);
 	 if (*xwin == 0)
 	 {
-	    fprintf(stderr,"XWinInfo failed\n");
+	    fprintf(stderr,_("XWinInfo failed\n"));
 	    exit(1);
 	 }
       }
@@ -592,7 +593,7 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
       XGetGeometry(global.display,*xwin,&root,
 	    &x, &y, &w, &h, &b, &depth);
       P("geom: %d %d %d %d\n",x,y,w,h);
-      printf("Force snow on root: window: %#lx, depth: %d\n",*xwin,depth);
+      printf(_("Force snow on root: window: %#lx, depth: %d\n"),*xwin,depth);
    }
    else
    {
@@ -656,19 +657,19 @@ int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const cha
 	       break;
 	 }
 	 if (desktopsession)
-	    printf("Detected desktop session: %s\n",desktopsession);
+	    printf(_("Detected desktop session: %s\n"),desktopsession);
 	 else
 	 {
-	    printf("Could not determine desktop session\n");
+	    printf(_("Could not determine desktop session\n"));
 	    desktopsession = (char *)"unknown_desktop_session";
 	 }
 
 	 global.DesktopSession = strdup(desktopsession);
 
 	 if (!strcasecmp(global.DesktopSession,"enlightenment"))
-	    printf("NOTE: xsnow will probably run, but some glitches are to be expected.\n");
+	    printf(_("NOTE: xsnow will probably run, but some glitches are to be expected.\n"));
 	 else if(!strcasecmp(global.DesktopSession,"twm"))
-	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
+	    printf(_("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n"));
       }
 
       // if not possible to create transparent window:
@@ -860,7 +861,7 @@ void SetBackground()
    if (!IsReadableFile(f))
       return;
 
-   printf("Setting background from %s\n",f);
+   printf(_("Setting background from %s\n"),f);
 
    int w = global.SnowWinWidth;
    int h = global.SnowWinHeight;

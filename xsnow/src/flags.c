@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -206,6 +206,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
 	 handle_ia(-meteorfrequency     ,MeteorFrequency                  );
 	 handle_ia(-moon                ,Moon                             );
+	 handle_ia(-mooncolor           ,MoonColor                        );
 	 handle_ia(-moonspeed           ,MoonSpeed                        );
 	 handle_ia(-moonsize            ,MoonSize                         );
 	 handle_ia(-halo                ,Halo                             );
@@ -216,6 +217,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_im(-offsety             ,OffsetY                          );
 	 handle_ia(-santa               ,SantaSize                        );
 	 handle_ia(-santaspeedfactor    ,SantaSpeedFactor                 );
+	 handle_ia(-santascale          ,SantaScale                       );
 	 handle_ia(-scale               ,Scale                            );
 	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
 	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
@@ -225,6 +227,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-stopafter           ,StopAfter                        );
 	 handle_ia(-theme               ,ThemeXsnow                       );
 	 handle_ia(-treefill            ,TreeFill                         );
+	 handle_ia(-treescale           ,TreeScale                        );
 	 handle_ia(-trees               ,DesiredNumberOfTrees             );
 	 handle_ia(-whirlfactor         ,WhirlFactor                      );
 	 handle_ia(-windtimer           ,WindTimer                        );
@@ -241,6 +244,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_is(-tc                  ,TreeColor                        );
 	 handle_is(-treetype            ,TreeType                         );
 	 handle_is(-bg                  ,BackgroundFile                   );
+	 handle_is(-lang                ,Language                         );
 
 	 handle_iv(-above               ,BelowAllForce            ,1      );
 	 handle_iv(-defaults            ,Defaults                 ,1      );
@@ -308,9 +312,6 @@ int HandleFlags(int argc, char*argv[])
       printf("** Maximum Santa is %d\n",MAXSANTA);
       return -1;
    }
-   /* Eskimo warning */
-   if (strstr(Flags.SnowColor,"yellow") != NULL)
-      printf("\nWarning: don't eat yellow snow!\n\n");
    if (!strcmp(Flags.TreeType,"all"))
    {
       free(Flags.TreeType);

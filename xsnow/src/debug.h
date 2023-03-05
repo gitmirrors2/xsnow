@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
 
 #include <stdio.h>
 #ifdef DEBUG
-#define P(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);}while(0)
+#define P(...) do {fprintf (stderr,"%s: %d: ",__FILE__,__LINE__);fprintf(stderr,__VA_ARGS__);fflush(stderr);}while(0)
 #else
 #define P(...) {}
 #endif
-#define R(...) do {printf ("%s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
-#define I(...) do {printf ("Xsnow info: %s: %d: ",__FILE__,__LINE__);printf(__VA_ARGS__);fflush(stdout);} while(0)
+#define R(...) do {fprintf (stderr,"%s: %d: ",__FILE__,__LINE__);fprintf(stderr,__VA_ARGS__);fflush(stderr);} while(0)
+#define I(...) do {fprintf (stderr,"Xsnow info: %s: %d: ",__FILE__,__LINE__);fprintf(stderr,__VA_ARGS__);fflush(stderr);} while(0)
 

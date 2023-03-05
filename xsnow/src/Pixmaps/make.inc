@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ birdl6.xpm \
 birdl7.xpm \
 birdl8.xpm \
 eland.xpm \
+extratree.xpm \
 flake0.xpm \
 flake1.xpm \
 flake2.xpm \
@@ -85,6 +86,7 @@ MediumSantaRudolf2.xpm \
 MediumSantaRudolf3.xpm \
 MediumSantaRudolf4.xpm \
 moon1.xpm \
+moon2.xpm \
 polarbear.xpm \
 RegularSanta1.xpm \
 RegularSanta2.xpm \

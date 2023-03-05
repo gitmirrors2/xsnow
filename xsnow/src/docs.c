@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2022\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2023\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
@@ -77,7 +77,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2022 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2023 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
@@ -117,6 +117,7 @@ void docs_usage(int man)
    manout("-noconfig"               ,"Do not read or write config file (see FILES).");
    manout("-hidemenu"               ,"Start with hidden interactive menu.");
    manout("-nomenu"                 ,"Do not show interactive menu.");
+   manout("-lang <c>"               ,"Set language, example: -lang it, see LANGUAGES below. Default: %s.",F(Language));
    manout("-scale <n>"              ,"Apply scalefactor (default: %d).",F(Scale));
    manout("-doublebuffer <n>"       ,"1: use double buffering; 0: do not use double buffering (default: %d).",F(UseDouble));
    manout(" "                       ,"Only effective with '-root' or '-id' or '-xwininfo'.");
@@ -186,6 +187,7 @@ void docs_usage(int man)
    manout("-showtrees"              ,"(Default) Display the trees.");
    manout("-trees <n>"              ,"Desired number of trees. Default %d.",F(DesiredNumberOfTrees));
    manout("-treefill <n>"           ,"Region in percents of the height of the window where trees grow (default: %d).",F(TreeFill));
+   manout("-treescale <n>"          ,"Scale scenery (default: %d).",F(TreeScale));
    manout("-treeoverlap"            ,"Allow scenery items to overlap each other (default).");
    manout("-notreeoverlap"          ,"Do not allow scenery items to overlap each other.");
 
@@ -208,6 +210,7 @@ void docs_usage(int man)
    manout("-santaspeedfactor <n>" ,"The speed Santa should not be excessive if he doesn't want to get");
    manout(" "                     ,"fined. The appropriate speed for the Santa chosen");
    manout(" "                     ,"will be multiplied by santaspeedfactor/100 (default: %d).",F(SantaSpeedFactor));
+   manout("-santascale <n>"       ,"The scale to be used when drawing Santa (default: %d).",F(SantaScale));
 
    if(doman)
    {
@@ -232,7 +235,8 @@ void docs_usage(int man)
    manout("."                     ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
    manout("."                     ,"https://unsplash.com/photos/wCujVcf0JDw");
    manout("-moonspeed <n>"        ,"Speed of moon in pixels/minute (default: %d).",F(MoonSpeed));
-   manout("-moonsize <n>"         ,"Realtive size of moon (default: %d).",F(MoonSize));
+   manout("-moonsize <n>"         ,"Relative size of moon (default: %d).",F(MoonSize));
+   manout("-mooncolor <n>"        ,"Color of moon 0: yellow-ish; 1: white-ish (default: %d).",F(MoonColor));
    manout("-halo <n>"             ,"1: show halo around moon, 0: do not show halo (default: %d).",F(Halo));
    manout("-halobrightness <n>"   ,"Brightness of halo (default: %d).",F(HaloBright));
    manout("-aurora <n>"           ,"To show (1) or not to show(0) aurora (default: %d).",F(Aurora));
@@ -305,6 +309,20 @@ void docs_usage(int man)
 
    if(doman)
    {
+      printf(".PP\n"); printf(".SS \"LANGUAGES\n");
+      printf(".br\n");
+   }
+   else
+   {
+      printf("\n   LANGUAGES\n\n");
+   }
+   manout(" ","Xsnow comes with some translations to non-english languages.");
+   manout(".","The translations are done with the aid of ");
+   manout(" ","translate.google.com (implemented in package 'trans'),");
+   manout(" ","so there will be room for improvement. Any suggestions are welcome: contact@ratrabbit.nl ."); 
+
+   if(doman)
+   {
       printf(".PP\n"); printf(".SS \"FILES\n");
       printf(".br\n");
    }
@@ -321,13 +339,12 @@ void docs_usage(int man)
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
-   manout(".", "    NOTE: when this file is present, no menu will appear.");
    manout(" "," ");
    manout("$HOME/xsnow/pixmaps/santa<n>.xpm", "where <n> = 1,2,3,4.");
    manout(" ", "If present, xsnow will try this files (4 of them) for displaying");
    manout(" ", "Santa. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
-   manout(".", "    NOTE: when these files are present, no menu will appear.");
+   manout(".", "    NOTE: To show: activate the first Santa in the menu.");
    manout(" "," ");
 
    if(doman)
@@ -441,6 +458,21 @@ void docs_usage(int man)
 
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");
+
+   manout(".","");
+   manout(".","Please report your comments via:");
+   manout(".","   https://ratrabbit.nl/ratrabbit/contact ."); 
+
+   if(doman)
+   {
+      printf(".PP\n"); printf(".SH HOMEPAGE\n");
+      printf(".br\n");
+   }
+   else
+   {
+      printf("\n   HOMEPAGE\n");
+   }
+   manout(" ","https://ratrabbit.nl/ratrabbit/xsnow");
 
    if(doman)
    {

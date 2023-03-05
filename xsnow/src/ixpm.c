@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ static void xpmCreatePixmapFromImage(
    GC gc;
    XGCValues values;
 
+   P("XCreatePixmap\n");
    *pixmap_return = XCreatePixmap(display, d, ximage->width,
 	 ximage->height, ximage->depth);
    /* set fg and bg in case we have an XYBitmap */
@@ -105,8 +106,10 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       for (i=1+ncolors; i<lines; i++)
 	 strrevert(idata[i],w);
 
-   XImage *ximage,*shapeimage;
+   XImage *ximage = NULL,*shapeimage = NULL;
    rc = XpmCreateImageFromData(display,idata,&ximage,&shapeimage,attr);
+   // NOTE: shapeimage is only created if color None is defined ...
+   P("ximage shapeimage: %p %p\n",ximage,shapeimage);
    if (rc != 0)
    {
       I("rc from XpmCreateImageFromData: ");
@@ -140,12 +143,12 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       abort();
    }
    XAddPixel(ximage,0xff000000);
-   if(p)
+   if(p && ximage)
       xpmCreatePixmapFromImage(display, d, ximage, p);
-   if(s)
+   if(s && shapeimage)
       xpmCreatePixmapFromImage(display, d, shapeimage, s);
-   XDestroyImage(ximage);
-   XDestroyImage(shapeimage);
+   if(ximage)XDestroyImage(ximage);
+   if(shapeimage)XDestroyImage(shapeimage);
    for(i=0; i<lines; i++) free(idata[i]);
    free(idata);
    return rc;

@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -59,7 +59,8 @@ static int          OldSantaY  = 0;  // the y value of Santa when he was last dr
 static const float  LocalScale = 0.6;
 static int          MoonSeeking = 1;
 
-static cairo_surface_t *Santa_surfaces[MAXSANTA+1][2][PIXINANIMATION];
+//                                      size      rudolph  direction animation   
+static cairo_surface_t *Santa_surfaces[MAXSANTA+1]  [2]       [2] [PIXINANIMATION] ;
 
 /* Speed for each Santa  in pixels/second*/
 static float Speed[] = {SANTASPEED0,  /* Santa 0 */
@@ -71,15 +72,17 @@ static float Speed[] = {SANTASPEED0,  /* Santa 0 */
 
 void Santa_ui()
 {
-   UIDO(SantaSize,        SetSantaSizeSpeed(););
-   UIDO(Rudolf,           SetSantaSizeSpeed(););
-   UIDO(NoSanta,                              );
-   UIDO(SantaSpeedFactor, SetSantaSizeSpeed(););
+   UIDO(SantaSize,        SetSantaSizeSpeed();                       );
+   UIDO(Rudolf,           SetSantaSizeSpeed();                       );
+   UIDO(NoSanta,                                                     );
+   UIDO(SantaSpeedFactor, SetSantaSizeSpeed();                       );
+   UIDO(SantaScale,       init_Santa_surfaces(); SetSantaSizeSpeed(););
 
    static int prev = 100;
    if(ScaleChanged(&prev))
    {
       P("%d Santa_scale \n",global.counter);
+      init_Santa_surfaces();
       SetSantaSizeSpeed();
    }
 }
@@ -88,9 +91,9 @@ int Santa_draw(cairo_t *cr)
 {
    if (Flags.NoSanta)
       return TRUE;
-   P("Santa_draw %d\n",global.counter++);
+   P("Santa_draw %d %d %d\n",global.counter++,global.SantaX,Flags.SantaSize);
    cairo_surface_t *surface;
-   surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][CurrentSanta];
+   surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][global.SantaDirection][CurrentSanta];
    cairo_set_source_surface (cr, surface, global.SantaX, global.SantaY);
    my_cairo_paint_with_alpha(cr,ALPHA);
    OldSantaX = global.SantaX;
@@ -121,17 +124,26 @@ void Santa_init()
    for (i=0; i<MAXSANTA+1; i++)
       for(j=0; j<2; j++)
 	 for (k=0; k<PIXINANIMATION; k++)
-	    Santa_surfaces[i][j][k] = NULL;
+	 {
+	    Santa_surfaces[i][j][0][k] = NULL;
+	    Santa_surfaces[i][j][1][k] = NULL;
+	 }
 
    SantaRegion            = XCreateRegion();
    global.SantaPlowRegion = XCreateRegion();
+   init_Santa_surfaces();
    SetSantaSizeSpeed();
+   if (drand48() > 0.5)
+      global.SantaDirection = 0;
+   else
+      global.SantaDirection = 1;
    ResetSanta();   
    add_to_mainloop(PRIORITY_HIGH, time_usanta, do_usanta);
 }
 
 void init_Santa_surfaces()
 {
+   P("init_Santa_surfaces\n");
    GdkPixbuf *pixbuf;
    int i,j,k;
    for(i=0; i<MAXSANTA+1; i++)
@@ -140,20 +152,28 @@ void init_Santa_surfaces()
 	 {
 	    int w,h;
 	    sscanf(Santas[i][j][k][0],"%d %d",&w,&h);
-	    w *= 0.01*Flags.Scale*LocalScale*global.WindowScale;
-	    h *= 0.01*Flags.Scale*LocalScale*global.WindowScale;
+	    w *= 0.01*Flags.Scale*LocalScale*global.WindowScale*0.01*Flags.SantaScale;
+	    h *= 0.01*Flags.Scale*LocalScale*global.WindowScale*0.01*Flags.SantaScale;
 	    P("%d init_Santa_surfaces %d %d %d %d %d\n",global.counter++,i,j,k,w,h);
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)Santas[i][j][k]);
 	    if(w < 1) w = 1;
 	    if(h < 1) h = 1;
 	    if (w == 1 && h == 1) h = 2;
-	    GdkPixbuf *pixbufscaled  = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
-	    if(Santa_surfaces[i][j][k])
-	       cairo_surface_destroy(Santa_surfaces[i][j][k]);
+	    GdkPixbuf *pixbufscaled0  = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
 
-	    Santa_surfaces[i][j][k] = gdk_cairo_surface_create_from_pixbuf (pixbufscaled, 0, NULL);
+	    GdkPixbuf *pixbufscaled1 = gdk_pixbuf_flip(pixbufscaled0,TRUE);
+
+	    if(Santa_surfaces[i][j][0][k])
+	    {
+	       cairo_surface_destroy(Santa_surfaces[i][j][0][k]);
+	       cairo_surface_destroy(Santa_surfaces[i][j][1][k]);
+	    }
+
+	    Santa_surfaces[i][j][0][k] = gdk_cairo_surface_create_from_pixbuf (pixbufscaled0, 0, NULL);
+	    Santa_surfaces[i][j][1][k] = gdk_cairo_surface_create_from_pixbuf (pixbufscaled1, 0, NULL);
 	    g_clear_object(&pixbuf);
-	    g_clear_object(&pixbufscaled);
+	    g_clear_object(&pixbufscaled0);
+	    g_clear_object(&pixbufscaled1);
 	 }
    int ok = 1;
    char *path[PIXINANIMATION];
@@ -174,9 +194,13 @@ void init_Santa_surfaces()
    if (ok)
    {
       printf("Using external Santa: %s.\n",path[0]);
-      if (!Flags.NoMenu)
+      printf("Use first Santa in menu to show Him.\n");
+      fflush(stdout);
+      /*
+	 if (!Flags.NoMenu)
 	 printf("Disabling menu.\n");
-      Flags.NoMenu = 1;
+	 Flags.NoMenu = 1;
+	 */
       int rc,i;
       char **santaxpm;
       for (i=0; i<PIXINANIMATION; i++)
@@ -192,12 +216,16 @@ void init_Santa_surfaces()
 	    if(h < 1) h = 1;
 	    if (w == 1 && h == 1) h = 2;
 	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
-	    GdkPixbuf *pixbufscaled  = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
-	    cairo_surface_destroy( Santa_surfaces[0][0][i]);
-	    Santa_surfaces[0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbufscaled,0,NULL);
+	    GdkPixbuf *pixbufscaled0 = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
+	    GdkPixbuf *pixbufscaled1 = gdk_pixbuf_flip(pixbufscaled0,TRUE);
+	    cairo_surface_destroy( Santa_surfaces[0][0][0][i]);
+	    cairo_surface_destroy( Santa_surfaces[0][0][1][i]);
+	    Santa_surfaces[0][0][0][i] = gdk_cairo_surface_create_from_pixbuf(pixbufscaled0,0,NULL);
+	    Santa_surfaces[0][0][1][i] = gdk_cairo_surface_create_from_pixbuf(pixbufscaled1,0,NULL);
 	    XpmFree(santaxpm);
 	    g_clear_object(&pixbuf);
-	    g_clear_object(&pixbufscaled);
+	    g_clear_object(&pixbufscaled0);
+	    g_clear_object(&pixbufscaled1);
 	 }
 	 else
 	 {
@@ -220,8 +248,8 @@ void SetSantaSizeSpeed()
    else
       SantaSpeed = 0.01*Flags.SantaSpeedFactor*SantaSpeed;
    global.ActualSantaSpeed               = SantaSpeed;
-   init_Santa_surfaces();
-   cairo_surface_t *surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][CurrentSanta];
+   //init_Santa_surfaces();
+   cairo_surface_t *surface = Santa_surfaces[Flags.SantaSize][Flags.Rudolf][global.SantaDirection][CurrentSanta];
    global.SantaWidth        = cairo_image_surface_get_width(surface);
    global.SantaHeight       = cairo_image_surface_get_height(surface);
    setSantaRegions();
@@ -253,22 +281,33 @@ int do_usanta(void *d)
    double santayrmin = 0;
    double santayrmax = global.SnowWinHeight*0.33;
 
-   global.ActualSantaSpeed += dt*(SANTASENS*global.NewWind+SantaSpeed - global.ActualSantaSpeed);
+   // global.ActualSantaSpeed is the absolute value of Santa's speed
+   // as is SantaSpeed
+   if (global.SantaDirection == 0)
+      global.ActualSantaSpeed += dt*(SANTASENS*global.NewWind+SantaSpeed - global.ActualSantaSpeed);
+   else
+      global.ActualSantaSpeed += dt*(-SANTASENS*global.NewWind+SantaSpeed - global.ActualSantaSpeed);
+
    if (global.ActualSantaSpeed>3*SantaSpeed)
       global.ActualSantaSpeed = 3*SantaSpeed;
    else if (global.ActualSantaSpeed < -2*SantaSpeed)
       global.ActualSantaSpeed = -2*SantaSpeed;
 
-   SantaXr += dt*global.ActualSantaSpeed;
+   if (global.SantaDirection == 0)
+      SantaXr += dt*global.ActualSantaSpeed;
+   else
+      SantaXr -= dt*global.ActualSantaSpeed;
+
    P("SantaXr: %ld global.SnowWinWidth: %d\n",lrint(SantaXr),global.SnowWinWidth);
-   if (SantaXr >= global.SnowWinWidth) 
+   if (
+	 (SantaXr >= global.SnowWinWidth && global.SantaDirection == 0) ||
+	 (SantaXr <= -global.SantaWidth  && global.SantaDirection == 1)
+      )
    {
       ResetSanta(); 
       oldx = global.SantaX;
       oldy = global.SantaY;
    }
-   if (SantaXr < -global.SantaWidth-global.ActualSantaSpeed) 
-      SantaXr = -global.SantaWidth - global.ActualSantaSpeed; 
    global.SantaX = lrintf(SantaXr);
    dtt += dt;
    if (dtt > 0.1)
@@ -291,10 +330,21 @@ int do_usanta(void *d)
       if (SantaYr > santayrmax - 20)
 	 yspeeddir = -2;
       int mooncy = global.moonY+Flags.MoonSize/2;
-      if (MoonSeeking &&
+      int ms;
+      if (global.SantaDirection == 0)
+	 ms = 
+	    MoonSeeking &&
 	    Flags.Moon && 
 	    global.SantaX+global.SantaWidth < global.moonX+Flags.MoonSize && 
-	    global.SantaX+global.SantaWidth > global.moonX-300) // Santa likes to hover the moon
+	    global.SantaX+global.SantaWidth > global.moonX-300; // Santa likes to hover the moon
+      else
+	 ms = 
+	    MoonSeeking &&
+	    Flags.Moon && 
+	    global.SantaX > global.moonX && 
+	    global.SantaX < global.moonX+300; // Santa likes to hover the moon
+
+      if(ms)
       {
 	 int dy = global.SantaY+global.SantaHeight/2 - mooncy;
 	 if (dy < 0)
@@ -325,13 +375,31 @@ int do_usanta(void *d)
 
 void ResetSanta()      
 {
-   global.SantaX  = -global.SantaWidth - global.ActualSantaSpeed;
+   // Most of the times, Santa will reappear at the side where He disappears
+   if (drand48() > 0.2)
+      global.SantaDirection = 1 - global.SantaDirection;
+   // place Santa somewhere before the left edge or after the right edge of the screen
+   int offset = global.SantaWidth*(drand48()+2);
+   if (global.SantaDirection == 1)
+      offset -= global.SantaWidth;
+   //offset = 0;  
+   if (global.SantaDirection == 0)
+      global.SantaX  = -offset;
+   else
+      global.SantaX = global.SnowWinWidth + offset;
+   P("%d\n",global.SantaX);
    SantaXr = global.SantaX;
    global.SantaY  = randint(global.SnowWinHeight / 3)+40;
    // sometimes Santa is moon seeking, sometimes not
    MoonSeeking = drand48() > 0.5;
    P("MoonSeeking: %d\n",MoonSeeking);
-   if (MoonSeeking && Flags.Moon && global.moonX < 400)
+   int ms;
+   if (global.SantaDirection == 0)
+      ms = MoonSeeking && Flags.Moon && global.moonX < 400;
+   else
+      ms = MoonSeeking && Flags.Moon && global.moonX > global.SnowWinWidth - 400;
+
+   if (ms)
    {
       P("moon seeking at start\n");
       global.SantaY = randint(Flags.MoonSize + 40)+global.moonY-20;
@@ -344,6 +412,14 @@ void ResetSanta()
    SetSantaSizeSpeed();
 }
 
+void SantaVisible()
+{
+   global.SantaX = global.SnowWinWidth/3;
+   global.SantaY = global.SnowWinHeight/6+40;
+   SantaXr = global.SantaX;
+   SantaYr = global.SantaY;
+}
+
 void setSantaRegions()
 {
    P("setSantaRegions %d %d %d %d\n",global.SantaX,global.SantaY,global.SantaWidth,global.SantaHeight);
@@ -354,8 +430,13 @@ void setSantaRegions()
 
    if(global.SantaPlowRegion)
       XDestroyRegion(global.SantaPlowRegion);
-   global.SantaPlowRegion = RegionCreateRectangle(
-	 global.SantaX + global.SantaWidth, global.SantaY, 1, global.SantaHeight);
+   if(global.SantaDirection == 0)
+      global.SantaPlowRegion = RegionCreateRectangle(
+	    global.SantaX + global.SantaWidth, global.SantaY, 1, global.SantaHeight);
+   else
+      global.SantaPlowRegion = RegionCreateRectangle(
+	    global.SantaX - 1,                 global.SantaY, 1, global.SantaHeight);
+
 }
 
 Region RegionCreateRectangle(int x, int y, int w, int h)
