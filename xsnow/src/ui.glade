@@ -300,6 +300,12 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="santascale-adjustment">
+    <property name="lower">50</property>
+    <property name="upper">200</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="santaspeedadjustment">
     <property name="lower">20</property>
     <property name="upper">400</property>
@@ -397,30 +403,19 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step-increment">1</property>
     <property name="page-increment">1</property>
   </object>
+  <object class="GtkAdjustment" id="treescale-adjustment">
+    <property name="lower">50</property>
+    <property name="upper">200</property>
+    <property name="value">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="treewindowfilladjustment">
     <property name="lower">10</property>
     <property name="upper">50</property>
     <property name="value">30</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-  </object>
-  <object class="GtkTextBuffer" id="welcome-text">
-    <property name="text" translatable="yes"> If everything is ok, it is now snowing on your desktop.\n
-\n
-Using he tabs above (snow, Santa, scenery, wind) you are\n
-encouraged to define your own preferences.\n
-\n
-If xsnow misbehaves on your desktop, use the 'settings'\n
-tab to see if you can correct this.\n\n
-In every tab you find the following rescue buttons:\n
-Defaults: set default preferences for this tab.\n
-Vintage: set vintage preferences for this tab.\n
-All defaults: set default preferences for all (except settings) tabs.\n
-All vintage: set vintage preferences for all (except settings) tabs.\n\n
-Vintage preferences give the look and feel of the original\n
-xsnow, created in 1993 by Rick Jansen.\n
-
-</property>
   </object>
   <object class="GtkAdjustment" id="whirl-adjustment">
     <property name="upper">300</property>
@@ -444,7 +439,7 @@ xsnow, created in 1993 by Rick Jansen.\n
         <property name="transition-duration">400</property>
         <property name="transition-type">crossfade</property>
         <child>
-          <!-- n-columns=3 n-rows=26 -->
+          <!-- n-columns=3 n-rows=24 -->
           <object class="GtkGrid" id="grid_welcome">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -457,54 +452,29 @@ xsnow, created in 1993 by Rick Jansen.\n
                 <property name="can-focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Hide menu</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Leave menu.
-Flag: -nomenu</property>
-                    <property name="halign">end</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_iconify" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkButton" id="general-quit2">
-                    <property name="label" translatable="yes">Quit xsnow</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_quit" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="left-attach">1</property>
-                <property name="top-attach">25</property>
+                <property name="top-attach">23</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">If everything is ok, it is now snowing on your desktop, and birds are flying.</property>
-                <property name="justify">fill</property>
-                <property name="max-width-chars">50</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">If everything is ok, it is now snowing on your desktop, and birds are flying. You are encouraged to define your own preferences using the tabs above.</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">60</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -515,25 +485,11 @@ Flag: -nomenu</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">You are encouraged to define your own preferences using the tabs above.</property>
-                <property name="justify">fill</property>
-                <property name="max-width-chars">50</property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="halign">start</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">center</property>
                 <property name="label" translatable="yes">Use the &lt;b&gt;settings&lt;/b&gt; tab if xsnow is misbehaving.
 Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                 <property name="use-markup">True</property>
-                <property name="justify">fill</property>
                 <property name="wrap">True</property>
                 <property name="max-width-chars">50</property>
               </object>
@@ -546,9 +502,9 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">start</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">center</property>
                 <property name="label" translatable="yes">In every tab you find the following rescue buttons:</property>
-                <property name="justify">fill</property>
                 <property name="wrap">True</property>
                 <property name="max-width-chars">50</property>
               </object>
@@ -561,10 +517,13 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin-start">20</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;Defaults &lt;/b&gt;</property>
                     <property name="use-markup">True</property>
                   </object>
@@ -578,8 +537,11 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">Set default preferences for this tab.</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">50</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -597,10 +559,13 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin-start">20</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;Vintage &lt;/b&gt;</property>
                     <property name="use-markup">True</property>
                   </object>
@@ -614,8 +579,11 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">Set vintage preferences for this tab.</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">50</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -633,10 +601,13 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin-start">20</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;All defaults &lt;/b&gt;</property>
                     <property name="use-markup">True</property>
                   </object>
@@ -650,8 +621,11 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">Set default preferences for all (except settings) tabs.</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">46</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -669,10 +643,13 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin-start">20</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;All vintage &lt;/b&gt;</property>
                     <property name="use-markup">True</property>
                   </object>
@@ -686,8 +663,11 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">Set vintage preferences for all (except settings) tabs.</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">46</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -727,17 +707,6 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">  </property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">18</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">   </property>
               </object>
               <packing>
@@ -753,6 +722,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">start</property>
                     <property name="pixel-size">64</property>
                     <property name="icon-name">applications-games</property>
                   </object>
@@ -766,8 +737,9 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="margin-left">24</property>
-                    <property name="margin-right">24</property>
+                    <property name="double-buffered">False</property>
+                    <property name="margin-start">24</property>
+                    <property name="margin-end">24</property>
                     <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Welcome at xsnow!</property>
                     <attributes>
@@ -784,6 +756,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image2">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">end</property>
                     <property name="pixel-size">64</property>
                     <property name="icon-name">applications-games</property>
                   </object>
@@ -807,6 +781,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image3">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">start</property>
                     <property name="pixel-size">64</property>
                     <property name="icon-name">applications-games</property>
                   </object>
@@ -820,12 +796,12 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="halign">start</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">center</property>
                     <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Vintage preferences: the look and feel of the original xsnow, created in 1993 by Rick Jansen.</property>
-                    <property name="justify">fill</property>
                     <property name="wrap">True</property>
-                    <property name="max-width-chars">45</property>
+                    <property name="max-width-chars">40</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -837,6 +813,8 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                   <object class="GtkImage" id="hello-image4">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">end</property>
                     <property name="pixel-size">64</property>
                     <property name="icon-name">applications-games</property>
                   </object>
@@ -849,7 +827,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
-                <property name="top-attach">20</property>
+                <property name="top-attach">18</property>
               </packing>
             </child>
             <child>
@@ -861,7 +839,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
-                <property name="top-attach">21</property>
+                <property name="top-attach">19</property>
               </packing>
             </child>
             <child>
@@ -870,62 +848,18 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                 <property name="can-focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">All defaults</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
-Flag: -defaults</property>
-                    <property name="halign">end</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_all_defaults" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkLinkButton" id="donate-button1">
-                    <property name="label" translatable="yes">Donate</property>
-                    <property name="name">donate</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Donate one euro or so to inspire the 
-maintainer of xsnow, here is a paypal link. </property>
-                    <property name="uri">https://paypal.me/wvermin</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">All vintage</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
-Flag: -vintage</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="left-attach">1</property>
-                <property name="top-attach">24</property>
+                <property name="top-attach">22</property>
               </packing>
             </child>
             <child>
@@ -949,27 +883,172 @@ Flag: -vintage</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <!-- n-columns=3 n-rows=2 -->
+              <object class="GtkGrid" id="welcome-button-grid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">If the system is too busy, all panels get this color, in which case
-you could adapt some things in "snow", "birds" or "settings", "celestials"</property>
-                <property name="justify">center</property>
-                <property name="xalign">0.5</property>
-                <property name="yalign">0.5</property>
-                <style>
-                  <class name="busymessage"/>
-                </style>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">All defaults</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
+Flag: -defaults</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_defaults" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="donate-button1">
+                    <property name="label" translatable="yes">Donate</property>
+                    <property name="name">donate</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Donate one euro or so to inspire the maintainer of xsnow, here is a paypal link. </property>
+                    <property name="uri">https://paypal.me/wvermin</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">All vintage</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
+Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Hide menu</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Leave menu.
+Flag: -nomenu</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_iconify" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="contact-button1">
+                    <property name="label" translatable="yes">Contact</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Please report any comments to the maintainer of xsnow.</property>
+                    <property name="uri">https://ratrabbit.nl/ratrabbit/contact</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="general-quit2">
+                    <property name="label" translatable="yes">Quit xsnow</property>
+                    <property name="width-request">120</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_quit" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">1</property>
-                <property name="top-attach">17</property>
+                <property name="top-attach">21</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">center</property>
+                    <property name="xpad">3</property>
+                    <property name="label" translatable="yes">If the system is too busy, all panels get this color, in which case you could  adapt some settings in "snow", "birds", "settings", or "celestials".</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">60</property>
+                    <style>
+                      <class name="busymessage"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">  </property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -1135,22 +1214,10 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
             <child>
               <placeholder/>
             </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="name">page5</property>
-            <property name="title" translatable="yes">welcome</property>
+            <property name="title" translatable="yes">Welcome</property>
           </packing>
         </child>
         <child>
@@ -1165,6 +1232,7 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Blow off:</property>
                 <property name="xalign">0.89999997615814209</property>
@@ -1178,6 +1246,7 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="label" translatable="yes">On windows:</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
@@ -1190,6 +1259,7 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="label" translatable="yes">On bottom:</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
@@ -1202,6 +1272,7 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="label" translatable="yes">On scenery:</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
@@ -1218,6 +1289,7 @@ you could adapt some things in "snow", "birds" or "settings", "celestials"</prop
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, show snowflakes.
 Flags: -snow, -nosnow</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1233,6 +1305,7 @@ Flags: -snow, -nosnow</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, show snow blowing away.
 Flags: -blowsnow, -noblowsnow</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1248,6 +1321,7 @@ Flags: -blowsnow, -noblowsnow</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, show fallen snow on windows.
 Flags: -keepsnowonwindows, -nokeepsnowonwindows</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1263,6 +1337,7 @@ Flags: -keepsnowonwindows, -nokeepsnowonwindows</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, show fallen snow on bottom of the desktop.
 Flags: -keepsnowonscreen, -nokeepsnowonscreen</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1278,6 +1353,7 @@ Flags: -keepsnowonscreen, -nokeepsnowonscreen</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, snow will collect on the trees.
 Flags: -keepsnowontrees, -nokeepsnowontrees</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1289,8 +1365,9 @@ Flags: -keepsnowontrees, -nokeepsnowontrees</property>
               <object class="GtkScale" id="id-BlowOffFactor">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will be generated because of Santa ploughing, wind or disappearing windows.
+                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will be generated  because of Santa ploughing, wind or disappearing windows. 
 Flag: -blowofffactor</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-blow-adjustment</property>
                 <property name="round-digits">1</property>
@@ -1307,9 +1384,10 @@ Flag: -blowofffactor</property>
               <object class="GtkScale" id="id-MaxWinSnowDepth">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the windows.
-Note: in Wayland, there is no snow on the windows.
+                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the windows. 
+Note: in Wayland, there is no snow on the windows. 
 Flag: -wsnowdepth</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-on-windows-adjustment</property>
                 <property name="round-digits">1</property>
@@ -1326,8 +1404,9 @@ Flag: -wsnowdepth</property>
               <object class="GtkScale" id="id-MaxScrSnowDepth">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the bottom of the desktop.
+                <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the  bottom of the desktop.
 Flag: -ssnowdepth</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-on-screen-adjustment</property>
                 <property name="round-digits">1</property>
@@ -1346,6 +1425,7 @@ Flag: -ssnowdepth</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">The higher this setting, the more snow will collect on the trees.
 Flag: -maxontrees</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-on-trees-adjustment</property>
                 <property name="round-digits">1</property>
@@ -1401,6 +1481,7 @@ Flag: -maxontrees</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.
 </property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_snow" swapped="no"/>
@@ -1418,6 +1499,7 @@ Flag: -maxontrees</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_snow" swapped="no"/>
@@ -1448,6 +1530,7 @@ Flag: -maxontrees</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -1476,6 +1559,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flags: -defaults</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
@@ -1494,6 +1578,7 @@ Flags: -defaults</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
@@ -1523,6 +1608,7 @@ Flag: -vintage</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -1555,6 +1641,7 @@ Flag: -vintage</property>
                 <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Size:</property>
                 <property name="xalign">0.89999997615814209</property>
@@ -1570,6 +1657,7 @@ Flag: -vintage</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Size of snowflakes, works only for non-vintage snow flakes.
 Flag: -snowsize</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-size-adjustment</property>
                 <property name="round-digits">0</property>
@@ -1600,7 +1688,8 @@ Flag: -snowsize</property>
                 <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Max # flakes:</property>
+                <property name="double-buffered">False</property>
+                <property name="label" translatable="yes">Max # snowflakes:</property>
                 <property name="justify">right</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
@@ -1615,6 +1704,7 @@ Flag: -snowsize</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Maximum amount of snowflakes.
 Flag: -flakecountmax</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">flake-count-max-adjustment</property>
                 <property name="round-digits">0</property>
@@ -1635,8 +1725,9 @@ Flag: -flakecountmax</property>
                 <property name="width-request">60</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes"># Flakes:</property>
+                <property name="label" translatable="yes"># Snowflakes:</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -1649,6 +1740,7 @@ Flag: -flakecountmax</property>
                 <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">label</property>
@@ -1666,6 +1758,7 @@ Flag: -flakecountmax</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set, try to show fluff on fallen snow and trees if possible.
 Flags: -fluffy, -nofluffy</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -1703,6 +1796,7 @@ Flags: -fluffy, -nofluffy</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Speed of the snowflakes.
 Flag: -snowspeedfactor</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-speed-adjustment</property>
                 <property name="round-digits">0</property>
@@ -1719,6 +1813,7 @@ Flag: -snowspeedfactor</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Intensity:</property>
                 <property name="xalign">0.89999997615814209</property>
@@ -1734,6 +1829,7 @@ Flag: -snowspeedfactor</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">The higher, the more snowflakes.
 Flag: -snowflakes</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="adjustment">snow-intensity-adjustment</property>
                 <property name="round-digits">0</property>
@@ -1753,6 +1849,7 @@ Flag: -snowflakes</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Color:</property>
                 <property name="xalign">0.89999997615814209</property>
@@ -1769,6 +1866,7 @@ Flag: -snowflakes</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">The color of the snow.
 Flag: -sc</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="show-editor">True</property>
@@ -1835,7 +1933,7 @@ Flag: -sc</property>
           </object>
           <packing>
             <property name="name">page2</property>
-            <property name="title" translatable="yes">snow</property>
+            <property name="title" translatable="yes">Snow</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -1855,8 +1953,9 @@ Flag: -sc</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Tiny Santa with three reindeers.
 Flags: -santa 0 -norudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="always-show-image">True</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
@@ -1865,6 +1964,7 @@ Flags: -santa 0 -norudolph</property>
                   <object class="GtkImage" id="santa-0-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -1882,8 +1982,9 @@ Flags: -santa 0 -norudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Small Santa with three reindeers.
 Flags: -santa 1 -norudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
@@ -1892,6 +1993,7 @@ Flags: -santa 1 -norudolph</property>
                   <object class="GtkImage" id="santa-1-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -1909,8 +2011,9 @@ Flags: -santa 1 -norudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Santa with three reindeers.
 Flags: -santa 2 -norudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
@@ -1919,6 +2022,7 @@ Flags: -santa 2 -norudolph</property>
                   <object class="GtkImage" id="santa-2-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -1936,8 +2040,9 @@ Flags: -santa 2 -norudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.
 Flags: -santa 3 -norudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
@@ -1946,6 +2051,7 @@ Flags: -santa 3 -norudolph</property>
                   <object class="GtkImage" id="santa-3-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -1963,8 +2069,9 @@ Flags: -santa 3 -norudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Santa using the train with two reindeers.
 Flags: -santa 4 -norudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
@@ -1973,6 +2080,7 @@ Flags: -santa 4 -norudolph</property>
                   <object class="GtkImage" id="santa-4-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -1990,8 +2098,9 @@ Flags: -santa 4 -norudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Santa using the train with one reindeer and Rudolph.
 Flags: -santa 4 -showrudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
                 <signal name="toggled" handler="button_santa" swapped="no"/>
@@ -1999,6 +2108,7 @@ Flags: -santa 4 -showrudolph</property>
                   <object class="GtkImage" id="santa-4r-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2016,8 +2126,9 @@ Flags: -santa 4 -showrudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Tiny Santa with two reindeers and Rudolph.
 Flags: -santa 0 -showrudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="always-show-image">True</property>
                 <property name="active">True</property>
                 <property name="draw-indicator">False</property>
@@ -2027,6 +2138,7 @@ Flags: -santa 0 -showrudolph</property>
                   <object class="GtkImage" id="santa-0r-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2044,8 +2156,9 @@ Flags: -santa 0 -showrudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Small Santa with two reindeers and Rudolph.
 Flags: -santa 1 -showrudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
                 <signal name="toggled" handler="button_santa" swapped="no"/>
@@ -2053,6 +2166,7 @@ Flags: -santa 1 -showrudolph</property>
                   <object class="GtkImage" id="santa-1r-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2070,8 +2184,9 @@ Flags: -santa 1 -showrudolph</property>
                 <property name="receives-default">False</property>
                 <property name="tooltip-text" translatable="yes">Santa with two reindeers and Rudolph.
 Flags: -santa 2 -showrudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
                 <signal name="toggled" handler="button_santa" swapped="no"/>
@@ -2079,6 +2194,7 @@ Flags: -santa 2 -showrudolph</property>
                   <object class="GtkImage" id="santa-2r-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2094,10 +2210,11 @@ Flags: -santa 2 -showrudolph</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">False</property>
-                <property name="tooltip-text" translatable="yes">Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder,  Blixem and Rudolph.
+                <property name="tooltip-text" translatable="yes">Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem and  Rudolph.
 Flags: -santa 3 -showrudolph</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="draw-indicator">False</property>
                 <property name="group">santa-0</property>
                 <signal name="toggled" handler="button_santa" swapped="no"/>
@@ -2105,6 +2222,7 @@ Flags: -santa 3 -showrudolph</property>
                   <object class="GtkImage" id="santa-3r-imid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2119,9 +2237,10 @@ Flags: -santa 3 -showrudolph</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="label" translatable="yes">Without Rudolph</property>
               </object>
               <packing>
@@ -2133,9 +2252,10 @@ Flags: -santa 3 -showrudolph</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
-                <property name="margin-left">8</property>
+                <property name="margin-start">8</property>
                 <property name="label" translatable="yes">With Rudolph</property>
               </object>
               <packing>
@@ -2162,6 +2282,7 @@ Flags: -santa 3 -showrudolph</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="margin-top">12</property>
                 <property name="margin-bottom">40</property>
                 <property name="label" translatable="yes">Choose your favorite Santa</property>
@@ -2191,6 +2312,7 @@ Flags: -santa 3 -showrudolph</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="margin-right">8</property>
@@ -2208,12 +2330,13 @@ Flags: -santa 3 -showrudolph</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Santa's speed.
 Flag: -santaspeedfactor</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
-                <property name="margin-left">8</property>
-                <property name="margin-right">8</property>
+                <property name="margin-start">8</property>
                 <property name="adjustment">santaspeedadjustment</property>
                 <property name="fill-level">1000</property>
                 <property name="round-digits">2</property>
+                <property name="digits">0</property>
                 <property name="has-origin">False</property>
                 <property name="value-pos">left</property>
               </object>
@@ -2234,6 +2357,7 @@ Flag: -santaspeedfactor</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_santa" swapped="no"/>
@@ -2251,6 +2375,7 @@ Flag: -santaspeedfactor</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_santa" swapped="no"/>
@@ -2281,6 +2406,7 @@ Flag: -santaspeedfactor</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -2309,6 +2435,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
@@ -2327,6 +2454,7 @@ Flag: -defaults</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
@@ -2356,6 +2484,7 @@ Flag: -vintage</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -2379,8 +2508,9 @@ Flag: -vintage</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">To show or not to show Santa.
 Flags: -showsanta, -nosanta</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">end</property>
-                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
                 <property name="margin-top">1</property>
               </object>
               <packing>
@@ -2413,10 +2543,38 @@ Flags: -showsanta, -nosanta</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Scale:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">2</property>
+                <property name="top-attach">10</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkScale" id="id-SantaScale">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Scale of Santa.
+Flags: -santascale &lt;n&gt;</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+                <property name="margin-start">8</property>
+                <property name="adjustment">santascale-adjustment</property>
+                <property name="round-digits">0</property>
+                <property name="digits">0</property>
+                <property name="value-pos">left</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">10</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -2469,6 +2627,7 @@ Flags: -showsanta, -nosanta</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">To show or not to show scenery.
 Flags: -showtrees, -notrees</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
               </object>
@@ -2485,11 +2644,13 @@ Flags: -showtrees, -notrees</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Vintage tree, you can set the color.
 Flag: -treetype 0</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage0">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2505,12 +2666,14 @@ Flag: -treetype 0</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Woody tree.
-Flags: -treetype 1, -treetype all</property>
+Flags: -treetype 1 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2526,12 +2689,14 @@ Flags: -treetype 1, -treetype all</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Leavy tree.
-Flags: -treetype 2, -treetype all</property>
+Flags: -treetype 2 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage2">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2547,12 +2712,14 @@ Flags: -treetype 2, -treetype all</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Small house.
-Flags: -treetype 3, -treetype all</property>
+Flags: -treetype 3 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage3">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2568,12 +2735,14 @@ Flags: -treetype 3, -treetype all</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Reindeer.
-Flags: -treetype 4, -treetype all</property>
+Flags: -treetype 4 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage4">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2589,12 +2758,14 @@ Flags: -treetype 4, -treetype all</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Moose.
-Flags: -treetype 5, -treetype all</property>
+Flags: -treetype 5 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage5">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2610,12 +2781,14 @@ Flags: -treetype 5, -treetype all</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Snowy tree.
-Flags: -treetype 6, -treetype all</property>
+Flags: -treetype 6 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage6">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2632,6 +2805,7 @@ Flags: -treetype 6, -treetype all</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Set color of vintage tree.
 Flag: -tc</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="show-editor">True</property>
@@ -2667,6 +2841,7 @@ Flag: -tc</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="margin-top">12</property>
                 <property name="margin-bottom">40</property>
                 <property name="label" translatable="yes">Compose your favorite scenery</property>
@@ -2684,7 +2859,11 @@ Flag: -tc</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Try and click any picture!</property>
+                <property name="double-buffered">False</property>
+                <property name="label" translatable="yes">Try and click any image!</property>
+                <property name="wrap">True</property>
+                <property name="width-chars">0</property>
+                <property name="max-width-chars">25</property>
                 <attributes>
                   <attribute name="scale" value="1.2"/>
                 </attributes>
@@ -2713,12 +2892,14 @@ Flag: -tc</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Polar bear.
-Flags: -treetype 7, -treetype all</property>
+Flags: -treetype 7 or: -treetype all</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_tree" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="treeimage7">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="stock">gtk-missing-image</property>
                   </object>
                 </child>
@@ -2740,6 +2921,7 @@ Flags: -treetype 7, -treetype all</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_scenery" swapped="no"/>
@@ -2757,6 +2939,7 @@ Flags: -treetype 7, -treetype all</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_scenery" swapped="no"/>
@@ -2787,6 +2970,7 @@ Flags: -treetype 7, -treetype all</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -2815,6 +2999,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
@@ -2833,6 +3018,7 @@ Flag: -defaults</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
@@ -2862,6 +3048,7 @@ Flag: -vintage</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -2904,7 +3091,7 @@ Flag: -vintage</property>
               </packing>
             </child>
             <child>
-              <!-- n-columns=5 n-rows=2 -->
+              <!-- n-columns=7 n-rows=1 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -2912,6 +3099,7 @@ Flag: -vintage</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes"># Items:</property>
                     <property name="wrap">True</property>
@@ -2925,17 +3113,20 @@ Flag: -vintage</property>
                 </child>
                 <child>
                   <object class="GtkScale" id="id-DesiredNumberOfTrees">
+                    <property name="height-request">100</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Desired number of scenery items.
 Flag: -trees</property>
-                    <property name="valign">center</property>
+                    <property name="double-buffered">False</property>
+                    <property name="orientation">vertical</property>
                     <property name="adjustment">ntreesadjustment</property>
+                    <property name="inverted">True</property>
                     <property name="fill-level">100</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
                     <property name="has-origin">False</property>
-                    <property name="value-pos">left</property>
+                    <property name="value-pos">bottom</property>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
@@ -2946,6 +3137,7 @@ Flag: -trees</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">% Window fill:</property>
                   </object>
@@ -2960,13 +3152,15 @@ Flag: -trees</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Bottom percentage of screen available for scenery.
 Flag: -treefill</property>
-                    <property name="valign">center</property>
+                    <property name="double-buffered">False</property>
+                    <property name="orientation">vertical</property>
                     <property name="adjustment">treewindowfilladjustment</property>
+                    <property name="inverted">True</property>
                     <property name="fill-level">100</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
                     <property name="has-origin">False</property>
-                    <property name="value-pos">left</property>
+                    <property name="value-pos">bottom</property>
                   </object>
                   <packing>
                     <property name="left-attach">3</property>
@@ -2981,11 +3175,12 @@ Flag: -treefill</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">To allow overlap or not when placing scenery.
 Flags: -treeoverlap, -notreeoverlap</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
-                    <property name="left-attach">4</property>
+                    <property name="left-attach">6</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
@@ -2993,34 +3188,32 @@ Flags: -treeoverlap, -notreeoverlap</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
-                    <property name="use-markup">True</property>
+                    <property name="double-buffered">False</property>
+                    <property name="label" translatable="yes">Scale:</property>
                   </object>
                   <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
+                    <property name="left-attach">4</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkScale" id="id-TreeScale">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
-                    <property name="use-markup">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Scale of scenery.
+Flag: sceneryscale &lt;n&gt;</property>
+                    <property name="double-buffered">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="adjustment">treescale-adjustment</property>
+                    <property name="inverted">True</property>
+                    <property name="round-digits">0</property>
+                    <property name="digits">0</property>
+                    <property name="value-pos">bottom</property>
                   </object>
                   <packing>
-                    <property name="left-attach">3</property>
-                    <property name="top-attach">1</property>
+                    <property name="left-attach">5</property>
+                    <property name="top-attach">0</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -3176,7 +3369,7 @@ Flags: -treeoverlap, -notreeoverlap</property>
           </object>
           <packing>
             <property name="name">page0</property>
-            <property name="title" translatable="yes">scenery</property>
+            <property name="title" translatable="yes">Scenery</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -3193,6 +3386,7 @@ Flags: -treeoverlap, -notreeoverlap</property>
               <object class="GtkLabel" id="celestials-header">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="margin-bottom">50</property>
                 <property name="label" translatable="yes">Compose here your favorite celestial conditions</property>
                 <attributes>
@@ -3376,6 +3570,7 @@ Flag: -nomenu</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Wind</property>
                     <property name="justify">center</property>
@@ -3398,6 +3593,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">If set, there will be wind.
 Flags: -wind, -nowind</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
@@ -3410,6 +3606,7 @@ Flags: -wind, -nowind</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Whirl:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3425,6 +3622,8 @@ Flags: -wind, -nowind</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">The higher this setting, the more the wind will whirl.
 Flag: -whirlfactor</property>
+                    <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <property name="adjustment">whirl-adjustment</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
@@ -3441,6 +3640,7 @@ Flag: -whirlfactor</property>
                     <property name="width-request">60</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Timer:</property>
                     <property name="width-chars">7</property>
@@ -3455,8 +3655,9 @@ Flag: -whirlfactor</property>
                   <object class="GtkScale" id="id-WindTimer">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">This setting determines how many seconds pass between two gusts of wind.
+                    <property name="tooltip-text" translatable="yes">This setting determines how many seconds pass between  two  gusts of wind.
 Flag: -windtimer</property>
+                    <property name="double-buffered">False</property>
                     <property name="adjustment">wind-timer-adjustment</property>
                     <property name="round-digits">0</property>
                     <property name="digits">0</property>
@@ -3470,11 +3671,12 @@ Flag: -windtimer</property>
                 </child>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Gust!</property>
+                    <property name="label" translatable="yes">Now!</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Force a gust of wind immediately.</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_wind_activate" swapped="no"/>
                   </object>
@@ -3488,6 +3690,7 @@ Flag: -windtimer</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Stars</property>
                     <property name="xalign">0.6000000238418579</property>
@@ -3509,6 +3712,7 @@ Flag: -windtimer</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">To show or not show stars.
 Flag: -stars  (0 means: no stars)</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
@@ -3521,6 +3725,7 @@ Flag: -stars  (0 means: no stars)</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Number:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3536,6 +3741,7 @@ Flag: -stars  (0 means: no stars)</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Number of twinkling stars.
 Flag: -stars</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">staradjustment</property>
                     <property name="round-digits">0</property>
@@ -3577,6 +3783,7 @@ Flag: -stars</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Moon</property>
                     <property name="xalign">0.6000000238418579</property>
@@ -3598,6 +3805,7 @@ Flag: -stars</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">To show or not show moon.
 Flags: -moon 1, -moon 0</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -3611,6 +3819,7 @@ Flags: -moon 1, -moon 0</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Speed:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3626,6 +3835,7 @@ Flags: -moon 1, -moon 0</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Speed of moon in pixels/minute.
 Flag: -moonspeed</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">moonspeedadjustment</property>
                     <property name="round-digits">0</property>
@@ -3643,9 +3853,9 @@ Flag: -moonspeed</property>
                     <property name="width-request">60</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Size:</property>
-                    <property name="width-chars">6</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -3659,6 +3869,7 @@ Flag: -moonspeed</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Relative size of the moon.
 Flag: -moonsize</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">moonsizeadjustment</property>
                     <property name="round-digits">0</property>
@@ -3675,6 +3886,7 @@ Flag: -moonsize</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Halo</property>
                     <property name="xalign">0.6000000238418579</property>
@@ -3696,6 +3908,7 @@ Flag: -moonsize</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">To show or not to show halo around moon.
 Flags: -halo 1, -halo 0</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -3706,8 +3919,10 @@ Flags: -halo 1, -halo 0</property>
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Bright:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3723,6 +3938,7 @@ Flags: -halo 1, -halo 0</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Brightness of moon's halo.
 Flag: -halobrightness</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">halobrightadjustment</property>
                     <property name="round-digits">0</property>
@@ -3740,6 +3956,7 @@ Flag: -halobrightness</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Meteors</property>
                     <property name="xalign">0.6000000238418579</property>
@@ -3761,6 +3978,7 @@ Flag: -halobrightness</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">To show or not to show meteors.
 Flags: -meteors, -nometeors</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -3774,6 +3992,7 @@ Flags: -meteors, -nometeors</property>
                     <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Aurora</property>
                     <property name="xalign">0.6000000238418579</property>
@@ -3796,6 +4015,7 @@ Flags: -meteors, -nometeors</property>
                     <property name="tooltip-text" translatable="yes">To show or not show aurora.
 Note: the aurora is best viewed using a dark background.
 Flags: -aurora 1, -aurora 0</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -3806,9 +4026,10 @@ Flags: -aurora 1, -aurora 0</property>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="width-request">60</property>
+                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Width:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3824,6 +4045,7 @@ Flags: -aurora 1, -aurora 0</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Width of aurora in percentage of screen width.
 Flag: -aurorawidth</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">aurorawidthadjustment</property>
                     <property name="round-digits">0</property>
@@ -3844,6 +4066,7 @@ Flag: -aurorawidth</property>
                     <property name="width-request">60</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Height:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3859,6 +4082,7 @@ Flag: -aurorawidth</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Vertical size of aurora.
 Flag: -auroraheight</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">auroraheightadjustment</property>
                     <property name="round-digits">0</property>
@@ -3876,9 +4100,10 @@ Flag: -auroraheight</property>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="width-request">60</property>
+                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Speed:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3892,8 +4117,9 @@ Flag: -auroraheight</property>
                   <object class="GtkScale" id="id-AuroraSpeed">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Animantion speed of aurora: real: 10, time lapse: 100
+                    <property name="tooltip-text" translatable="yes">Animation speed of aurora: real: 10, for a more dramatic effect choose: 100
 Flag: -auroraspeed</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">auroraspeedadjustment</property>
                     <property name="round-digits">0</property>
@@ -3911,6 +4137,7 @@ Flag: -auroraspeed</property>
                     <property name="width-request">60</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Bright:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -3926,6 +4153,7 @@ Flag: -auroraspeed</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Brightness of aurora.
 Flags: -aurorabrightness</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">aurorabrightnessadjustment</property>
                     <property name="round-digits">0</property>
@@ -3946,6 +4174,7 @@ Flags: -aurorabrightness</property>
                     <property name="receives-default">False</property>
                     <property name="tooltip-text" translatable="yes">Place aurora left on the screen.
 Flag: -auroraleft</property>
+                    <property name="double-buffered">False</property>
                     <property name="active">True</property>
                     <property name="draw-indicator">False</property>
                   </object>
@@ -3962,6 +4191,7 @@ Flag: -auroraleft</property>
                     <property name="receives-default">False</property>
                     <property name="tooltip-text" translatable="yes">Place aurora in the middle of the screen.
 Flag: -auroramiddle</property>
+                    <property name="double-buffered">False</property>
                     <property name="active">True</property>
                     <property name="draw-indicator">False</property>
                     <property name="group">id-AuroraLeft</property>
@@ -3979,6 +4209,7 @@ Flag: -auroramiddle</property>
                     <property name="receives-default">False</property>
                     <property name="tooltip-text" translatable="yes">Place aurora in the right of the screen.
 Flag: -auroraright</property>
+                    <property name="double-buffered">False</property>
                     <property name="active">True</property>
                     <property name="draw-indicator">False</property>
                     <property name="group">id-AuroraLeft</property>
@@ -3990,9 +4221,13 @@ Flag: -auroraright</property>
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <property name="label" translatable="yes">Frequency:</property>
+                    <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
                     <property name="left-attach">2</property>
@@ -4005,6 +4240,7 @@ Flag: -auroraright</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Frequency of meteors to appear.
 Flags: -meteorfrequency</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">meteorfreqadjustment</property>
                     <property name="round-digits">0</property>
@@ -4019,8 +4255,10 @@ Flags: -meteorfrequency</property>
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <property name="width-request">80</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="label" translatable="yes">Base:</property>
                     <property name="xalign">0.89999997615814209</property>
@@ -4036,6 +4274,7 @@ Flags: -meteorfrequency</property>
                     <property name="can-focus">True</property>
                     <property name="tooltip-text" translatable="yes">Baseline height of aurora, in percentage of screen height.
 Flag: -aurorabase</property>
+                    <property name="double-buffered">False</property>
                     <property name="valign">center</property>
                     <property name="adjustment">aurorabaseadjustment</property>
                     <property name="round-digits">0</property>
@@ -4049,7 +4288,19 @@ Flag: -aurorabase</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkToggleButton" id="id-MoonColor">
+                    <property name="label" translatable="yes">Color</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Choose between yellow-ish and white-ish moon.
+Flag: -mooncolor [0,1]</property>
+                    <property name="double-buffered">False</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">6</property>
+                    <property name="top-attach">2</property>
+                  </packing>
                 </child>
                 <child>
                   <placeholder/>
@@ -4142,7 +4393,7 @@ Flag: -aurorabase</property>
           </object>
           <packing>
             <property name="name">page4</property>
-            <property name="title" translatable="yes">celestials</property>
+            <property name="title" translatable="yes">Celestials</property>
             <property name="position">4</property>
           </packing>
         </child>
@@ -4159,6 +4410,7 @@ Flag: -aurorabase</property>
               <object class="GtkLabel" id="birds-header">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="margin-top">12</property>
                 <property name="margin-bottom">40</property>
                 <property name="label" translatable="yes">Birds settings</property>
@@ -4184,6 +4436,7 @@ Flag: -aurorabase</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flags: -defaults</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
@@ -4202,6 +4455,7 @@ Flags: -defaults</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
@@ -4230,6 +4484,7 @@ Flag: -vintage</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -4257,6 +4512,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
+                    <property name="double-buffered">False</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -4283,6 +4539,7 @@ Flag: -nomenu</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_birds" swapped="no"/>
@@ -4300,6 +4557,7 @@ Flag: -nomenu</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_birds" swapped="no"/>
@@ -4325,6 +4583,7 @@ Flag: -nomenu</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set: show birds.
 Flags: -showbirds 1, -showbirds 0</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
               </object>
@@ -4341,6 +4600,7 @@ Flags: -showbirds 1, -showbirds 0</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">If set: show no Santa, snow or scenery.
 Flags: -birdsonly 0, -birdsony 1</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
               </object>
@@ -4353,8 +4613,11 @@ Flags: -birdsonly 0, -birdsony 1</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Preferred distance:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4368,6 +4631,7 @@ Flags: -birdsonly 0, -birdsony 1</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Preferred distance from other birds.
 Flag: -prefdistance</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-prefdistance-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4398,6 +4662,7 @@ Flag: -prefdistance</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Restart birds.</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <signal name="clicked" handler="button_birds_restart" swapped="no"/>
@@ -4411,8 +4676,10 @@ Flag: -prefdistance</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Viewing distance:</property>
+                <property name="wrap">True</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4427,6 +4694,7 @@ Flag: -prefdistance</property>
                 <property name="tooltip-text" translatable="yes">Viewing distance.
 NOTE: Santa has no knowledge of viewing distance, so when birds are following Santa, the relative positions of Santa and birds will be temporarely out of sync when you change the viewing distance. This is only noticeable when the birds are following Santa.
 Flag: -viewingdistance</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-vd-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4439,42 +4707,14 @@ Flag: -viewingdistance</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="birds-mean-distance">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Actual mean distance from neighbours.</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin-top">8</property>
-                <property name="label" translatable="yes">label</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">10</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="birds-range">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Distance used to get the desired number of neighbours.</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin-top">8</property>
-                <property name="label" translatable="yes">label</property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">10</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Focus to 
-attraction point:</property>
+                <property name="label" translatable="yes">Focus to attraction point:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4486,8 +4726,9 @@ attraction point:</property>
               <object class="GtkScale" id="id-AttrFactor">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Eagerness to concentrate on common attraction point.
+                <property name="tooltip-text" translatable="yes">Tendency to concentrate on the attraction point.
 Flag: -focuscentre</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-attraction-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4505,6 +4746,7 @@ Flag: -focuscentre</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Desired number of birds. If zero, no birds are shown.
 Flag: -nbirds</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-nbirds-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4523,8 +4765,11 @@ Flag: -nbirds</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes"># Birds:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4538,6 +4783,7 @@ Flag: -nbirds</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Number of nearest neighbours the birds should look at.
 Flag: -neighbours</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-neighbours-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4553,8 +4799,11 @@ Flag: -neighbours</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Neighbours:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4569,6 +4818,7 @@ Flag: -neighbours</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Give the birds a fancy color.
 Flag: -birdscolor</property>
+                <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="rgba">rgb(0,0,0)</property>
@@ -4583,8 +4833,11 @@ Flag: -birdscolor</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Bird color</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -4606,8 +4859,11 @@ Flag: -birdscolor</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Anarchy:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4621,6 +4877,7 @@ Flag: -birdscolor</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Anarchy level: the higher, the more anarchy.
 Flag: -anarchy</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-anarchy-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4636,8 +4893,11 @@ Flag: -anarchy</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Distance weight:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4649,8 +4909,9 @@ Flag: -anarchy</property>
               <object class="GtkScale" id="id-DisWeight">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Eagerness to keep desired distance to neighbours.
+                <property name="tooltip-text" translatable="yes">Tendency to keep desired distance to neighbours.
 Flag: -disweight</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-distance-weight-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4666,9 +4927,11 @@ Flag: -disweight</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Adjust speed to
-neighbours:</property>
+                <property name="label" translatable="yes">Adjust speed to neighbours:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4680,8 +4943,9 @@ neighbours:</property>
               <object class="GtkScale" id="id-FollowWeight">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="tooltip-text" translatable="yes">Eagerness to adjust speed to neighbours.
+                <property name="tooltip-text" translatable="yes">Tendency to adjust speed to neighbours.
 Flag: -followneighbours</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-follow-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4697,8 +4961,11 @@ Flag: -followneighbours</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Speed:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4712,6 +4979,7 @@ Flag: -followneighbours</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Speed of birds in arbitrary units.
 Flag: -birdsspeed</property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-speed-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4727,8 +4995,11 @@ Flag: -birdsspeed</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">center</property>
                 <property name="label" translatable="yes">Drawing scale:</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">20</property>
                 <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
@@ -4743,6 +5014,7 @@ Flag: -birdsspeed</property>
                 <property name="tooltip-text" translatable="yes">Influence the size of the birds.
 Flag: -birdsscale
 </property>
+                <property name="double-buffered">False</property>
                 <property name="adjustment">birds-scale-adjustment</property>
                 <property name="round-digits">0</property>
                 <property name="digits">0</property>
@@ -4764,6 +5036,7 @@ attr point</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Show the point where the birds want to go.
 Flags: -showattr 0, -showattr 1</property>
+                <property name="double-buffered">False</property>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -4778,8 +5051,9 @@ Santa</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Birds are attracted by an attraction point. Here you can choose to let Santa be the attraction point.
+                <property name="tooltip-text" translatable="yes">Birds are attracted by an attraction point. Here you can choose to follow Santa.
 Flags: -followsanta 0, -followsanta 1</property>
+                <property name="double-buffered">False</property>
               </object>
               <packing>
                 <property name="left-attach">3</property>
@@ -4792,6 +5066,7 @@ Flags: -followsanta 0, -followsanta 1</property>
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Percentage of screen to be used for the attraction point.
 Flag: -attrspace</property>
+                <property name="double-buffered">False</property>
                 <property name="orientation">vertical</property>
                 <property name="adjustment">attr-space-adjustment</property>
                 <property name="round-digits">1</property>
@@ -4809,10 +5084,11 @@ Flag: -attrspace</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="valign">start</property>
-                <property name="label" translatable="yes">Attraction
-point
-range</property>
+                <property name="label" translatable="yes">Attraction point range</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">10</property>
               </object>
               <packing>
                 <property name="left-attach">4</property>
@@ -4845,7 +5121,50 @@ range</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
+                <child>
+                  <object class="GtkLabel" id="birds-mean-distance">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Actual mean distance from neighbours.</property>
+                    <property name="double-buffered">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin-top">8</property>
+                    <property name="label" translatable="yes">label</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="birds-range">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Distance used to get the desired number of neighbours.</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin-top">8</property>
+                    <property name="label" translatable="yes">label</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">12</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">9</property>
+                <property name="width">3</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -4910,7 +5229,7 @@ range</property>
           </object>
           <packing>
             <property name="name">page6</property>
-            <property name="title" translatable="yes">birds</property>
+            <property name="title" translatable="yes">Birds</property>
             <property name="position">5</property>
           </packing>
         </child>
@@ -4927,6 +5246,7 @@ range</property>
               <object class="GtkLabel" id="id-version">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="label" translatable="yes">version</property>
               </object>
               <packing>
@@ -4939,6 +5259,7 @@ range</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
                 <property name="margin-top">8</property>
                 <property name="margin-bottom">20</property>
                 <property name="label" translatable="yes">Settings</property>
@@ -4962,9 +5283,12 @@ range</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Trans-
-parency </property>
+                    <property name="double-buffered">False</property>
+                    <property name="label" translatable="yes">Transparency </property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="ellipsize">end</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -4981,6 +5305,7 @@ parency </property>
 0: no transparency.
 100: fully transparent, you will see nothing!
 Flag: -transparency</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">general-transparency-adjuspment</property>
                     <property name="inverted">True</property>
@@ -5000,13 +5325,13 @@ Flag: -transparency</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <property name="label" translatable="yes">Lift
-snow
-on
-bottom</property>
+                    <property name="label" translatable="yes">Lift snow on bottom</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5019,9 +5344,9 @@ bottom</property>
                   <object class="GtkScale" id="id-OffsetS">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Use this if snow falls below the bottom of your screen,
-or fallen snow hides something that should not be hidden.
+                    <property name="tooltip-text" translatable="yes">Use this if snow falls below the bottom of your screen, or  fallen snow hides something that should not be hidden.
 Flag: -offsets</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">lift-window-adjustment</property>
                     <property name="inverted">True</property>
@@ -5041,13 +5366,13 @@ Flag: -offsets</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <property name="label" translatable="yes">Lift
-snow
-on
-windows</property>
+                    <property name="label" translatable="yes">Lift snow on windows</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5060,9 +5385,10 @@ windows</property>
                   <object class="GtkScale" id="id-OffsetY">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Use this if no snow collects on your windows, or if snow collects separated from your windows. 
-Some basic window managers need this setting (e.g. TWM needs in general a value of 25 .. 28).
+                    <property name="tooltip-text" translatable="yes">Use this if no snow collects on your windows, or if snow  collects separated from your windows. 
+Some basic window managers need this setting (e.g. TWM  needs in general a value of 25 .. 28).
 Flag: -offsety</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">lift-windows-adjustment</property>
                     <property name="inverted">True</property>
@@ -5082,11 +5408,13 @@ Flag: -offsety</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Cpu 
-factor</property>
+                    <property name="label" translatable="yes">Cpu factor</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
                     <property name="width-chars">6</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5100,8 +5428,9 @@ factor</property>
                     <property name="name">general-cpuload</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">The higher, the smoother xsnow will run, but will also use more cpu power.
+                    <property name="tooltip-text" translatable="yes">The higher, the smoother xsnow will run, but will also use  more cpu power.
 Flag: -cpuload</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">cpuload-adjustment</property>
                     <property name="inverted">True</property>
@@ -5124,8 +5453,11 @@ Flag: -cpuload</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="label" translatable="yes">Scale</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5139,8 +5471,9 @@ Flag: -cpuload</property>
                     <property name="name">general-scale</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Overll drawing scale.
+                    <property name="tooltip-text" translatable="yes">Overall drawing scale.
 Flag: -scale</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">scale-adjustment</property>
                     <property name="inverted">True</property>
@@ -5171,11 +5504,10 @@ Flag: -scale</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Ignore
-large
-top
-windows</property>
+                    <property name="label" translatable="yes">Ignore large top windows</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5188,12 +5520,12 @@ windows</property>
                   <object class="GtkScale" id="id-IgnoreTop">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Windows wider than 80% of the screen and closer to the top than the number in this widget will not collect snow.
-
+                    <property name="tooltip-text" translatable="yes">Windows wider than 80 percent of the screen and closer to the top  than the number in this widget will not collect snow.
 In some cases, there are invisible windows near the top of the screen, which are handled by xsnow as normal windows: snow is collected upon them. By entering a suitable number here, this undesired behaviour can be avoided.
 Flag: -ignoretop
 
 </property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">ignoretopadjustment</property>
                     <property name="restrict-to-fill-level">False</property>
@@ -5212,11 +5544,10 @@ Flag: -ignoretop
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Ignore
-large
-bottom
-windows</property>
+                    <property name="label" translatable="yes">Ignore large bottom windows</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">10</property>
                     <property name="xalign">0.89999997615814209</property>
                   </object>
                   <packing>
@@ -5229,10 +5560,11 @@ windows</property>
                   <object class="GtkScale" id="id-IgnoreBottom">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="tooltip-text" translatable="yes">Windows wider than 80% of the screen and closer to the bottom than the number in this widget will not collect snow.
+                    <property name="tooltip-text" translatable="yes">Windows wider than 80 percent of the screen and closer to the  bottom than the number in this widget will not collect snow.
 
-In some cases, there are invisible windows near the bottom of the screen, which are handled by xsnow as normal windows: snow is collected upon them. By entering a suitable number here, this undesired behaviour can be avoided.
+In some cases, there are invisible windows near the bottom  of  the screen, which are handled by xsnow as normal windows: snow is collected upon them. By entering a suitable  number here, this undesired behaviour can be avoided.
 Flag: -ignorebottom</property>
+                    <property name="double-buffered">False</property>
                     <property name="orientation">vertical</property>
                     <property name="adjustment">ignorebottomadjustment</property>
                     <property name="inverted">True</property>
@@ -5415,6 +5747,7 @@ Flag: -vintage</property>
                   <object class="GtkLabel" id="settings-show-desktop-type">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="double-buffered">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="margin-top">4</property>
@@ -5489,9 +5822,9 @@ windows</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">When activated, it will be snowing below your windows, else it will be snowing upon you windows too.
-On some desktop environments, when snowing above your windows you will not be able to click on any window.
-Therefore, you will be asked to click a button, to be sure that things are OK.
+                    <property name="tooltip-text" translatable="yes">When activated, it will be snowing below your windows, else  it will be snowing upon you windows too.
+On some desktop environments, when snowing above your  windows you will not be able to click on any window.
+Therefore, you will be asked to click a button, to be sure that  things are OK.
 Flag: -above</property>
                     <property name="double-buffered">False</property>
                     <property name="halign">center</property>
@@ -5532,9 +5865,10 @@ confirm</property>
                   <object class="GtkComboBoxText" id="id-Screen">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">If you have more than one monitor, choose where you want snow falling. Choose 'all monitors' if you want snow in all monitors. 
+                    <property name="tooltip-text" translatable="yes">If you have more than one monitor, choose where you want snow falling. Choose 'all monitors' if you want snow in all monitors.
 NOTE: when changing monitor, xsnow will restart.
 Flag: -screen</property>
+                    <property name="double-buffered">False</property>
                     <property name="active">1</property>
                     <items>
                       <item translatable="yes">all monitors</item>
@@ -5549,7 +5883,7 @@ Flag: -screen</property>
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="id-Outline">
-                    <property name="label" translatable="yes">Draw
+                    <property name="label" translatable="yes">Create
 outline</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -5613,8 +5947,9 @@ Flag: -outline 1/0</property>
               <object class="GtkFileChooserButton" id="id-BackgroundFile">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Choose here the picture you want as background when xscreensaver is active.
+                <property name="tooltip-text" translatable="yes">Choose here the picture you want as background when  xscreensaver is active.
 Flag: -bg</property>
+                <property name="double-buffered">False</property>
                 <property name="filter">backgroundchooserfilter</property>
                 <property name="title" translatable="yes">Choose background</property>
                 <property name="width-chars">20</property>
@@ -5633,6 +5968,7 @@ Flag: -bg</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Activate xscreensaver.
 Click and don't touch mouse and keyboard for a few seconds...</property>
+                <property name="double-buffered">False</property>
                 <signal name="clicked" handler="button_xscreensaver_activate" swapped="no"/>
               </object>
               <packing>
@@ -5644,14 +5980,15 @@ Click and don't touch mouse and keyboard for a few seconds...</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Settings sfor Xscreensaver. You can choose a background, and choose to use it or not.
+                <property name="tooltip-text" translatable="yes">Settings for Xscreensaver. You can choose a background, and choose to use it or not.
 Make sure you add a line like
-   xsnow -root
+xsnow -root
 after the line 'programs:' in the file ~/.xscreensaver and you run xscreensaver-demo to choose for xsnow.
 To activate xscreensaver on the command line:
-   xscreensaver-command  -activate 
+xscreensaver-command  -activate
 See also the man page:
-  man xsnow</property>
+man xsnow</property>
+                <property name="double-buffered">False</property>
                 <property name="label" translatable="yes">Xscreensaver: </property>
               </object>
               <packing>
@@ -5678,6 +6015,7 @@ See also the man page:
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">When activated, the background will be black.
 Flag: -bg  (this button will be automatically desactivated when -bg is given)</property>
+                <property name="double-buffered">False</property>
               </object>
               <packing>
                 <property name="left-attach">13</property>
@@ -6138,7 +6476,7 @@ Flag: -bg  (this button will be automatically desactivated when -bg is given)</p
           </object>
           <packing>
             <property name="name">page3</property>
-            <property name="title" translatable="yes">settings</property>
+            <property name="title" translatable="yes">Settings</property>
             <property name="position">6</property>
           </packing>
         </child>
@@ -6157,6 +6495,7 @@ Flag: -bg  (this button will be automatically desactivated when -bg is given)</p
             <property name="width-request">-1</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="double-buffered">False</property>
             <property name="margin-top">8</property>
             <property name="margin-bottom">8</property>
             <property name="stack">stack</property>
@@ -6164,6 +6503,24 @@ Flag: -bg  (this button will be automatically desactivated when -bg is given)</p
               <class name="wv"/>
             </style>
           </object>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="id-Lang">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="double-buffered">False</property>
+            <property name="valign">center</property>
+            <property name="active">0</property>
+            <items>
+              <item translatable="yes">en</item>
+              <item>fr</item>
+              <item>nl</item>
+              <item translatable="yes">it</item>
+            </items>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
     </child>
