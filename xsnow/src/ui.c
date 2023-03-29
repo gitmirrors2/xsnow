@@ -196,6 +196,7 @@ static GtkContainer  *moonbox;
 static GtkImage      *preview;
 static int Nscreens;
 static int HaveXinerama;
+static int iconified = 0;
 
 #define nsbuffer 1024
 static char sbuffer[nsbuffer];
@@ -217,6 +218,11 @@ static void handle_theme(void);
 static void handle_screen(void);
 static void update_preview_cb (GtkFileChooser *file_chooser, gpointer data);
 static void my_gtk_label_set_text(GtkLabel *label, const gchar *str); 
+static int do_test_iconified(void *dummy);
+static gboolean callback_func(GtkWidget *widget,
+      GdkEventWindowState *event,
+      gpointer user_data);
+
 
 static int human_interaction = 1;
 GtkWidget *nflakeslabel;
@@ -275,6 +281,43 @@ void button_iconify()
 {
    P("button_iconify\n");
    gtk_window_iconify(GTK_WINDOW(hauptfenster));
+   g_timeout_add_full(G_PRIORITY_DEFAULT,40, do_test_iconified, NULL, NULL);
+}
+
+int do_test_iconified(void *dummy)
+{
+   (void)dummy;
+   static int counter = 0;
+   P("do_test_iconified %d\n",counter);
+   if(iconified)
+   {
+      P("is iconified\n");
+      return FALSE;
+   }
+   counter++;
+   if (!iconified && counter > 10)
+   {
+      P("hiding hauptfenster %d\n",counter);
+      gtk_widget_hide(GTK_WIDGET(hauptfenster));
+      iconified = 1;
+      counter = 0;
+      return FALSE;
+   }
+   return TRUE;
+}
+
+gboolean callback_func(GtkWidget *widget,
+      GdkEventWindowState *event,
+      gpointer user_data)
+{
+   (void)widget;
+   (void)user_data;
+   if(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED)
+   {
+      iconified = 1;
+      P("iconified\n");
+   }
+   return TRUE;
 }
 
 typedef struct _santa_button
@@ -1075,6 +1118,13 @@ void ui()
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
    moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
 
+   {
+      g_signal_connect(G_OBJECT(hauptfenster),
+	    "window-state-event",
+	    G_CALLBACK(callback_func),
+	    NULL);
+   }
+
    hauptfenstersc  = gtk_widget_get_style_context(hauptfenster);
 
    handle_css();
@@ -1155,7 +1205,7 @@ void ui()
 
    gtk_combo_box_text_remove_all(LangButton);
    gtk_combo_box_text_append_text(LangButton,"sys");
-   lang[0] = "sys";
+   lang[0] = strdup("sys");
 
    char *languages = strdup(LANGUAGES);
    char *token = strtok(languages," ");

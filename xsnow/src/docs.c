@@ -127,13 +127,14 @@ void docs_usage(int man)
    manout(" "                       ,"1: Check gtk version before starting the user interface.");
    manout(" "                       ,"(default: %d).",F(CheckGtk));
    manout("-id <n>, -window-id <n>" ,"Snow in window with id (for example from xwininfo).");
+   manout("--window-id <n>"         ,"see -id.");
    manout("-desktop"                ,"Act as if window is a desktop.");
    manout("-allworkspaces <n>"      ,"0: use one desktop for snow, 1: use all desktops (default: %d).",F(AllWorkspaces));
    manout("-above"                  ,"Snow above your windows. Default is to snow below your windows.");
    manout(" "                       ,"NOTE: in some environments this results in an un-clickable desktop.");
    manout("-xwininfo  "             ,"Use a cursor to point at the window you want the snow to be fallen in.");
    manout("-stopafter <n>"          ,"Stop xsnow after so many seconds.");
-   manout("-root    "               ,"Force to paint on (virtual) root window.");
+   manout("-root, --root "          ,"Force to paint on (virtual) root window.");
    manout("."                       ,"Use this for xscreensaver:");
    manout("."                       ,"Make sure xscreensaver is running, either as a start-up application");
    manout("."                       ,"or from the command line, e.g:");

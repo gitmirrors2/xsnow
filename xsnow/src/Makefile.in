@@ -120,7 +120,8 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libxdo_a_AR = $(AR) $(ARFLAGS)
 libxdo_a_LIBADD =
-am_libxdo_a_OBJECTS = libxdo_a-xdo.$(OBJEXT)
+am_libxdo_a_OBJECTS = libxdo_a-xdo.$(OBJEXT) \
+	libxdo_a-xdo_search.$(OBJEXT)
 libxdo_a_OBJECTS = $(am_libxdo_a_OBJECTS)
 am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
@@ -142,8 +143,9 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
-xsnow_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) libxdo.a
+xsnow_DEPENDENCIES = libxdo.a $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -160,19 +162,19 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/libxdo_a-xdo.Po \
-	./$(DEPDIR)/xsnow-Santa.Po ./$(DEPDIR)/xsnow-aurora.Po \
-	./$(DEPDIR)/xsnow-birds.Po ./$(DEPDIR)/xsnow-blowoff.Po \
-	./$(DEPDIR)/xsnow-clientwin.Po ./$(DEPDIR)/xsnow-clocks.Po \
-	./$(DEPDIR)/xsnow-csvpos.Po ./$(DEPDIR)/xsnow-docs.Po \
-	./$(DEPDIR)/xsnow-dsimple.Po ./$(DEPDIR)/xsnow-fallensnow.Po \
-	./$(DEPDIR)/xsnow-flags.Po ./$(DEPDIR)/xsnow-hashtable.Po \
-	./$(DEPDIR)/xsnow-ixpm.Po ./$(DEPDIR)/xsnow-kdtree.Po \
-	./$(DEPDIR)/xsnow-loadmeasure.Po ./$(DEPDIR)/xsnow-main.Po \
-	./$(DEPDIR)/xsnow-mainstub.Po ./$(DEPDIR)/xsnow-meteor.Po \
-	./$(DEPDIR)/xsnow-moon.Po ./$(DEPDIR)/xsnow-pixmaps.Po \
-	./$(DEPDIR)/xsnow-safe_malloc.Po ./$(DEPDIR)/xsnow-scenery.Po \
-	./$(DEPDIR)/xsnow-selfrep.Po ./$(DEPDIR)/xsnow-snow.Po \
-	./$(DEPDIR)/xsnow-spline_interpol.Po \
+	./$(DEPDIR)/libxdo_a-xdo_search.Po ./$(DEPDIR)/xsnow-Santa.Po \
+	./$(DEPDIR)/xsnow-aurora.Po ./$(DEPDIR)/xsnow-birds.Po \
+	./$(DEPDIR)/xsnow-blowoff.Po ./$(DEPDIR)/xsnow-clientwin.Po \
+	./$(DEPDIR)/xsnow-clocks.Po ./$(DEPDIR)/xsnow-csvpos.Po \
+	./$(DEPDIR)/xsnow-docs.Po ./$(DEPDIR)/xsnow-dsimple.Po \
+	./$(DEPDIR)/xsnow-fallensnow.Po ./$(DEPDIR)/xsnow-flags.Po \
+	./$(DEPDIR)/xsnow-hashtable.Po ./$(DEPDIR)/xsnow-ixpm.Po \
+	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-loadmeasure.Po \
+	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
+	./$(DEPDIR)/xsnow-meteor.Po ./$(DEPDIR)/xsnow-moon.Po \
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-safe_malloc.Po \
+	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-selfrep.Po \
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-spline_interpol.Po \
 	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transwindow.Po \
 	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
 	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
@@ -652,11 +654,11 @@ gamesdir = $(exec_prefix)/games
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) \
 	-DLOCALEDIR=\"$(LOCALEDIR)\" -DLANGUAGES='"$(LANGUAGES)"' \
 	$(am__append_1) $(am__append_2)
-xsnow_LDADD = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL) libxdo.a 
+xsnow_LDADD = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 @USE_NLS_FALSE@LANGUAGES = 
 noinst_LIBRARIES = libxdo.a
-libxdo_a_SOURCES = xdo.c xdo.h xdo_util.h xdo_version.h
+libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
 		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
@@ -682,7 +684,9 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		safe_malloc.c safe_malloc.h mygettext.h gettext.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
-BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
+@MAKESELFREP_FALSE@tarfile_inc = 
+@MAKESELFREP_TRUE@tarfile_inc = tarfile.inc
+BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright 
 TESTS = test1.sh
@@ -788,6 +792,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxdo_a-xdo.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxdo_a-xdo_search.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-Santa.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-aurora.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-birds.Po@am__quote@ # am--include-marker
@@ -855,6 +860,20 @@ libxdo_a-xdo.obj: xdo.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xdo.c' object='libxdo_a-xdo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libxdo_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libxdo_a-xdo.obj `if test -f 'xdo.c'; then $(CYGPATH_W) 'xdo.c'; else $(CYGPATH_W) '$(srcdir)/xdo.c'; fi`
+
+libxdo_a-xdo_search.o: xdo_search.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libxdo_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libxdo_a-xdo_search.o -MD -MP -MF $(DEPDIR)/libxdo_a-xdo_search.Tpo -c -o libxdo_a-xdo_search.o `test -f 'xdo_search.c' || echo '$(srcdir)/'`xdo_search.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxdo_a-xdo_search.Tpo $(DEPDIR)/libxdo_a-xdo_search.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xdo_search.c' object='libxdo_a-xdo_search.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libxdo_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libxdo_a-xdo_search.o `test -f 'xdo_search.c' || echo '$(srcdir)/'`xdo_search.c
+
+libxdo_a-xdo_search.obj: xdo_search.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libxdo_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libxdo_a-xdo_search.obj -MD -MP -MF $(DEPDIR)/libxdo_a-xdo_search.Tpo -c -o libxdo_a-xdo_search.obj `if test -f 'xdo_search.c'; then $(CYGPATH_W) 'xdo_search.c'; else $(CYGPATH_W) '$(srcdir)/xdo_search.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxdo_a-xdo_search.Tpo $(DEPDIR)/libxdo_a-xdo_search.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xdo_search.c' object='libxdo_a-xdo_search.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libxdo_a_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libxdo_a-xdo_search.obj `if test -f 'xdo_search.c'; then $(CYGPATH_W) 'xdo_search.c'; else $(CYGPATH_W) '$(srcdir)/xdo_search.c'; fi`
 
 xsnow-clocks.o: clocks.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-clocks.o -MD -MP -MF $(DEPDIR)/xsnow-clocks.Tpo -c -o xsnow-clocks.o `test -f 'clocks.c' || echo '$(srcdir)/'`clocks.c
@@ -1768,6 +1787,7 @@ clean-am: clean-gamesPROGRAMS clean-generic clean-noinstLIBRARIES \
 
 distclean: distclean-recursive
 		-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
+	-rm -f ./$(DEPDIR)/libxdo_a-xdo_search.Po
 	-rm -f ./$(DEPDIR)/xsnow-Santa.Po
 	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
@@ -1847,6 +1867,7 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
 		-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
+	-rm -f ./$(DEPDIR)/libxdo_a-xdo_search.Po
 	-rm -f ./$(DEPDIR)/xsnow-Santa.Po
 	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
@@ -1948,7 +1969,7 @@ changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
 
 xsnow-docs.$(OBJEXT): changelog.inc
 
-xsnow-selfrep.$(OBJEXT): tarfile.inc
+xsnow-selfrep.$(OBJEXT): $(tarfile_inc)
 xsnow.6: xsnow
 	./xsnow -manpage > $@
 

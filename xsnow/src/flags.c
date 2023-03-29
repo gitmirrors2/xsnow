@@ -203,6 +203,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-flakecountmax       ,FlakeCountMax                    );
 	 handle_ia(-id                  ,WindowId                         );
 	 handle_ia(-window-id           ,WindowId                         );
+	 handle_ia(--window-id          ,WindowId                         );
 	 handle_ia(-maxontrees          ,MaxOnTrees                       );
 	 handle_ia(-meteorfrequency     ,MeteorFrequency                  );
 	 handle_ia(-moon                ,Moon                             );
@@ -268,6 +269,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_iv(-showrudolph         ,Rudolf                   ,1      );
 	 handle_iv(-nosanta             ,NoSanta                  ,1      );
 	 handle_iv(-root                ,ForceRoot                ,1      );
+	 handle_iv(--root               ,ForceRoot                ,1      );
 	 handle_iv(-showsanta           ,NoSanta                  ,0      );
 	 handle_iv(-snow                ,NoSnowFlakes             ,0      );
 	 handle_iv(-nosnow              ,NoSnowFlakes             ,1      );

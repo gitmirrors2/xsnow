@@ -20,15 +20,14 @@
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = . src data po afterburner
 
-
 EXTRA_DIST = bootstrap Changes README README.md \
-	     addcopyright.sh prevent-remakes \
+	     addcopyright.sh \
 	     dependencies simplemake.sh getversion bootdate \
 	     pofiles
 
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 
-CLEANFILES = $(tarfile) 
+CLEANFILES = $(tarfile)
 
 ACLOCAL_AMFLAGS = -I m4
 

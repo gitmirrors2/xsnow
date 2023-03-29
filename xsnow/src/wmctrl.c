@@ -504,71 +504,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    return 1;
 }
 
-// an heroic effort to write a wrapper around XGetWindowProperty()
-//     not used (yet)
-// if needle != NULL:
-//     returns 1 if Atom atomname contains char *needle
-//     else returns 0
-// if needle == NULL && props != NULL
-//     props must be allocated by caller to contain nprops elements
-//     on return, props will contain at most nprops integers as obtained by 
-//     XGetWindowProperty().
-//     return value is number of properties returned from XGetWindowProperty()
-// works only with format==32, if another format is found, returns -format found
-// see man XGetWindowProperty
-int GetProperty32(Display *display, Window window, const char *atomname, 
-      const char *needle, int *props, const int nprops)
-{
-   unsigned char *properties = NULL;
-   Atom           type;
-   int            format;
-   unsigned long  nitems = 0;
-   unsigned long  b;
-   int            rc = 0;
 
-   Atom atom = XInternAtom(display, atomname, True);
-   XGetWindowProperty(display, window, atom, 0, (~0L), False, 
-	 AnyPropertyType, &type, &format, &nitems, &b, &properties);
-   if(format == 32)
-   {
-      if (needle)
-      {
-	 int i;
-	 for(i=0; i<(int)nitems; i++)
-	 {
-	    char *s = NULL;
-	    s = XGetAtomName(display,((Atom*)(void*)properties)[i]);
-	    if (!strcmp(s,needle))
-	    { 
-	       if(s) XFree(s);
-	       rc = 1;
-	       break;
-	    }
-	    if(s) XFree(s);
-	 }
-      }
-      else
-      {
-	 if(props)
-	 {
-	    int i;
-	    for (i=0; i<(int)nitems && i<nprops; i++)
-	       props[i] = ((long *)(void*)properties)[i];
-	 }
-	 rc = nitems;
-      }
-   }
-   else
-      rc = -format;
-
-   if(properties) XFree(properties);
-   return rc;
-}
-
-Window FindWindowWithName(Display *dsp,const char *needle)
-{
-   return Window_With_Name(dsp,DefaultRootWindow(dsp),needle);
-}
 
 WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
 {

@@ -47,7 +47,7 @@ date +%s > bootdate
 autoreconf -fvi || exit 1
 (
 echo removing po/*.gmo end po/*.po
-rm po/*.gmo po/*.po
+rm -f po/*.gmo po/*.po
 echo "Copying pofiles/*.po to po/"
 cp pofiles/*.po po
 cd po
@@ -58,8 +58,6 @@ echo '# Set of available languages.' > LINGUAS
 echo "$languages" >> LINGUAS
 echo "Created po/LINGUAS:"
 cat LINGUAS
-echo "Create po/Makevars"
-sed -e '/MSGMERGE_OPTIONS/s/=/= -N /' Makevars.template > Makevars || exit 1
 echo 
 )
 

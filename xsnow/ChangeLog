@@ -1,3 +1,27 @@
+version 3.7.4
+	01: utils.c: fix bug in using xdo_search_windows(): the search
+	    parameter must be filled in completely (probably bug in
+	    xdo_search_windows)
+	02: flags.c, docs.c: add flags --root and --window-id 
+	    same as -root and -window-id for usage under xscreensaver
+	03: main.c: do_display_dimensions: put fflush() and return in proper
+	    order
+	    remove prevent-remakes
+	    utils.c: use memset to initialize xdo_search_t search
+	    bootstrap: rm -f po/*.gmo po/*.po
+	04: bootstrap: get rid of Makevars.template
+
+version 3.7.3
+	01: removed debug output
+version 3.7.2
+	01: make 'hide menu' button working in WM's that do not support
+	       iconify
+	    add xdo_search.c, make it g++ compilable
+	    ui.c: trivia to make it g++ compilable again
+	    windows.{c,h}, wmctrl.{c,h}: remove unused functions
+	    main.c, utils.{c,h}: use xdo function to find window "pcmanfm"
+	02: fix bug that caused error when configuring with --disable-selfrep
+	    
 version 3.7.1
 	01: choose between two moon colors (as suggested by Lewis Smith)
 	02: xsnow.h, Santa.c, Fallensnow.c: make Santa bidirectional

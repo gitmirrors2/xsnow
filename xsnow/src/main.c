@@ -774,12 +774,15 @@ int StartWindow()
 	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
-	       (xwin = FindWindowWithName(global.display,"pcmanfm")))
+	       (xwin = largest_window_with_name(global.xdo,"pcmanfm"))
+	       )
 	 {
 	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
-	 else if ((xwin = FindWindowWithName(global.display,"Desktop")))
+	 else if (
+	       (xwin = largest_window_with_name(global.xdo,"Desktop"))
+	       )
 	 {
 	    printf(_("Using window 'Desktop'.\n"));
 	 }
@@ -1344,8 +1347,8 @@ int do_display_dimensions(void *d)
       PrevH = global.SnowWinHeight;
       SetWindowScale();
    }
-   return TRUE;
    fflush(stdout);
+   return TRUE;
 }
 
 int do_draw_all(gpointer widget)

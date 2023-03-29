@@ -28,7 +28,7 @@ games_PROGRAMS = xsnow
 
 xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
 		    -DLANGUAGES='"$(LANGUAGES)"'
-xsnow_LDADD       = $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL) libxdo.a 
+xsnow_LDADD       = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
 if USE_NLS
@@ -43,7 +43,7 @@ xsnow_CPPFLAGS += -DSELFREP
 endif
 
 noinst_LIBRARIES = libxdo.a
-libxdo_a_SOURCES = xdo.c xdo.h xdo_util.h xdo_version.h
+libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
@@ -71,8 +71,13 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
-BUILT_SOURCES = ui_xml.h snow_includes.h tarfile.inc
+if MAKESELFREP
+tarfile_inc = tarfile.inc
+else
+tarfile_inc =
+endif
 
+BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
 
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 
@@ -108,7 +113,7 @@ changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
 
 xsnow-docs.$(OBJEXT): changelog.inc
 
-xsnow-selfrep.$(OBJEXT): tarfile.inc
+xsnow-selfrep.$(OBJEXT): $(tarfile_inc)
 
 appicondir=$(datadir)/pixmaps
 appicon_DATA=Pixmaps/xsnow.svg

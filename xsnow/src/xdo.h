@@ -1,29 +1,29 @@
 /*
-Copyright (c) 2007, 2008, 2009: Jordan Sissel.
-All rights reserved.
+   Copyright (c) 2007, 2008, 2009: Jordan Sissel.
+   All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the Jordan Sissel nor the names of its contributors
-      may be used to endorse or promote products derived from this software
-      without specific prior written permission.
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Neither the name of the Jordan Sissel nor the names of its contributors
+ may be used to endorse or promote products derived from this software
+ without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY JORDAN SISSEL ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL JORDAN SISSEL BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE IS PROVIDED BY JORDAN SISSEL ``AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL JORDAN SISSEL BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 /**
  * @file xdo.h
  */
@@ -80,18 +80,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * this key (keycode, modifiers, group, etc)
  */
 typedef struct charcodemap {
-  wchar_t key; /** the letter for this key, like 'a' */
-  KeyCode code; /** the keycode that this key is on */
-  KeySym symbol; /** the symbol representing this key */
-  int group; /** the keyboard group that has this key in it */
-  int modmask; /** the modifiers to apply when sending this key */
+   wchar_t key; /** the letter for this key, like 'a' */
+   KeyCode code; /** the keycode that this key is on */
+   KeySym symbol; /** the symbol representing this key */
+   int group; /** the keyboard group that has this key in it */
+   int modmask; /** the modifiers to apply when sending this key */
    /** if this key need to be bound at runtime because it does not
     * exist in the current keymap, this will be set to 1. */
-  int needs_binding;
+   int needs_binding;
 } charcodemap_t;
 
 typedef enum {
-  XDO_FEATURE_XTEST, /** Is XTest available? */
+   XDO_FEATURE_XTEST, /** Is XTest available? */
 } XDO_FEATURES;
 
 /**
@@ -99,38 +99,38 @@ typedef enum {
  */
 typedef struct xdo {
 
-  /** The Display for Xlib */
-  Display *xdpy;
+   /** The Display for Xlib */
+   Display *xdpy;
 
-  /** The display name, if any. NULL if not specified. */
-  char *display_name;
+   /** The display name, if any. NULL if not specified. */
+   char *display_name;
 
-  /** @internal Array of known keys/characters */
-  charcodemap_t *charcodes;
+   /** @internal Array of known keys/characters */
+   charcodemap_t *charcodes;
 
-  /** @internal Length of charcodes array */
-  int charcodes_len;
+   /** @internal Length of charcodes array */
+   int charcodes_len;
 
-  /** @internal highest keycode value */
-  int keycode_high; /* highest and lowest keycodes */
+   /** @internal highest keycode value */
+   int keycode_high; /* highest and lowest keycodes */
 
-  /** @internal lowest keycode value */
-  int keycode_low;  /* used by this X server */
-  
-  /** @internal number of keysyms per keycode */
-  int keysyms_per_keycode;
+   /** @internal lowest keycode value */
+   int keycode_low;  /* used by this X server */
 
-  /** Should we close the display when calling xdo_free? */
-  int close_display_when_freed;
+   /** @internal number of keysyms per keycode */
+   int keysyms_per_keycode;
 
-  /** Be extra quiet? (omits some error/message output) */
-  int quiet;
+   /** Should we close the display when calling xdo_free? */
+   int close_display_when_freed;
 
-  /** Enable debug output? */
-  int debug;
+   /** Be extra quiet? (omits some error/message output) */
+   int quiet;
 
-  /** Feature flags, such as XDO_FEATURE_XTEST, etc... */
-  int features_mask;
+   /** Enable debug output? */
+   int debug;
+
+   /** Feature flags, such as XDO_FEATURE_XTEST, etc... */
+   int features_mask;
 
 } xdo_t;
 
@@ -192,31 +192,33 @@ typedef struct xdo {
  * @see xdo_search_windows
  */
 typedef struct xdo_search {
-  const char *title;        /** pattern to test against a window title */
-  const char *winclass;     /** pattern to test against a window class */
-  const char *winclassname; /** pattern to test against a window class */
-  const char *winname;      /** pattern to test against a window name */
-  int pid;            /** window pid (From window atom _NET_WM_PID) */
-  long max_depth;     /** depth of search. 1 means only toplevel windows */
-  int only_visible;   /** boolean; set true to search only visible windows */
-  int screen;         /** what screen to search, if any. If none given, search 
-                         all screens */
+   const char *title;        /** pattern to test against a window title */
+   const char *winclass;     /** pattern to test against a window class */
+   const char *winclassname; /** pattern to test against a window class */
+   const char *winname;      /** pattern to test against a window name */
+   int pid;            /** window pid (From window atom _NET_WM_PID) */
+   long max_depth;     /** depth of search. 1 means only toplevel windows */
+   int only_visible;   /** boolean; set true to search only visible windows */
+   int screen;         /** what screen to search, if any. If none given, search 
+			 all screens */
 
-  /** Should the tests be 'and' or 'or' ? If 'and', any failure will skip the
-   * window. If 'or', any success will keep the window in search results. */
-  enum { SEARCH_ANY, SEARCH_ALL } require;
-  
-  /** bitmask of things you are searching for, such as SEARCH_NAME, etc.
-   * @see SEARCH_NAME, SEARCH_CLASS, SEARCH_PID, SEARCH_CLASSNAME, etc
-   */
-  unsigned int searchmask; 
+   /** Should the tests be 'and' or 'or' ? If 'and', any failure will skip the
+    * window. If 'or', any success will keep the window in search results. */
+   //enum { SEARCH_ANY, SEARCH_ALL } require;
+   unsigned int require;  // wv
 
-  /** What desktop to search, if any. If none given, search all screens. */
-  long desktop;
+   /** bitmask of things you are searching for, such as SEARCH_NAME, etc.
+    * @see SEARCH_NAME, SEARCH_CLASS, SEARCH_PID, SEARCH_CLASSNAME, etc
+    */
+   unsigned int searchmask; 
 
-  /** How many results to return? If 0, return all. */
-  unsigned int limit;
+   /** What desktop to search, if any. If none given, search all screens. */
+   long desktop;
+
+   /** How many results to return? If 0, return all. */
+   unsigned int limit;
 } xdo_search_t;
+enum { SEARCH_ANY, SEARCH_ALL };  // wv
 
 #define XDO_ERROR 1
 #define XDO_SUCCESS 0
@@ -240,7 +242,7 @@ xdo_t* xdo_new(const char *display);
  * xdo_free is called. Otherwise, we leave it open.
  */
 xdo_t* xdo_new_with_opened_display(Display *xdpy, const char *display,
-                                   int close_display_when_freed);
+      int close_display_when_freed);
 
 /**
  * Return a string representing the version of this library
@@ -329,7 +331,7 @@ int xdo_get_window_at_mouse(const xdo_t *xdo, Window *window_ret);
  *   will be stored.
  */
 int xdo_get_mouse_location2(const xdo_t *xdo, int *x_ret, int *y_ret,
-                            int *screen_num_ret, Window *window_ret);
+      int *screen_num_ret, Window *window_ret);
 
 /**
  * Wait for the mouse to move from a location. This function will block
@@ -367,7 +369,7 @@ int xdo_click_window(const xdo_t *xdo, Window window, int button);
  *    right, 4 is wheel up, 5 is wheel down.
  */
 int xdo_click_window_multiple(const xdo_t *xdo, Window window, int button,
-                       int repeat, useconds_t delay);
+      int repeat, useconds_t delay);
 
 /**
  * Type a string to the specified window.
@@ -404,7 +406,7 @@ int xdo_enter_text_window(const xdo_t *xdo, Window window, const char *string, u
  * @param delay The delay between keystrokes in microseconds.
  */
 int xdo_send_keysequence_window(const xdo_t *xdo, Window window,
-                    const char *keysequence, useconds_t delay);
+      const char *keysequence, useconds_t delay);
 
 /**
  * Send key release (up) events for the given key sequence.
@@ -412,7 +414,7 @@ int xdo_send_keysequence_window(const xdo_t *xdo, Window window,
  * @see xdo_send_keysequence_window
  */
 int xdo_send_keysequence_window_up(const xdo_t *xdo, Window window,
-                       const char *keysequence, useconds_t delay);
+      const char *keysequence, useconds_t delay);
 
 /**
  * Send key press (down) events for the given key sequence.
@@ -420,8 +422,8 @@ int xdo_send_keysequence_window_up(const xdo_t *xdo, Window window,
  * @see xdo_send_keysequence_window
  */
 int xdo_send_keysequence_window_down(const xdo_t *xdo, Window window,
-                         const char *keysequence, useconds_t delay);
-                         
+      const char *keysequence, useconds_t delay);
+
 /**
  * Send a series of keystrokes.
  *
@@ -434,8 +436,8 @@ int xdo_send_keysequence_window_down(const xdo_t *xdo, Window window,
  * @param delay The delay between keystrokes in microseconds.
  */
 int xdo_send_keysequence_window_list_do(const xdo_t *xdo, Window window,
-                            charcodemap_t *keys, int nkeys,
-                            int pressed, int *modifier, useconds_t delay);
+      charcodemap_t *keys, int nkeys,
+      int pressed, int *modifier, useconds_t delay);
 
 /**
  * Get a list of active keys. Uses XQueryKeymap.
@@ -445,7 +447,7 @@ int xdo_send_keysequence_window_list_do(const xdo_t *xdo, Window window,
  * @param nkeys Pointer to integer where the number of keys will be stored.
  */
 int xdo_get_active_keys_to_keycode_list(const xdo_t *xdo, charcodemap_t **keys,
-                                         int *nkeys);
+      int *nkeys);
 
 /**
  * Wait for a window to have a specific map state.
@@ -464,7 +466,7 @@ int xdo_wait_for_window_map_state(const xdo_t *xdo, Window wid, int map_state);
 #define SIZE_TO 0
 #define SIZE_FROM 1
 int xdo_wait_for_window_size(const xdo_t *xdo, Window window, unsigned int width,
-                             unsigned int height, int flags, int to_or_from);
+      unsigned int height, int flags, int to_or_from);
 
 
 /**
@@ -491,8 +493,8 @@ int xdo_move_window(const xdo_t *xdo, Window wid, int x, int y);
  * @param height_ret the return location of the translated height
  */
 int xdo_translate_window_with_sizehint(const xdo_t *xdo, Window window,
-                                       unsigned int width, unsigned int height,
-                                       unsigned int *width_ret, unsigned int *height_ret);
+      unsigned int width, unsigned int height,
+      unsigned int *width_ret, unsigned int *height_ret);
 
 /**
  * Change the window size.
@@ -515,7 +517,7 @@ int xdo_set_window_size(const xdo_t *xdo, Window wid, int w, int h, int flags);
  * @param value the string value of the property.
  */
 int xdo_set_window_property(const xdo_t *xdo, Window wid, const char *property,
-                        const char *value);
+      const char *value);
 
 /**
  * Change the window's classname and or class.
@@ -524,7 +526,7 @@ int xdo_set_window_property(const xdo_t *xdo, Window wid, const char *property,
  * @param _class The new class. If NULL, no change.
  */
 int xdo_set_window_class(const xdo_t *xdo, Window wid, const char *name,
-                        const char *_class);
+      const char *_class);
 
 /**
  * Sets the urgency hint for a window.
@@ -541,7 +543,7 @@ int xdo_set_window_urgency (const xdo_t *xdo, Window wid, int urgency);
  *
  */
 int xdo_set_window_override_redirect(const xdo_t *xdo, Window wid,
-                                     int override_redirect);
+      int override_redirect);
 
 /**
  * Focus a window.
@@ -659,7 +661,7 @@ int xdo_reparent_window(const xdo_t *xdo, Window wid_source, Window wid_target);
  *   stored. If NULL, this parameter is ignored.
  */
 int xdo_get_window_location(const xdo_t *xdo, Window wid,
-                            int *x_ret, int *y_ret, Screen **screen_ret);
+      int *x_ret, int *y_ret, Screen **screen_ret);
 
 /**
  * Get a window's size.
@@ -669,7 +671,7 @@ int xdo_get_window_location(const xdo_t *xdo, Window wid,
  * @param height_ret pointer to unsigned int where the height is stored.
  */
 int xdo_get_window_size(const xdo_t *xdo, Window wid, unsigned int *width_ret,
-                        unsigned int *height_ret);
+      unsigned int *height_ret);
 
 /* pager-like behaviors */
 
@@ -753,7 +755,7 @@ int xdo_get_desktop_for_window(const xdo_t *xdo, Window wid, long *desktop);
  * @see xdo_search_t
  */
 int xdo_search_windows(const xdo_t *xdo, const xdo_search_t *search,
-                      Window **windowlist_ret, unsigned int *nwindows_ret);
+      Window **windowlist_ret, unsigned int *nwindows_ret);
 
 /**
  * Generic property fetch.
@@ -767,7 +769,7 @@ int xdo_search_windows(const xdo_t *xdo, const xdo_search_t *search,
  *   will need to be cast to the type before using.
  */
 unsigned char *xdo_get_window_property_by_atom(const xdo_t *xdo, Window window, Atom atom,
-                              long *nitems, Atom *type, int *size);
+      long *nitems, Atom *type, int *size);
 
 /**
  * Get property of window by name of atom.
@@ -781,7 +783,7 @@ unsigned char *xdo_get_window_property_by_atom(const xdo_t *xdo, Window window, 
  *   will need to be cast to the type before using.
  */
 int xdo_get_window_property(const xdo_t *xdo, Window window, const char *property,
-                            unsigned char **value, long *nitems, Atom *type, int *size);
+      unsigned char **value, long *nitems, Atom *type, int *size);
 
 /**
  * Get the current input state. This is a mask value containing any of the
@@ -812,7 +814,7 @@ const char **xdo_get_symbol_map(void);
  * @param nkeys Pointer to integer where the number of keys will be stored.
  */
 int xdo_get_active_modifiers(const xdo_t *xdo, charcodemap_t **keys,
-                             int *nkeys);
+      int *nkeys);
 
 /**
  * Send any events necessary to clear the active modifiers.
@@ -820,8 +822,8 @@ int xdo_get_active_modifiers(const xdo_t *xdo, charcodemap_t **keys,
  * called, then this method will send a key-up for 'alt'
  */
 int xdo_clear_active_modifiers(const xdo_t *xdo, Window window,
-                               charcodemap_t *active_mods,
-                               int active_mods_n);
+      charcodemap_t *active_mods,
+      int active_mods_n);
 
 /**
  * Send any events necessary to make these modifiers active.
@@ -829,8 +831,8 @@ int xdo_clear_active_modifiers(const xdo_t *xdo, Window window,
  * to restore them after.
  */
 int xdo_set_active_modifiers(const xdo_t *xdo, Window window,
-                             charcodemap_t *active_mods,
-                             int active_mods_n);
+      charcodemap_t *active_mods,
+      int active_mods_n);
 
 /**
  * Get the position of the current viewport.
@@ -875,7 +877,7 @@ int xdo_close_window(const xdo_t *xdo, Window window);
  * window manager's decorator window rather than the client window.
  */
 int xdo_find_window_client(const xdo_t *xdo, Window window, Window *window_ret,
-                           int direction);
+      int direction);
 
 /**
  * Get a window's name, if any.
@@ -883,8 +885,8 @@ int xdo_find_window_client(const xdo_t *xdo, Window window, Window *window_ret,
  * TODO(sissel): Document
  */
 int xdo_get_window_name(const xdo_t *xdo, Window window, 
-                        unsigned char **name_ret, int *name_len_ret,
-                        int *name_type);
+      unsigned char **name_ret, int *name_len_ret,
+      int *name_type);
 
 /**
  * Disable an xdo feature.
@@ -924,5 +926,5 @@ int xdo_has_feature(xdo_t *xdo, int feature);
  * for the given screen.
  */
 int xdo_get_viewport_dimensions(xdo_t *xdo, unsigned int *width,
-                                unsigned int *height, int screen);
+      unsigned int *height, int screen);
 #endif /* ifndef _XDO_H_ */

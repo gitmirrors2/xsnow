@@ -41,6 +41,8 @@
 #endif
 #endif
 
+#include "xdo.h"
+
 extern guint   add_to_mainloop(gint prio,float time,GSourceFunc func);
 extern guint   add_to_mainloop1(gint prio,float time,GSourceFunc func,gpointer datap);
 extern void    remove_from_mainloop(guint *tag);
@@ -63,6 +65,9 @@ extern int     IsReadableFile(char *path);
 extern float   gaussf(float x, float mu, float sigma);
 extern void    traceback(void);
 extern char   *guess_language(void);
+extern Window  largest_window_with_name(xdo_t *myxdo, const char *name);
+extern void    fill_xdo_search(xdo_search_t *search);
+
 
 // obtain normally distributed number. The number will be between min and max:
 extern double gaussian (double mean, double standard_deviation, double min, double max);

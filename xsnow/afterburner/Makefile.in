@@ -290,8 +290,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@MAKESELFREP_TRUE@tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
-@MAKESELFREP_TRUE@CLEANFILES = $(tarfile)
+tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
+@MAKESELFREP_FALSE@makeselfrep = 
+@MAKESELFREP_TRUE@makeselfrep = 1
+@USE_NLS_TRUE@use_nls = 1
+CLEANFILES = $(tarfile)
 all: all-am
 
 .SUFFIXES:
@@ -366,10 +369,8 @@ distdir-am: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-@MAKESELFREP_FALSE@all-local:
 all-am: Makefile all-local
 installdirs:
-@MAKESELFREP_FALSE@install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -481,17 +482,26 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
-@MAKESELFREP_TRUE@all-local:
-@MAKESELFREP_TRUE@	if test -z "$(XSNOW_SELFREP)" ; then                        \
-@MAKESELFREP_TRUE@		echo "Creating tar file $(tarfile) ..." ;           \
-@MAKESELFREP_TRUE@		$(MAKE) -C "$(top_builddir)" XSNOW_SELFREP=1 dist ; \
-@MAKESELFREP_TRUE@		echo "Remaking xsnow, using real tar file ..." ;    \
-@MAKESELFREP_TRUE@		ls -l "$(tarfile)" ;                                \
-@MAKESELFREP_TRUE@		$(MAKE) -C "$(top_builddir)" XSNOW_SELFREP=1 ;      \
-@MAKESELFREP_TRUE@	fi
 
-@MAKESELFREP_TRUE@install:
-@MAKESELFREP_TRUE@	@echo "Nothing to install here"
+# it would be nice to skip all-local when running make check
+
+all-local: 
+	if test -z "$(AFTERBURNER)" ; then                                  \
+		if test "$(makeselfrep)" ; then                             \
+			echo "Creating tar file $(tarfile) ..." ;           \
+			$(MAKE) -C "$(top_builddir)" AFTERBURNER=1 dist ;   \
+			echo "Remaking xsnow, using real tar file ..." ;    \
+			ls -l "$(tarfile)" ;                                \
+			$(MAKE) -C "$(top_builddir)" AFTERBURNER=1 ;        \
+		fi ;                                                        \
+		if test "$(use_nls)" ; then                                 \
+			echo "Creating gmo files ... $(top_builddir)/po" ;  \
+			$(MAKE) -C "$(top_builddir)/po" update-gmo ;        \
+		fi ;                                                        \
+	fi
+
+install:
+	@echo "Nothing to install here"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -24,20 +24,37 @@
 # Then, we run a 'make' from the top directory to recompile selfrep.c and
 # relink xsnow. When running this make, we must do nothing here.
 
-if MAKESELFREP
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
-all-local:
-	if test -z "$(XSNOW_SELFREP)" ; then                        \
-		echo "Creating tar file $(tarfile) ..." ;           \
-		$(MAKE) -C "$(top_builddir)" XSNOW_SELFREP=1 dist ; \
-		echo "Remaking xsnow, using real tar file ..." ;    \
-		ls -l "$(tarfile)" ;                                \
-		$(MAKE) -C "$(top_builddir)" XSNOW_SELFREP=1 ;      \
+
+if MAKESELFREP
+makeselfrep = 1
+else
+makeselfrep =
+endif
+
+if USE_NLS
+use_nls = 1
+endif
+
+# it would be nice to skip all-local when running make check
+
+all-local: 
+	if test -z "$(AFTERBURNER)" ; then                                  \
+		if test "$(makeselfrep)" ; then                             \
+			echo "Creating tar file $(tarfile) ..." ;           \
+			$(MAKE) -C "$(top_builddir)" AFTERBURNER=1 dist ;   \
+			echo "Remaking xsnow, using real tar file ..." ;    \
+			ls -l "$(tarfile)" ;                                \
+			$(MAKE) -C "$(top_builddir)" AFTERBURNER=1 ;        \
+		fi ;                                                        \
+		if test "$(use_nls)" ; then                                 \
+			echo "Creating gmo files ... $(top_builddir)/po" ;  \
+			$(MAKE) -C "$(top_builddir)/po" update-gmo ;        \
+		fi ;                                                        \
 	fi
 
 install:
 	@echo "Nothing to install here"
 
 CLEANFILES = $(tarfile)
-endif
 

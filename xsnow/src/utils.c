@@ -37,6 +37,7 @@
 #include "version.h"
 #include "flags.h"
 #include "safe_malloc.h"
+#include "xdo.h"
 
 void traceback()
 #ifdef TRACEBACK_AVAILALBLE
@@ -351,13 +352,12 @@ float gaussf(float x, float mu, float sigma)
 // be found
 char *guess_language()
 {
-   char *tries[] = {"LANGUAGE","LANG","LC_ALL","LC_MESSAGES","LC_NAME","LC_TIME",NULL};
+   const char *tries[] = {"LANGUAGE","LANG","LC_ALL","LC_MESSAGES","LC_NAME","LC_TIME",NULL};
    char *a, *b;
    int i = 0;
-   char *try = tries[i];
-   while (try)
+   while (tries[i])
    {
-      a = getenv(try);
+      a = getenv(tries[i]);
       if (a && strlen(a)>0)
       {
 	 b = strdup(a);
@@ -373,8 +373,48 @@ char *guess_language()
 	 }
 	 free(b);
       }
-      try = tries[++i];
+      ++i;
    }
    return NULL;
 }
+
+// find largest window with name
+Window  largest_window_with_name(xdo_t *myxdo, const char *name)
+{
+   xdo_search_t search;
+
+   memset(&search,0,sizeof(xdo_search_t));
+
+   search.searchmask     = SEARCH_NAME;
+   search.winname        = name;
+   search.require        = SEARCH_ANY;
+   search.max_depth      = 4;
+   search.limit          = 0;
+
+   Window *windows = NULL;
+   unsigned int nwindows;
+
+   xdo_search_windows(myxdo, &search, &windows, &nwindows);
+   P("nwindows: %s %d\n",search.winname,nwindows);
+   unsigned int i;
+   Window w = 0;
+   unsigned int maxsize = 0;
+
+   for (i=0; i<nwindows; i++)
+   {
+      unsigned int width,height;
+      xdo_get_window_size(myxdo, windows[i], &width, &height);
+      P("window: 0x%lx %d %d\n",windows[i],width,height);
+      unsigned int size = width*height;
+      if (size <= maxsize)
+         continue;
+      P("width %d height %d size %d prev maxsize %d\n",width,height, size, maxsize);
+      maxsize = size;
+      w = windows[i];
+   }
+   if (windows)
+      free(windows);
+   return w;
+}
+
 

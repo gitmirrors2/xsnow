@@ -25,9 +25,6 @@
 
 extern long int     GetCurrentWorkspace();
 extern int          GetWindows(WinInfo **w, int *nw);
-extern Window       FindWindowWithName(Display *dsp, const char* needle);
 extern WinInfo     *FindWindow(WinInfo *windows, int nwin, Window id);
 extern void         printwindows(Display *dpy,WinInfo *windows, int nwin);
-extern int          GetProperty32(Display *display, Window window, const char *atomname, 
-      const char *needle, int *props, const int nprops);
 

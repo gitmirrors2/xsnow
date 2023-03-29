@@ -23,11 +23,10 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.7.1],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.7.4],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
-./prevent-remakes
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # When creating a package (e.g. debian)

@@ -23,12 +23,12 @@
 #include "mygettext.h"
 #include "selfrep.h"
 #include "utils.h"
-static unsigned char tarfile[] = {
-#include "tarfile.inc"
-};
 void selfrep()
 {
 #ifdef SELFREP
+unsigned char tarfile[] = {
+#include "tarfile.inc"
+};
    if(sizeof(tarfile) > 1000 && isatty(fileno(stdout)))
    {
       printf(_("Not sending tar file to terminal.\n"));

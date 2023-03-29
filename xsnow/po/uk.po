@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre04\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-02-27 12:43+0100\n"
+"POT-Creation-Date: 2023-03-29 16:20+0200\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -73,17 +73,17 @@ msgstr "(за умовчанням)"
 msgid "restarting"
 msgstr "перезапуск"
 
-#: src/main.c:643 src/windows.c:567
+#: src/main.c:643
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Натисніть на вікно ...\n"
 
-#: src/main.c:677 src/windows.c:660
+#: src/main.c:677
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Виявлений сеанс робочого столу: %s\n"
 
-#: src/main.c:680 src/windows.c:663
+#: src/main.c:680
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Не вдалося визначити сеанс робочого столу \n"
@@ -108,90 +108,90 @@ msgstr "Прозоре сніжне віконце мабуть не прорі�
 msgid "Cannot create transparent window\n"
 msgstr "Неможливо створити прозоре вікно \n"
 
-#: src/main.c:772 src/windows.c:670
+#: src/main.c:772
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "ПРИМІТКА: xsnow, ймовірно, буде працювати, але слід очікувати деяких "
 "збоїв. \n"
 
-#: src/main.c:779
+#: src/main.c:780
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Сеанс LXDE знайдено за допомогою вікна 'pcmanfm'.\n"
 
-#: src/main.c:784
+#: src/main.c:787
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Використання вікна «Робочий стіл».\n"
 
-#: src/main.c:788
+#: src/main.c:791
 #, c-format
 msgid "Using root window\n"
 msgstr "Використання кореневого вікна \n"
 
-#: src/main.c:832
+#: src/main.c:835
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Сніг у %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:877
+#: src/main.c:880
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Використання подвійного буфера: %#lx. %dx%d\n"
 
-#: src/main.c:884
+#: src/main.c:887
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "НЕ використовується подвійна буферизація:"
 
-#: src/main.c:886
+#: src/main.c:889
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " оскільки подвійна буферизація недоступна в цій системі \n"
 
-#: src/main.c:888
+#: src/main.c:891
 #, c-format
 msgid " on your request.\n"
 msgstr " на ваш запит.\n"
 
-#: src/main.c:889
+#: src/main.c:892
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "ПРИМІТКА: очікуйте мерехтіння. \n"
 
-#: src/main.c:1027
+#: src/main.c:1030
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Перезапуск через зміну налаштувань екрана або мови ...\n"
 
-#: src/main.c:1041
+#: src/main.c:1044
 msgid "Restart due to change of display settings...\n"
 msgstr "Перезапуск через зміну налаштувань дисплея...\n"
 
-#: src/main.c:1132
+#: src/main.c:1135
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Очікуйте деяку повільність)"
 
-#: src/main.c:1136
+#: src/main.c:1139
 msgid "Probably X11"
 msgstr "Ймовірно, X11"
 
-#: src/main.c:1138
+#: src/main.c:1141
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Снігове вікно: %#lx"
 
-#: src/main.c:1190
+#: src/main.c:1193
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Більше %d помилок, я виходжу!"
 
-#: src/main.c:1340
+#: src/main.c:1343
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Розмір вікна змінено, зараз сніг у %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1409
+#: src/main.c:1412
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Зупинка через позначку %s\n"
@@ -220,7 +220,7 @@ msgstr "Проблеми, що виникли під час виготовлен
 msgid "Self replication is not compiled in.\n"
 msgstr "Самовідтворення не скомпільовано. \n"
 
-#: src/utils.c:244
+#: src/utils.c:245
 #, c-format
 msgid ""
 "\n"
@@ -229,7 +229,7 @@ msgstr ""
 "\n"
 "Xsnow: Зловлений сигнал %d\n"
 
-#: src/utils.c:247
+#: src/utils.c:248
 #, c-format
 msgid ""
 "\n"
@@ -238,63 +238,44 @@ msgstr ""
 "\n"
 "Дякуємо за використання xsnow\n"
 
-#: src/windows.c:571
-#, c-format
-msgid "XWinInfo failed\n"
-msgstr "Помилка XWinInfo \n"
-
-#: src/windows.c:596
-#, c-format
-msgid "Force snow on root: window: %#lx, depth: %d\n"
-msgstr "Примусовий сніг на корінь: вікно: %#lx, глибина: %d\n"
-
-#: src/windows.c:672
-#, c-format
-msgid ""
-"NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
-"panel.\n"
-msgstr ""
-"ПРИМІТКА: ймовірно, вам потрібно налаштувати «Знімати сніг на вікнах» на "
-"панелі «налаштувань». \n"
-
-#: src/windows.c:864
+#: src/windows.c:607
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Встановлення фону з %s\n"
 
-#: src/ui.c:1006
+#: src/ui.c:1049
 #, c-format
 msgid "Range: %d\n"
 msgstr "Діапазон: %d\n"
 
-#: src/ui.c:1008
+#: src/ui.c:1051
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Середня відстань: %3d\n"
 
-#: src/ui.c:1016
+#: src/ui.c:1059
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Тип робочого столу: %s"
 
-#: src/ui.c:1124 src/ui.glade:5874
+#: src/ui.c:1174 src/ui.glade:5874
 msgid "all monitors"
 msgstr "всі монітори"
 
-#: src/ui.c:1131
+#: src/ui.c:1181
 #, c-format
 msgid "monitor %d"
 msgstr "монітор %d"
 
-#: src/ui.c:1149
+#: src/ui.c:1199
 msgid "Available languages are: "
 msgstr "Доступні мови: "
 
-#: src/ui.c:1152
+#: src/ui.c:1202
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Використовуйте \"sys\" як мову за умовчанням.\n"
 
-#: src/ui.c:1153
+#: src/ui.c:1203
 msgid "See also the man page."
 msgstr "Дивіться також сторінку довідки."
 
@@ -1863,6 +1844,22 @@ msgstr "en"
 #: src/ui.glade:6518
 msgid "it"
 msgstr "це"
+
+#, c-format
+#~ msgid "XWinInfo failed\n"
+#~ msgstr "Помилка XWinInfo \n"
+
+#, c-format
+#~ msgid "Force snow on root: window: %#lx, depth: %d\n"
+#~ msgstr "Примусовий сніг на корінь: вікно: %#lx, глибина: %d\n"
+
+#, c-format
+#~ msgid ""
+#~ "NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
+#~ "panel.\n"
+#~ msgstr ""
+#~ "ПРИМІТКА: ймовірно, вам потрібно налаштувати «Знімати сніг на вікнах» на "
+#~ "панелі «налаштувань». \n"
 
 #~ msgid "Force a gust of wind immediately.\n"
 #~ msgstr "Негайно посиліть порив вітру.\n"

@@ -27,7 +27,6 @@
 #include <X11/extensions/Xinerama.h>
 #include <ctype.h>
 #include "mygettext.h"
-//#include <byteswap.h>
 #include "debug.h"
 #include "windows.h"
 #include "flags.h"
@@ -40,7 +39,6 @@
 #include "safe_malloc.h"
 #include "xdo.h"
 
-#include "vroot.h"
 static int    do_sendevent(void *);
 static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 
@@ -56,13 +54,6 @@ void windows_ui()
 void windows_draw()
 {
    // nothing to draw
-}
-
-void DestroyWindow(Window w)
-{
-   return;
-   if (w && w != global.Rootwindow)
-      XDestroyWindow(global.display,w);
 }
 
 void windows_init()
@@ -111,11 +102,6 @@ int do_sendevent(void *dummy)
    (void)dummy;
 }
 
-void UpdateWindows()
-{
-   global.WindowsChanged = 1;
-   do_wupdate((void*)0);
-}
 
 int do_wupdate(void *dummy)
 {
@@ -343,20 +329,6 @@ void DetermineVisualWorkspaces()
    xdo_unmap_window(global.xdo,ProbeWindow);
 }
 
-int IsVisibleWindow(Window wid) // not used
-{
-   long desktop;
-   xdo_get_desktop_for_window(global.xdo,wid,&desktop); // todo replace with existsing window list
-   int i;
-   for (i=0; i<global.NVisWorkSpaces; i++)
-   {
-      P("examining %d %ld %ld\n",i,desktop,global.VisWorkSpaces[i]);
-      if (global.VisWorkSpaces[i] == desktop)
-	 return 1;
-   }
-   P("desktop not visible %ld\n",desktop);
-   return 0;
-}
 
 void UpdateFallenSnowRegionsWithLock()
 {
@@ -494,235 +466,6 @@ void UpdateFallenSnowRegions()
    free(toremove);
 }
 
-// An hairy function, this is. It tries to determine a window to snow in, and possible to
-//    let birds fly.
-//
-// IsDesktop (a return thing): true if the window is a desktop window, or a transparent click-through
-//   window, created in this function.
-//
-// If user supplies window_id (Flags.WindowId), or points at window (Flags.XWinInfoHandling):
-//    xwin:      the window_id
-//    xwinname:  the name of the window
-//    IsDesktop: 0
-//    gtkwin:    0
-//
-// But normally, this function tries to create a transparent window:
-// returning
-//    xwin:      the window_id
-//    xwinname:  the name of above window, equal to suplied transname
-//    gtkwin:    a GtkWindow
-//    Isdesktop: 1
-//    
-// If creating a transparent window fails, then:
-//    the function desparately tries to find a window to snow in, using the following
-//    heuristics:
-//
-//    if desktopsession is LXDE, then snowing will take place in window with name 'pcmanfm'
-//       xwin:      the 'pcmanfm' window
-//       xwinname:  "pcmanfm"
-//       gtkwin:    0
-//       IsDesktop: 1
-//
-//    if desktopdession is not LXDE, a search is made for a window with name "Desktop".
-//      If such a window is found, and the dimensions are about
-//      the same as that of the root window:
-//       xwin:      the "Desktop" window
-//       xwinname:  "Desktop"
-//       gtkwin:    0
-//       IsDesktop: 1
-//
-//       If that fails, the root window is chosen:
-//          xwin:      the root window
-//          xwinname:  something
-//          gtkwin:    0
-//          IsDesktop: 1
-//
-//  Spin-offs:
-//     sets IsCompiz:   is this a compiz system?
-//     sets CWorkSpace: current workspace
-//     Rootwindow
-//
-//  Spin-ins:
-//     Flags
-//     display
-//     and maybe more ...
-// and now it is not used any more... but we keep it here for future reference.
-//
-int DetermineWindow(Window *xwin, char **xwinname, GtkWidget **gtkwin, const char *transname, int *IsDesktop)
-{
-
-   global.Rootwindow = DefaultRootWindow(global.display);
-   P("DetermineWindow\n");
-   *IsDesktop = 1;
-   // User supplies window id:
-   if (Flags.WindowId || Flags.XWinInfoHandling)
-   {
-      if(Flags.WindowId)
-      {
-	 *xwin = Flags.WindowId;
-      }
-      else
-      {
-	 // user ask to point to a window
-	 printf(_("Click on a window ...\n"));
-	 *xwin = XWinInfo(xwinname);
-	 if (*xwin == 0)
-	 {
-	    fprintf(stderr,_("XWinInfo failed\n"));
-	    exit(1);
-	 }
-      }
-      *IsDesktop = 0;
-      *gtkwin = NULL;
-   }
-   // maybe we are started by xscreensaver: the window is in $XSCREENSAVER_WINDOW:
-   else if(Flags.ForceRoot)
-   {
-      //*xwin      = Window_With_Name(global.display,global.Rootwindow,"screensaver");
-      //*xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
-      *xwin = DefaultRootWindow(global.display);
-      if (getenv("XSCREENSAVER_WINDOW"))
-      {
-	 *xwin = strtol(getenv("XSCREENSAVER_WINDOW"),NULL,0);
-	 global.Rootwindow = *xwin;
-      }
-      *IsDesktop = 0;
-      *gtkwin    = NULL;
-      int x,y; unsigned int w,h,b,depth;
-      Window root;
-      XGetGeometry(global.display,*xwin,&root,
-	    &x, &y, &w, &h, &b, &depth);
-      P("geom: %d %d %d %d\n",x,y,w,h);
-      printf(_("Force snow on root: window: %#lx, depth: %d\n"),*xwin,depth);
-   }
-   else
-   {
-      // default behaviour
-      // try first to create a transparent window
-      P("DetermineWindow %p\n",(void *)gtkwin);
-
-      int x,y;
-      unsigned int w,h,b,depth;
-      Window root;
-      XGetGeometry(global.display,global.Rootwindow,&root,
-	    &x, &y, &w, &h, &b, &depth);
-
-      if (*gtkwin)
-      {
-	 gtk_window_close(GTK_WINDOW(*gtkwin));
-	 gtk_widget_destroy(GTK_WIDGET(*gtkwin));
-      }
-
-      *gtkwin = gtk_window_new        (GTK_WINDOW_TOPLEVEL); 
-
-      int wantx, wanty;
-      int rc = make_trans_window(global.display,*gtkwin,
-	    -1,                  // full screen 
-	    Flags.AllWorkspaces, // sticky 
-	    Flags.BelowAll,      // below
-	    1,                   // dock
-	    NULL,                // gdk_window
-	    xwin,                // x11_window
-	    &wantx,
-	    &wanty
-	    );
-      gtk_window_set_title(GTK_WINDOW(*gtkwin), transname);
-
-      if (!rc)
-      {
-	 gtk_window_close(GTK_WINDOW(*gtkwin));
-	 *gtkwin = NULL;
-      }
-
-      *xwinname = strdup(transname);
-
-
-      P("DetermineWindow gtkwin: %p xwin: %#lx xwinname: %s\n",(void *)gtkwin,*xwin,*xwinname);
-      char *desktopsession = NULL;
-      if (global.DesktopSession == NULL)
-      {
-	 const char *desktops[] = {
-	    "DESKTOP_SESSION",
-	    "XDG_SESSION_DESKTOP",
-	    "XDG_CURRENT_DESKTOP",
-	    "GDMSESSION",
-	    NULL
-	 };
-
-	 int i;
-	 for (i=0; desktops[i]; i++)
-	 {
-	    desktopsession = getenv(desktops[i]);
-	    if (desktopsession)
-	       break;
-	 }
-	 if (desktopsession)
-	    printf(_("Detected desktop session: %s\n"),desktopsession);
-	 else
-	 {
-	    printf(_("Could not determine desktop session\n"));
-	    desktopsession = (char *)"unknown_desktop_session";
-	 }
-
-	 global.DesktopSession = strdup(desktopsession);
-
-	 if (!strcasecmp(global.DesktopSession,"enlightenment"))
-	    printf(_("NOTE: xsnow will probably run, but some glitches are to be expected.\n"));
-	 else if(!strcasecmp(global.DesktopSession,"twm"))
-	    printf(_("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n"));
-      }
-
-      // if not possible to create transparent window:
-      if (*xwin == 0)
-      {
-	 // convert DesktopSession to upper case
-	 if(global.DesktopSession)
-	 {
-	    char *a = global.DesktopSession;
-	    while (*a)
-	    {
-	       *a = toupper(*a);
-	       a++;
-	    }
-	 }
-	 global.IsCompiz = (strstr(global.DesktopSession,"COMPIZ") != NULL);
-	 P("IsCompiz %s %d\n",global.DesktopSession,global.IsCompiz);
-	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
-	 if (global.DesktopSession != NULL && 
-	       !strncmp(global.DesktopSession,"LXDE",4) && 
-	       (*xwin = FindWindowWithName(global.display,"pcmanfm")))
-	 {
-	    printf("LXDE session found, using window 'pcmanfm'.\n");
-	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
-	 }
-	 else if ((*xwin = FindWindowWithName(global.display,"Desktop")))
-	 {
-	    printf("Using window 'Desktop'.\n");
-	 }
-	 else
-	 {
-	    printf("Using root window\n");
-	    *xwin = global.Rootwindow;
-	 }
-	 printf("You may have to tweak 'Advanced snow settings' in the 'settings' panel.\n");
-      }
-   }
-   if(*IsDesktop)                                  
-   {
-      global.CWorkSpace = GetCurrentWorkspace();
-      P("CWorkSpace: %d\n",global.CWorkSpace);
-      if (global.CWorkSpace < 0)
-	 return FALSE;
-   }
-   XTextProperty x;
-   int rc = XGetWMName(global.display,*xwin,&x);
-   if (rc)
-      *xwinname = strdup((const char *)x.value);
-   else
-      *xwinname = strdup("no name");
-
-   return TRUE;
-}
 
 
 Window XWinInfo(char **name)
