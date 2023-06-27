@@ -38,6 +38,7 @@
 #include "dsimple.h"
 #include "safe_malloc.h"
 #include "xdo.h"
+#include "scenery.h"
 
 static int    do_sendevent(void *);
 static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
@@ -583,7 +584,7 @@ void DisplayDimensions()
    }
 
    global.SnowWinWidth  = w;
-   global.SnowWinHeight = h;
+   global.SnowWinHeight = h + Flags.OffsetS;
 
    P("DisplayDimensions: SnowWinX: %d Y:%d W:%d H:%d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
 
@@ -591,6 +592,8 @@ void DisplayDimensions()
    global.SnowWinDepth       = d;
 
    UpdateFallenSnowAtBottom();
+
+   RedrawTrees();
 
    SetMaxScreenSnowDepth();
    if(!global.IsDouble)

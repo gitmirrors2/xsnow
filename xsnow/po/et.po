@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre04\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-03-29 16:20+0200\n"
+"POT-Creation-Date: 2023-06-27 15:41+0200\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -114,83 +114,83 @@ msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "MÄRKUS. xsnow tõenäoliselt töötab, kuid oodata on mõningaid tõrkeid. \n"
 
-#: src/main.c:780
+#: src/main.c:782
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Leiti LXDE seanss, kasutades akent 'pcmanfm'.\n"
 
-#: src/main.c:787
+#: src/main.c:789
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Akna „Töölaud” kasutamine.\n"
 
-#: src/main.c:791
+#: src/main.c:793
 #, c-format
 msgid "Using root window\n"
 msgstr "Juurakna kasutamine \n"
 
-#: src/main.c:835
+#: src/main.c:837
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "%#lx sajab lund: %s %d+%d %dx%d\n"
 
-#: src/main.c:880
+#: src/main.c:882
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Topeltpuhvri kasutamine: %#lx. %dx%d\n"
 
-#: src/main.c:887
+#: src/main.c:889
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "EI kasuta topeltpuhverdamist:"
 
-#: src/main.c:889
+#: src/main.c:891
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " kuna topeltpuhverdus pole selles süsteemis saadaval \n"
 
-#: src/main.c:891
+#: src/main.c:893
 #, c-format
 msgid " on your request.\n"
 msgstr " teie soovil. \n"
 
-#: src/main.c:892
+#: src/main.c:894
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "MÄRKUS. Oodake mõningast virvendust. \n"
 
-#: src/main.c:1030
+#: src/main.c:1032
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Taaskäivitage ekraani- või keeleseadete muutmise tõttu ... \n"
 
-#: src/main.c:1044
+#: src/main.c:1046
 msgid "Restart due to change of display settings...\n"
 msgstr "Taaskäivitage kuvaseadete muutmise tõttu...\n"
 
-#: src/main.c:1135
+#: src/main.c:1137
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (oodake mõningast loidust)"
 
-#: src/main.c:1139
+#: src/main.c:1141
 msgid "Probably X11"
 msgstr "Ilmselt X11"
 
-#: src/main.c:1141
+#: src/main.c:1143
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Lumeaken: %#lx"
 
-#: src/main.c:1193
+#: src/main.c:1195
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Rohkem kui %d viga, ma lõpetasin!"
 
-#: src/main.c:1343
+#: src/main.c:1345
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Akna suurus muudetud, nüüd sajab lund %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1412
+#: src/main.c:1414
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Peatatakse lipu %s tõttu\n"
@@ -237,7 +237,7 @@ msgstr ""
 "\n"
 "Täname, et kasutasite xsnow\n"
 
-#: src/windows.c:607
+#: src/windows.c:610
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Tausta seadistamine asukohast %s\n"

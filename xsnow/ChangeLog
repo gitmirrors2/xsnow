@@ -1,3 +1,10 @@
+version 3.7.5
+	01: data/xsnow.desktop.in: add 'Simulation' to categories
+	02: main.c: make 'settings->lift snow on bottom', 
+	    -offsets working
+	    it appears that xdo_search uses the name argument as
+	    a regular expression, so use ^pcmanfm$ and ^Desktop$. 
+
 version 3.7.4
 	01: utils.c: fix bug in using xdo_search_windows(): the search
 	    parameter must be filled in completely (probably bug in

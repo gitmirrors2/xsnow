@@ -773,15 +773,17 @@ int StartWindow()
 	 if(!strcasecmp(global.DesktopSession,"twm"))
 	    printf("NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' panel.\n");
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
+	 // largest_window_with_name uses name argument as regex, hence the '^' and '$'.
+	 // Note that the name is still case-insensitive
 	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
-	       (xwin = largest_window_with_name(global.xdo,"pcmanfm"))
+	       (xwin = largest_window_with_name(global.xdo,"^pcmanfm$"))
 	       )
 	 {
 	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
 	 else if (
-	       (xwin = largest_window_with_name(global.xdo,"Desktop"))
+	       (xwin = largest_window_with_name(global.xdo,"^Desktop$"))
 	       )
 	 {
 	    printf(_("Using window 'Desktop'.\n"));

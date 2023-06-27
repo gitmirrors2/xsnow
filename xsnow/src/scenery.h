@@ -25,5 +25,6 @@
 extern void scenery_init(void);
 extern void scenery_ui(void);
 extern void EraseTrees(void);
+extern void RedrawTrees(void);
 extern int  scenery_draw(cairo_t *cr);
 

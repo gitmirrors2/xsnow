@@ -48,7 +48,6 @@
 static int              do_initbaum(void *);
 static void             ReInitTree0(void);
 static void             InitTreePixmaps(void);
-static void             RedrawTrees(void);
 static cairo_surface_t *tree_surface(int flip, const char **xpm, float scale);
 static void             create_tree_surfaces(void);
 static void             create_tree_dimensions(int tt);

@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre02\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-03-29 16:20+0200\n"
+"POT-Creation-Date: 2023-06-27 15:41+0200\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -117,84 +117,84 @@ msgstr ""
 "OPMERKING: xsnow zal waarschijnlijk werken, maar er zijn enkele storingen te "
 "verwachten. \n"
 
-#: src/main.c:780
+#: src/main.c:782
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-sessie gevonden met venster 'pcmanfm'.\n"
 
-#: src/main.c:787
+#: src/main.c:789
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Venster 'Desktop' gebruiken.\n"
 
-#: src/main.c:791
+#: src/main.c:793
 #, c-format
 msgid "Using root window\n"
 msgstr "Hoofdvenster gebruiken \n"
 
-#: src/main.c:835
+#: src/main.c:837
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Sneeuwt in %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:880
+#: src/main.c:882
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Dubbele buffer gebruiken: %#lx. %dx%d\n"
 
-#: src/main.c:887
+#: src/main.c:889
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "GEEN dubbele buffering gebruiken:"
 
-#: src/main.c:889
+#: src/main.c:891
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " omdat dubbele buffering niet beschikbaar is op dit systeem \n"
 
-#: src/main.c:891
+#: src/main.c:893
 #, c-format
 msgid " on your request.\n"
 msgstr " op uw verzoek.\n"
 
-#: src/main.c:892
+#: src/main.c:894
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "OPMERKING: verwacht enige flikkering.\n"
 
-#: src/main.c:1030
+#: src/main.c:1032
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr ""
 "Opnieuw opstarten vanwege wijziging van scherm- of taalinstellingen ...\n"
 
-#: src/main.c:1044
+#: src/main.c:1046
 msgid "Restart due to change of display settings...\n"
 msgstr "Opnieuw opstarten vanwege wijziging van weergave-instellingen...\n"
 
-#: src/main.c:1135
+#: src/main.c:1137
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (verwacht wat traagheid)"
 
-#: src/main.c:1139
+#: src/main.c:1141
 msgid "Probably X11"
 msgstr "Waarschijnlijk X11"
 
-#: src/main.c:1141
+#: src/main.c:1143
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Sneeuwvenster: %#lx"
 
-#: src/main.c:1193
+#: src/main.c:1195
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Meer dan %d fouten, ik ben gestopt!"
 
-#: src/main.c:1343
+#: src/main.c:1345
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Venstergrootte gewijzigd, sneeuwt nu in %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1412
+#: src/main.c:1414
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Stoppen vanwege vlag %s\n"
@@ -241,7 +241,7 @@ msgstr ""
 "\n"
 "Bedankt voor het gebruik van xsnow\n"
 
-#: src/windows.c:607
+#: src/windows.c:610
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Achtergrond instellen van %s\n"
