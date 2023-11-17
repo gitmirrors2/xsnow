@@ -1,3 +1,7 @@
+version 3.7.6
+	01: correct spelling error in ChangeLog
+	    adapt for debian sid
+
 version 3.7.5
 	01: data/xsnow.desktop.in: add 'Simulation' to categories
 	02: main.c: make 'settings->lift snow on bottom', 
@@ -89,7 +93,7 @@ version 3.6.0
 	   birds.c: fix bug that caused a hang when using -doublebuffer 0
 	   docs.c: update window manager/desktop issues
 	   main.c: print info when snow window changes size (thanks to Gim Kami)
-	   configure.ac: chack for availability of gsl_interp_steffen, 
+	   configure.ac: check for availability of gsl_interp_steffen, 
 	       gsl_interp_akima, gsl_interp_cspline and gsl_interp_linear
 	       (Thanks to Joachim Ruebenschuss)
 	   utils.c: somewhat nicer print-out of version
