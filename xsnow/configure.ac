@@ -6,7 +6,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.7.6],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.7.7],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -114,6 +114,7 @@ AC_PROG_CC([cc gcc])
 AC_PROG_CXX([c++ g++])
 AC_PROG_INSTALL
 AC_PROG_RANLIB
+AX_PROG_CC_FOR_BUILD
 
 LIBS="-lm"
 # Checks for header files.

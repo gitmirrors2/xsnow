@@ -1,5 +1,4 @@
-#!/bin/sh
-# -copyright-
+/* -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -18,23 +17,20 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
+ */
 
-XSNOW=xsnow
-if [ -x ./xsnow ]; then
-   XSNOW=./xsnow
-fi
-# test if 'xsnow -h' more or less works:
-$XSNOW -h | grep -q -i xsnow 
-if [ $? -ne 0 ] ; then
-   echo "Error in executing: $XSNOW -h"
-   exit 1
-fi
-# test if all default values are substituted:
-$XSNOW -h | grep -q DEFAULT_
-if [ $? -eq 0 ] ; then
-   echo "Not all default values are substituted:"
-   $XSNOW -h | grep DEFAULT_
-   exit 1
-fi
+// A stripped-down version of xsnow: only capable to output the man page
+// To be compiled like: cc -DMAKEMAN makeman.c docs.c flags.c
+// macro MAKEMAN is used in     flags.c flags.h
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "docs.h"
+#include "flags.h"
 
-
+int main()
+{
+   InitFlags();
+   SetDefaultFlags();
+   docs_usage(1);
+}

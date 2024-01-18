@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre04\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-11-17 11:25+0100\n"
+"POT-Creation-Date: 2024-01-17 15:12+0100\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,171 +27,171 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:375
+#: src/main.c:377
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Доступні мови: %s\n"
 
-#: src/main.c:378
+#: src/main.c:380
 msgid "Warning: don't eat yellow snow!"
 msgstr "Попередження: не їжте жовтий сніг!"
 
-#: src/main.c:399
+#: src/main.c:401
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Для оптимальних результатів додайте до %s:\n"
 
-#: src/main.c:407
+#: src/main.c:409
 #, c-format
 msgid "unknown\n"
 msgstr "невідомо \n"
 
-#: src/main.c:416
+#: src/main.c:418
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Виявлено робочий стіл Wayland \n"
 
-#: src/main.c:431
+#: src/main.c:433
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow потрібна версія gtk >= %s, знайдено версію %s \n"
 
-#: src/main.c:441
+#: src/main.c:443
 msgid "Continuing with flag"
 msgstr "Продовжуючи з прапором"
 
-#: src/main.c:477
+#: src/main.c:479
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: неможливо підключитися до X-сервера %s\n"
 
-#: src/main.c:478
+#: src/main.c:480
 msgid "(default)"
 msgstr "(за умовчанням)"
 
-#: src/main.c:596
+#: src/main.c:598
 msgid "restarting"
 msgstr "перезапуск"
 
-#: src/main.c:643
+#: src/main.c:645
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Натисніть на вікно ...\n"
 
-#: src/main.c:677
+#: src/main.c:679
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Виявлений сеанс робочого столу: %s\n"
 
-#: src/main.c:680
+#: src/main.c:682
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Не вдалося визначити сеанс робочого столу \n"
 
-#: src/main.c:712
+#: src/main.c:714
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Спроба засніжити в кореневому вікні \n"
 
-#: src/main.c:756
+#: src/main.c:758
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Використання прозорого вікна \n"
 
-#: src/main.c:761
+#: src/main.c:763
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr "Прозоре сніжне віконце мабуть не прорізне, на жаль..\n"
 
-#: src/main.c:770
+#: src/main.c:772
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Неможливо створити прозоре вікно \n"
 
-#: src/main.c:772
+#: src/main.c:774
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "ПРИМІТКА: xsnow, ймовірно, буде працювати, але слід очікувати деяких "
 "збоїв. \n"
 
-#: src/main.c:782
+#: src/main.c:784
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Сеанс LXDE знайдено за допомогою вікна 'pcmanfm'.\n"
 
-#: src/main.c:789
+#: src/main.c:791
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Використання вікна «Робочий стіл».\n"
 
-#: src/main.c:793
+#: src/main.c:795
 #, c-format
 msgid "Using root window\n"
 msgstr "Використання кореневого вікна \n"
 
-#: src/main.c:837
+#: src/main.c:839
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Сніг у %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:882
+#: src/main.c:884
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Використання подвійного буфера: %#lx. %dx%d\n"
 
-#: src/main.c:889
+#: src/main.c:891
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "НЕ використовується подвійна буферизація:"
 
-#: src/main.c:891
+#: src/main.c:893
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " оскільки подвійна буферизація недоступна в цій системі \n"
 
-#: src/main.c:893
+#: src/main.c:895
 #, c-format
 msgid " on your request.\n"
 msgstr " на ваш запит.\n"
 
-#: src/main.c:894
+#: src/main.c:896
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "ПРИМІТКА: очікуйте мерехтіння. \n"
 
-#: src/main.c:1032
+#: src/main.c:1034
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Перезапуск через зміну налаштувань екрана або мови ...\n"
 
-#: src/main.c:1046
+#: src/main.c:1048
 msgid "Restart due to change of display settings...\n"
 msgstr "Перезапуск через зміну налаштувань дисплея...\n"
 
-#: src/main.c:1137
+#: src/main.c:1139
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Очікуйте деяку повільність)"
 
-#: src/main.c:1141
+#: src/main.c:1143
 msgid "Probably X11"
 msgstr "Ймовірно, X11"
 
-#: src/main.c:1143
+#: src/main.c:1145
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Снігове вікно: %#lx"
 
-#: src/main.c:1195
+#: src/main.c:1197
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Більше %d помилок, я виходжу!"
 
-#: src/main.c:1345
+#: src/main.c:1347
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Розмір вікна змінено, зараз сніг у %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1414
+#: src/main.c:1416
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Зупинка через позначку %s\n"
@@ -220,7 +220,7 @@ msgstr "Проблеми, що виникли під час виготовлен
 msgid "Self replication is not compiled in.\n"
 msgstr "Самовідтворення не скомпільовано. \n"
 
-#: src/utils.c:245
+#: src/utils.c:248
 #, c-format
 msgid ""
 "\n"
@@ -229,7 +229,7 @@ msgstr ""
 "\n"
 "Xsnow: Зловлений сигнал %d\n"
 
-#: src/utils.c:248
+#: src/utils.c:251
 #, c-format
 msgid ""
 "\n"
@@ -238,44 +238,44 @@ msgstr ""
 "\n"
 "Дякуємо за використання xsnow\n"
 
-#: src/windows.c:610
+#: src/windows.c:613
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Встановлення фону з %s\n"
 
-#: src/ui.c:1049
+#: src/ui.c:1050
 #, c-format
 msgid "Range: %d\n"
 msgstr "Діапазон: %d\n"
 
-#: src/ui.c:1051
+#: src/ui.c:1052
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Середня відстань: %3d\n"
 
-#: src/ui.c:1059
+#: src/ui.c:1060
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Тип робочого столу: %s"
 
-#: src/ui.c:1174 src/ui.glade:5874
+#: src/ui.c:1175 src/ui.glade:5874
 msgid "all monitors"
 msgstr "всі монітори"
 
-#: src/ui.c:1181
+#: src/ui.c:1182
 #, c-format
 msgid "monitor %d"
 msgstr "монітор %d"
 
-#: src/ui.c:1199
+#: src/ui.c:1200
 msgid "Available languages are: "
 msgstr "Доступні мови: "
 
-#: src/ui.c:1202
+#: src/ui.c:1203
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Використовуйте \"sys\" як мову за умовчанням.\n"
 
-#: src/ui.c:1203
+#: src/ui.c:1204
 msgid "See also the man page."
 msgstr "Дивіться також сторінку довідки."
 

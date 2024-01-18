@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -26,16 +26,18 @@ TOASCII  = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 games_PROGRAMS = xsnow
 
+noinst_PROGRAMS = makeman
+
 xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
 		    -DLANGUAGES='"$(LANGUAGES)"'
 xsnow_LDADD       = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
 if USE_NLS
-   LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
-   xsnow_CPPFLAGS += -DENABLE_NLS=1
+LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
+xsnow_CPPFLAGS += -DENABLE_NLS=1
 else
-   LANGUAGES = 
+	LANGUAGES = 
 endif
 
 if MAKESELFREP
@@ -47,7 +49,7 @@ libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
 
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
+		pixmaps.c version.h wmctrl.h xsnow.h xsnow-constants.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh \
@@ -71,10 +73,17 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
+makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
+		  version.h doit.h
+
+makeman$(EXEEXT): changelog.inc
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
+		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
+
 if MAKESELFREP
 tarfile_inc = tarfile.inc
 else
-tarfile_inc =
+	tarfile_inc =
 endif
 
 BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
@@ -88,10 +97,10 @@ if MAKESELFREP
 tarfile.inc: $(tarfile) $(TOASCII)
 	@echo "Converting tarfile:"
 	ls -l $(tarfile)
-	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
+	env CC="$(CC_FOR_BUILD)" CFLAGS="$(CFLAGS_FOR_BUILD)" $(TOASCII) < $(tarfile) > $@ 
 else
 	tarfile.inc: 
-	echo "No selfrep compiled in" | $(TOASCII) > $@
+	echo "No selfrep compiled in" | env "CC=$(CC_FOR_BUILD)" CFLAGS="$(CFLAGS_FOR_BUILD)" $(TOASCII) > $@
 endif
 
 
@@ -119,8 +128,8 @@ appicondir=$(datadir)/pixmaps
 appicon_DATA=Pixmaps/xsnow.svg
 
 man6_MANS = xsnow.6
-xsnow.6: xsnow
-	./xsnow -manpage > $@
+xsnow.6: makeman
+	./makeman > $@
 
 CLEANFILES = xsnow.6 ui_xml.h snow_includes.h xsnow_out_2 xsnow_out_3 \
 	     changelog.inc tarfile.inc toascii toascii.c

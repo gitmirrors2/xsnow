@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre04\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-11-17 11:25+0100\n"
+"POT-Creation-Date: 2024-01-17 15:12+0100\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,171 +27,171 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:375
+#: src/main.c:377
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Galimos kalbos: %s\n"
 
-#: src/main.c:378
+#: src/main.c:380
 msgid "Warning: don't eat yellow snow!"
 msgstr "Įspėjimas: nevalgykite geltono sniego!"
 
-#: src/main.c:399
+#: src/main.c:401
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Norėdami gauti optimalius rezultatus, pridėkite prie savo %s:\n"
 
-#: src/main.c:407
+#: src/main.c:409
 #, c-format
 msgid "unknown\n"
 msgstr "nežinomas \n"
 
-#: src/main.c:416
+#: src/main.c:418
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Aptiktas „Wayland“ darbalaukis \n"
 
-#: src/main.c:431
+#: src/main.c:433
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow reikia gtk versijos >u003d %s, rasta versija %s \n"
 
-#: src/main.c:441
+#: src/main.c:443
 msgid "Continuing with flag"
 msgstr "Tęsinys su vėliava"
 
-#: src/main.c:477
+#: src/main.c:479
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: nepavyksta prisijungti prie X serverio %s\n"
 
-#: src/main.c:478
+#: src/main.c:480
 msgid "(default)"
 msgstr "(numatytas)"
 
-#: src/main.c:596
+#: src/main.c:598
 msgid "restarting"
 msgstr "paleidimas iš naujo"
 
-#: src/main.c:643
+#: src/main.c:645
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Spustelėkite langą...\n"
 
-#: src/main.c:677
+#: src/main.c:679
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Aptikta darbalaukio sesija: %s\n"
 
-#: src/main.c:680
+#: src/main.c:682
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Nepavyko nustatyti darbalaukio seanso \n"
 
-#: src/main.c:712
+#: src/main.c:714
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Bandoma snigti šakniniame lange \n"
 
-#: src/main.c:756
+#: src/main.c:758
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Naudojant skaidrų langą \n"
 
-#: src/main.c:761
+#: src/main.c:763
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr "Deja, permatomas sniego langas tikriausiai nepaspaudžiamas..\n"
 
-#: src/main.c:770
+#: src/main.c:772
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Negalima sukurti skaidraus lango \n"
 
-#: src/main.c:772
+#: src/main.c:774
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "PASTABA: xsnow tikriausiai veiks, bet galima tikėtis tam tikrų "
 "nesklandumų. \n"
 
-#: src/main.c:782
+#: src/main.c:784
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE sesija rasta naudojant langą „pcmanfm“.\n"
 
-#: src/main.c:789
+#: src/main.c:791
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Naudojant langą „Darbalaukis“.\n"
 
-#: src/main.c:793
+#: src/main.c:795
 #, c-format
 msgid "Using root window\n"
 msgstr "Naudojant šakninį langą \n"
 
-#: src/main.c:837
+#: src/main.c:839
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Sninga %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:882
+#: src/main.c:884
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Naudojant dvigubą buferį: %#lx. %dx%d\n"
 
-#: src/main.c:889
+#: src/main.c:891
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "NEnaudojamas dvigubas buferis:"
 
-#: src/main.c:891
+#: src/main.c:893
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " nes dvigubas buferis šioje sistemoje negalimas \n"
 
-#: src/main.c:893
+#: src/main.c:895
 #, c-format
 msgid " on your request.\n"
 msgstr " pagal jūsų prašymą. \n"
 
-#: src/main.c:894
+#: src/main.c:896
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "PASTABA: tikėkitės mirgėjimo. \n"
 
-#: src/main.c:1032
+#: src/main.c:1034
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Paleisti iš naujo dėl ekrano ar kalbos nustatymų pasikeitimo...\n"
 
-#: src/main.c:1046
+#: src/main.c:1048
 msgid "Restart due to change of display settings...\n"
 msgstr "Paleisti iš naujo, nes pasikeitė ekrano nustatymai...\n"
 
-#: src/main.c:1137
+#: src/main.c:1139
 msgid "Wayland (Expect some slugginess)"
 msgstr "Veilendas (Tikėkitės vangumo)"
 
-#: src/main.c:1141
+#: src/main.c:1143
 msgid "Probably X11"
 msgstr "Tikriausiai X11"
 
-#: src/main.c:1143
+#: src/main.c:1145
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Sniego langas: %#lx"
 
-#: src/main.c:1195
+#: src/main.c:1197
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Daugiau nei %d klaidų, išėjau!"
 
-#: src/main.c:1345
+#: src/main.c:1347
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Pakeistas lango dydis, dabar sninga po %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1414
+#: src/main.c:1416
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Sustabdoma dėl vėliavėlės %s\n"
@@ -220,7 +220,7 @@ msgstr "Problemos, iškilusios gaminant deguto rutulį. \n"
 msgid "Self replication is not compiled in.\n"
 msgstr "Savarankiškas replikavimas nesukompiliuotas.\n"
 
-#: src/utils.c:245
+#: src/utils.c:248
 #, c-format
 msgid ""
 "\n"
@@ -229,7 +229,7 @@ msgstr ""
 "\n"
 "Xsnow: užfiksuotas signalas %d\n"
 
-#: src/utils.c:248
+#: src/utils.c:251
 #, c-format
 msgid ""
 "\n"
@@ -238,44 +238,44 @@ msgstr ""
 "\n"
 "Dėkojame, kad naudojatės xsnow\n"
 
-#: src/windows.c:610
+#: src/windows.c:613
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Fono nustatymas iš %s\n"
 
-#: src/ui.c:1049
+#: src/ui.c:1050
 #, c-format
 msgid "Range: %d\n"
 msgstr "Diapazonas: %d\n"
 
-#: src/ui.c:1051
+#: src/ui.c:1052
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Vidutinis atstumas: %3d\n"
 
-#: src/ui.c:1059
+#: src/ui.c:1060
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Darbalaukio tipas: %s"
 
-#: src/ui.c:1174 src/ui.glade:5874
+#: src/ui.c:1175 src/ui.glade:5874
 msgid "all monitors"
 msgstr "visi monitoriai"
 
-#: src/ui.c:1181
+#: src/ui.c:1182
 #, c-format
 msgid "monitor %d"
 msgstr "stebėti %d"
 
-#: src/ui.c:1199
+#: src/ui.c:1200
 msgid "Available languages are: "
 msgstr "Galimos kalbos: "
 
-#: src/ui.c:1202
+#: src/ui.c:1203
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Naudokite \"sys\" kaip numatytąją kalbą. \n"
 
-#: src/ui.c:1203
+#: src/ui.c:1204
 msgid "See also the man page."
 msgstr "Taip pat žiūrėkite vadovo puslapį."
 

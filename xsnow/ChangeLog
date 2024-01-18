@@ -1,3 +1,7 @@
+version 3.7.7
+	01: enable cross compiling
+	02: fix minor issue: version in man page
+
 version 3.7.6
 	01: correct spelling error in ChangeLog
 	    adapt for debian sid

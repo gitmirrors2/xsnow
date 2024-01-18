@@ -91,6 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 games_PROGRAMS = xsnow$(EXEEXT)
+noinst_PROGRAMS = makeman$(EXEEXT)
 @USE_NLS_TRUE@am__append_1 = -DENABLE_NLS=1
 @MAKESELFREP_TRUE@am__append_2 = -DSELFREP
 subdir = src
@@ -99,6 +100,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/host-cpu-c-abi.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/m4_ax_prog_cc_for_build.m4 \
 	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
 	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/configure.ac
@@ -111,7 +113,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(gamesdir)" "$(DESTDIR)$(man6dir)" \
 	"$(DESTDIR)$(appicondir)"
-PROGRAMS = $(games_PROGRAMS)
+PROGRAMS = $(games_PROGRAMS) $(noinst_PROGRAMS)
 LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 AM_V_AR = $(am__v_AR_@AM_V@)
@@ -123,6 +125,9 @@ libxdo_a_LIBADD =
 am_libxdo_a_OBJECTS = libxdo_a-xdo.$(OBJEXT) \
 	libxdo_a-xdo_search.$(OBJEXT)
 libxdo_a_OBJECTS = $(am_libxdo_a_OBJECTS)
+am_makeman_OBJECTS = makeman.$(OBJEXT) docs.$(OBJEXT) flags.$(OBJEXT)
+makeman_OBJECTS = $(am_makeman_OBJECTS)
+makeman_LDADD = $(LDADD)
 am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
 	xsnow-wmctrl.$(OBJEXT) xsnow-docs.$(OBJEXT) \
@@ -161,8 +166,9 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/libxdo_a-xdo.Po \
-	./$(DEPDIR)/libxdo_a-xdo_search.Po ./$(DEPDIR)/xsnow-Santa.Po \
+am__depfiles_remade = ./$(DEPDIR)/docs.Po ./$(DEPDIR)/flags.Po \
+	./$(DEPDIR)/libxdo_a-xdo.Po ./$(DEPDIR)/libxdo_a-xdo_search.Po \
+	./$(DEPDIR)/makeman.Po ./$(DEPDIR)/xsnow-Santa.Po \
 	./$(DEPDIR)/xsnow-aurora.Po ./$(DEPDIR)/xsnow-birds.Po \
 	./$(DEPDIR)/xsnow-blowoff.Po ./$(DEPDIR)/xsnow-clientwin.Po \
 	./$(DEPDIR)/xsnow-clocks.Po ./$(DEPDIR)/xsnow-csvpos.Po \
@@ -209,8 +215,9 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libxdo_a_SOURCES) $(xsnow_SOURCES) $(nodist_xsnow_SOURCES)
-DIST_SOURCES = $(libxdo_a_SOURCES) $(xsnow_SOURCES)
+SOURCES = $(libxdo_a_SOURCES) $(makeman_SOURCES) $(xsnow_SOURCES) \
+	$(nodist_xsnow_SOURCES)
+DIST_SOURCES = $(libxdo_a_SOURCES) $(makeman_SOURCES) $(xsnow_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -494,11 +501,17 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD_EXEEXT = @BUILD_EXEEXT@
+BUILD_OBJEXT = @BUILD_OBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
+CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
+CPP_FOR_BUILD = @CPP_FOR_BUILD@
 CSCOPE = @CSCOPE@
 CTAGS = @CTAGS@
 CXX = @CXX@
@@ -530,6 +543,7 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
+LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
@@ -579,6 +593,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_CC_FOR_BUILD = @ac_ct_CC_FOR_BUILD@
 ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -632,7 +647,7 @@ top_srcdir = @top_srcdir@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -656,12 +671,11 @@ xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) \
 	$(am__append_1) $(am__append_2)
 xsnow_LDADD = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
-@USE_NLS_FALSE@LANGUAGES = 
 noinst_LIBRARIES = libxdo.a
 libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h windows.c windows.h\
+		pixmaps.c version.h wmctrl.h xsnow.h xsnow-constants.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
 		test1.sh \
@@ -684,7 +698,9 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		safe_malloc.c safe_malloc.h mygettext.h gettext.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
-@MAKESELFREP_FALSE@tarfile_inc = 
+makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
+		  version.h doit.h
+
 @MAKESELFREP_TRUE@tarfile_inc = tarfile.inc
 BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
@@ -773,6 +789,9 @@ uninstall-gamesPROGRAMS:
 clean-gamesPROGRAMS:
 	-test -z "$(games_PROGRAMS)" || rm -f $(games_PROGRAMS)
 
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
@@ -791,8 +810,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/docs.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flags.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxdo_a-xdo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxdo_a-xdo_search.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/makeman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-Santa.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-aurora.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-birds.Po@am__quote@ # am--include-marker
@@ -1782,11 +1804,14 @@ maintainer-clean-generic:
 clean: clean-recursive
 
 clean-am: clean-gamesPROGRAMS clean-generic clean-noinstLIBRARIES \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
-		-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
+		-rm -f ./$(DEPDIR)/docs.Po
+	-rm -f ./$(DEPDIR)/flags.Po
+	-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
 	-rm -f ./$(DEPDIR)/libxdo_a-xdo_search.Po
+	-rm -f ./$(DEPDIR)/makeman.Po
 	-rm -f ./$(DEPDIR)/xsnow-Santa.Po
 	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
@@ -1865,8 +1890,11 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-		-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
+		-rm -f ./$(DEPDIR)/docs.Po
+	-rm -f ./$(DEPDIR)/flags.Po
+	-rm -f ./$(DEPDIR)/libxdo_a-xdo.Po
 	-rm -f ./$(DEPDIR)/libxdo_a-xdo_search.Po
+	-rm -f ./$(DEPDIR)/makeman.Po
 	-rm -f ./$(DEPDIR)/xsnow-Santa.Po
 	-rm -f ./$(DEPDIR)/xsnow-aurora.Po
 	-rm -f ./$(DEPDIR)/xsnow-birds.Po
@@ -1926,24 +1954,31 @@ uninstall-man: uninstall-man6
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--depfiles check check-TESTS check-am clean \
 	clean-gamesPROGRAMS clean-generic clean-noinstLIBRARIES \
-	cscopelist-am ctags ctags-am distclean distclean-compile \
-	distclean-generic distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-appiconDATA \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-gamesPROGRAMS \
-	install-html install-html-am install-info install-info-am \
-	install-man install-man6 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am recheck tags tags-am \
-	uninstall uninstall-am uninstall-appiconDATA \
-	uninstall-gamesPROGRAMS uninstall-man uninstall-man6
+	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-appiconDATA install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am \
+	install-gamesPROGRAMS install-html install-html-am \
+	install-info install-info-am install-man install-man6 \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am recheck tags tags-am uninstall uninstall-am \
+	uninstall-appiconDATA uninstall-gamesPROGRAMS uninstall-man \
+	uninstall-man6
 
 .PRECIOUS: Makefile
 
 
-@USE_NLS_TRUE@   LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
+@USE_NLS_TRUE@LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
+@USE_NLS_FALSE@	LANGUAGES = 
+
+makeman$(EXEEXT): changelog.inc
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
+		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
+@MAKESELFREP_FALSE@	tarfile_inc =
 
 $(tarfile):
 	echo "Dummy tarfile." > $@
@@ -1951,9 +1986,9 @@ $(tarfile):
 @MAKESELFREP_TRUE@tarfile.inc: $(tarfile) $(TOASCII)
 @MAKESELFREP_TRUE@	@echo "Converting tarfile:"
 @MAKESELFREP_TRUE@	ls -l $(tarfile)
-@MAKESELFREP_TRUE@	export CC="$(CC)"; export CFLAGS="$(CFLAGS)"; $(TOASCII) < $(tarfile) > $@ 
+@MAKESELFREP_TRUE@	env CC="$(CC_FOR_BUILD)" CFLAGS="$(CFLAGS_FOR_BUILD)" $(TOASCII) < $(tarfile) > $@ 
 @MAKESELFREP_FALSE@	tarfile.inc: 
-@MAKESELFREP_FALSE@	echo "No selfrep compiled in" | $(TOASCII) > $@
+@MAKESELFREP_FALSE@	echo "No selfrep compiled in" | env "CC=$(CC_FOR_BUILD)" CFLAGS="$(CFLAGS_FOR_BUILD)" $(TOASCII) > $@
 
 ui_xml.h: ui.glade $(top_srcdir)/src/gen_ui_xml.sh
 	@echo "Creating $@ from $<"
@@ -1969,8 +2004,8 @@ changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
 xsnow-docs.$(OBJEXT): changelog.inc
 
 xsnow-selfrep.$(OBJEXT): $(tarfile_inc)
-xsnow.6: xsnow
-	./xsnow -manpage > $@
+xsnow.6: makeman
+	./makeman > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

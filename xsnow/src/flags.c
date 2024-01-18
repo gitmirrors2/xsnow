@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -18,15 +18,17 @@
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
 */
+
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "flags.h"
+
+#include "xsnow-constants.h"
+#ifndef MAKEMAN
+
 #include "utils.h"
-#include "xsnow.h"
 #include "docs.h"
-#include "doit.h"
 #include "birds.h"
 #include "windows.h"
 #include "selfrep.h"
@@ -34,13 +36,20 @@
 
 #include "debug.h"
 
+#endif
+
+#include "flags.h"
+#include "doit.h"
+
 FLAGS Flags;
 FLAGS OldFlags;
 FLAGS DefaultFlags;
 FLAGS VintageFlags;
 
+#ifndef MAKEMAN
+
 static void ReadFlags(void);
-static void SetDefaultFlags(void);
+//static void SetDefaultFlags(void);
 static void findflag(FILE *f, const char *x, char **value);
 
 static long int S2Int(char *s)     // string to integer
@@ -54,9 +63,10 @@ static long int S2PosInt(char *s)  //string to positive integer
    return x;
 }
 
-
 static char *FlagsFile          = NULL;
 static int   FlagsFileAvailable = 1;
+
+#endif
 
 void SetDefaultFlags()
 {
@@ -82,6 +92,8 @@ void InitFlags()
    DOITALL;
 #include "undefall.inc"
 }
+
+#ifndef MAKEMAN
 
 #define handlestring(x) checkax; free(Flags.x); Flags.x = strdup(argv[++ax])
 
@@ -449,3 +461,5 @@ void WriteFlags()
 #include "undefall.inc"
    fclose(f);
 }
+
+#endif

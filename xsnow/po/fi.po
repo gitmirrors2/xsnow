@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.6.1.gettext~pre7\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2023-11-17 11:25+0100\n"
+"POT-Creation-Date: 2024-01-17 15:12+0100\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,175 +27,175 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:375
+#: src/main.c:377
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Saatavilla olevat kielet ovat: %s\n"
 
-#: src/main.c:378
+#: src/main.c:380
 msgid "Warning: don't eat yellow snow!"
 msgstr "Varoitus: älä syö keltaista lunta!"
 
-#: src/main.c:399
+#: src/main.c:401
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Optimaalista palautusta varten lisää %s:\n"
 
-#: src/main.c:407
+#: src/main.c:409
 #, c-format
 msgid "unknown\n"
 msgstr "tuntematon\n"
 
-#: src/main.c:416
+#: src/main.c:418
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Havaittu Wayland-työpöytä\n"
 
-#: src/main.c:431
+#: src/main.c:433
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow tarvitsee gtk-version >= %s, löytyi versio %s \n"
 
-#: src/main.c:441
+#: src/main.c:443
 msgid "Continuing with flag"
 msgstr "Jatketaan liputuksella"
 
-#: src/main.c:477
+#: src/main.c:479
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: ei voida yhdistää X-palvelimeen %s\n"
 
-#: src/main.c:478
+#: src/main.c:480
 msgid "(default)"
 msgstr "(oletuksena)"
 
-#: src/main.c:596
+#: src/main.c:598
 msgid "restarting"
 msgstr "uudelleenkäynnistys"
 
-#: src/main.c:643
+#: src/main.c:645
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Napauta ikkunaa ...\n"
 
-#: src/main.c:677
+#: src/main.c:679
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Havaittu työpöytäistunto: %s\n"
 
-#: src/main.c:680
+#: src/main.c:682
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Työpöytäistuntoa ei voitu määrittää\n"
 
-#: src/main.c:712
+#: src/main.c:714
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Yritetään lunta juuri-ikkunassa\n"
 
-#: src/main.c:756
+#: src/main.c:758
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Käyttämällä läpinäkyvää ikkunaa\n"
 
-#: src/main.c:761
+#: src/main.c:763
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "Läpinäkyvä lumiikkuna ei todennäköisesti ole napsautettava, "
 "valitettavasti..\n"
 
-#: src/main.c:770
+#: src/main.c:772
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Läpinäkyvää ikkunaa ei voi luoda\n"
 
-#: src/main.c:772
+#: src/main.c:774
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "HUOMAUTUS: xsnow todennäköisesti toimii, mutta joitakin virheitä on "
 "odotettavissa.\n"
 
-#: src/main.c:782
+#: src/main.c:784
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-istunto löytyi, käyttäen ikkunaa 'pcmanfm'.\n"
 
-#: src/main.c:789
+#: src/main.c:791
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Käytä ikkunaa 'Työpöytä'.\n"
 
-#: src/main.c:793
+#: src/main.c:795
 #, c-format
 msgid "Using root window\n"
 msgstr "Käytetään pääikkunaa\n"
 
-#: src/main.c:837
+#: src/main.c:839
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:882
+#: src/main.c:884
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Käytetään kaksinkertaista puskuria: %#lx. %dx%d\n"
 
-#: src/main.c:889
+#: src/main.c:891
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "EI kaksoispuskurointia:"
 
-#: src/main.c:891
+#: src/main.c:893
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr ""
 " koska kaksinkertainen puskurointi ei ole käytettävissä tässä "
 "järjestelmässä\n"
 
-#: src/main.c:893
+#: src/main.c:895
 #, c-format
 msgid " on your request.\n"
 msgstr " pyynnöstäsi.\n"
 
-#: src/main.c:894
+#: src/main.c:896
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "HUOMAA: odota välähdystä.\n"
 
-#: src/main.c:1032
+#: src/main.c:1034
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Käynnistä uudelleen näytön tai kielen asetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1046
+#: src/main.c:1048
 msgid "Restart due to change of display settings...\n"
 msgstr "Käynnistä uudelleen näyttöasetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1137
+#: src/main.c:1139
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Odottaa jonkin verran slugginess)"
 
-#: src/main.c:1141
+#: src/main.c:1143
 msgid "Probably X11"
 msgstr "Todennäköisesti X11"
 
-#: src/main.c:1143
+#: src/main.c:1145
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Lumiikkuna: %#lx"
 
-#: src/main.c:1195
+#: src/main.c:1197
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Yli %d virhettä, lopetan!"
 
-#: src/main.c:1345
+#: src/main.c:1347
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Ikkunan koko muutettu, nyt lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1414
+#: src/main.c:1416
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Keskeytetään lipun %s takia\n"
@@ -224,7 +224,7 @@ msgstr "Ongelmia tervapallon valmistuksen aikana.\n"
 msgid "Self replication is not compiled in.\n"
 msgstr "Itsekopiointia ei ole käännetty.\n"
 
-#: src/utils.c:245
+#: src/utils.c:248
 #, c-format
 msgid ""
 "\n"
@@ -233,7 +233,7 @@ msgstr ""
 "\n"
 "Xsnow: Saimme signaalin %d\n"
 
-#: src/utils.c:248
+#: src/utils.c:251
 #, c-format
 msgid ""
 "\n"
@@ -242,44 +242,44 @@ msgstr ""
 "\n"
 "Kiitos, että käytät xsnow\n"
 
-#: src/windows.c:610
+#: src/windows.c:613
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Asetetaan taustaa kohteesta %s\n"
 
-#: src/ui.c:1049
+#: src/ui.c:1050
 #, c-format
 msgid "Range: %d\n"
 msgstr "Alue: %d\n"
 
-#: src/ui.c:1051
+#: src/ui.c:1052
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Keskimääräinen etäisyys: %3d\n"
 
-#: src/ui.c:1059
+#: src/ui.c:1060
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Työpöydän tyyppi: %s"
 
-#: src/ui.c:1174 src/ui.glade:5874
+#: src/ui.c:1175 src/ui.glade:5874
 msgid "all monitors"
 msgstr "kaikki näytöt"
 
-#: src/ui.c:1181
+#: src/ui.c:1182
 #, c-format
 msgid "monitor %d"
 msgstr "näyttö %d"
 
-#: src/ui.c:1199
+#: src/ui.c:1200
 msgid "Available languages are: "
 msgstr "Tämä lehdistötiedote on saatavissa seuraavilla kielillä: "
 
-#: src/ui.c:1202
+#: src/ui.c:1203
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Käytä \"sys\" oletuskielelläsi.\n"
 
-#: src/ui.c:1203
+#: src/ui.c:1204
 msgid "See also the man page."
 msgstr "Katso myös Man Page."
 

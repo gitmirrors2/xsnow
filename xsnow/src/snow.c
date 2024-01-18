@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+
+#include "xsnow-constants.h"
+
 #include "debug.h"
 #include "xsnow.h"
 #include "pixmaps.h"

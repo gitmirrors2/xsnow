@@ -2,7 +2,7 @@
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023 Willem Vermin
+#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
 #-# 
 #-# This program is free software: you can redistribute it and/or modify
 #-# it under the terms of the GNU General Public License as published by
@@ -23,10 +23,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "xsnow.h"
+#include "xsnow-constants.h"
 #include "docs.h"
 #include "version.h"
-#include "utils.h"
 #include "flags.h"
 #include "safe_malloc.h"
 
@@ -60,7 +59,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2023\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2024\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
@@ -77,7 +76,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2023 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2024 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");
