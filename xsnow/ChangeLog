@@ -1,6 +1,6 @@
 version 3.7.8
 	01: src/Makefile.am: fix bug related with tarfile.inc which caused
-	    --without-selfrep not working
+	    --disable-selfrep not working
 	    Thanks to Andrea Musuruane
 
 version 3.7.7
