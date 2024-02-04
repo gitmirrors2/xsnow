@@ -17,8 +17,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre04\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-01-17 15:12+0100\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2023-02-17 13:40+0100\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,172 +27,172 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:377
+#: src/main.c:375
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Dostupné jazyky jsou: %s\n"
 
-#: src/main.c:380
+#: src/main.c:378
 msgid "Warning: don't eat yellow snow!"
 msgstr "Upozornění: nejezte žlutý sníh!"
 
-#: src/main.c:401
+#: src/main.c:399
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Pro optimální výsledky přidejte do svého %s:\n"
 
-#: src/main.c:409
+#: src/main.c:407
 #, c-format
 msgid "unknown\n"
 msgstr "neznámý\n"
 
-#: src/main.c:418
+#: src/main.c:416
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Detekovaná plocha Wayland\n"
 
-#: src/main.c:433
+#: src/main.c:431
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow potřebuje verzi gtk >= %s, nalezená verze %s \n"
 
-#: src/main.c:443
+#: src/main.c:441
 msgid "Continuing with flag"
 msgstr "Pokračujeme vlajkou"
 
-#: src/main.c:479
+#: src/main.c:477
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: nelze se připojit k X serveru %s\n"
 
-#: src/main.c:480
+#: src/main.c:478
 msgid "(default)"
 msgstr "(výchozí)"
 
-#: src/main.c:598
+#: src/main.c:596
 msgid "restarting"
 msgstr "restartování"
 
-#: src/main.c:645
+#: src/main.c:643 src/windows.c:567
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Klikněte na okno ...\n"
 
-#: src/main.c:679
+#: src/main.c:677 src/windows.c:660
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Zjištěná relace plochy: %s\n"
 
-#: src/main.c:682
+#: src/main.c:680 src/windows.c:663
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Nelze určit relaci počítače\n"
 
-#: src/main.c:714
+#: src/main.c:712
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Pokus o sněžení v kořenovém okně\n"
 
-#: src/main.c:758
+#: src/main.c:756
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Použití průhledného okna\n"
 
-#: src/main.c:763
+#: src/main.c:761
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr "Průhledné sněhové okno pravděpodobně není proklikávací, bohužel..\n"
 
-#: src/main.c:772
+#: src/main.c:770
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Nelze vytvořit průhledné okno\n"
 
-#: src/main.c:774
+#: src/main.c:772 src/windows.c:670
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "POZNÁMKA: xsnow pravděpodobně poběží, ale lze očekávat nějaké závady.\n"
 
-#: src/main.c:784
+#: src/main.c:779
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Byla nalezena relace LXDE pomocí okna 'pcmanfm'.\n"
 
-#: src/main.c:791
+#: src/main.c:784
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Pomocí okna 'Desktop'. \n"
 
-#: src/main.c:795
+#: src/main.c:788
 #, c-format
 msgid "Using root window\n"
 msgstr "Použití kořenového okna \n"
 
-#: src/main.c:839
+#: src/main.c:832
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Sněží v %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:884
+#: src/main.c:877
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Použití dvojité vyrovnávací paměti: %#lx. %dx%d\n"
 
-#: src/main.c:891
+#: src/main.c:884
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "NEPOUŽÍVEJTE dvojité ukládání do vyrovnávací paměti:"
 
-#: src/main.c:893
+#: src/main.c:886
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr ""
 " protože dvojité ukládání do vyrovnávací paměti není v tomto systému k "
 "dispozici\n"
 
-#: src/main.c:895
+#: src/main.c:888
 #, c-format
 msgid " on your request.\n"
 msgstr " na vaši žádost.\n"
 
-#: src/main.c:896
+#: src/main.c:889
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "POZNÁMKA: očekávejte nějaké blikání.\n"
 
-#: src/main.c:1034
+#: src/main.c:1027
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Restartovat kvůli změně nastavení obrazovky nebo jazyka ...\n"
 
-#: src/main.c:1048
+#: src/main.c:1041
 msgid "Restart due to change of display settings...\n"
 msgstr "Restartovat kvůli změně nastavení displeje...\n"
 
-#: src/main.c:1139
+#: src/main.c:1132
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (očekávejte nějakou pomalost)"
 
-#: src/main.c:1143
+#: src/main.c:1136
 msgid "Probably X11"
 msgstr "Pravděpodobně X11"
 
-#: src/main.c:1145
+#: src/main.c:1138
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Sněhové okno: %#lx"
 
-#: src/main.c:1197
+#: src/main.c:1190
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Více než %d chyb, končím!"
 
-#: src/main.c:1347
+#: src/main.c:1340
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Velikost okna změněna, nyní sněží v %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1416
+#: src/main.c:1409
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Zastavení kvůli příznaku %s\n"
@@ -221,7 +221,7 @@ msgstr "Problémy při výrobě dehtové koule.\n"
 msgid "Self replication is not compiled in.\n"
 msgstr "Vlastní replikace není zkompilována. \n"
 
-#: src/utils.c:248
+#: src/utils.c:244
 #, c-format
 msgid ""
 "\n"
@@ -230,7 +230,7 @@ msgstr ""
 "\n"
 "Xsnow: Zachycený signál %d\n"
 
-#: src/utils.c:251
+#: src/utils.c:247
 #, c-format
 msgid ""
 "\n"
@@ -239,44 +239,63 @@ msgstr ""
 "\n"
 "Děkujeme za použití xsnow\n"
 
-#: src/windows.c:613
+#: src/windows.c:571
+#, c-format
+msgid "XWinInfo failed\n"
+msgstr "XWinInfo se nezdařilo \n"
+
+#: src/windows.c:596
+#, c-format
+msgid "Force snow on root: window: %#lx, depth: %d\n"
+msgstr "Vynutit sníh na kořen: okno: %#lx, hloubka: %d\n"
+
+#: src/windows.c:672
+#, c-format
+msgid ""
+"NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
+"panel.\n"
+msgstr ""
+"POZNÁMKA: Pravděpodobně budete muset vyladit 'Zvedat sníh na okna' v panelu "
+"'nastavení'.\n"
+
+#: src/windows.c:864
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Nastavení pozadí z %s\n"
 
-#: src/ui.c:1050
+#: src/ui.c:1006
 #, c-format
 msgid "Range: %d\n"
 msgstr "Rozsah: %d\n"
 
-#: src/ui.c:1052
+#: src/ui.c:1008
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Střední vzdálenost: %3d\n"
 
-#: src/ui.c:1060
+#: src/ui.c:1016
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Typ plochy: %s"
 
-#: src/ui.c:1175 src/ui.glade:5874
+#: src/ui.c:1124 src/ui.glade:5874
 msgid "all monitors"
 msgstr "všechny monitory"
 
-#: src/ui.c:1182
+#: src/ui.c:1131
 #, c-format
 msgid "monitor %d"
 msgstr "monitor %d"
 
-#: src/ui.c:1200
+#: src/ui.c:1149
 msgid "Available languages are: "
 msgstr "Dostupné jazyky jsou: "
 
-#: src/ui.c:1203
+#: src/ui.c:1152
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Jako výchozí jazyk použijte \"sys\".\n"
 
-#: src/ui.c:1204
+#: src/ui.c:1153
 msgid "See also the man page."
 msgstr "Viz také manuálová stránka."
 
@@ -837,8 +856,7 @@ msgstr "Měřítko:"
 msgid ""
 "Scale of Santa.\n"
 "Flags: -santascale <n>"
-msgstr ""
-"Ježíškova stupnice.\n"
+msgstr "Ježíškova stupnice.\n"
 "Flags: -santascale <n>"
 
 #: src/ui.glade:2609
@@ -977,8 +995,7 @@ msgstr ""
 msgid ""
 "Scale of scenery.\n"
 "Flag: sceneryscale <n>"
-msgstr ""
-"Měřítko scenérie. \n"
+msgstr "Měřítko scenérie. \n"
 "Flag: sceneryscale <n>"
 
 #: src/ui.glade:3372
@@ -1838,22 +1855,6 @@ msgstr "en"
 #: src/ui.glade:6518
 msgid "it"
 msgstr "to"
-
-#, c-format
-#~ msgid "XWinInfo failed\n"
-#~ msgstr "XWinInfo se nezdařilo \n"
-
-#, c-format
-#~ msgid "Force snow on root: window: %#lx, depth: %d\n"
-#~ msgstr "Vynutit sníh na kořen: okno: %#lx, hloubka: %d\n"
-
-#, c-format
-#~ msgid ""
-#~ "NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
-#~ "panel.\n"
-#~ msgstr ""
-#~ "POZNÁMKA: Pravděpodobně budete muset vyladit 'Zvedat sníh na okna' v "
-#~ "panelu 'nastavení'.\n"
 
 #~ msgid "Force a gust of wind immediately.\n"
 #~ msgstr "Okamžitě vynuťte poryv větru.\n"

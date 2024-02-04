@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.6.1.gettext~pre7\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-01-17 15:12+0100\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2023-02-17 13:40+0100\n"
 "PO-Revision-Date: 2023-02-17 13:40+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -26,177 +26,177 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:377
+#: src/main.c:375
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Los idiomas disponibles son: %s\n"
 
-#: src/main.c:380
+#: src/main.c:378
 msgid "Warning: don't eat yellow snow!"
 msgstr "Advertencia: ¡No comas nieve amarilla!"
 
-#: src/main.c:401
+#: src/main.c:399
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Para obtener resultados óptimos, añada a su %s:\n"
 
-#: src/main.c:409
+#: src/main.c:407
 #, c-format
 msgid "unknown\n"
 msgstr "desconocido\n"
 
-#: src/main.c:418
+#: src/main.c:416
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Escritorio Wayland detectado\n"
 
-#: src/main.c:433
+#: src/main.c:431
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow necesita versión gtk >= %s, se encontró la versión %s \n"
 
-#: src/main.c:443
+#: src/main.c:441
 msgid "Continuing with flag"
 msgstr "Siguiendo con"
 
-#: src/main.c:479
+#: src/main.c:477
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: no se puede conectar al servidor X %s\n"
 
-#: src/main.c:480
+#: src/main.c:478
 msgid "(default)"
 msgstr "(por defecto)"
 
-#: src/main.c:598
+#: src/main.c:596
 msgid "restarting"
 msgstr "reiniciando"
 
-#: src/main.c:645
+#: src/main.c:643 src/windows.c:567
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Haga clic en una ventana ...\n"
 
-#: src/main.c:679
+#: src/main.c:677 src/windows.c:660
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Sesión de escritorio detectada: %s\n"
 
-#: src/main.c:682
+#: src/main.c:680 src/windows.c:663
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "No se ha podido determinar la sesión de escritorio\n"
 
-#: src/main.c:714
+#: src/main.c:712
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Tratando de nevar en la ventana raíz\n"
 
-#: src/main.c:758
+#: src/main.c:756
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Uso de la ventana transparente\n"
 
-#: src/main.c:763
+#: src/main.c:761
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "La ventana de nieve transparente no es probablemente clic a través de, por "
 "desgracia..\n"
 
-#: src/main.c:772
+#: src/main.c:770
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "No se puede crear una ventana transparente\n"
 
-#: src/main.c:774
+#: src/main.c:772 src/windows.c:670
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "NOTA: xsnow probablemente se ejecutará, pero se esperan algunos problemas "
 "técnicos.\n"
 
-#: src/main.c:784
+#: src/main.c:779
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Sesión LXDE encontrada, usando la ventana 'pcmanfm'.\n"
 
-#: src/main.c:791
+#: src/main.c:784
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Usando la ventana 'Escritorio'.\n"
 
-#: src/main.c:795
+#: src/main.c:788
 #, c-format
 msgid "Using root window\n"
 msgstr "Uso de la ventana raíz\n"
 
-#: src/main.c:839
+#: src/main.c:832
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Nevando en %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:884
+#: src/main.c:877
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Usando doble búfer: %#lx. %dx%d\n"
 
-#: src/main.c:891
+#: src/main.c:884
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "NO usar doble buffering:"
 
-#: src/main.c:893
+#: src/main.c:886
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " porque el búfer doble no está disponible en este sistema\n"
 
-#: src/main.c:895
+#: src/main.c:888
 #, c-format
 msgid " on your request.\n"
 msgstr " a petición suya.\n"
 
-#: src/main.c:896
+#: src/main.c:889
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "NOTA: espere un poco de parpadeo.\n"
 
-#: src/main.c:1034
+#: src/main.c:1027
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr ""
 "Reiniciar debido al cambio de la configuración de la pantalla o del "
 "idioma...\n"
 
-#: src/main.c:1048
+#: src/main.c:1041
 msgid "Restart due to change of display settings...\n"
 msgstr "Reiniciar debido al cambio de la configuración de la pantalla...\n"
 
-#: src/main.c:1139
+#: src/main.c:1132
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Espere algo de lentitud)"
 
-#: src/main.c:1143
+#: src/main.c:1136
 msgid "Probably X11"
 msgstr "Probablemente X11"
 
-#: src/main.c:1145
+#: src/main.c:1138
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Ventana de nieve: %#lx"
 
-#: src/main.c:1197
+#: src/main.c:1190
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "¡Más de %d errores, renuncio!"
 
-#: src/main.c:1347
+#: src/main.c:1340
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr ""
-"El tamaño de la ventana ha cambiado, ahora está nevando en %#lx: %s %d+%d "
-"%dx%d\n"
+"El tamaño de la ventana ha cambiado, ahora está nevando en %#lx: %s %d+%d %dx"
+"%d\n"
 
-#: src/main.c:1416
+#: src/main.c:1409
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Detenerse debido a la bandera %s\n"
@@ -225,7 +225,7 @@ msgstr "Problemas encontrados durante la producción de la bola de alquitrán.\n
 msgid "Self replication is not compiled in.\n"
 msgstr "La autorreplicación no se compila en.\n"
 
-#: src/utils.c:248
+#: src/utils.c:244
 #, c-format
 msgid ""
 "\n"
@@ -234,7 +234,7 @@ msgstr ""
 "\n"
 "Xsnow: Señal captada %d\n"
 
-#: src/utils.c:251
+#: src/utils.c:247
 #, c-format
 msgid ""
 "\n"
@@ -243,44 +243,63 @@ msgstr ""
 "\n"
 "Gracias por usar xsnow\n"
 
-#: src/windows.c:613
+#: src/windows.c:571
+#, c-format
+msgid "XWinInfo failed\n"
+msgstr "Error en XWinInfo\n"
+
+#: src/windows.c:596
+#, c-format
+msgid "Force snow on root: window: %#lx, depth: %d\n"
+msgstr "Forzar nieve en la raíz: ventana: %#lx, profundidad: %d\n"
+
+#: src/windows.c:672
+#, c-format
+msgid ""
+"NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
+"panel.\n"
+msgstr ""
+"NOTA: es probable que tengas que modificar \"Levantar nieve en las ventanas"
+"\" en el panel \"Ajustes\".\n"
+
+#: src/windows.c:864
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Configuración de fondo desde %s\n"
 
-#: src/ui.c:1050
+#: src/ui.c:1006
 #, c-format
 msgid "Range: %d\n"
 msgstr "Rango: %d\n"
 
-#: src/ui.c:1052
+#: src/ui.c:1008
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Distancia media: %3d\n"
 
-#: src/ui.c:1060
+#: src/ui.c:1016
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Tipo de escritorio: %s"
 
-#: src/ui.c:1175 src/ui.glade:5874
+#: src/ui.c:1124 src/ui.glade:5874
 msgid "all monitors"
 msgstr "Todos los monitores"
 
-#: src/ui.c:1182
+#: src/ui.c:1131
 #, c-format
 msgid "monitor %d"
 msgstr "monitor %d"
 
-#: src/ui.c:1200
+#: src/ui.c:1149
 msgid "Available languages are: "
 msgstr "Idiomas disponibles: "
 
-#: src/ui.c:1203
+#: src/ui.c:1152
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Utilice \"sys\" para el idioma predeterminado.\n"
 
-#: src/ui.c:1204
+#: src/ui.c:1153
 msgid "See also the man page."
 msgstr "Véase también la página de manual."
 
@@ -853,8 +872,7 @@ msgstr "Escala:"
 msgid ""
 "Scale of Santa.\n"
 "Flags: -santascale <n>"
-msgstr ""
-"Escala de Papá Noel.\n"
+msgstr "Escala de Papá Noel.\n"
 "Flags: -santascale <n>"
 
 #: src/ui.glade:2609
@@ -993,8 +1011,7 @@ msgstr ""
 msgid ""
 "Scale of scenery.\n"
 "Flag: sceneryscale <n>"
-msgstr ""
-"Escala del paisaje.\n"
+msgstr "Escala del paisaje.\n"
 "Flag: sceneryscale <n>"
 
 #: src/ui.glade:3372
@@ -1945,22 +1962,6 @@ msgstr "es"
 #: src/ui.glade:6518
 msgid "it"
 msgstr "."
-
-#, c-format
-#~ msgid "XWinInfo failed\n"
-#~ msgstr "Error en XWinInfo\n"
-
-#, c-format
-#~ msgid "Force snow on root: window: %#lx, depth: %d\n"
-#~ msgstr "Forzar nieve en la raíz: ventana: %#lx, profundidad: %d\n"
-
-#, c-format
-#~ msgid ""
-#~ "NOTE: you probably need to tweak 'Lift snow on windows' in the 'settings' "
-#~ "panel.\n"
-#~ msgstr ""
-#~ "NOTA: es probable que tengas que modificar \"Levantar nieve en las "
-#~ "ventanas\" en el panel \"Ajustes\".\n"
 
 #~ msgid "Force a gust of wind immediately.\n"
 #~ msgstr "Forzar una ráfaga de viento inmediatamente.\n"
