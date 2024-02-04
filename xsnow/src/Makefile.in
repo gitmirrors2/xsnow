@@ -701,6 +701,7 @@ nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
 		  version.h doit.h
 
+@MAKESELFREP_FALSE@tarfile_inc = 
 @MAKESELFREP_TRUE@tarfile_inc = tarfile.inc
 BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
@@ -1978,7 +1979,6 @@ uninstall-man: uninstall-man6
 makeman$(EXEEXT): changelog.inc
 	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
 		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
-@MAKESELFREP_FALSE@	tarfile_inc =
 
 $(tarfile):
 	echo "Dummy tarfile." > $@

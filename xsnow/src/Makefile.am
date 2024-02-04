@@ -83,7 +83,7 @@ makeman$(EXEEXT): changelog.inc
 if MAKESELFREP
 tarfile_inc = tarfile.inc
 else
-	tarfile_inc =
+tarfile_inc =
 endif
 
 BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
