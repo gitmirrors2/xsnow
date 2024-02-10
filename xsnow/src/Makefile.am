@@ -42,6 +42,7 @@ endif
 
 if MAKESELFREP
 xsnow_CPPFLAGS += -DSELFREP
+CFLAGS_FOR_BUILD += -DSELFREP
 endif
 
 noinst_LIBRARIES = libxdo.a

@@ -94,6 +94,7 @@ games_PROGRAMS = xsnow$(EXEEXT)
 noinst_PROGRAMS = makeman$(EXEEXT)
 @USE_NLS_TRUE@am__append_1 = -DENABLE_NLS=1
 @MAKESELFREP_TRUE@am__append_2 = -DSELFREP
+@MAKESELFREP_TRUE@am__append_3 = -DSELFREP
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -507,7 +508,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
-CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@ $(am__append_3)
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
