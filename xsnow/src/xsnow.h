@@ -52,7 +52,7 @@
 #define time_desktop_type         2.0    // time between showing desktop type
 #define time_display_dimensions   0.5    // time between check of screen dimensions
 #define time_displaychanged       1.00   // time between checks if display has changed
-#define time_emeteor              0.40   // time between meteors erasures
+#define time_emeteor              0.60   // time between meteors erasures
 #define time_event                0.50   // time between checking events
 #define time_flakecount           1.00   // time between updates of show flakecount
 #define time_fuse                 1.00   // time between testing on too much flakes
@@ -86,6 +86,9 @@
 
 #define ALPHA (0.01*(100 - Flags.Transparency))
 #define XPM_TYPE const char
+
+#define DOCAPELLA                  1  // to convert fallensnow into flakes or not when moving window
+
 /* ------------------------------------------------------------------ */
 
 typedef struct _WinInfo
@@ -268,6 +271,10 @@ extern struct _global
    char            Message[256];
 
    char           *Language;
+
+   int            DoCapella;  // if true, Marc Capella's method is used to
+			      // deal with fallensnow on resized or moved windows:
+			      // fallensnow is turned into flakes.
 } global;
 
 extern int set_sticky(int s);

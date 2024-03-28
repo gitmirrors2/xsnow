@@ -39,7 +39,6 @@
 #include "debug.h"
 #include "version.h"
 #include "flags.h"
-#include "safe_malloc.h"
 #include "xdo.h"
 
 void traceback()
@@ -410,7 +409,7 @@ Window  largest_window_with_name(xdo_t *myxdo, const char *name)
       P("window: 0x%lx %d %d\n",windows[i],width,height);
       unsigned int size = width*height;
       if (size <= maxsize)
-         continue;
+	 continue;
       P("width %d height %d size %d prev maxsize %d\n",width,height, size, maxsize);
       maxsize = size;
       w = windows[i];
@@ -420,4 +419,23 @@ Window  largest_window_with_name(xdo_t *myxdo, const char *name)
    return w;
 }
 
-
+// mix colors, given as "#abcdef" or "yellow"
+// mixed color will be t*color1 + (1-t)*color2
+// mixed must have been allocated by caller
+void mixcolors(const char *color1, const char *color2, const double t, char *mixed)
+{
+   int r, g, b ;
+   GdkRGBA c1,c2;
+   gdk_rgba_parse(&c1, color1);
+   gdk_rgba_parse(&c2, color2);
+   r = 255*(t*c1.red   + (1-t)*c2.red);
+   g = 255*(t*c1.green + (1-t)*c2.green);
+   b = 255*(t*c1.blue  + (1-t)*c2.blue);
+   if (r < 0) r = 0;
+   if (g < 0) g = 0;
+   if (b < 0) b = 0;
+   if (r > 255) r = 255;
+   if (g > 255) g = 255;
+   if (b > 255) b = 255;
+   sprintf(mixed,"#%02x%02x%02x",r,g,b);
+}

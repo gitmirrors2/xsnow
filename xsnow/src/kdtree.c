@@ -65,7 +65,6 @@
 #include <math.h>
 #include <assert.h>
 #include "kdtree.h"
-#include "safe_malloc.h"
 
 #if defined(WIN32) || defined(__WIN32__)
 #include <malloc.h>

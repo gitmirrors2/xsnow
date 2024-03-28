@@ -37,7 +37,6 @@
 #include "snow.h"
 #include "blowoff.h"
 #include "treesnow.h"
-#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes || Flags.NoKeepSnowOnTrees || Flags.NoTrees)

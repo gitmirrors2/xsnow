@@ -70,14 +70,14 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		selfrep.c selfrep.h \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
-		safe_malloc.c safe_malloc.h mygettext.h gettext.h 
+		safe_malloc.h mygettext.h gettext.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
 		  version.h doit.h
 
-makeman$(EXEEXT): changelog.inc
+makeman$(EXEEXT): changelog.inc $(makeman_SOURCES)
 	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
 		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
 
@@ -108,7 +108,7 @@ endif
 EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright 
 
 ui_xml.h: ui.glade $(top_srcdir)/src/gen_ui_xml.sh
-	@echo "Creating $@ from $<"
+	@echo "Creating $@ from ui.glade"
 	$(top_srcdir)/src/gen_ui_xml.sh $(top_srcdir)
 
 snow_includes.h: Pixmaps

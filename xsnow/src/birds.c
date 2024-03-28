@@ -42,6 +42,7 @@
 #include "kdtree.h"
 #include "mainstub.h"
 #include "pixmaps.h"
+#include "safe_malloc.h"
 #include "ui.h"
 #include "utils.h"
 #include "windows.h"

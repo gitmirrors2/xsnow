@@ -39,7 +39,6 @@
 #include "fallensnow.h"
 #include "transwindow.h"
 #include "dsimple.h"
-#include "safe_malloc.h"
 #include "xdo.h"
 #include "scenery.h"
 
@@ -50,6 +49,7 @@ static WinInfo      *Windows = NULL;
 static int          NWindows;
 static int          do_wupdate(void *);
 static void         DetermineVisualWorkspaces(void);
+
 
 void windows_ui()
 {
@@ -416,6 +416,7 @@ void UpdateFallenSnowRegions()
 		  && (int)global.SnowWinHeight - w->ya < Flags.IgnoreBottom) // too wide&too close to bottom
 	   )
 	 {
+	    P("Gone...\n");
 	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
@@ -426,8 +427,16 @@ void UpdateFallenSnowRegions()
 	 P("%#lx hidden:%d\n",fsnow->win.id,fsnow->win.hidden);
 	 if (fsnow->win.hidden)
 	 {
-	    P("%#lx is hidden %d\n",fsnow->win.id, counter++);
-	    CleanFallenArea(fsnow,0,fsnow->w);
+	    P("%#lx is hidden %d\n",fsnow->win.id, global.counter++);
+	    if(global.DoCapella)
+	    {
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+	       toremove[ntoremove++] = fsnow->win.id;
+	    }
+	    else
+	    {
+	       CleanFallenArea(fsnow,0,fsnow->w);
+	    }
 	    P("CleanFallenArea\n");
 	 }
       }
@@ -447,15 +456,25 @@ void UpdateFallenSnowRegions()
 	 {
 	    if (fsnow->x != w->x + Flags.OffsetX || fsnow->y != w->y + Flags.OffsetY)
 	    {
-	       CleanFallenArea(fsnow,0,fsnow->w);
-	       P("CleanFallenArea\n");
-	       fsnow->x = w->x + Flags.OffsetX;
-	       fsnow->y = w->y + Flags.OffsetY;
-	       XFlush(global.display);
+	       if (global.DoCapella)
+	       {
+		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+		  toremove[ntoremove++] = fsnow->win.id;
+	       }
+	       else
+	       {
+		  CleanFallenArea(fsnow,0,fsnow->w);
+		  P("CleanFallenArea\n");
+		  fsnow->x = w->x + Flags.OffsetX;
+		  fsnow->y = w->y + Flags.OffsetY;
+		  XFlush(global.display);
+	       }
 	    }
 	 }
 	 else
 	 {
+	    if(global.DoCapella)
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
       }

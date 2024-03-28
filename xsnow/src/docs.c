@@ -162,6 +162,8 @@ void docs_usage(int man)
    manout("-blowsnow"             ,"(Default) Animate blow-off snow.");
    manout("-noblowsnow"           ,"Do not animate blowing snow from trees or windows");
    manout("-sc <c>  "             ,"Use the given string as color for the flakes (default: %s).",F(SnowColor));
+   manout("-sc2 <c> "             ,"Use the given string as second color for the flakes (default: %s).",F(SnowColor2));
+   manout("-enablesc2 <n> "       ,"1: enable usage of second color for the flakes (default: %d).",F(UseColor2));
    manout("-snowspeedfactor <n>"  ,"Multiply the speed of snow with this number/100 (default: %d).",F(SnowSpeedFactor));
    manout("-snowsize <n>"         ,"Set size of (non-vintage) snow flakes (default: %d).",F(SnowSize));
    manout("-snow       "          ,"(Default) Show snow.");

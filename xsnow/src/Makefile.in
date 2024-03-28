@@ -144,8 +144,7 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-blowoff.$(OBJEXT) xsnow-treesnow.$(OBJEXT) \
 	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
 	xsnow-transwindow.$(OBJEXT) xsnow-selfrep.$(OBJEXT) \
-	xsnow-aurora.$(OBJEXT) xsnow-spline_interpol.$(OBJEXT) \
-	xsnow-safe_malloc.$(OBJEXT)
+	xsnow-aurora.$(OBJEXT) xsnow-spline_interpol.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -179,9 +178,9 @@ am__depfiles_remade = ./$(DEPDIR)/docs.Po ./$(DEPDIR)/flags.Po \
 	./$(DEPDIR)/xsnow-kdtree.Po ./$(DEPDIR)/xsnow-loadmeasure.Po \
 	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
 	./$(DEPDIR)/xsnow-meteor.Po ./$(DEPDIR)/xsnow-moon.Po \
-	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-safe_malloc.Po \
-	./$(DEPDIR)/xsnow-scenery.Po ./$(DEPDIR)/xsnow-selfrep.Po \
-	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-spline_interpol.Po \
+	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-scenery.Po \
+	./$(DEPDIR)/xsnow-selfrep.Po ./$(DEPDIR)/xsnow-snow.Po \
+	./$(DEPDIR)/xsnow-spline_interpol.Po \
 	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transwindow.Po \
 	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
 	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
@@ -696,7 +695,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		selfrep.c selfrep.h \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
-		safe_malloc.c safe_malloc.h mygettext.h gettext.h 
+		safe_malloc.h mygettext.h gettext.h 
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
@@ -837,7 +836,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-meteor.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-moon.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-safe_malloc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scenery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-selfrep.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snow.Po@am__quote@ # am--include-marker
@@ -1318,20 +1316,6 @@ xsnow-spline_interpol.obj: spline_interpol.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='spline_interpol.c' object='xsnow-spline_interpol.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-spline_interpol.obj `if test -f 'spline_interpol.c'; then $(CYGPATH_W) 'spline_interpol.c'; else $(CYGPATH_W) '$(srcdir)/spline_interpol.c'; fi`
-
-xsnow-safe_malloc.o: safe_malloc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-safe_malloc.o -MD -MP -MF $(DEPDIR)/xsnow-safe_malloc.Tpo -c -o xsnow-safe_malloc.o `test -f 'safe_malloc.c' || echo '$(srcdir)/'`safe_malloc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-safe_malloc.Tpo $(DEPDIR)/xsnow-safe_malloc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='safe_malloc.c' object='xsnow-safe_malloc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-safe_malloc.o `test -f 'safe_malloc.c' || echo '$(srcdir)/'`safe_malloc.c
-
-xsnow-safe_malloc.obj: safe_malloc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-safe_malloc.obj -MD -MP -MF $(DEPDIR)/xsnow-safe_malloc.Tpo -c -o xsnow-safe_malloc.obj `if test -f 'safe_malloc.c'; then $(CYGPATH_W) 'safe_malloc.c'; else $(CYGPATH_W) '$(srcdir)/safe_malloc.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-safe_malloc.Tpo $(DEPDIR)/xsnow-safe_malloc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='safe_malloc.c' object='xsnow-safe_malloc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-safe_malloc.obj `if test -f 'safe_malloc.c'; then $(CYGPATH_W) 'safe_malloc.c'; else $(CYGPATH_W) '$(srcdir)/safe_malloc.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1834,7 +1818,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-meteor.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
-	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
@@ -1917,7 +1900,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-meteor.Po
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
-	-rm -f ./$(DEPDIR)/xsnow-safe_malloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
@@ -1977,7 +1959,7 @@ uninstall-man: uninstall-man6
 @USE_NLS_TRUE@LANGUAGES != for l in `sed 's/\#.*//' $(top_srcdir)/po/LINGUAS`; do echo $$l; done
 @USE_NLS_FALSE@	LANGUAGES = 
 
-makeman$(EXEEXT): changelog.inc
+makeman$(EXEEXT): changelog.inc $(makeman_SOURCES)
 	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
 		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
 
@@ -1992,7 +1974,7 @@ $(tarfile):
 @MAKESELFREP_FALSE@	echo "No selfrep compiled in" | env "CC=$(CC_FOR_BUILD)" CFLAGS="$(CFLAGS_FOR_BUILD)" $(TOASCII) > $@
 
 ui_xml.h: ui.glade $(top_srcdir)/src/gen_ui_xml.sh
-	@echo "Creating $@ from $<"
+	@echo "Creating $@ from ui.glade"
 	$(top_srcdir)/src/gen_ui_xml.sh $(top_srcdir)
 
 snow_includes.h: Pixmaps

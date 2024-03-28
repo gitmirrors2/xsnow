@@ -45,7 +45,6 @@
 #include "blowoff.h"
 #include "wind.h"
 #include "debug.h"
-#include "safe_malloc.h"
 #include "spline_interpol.h"
 
 #define NOTACTIVE \
@@ -312,7 +311,7 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
 {
    // threads: locking by caller
    if(w<3) return;  // too narrow windows results in complications with regard to 
-   //                  computing splines etc.
+		    //                  computing splines etc.
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
    p->win        = *win;
    p->x          = x;
@@ -542,7 +541,14 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 
-   gdk_rgba_parse(&color,Flags.SnowColor);
+   if (Flags.UseColor2)
+   {
+      char newcolor[8];
+      mixcolors(Flags.SnowColor, Flags.SnowColor2, 0.5, &newcolor[0]);
+      gdk_rgba_parse(&color,newcolor);
+   }
+   else
+      gdk_rgba_parse(&color,Flags.SnowColor);
    cairo_set_source_rgb(cr,color.red, color.green, color.blue);
 
    {

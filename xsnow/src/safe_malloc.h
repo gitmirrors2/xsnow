@@ -19,16 +19,6 @@
 #-# 
  */
 #pragma once
-#include <stdio.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_spline.h>
-extern void *safe_malloc(size_t size);
-extern void *safe_realloc(void *ptr, size_t size);
-extern void safe_free(void *ptr);
-extern void safe_gsl_spline_free (gsl_spline *spline);
-extern void safe_gsl_interp_accel_free (gsl_interp_accel *acc);
-extern int safe_XFree(void *data);
-
 #define REALLOC_CHECK(x) \
    if(x == NULL) \
      {           \

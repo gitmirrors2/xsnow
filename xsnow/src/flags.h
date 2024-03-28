@@ -21,7 +21,6 @@
 #pragma once
 
 #include <stdlib.h>
-#include "safe_malloc.h"
 
 #include "doit.h"
 

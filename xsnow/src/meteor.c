@@ -47,6 +47,8 @@ static int do_meteor(void *);
 static GdkRGBA       colors[NUMCOLORS];
 static MeteorMap     meteor;
 
+static int           drawcount;
+
 void meteor_init()
 {
    meteor.x1       = 0;
@@ -74,19 +76,32 @@ void meteor_ui()
 
 void meteor_draw(cairo_t *cr)
 {
-   P("meteor_draw %d %d\n",counter++,meteor.active);
+   P("meteor_draw %d %d\n",global.counter++,meteor.active);
    if (!meteor.active)
       return;
+   drawcount++;
+   double fraction = drawcount*time_draw_all/time_emeteor;
+   P("meteor_draw %d %d %lf %lf\n",drawcount,meteor.active,time_emeteor/time_draw_all,fraction);
    cairo_save(cr);
 
    int c = meteor.colornum;
-   cairo_set_source_rgba(cr,colors[c].red, colors[c].green, colors[c].blue, ALPHA);
    cairo_set_line_width(cr,2);
    cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
    cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
    cairo_move_to(cr,meteor.x1,meteor.y1);
-   cairo_line_to(cr,meteor.x2,meteor.y2);
+
+   double xf = meteor.x1+fraction*(meteor.x2-meteor.x1);
+   double yf = meteor.y1+fraction*(meteor.y2-meteor.y1);
+
+   cairo_pattern_t *cp = cairo_pattern_create_linear(meteor.x1,yf,meteor.x2,yf);
+   cairo_pattern_add_color_stop_rgba(cp, 0, colors[c].red,colors[c].green,colors[c].blue,0);
+   cairo_pattern_add_color_stop_rgba(cp, 1, colors[c].red,colors[c].green,colors[c].blue,1);
+   cairo_set_source(cr,cp);
+
+   cairo_line_to(cr,xf,yf);
    cairo_stroke(cr);
+
+   cairo_pattern_destroy(cp);
 
    cairo_restore(cr);
 }
@@ -127,6 +142,7 @@ int do_emeteor(gpointer data)
       myXClearArea(global.display,global.SnowWin,x,y,w,h,global.xxposures);
    }
    meteor.active = 0;
+   drawcount = 0;
    return TRUE;
 }
 
@@ -153,6 +169,7 @@ int do_meteor(void *d)
 
    if (Flags.MeteorFrequency < 0 || Flags.MeteorFrequency > 100)
       Flags.MeteorFrequency = DefaultFlags.MeteorFrequency;
+   // when to start next meteor:
    float t = (0.5+drand48())*(Flags.MeteorFrequency*(0.1-time_meteor)/100 + time_meteor);
    P("do_meteor %f\n",t);
    add_to_mainloop (PRIORITY_DEFAULT, t, do_meteor);

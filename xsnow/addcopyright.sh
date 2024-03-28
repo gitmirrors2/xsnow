@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 eof
 n=0
+tmpfile="tmpfile"
 while [ "$1" ] ; do
    f="$1"
    shift
@@ -55,9 +56,14 @@ while [ "$1" ] ; do
    # following 2 sed commands take care that only the first '-copyright-'
    # will be followed by the copyright text
    # Notice that sed requires a newline after the filename of the 'r' command
-   sed -i "/^\s*#-#/d" "$f"
-   sed -i "/$txt/{r $crfile
-:a;n;ba;}" "$f"
+   # Not using 'sed -i' because not all sed's interpret this the same
+   sed "/^[ 	]*#-#/d" "$f" > "$tmpfile" && cp "$tmpfile" "$f"
+   sed "/$txt/{r $crfile
+:a
+n
+ba
+}" "$f" > "$tmpfile" && cp "$tmpfile" "$f"
    n=`expr $n + 1`
 done
+rm -f "$tmpfile"
 echo "$n files copyrighted"

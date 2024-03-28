@@ -41,7 +41,6 @@
 #include "windows.h"
 #include "dsimple.h"
 #include "debug.h"
-#include "safe_malloc.h"
 
 #include "vroot.h"
 

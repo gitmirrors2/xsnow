@@ -89,7 +89,6 @@
 #include "treesnow.h"
 #include "loadmeasure.h"
 #include "selfrep.h"
-#include "safe_malloc.h"
 #include "xdo.h"
 
 #include "vroot.h"
@@ -312,6 +311,8 @@ int main_c(int argc, char *argv[])
 
    global.SantaPlowRegion    = 0;
 
+   global.DoCapella          = DOCAPELLA;
+
    int i;
 
 
@@ -353,23 +354,23 @@ int main_c(int argc, char *argv[])
    int rc = HandleFlags(argc, argv);
 
    handle_language(0); // the langues used is from flags or .xsnowrc
-   //                     this changes env LANGUAGE accordingly
-   //                     so that the desired translation is in effect
+		       //                     this changes env LANGUAGE accordingly
+		       //                     so that the desired translation is in effect
 
    mybindtestdomain();
    switch(rc)
    {
       case -1:   // wrong flag
-	 //PrintVersion();
+		 //PrintVersion();
 	 Thanks();
 	 return 1;
 	 break;
       case 1:    // manpage or help
-	 //         Ok, this cannot happen, is already caught above
+		 //         Ok, this cannot happen, is already caught above
 	 return 0;
 	 break;
       default:  // ditto
-	 //PrintVersion();
+		//PrintVersion();
 	 break;
    }
    PrintVersion();
@@ -466,6 +467,8 @@ int main_c(int argc, char *argv[])
 	 Flags.TreeColor = strdup(DefaultFlags.TreeColor); 
       if (!ValidColor(Flags.SnowColor))
 	 Flags.SnowColor = strdup(DefaultFlags.SnowColor); 
+      if (!ValidColor(Flags.SnowColor2))
+	 Flags.SnowColor2 = strdup(DefaultFlags.SnowColor2); 
       if (!ValidColor(Flags.BirdsColor))
 	 Flags.BirdsColor = strdup(DefaultFlags.BirdsColor); 
       WriteFlags();
@@ -740,7 +743,7 @@ int StartWindow()
 	    NULL,                // gdk_window
 	    &xwin,               // x11_window
 	    &wantx,              // make_trans_window tries to place the window here,
-	    //                      but, depending on window manager that does not always succeed
+				 //                      but, depending on window manager that does not always succeed
 	    &wanty
 	    );
       if (rc)
@@ -779,7 +782,7 @@ int StartWindow()
 	 // Note that the name is still case-insensitive
 	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
 	       (xwin = largest_window_with_name(global.xdo,"^pcmanfm$"))
-	       )
+	    )
 	 {
 	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
@@ -993,7 +996,11 @@ int do_ui_check(void *d)
    UIDO (Transparency        ,                                    );
    UIDO (Scale               ,                                    );
    UIDO (OffsetS             , DisplayDimensions();               );
-   UIDO (OffsetY             , UpdateFallenSnowRegionsWithLock(); );
+   UIDO (OffsetY             , 
+	 int x = global.DoCapella;
+	 global.DoCapella=0; 
+	 UpdateFallenSnowRegionsWithLock(); 
+	 global.DoCapella = x;                                    );
    UIDO (NoFluffy            , ClearScreen();                     );
    UIDO (AllWorkspaces       , DoAllWorkspaces();                 );
    UIDO (BelowAll            , set_below_above();                 );

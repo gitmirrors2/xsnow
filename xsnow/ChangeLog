@@ -1,3 +1,29 @@
+version 3.7.9
+	01: ui.glade: make gui not-resizable to prevent wrong reported size when user
+	    tries to change size. 
+	    Thanks to Mark Capella for bringing this up.
+	02: windows.c, main.c, xsnow.h: when window is moved or resized, 
+	    convert fallensnow into flakes. Look for global.DoCapella.
+	    Thanks to Mark Capella for the idea.
+	03: ui.glade: change color pickers (snow, birds, vintage tree) to standard,
+	    the fancy color editor is still available using the '+' button.
+	04: main.c: take care that while changing OffsetY, fallensnow is not
+	    converted to flakes.
+	    xsnow.h, main.c: use macro DOCAPELLA for setting default.
+	05: meteor.c: better simulation of meteors.
+	06: generate flakes if window is minimized.
+	07: snow.c and others: optional: 2 snow colors, inspired by
+	      Mark Capella's plasmasnow.
+	    pofiles/: add translations for 2 snow colors.
+	    src/Makefile.am: specify dependencies of makeman.
+	08: adaptations for FreeBSD:
+	       use sh in stead of bash in bootstrap
+	       addcopyright.sh: adapt sed calls to FreeBSD's sed
+	       remove src/safe_malloc.c, adapt src/safe_malloc.h
+	        - safe_malloc.c was not used anyway
+	09: addcopyright.sh: use tmpfile="tmpfile" in stead of `mktemp`
+	    src/Makefile.am: minor: avoid $< because of FreeBSD's make
+
 version 3.7.8
 	01: src/Makefile.am: fix bug related with tarfile.inc which caused
 	    --disable-selfrep not working

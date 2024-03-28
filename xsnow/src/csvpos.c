@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "csvpos.h"
-#include "safe_malloc.h"
 // given s like "9,2,0" fill k with 9,2,0, set n to 3.
 // all values positive, if negative 0 is inserted
 // k is allocated in csvpos, free it with free(3)

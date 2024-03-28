@@ -56,6 +56,7 @@
    BUTTON(togglecode     ,xsnow_snow        ,NoKeepSWin           ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_snow        ,NoKeepSnowOnTrees    ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_snow        ,NoSnowFlakes         ,-1 )   /*i*/ \
+   BUTTON(togglecode     ,xsnow_snow        ,UseColor2            ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,Stars                ,1  )         \
    BUTTON(togglecode     ,xsnow_scenery     ,NoTrees              ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_scenery     ,Overlap              ,1  )         \
@@ -114,6 +115,7 @@
 #define ALL_COLORS \
    BUTTON(colorcode      ,xsnow_birds       ,BirdsColor           ,1  )         \
    BUTTON(colorcode      ,xsnow_snow        ,SnowColor            ,1  )         \
+   BUTTON(colorcode      ,xsnow_snow        ,SnowColor2           ,1  )         \
    BUTTON(colorcode      ,xsnow_scenery     ,TreeColor            ,1  )         \
 
 #define ALL_FILECHOOSERS \

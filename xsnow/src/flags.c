@@ -32,7 +32,6 @@
 #include "birds.h"
 #include "windows.h"
 #include "selfrep.h"
-#include "safe_malloc.h"
 
 #include "debug.h"
 
@@ -250,10 +249,12 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-transparency        ,Transparency                     );
 	 handle_im(-screen              ,Screen                           );
 	 handle_ia(-outline             ,Outline                          );
+	 handle_ia(-enablesc2           ,UseColor2                        );
 
 
 	 handle_is(-display             ,DisplayName                      );
 	 handle_is(-sc                  ,SnowColor                        );
+	 handle_is(-sc2                 ,SnowColor2                       );
 	 handle_is(-tc                  ,TreeColor                        );
 	 handle_is(-treetype            ,TreeType                         );
 	 handle_is(-bg                  ,BackgroundFile                   );

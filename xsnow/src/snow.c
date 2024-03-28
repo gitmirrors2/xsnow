@@ -44,7 +44,6 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
-#include "safe_malloc.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -90,8 +89,8 @@ void snow_init()
    NFlakeTypesVintage = MaxFlakeTypes;
 
    add_random_flakes(EXTRA_FLAKES);   // will change MaxFlakeTypes
-   //                            and create xsnow_xpm, containing
-   //                            vintage and new flakes
+				      //                            and create xsnow_xpm, containing
+				      //                            vintage and new flakes
 
 
    snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
@@ -136,8 +135,16 @@ void snow_ui()
    UIDO (NoSnowFlakes, 
 	 if(Flags.NoSnowFlakes)
 	 ClearScreen();                                            );
+   UIDO (UseColor2, 
+	 InitSnowColor();
+	 ClearScreen();
+	);
    UIDO (SnowFlakesFactor               , InitFlakesPerSecond();   );
    UIDOS(SnowColor                      ,
+	 InitSnowColor();
+	 //InitFallenSnow(); 
+	 ClearScreen();                                            );
+   UIDOS(SnowColor2                     ,
 	 InitSnowColor();
 	 //InitFallenSnow(); 
 	 ClearScreen();                                            );
@@ -169,7 +176,15 @@ void init_snow_pix()
       rp->height = h;
       char **x;
       int lines;
-      xpm_set_color(xsnow_xpm[flake], &x, &lines, Flags.SnowColor);
+
+      if (Flags.UseColor2)
+      {
+	 char color[8];
+	 mixcolors(Flags.SnowColor, Flags.SnowColor2, drand48(), &color[0]);
+	 xpm_set_color(xsnow_xpm[flake], &x, &lines, color);
+      }
+      else
+	 xpm_set_color(xsnow_xpm[flake], &x, &lines, Flags.SnowColor);
       GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)x);
       if (w<1) w=1;
       if (h<1) h=1;

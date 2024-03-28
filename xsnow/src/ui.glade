@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <!-- -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
@@ -431,11 +431,13 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
   <object class="GtkApplicationWindow" id="hauptfenster">
     <property name="can-focus">False</property>
     <property name="halign">start</property>
+    <property name="resizable">False</property>
     <signal name="destroy" handler="button_quit" swapped="no"/>
     <child>
       <object class="GtkStack" id="stack">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="double-buffered">False</property>
         <property name="transition-duration">400</property>
         <property name="transition-type">crossfade</property>
         <child>
@@ -1282,22 +1284,6 @@ Flag: -nomenu</property>
               </packing>
             </child>
             <child>
-              <object class="GtkToggleButton" id="id-NoSnowFlakes">
-                <property name="label" translatable="yes">Show snow</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">If set, show snowflakes.
-Flags: -snow, -nosnow</property>
-                <property name="double-buffered">False</property>
-                <property name="valign">center</property>
-              </object>
-              <packing>
-                <property name="left-attach">3</property>
-                <property name="top-attach">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToggleButton" id="id-BlowSnow">
                 <property name="label" translatable="yes">Show</property>
                 <property name="visible">True</property>
@@ -1846,17 +1832,19 @@ Flag: -snowflakes</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkToggleButton" id="id-NoSnowFlakes">
+                <property name="label" translatable="yes">Show snow</property>
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">If set, show snowflakes.
+Flags: -snow, -nosnow</property>
                 <property name="double-buffered">False</property>
                 <property name="valign">center</property>
-                <property name="label" translatable="yes">Color:</property>
-                <property name="xalign">0.89999997615814209</property>
               </object>
               <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">2</property>
+                <property name="left-attach">3</property>
+                <property name="top-attach">1</property>
               </packing>
             </child>
             <child>
@@ -1869,7 +1857,50 @@ Flag: -sc</property>
                 <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="show-editor">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Color:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Second color:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="id-SnowColor2">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">The second color of the snow.
+Flag: -sc2</property>
+                <property name="double-buffered">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -1877,13 +1908,20 @@ Flag: -sc</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkToggleButton" id="id-UseColor2">
+                <property name="label" translatable="yes">Enable</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">If set, use two colors.
+Flag: -enablesc2</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -2808,7 +2846,6 @@ Flag: -tc</property>
                 <property name="double-buffered">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="show-editor">True</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -4822,7 +4859,6 @@ Flag: -birdscolor</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="rgba">rgb(0,0,0)</property>
-                <property name="show-editor">True</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>

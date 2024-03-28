@@ -111,6 +111,7 @@
    DOIT_I(Outline              ,0          ,0          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
    DOIT_I(TreeScale            ,100        ,100        ) \
+   DOIT_I(UseColor2            ,0          ,0          ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \
@@ -118,6 +119,7 @@
    DOIT_I(IgnoreBottom         ,0          ,0          ) \
    \
    DOIT_S(SnowColor            ,"#fffafa"  ,"#fffafa"  ) /* "snow" */       \
+   DOIT_S(SnowColor2           ,"#87ceff"  ,"#87ceff"  ) /* "skyblue1" */       \
    DOIT_S(TreeColor            ,"#7fff00"  ,"#7fff00"  ) /* "chartreuse" */ \
    DOIT_S(TreeType             ,"1,2,3,4,5,6,7," ,"0,"        ) \
    \
