@@ -23,7 +23,7 @@
 #-# 
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.7.9],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.8.0],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -61,7 +61,6 @@ if test "x$x" != x ; then
    fi
 fi
 
-
 if test x"$good" = xyes ; then
    SOURCE_DATE_EPOCH="$x"
 else
@@ -80,6 +79,11 @@ AM_GNU_GETTEXT([external])
 #AM_GNU_GETTEXT_VERSION([0.21])
 AC_SUBST([LOCALEDIR],[$localedir])
 AM_CONDITIONAL([USE_NLS],[test "x$USE_NLS" = "xyes"])
+
+AC_CHECK_PROG(MSGMERGE_AVAIL,msgmerge,yes)
+AS_IF([test "x$MSGMERGE_AVAIL" != "xyes"], 
+      [AC_MSG_WARN([No program 'msgmerge' found. Usually it is part of the 'gettext' package.
+       'make dist' will fail and 'xsnow -selfrep' will fail.])])
 
 # Check if we can create a reproducible 'make dist'.
 # If yes: replace the original am__tar (Make's recipe to make a tarball) by
@@ -130,7 +134,7 @@ AC_CHECK_HEADERS([unordered_set])
 AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
-PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto xinerama xtst xkbcommon])
+PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto xinerama xtst])
 PKG_CHECK_MODULES(GSL, [gsl])
 
 m4_include([m4/ax_pthread.m4])

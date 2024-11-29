@@ -31,4 +31,8 @@ CLEANFILES = $(tarfile)
 
 ACLOCAL_AMFLAGS = -I m4
 
+# make check only in src:
+# Thanks to: https://stackoverflow.com/questions/8332261/autoconf-automake-how-to-avoid-passing-the-check-option-to-ac-config-subdirs
+check-recursive:
+	$(MAKE) -C src check
 

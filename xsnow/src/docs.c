@@ -337,6 +337,8 @@ void docs_usage(int man)
    manout(".","    NOTE: the following settings are not read or written:");
    manout(".","          -above  -defaults  -desktop  -fullscreen -noconfig -id");
    manout(".","          -nomenu -stopafter -xwininfo -display    -noisy    -checkgtk");
+   manout(".","    NOTE: the file also contains the screen locations of a number of buttons,");
+   manout(".","          which can be used for testing purposes.");
    manout(" "," ");
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
@@ -348,6 +350,17 @@ void docs_usage(int man)
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");
    manout(".", "    NOTE: To show: activate the first Santa in the menu.");
    manout(" "," ");
+
+   if(doman)
+   {
+      printf(".PP\n"); printf(".SS \"SIGNALS\n");
+      printf(".br\n");
+   }
+   else
+   {
+      printf("\n   SIGNALS\n\n");
+   }
+   manout(" ","On receiving the SIGUSR1 signal, xsnow writes the file ~/.xsnowrc.");
 
    if(doman)
    {

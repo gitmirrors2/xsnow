@@ -36,7 +36,8 @@ if USE_NLS
 use_nls = 1
 endif
 
-# it would be nice to skip all-local when running make check
+# It would be nice to skip all-local when running make check.
+# Ok, this is done in the top-level Makefile.am
 
 all-local: 
 	if test -z "$(AFTERBURNER)" ; then                                  \

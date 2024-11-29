@@ -891,7 +891,7 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="id-alldefaults">
                     <property name="label" translatable="yes">All defaults</property>
                     <property name="width-request">120</property>
                     <property name="visible">True</property>
@@ -926,7 +926,7 @@ Flag: -defaults</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="id-allvintage">
                     <property name="label" translatable="yes">All vintage</property>
                     <property name="width-request">120</property>
                     <property name="visible">True</property>
@@ -5686,7 +5686,7 @@ Flag: -nomenu</property>
                 <property name="can-focus">False</property>
                 <property name="halign">end</property>
                 <child>
-                  <object class="GtkButton" id="general-default">
+                  <object class="GtkButton" id="id-general-default">
                     <property name="label" translatable="yes">Defaults</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -6527,7 +6527,7 @@ Flag: -bg  (this button will be automatically desactivated when -bg is given)</p
         <property name="can-focus">False</property>
         <property name="show-close-button">True</property>
         <child>
-          <object class="GtkStackSwitcher" id="tabs">
+          <object class="GtkStackSwitcher" id="id-tabs">
             <property name="width-request">-1</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>

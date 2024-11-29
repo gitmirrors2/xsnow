@@ -23,8 +23,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "xsnow-constants.h"
+
 #ifndef MAKEMAN
 
 #include "utils.h"
@@ -34,6 +36,10 @@
 #include "selfrep.h"
 
 #include "debug.h"
+#include "xsnow.h"
+#include "ui.h"
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 
 #endif
 
@@ -44,6 +50,9 @@ FLAGS Flags;
 FLAGS OldFlags;
 FLAGS DefaultFlags;
 FLAGS VintageFlags;
+
+static void write_button_location(char *x, FILE *f);
+static void write_tabs_locations(FILE *f);
 
 #ifndef MAKEMAN
 
@@ -443,7 +452,7 @@ void ReadFlags()
    fclose(f);
 }
 
-void WriteFlags()
+void WriteFlags(int output_locations)
 {
    FILE *f;
    makeflagsfile();
@@ -455,12 +464,133 @@ void WriteFlags()
       I("Cannot write %s\n",FlagsFile);
       return;
    }
+   fprintf(f,"# Flags used by the program:\n");
 #define DOIT_I(x,d,v) fprintf(f,"%s %d\n", # x,Flags.x);
 #define DOIT_L(x,d,v) fprintf(f,"%s %ld\n",# x,Flags.x);
 #define DOIT_S(x,d,v) fprintf(f,"%s %s\n", # x,Flags.x);
    DOIT;
 #include "undefall.inc"
+#define DOIT_I(x,d,v) write_button_location(# x,f);
+#define DOIT_L(x,d,v) write_button_location(# x,f);
+#define DOIT_S(x,f,v) ;
+   if(output_locations && !Flags.NoMenu)
+   {
+      fprintf(f,"# Positions of widgets on the screen:\n");
+
+      write_tabs_locations(f);
+
+      write_button_location("alldefaults",f);
+      write_button_location("allvintage",f);
+      write_button_location("general-default",f); // button "defaults" in settings
+
+      DOIT;
+#include "undefall.inc"
+   }
    fclose(f);
+}
+
+void write_tabs_locations(FILE *f)
+{
+   char *tab_names[] = // names of tabs in header
+   {
+      "welcome",
+      "snow",
+      "santa",
+      "scenery",
+      "celestials",
+      "birds",
+      "settings",
+      NULL
+   };
+
+   GtkHeaderBar* headerbar = GTK_HEADER_BAR(gtk_builder_get_object(builder,"headerbar"));
+   (void)headerbar;
+   P("headerbar: %p\n",(void*)headerbar);
+
+
+   GtkStackSwitcher* switcher = GTK_STACK_SWITCHER(gtk_builder_get_object(builder,"id-tabs"));
+   P("switcher: %p\n",(void*)switcher);
+
+   GList *list = gtk_container_get_children ((GtkContainer*)switcher);
+   P("list: %p\n",(void*)list);
+   P("list data: %p\n",(void*)list->data);
+   P("list next: %p\n",(void*)list->next);
+   P("list prev: %p\n",(void*)list->prev);
+   P("list length: %d\n",g_list_length(list));
+
+   unsigned int names_len = 0;
+   while (tab_names[names_len] != NULL)
+      names_len++;
+   P("names_len: %d\n",names_len);
+
+   assert(names_len == g_list_length(list));
+
+   GList *plist = list;
+   int c=0;
+   while (1)
+   {
+      //const char *label = gtk_button_get_label(GTK_BUTTON(plist->data));
+      gtk_buildable_set_name(GTK_BUILDABLE(plist->data),tab_names[c]);
+      gint wx,wy;
+      gboolean rc = gtk_widget_translate_coordinates(plist->data, gtk_widget_get_toplevel(plist->data), 0, 0, &wx, &wy);
+      (void)rc;
+      GtkAllocation alloc;
+      gtk_widget_get_allocation(plist->data, &alloc);
+      P("wx wy: %d %d --  %d\n",wx,wy,rc);
+      GtkWindow *hauptfenster = GTK_WINDOW(gtk_builder_get_object(builder,"hauptfenster"));
+      GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(hauptfenster));
+      Window x11_window = gdk_x11_window_get_xid(gdkwin);
+      int xx,yy;
+      Window dummy;
+      XTranslateCoordinates(global.display, x11_window, global.Rootwindow, 0, 0, &xx, &yy, &dummy);
+      XWindowAttributes xwa;
+      XGetWindowAttributes(global.display, x11_window, &xwa );
+      P("%d %s: CLICK on: %d %d\n",c,tab_names[c],xx-xwa.x+wx+alloc.width/2,yy-xwa.y+wy+alloc.height/2);
+      fprintf(f,"id-%s %d %d\n",tab_names[c],xx-xwa.x+wx+alloc.width/2,yy-xwa.y+wy+alloc.height/2);
+      if (plist->next)
+      {
+	 plist = plist->next;
+	 c++;
+      }
+      else
+	 break;
+   }
+}
+
+void write_button_location(char *x,FILE *f)
+{
+   (void)f;
+   const char *prefix = "id-";
+   char *id;
+   id = malloc(strlen(x)+strlen(prefix)+1);
+   strcpy(id,prefix);
+   strcat(id,x);
+   P("write_button_location: %s %s\n",x,id);
+
+   GtkWidget* widget = GTK_WIDGET(gtk_builder_get_object(builder,id));
+
+   if (widget == NULL)
+      return;
+
+
+   GtkAllocation alloc;
+   gtk_widget_get_allocation(widget, &alloc);
+
+   gint wx,wy;
+   gboolean rc = gtk_widget_translate_coordinates(widget, 
+	 gtk_widget_get_toplevel(widget), 0, 0, &wx, &wy);
+   P("wxy: %s %d %d %d %d %d\n",x,rc,wx,wy,alloc.width,alloc.height);
+   if (!rc) 
+      return;
+   GtkWindow *hauptfenster = GTK_WINDOW(gtk_builder_get_object(builder,"hauptfenster"));
+   GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(hauptfenster));
+   Window x11_window = gdk_x11_window_get_xid(gdkwin);
+   int xx,yy;
+   Window dummy;
+   XTranslateCoordinates(global.display, x11_window, global.Rootwindow, 0, 0, &xx, &yy, &dummy);
+   XWindowAttributes xwa;
+   XGetWindowAttributes(global.display, x11_window, &xwa );
+   fprintf(f,"%s %d %d\n",id,xx-xwa.x+wx+alloc.width/2,yy-xwa.y+wy+alloc.height/2);
 }
 
 #endif

@@ -65,4 +65,4 @@ extern FLAGS VintageFlags;
 extern int  HandleFlags(int argc, char*argv[]);
 extern void InitFlags(void);
 extern void SetDefaultFlags(void);
-extern void WriteFlags(void);
+extern void WriteFlags(int output_locations);

@@ -14,6 +14,9 @@ gettext
 gcc
 g++
 
+## for running 'make check:'
+see README.md
+
 # Suse
 libX11-devel
 libXpm-devel
@@ -25,6 +28,9 @@ gettext
 libgtk-3-0
 gtk3-devel
 pkg-config
+
+## for running 'make check:'
+see README.md
 
 #for centos it seems that the following are also needed:
 xrdp-devel

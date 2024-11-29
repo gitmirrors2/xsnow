@@ -95,7 +95,7 @@ void scenery_init()
       }
       free(Flags.TreeType);
       vsc(&Flags.TreeType,b,m);
-      WriteFlags();
+      WriteFlags(1);
       free(a);
       free(b);
    }

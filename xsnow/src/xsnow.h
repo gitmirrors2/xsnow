@@ -71,6 +71,7 @@
 #define time_star                 0.50   // time between drawing stars
 #define time_switchflakes         0.2    // time between checks if flakes should be switched beteen default and vintage
 #define time_testing              2.10   // time between testing code
+#define time_writeflags           0.10   // time between writing flags
 #define time_ui_check             0.25   // time between checking values from ui
 #define time_umoon                0.04   // time between update position of moon
 #define time_usanta               0.04   // time between update of santa position
@@ -174,6 +175,7 @@ typedef struct _SnowMap {
    unsigned int height  BITS(16);
 } SnowMap;
 
+
 extern struct _global
 {
    SnowMap        *fluffpix;
@@ -211,21 +213,22 @@ extern struct _global
    int             SnowWinWidth;
    int             SnowWinHeight;
    int             WindowOffsetX;    // when using the root window for drawing, we need
-   //                                   these offsets to correct for the position of the
-   //                                   windows.
+				     //                                   these offsets to correct for the position of the
+				     //                                   windows.
    int             WindowOffsetY;
    int             SnowWinDepth;
    char           *DesktopSession;
    int             IsCompiz;
    int             IsWayland;
    long            CWorkSpace;  // long? Yes, in compiz we take the placement of the desktop
-   //                                     which can easily be > 16 bits
+				//                                     which can easily be > 16 bits
    long            VisWorkSpaces[MAXVISWORKSPACES];  // these workspaces are visible. In bspwm (and possibly other tiling
-   //                                 widowmanagers) when xsnow is running full-screen, the different
-   //                                 xinerama screens each cover another workspace.
+						     //                                 widowmanagers) when xsnow is running full-screen, the different
+						     //                                 xinerama screens each cover another workspace.
    int             NVisWorkSpaces;  // number of VisWorkSpaces
    long            ChosenWorkSpace; // workspace that is chosen as workspace to snow in
    Window          Rootwindow;
+   GtkBuilder     *builder;
    int             Xroot;
    int             Yroot;
    unsigned int    Wroot;

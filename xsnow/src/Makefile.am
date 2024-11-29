@@ -53,7 +53,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		pixmaps.c version.h wmctrl.h xsnow.h xsnow-constants.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh \
+		test1.sh test2.sh \
 		doit.h ui.c ui.h ui.glade \
 		debug.h \
 		mainstub.cpp mainstub.h \
@@ -116,7 +116,7 @@ snow_includes.h: Pixmaps
 	$(top_srcdir)/src/gen_snow_includes.sh $(top_srcdir)
 
 
-TESTS = test1.sh
+TESTS = test1.sh test2.sh
 
 changelog.inc: $(top_srcdir)/ChangeLog $(TOCC)
 	$(TOCC) < $(top_srcdir)/ChangeLog > $@

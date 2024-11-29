@@ -51,6 +51,7 @@
 #include <X11/extensions/Xinerama.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 #include <cairo-xlib.h>
 #include <gsl/gsl_version.h>
 #include <stdlib.h>
@@ -117,6 +118,7 @@ char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 
 static char **Argv;
 static int Argc;
 
+static volatile int time_to_write_flags = FALSE;
 // timing stuff
 //static double       TotSleepTime = 0;
 
@@ -156,6 +158,7 @@ static void   mybindtestdomain(void);
 
 // callbacks
 static int do_displaychanged(void *);
+static int do_write_flags(void *);
 static int do_draw_all(gpointer widget);
 static int do_event(void *);
 static int do_show_range_etc(void *);
@@ -260,6 +263,7 @@ int main_c(int argc, char *argv[])
    signal(SIGINT,  SigHandler);
    signal(SIGTERM, SigHandler);
    signal(SIGHUP,  SigHandler);
+   signal(SIGUSR1, SigHandler);
    P("srand %d\n",(int)(fmod(wallcl()*1.0e6,1.0e8)));
    srand48((int)(fmod(wallcl()*1.0e6,1.0e8)));
 
@@ -423,8 +427,6 @@ int main_c(int argc, char *argv[])
       global.IsWayland = 0;
 
    gtk_init(&argc, &argv);
-   if (!Flags.NoConfig)
-      WriteFlags();
 
    if (Flags.BelowAllForce)
       Flags.BelowAll = 0;
@@ -471,7 +473,6 @@ int main_c(int argc, char *argv[])
 	 Flags.SnowColor2 = strdup(DefaultFlags.SnowColor2); 
       if (!ValidColor(Flags.BirdsColor))
 	 Flags.BirdsColor = strdup(DefaultFlags.BirdsColor); 
-      WriteFlags();
    }
 
 
@@ -572,6 +573,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged     );
    add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event              );
    add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing            );
+   add_to_mainloop(PRIORITY_DEFAULT, time_writeflags,         do_write_flags        );
    add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
    add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
@@ -584,6 +586,9 @@ int main_c(int argc, char *argv[])
    fflush(stdout);
 
    DoAllWorkspaces(); // to set global.ChosenWorkSpace
+
+   if (!Flags.NoConfig)
+      WriteFlags(1);
 
    P("Entering main loop\n");
    // main loop
@@ -1009,7 +1014,7 @@ int do_ui_check(void *d)
 
    if (Flags.Changes > 0)
    {
-      WriteFlags();
+      WriteFlags(1);
       set_buttons();
       P("-----------Changes: %d\n",Flags.Changes);
    }
@@ -1018,6 +1023,16 @@ int do_ui_check(void *d)
    (void)d;
 }
 
+int do_write_flags(void *d)
+{
+   (void)d;
+   if (time_to_write_flags)
+   {
+      WriteFlags(1);
+      time_to_write_flags = FALSE;
+   }
+   return TRUE;
+}
 
 int do_displaychanged(void *d)
 {
@@ -1161,31 +1176,18 @@ int do_testing(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
-   return TRUE;
-   int xret,yret;
-   unsigned int wret,hret;
-   xdo_get_window_location(global.xdo, global.SnowWin,&xret,&yret,NULL);
-   xdo_get_window_size(global.xdo, global.SnowWin, &wret, &hret);
-   P("%d wxh %d %d %d %d    %d %d %d %d \n",global.counter++,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight,xret,yret,wret,hret);
-   P("WorkspaceActive, chosen: %d %ld\n",WorkspaceActive(),global.ChosenWorkSpace);
-   P("vis:");
-   int i;
-   for (i=0; i<global.NVisWorkSpaces; i++)
-      printf(" %ld",global.VisWorkSpaces[i]);
-   printf("\n");
-   printf("offsets: %d %d\n",global.WindowOffsetX,global.WindowOffsetY);
-   global.counter++;
-
-   for (i=0; i<global.NVisWorkSpaces; i++)
-      printf("%d: visible: %d %ld\n",global.counter,i,global.VisWorkSpaces[i]);
-
-   P("current workspace: %ld\n",global.CWorkSpace);
 
    return TRUE;
 }
 
 void SigHandler(int signum)
 {
+   if (signum == SIGUSR1)
+   {
+      I("Caught SIGUSR1\n");
+      time_to_write_flags = TRUE;
+      return;
+   }
    global.HaltedByInterrupt = signum;
    Flags.Done        = 1;
 }

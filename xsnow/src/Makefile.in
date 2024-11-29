@@ -556,6 +556,7 @@ MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
+MSGMERGE_AVAIL = @MSGMERGE_AVAIL@
 MSGMERGE_FOR_MSGFMT_OPTION = @MSGMERGE_FOR_MSGFMT_OPTION@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -678,7 +679,7 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		pixmaps.c version.h wmctrl.h xsnow.h xsnow-constants.h windows.c windows.h\
 		flags.c flags.h csvpos.c csvpos.h \
 		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh \
+		test1.sh test2.sh \
 		doit.h ui.c ui.h ui.glade \
 		debug.h \
 		mainstub.cpp mainstub.h \
@@ -706,7 +707,7 @@ makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
 BUILT_SOURCES = ui_xml.h snow_includes.h $(tarfile_inc)
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 EXTRA_DIST = gen_snow_includes.sh gen_ui_xml.sh tocc.sh toascii.sh xdo-copyright 
-TESTS = test1.sh
+TESTS = test1.sh test2.sh
 appicondir = $(datadir)/pixmaps
 appicon_DATA = Pixmaps/xsnow.svg
 man6_MANS = xsnow.6
@@ -1664,6 +1665,13 @@ recheck: all
 test1.sh.log: test1.sh
 	@p='test1.sh'; \
 	b='test1.sh'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test2.sh.log: test2.sh
+	@p='test2.sh'; \
+	b='test2.sh'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.6.1.gettext~pre7\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-03-28 10:54+0100\n"
+"POT-Creation-Date: 2024-11-29 14:24+0100\n"
 "PO-Revision-Date: 2024-03-10 14:19+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,175 +27,175 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:378
+#: src/main.c:382
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Saatavilla olevat kielet ovat: %s\n"
 
-#: src/main.c:381
+#: src/main.c:385
 msgid "Warning: don't eat yellow snow!"
 msgstr "Varoitus: älä syö keltaista lunta!"
 
-#: src/main.c:402
+#: src/main.c:406
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Optimaalista palautusta varten lisää %s:\n"
 
-#: src/main.c:410
+#: src/main.c:414
 #, c-format
 msgid "unknown\n"
 msgstr "tuntematon\n"
 
-#: src/main.c:419
+#: src/main.c:423
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Havaittu Wayland-työpöytä\n"
 
-#: src/main.c:434
+#: src/main.c:436
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow tarvitsee gtk-version >= %s, löytyi versio %s \n"
 
-#: src/main.c:444
+#: src/main.c:446
 msgid "Continuing with flag"
 msgstr "Jatketaan liputuksella"
 
-#: src/main.c:482
+#: src/main.c:483
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: ei voida yhdistää X-palvelimeen %s\n"
 
-#: src/main.c:483
+#: src/main.c:484
 msgid "(default)"
 msgstr "(oletuksena)"
 
-#: src/main.c:601
+#: src/main.c:606
 msgid "restarting"
 msgstr "uudelleenkäynnistys"
 
-#: src/main.c:648
+#: src/main.c:653
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Napauta ikkunaa ...\n"
 
-#: src/main.c:682
+#: src/main.c:687
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Havaittu työpöytäistunto: %s\n"
 
-#: src/main.c:685
+#: src/main.c:690
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Työpöytäistuntoa ei voitu määrittää\n"
 
-#: src/main.c:717
+#: src/main.c:722
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Yritetään lunta juuri-ikkunassa\n"
 
-#: src/main.c:761
+#: src/main.c:766
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Käyttämällä läpinäkyvää ikkunaa\n"
 
-#: src/main.c:766
+#: src/main.c:771
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "Läpinäkyvä lumiikkuna ei todennäköisesti ole napsautettava, "
 "valitettavasti..\n"
 
-#: src/main.c:775
+#: src/main.c:780
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Läpinäkyvää ikkunaa ei voi luoda\n"
 
-#: src/main.c:777
+#: src/main.c:782
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "HUOMAUTUS: xsnow todennäköisesti toimii, mutta joitakin virheitä on "
 "odotettavissa.\n"
 
-#: src/main.c:787
+#: src/main.c:792
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-istunto löytyi, käyttäen ikkunaa 'pcmanfm'.\n"
 
-#: src/main.c:794
+#: src/main.c:799
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Käytä ikkunaa 'Työpöytä'.\n"
 
-#: src/main.c:798
+#: src/main.c:803
 #, c-format
 msgid "Using root window\n"
 msgstr "Käytetään pääikkunaa\n"
 
-#: src/main.c:842
+#: src/main.c:847
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:887
+#: src/main.c:892
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Käytetään kaksinkertaista puskuria: %#lx. %dx%d\n"
 
-#: src/main.c:894
+#: src/main.c:899
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "EI kaksoispuskurointia:"
 
-#: src/main.c:896
+#: src/main.c:901
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr ""
 " koska kaksinkertainen puskurointi ei ole käytettävissä tässä "
 "järjestelmässä\n"
 
-#: src/main.c:898
+#: src/main.c:903
 #, c-format
 msgid " on your request.\n"
 msgstr " pyynnöstäsi.\n"
 
-#: src/main.c:899
+#: src/main.c:904
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "HUOMAA: odota välähdystä.\n"
 
-#: src/main.c:1041
+#: src/main.c:1056
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Käynnistä uudelleen näytön tai kielen asetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1055
+#: src/main.c:1070
 msgid "Restart due to change of display settings...\n"
 msgstr "Käynnistä uudelleen näyttöasetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1146
+#: src/main.c:1161
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Odottaa jonkin verran slugginess)"
 
-#: src/main.c:1150
+#: src/main.c:1165
 msgid "Probably X11"
 msgstr "Todennäköisesti X11"
 
-#: src/main.c:1152
+#: src/main.c:1167
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Lumiikkuna: %#lx"
 
-#: src/main.c:1204
+#: src/main.c:1206
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Yli %d virhettä, lopetan!"
 
-#: src/main.c:1354
+#: src/main.c:1356
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Ikkunan koko muutettu, nyt lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1423
+#: src/main.c:1425
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Keskeytetään lipun %s takia\n"

@@ -1,3 +1,17 @@
+version 3.8.0
+	01: configure.ac: add warning if msgmerge is not found.
+	    In that case, no 'make dist' or 'xsnow -selfrep' is possible.
+	    data/xsnow.appdata.xml.in: make it conform "appstreamcli validate"
+	    xdo_search.c:37: Correct call to calloc, parameters were switched
+	02: Add tests: xsnow running in Xvfb, use xdotool to click buttons
+	    Output screen locations of buttons to ~/.xsnowrc
+	    Use SIGUSR1 to force rewrite of ~/.xsnowrc
+	    Makefile.am: make check only in src/
+	    src/{xdo.c,xdo.h,clientwin.c,clientwin.h,dsimple.c,dsimple.h,
+	         kdtree.c,kdtree.h,xdo_version.h,xdo_util.h,xdo_version.h} :
+		 remove GPL 3 license: these files had already an own license.
+	    src/xdo.c, configure.ac: remove dependency for libxkbcommon.
+
 version 3.7.9
 	01: ui.glade: make gui not-resizable to prevent wrong reported size when user
 	    tries to change size. 

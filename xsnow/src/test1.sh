@@ -25,8 +25,10 @@ if [ -x ./xsnow ]; then
 fi
 # test if 'xsnow -h' more or less works:
 $XSNOW -h | grep -q -i xsnow 
-if [ $? -ne 0 ] ; then
-   echo "Error in executing: $XSNOW -h"
+if [ $? -eq 0 ] ; then
+   echo "PASSED: running $XSNOW -h"
+else
+   echo "FAILED: error in executing: $XSNOW -h"
    exit 1
 fi
 # test if all default values are substituted:
@@ -36,5 +38,3 @@ if [ $? -eq 0 ] ; then
    $XSNOW -h | grep DEFAULT_
    exit 1
 fi
-
-

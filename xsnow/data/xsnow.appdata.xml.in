@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2024 Willem Vermin -->
 <component type="desktop">
   <id>xsnow.desktop</id>
-  <metadata_license>gpl-3+</metadata_license>
+  <metadata_license>FSFAP</metadata_license>
   <name>Xsnow</name>
-  <summary>Let it snow on your desktop.</summary>
+  <summary>Let it snow on your desktop</summary>
   <description>
     <p>
-       Xsnow creates on your desktop:
-       <ul>
-       <li> Snow </li>
-       <li> Santa </li>
-       <li> Moon </li>
-       <li> Stars </li>
-       <li> Meteorites </li>
-       <li> Flock of birds </li>
-       <li> Trees, animals and houses </li>
-    </ul>
-    </p>
-    <p>
+       Xsnow is an X11 application.
+       It creates Xmas on your desktop with the following items:
+       snow, Santa, moon, stars, meteorites, birds and aurora.
+       Snow will collect on the windows and the bottom of the screen.
        Preferences can be set with the comprehensive graphical interface 
        or on the command line.
-    </p>
-    <p>
        Xsnow can also be used in combination with XScreenSaver.
     </p>
   </description>
@@ -43,8 +34,12 @@
        <image>https://a.fsdn.com/con/app/proj/xsnow/screenshots/xsnow-3.3.2.png/max/max/1</image>
     </screenshot>
   </screenshots>
-  <project_license>gpl-3+</project_license>
-  <developer_name>Willem Vermin</developer_name>
+  <launchable type="desktop-id">xsnow.desktop</launchable>
+  <content_rating type="oars-1.0"/>
+  <project_license>GPL-3.0+</project_license>
+  <developer id="@wvermin@gmail.com">
+     <name>Willem Vermin</name>
+  </developer>
   <update_contact>wvermin@gmail.com</update_contact>
 </component>
 

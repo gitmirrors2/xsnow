@@ -15,6 +15,9 @@ installed before compiling xsnow.
 
      tar xf xsnow-<version>.tar.gz
      cd xsnow-<version>
+     # in some cases you need to run
+     #    ./bootstrap
+     # this requires that you have autoconf and automake installed
      ./configure
      make
      sudo make install
@@ -43,6 +46,17 @@ The bootstrap script
 
 puts everything in place and performs a autoreconf -fvi.
 See also: Languages.
+
+### Running make check
+
+When the environment variable XSNOW_FAST_CHECK is set, 
+make check will only perform a superficial check, otherwize
+a more thorough test invoked. You need Xvfb, scrot, 
+xdotool and xdpyinfo (from x11-utils) available.
+
+When the environment variable XSNOW_USESCREEN is set,
+the thorough test will use your screen to run xsnow in.
+Be sure not to move the mouse when the test is running.
 
 ## Self replication
 

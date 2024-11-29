@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre02\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-03-28 10:54+0100\n"
+"POT-Creation-Date: 2024-11-29 14:24+0100\n"
 "PO-Revision-Date: 2024-03-10 14:19+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,170 +27,170 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:378
+#: src/main.c:382
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Tilgængelige sprog er: %s\n"
 
-#: src/main.c:381
+#: src/main.c:385
 msgid "Warning: don't eat yellow snow!"
 msgstr "Advarsel: spis ikke gul sne!"
 
-#: src/main.c:402
+#: src/main.c:406
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "For optimale resultater skal du tilføje til din %s:\n"
 
-#: src/main.c:410
+#: src/main.c:414
 #, c-format
 msgid "unknown\n"
 msgstr "ukendt \n"
 
-#: src/main.c:419
+#: src/main.c:423
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Fundet Wayland desktop \n"
 
-#: src/main.c:434
+#: src/main.c:436
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow kræver gtk-version >= %s, fundet version %s \n"
 
-#: src/main.c:444
+#: src/main.c:446
 msgid "Continuing with flag"
 msgstr "Fortsætter med flag"
 
-#: src/main.c:482
+#: src/main.c:483
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: kan ikke oprette forbindelse til X-server %s\n"
 
-#: src/main.c:483
+#: src/main.c:484
 msgid "(default)"
 msgstr "(Standard)"
 
-#: src/main.c:601
+#: src/main.c:606
 msgid "restarting"
 msgstr "genstarter"
 
-#: src/main.c:648
+#: src/main.c:653
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Klik på et vindue ...\n"
 
-#: src/main.c:682
+#: src/main.c:687
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Registreret skrivebordssession: %s\n"
 
-#: src/main.c:685
+#: src/main.c:690
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Kunne ikke bestemme desktop-session \n"
 
-#: src/main.c:717
+#: src/main.c:722
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Forsøger at sne i rodvinduet \n"
 
-#: src/main.c:761
+#: src/main.c:766
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Brug af gennemsigtigt vindue \n"
 
-#: src/main.c:766
+#: src/main.c:771
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "Det gennemsigtige sne-vindue er sandsynligvis ikke gennemklik, desværre..\n"
 
-#: src/main.c:775
+#: src/main.c:780
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Kan ikke oprette gennemsigtigt vindue \n"
 
-#: src/main.c:777
+#: src/main.c:782
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr "BEMÆRK: xsnow vil sandsynligvis køre, men nogle fejl kan forventes.\n"
 
-#: src/main.c:787
+#: src/main.c:792
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-session fundet ved hjælp af vinduet 'pcmanfm'.\n"
 
-#: src/main.c:794
+#: src/main.c:799
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Bruger vinduet 'Desktop'.\n"
 
-#: src/main.c:798
+#: src/main.c:803
 #, c-format
 msgid "Using root window\n"
 msgstr "Brug af rodvindue\n"
 
-#: src/main.c:842
+#: src/main.c:847
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Sne i % #lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:887
+#: src/main.c:892
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Brug af dobbelt buffer: % #lx. %dx%d\n"
 
-#: src/main.c:894
+#: src/main.c:899
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "Bruger IKKE dobbelt buffering:"
 
-#: src/main.c:896
+#: src/main.c:901
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " fordi dobbelt buffering ikke er tilgængelig på dette system \n"
 
-#: src/main.c:898
+#: src/main.c:903
 #, c-format
 msgid " on your request.\n"
 msgstr " på din anmodning.\n"
 
-#: src/main.c:899
+#: src/main.c:904
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "BEMÆRK: forvent noget flimmer.\n"
 
-#: src/main.c:1041
+#: src/main.c:1056
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Genstart på grund af ændring af skærm- eller sprogindstillinger ...\n"
 
-#: src/main.c:1055
+#: src/main.c:1070
 msgid "Restart due to change of display settings...\n"
 msgstr "Genstart på grund af ændring af skærmindstillinger...\n"
 
-#: src/main.c:1146
+#: src/main.c:1161
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (forvent lidt træghed)"
 
-#: src/main.c:1150
+#: src/main.c:1165
 msgid "Probably X11"
 msgstr "Sandsynligvis X11"
 
-#: src/main.c:1152
+#: src/main.c:1167
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Snevindue: % #lx"
 
-#: src/main.c:1204
+#: src/main.c:1206
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Mere end %d fejl, jeg stopper!"
 
-#: src/main.c:1354
+#: src/main.c:1356
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Vinduesstørrelse ændret, sner nu ind om %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1423
+#: src/main.c:1425
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Stopper på grund af flag %s\n"

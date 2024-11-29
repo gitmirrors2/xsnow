@@ -32,7 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * http://www.in-ulm.de/~mascheck/X11/xmodmap.html
  */
 
-/* some small mods, see the string 'wv' */
+/* some small mods, see the string and macro 'wv' */
+
+#define wv
 
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE 500
@@ -59,7 +61,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 
+// wv xsnow is not using xdo's keyboard facilities, and
+// and libxkbcommon is not readily available everywhere, so:
+#ifndef wv
 #include <xkbcommon/xkbcommon.h>
+#endif
 
 #include "xdo.h"
 #include "xdo_util.h"
@@ -1395,7 +1401,12 @@ static void _xdo_populate_charcode_map(xdo_t *xdo) {
 
 /* context-free functions */
 wchar_t _keysym_to_char(KeySym keysym) {
+#ifdef wv
+   // this function depends on xkbcommon.h and is not used in xsnow.
+   return 0*keysym;
+#else
   return (wchar_t)xkb_keysym_to_utf32(keysym);
+#endif
 }
 
 int _xdo_send_keysequence_window_to_keycode_list(const xdo_t *xdo, const char *keyseq,

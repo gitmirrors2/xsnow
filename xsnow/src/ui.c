@@ -188,7 +188,7 @@
 #define DEFAULT(name) DefaultFlags.name
 #define VINTAGE(name) VintageFlags.name
 
-static GtkBuilder    *builder;
+GtkBuilder    *builder;
 static GtkWidget     *mean_distance;
 static GtkWidget     *range;
 static GtkWidget     *desktop_type;
@@ -1106,7 +1106,7 @@ void ui()
 {
    ui_running = True;
 
-   builder = gtk_builder_new_from_string (xsnow_xml, -1);
+   builder        = gtk_builder_new_from_string (xsnow_xml, -1);
 #ifdef HAVE_GETTEXT
    gtk_builder_set_translation_domain(builder,TEXTDOMAIN);
 #endif
@@ -1238,6 +1238,7 @@ void ui()
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
 
+   global.builder = builder;
 }
 
 // Set the style provider for the widgets

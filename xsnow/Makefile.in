@@ -272,6 +272,7 @@ MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
+MSGMERGE_AVAIL = @MSGMERGE_AVAIL@
 MSGMERGE_FOR_MSGFMT_OPTION = @MSGMERGE_FOR_MSGFMT_OPTION@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -868,6 +869,11 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+# make check only in src:
+# Thanks to: https://stackoverflow.com/questions/8332261/autoconf-automake-how-to-avoid-passing-the-check-option-to-ac-config-subdirs
+check-recursive:
+	$(MAKE) -C src check
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
