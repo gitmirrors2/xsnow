@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -22,10 +23,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "xsnow.h"
 #include "ixpm.h"
 #include "debug.h"
 #include "utils.h"
 #include "safe_malloc.h"
+#include "xpm2cairo-gdk.h"
 
 // from the xpm package:
 static void xpmCreatePixmapFromImage(
@@ -210,7 +213,7 @@ cairo_region_t *gregionfromxpm(const char **data, int flop, float scale)
    P("gregionfromxpm: w:%d h:%d\n",w,h);
 
    GdkPixbuf *pixbuf;
-   GdkPixbuf *pixbuf1 = gdk_pixbuf_new_from_xpm_data(data);
+   GdkPixbuf *pixbuf1 = xpm2gdk(global.display, (char **)data, NULL);
    if (flop)
    {
       pixbuf = gdk_pixbuf_flip(pixbuf1,1);

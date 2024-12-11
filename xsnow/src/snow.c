@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -44,6 +45,7 @@
 #include "ui.h"
 #include "blowoff.h"
 #include "treesnow.h"
+#include "xpm2cairo-gdk.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes)
@@ -185,7 +187,7 @@ void init_snow_pix()
       }
       else
 	 xpm_set_color(xsnow_xpm[flake], &x, &lines, Flags.SnowColor);
-      GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)x);
+      GdkPixbuf *pixbuf = xpm2gdk(global.display, (char **)x, NULL);
       if (w<1) w=1;
       if (h<1) h=1;
       if (w == 1 && h == 1) h = 2;

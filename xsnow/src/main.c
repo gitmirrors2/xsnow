@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -118,7 +119,6 @@ char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 
 static char **Argv;
 static int Argc;
 
-static volatile int time_to_write_flags = FALSE;
 // timing stuff
 //static double       TotSleepTime = 0;
 
@@ -275,47 +275,48 @@ int main_c(int argc, char *argv[])
    aurora_sem_init();
    birds_sem_init();
 
-   global.counter            = 0;
-   global.cpufactor          = 1.0;
-   global.WindowScale        = 1.0;
+   global.counter             = 0;
+   global.cpufactor           = 1.0;
+   global.WindowScale         = 1.0;
 
-   global.MaxSnowFlakeHeight = 0;
-   global.MaxSnowFlakeWidth  = 0;
-   global.FlakeCount         = 0;  /* # active flakes */
-   global.FluffCount         = 0;
+   global.MaxSnowFlakeHeight  = 0;
+   global.MaxSnowFlakeWidth   = 0;
+   global.FlakeCount          = 0;  /* # active flakes */
+   global.FluffCount          = 0;
 
-   global.SnowWin            = 0;
-   global.WindowOffsetX      = 0;
-   global.WindowOffsetY      = 0;
-   global.DesktopSession     = NULL;
-   global.CWorkSpace         = 0;
-   global.ChosenWorkSpace    = 0;
-   global.NVisWorkSpaces     = 1;
-   global.VisWorkSpaces[0]   = 0;
-   global.WindowsChanged     = 0;
-   global.ForceRestart       = 0;
+   global.SnowWin             = 0;
+   global.WindowOffsetX       = 0;
+   global.WindowOffsetY       = 0;
+   global.DesktopSession      = NULL;
+   global.CWorkSpace          = 0;
+   global.ChosenWorkSpace     = 0;
+   global.NVisWorkSpaces      = 1;
+   global.VisWorkSpaces[0]    = 0;
+   global.WindowsChanged      = 0;
+   global.ForceRestart        = 0;
 
-   global.FsnowFirst         = NULL;
-   global.MaxScrSnowDepth    = 0;
-   global.RemoveFluff        = 0;
+   global.FsnowFirst          = NULL;
+   global.MaxScrSnowDepth     = 0;
+   global.RemoveFluff         = 0;
 
-   global.SnowOnTrees        = NULL;
-   global.OnTrees            = 0;
+   global.SnowOnTrees         = NULL;
+   global.OnTrees             = 0;
 
-   global.moonX              = 1000;
-   global.moonY              = 80;
+   global.moonX               = 1000;
+   global.moonY               = 80;
 
-   global.Wind               = 0;
-   global.Direction          = 0;
-   global.WindMax            = 500.0;
-   global.NewWind            = 100.0;
+   global.Wind                = 0;
+   global.Direction           = 0;
+   global.WindMax             = 500.0;
+   global.NewWind             = 100.0;
 
-   global.HaltedByInterrupt  = 0;
-   global.Message[0]         = 0;
+   global.HaltedByInterrupt   = 0;
+   global.Message[0]          = 0;
 
-   global.SantaPlowRegion    = 0;
+   global.SantaPlowRegion     = 0;
 
-   global.DoCapella          = DOCAPELLA;
+   global.DoCapella           = DOCAPELLA;
+   global.time_to_write_flags = TRUE;
 
    int i;
 
@@ -588,7 +589,8 @@ int main_c(int argc, char *argv[])
    DoAllWorkspaces(); // to set global.ChosenWorkSpace
 
    if (!Flags.NoConfig)
-      WriteFlags(1);
+      global.time_to_write_flags = TRUE;
+      //WriteFlags(1);
 
    P("Entering main loop\n");
    // main loop
@@ -1014,7 +1016,8 @@ int do_ui_check(void *d)
 
    if (Flags.Changes > 0)
    {
-      WriteFlags(1);
+      //WriteFlags(1);
+      global.time_to_write_flags = TRUE;
       set_buttons();
       P("-----------Changes: %d\n",Flags.Changes);
    }
@@ -1025,13 +1028,24 @@ int do_ui_check(void *d)
 
 int do_write_flags(void *d)
 {
-   (void)d;
-   if (time_to_write_flags)
+   const int mc = 0;
+   // if one should wait a little longer before calling WriteFlags()
+   // one could set mc to 1, 2, ...
+   static int c = mc;
+   if (global.time_to_write_flags)
    {
+      P("c: %d\n",c);
+      if (c > 0)
+      {
+	 c--;
+	 return TRUE;
+      }
       WriteFlags(1);
-      time_to_write_flags = FALSE;
+      global.time_to_write_flags = FALSE;
+      c = mc;
    }
    return TRUE;
+   (void)d;
 }
 
 int do_displaychanged(void *d)
@@ -1185,7 +1199,7 @@ void SigHandler(int signum)
    if (signum == SIGUSR1)
    {
       I("Caught SIGUSR1\n");
-      time_to_write_flags = TRUE;
+      global.time_to_write_flags = TRUE;
       return;
    }
    global.HaltedByInterrupt = signum;

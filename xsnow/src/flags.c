@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -34,6 +35,7 @@
 #include "birds.h"
 #include "windows.h"
 #include "selfrep.h"
+#include "version.h"
 
 #include "debug.h"
 #include "xsnow.h"
@@ -464,6 +466,7 @@ void WriteFlags(int output_locations)
       I("Cannot write %s\n",FlagsFile);
       return;
    }
+   fprintf(f,"# Xsnow version %s\n",VERSION);
    fprintf(f,"# Flags used by the program:\n");
 #define DOIT_I(x,d,v) fprintf(f,"%s %d\n", # x,Flags.x);
 #define DOIT_L(x,d,v) fprintf(f,"%s %ld\n",# x,Flags.x);
@@ -503,9 +506,9 @@ void write_tabs_locations(FILE *f)
       NULL
    };
 
-   GtkHeaderBar* headerbar = GTK_HEADER_BAR(gtk_builder_get_object(builder,"headerbar"));
-   (void)headerbar;
-   P("headerbar: %p\n",(void*)headerbar);
+   //GtkHeaderBar* headerbar = GTK_HEADER_BAR(gtk_builder_get_object(builder,"headerbar"));
+   //(void)headerbar;
+   //P("headerbar: %p\n",(void*)headerbar);
 
 
    GtkStackSwitcher* switcher = GTK_STACK_SWITCHER(gtk_builder_get_object(builder,"id-tabs"));
@@ -523,12 +526,15 @@ void write_tabs_locations(FILE *f)
       names_len++;
    P("names_len: %d\n",names_len);
 
-   assert(names_len == g_list_length(list));
+   if (names_len != g_list_length(list))
+      return;
+   //assert(names_len == g_list_length(list));
 
    GList *plist = list;
    int c=0;
    while (1)
    {
+      // plist->data is the radiobutton
       //const char *label = gtk_button_get_label(GTK_BUTTON(plist->data));
       gtk_buildable_set_name(GTK_BUILDABLE(plist->data),tab_names[c]);
       gint wx,wy;

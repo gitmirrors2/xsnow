@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -32,6 +33,7 @@
 #include "pixmaps.h"
 #include "utils.h"
 #include "windows.h"
+#include "xpm2cairo-gdk.h"
 
 
 #define LEAVE_IF_INACTIVE\
@@ -140,7 +142,7 @@ static void init_moon_surface()
       Flags.MoonColor = 1;
    int whichmoon = Flags.MoonColor;
    static GdkPixbuf *pixbuf, *pixbufscaled;
-   pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)moons_xpm[whichmoon]);
+   pixbuf = xpm2gdk(global.display, (char **)moons_xpm[whichmoon], NULL);
    // standard moon is some percentage of window width
    const float p = 30.0;
    global.moonR = p*Flags.MoonSize*0.01*moonScale;

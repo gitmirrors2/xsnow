@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -47,6 +48,7 @@
 #include "csvpos.h"
 #include "treesnow.h"
 #include "safe_malloc.h"
+#include "xpm2cairo-gdk.h"
 
 static int              do_initbaum(void *);
 static void             ReInitTree0(void);
@@ -172,7 +174,7 @@ cairo_surface_t *tree_surface(int flip, const char **xpm, float scale)
 {
    P("xpm[2]: %s\n",xpm[2]);
    GdkPixbuf *pixbuf, *pixbuf1;
-   pixbuf1 = gdk_pixbuf_new_from_xpm_data((const char **)xpm);
+   pixbuf1 = xpm2gdk(global.display, (char **)xpm, NULL);
    if (flip)
    {
       pixbuf = gdk_pixbuf_flip(pixbuf1,1);

@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -39,6 +40,7 @@
 #include "ixpm.h"
 #include "moon.h"
 #include "safe_malloc.h"
+#include "xpm2cairo-gdk.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive())
@@ -158,7 +160,7 @@ void init_Santa_surfaces()
 	    w *= 0.01*Flags.Scale*LocalScale*global.WindowScale*0.01*Flags.SantaScale;
 	    h *= 0.01*Flags.Scale*LocalScale*global.WindowScale*0.01*Flags.SantaScale;
 	    P("%d init_Santa_surfaces %d %d %d %d %d\n",global.counter++,i,j,k,w,h);
-	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)Santas[i][j][k]);
+	    pixbuf = xpm2gdk(global.display, (char **)Santas[i][j][k], NULL);
 	    if(w < 1) w = 1;
 	    if(h < 1) h = 1;
 	    if (w == 1 && h == 1) h = 2;
@@ -218,7 +220,7 @@ void init_Santa_surfaces()
 	    if(w < 1) w = 1;
 	    if(h < 1) h = 1;
 	    if (w == 1 && h == 1) h = 2;
-	    pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)santaxpm);
+	    pixbuf = xpm2gdk(global.display, (char **)santaxpm, NULL);
 	    GdkPixbuf *pixbufscaled0 = gdk_pixbuf_scale_simple(pixbuf,w,h,GDK_INTERP_HYPER);
 	    GdkPixbuf *pixbufscaled1 = gdk_pixbuf_flip(pixbufscaled0,TRUE);
 	    cairo_surface_destroy( Santa_surfaces[0][0][0][i]);

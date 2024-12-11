@@ -17,8 +17,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.7.0~pre02\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-11-29 14:24+0100\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2024-03-10 14:19+0100\n"
 "PO-Revision-Date: 2024-03-10 14:19+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -27,36 +27,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:382
+#: src/main.c:379
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Beschikbare talen zijn: %s\n"
 
-#: src/main.c:385
+#: src/main.c:382
 msgid "Warning: don't eat yellow snow!"
 msgstr "Waarschuwing: eet geen gele sneeuw!"
 
-#: src/main.c:406
+#: src/main.c:403
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Voeg voor een optimaal resultaat toe aan uw %s:\n"
 
-#: src/main.c:414
+#: src/main.c:411
 #, c-format
 msgid "unknown\n"
 msgstr "onbekend\n"
 
-#: src/main.c:423
+#: src/main.c:420
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Wayland-desktop gedetecteerd \n"
 
-#: src/main.c:436
+#: src/main.c:435
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow vereist gtk-versie >= %s, gevonden versie %s \n"
 
-#: src/main.c:446
+#: src/main.c:445
 msgid "Continuing with flag"
 msgstr "Verder met vlag"
 
@@ -69,132 +69,132 @@ msgstr "%s: kan geen verbinding maken met X-server %s\n"
 msgid "(default)"
 msgstr "(standaard)"
 
-#: src/main.c:606
+#: src/main.c:602
 msgid "restarting"
 msgstr "herstarten"
 
-#: src/main.c:653
+#: src/main.c:649
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Klik op een venster ...\n"
 
-#: src/main.c:687
+#: src/main.c:683
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Gedetecteerde desktopsessie: %s\n"
 
-#: src/main.c:690
+#: src/main.c:686
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Kan desktopsessie niet bepalen \n"
 
-#: src/main.c:722
+#: src/main.c:718
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Proberen te sneeuwen in rootvenster \n"
 
-#: src/main.c:766
+#: src/main.c:762
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Transparant venster gebruiken \n"
 
-#: src/main.c:771
+#: src/main.c:767
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "Het doorzichtige sneeuwvenster is waarschijnlijk niet doorklikbaar, "
 "helaas..\n"
 
-#: src/main.c:780
+#: src/main.c:776
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Kan geen transparant venster maken \n"
 
-#: src/main.c:782
+#: src/main.c:778
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "OPMERKING: xsnow zal waarschijnlijk werken, maar er zijn enkele storingen te "
 "verwachten. \n"
 
-#: src/main.c:792
+#: src/main.c:788
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-sessie gevonden met venster 'pcmanfm'.\n"
 
-#: src/main.c:799
+#: src/main.c:795
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Venster 'Desktop' gebruiken.\n"
 
-#: src/main.c:803
+#: src/main.c:799
 #, c-format
 msgid "Using root window\n"
 msgstr "Hoofdvenster gebruiken \n"
 
-#: src/main.c:847
+#: src/main.c:843
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Sneeuwt in %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:892
+#: src/main.c:888
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Dubbele buffer gebruiken: %#lx. %dx%d\n"
 
-#: src/main.c:899
+#: src/main.c:895
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "GEEN dubbele buffering gebruiken:"
 
-#: src/main.c:901
+#: src/main.c:897
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " omdat dubbele buffering niet beschikbaar is op dit systeem \n"
 
-#: src/main.c:903
+#: src/main.c:899
 #, c-format
 msgid " on your request.\n"
 msgstr " op uw verzoek.\n"
 
-#: src/main.c:904
+#: src/main.c:900
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "OPMERKING: verwacht enige flikkering.\n"
 
-#: src/main.c:1056
+#: src/main.c:1042
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr ""
 "Opnieuw opstarten vanwege wijziging van scherm- of taalinstellingen ...\n"
 
-#: src/main.c:1070
+#: src/main.c:1056
 msgid "Restart due to change of display settings...\n"
 msgstr "Opnieuw opstarten vanwege wijziging van weergave-instellingen...\n"
 
-#: src/main.c:1161
+#: src/main.c:1147
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (verwacht wat traagheid)"
 
-#: src/main.c:1165
+#: src/main.c:1151
 msgid "Probably X11"
 msgstr "Waarschijnlijk X11"
 
-#: src/main.c:1167
+#: src/main.c:1153
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Sneeuwvenster: %#lx"
 
-#: src/main.c:1206
+#: src/main.c:1205
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Meer dan %d fouten, ik ben gestopt!"
 
-#: src/main.c:1356
+#: src/main.c:1355
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Venstergrootte gewijzigd, sneeuwt nu in %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1425
+#: src/main.c:1424
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Stoppen vanwege vlag %s\n"
@@ -223,7 +223,7 @@ msgstr "Problemen tijdens de productie van de teerbal.\n"
 msgid "Self replication is not compiled in.\n"
 msgstr "Zelfreplicatie is niet gecompileerd.\n"
 
-#: src/utils.c:247
+#: src/utils.c:248
 #, c-format
 msgid ""
 "\n"
@@ -232,7 +232,7 @@ msgstr ""
 "\n"
 "Xsnow: Gevangen signaal %d\n"
 
-#: src/utils.c:250
+#: src/utils.c:251
 #, c-format
 msgid ""
 "\n"
@@ -241,7 +241,7 @@ msgstr ""
 "\n"
 "Bedankt voor het gebruik van xsnow\n"
 
-#: src/windows.c:632
+#: src/windows.c:633
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Achtergrond instellen van %s\n"
@@ -721,8 +721,7 @@ msgstr "Inschakelen"
 msgid ""
 "If set, use two colors.\n"
 "Flag: -enablesc2"
-msgstr ""
-"Indien ingesteld, gebruik dan twee kleuren.\n"
+msgstr "Indien ingesteld, gebruik dan twee kleuren.\n"
 "Flag: -enablesc2"
 
 #: src/ui.glade:1974

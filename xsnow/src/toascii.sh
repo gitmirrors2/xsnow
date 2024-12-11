@@ -1,5 +1,5 @@
 #!/bin/sh
-# -copyright-
+###### -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen

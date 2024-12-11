@@ -1,4 +1,4 @@
-# -copyright-
+######  -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -70,7 +70,8 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		selfrep.c selfrep.h \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
-		safe_malloc.h mygettext.h gettext.h 
+		safe_malloc.h mygettext.h gettext.h  \
+		xpm2cairo-gdk.c xpm2cairo-gdk.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 

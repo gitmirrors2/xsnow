@@ -1,5 +1,5 @@
 #!/bin/bash
-# -copyright-
+###### -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -18,6 +18,7 @@
 #-# You should have received a copy of the GNU General Public License
 #-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-# 
+
 # run xsnow in virtual frame buffer (Xvfb)
 # take a screenshot, and after a few seconds take another screenshot
 # If these screenshots are identical, xsnow is not running and the test fails.
@@ -34,7 +35,7 @@ if [ "$XSNOW_FAST_CHECK" ] ; then
    exit 0
 fi
 
-apps="Xvfb xdotool scrot xdpyinfo"
+apps="Xvfb xdotool scrot xdpyinfo killall"
 
 missing=0
 for app in $apps ; do
@@ -50,10 +51,12 @@ if [ "$missing" -ne 0 ] ; then
 fi
 
 
-XSNOW=xsnow
+XSNOW=/usr/games/xsnow
 if [ -x ./xsnow ]; then
    XSNOW=./xsnow
 fi
+
+echo "XSNOW: $XSNOW, PWD: $PWD"
 
 rcfile="$HOME/.xsnowrc"
 sumerr=0
@@ -136,13 +139,12 @@ fi
 
 waitfor()
 {
-   while test -f "$rcfile" ; do
-      rm -f "$rcfile"
-      sleep 0.2
-   done
-   kill -SIGUSR1 "$p_xsnow"
+   #while test -f "$rcfile" ; do
+   #   rm -f "$rcfile"
+   #   sleep 0.2
+   #done
    local i
-   for i in `seq 200` ; do
+   for i in `seq 20` ; do
       #echo waitfor $1 $i
       sleep 0.1
       if test -f "$rcfile" ; then
@@ -175,6 +177,7 @@ click()
 
 check()
 {
+   sleep 1
    waitfor "^$1 [0-9]"
    if [ "$?" != 0 ] ; then
       echo "NOT FOUND: $1"
@@ -195,7 +198,6 @@ check()
 sleep 2
 
 test -f "$rcfile" && cp "$rcfile" "$rcbak"
-rm -f "$rcfile"
 
 click alldefaults
 check Aurora 1

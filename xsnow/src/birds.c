@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -30,6 +31,7 @@
 
 #include "xsnow-constants.h"
 
+#include "xsnow.h"
 #include "Santa.h"
 #include "birds.h"
 #include "clocks.h"
@@ -46,6 +48,7 @@
 #include "ui.h"
 #include "utils.h"
 #include "windows.h"
+#include "xpm2cairo-gdk.h"
 
 
 #define NWINGS 8
@@ -892,7 +895,7 @@ static void init_bird_pixbufs(const char *color)
       char **x;
       int lines;
       xpm_set_color((char **)birds_xpm[i], &x, &lines, color);
-      bird_pixbufs[i] = gdk_pixbuf_new_from_xpm_data((const char **)x);
+      bird_pixbufs[i] = xpm2gdk(global.display, (char **)x, NULL);
       xpm_destroy(x);
    }
 }

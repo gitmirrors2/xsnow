@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -161,6 +162,7 @@
 #include "windows.h"
 #include "xsnow.h"
 #include "safe_malloc.h"
+#include "xpm2cairo-gdk.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -223,6 +225,7 @@ static int do_test_iconified(void *dummy);
 static gboolean callback_func(GtkWidget *widget,
       GdkEventWindowState *event,
       gpointer user_data);
+static void headerfunc(GtkWidget *w, gpointer data);
 
 
 static int human_interaction = 1;
@@ -634,7 +637,7 @@ static void init_santa_pixmaps()
    GdkPixbuf *pixbuf;
    for (i=0; i<NBUTTONS; i++)
    {
-      pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)Santas[i/2][i%2][0]);
+      pixbuf = xpm2gdk(global.display, (char **)Santas[i/2][i%2][0],NULL);
       image = GTK_IMAGE(gtk_builder_get_object(builder,santa_barray[i]->imid));
       gtk_image_set_from_pixbuf(image,pixbuf);
       g_object_unref(pixbuf);
@@ -646,7 +649,7 @@ static void init_tree_pixmaps()
    GtkImage *image; 
    GdkPixbuf *pixbuf;
 #define TREE(x) \
-   NEWLINE pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[x]);\
+   NEWLINE pixbuf = xpm2gdk(global.display, (char **)xpmtrees[x], NULL);\
    NEWLINE image = GTK_IMAGE(gtk_builder_get_object(builder,"treeimage" # x));\
    NEWLINE gtk_image_set_from_pixbuf(image,pixbuf); \
    NEWLINE g_object_unref(pixbuf);
@@ -659,7 +662,7 @@ static void init_hello_pixmaps()
 {
    GtkImage *image; 
    GdkPixbuf *pixbuf, *pixbuf1;
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
+   pixbuf = xpm2gdk(global.display, (char **)xsnow_logo, NULL);
    pixbuf1 = gdk_pixbuf_scale_simple(pixbuf,64,64,GDK_INTERP_BILINEAR);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image1"));
    gtk_image_set_from_pixbuf(image,pixbuf1);
@@ -667,7 +670,7 @@ static void init_hello_pixmaps()
    gtk_image_set_from_pixbuf(image,pixbuf1);
    g_object_unref(pixbuf);
    g_object_unref(pixbuf1);
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpmtrees[0]);
+   pixbuf = xpm2gdk(global.display, (char **)xpmtrees[0], NULL);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image3"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"hello-image4"));
@@ -1102,6 +1105,20 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
    gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
 }
 
+void headerfunc(GtkWidget *w, gpointer data)
+{
+   static double last = 0;
+   double now = wallclock();
+   if (now < last + 0.01)
+      return;
+   P("headerfunc: now: %lf last: %lf\n",now,last);
+   last = now;
+   global.time_to_write_flags = TRUE;
+   
+   (void) w;
+   (void) data;
+}
+
 void ui()
 {
    ui_running = True;
@@ -1237,6 +1254,20 @@ void ui()
 
    if (Flags.HideMenu)
       gtk_window_iconify(GTK_WINDOW(hauptfenster));
+
+   // connect handler to radiobuttons in the headerbar
+
+   {
+      GtkStackSwitcher* switcher = GTK_STACK_SWITCHER(gtk_builder_get_object(builder,"id-tabs"));
+      GList *list = gtk_container_get_children((GtkContainer*)switcher);  // this is a list with radiobuttons
+
+      GList *p = list;
+      while(p != NULL)
+      {
+	 g_signal_connect(G_OBJECT(p->data),"clicked",G_CALLBACK(headerfunc),NULL);
+	 p = p->next;
+      }
+   }
 
    global.builder = builder;
 }
@@ -1493,7 +1524,7 @@ void ui_error_x11()
 
    GtkImage *image; 
    GdkPixbuf *pixbuf;
-   pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xsnow_logo);
+   pixbuf = xpm2gdk(global.display, (char **)xsnow_logo, NULL);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image1"));
    gtk_image_set_from_pixbuf(image,pixbuf);
    image = GTK_IMAGE(gtk_builder_get_object(builder,"error-x11-image2"));

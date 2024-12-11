@@ -1,4 +1,5 @@
-/* -copyright-
+/* 
+ -copyright-
 #-# 
 #-# xsnow: let it snow on your desktop
 #-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
@@ -25,6 +26,7 @@
 #include <X11/Intrinsic.h>
 #include <gtk/gtk.h>
 #include "xdo.h"
+#include "xsnow-constants.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -40,7 +42,9 @@
 #define BITS(n) :n
 #endif
 
-
+// uncomment if you want to use (deprecated) gdk_pixbuf_new_from_xpm_data()
+// in stead of xpm2gdk():
+//#define USE_GDK_PIXBUF_NEW_FROM_XPM_DATA
 
 // timers
 
@@ -71,7 +75,7 @@
 #define time_star                 0.50   // time between drawing stars
 #define time_switchflakes         0.2    // time between checks if flakes should be switched beteen default and vintage
 #define time_testing              2.10   // time between testing code
-#define time_writeflags           0.10   // time between writing flags
+#define time_writeflags           0.20   // time between checks if flags should be written
 #define time_ui_check             0.25   // time between checking values from ui
 #define time_umoon                0.04   // time between update position of moon
 #define time_usanta               0.04   // time between update of santa position
@@ -278,6 +282,7 @@ extern struct _global
    int            DoCapella;  // if true, Marc Capella's method is used to
 			      // deal with fallensnow on resized or moved windows:
 			      // fallensnow is turned into flakes.
+   volatile int time_to_write_flags;
 } global;
 
 extern int set_sticky(int s);
