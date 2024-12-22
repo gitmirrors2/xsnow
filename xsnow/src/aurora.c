@@ -1,23 +1,23 @@
 /* 
- -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+   -copyright-
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 
 #include <pthread.h>
@@ -727,16 +727,22 @@ void aurora_computeparms(AuroraMap *a)
    double px[AURORA_H];
    for (i=0; i<AURORA_H; i++)
       px[i] = i;
+   // 'gcc-14 -fanalyzer -O2 -Wall' thinks that px[AURORA_H -1] 
+   // is uninitialized, so:
+   px[AURORA_H-1] = AURORA_H-1;  
    if(a->zh)
    {
       free(a->zh);
       a->zh = NULL;
    }
    double *x = (double *)malloc(a->nz*sizeof(double));
+   assert(x);
    a->zh     = (double *)malloc(a->nz*sizeof(double));
+   assert(a->zh);
    dx = (double)(AURORA_H-1)/(double)(a->nz - 1);
    for (i=0; i<a->nz; i++)
       x[i] = i*dx;
+
    x[a->nz-1] = px[AURORA_H-1];
    spline_interpol(px,AURORA_H,a->h,x,a->nz,a->zh);
 
@@ -766,6 +772,7 @@ void aurora_computeparms(AuroraMap *a)
       a->zaa = NULL;
    }
    a->zaa    = (double *)malloc(a->nz*sizeof(double));
+   assert(a->zaa);
    dx = (double)(AURORA_AA-1)/(double)(a->nz - 1);
    for (i=0; i<a->nz; i++)
       x[i] = i*dx;
@@ -810,6 +817,7 @@ void aurora_computeparms(AuroraMap *a)
 	       a->lfuzz += 4*f;
 	       a->fuzz = (fuzz_t *)realloc(a->fuzz, a->lfuzz*sizeof(fuzz_t));
 	    }
+	    assert(a->fuzz);
 	    P("d0 d: %d %d %d %d %d\n",a->z[i].x,d0,d,a->nfuzz,a->lfuzz);
 	    if (d0 > 0) // edge on the right side
 	    {
@@ -950,6 +958,8 @@ void create_aurora_base(const double *y, int n,
    } *p;
    double *x = (double*)malloc(n*sizeof(double));
    double *s = (double*)malloc(nslant*sizeof(double));
+   assert(x);
+   assert(s);
    for(i=0; i<n; i++)
       x[i] = i;
    for(i=0; i<nslant; i++)
@@ -969,6 +979,7 @@ void create_aurora_base(const double *y, int n,
 
    double dx = ((double)(n-1))/(nw-1);
    p = (struct pq*) malloc(nw*sizeof(struct pq));
+   assert(p);
    double costheta = cos(theta);
    double sintheta = sin(theta);
    struct pq *pp = p;
@@ -1010,6 +1021,7 @@ void create_aurora_base(const double *y, int n,
    int lz = 1;
    m1 = (pp->x - pmin)/d;
    aurora_t *pz = (aurora_t*)malloc(lz*sizeof(aurora_t));
+   assert(pz);
    pz[0].y = pp->y;
    pz[0].x = pp->x;
 
@@ -1024,7 +1036,7 @@ void create_aurora_base(const double *y, int n,
       {
 	 lz += nw + abs(m-m1);
 	 pz = (aurora_t*)realloc(pz,lz*sizeof(aurora_t));
-	 REALLOC_CHECK(pz);
+	 assert(pz);
       }
 
       int j;
@@ -1051,6 +1063,7 @@ void create_aurora_base(const double *y, int n,
    }
    *nz = k;
    *z = (aurora_t*)realloc(pz,k*sizeof(aurora_t));
+   assert(*z);
    gsl_spline_free (spline);
    gsl_interp_accel_free (acc);
    gsl_spline_free (splines);

@@ -1,23 +1,23 @@
 /* 
- -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+   -copyright-
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 #include <stdio.h>
 #include <string.h>
@@ -71,9 +71,11 @@ void paintit(XImage *img, long int color)
 static void strrevert(char*s, size_t l)
 {
    assert(l>0);
+   assert(s);
    size_t n = strlen(s)/l;
    size_t i;
    char *c = (char *)malloc(l*sizeof(*c));
+   assert(c);
    char *a = s;
    char *b = s+strlen(s)-l;
    for (i=0; i<n/2; i++)
@@ -102,6 +104,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
    lines = height+ncolors+1;
    assert(lines>0);
    idata = (char **)malloc(lines*sizeof(*idata));
+   assert(idata);
    for (i=0; i<lines; i++)
       idata[i] = strdup(data[i]);
    if(flop)
@@ -167,7 +170,10 @@ Region regionfromxpm(const char **data, int flop, float scale)
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    // find color "None":
    int i;
-   char *code = (char *)"";
+   char *code = (char*)malloc(sizeof(char));
+   assert(code);
+   code[0] = 0;
+
    int offset = nc + 1;
    for(i=1; i<=nc; i++)
    {
@@ -177,6 +183,7 @@ Region regionfromxpm(const char **data, int flop, float scale)
       P("%s\n",s);
       if(!strcasecmp(s,"None"))
       {
+	 free(code);
 	 code = strndup(data[i],n);
 	 break;
       }
@@ -185,10 +192,12 @@ Region regionfromxpm(const char **data, int flop, float scale)
    rect.width = 1;
    rect.height = 1;
    int y;
+   assert(code);
    for (y=0; y<h; y++)
    {
       int x;
       char*s = strdup(data[y+offset]);
+      assert(s);
       if(flop)
 	 strrevert(s,n);
       for(x=0; x<w; x++)
@@ -269,6 +278,7 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
       bits[i] = 0;
 
    char *code = (char *)malloc(sizeof(char)*cpp);
+   assert(code);
    for (i=0; i<cpp; i++)
       code[i] = ' ';
 
@@ -287,6 +297,7 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
 	 }
       }
    }
+   assert(code);
    int y;
    unsigned char c = 0;
    int j = 0;
@@ -365,11 +376,13 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
    sscanf(data[0],"%*d %d",&n);
    assert(n+3>0);
    *out = (char**)malloc(sizeof(char *)*(n+3));
+   assert(*out);
    char **x = *out;
    int j;
    for (j=0; j<2; j++)
       x[j] = strdup(data[j]);
    x[2] = (char *)malloc(5+strlen(color));
+   assert(x[2]);
    x[2][0] = '\0';
    strcat(x[2],". c ");
    strcat(x[2],color);

@@ -1,23 +1,23 @@
 #!/bin/sh
 # -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 debroot=../xsnow-debian
 deb=$debroot/debian
 
@@ -29,9 +29,7 @@ rm -f configure
 # Create make.inc for the Pixmaps folder
 (
 cd src/Pixmaps
-echo -n "# -copyright" > make.inc
-echo "-" >> make.inc
-echo "EXTRA_DIST = \\" >> make.inc
+echo "EXTRA_DIST = \\" > make.inc
 echo "make.inc \\" >> make.inc
 ls *.xpm *.xbm *.svg | sed 's/$/ \\/' | sed '$s/\\//' >> make.inc
 )
@@ -47,7 +45,7 @@ date +%s > bootdate
 
 autoreconf -fvi || exit 1
 (
-echo removing po/*.gmo end po/*.po
+echo removing po/*.gmo and po/*.po
 rm -f po/*.gmo po/*.po
 echo "Copying pofiles/*.po to po/"
 cp pofiles/*.po po
@@ -66,7 +64,7 @@ echo
 if [ -d $deb ] ; then
    rm -rf $deb/tests
    mkdir -p $deb/tests                                                 || exit 1
-   cp src/test1.sh src/test2.sh $deb/tests                                 || exit 1
+   cp src/test1.sh src/test2.sh $deb/tests                             || exit 1
    echo "Tests:" > $deb/tests/control                                  || exit 1
    for f in $deb/tests/test?.sh ; do
       echo "     `basename $f`" >> $deb/tests/control                  || exit 1

@@ -1,23 +1,23 @@
 /* 
  -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 
 #include <pthread.h>
@@ -362,15 +362,15 @@ int HandleFlags(int argc, char*argv[])
 static void makeflagsfile()
 {
    if (FlagsFile != NULL || FlagsFileAvailable == 0) return;
-   char *h = getenv("HOME");
-   if (h == NULL)
+   if (getenv("HOME") == NULL)
    {
       FlagsFileAvailable = 0;
       printf("Warning: cannot create or read $HOME/%s\n",FLAGSFILE);
       return;
    }
-   FlagsFile = strdup(h);
-   FlagsFile = (char *)realloc (FlagsFile,strlen(FlagsFile) + 1 + strlen(FLAGSFILE) + 1);
+   FlagsFile = (char *)malloc(sizeof(char)*(strlen(getenv("HOME")) + 1 + strlen(FLAGSFILE) + 1));
+   assert(FlagsFile);
+   strcpy(FlagsFile,getenv("HOME"));
    strcat(FlagsFile,"/");
    strcat(FlagsFile,FLAGSFILE);
    P("FlagsFile: %s\n",FlagsFile);
@@ -569,6 +569,7 @@ void write_button_location(char *x,FILE *f)
    const char *prefix = "id-";
    char *id;
    id = malloc(strlen(x)+strlen(prefix)+1);
+   assert(id);
    strcpy(id,prefix);
    strcat(id,x);
    P("write_button_location: %s %s\n",x,id);
@@ -576,8 +577,10 @@ void write_button_location(char *x,FILE *f)
    GtkWidget* widget = GTK_WIDGET(gtk_builder_get_object(builder,id));
 
    if (widget == NULL)
+   {
+      free(id);
       return;
-
+   }
 
    GtkAllocation alloc;
    gtk_widget_get_allocation(widget, &alloc);
@@ -586,8 +589,13 @@ void write_button_location(char *x,FILE *f)
    gboolean rc = gtk_widget_translate_coordinates(widget, 
 	 gtk_widget_get_toplevel(widget), 0, 0, &wx, &wy);
    P("wxy: %s %d %d %d %d %d\n",x,rc,wx,wy,alloc.width,alloc.height);
+
    if (!rc) 
+   {
+      free(id);
       return;
+   }
+
    GtkWindow *hauptfenster = GTK_WINDOW(gtk_builder_get_object(builder,"hauptfenster"));
    GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(hauptfenster));
    Window x11_window = gdk_x11_window_get_xid(gdkwin);
@@ -597,6 +605,8 @@ void write_button_location(char *x,FILE *f)
    XWindowAttributes xwa;
    XGetWindowAttributes(global.display, x11_window, &xwa );
    fprintf(f,"%s %d %d\n",id,xx-xwa.x+wx+alloc.width/2,yy-xwa.y+wy+alloc.height/2);
+
+   free(id);
 }
 
 #endif

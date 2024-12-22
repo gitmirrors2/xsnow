@@ -1,23 +1,23 @@
 /* 
  -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
  *
  */
 #include <pthread.h>
@@ -34,6 +34,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_sort.h>
+#include <assert.h>
 
 #include "xsnow-constants.h"
 
@@ -287,6 +288,8 @@ void CreateDesh(FallenSnow *p)
 
    double *x = (double *)malloc(w*sizeof(double));
    double *y = (double *)malloc(w*sizeof(double));
+   assert(x);
+   assert(y);
    for (i=0; i<w; i++)
       x[i] = i;
    spline_interpol(splinex, N, spliney, x, w, y);
@@ -314,6 +317,7 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    if(w<3) return;  // too narrow windows results in complications with regard to 
 		    //                  computing splines etc.
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
+   assert(p);
    p->win        = *win;
    p->x          = x;
    p->y          = y;
@@ -324,7 +328,9 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    p->prevw      = 10;
    p->prevh      = 10;
    p->acth       = (short int *)malloc(sizeof(*(p->acth))*w);
+   assert(p->acth);
    p->desh       = (short int *)malloc(sizeof(*(p->desh))*w);
+   assert(p->desh);
    p->surface    = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
    //p->surface1   = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
    p->surface1   = cairo_surface_create_similar (p->surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
@@ -570,6 +576,8 @@ void CreateSurfaceFromFallen(FallenSnow *f)
 
       double *av = (double *)malloc(nav*sizeof(double));
       double *x  = (double *)malloc(nav*sizeof(double));
+      assert(av);
+      assert(x);
 
       int i;
       for (i=0; i<nav-3; i++)
@@ -844,6 +852,7 @@ void InitFallenSnow()
       PopFallenSnow(&global.FsnowFirst);
    // create fallensnow on bottom of screen:
    WinInfo *NullWindow = (WinInfo *)malloc(sizeof(WinInfo));
+   assert(NullWindow);
    memset(NullWindow,0,sizeof(WinInfo));
 
    PushFallenSnow(&global.FsnowFirst, NullWindow, 0, global.SnowWinHeight, global.SnowWinWidth, global.MaxScrSnowDepth);
@@ -915,6 +924,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    short int *old;
    // old will contain the acth values, corresponding with x-1..x+w (including)
    old = (short int *)malloc(sizeof(*old)*(w+2));
+   assert(old);
    for (i=imin-1; i<=imax; i++) 
    {
       if (i < 0) 

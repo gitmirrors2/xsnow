@@ -1,23 +1,23 @@
 /* 
  -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 
 /* How to implement a new button
@@ -561,6 +561,7 @@ static void report_tree_type(int p, gint active)
 	    a[i] = -1;
    }
    int *b = (int *)malloc(sizeof(*b)*n);
+   assert(b);
    int i,m=0;
    for(i=0; i<n; i++)
    {
@@ -869,8 +870,9 @@ void ui_set_celestials_header(const char *text)
       return;
    GtkWidget *celestials_header = GTK_WIDGET(gtk_builder_get_object(builder,"celestials-header")); 
    char *a = strdup(gtk_label_get_text(GTK_LABEL(celestials_header)));
+   assert(a);
    a = (char *) realloc(a,strlen(a)+2+strlen(text));
-   REALLOC_CHECK(a);
+   assert(a);
    strcat(a,"\n");
    strcat(a,text);
    my_gtk_label_set_text(GTK_LABEL(celestials_header),a);
@@ -1198,6 +1200,7 @@ void ui()
    {
       snprintf(sbuffer,nsbuffer,_("monitor %d"),i);
       s = (char*) realloc(s,p+1+strlen(sbuffer));
+      assert(s);
       strcpy(&s[p],sbuffer);
       gtk_combo_box_text_append_text(ScreenButton,&s[p]);
       p += 1+strlen(sbuffer);
@@ -1270,6 +1273,8 @@ void ui()
    }
 
    global.builder = builder;
+   if(s)
+      free(s);
 }
 
 // Set the style provider for the widgets

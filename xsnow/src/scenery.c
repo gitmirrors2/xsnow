@@ -1,23 +1,23 @@
 /* 
  -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 
 #define DEFAULTTREETYPE 2
@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
+#include <assert.h>
 
 #include "xsnow-constants.h"
 
@@ -260,6 +261,7 @@ int do_initbaum(void *d)
       {
 	 ntemp = 1+MAXTREETYPE;
 	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
+	 assert(tmptreetype);
 	 int i;
 	 for (i=0; i<ntemp; i++)
 	    tmptreetype[i] = i;
@@ -269,6 +271,7 @@ int do_initbaum(void *d)
       {
 	 ntemp = MAXTREETYPE-1;
 	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
+	 assert(tmptreetype);
 	 int i;
 	 for (i=0; i<ntemp; i++)
 	    tmptreetype[i] = i+1;
@@ -359,6 +362,7 @@ int do_initbaum(void *d)
       int flop = (drand48()>0.5);
 
       Treeinfo *tree = (Treeinfo *)malloc(sizeof(Treeinfo));
+      assert(tree);
       tree->x     = x;
       tree->y     = y;
       tree->w     = w;
@@ -496,11 +500,16 @@ void ReInitTree0()
    int i;
    int n = TreeHeight[0]+3;
    char **xpmtmp = (char **)malloc(n*sizeof(char *));
+   assert(xpmtmp);
    int j;
    for (j=0; j<2; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
-   xpmtmp[2] = strdup(". c ");
-   xpmtmp[2] = (char *)realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
+   //xpmtmp[2] = strdup(". c ");
+   //xpmtmp[2] = (char *)realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
+#define COLORPREFIX ". c "
+   xpmtmp[2] = (char *)malloc(sizeof(COLORPREFIX)+strlen(Flags.TreeColor)+1);
+   assert(xpmtmp[2]);
+   strcpy(xpmtmp[2],COLORPREFIX);
    strcat(xpmtmp[2],Flags.TreeColor);
    for(j=3; j<n; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);

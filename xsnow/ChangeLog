@@ -1,3 +1,16 @@
+version 3.8.3
+	01: with the exception of xdo.c:
+	    make 'gcc-14 -fanalyzer -O2 -Wno-analyzer-imprecise-fp-arithmetic' happy
+
+version 3.8.2
+	01: po/Makevars: disable changing .po and/or .pot files by
+	      po/Makefile.in.in
+	    configure.ac: Add flag --mode="a+rwX" to tar replacement to get reproducible 
+	      build.
+	    snow.c: fix a real bug: first EraseSnowFlake1(flake) and then
+	      DelFlake(flake), and not the other way around.
+	    main.c: do not printf() in sighandler
+
 version 3.8.1
 	01: xpm2cairo-gdk.c: use xpm2gdk() as replacement for deprecated 
 	    gdk_pixbuf_new_from_xpm_data().
@@ -581,6 +594,7 @@ version 3.0.10
 	8:next to the 7 archaic flakes, generate random flakes
 	  changed the addcopyright.sh script to only trigger on
 	  the first -copyright- line
+#-endcopyright-
 	9:some code clean up
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()

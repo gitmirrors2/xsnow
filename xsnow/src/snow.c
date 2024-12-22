@@ -1,23 +1,23 @@
 /* 
  -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
 */
 
 #include <pthread.h>
@@ -96,6 +96,7 @@ void snow_init()
 
 
    snowPix       = (SnowMap          *)malloc(MaxFlakeTypes*sizeof(SnowMap));
+   assert(snowPix);
 
    P("MaxFlakeTypes: %d\n",MaxFlakeTypes);
 
@@ -299,8 +300,8 @@ int do_UpdateSnowFlake(Snow *flake)
    if ((flake->freeze || flake->fluff)  && global.RemoveFluff)
    {
       P("removefluff\n");
-      DelFlake(flake);
       EraseSnowFlake1(flake);
+      DelFlake(flake);
       return FALSE;
    }
    double FlakesDT = time_snowflakes;
@@ -310,8 +311,8 @@ int do_UpdateSnowFlake(Snow *flake)
    // handle fluff and KillFlakes
    if (KillFlakes || (flake->fluff && flake->flufftimer > flake->flufftime))
    {
-      DelFlake(flake);
       EraseSnowFlake1(flake);
+      DelFlake(flake);
       return FALSE;
    }
    if (flake->fluff)
@@ -567,6 +568,7 @@ int do_UpdateSnowFlake(Snow *flake)
 Snow *MakeFlake(int type)
 {
    Snow *flake = (Snow *)malloc(sizeof(Snow)); 
+   assert(flake);
    global.FlakeCount++; 
    if (type < 0)
    {
@@ -695,6 +697,8 @@ void genxpmflake(char ***xpm, int w, int h)
 
    x = (float *)malloc(nmax*sizeof(float));
    y = (float *)malloc(nmax*sizeof(float));
+   assert(x);
+   assert(y);
 
    int i,j;
    float w2 = 0.5*w;
@@ -733,6 +737,8 @@ void genxpmflake(char ***xpm, int w, int h)
    float *xa, *ya;
    xa = (float *)malloc(n*sizeof(float));
    ya = (float *)malloc(n*sizeof(float));
+   assert(xa);
+   assert(ya);
 
 
    for (i=0; i<n; i++)
@@ -787,6 +793,7 @@ void genxpmflake(char ***xpm, int w, int h)
 
    P("allocating %d\n",(nh+3)*sizeof(char*));
    *xpm = (char **)malloc((nh+3)*sizeof(char*));
+   assert(*xpm);
    char **X = *xpm;
 
    X[0] = (char *)malloc(80*sizeof(char));
@@ -800,7 +807,10 @@ void genxpmflake(char ***xpm, int w, int h)
    P("allocating %d\n",nw+1);
    assert(nw>=0);
    for (i=0; i<nh; i++)
+   {
       X[i+offset] = (char *) malloc((nw+1)*sizeof(char));
+      assert(X[i+offset]);
+   }
 
    for (i=0; i<nh; i++)
    {
@@ -847,8 +857,12 @@ void add_random_flakes(int n)
    {
       int w,h;
       int m = Flags.SnowSize;
+      //w = m+m*drand48();
+      //h = m+m*drand48();
+
       w = m+m*drand48();
       h = m+m*drand48();
+
       genxpmflake(&x[i+NFlakeTypesVintage],w,h);
    }
    MaxFlakeTypes   = n + NFlakeTypesVintage;

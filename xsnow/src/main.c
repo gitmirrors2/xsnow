@@ -1,23 +1,23 @@
 /* 
- -copyright-
-#-# 
-#-# xsnow: let it snow on your desktop
-#-# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#-# 	      2019,2020,2021,2022,2023,2024 Willem Vermin
-#-# 
-#-# This program is free software: you can redistribute it and/or modify
-#-# it under the terms of the GNU General Public License as published by
-#-# the Free Software Foundation, either version 3 of the License, or
-#-# (at your option) any later version.
-#-# 
-#-# This program is distributed in the hope that it will be useful,
-#-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-#-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#-# GNU General Public License for more details.
-#-# 
-#-# You should have received a copy of the GNU General Public License
-#-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-# 
+   -copyright-
+# xsnow: let it snow on your desktop
+# Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
+#              2019,2020,2021,2022,2023,2024 Willem Vermin
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+#-endcopyright-
  *
  */
 /*
@@ -60,6 +60,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include "mygettext.h"
 
 #include "xsnow-constants.h"
@@ -170,6 +171,7 @@ static int do_display_dimensions(void *);
 static int do_drawit(void*);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
+static volatile int signal_caught = 0;
 /**********************************************************************************************/
 
 /* About some technicalities of this program
@@ -392,6 +394,7 @@ int main_c(int argc, char *argv[])
    //   -lang c
 
    Argv = (char**) malloc((argc+1)*sizeof(char**));
+   assert(Argv);
    Argc = 0;
    for (i=0; i<argc; i++)
    {
@@ -402,6 +405,7 @@ int main_c(int argc, char *argv[])
    }
    Argv[Argc] = NULL;
    GetDesktopSession();
+   assert(global.DesktopSession);
    if(!strncasecmp(global.DesktopSession,"bspwm",5))
    {
       printf(_("For optimal resuts, add to your %s:\n"),"bspwmrc");
@@ -590,7 +594,7 @@ int main_c(int argc, char *argv[])
 
    if (!Flags.NoConfig)
       global.time_to_write_flags = TRUE;
-      //WriteFlags(1);
+   //WriteFlags(1);
 
    P("Entering main loop\n");
    // main loop
@@ -1028,6 +1032,12 @@ int do_ui_check(void *d)
 
 int do_write_flags(void *d)
 {
+   if (signal_caught)
+   {
+      printf("xsnow: caught signal %d\n",signal_caught);
+      fflush(stdout);
+      signal_caught = 0;
+   }
    const int mc = 0;
    // if one should wait a little longer before calling WriteFlags()
    // one could set mc to 1, 2, ...
@@ -1196,9 +1206,11 @@ int do_testing(void *d)
 
 void SigHandler(int signum)
 {
+   signal_caught = signum;
    if (signum == SIGUSR1)
    {
-      I("Caught SIGUSR1\n");
+      // Forbidden: printf in sighandler
+      //I("Caught SIGUSR1\n");
       global.time_to_write_flags = TRUE;
       return;
    }
