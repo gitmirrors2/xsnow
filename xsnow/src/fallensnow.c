@@ -64,6 +64,7 @@ static void  *do_fallen(void *d);
 static int    lock_swap(void);
 static int    unlock_swap(void);
 static void   check_fallen(void);
+static void   compute_mixed_color(GdkRGBA *color);
 
 // pop first element
 static int    PopFallenSnow(FallenSnow **list);
@@ -100,8 +101,14 @@ void fallensnow_draw(cairo_t *cr)
 {
    if (NOTACTIVE)
       return;
-
    lock_swap();
+
+   // To avoid vertical line between blob and fallensnow when using transparency:
+   if (Flags.Transparency)
+      cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+   else
+      cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
    {
@@ -112,6 +119,22 @@ void fallensnow_draw(cairo_t *cr)
 	 P("fallensnow_draw: x:%d y:%d\n",fsnow->x,fsnow->y);
 	 cairo_set_source_surface (cr, fsnow->surface, fsnow->x, fsnow->y-fsnow->h);
 	 my_cairo_paint_with_alpha(cr,ALPHA);
+	 if (fsnow->win.id)
+	 {
+	    // draw half circle left and right (blobs)
+	    GdkRGBA color;
+	    int w = cairo_image_surface_get_width(fsnow->surface);
+	    P("acth; %d %d\n",fsnow->acth[0],fsnow->acth[1]);
+	    compute_mixed_color(&color);
+	    cairo_set_source_rgba(cr, color.red, color.green, color.blue, ALPHA);
+	    cairo_arc(cr,fsnow->x,fsnow->y,fsnow->firsth,M_PI/2,3*M_PI/2);
+	    cairo_close_path(cr);
+	    cairo_fill(cr);
+	    cairo_arc(cr,fsnow->x+w-1,fsnow->y,fsnow->lasth,-M_PI/2,M_PI/2);
+	    cairo_close_path(cr);
+	    cairo_fill(cr);
+	 }
+
 	 fsnow->prevx = fsnow->x;
 	 fsnow->prevy = fsnow->y-fsnow->h+1;
 	 fsnow->prevw = cairo_image_surface_get_width(fsnow->surface);
@@ -248,63 +271,56 @@ void swapsurfaces()
 
 void drawquartcircle(int n, short int *y)  // nb: dimension of y > n+1
 {
-   int i;
    float n2 = n*n;
-   for(i=0; i<=n; i++)
+   for (int i=0; i<=n; i++)
       y[i] = lrintf(sqrtf(n2 - i*i));
 }
 
 void CreateDesh(FallenSnow *p)
 {
    // threads: locking by caller
-   int i;
+   P("CreateDesh %d %p\n",global.counter++,(void*)p);
    int w           = p->w;
    int h           = p->h;
-   int id          = p->win.id;
    short int *desh = p->desh;
 #define N 6
    double splinex[N];
    double spliney[N];
 
    randomuniqarray(splinex,N,0.0000001,NULL);
-   for (i=0; i<N; i++)
+   for (int i=0; i<N; i++)
    {
+      float min = 0.3;
+      float max = 1.0;
       splinex[i] *= (w-1);
-      spliney[i] = drand48();
+      spliney[i] = min + (max - min)*drand48();
    }
 
    splinex[0] = 0;
    splinex[N-1] = w-1;
-   if(id == 0) // bottom
-   {
-      spliney[0]   = 1.0;
-      spliney[N-1] = 1.0;
-   }
-   else
-   {
-      spliney[0]   = 0;
-      spliney[N-1] = 0;
-   }
 
    double *x = (double *)malloc(w*sizeof(double));
    double *y = (double *)malloc(w*sizeof(double));
    assert(x);
    assert(y);
-   for (i=0; i<w; i++)
+   for (int i=0; i<w; i++)
       x[i] = i;
    spline_interpol(splinex, N, spliney, x, w, y);
-   for (i=0; i<w; i++)
+   for (int i=0; i<w; i++)
    {
       desh[i] = h*y[i];
       if (desh[i] < 2)
 	 desh[i] = 2;
    }
+
    free(x);
    free(y);
 
 #if 0
+   int id          = p->win.id;
    FILE *ff = fopen("/tmp/desh","w");
-   for (i=0; i<w; i++)
+   fprintf(ff,"id: %d\n",id);
+   for (int i=0; i<w; i++)
       fprintf(ff,"%d %d\n",i,desh[i]);
    fclose(ff);
 #endif
@@ -327,6 +343,8 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    p->prevy      = 0;
    p->prevw      = 10;
    p->prevh      = 10;
+   p->firsth     = 0;
+   p->lasth      = 0;
    p->acth       = (short int *)malloc(sizeof(*(p->acth))*w);
    assert(p->acth);
    p->desh       = (short int *)malloc(sizeof(*(p->desh))*w);
@@ -335,25 +353,25 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
    //p->surface1   = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,w,h);
    p->surface1   = cairo_surface_create_similar (p->surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
 
-   int l = 0,i;
-   for (i=0; i<w; i++)
+   int l = 0;
+   for (int i=0; i<w; i++)
    {
-      p->acth[i] = 0; // specify l to get sawtooth effect
+      p->acth[i] = 0;
       p->desh[i] = h;
       l++;
       if (l > h)
 	 l = 0;
    }
 
+   P("PushFallenSnow\n");
    CreateDesh(p);
 
    (void)drawquartcircle;
 #if 0
    if (w > h && win->id != 0)
    {
-      int i;
       drawquartcircle(h,&(p->desh[w-h-1]));
-      for(i=0; i<=h; i++)
+      for (int i=0; i<=h; i++)
 	 p->desh[i] = p->desh[w-1-i];
    }
 #endif
@@ -373,6 +391,8 @@ int do_change_deshes(void *dummy)
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
    {
+      if (drand48() < 0.7)
+	 continue;
       CreateDesh(fsnow);
       fsnow = fsnow->next;
    }
@@ -387,9 +407,8 @@ int do_adjust_deshes(void *dummy)
    FallenSnow *fsnow = global.FsnowFirst;
    while(fsnow)
    {
-      int i;
       int adjustments = 0;
-      for(i=0; i<fsnow->w; i++)
+      for (int i=0; i<fsnow->w; i++)
       {
 	 int d = fsnow->acth[i] - fsnow->desh[i];
 	 if (d > 0)
@@ -491,8 +510,7 @@ void PrintFallenSnow(FallenSnow *list)
 
    while (fallen != NULL) {
       int sumact = 0;
-      int i;
-      for(i=0; i<fallen->w; i++)
+      for (int i=0; i<fallen->w; i++)
 	 sumact += fallen->acth[i];
       printf("id:%#10lx ws:%4ld x:%6d y:%6d w:%6d sty:%2d hid:%2d sum:%8d\n", fallen->win.id, fallen->win.ws,
 	    fallen->x, fallen->y, fallen->w, fallen->win.sticky, fallen->win.hidden, sumact);
@@ -503,12 +521,12 @@ void PrintFallenSnow(FallenSnow *list)
 void CleanFallenArea(FallenSnow *fsnow,int xstart,int w)
 {
    // threads: locking by caller
-   if(global.IsDouble)
+   if(global.IsDouble)  // so this one is only used in vintage desktops
       return;
-   P("CleanFallenArea %d %d\n",counter++,global.IsDouble);
+   P("CleanFallenArea %d %d %d %d\n",global.counter++,global.IsDouble,xstart,w);
    int x = fsnow->prevx;
    int y = fsnow->prevy;
-   if (!global.IsDouble)
+   if (!global.IsDouble) // TODO: make sure that not too much is erased
       myXClearArea(global.display, global.SnowWin, x+xstart, y, 
 	    w, fsnow->h+global.MaxSnowFlakeHeight, global.xxposures);
 }
@@ -531,6 +549,18 @@ void CleanFallen(Window id)
    }
 }
 
+void compute_mixed_color(GdkRGBA *color)
+{
+   if (Flags.UseColor2)
+   {
+      char newcolor[8];
+      mixcolors(Flags.SnowColor, Flags.SnowColor2, 0.5, &newcolor[0]);
+      gdk_rgba_parse(color,newcolor);
+   }
+   else
+      gdk_rgba_parse(color,Flags.SnowColor);
+}
+
 void CreateSurfaceFromFallen(FallenSnow *f)
 {
    // threads: locking by caller
@@ -543,19 +573,17 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    int h            = f->h;
    int w            = f->w;
    short int *acth  = f->acth;
-   int id           = f->win.id;
 
-   cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+   // To avoid vertical line between blob and fallensnow when using transparency:
+   if (Flags.Transparency)
+      cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+   else
+      cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+
    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 
-   if (Flags.UseColor2)
-   {
-      char newcolor[8];
-      mixcolors(Flags.SnowColor, Flags.SnowColor2, 0.5, &newcolor[0]);
-      gdk_rgba_parse(&color,newcolor);
-   }
-   else
-      gdk_rgba_parse(&color,Flags.SnowColor);
+   compute_mixed_color(&color);
+
    cairo_set_source_rgb(cr,color.red, color.green, color.blue);
 
    {
@@ -579,68 +607,51 @@ void CreateSurfaceFromFallen(FallenSnow *f)
       assert(av);
       assert(x);
 
-      int i;
-      for (i=0; i<nav-3; i++)
+      for (int i=0; i<nav-3; i++)
       {
-	 int j;
 	 double s = 0;
-	 for (j=0; j<m; j++)
+	 for (int j=0; j<m; j++)
 	    s += acth[m*i+j];
 	 av[i+1] = s/m;
 	 x[i+1]  = m*i + 0.5*m;
       }
       x[0]  = 0;
-      if(id == 0)
-	 av[0] = av[1];
-      else
-	 av[0] = 0;
+      av[0] = av[1];
 
       int k    = nav - 3;
       int mk   = m*k;
       double s = 0;
-      for (i=mk; i<w; i++)
+      for (int i=mk; i<w; i++)
 	 s += acth[i];
 
       av[k+1] = s/(w-mk);
       x[k+1]  = mk + 0.5*(w-mk-1);
 
-      if(id == 0)
-	 av[nav-1] = av[nav-2];
-      else
-	 av[nav-1] = 0;
       x[nav-1]  = w-1;
+      av[nav-1] = av[nav-2];
 
       gsl_interp_accel *acc = gsl_interp_accel_alloc();
       gsl_spline *spline    = gsl_spline_alloc(SPLINE_INTERP, nav);
       gsl_spline_init(spline,x,av,nav);
 
+      // fill in first and last heights, needed for drwaing blobs
+      f->firsth = gsl_spline_eval(spline,0  ,acc);
+      f->lasth  = gsl_spline_eval(spline,w-1,acc);
+
       cairo_set_line_width(cr,1);
 
-      cairo_set_antialias(cr,CAIRO_ANTIALIAS_DEFAULT);
-
-      if(0)
-      {
-	 cairo_move_to(cr,x[0],h-av[0]);
-	 for(i=0; i<w; i++)
-	    cairo_line_to(cr,i,h-gsl_spline_eval(spline, i, acc));
-	 cairo_line_to(cr,w-1,h);
-	 cairo_line_to(cr,0,h);
-	 cairo_close_path(cr);
-	 cairo_stroke_preserve(cr);
-	 cairo_fill(cr);
-      }
-      else
       {
 	 // draw fallensnow: a move_to, followed by line_to's, followed by close_path and fill.
 	 // to prevent a permanent bottom snow-line, even if there has no snow fallen on
 	 // certain parts, only handle regions where snow has been fallen.
+
 	 enum{searching, drawing};
 	 int state = searching; // searching for acth[] > 0
-	 int i;
 	 int startpos;
-	 for (i=0; i<w; ++i)
+	 for (int i=0; i<w; ++i)
 	 {
 	    int val = gsl_spline_eval(spline,i,acc);
+
 	    switch(state)
 	    {
 	       case searching:
@@ -668,13 +679,11 @@ void CreateSurfaceFromFallen(FallenSnow *f)
 	    }
 	 }
       }
-      if(0)
+      if(0) // draw averages
       {
-	 // draw averages
-	 int i;
 	 cairo_save(cr);
 	 cairo_set_source_rgba(cr,1,0,0,1);
-	 for (i=0; i<nav; i++)
+	 for (int i=0; i<nav; i++)
 	    cairo_rectangle(cr,x[i],h-av[i]-4,4,4);
 	 cairo_fill(cr);
 	 cairo_restore(cr);
@@ -690,11 +699,10 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    {
       // draw max height of fallensnow (using f->desh)
       cairo_save(cr);
-      int j;
 
       cairo_set_operator(cr,CAIRO_OPERATOR_OVER);
       cairo_set_source_rgba(cr,1,0,0,1);
-      for(j=0; j<w; j++)
+      for (int j=0; j<w; j++)
       {
 	 cairo_rectangle(cr,j,h-f->desh[j],1,1);
       }
@@ -716,13 +724,36 @@ void DrawFallen(FallenSnow *fsnow)
 	 // do not interfere with Santa
 	 if(!Flags.NoSanta)
 	 {
+	    {
+	       // generate snow if Santa touches top of window
+	       int in = XRectInRegion(global.SantaRegion, fsnow->x, fsnow->y - fsnow->h,
+		     fsnow->w, fsnow->h);
+	       if (in == RectangleIn || in == RectanglePart)
+	       {
+		  int x = global.SantaX - fsnow->x;
+		  int w = global.SantaWidth;
+		  if (x < 0)
+		  {
+		     w += x;
+		     x = 0;
+		  }
+
+		  P("generate flakes %d %d %d\n",global.counter++,x,w);
+		  GenerateFlakesFromFallen(fsnow, x, w, -100, 0.05);
+		  CleanFallenArea(fsnow,x,w);
+		  for (int i=0; i<fsnow->w; i++)
+		     if (i < x+w && i>=x)
+			fsnow->acth[i] = 0;
+	       }
+	    }
 	    int in = XRectInRegion(global.SantaPlowRegion, fsnow->x, fsnow->y - fsnow->h,
 		  fsnow->w, fsnow->h);
 	    if (in == RectangleIn || in == RectanglePart)
 	    {
+	       // generate snow for plouging Santa
 	       // determine front of Santa in fsnow
 	       int xfront;
-	       if (global.SantaDirection == 0)
+	       if (global.SantaDirection == 0)  // left to right
 		  xfront = global.SantaX+global.SantaWidth - fsnow->x;
 	       else
 		  xfront = global.SantaX                   - fsnow->x;
@@ -743,28 +774,26 @@ void DrawFallen(FallenSnow *fsnow)
 
 	       if (global.ActualSantaSpeed > 0)
 	       {
-		  if (global.SantaDirection == 0)
+		  if (global.SantaDirection == 0)  // left to right
 		  {
-		     GenerateFlakesFromFallen(fsnow,xfront,         clearing,vy);
+		     GenerateFlakesFromFallen(fsnow,xfront,         clearing,vy,0.15);
 		     CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
 		  }
 		  else
 		  {
-		     GenerateFlakesFromFallen(fsnow,xfront-clearing,clearing,vy);
+		     GenerateFlakesFromFallen(fsnow,xfront-clearing,clearing,vy,0.15);
 		     CleanFallenArea(fsnow,xback+clearing,global.SantaWidth+2*clearing);
 		  }
 	       }
 	       if(global.SantaDirection == 0)
 	       {
-		  int i;
-		  for (i=0; i<fsnow->w; i++)
+		  for (int i=0; i<fsnow->w; i++)
 		     if (i < xfront+clearing && i>=xback-clearing)
 			fsnow->acth[i] = 0;
 	       }
 	       else
 	       {
-		  int i;
-		  for (i=0; i<fsnow->w; i++)
+		  for (int i=0; i<fsnow->w; i++)
 		     if (i > xfront-clearing && i<=xback+clearing)
 			fsnow->acth[i] = 0;
 	       }
@@ -776,15 +805,14 @@ void DrawFallen(FallenSnow *fsnow)
       }
 }
 
-void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
+void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float amount)
 {
    // threads: locking by caller
-   P("GenerateFlakes %d %d %d %f\n",counter++,x,w,vy);
+   P("GenerateFlakes %d %d %d %f\n",global.counter++,x,w,vy);
    if (!Flags.BlowSnow || Flags.NoSnowFlakes)
       return;
    // animation of fallen fallen snow
    // x-values x..x+w are transformed in flakes, vertical speed vy
-   int i;
    int ifirst = x; 
    if (ifirst < 0) 
       ifirst = 0;
@@ -795,15 +823,14 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
       ilast = 0;
    if (ilast > fsnow->w) 
       ilast = fsnow->w;
-   P("ifirst ilast: %d %d %d %d\n",ifirst,ilast,w,w<global.MaxSnowFlakeWidth?w:global.MaxSnowFlakeWidth);
+   P("ifirst ilast: %d %d %d %d %d\n",global.counter++,ifirst,ilast,w,w<(int)global.MaxSnowFlakeWidth?w:(int)global.MaxSnowFlakeWidth);
    P("maxheight: %d maxw: %d\n",global.MaxSnowFlakeHeight,global.MaxSnowFlakeWidth);
-   for (i=ifirst; i<ilast; i+=1)
+   for (int i=ifirst; i<ilast; i+=1)
    {
-      int j;
-      for(j=0; j<fsnow->acth[i]; j++)
+      for (int j=0; j<fsnow->acth[i]; j++)
       {
-	 int k, kmax = BlowOff();
-	 for(k=0; k<kmax; k++)
+	 int kmax = BlowOff();
+	 for (int k=0; k<kmax; k++)
 	 {
 	    float p = 0;
 	    p = drand48();
@@ -812,7 +839,7 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy)
 	    // Otherwize, we go for more dramatic effects
 	    // But, it appeared that, if global.Trans==1, too much snow
 	    // is generated, choking the x server. 
-	    if (p < 0.15)
+	    if (p < amount)
 	    {
 	       Snow *flake   = MakeFlake(-1);
 	       flake->rx     = fsnow->x + i + 16*(drand48()-0.5);
@@ -867,16 +894,15 @@ void InitFallenSnow()
 void UpdateFallenSnowWithWind(FallenSnow *fsnow, int w, int h)
 {
    // threads: locking by caller
-   int i;
    int x = randint(fsnow->w - w);
-   for(i=x; i<x+w; i++)
+   for (int i=x; i<x+w; i++)
       if(fsnow->acth[i] > h)
       {
 	 // animation of blown off snow
 	 if (!Flags.NoWind && global.Wind != 0 && drand48() > 0.5)
 	 {
-	    int j, jmax = BlowOff();
-	    for (j=0; j< jmax; j++)
+	    int jmax = BlowOff();
+	    for (int j=0; j< jmax; j++)
 	    {
 	       Snow *flake       = MakeFlake(-1);
 	       flake->rx         = fsnow->x + i;
@@ -919,13 +945,13 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    if(imin < 0) imin = 0;
    int imax = x + w;
    if (imax > fsnow->w) imax = fsnow->w;
-   int i, k;
+   int k;
    k = 0;
    short int *old;
    // old will contain the acth values, corresponding with x-1..x+w (including)
    old = (short int *)malloc(sizeof(*old)*(w+2));
    assert(old);
-   for (i=imin-1; i<=imax; i++) 
+   for (int i=imin-1; i<=imax; i++) 
    {
       if (i < 0) 
 	 old[k++] = fsnow->acth[0];
@@ -943,7 +969,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    else
       add = 1;
    k = 1;  // old[1] corresponds with acth[0]
-   for (i=imin; i<imax; i++)
+   for (int i=imin; i<imax; i++)
    {
       if ((fsnow->desh[i] > old[k]) &&
 	    (old[k-1] >= old[k] || old[k+1] >= old[k]))
@@ -952,7 +978,7 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    }
    // old will contain the new acth values, corresponding with x-1..x+w (including)
    k = 0;
-   for (i=imin-1; i<=imax; i++) 
+   for (int i=imin-1; i<=imax; i++) 
    {
       if (i < 0) 
 	 old[k++] = fsnow->acth[0];
@@ -963,11 +989,10 @@ void UpdateFallenSnowPartial(FallenSnow *fsnow, int x, int w)
    }
    // and now some smoothing
    k = 1;
-   for (i=imin; i<imax; i++)
+   for (int i=imin; i<imax; i++)
    {
-      int j;
       int sum=0;
-      for (j=k-1; j<=k+1; j++)
+      for (int j=k-1; j<=k+1; j++)
 	 sum += old[j];
       fsnow->acth[i] = sum/3;
       k++;
@@ -999,8 +1024,7 @@ int IsVisibleFallen(FallenSnow *fsnow)
    }
    long ws = fsnow->win.ws;
 
-   int i;
-   for (i=0; i<global.NVisWorkSpaces; i++)
+   for (int i=0; i<global.NVisWorkSpaces; i++)
    {
       P("%d examining %d %ld %ld\n",global.counter++,i,ws,global.VisWorkSpaces[i]);
       if (global.VisWorkSpaces[i] == ws)

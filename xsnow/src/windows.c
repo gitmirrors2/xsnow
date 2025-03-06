@@ -80,8 +80,7 @@ int WorkspaceActive()
    // ah, so difficult ...
    if (Flags.AllWorkspaces)
       return 1;
-   int i;
-   for (i=0; i<global.NVisWorkSpaces; i++)
+   for (int i=0; i<global.NVisWorkSpaces; i++)
    {
       if (global.VisWorkSpaces[i] == global.ChosenWorkSpace)
 	 return 1;
@@ -181,8 +180,7 @@ int do_wupdate(void *dummy)
       goto end;
    }
 
-   int i;
-   for (i=0; i<NWindows; i++)
+   for (int i=0; i<NWindows; i++)
    {
       WinInfo *w = &Windows[i];
       P("SnowWinX SnowWinY: %d %d\n",global.SnowWinX,global.SnowWinY);
@@ -297,9 +295,8 @@ void DetermineVisualWorkspaces()
    xdo_map_window(global.xdo,ProbeWindow);
 
    global.NVisWorkSpaces = number;
-   int i;
    int prev = -SOMENUMBER;
-   for (i=0; i<number; i++)
+   for (int i=0; i<number; i++)
    {
       int x = info[i].x_org;
       int y = info[i].y_org;
@@ -350,10 +347,9 @@ void UpdateFallenSnowRegions()
    // threads: locking by caller
    WinInfo *w;
    FallenSnow *fsnow;
-   int i;
    // add fallensnow regions:
    w = Windows;
-   for (i=0; i<NWindows; i++)
+   for (int i=0; i<NWindows; i++)
    {
       //P("%d %#lx\n",i,w->id);
       {
@@ -420,7 +416,7 @@ void UpdateFallenSnowRegions()
 	   )
 	 {
 	    P("Gone...\n");
-	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
 
@@ -433,7 +429,7 @@ void UpdateFallenSnowRegions()
 	    P("%#lx is hidden %d\n",fsnow->win.id, global.counter++);
 	    if(global.DoCapella)
 	    {
-	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
 	       toremove[ntoremove++] = fsnow->win.id;
 	    }
 	    else
@@ -450,7 +446,7 @@ void UpdateFallenSnowRegions()
    // moved: move fallen area accordingly
    // resized: remove fallen area: add it to toremove
    w = Windows;
-   for(i=0; i<NWindows; i++)
+   for (int i=0; i<NWindows; i++)
    {
       fsnow = FindFallen(global.FsnowFirst,w->id);
       if (fsnow)
@@ -461,7 +457,7 @@ void UpdateFallenSnowRegions()
 	    {
 	       if (global.DoCapella)
 	       {
-		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
 		  toremove[ntoremove++] = fsnow->win.id;
 	       }
 	       else
@@ -477,14 +473,14 @@ void UpdateFallenSnowRegions()
 	 else
 	 {
 	    if(global.DoCapella)
-	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0);
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
       }
       w++;
    }
 
-   for (i=0; i<ntoremove; i++)
+   for (int i=0; i<ntoremove; i++)
    {
       CleanFallen(toremove[i]);
       RemoveFallenSnow(&global.FsnowFirst,toremove[i]);
@@ -528,8 +524,7 @@ int xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h)
       if(scr > number-1)
 	 scr = number-1;
 
-      int i;
-      for (i=0; i<number; i++)
+      for (int i=0; i<number; i++)
       {
 	 P("number: %d\n",info[i].screen_number);
 	 P("   x_org:  %d\n",info[i].x_org);
@@ -542,12 +537,11 @@ int xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h)
       {
 	 // set x,y to 0,0
 	 // set width and height to maximum values found
-	 int i;
 	 *x = 0;
 	 *y = 0;
 	 *w = 0;
 	 *h = 0;
-	 for (i=0; i<number; i++)
+	 for (int i=0; i<number; i++)
 	 {
 	    if (info[i].width > *w)
 	       *w = info[i].width;
@@ -657,11 +651,10 @@ void SetBackground()
 
    int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
    P("rowstride: %d\n",rowstride);
-   int i,j;
    int k = 0;
    if(is_little_endian())
-      for (i=0; i<h; i++)
-	 for(j=0; j<w; j++)
+      for (int i=0; i<h; i++)
+	 for (int j=0; j<w; j++)
 	 {
 	    guchar *p = &pixels[i*rowstride +j*n_channels];
 	    pixels1[k++] = p[2];
@@ -673,8 +666,8 @@ void SetBackground()
    {
       I("Big endian system, swapping bytes in background.\n");
       I("Let me know if this is not OK.\n");
-      for (i=0; i<h; i++)
-	 for(j=0; j<w; j++)
+      for (int i=0; i<h; i++)
+	 for (int j=0; j<w; j++)
 	 {
 	    guchar *p = &pixels[i*rowstride +j*n_channels];
 	    pixels1[k++] = 0xff;

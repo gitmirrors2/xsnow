@@ -54,7 +54,7 @@ static void   setSantaRegions(void);
 static int          CurrentSanta;
 static Pixmap       SantaMaskPixmap[PIXINANIMATION];
 static Pixmap       SantaPixmap[PIXINANIMATION];
-static Region       SantaRegion = 0;
+//static Region       SantaRegion = 0;
 static float        SantaSpeed;  
 static float        SantaXr;
 static float        SantaYr;
@@ -119,22 +119,21 @@ void Santa_erase(cairo_t *cr)
 void Santa_init()
 {
    P("Santa_init\n");
-   int i;
-   for (i=0; i<PIXINANIMATION; i++)
+   global.SantaRegion = 0;
+   for (int i=0; i<PIXINANIMATION; i++)
    {
       SantaPixmap[i]     = 0;
       SantaMaskPixmap[i] = 0;
    }
-   int j,k;
-   for (i=0; i<MAXSANTA+1; i++)
-      for(j=0; j<2; j++)
-	 for (k=0; k<PIXINANIMATION; k++)
+   for (int i=0; i<MAXSANTA+1; i++)
+      for (int j=0; j<2; j++)
+	 for (int k=0; k<PIXINANIMATION; k++)
 	 {
 	    Santa_surfaces[i][j][0][k] = NULL;
 	    Santa_surfaces[i][j][1][k] = NULL;
 	 }
 
-   SantaRegion            = XCreateRegion();
+   global.SantaRegion     = XCreateRegion();
    global.SantaPlowRegion = XCreateRegion();
    init_Santa_surfaces();
    SetSantaSizeSpeed();
@@ -150,10 +149,9 @@ void init_Santa_surfaces()
 {
    P("init_Santa_surfaces\n");
    GdkPixbuf *pixbuf;
-   int i,j,k;
-   for(i=0; i<MAXSANTA+1; i++)
-      for (j=0; j<2; j++)
-	 for (k=0; k<PIXINANIMATION; k++)
+   for (int i=0; i<MAXSANTA+1; i++)
+      for (int j=0; j<2; j++)
+	 for (int k=0; k<PIXINANIMATION; k++)
 	 {
 	    int w,h;
 	    sscanf(Santas[i][j][k][0],"%d %d",&w,&h);
@@ -189,7 +187,7 @@ void init_Santa_surfaces()
       "xsnow/pixmaps/santa3.xpm",
       "xsnow/pixmaps/santa4.xpm",
    };
-   for (i=0; i<PIXINANIMATION; i++)
+   for (int i=0; i<PIXINANIMATION; i++)
    {
       path[i] = NULL;
       FILE *f = HomeOpen(filenames[i],"r",&path[i]);
@@ -206,9 +204,9 @@ void init_Santa_surfaces()
 	 printf("Disabling menu.\n");
 	 Flags.NoMenu = 1;
 	 */
-      int rc,i;
+      int rc;
       char **santaxpm;
-      for (i=0; i<PIXINANIMATION; i++)
+      for (int i=0; i<PIXINANIMATION; i++)
       {
 	 rc = XpmReadFileToData(path[i],&santaxpm);
 	 if(rc == XpmSuccess)
@@ -372,7 +370,7 @@ int do_usanta(void *d)
       SantaYr = santayrmax;
 
    global.SantaY = lrintf(SantaYr);
-   XOffsetRegion(SantaRegion,            global.SantaX - oldx, global.SantaY - oldy);
+   XOffsetRegion(global.SantaRegion,     global.SantaX - oldx, global.SantaY - oldy);
    XOffsetRegion(global.SantaPlowRegion, global.SantaX - oldx, global.SantaY - oldy);
 
    RETURN;
@@ -428,9 +426,9 @@ void SantaVisible()
 void setSantaRegions()
 {
    P("setSantaRegions %d %d %d %d\n",global.SantaX,global.SantaY,global.SantaWidth,global.SantaHeight);
-   if(SantaRegion)
-      XDestroyRegion(SantaRegion);
-   SantaRegion = RegionCreateRectangle(
+   if(global.SantaRegion)
+      XDestroyRegion(global.SantaRegion);
+   global.SantaRegion = RegionCreateRectangle(
 	 global.SantaX,global.SantaY,global.SantaWidth,global.SantaHeight);
 
    if(global.SantaPlowRegion)

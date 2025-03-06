@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -52,6 +52,7 @@
 #define time_below_confirm        1.0    // time between check of 'confirm' button (after 'below' button)
 #define time_blowoff              0.50   // time between blow snow off windows 
 #define time_change_attr         60.0    // time between changing attraction point
+#define time_check_stop           1.0    // time between check on STOPFILE
 #define time_clean                1.00   // time between cleaning desktop
 #define time_desktop_type         2.0    // time between showing desktop type
 #define time_display_dimensions   0.5    // time between check of screen dimensions
@@ -83,7 +84,7 @@
 #define time_wind                 0.10   // time between starting or ending wind
 #define time_wupdate              0.20   // time between getting windows information
 
-#define time_change_bottom      300.0    // time between changing desired heights
+#define time_change_bottom      30.0    // time between changing desired heights
 #define time_adjust_bottom        (time_change_bottom/20)// time between adjusting height of bottom snow
 #define time_fallen               0.20   // time between recompute fallen snow surfaces
 #define time_snowflakes       (0.02 * global.cpufactor)  // time between updates of snowflakes positions etc
@@ -117,9 +118,11 @@ typedef struct _FallenSnow {
    int                 prevw,prevh;  // w,h of last draw
    short int          *acth;         // actual heights
    short int          *desh;         // desired heights
+   short int          firsth;        // first height to draw
+   short int          lasth;         // last height to draw
    struct _FallenSnow *next;         // pointer to next item
    cairo_surface_t    *surface;      // 
-   cairo_surface_t    *surface1;      // 
+   cairo_surface_t    *surface1;     // 
 } FallenSnow;
 
 typedef struct _MeteorMap {
@@ -195,6 +198,7 @@ extern struct _global
    double          cpufactor;
 
    float           ActualSantaSpeed;
+   Region          SantaRegion;
    Region          SantaPlowRegion;
    int             SantaHeight;
    int             SantaWidth;

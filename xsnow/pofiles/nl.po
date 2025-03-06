@@ -317,7 +317,7 @@ msgid ""
 "above."
 msgstr ""
 "Als alles in orde is, sneeuwt het nu op je bureaublad en vliegen er vogels. "
-"U wordt aangemoedigd om uw eigen voorkeuren te definiëren met behulp van de "
+"Stel je eigen voorkeuren in met behulp van de "
 "bovenstaande tabbladen."
 
 #: src/ui.glade:492
@@ -330,7 +330,7 @@ msgstr ""
 
 #: src/ui.glade:509
 msgid "In every tab you find the following rescue buttons:"
-msgstr "In elk tabblad vind je de volgende reddingsknoppen:"
+msgstr "In elk tabblad vind je de volgende buttons:"
 
 #: src/ui.glade:529
 msgid "<b>Defaults </b>"
@@ -355,7 +355,7 @@ msgstr "<b>Alles standaard </b>"
 #: src/ui.glade:628
 msgid "Set default preferences for all (except settings) tabs."
 msgstr ""
-"Standaardvoorkeuren instellen voor alle (behalve instellingen) tabbladen."
+"Standaardvoorkeuren instellen voor alle (behalve Instellingen) tabbladen."
 
 #: src/ui.glade:655
 msgid "<b>All vintage </b>"
@@ -363,7 +363,7 @@ msgstr "<b>Alles vintage </b>"
 
 #: src/ui.glade:670
 msgid "Set vintage preferences for all (except settings) tabs."
-msgstr "Stel vintage-voorkeuren in voor alle (behalve instellingen) tabbladen."
+msgstr "Stel vintage-voorkeuren in voor alle (behalve Instellingen) tabbladen."
 
 #: src/ui.glade:690 src/ui.glade:701 src/ui.glade:840 src/ui.glade:1045
 #: src/ui.glade:2870 src/ui.glade:2919 src/ui.glade:4688
@@ -396,7 +396,7 @@ msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flag: -defaults"
 msgstr ""
-"Standaardwaarden toepassen voor alle voorkeuren (behalve instellingen).\n"
+"Standaardwaarden toepassen voor alle voorkeuren (behalve Instellingen).\n"
 "Flag: -defaults"
 
 #: src/ui.glade:914
@@ -422,7 +422,7 @@ msgid ""
 "Use vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
 msgstr ""
-"Gebruik vintage waarden voor alle voorkeuren (behalve instellingen).\n"
+"Gebruik vintage waarden voor alle voorkeuren (behalve Instellingen).\n"
 "Flag: -vintage"
 
 #: src/ui.glade:949 src/ui.glade:1513 src/ui.glade:2441 src/ui.glade:3004
@@ -464,8 +464,8 @@ msgid ""
 "\"celestials\"."
 msgstr ""
 "Als het systeem te druk is, krijgen alle panelen deze kleur, in dat geval "
-"zou je wat instellingen kunnen aanpassen in \"snow\", \"birds\", "
-"\"settings\", of \"celestials\"."
+"zou je wat instellingen kunnen aanpassen in \"Sneeuw\", \"Vogels\", "
+"\"Instellingen\", of \"Hemel\"."
 
 #: src/ui.glade:1222
 msgid "Welcome"
@@ -599,7 +599,7 @@ msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flags: -defaults"
 msgstr ""
-"Standaardwaarden toepassen voor alle voorkeuren (behalve instellingen).\n"
+"Standaardwaarden toepassen voor alle voorkeuren (behalve Instellingen).\n"
 "Flags: -defaults"
 
 #: src/ui.glade:1632 src/ui.glade:3895
@@ -905,7 +905,7 @@ msgid ""
 "Leavy tree.\n"
 "Flags: -treetype 2 or: -treetype all"
 msgstr ""
-"Bladboom.\n"
+"Boom met bladeren.\n"
 "Flags: -treetype 2 or: -treetype all"
 
 #: src/ui.glade:2752
@@ -913,7 +913,7 @@ msgid ""
 "Small house.\n"
 "Flags: -treetype 3 or: -treetype all"
 msgstr ""
-"Klein huis.\n"
+"Huisje.\n"
 "Flags: -treetype 3 or: -treetype all"
 
 #: src/ui.glade:2775
@@ -966,7 +966,7 @@ msgstr ""
 
 #: src/ui.glade:3141
 msgid "# Items:"
-msgstr "# Artikelen:"
+msgstr "# Items:"
 
 #: src/ui.glade:3156
 msgid ""
@@ -997,7 +997,7 @@ msgid ""
 "To allow overlap or not when placing scenery.\n"
 "Flags: -treeoverlap, -notreeoverlap"
 msgstr ""
-"Wel of geen overlap toestaan bij het plaatsen van scenery.\n"
+"Wel of geen overlap toestaan bij het plaatsen van items.\n"
 "Flags: -treeoverlap, -notreeoverlap"
 
 #: src/ui.glade:3240
@@ -1021,7 +1021,7 @@ msgid ""
 "Apply default values for all preferences (except settings).\n"
 "Flag: -defaults"
 msgstr ""
-"Pas standaardwaarden toe voor alle voorkeuren (behalve instellingen).\n"
+"Pas standaardwaarden toe voor alle voorkeuren (behalve Instellingen).\n"
 "Flag: -defaults"
 
 #: src/ui.glade:3526
@@ -1029,7 +1029,7 @@ msgid ""
 "Apply vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
 msgstr ""
-"Vintage-waarden toepassen voor alle voorkeuren (behalve instellingen).\n"
+"Vintage-waarden toepassen voor alle voorkeuren (behalve Instellingen).\n"
 "Flag: -vintage"
 
 #: src/ui.glade:3612
@@ -1147,7 +1147,7 @@ msgstr ""
 
 #: src/ui.glade:3964 src/ui.glade:4179
 msgid "Bright:"
-msgstr "Helder:"
+msgstr "Helderheid:"
 
 #: src/ui.glade:3976
 msgid ""
@@ -1179,7 +1179,7 @@ msgid ""
 "Note: the aurora is best viewed using a dark background.\n"
 "Flags: -aurora 1, -aurora 0"
 msgstr ""
-"Wel of niet aurora tonen.\n"
+"Wel of niet aurora (noorderlicht) tonen.\n"
 "Opmerking: de aurora kan het beste worden bekeken met een donkere "
 "achtergrond.\n"
 "Flags: -aurora 1, -aurora 0"
@@ -1479,7 +1479,7 @@ msgid ""
 "attr point"
 msgstr ""
 "Toon \n"
-"attr-punt"
+"attractiepunt"
 
 #: src/ui.glade:5073
 msgid ""
@@ -1495,7 +1495,7 @@ msgid ""
 "Santa"
 msgstr ""
 "Volg \n"
-" de Kerstman"
+"de Kerstman"
 
 #: src/ui.glade:5090
 msgid ""

@@ -301,9 +301,7 @@ void *do_update_speed_birds(void *d)
 	 kd_free(kd);
 	 kd = kd_create(3);
 
-	 int i;
-
-	 for (i=0; i<Nbirds; i++)
+	 for (int i=0; i<Nbirds; i++)
 	 {
 	    BirdType *bird = &birds[i];
 	    kd_insert3f(kd, bird->x, bird->y, bird->z, bird);
@@ -311,7 +309,7 @@ void *do_update_speed_birds(void *d)
 
 	 int sumnum         = 0;
 	 float summeandist  = 0;
-	 for (i=0; i<Nbirds; i++)
+	 for (int i=0; i<Nbirds; i++)
 	 {
 	    if (drand48() < Flags.Anarchy*0.01)
 	       continue;
@@ -455,8 +453,7 @@ int do_update_pos_birds(void *d)
 
    P("%f\n",dt);
 
-   int i;
-   for (i=0; i<Nbirds; i++)
+   for (int i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
 
@@ -477,12 +474,9 @@ int birds_draw(cairo_t *cr)
    LEAVE_IF_INACTIVE;
    P("drawing birds %d\n",counter++);
 
-   int before;
-   int i;
-
    lock();
 
-   for (before=0; before<2; before++)
+   for (int before=0; before<2; before++)
    {
       if(before && Flags.FollowSanta && !Flags.BirdsOnly)
       {
@@ -531,9 +525,8 @@ int birds_draw(cairo_t *cr)
 	    testbird.x = attrbird.x;
 	    testbird.y = attrbird.y;
 	    testbird.z = attrbird.z;
-	    int i;
 	    int centerbird = 0;
-	    for (i=0; i<3; i++)
+	    for (int i=0; i<3; i++)
 	    {
 	       GdkPixbuf *bird_pixbuf = bird_pixbufs[testbird.wingstate+i*NWINGS];
 	       int iw = 400;
@@ -554,7 +547,7 @@ int birds_draw(cairo_t *cr)
 	 }
 #endif
       }
-      for (i=0; i<Nbirds; i++)
+      for (int i=0; i<Nbirds; i++)
       {
 	 BirdType *bird = &birds[i];
 
@@ -685,8 +678,7 @@ int birds_erase(int force)
       LEAVE_IF_INACTIVE;
 
    P("birds_erase %d\n",counter++);
-   int i;
-   for (i=0; i<Nbirds; i++)
+   for (int i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       if (bird->prevdrawable && bird->prevw != 0 && bird->prevh != 0)
@@ -730,7 +722,6 @@ void init_birds(int start)
 {
    lock();
 
-   int i;
    if(!global.IsDouble)
       birds_erase(1);
    P("nbirds: %d %d\n",start,Flags.Nbirds);
@@ -741,7 +732,7 @@ void init_birds(int start)
       kd_free(kd);
    kd = kd_create(3);
    Nbirds = Flags.Nbirds;
-   for (i=start; i<Nbirds; i++)
+   for (int i=start; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       bird->x = drand48()*blobals.maxx;
@@ -791,8 +782,7 @@ static int do_wings(void *d)
 
    lock();
 
-   int i;
-   for (i=0; i<Nbirds; i++)
+   for (int i=0; i<Nbirds; i++)
    {
       BirdType *bird = &birds[i];
       bird->wingstate++;
@@ -878,8 +868,7 @@ static void main_window()
 
 void birds_init_color()
 {
-   int i;
-   for (i=0; i<NBIRDPIXBUFS; i++)
+   for (int i=0; i<NBIRDPIXBUFS; i++)
    {
       g_object_unref(bird_pixbufs[i]);
    }
@@ -889,8 +878,7 @@ void birds_init_color()
 
 static void init_bird_pixbufs(const char *color)
 {
-   int i;
-   for (i=0; i<NBIRDPIXBUFS; i++)
+   for (int i=0; i<NBIRDPIXBUFS; i++)
    {
       char **x;
       int lines;

@@ -54,9 +54,8 @@ static cairo_surface_t *surfaces[STARANIMATIONS];
 
 void stars_init()
 {
-   int i;
    init_stars();
-   for (i=0; i<STARANIMATIONS; i++)
+   for (int i=0; i<STARANIMATIONS; i++)
       surfaces[i] = NULL;
    set_star_surfaces();
    add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars);
@@ -64,8 +63,7 @@ void stars_init()
 
 void set_star_surfaces()
 {
-   int i;
-   for(i=0; i<STARANIMATIONS; i++)
+   for (int i=0; i<STARANIMATIONS; i++)
    {
       float size = LocalScale*global.WindowScale*0.01*Flags.Scale*StarSize;
       size *= 0.2*(1+4*drand48());
@@ -95,13 +93,12 @@ void set_star_surfaces()
 
 void init_stars()
 {
-   int i;
    NStars = Flags.NStars;
    P("initstars %d\n",NStars);
    // Nstars+1: we do not allocate 0 bytes
    Stars = (Skoordinaten *) realloc(Stars,(NStars+1)*sizeof(Skoordinaten));
    REALLOC_CHECK(Stars);
-   for (i=0; i<NStars; i++)
+   for (int i=0; i<NStars; i++)
    {
       Skoordinaten *star = &Stars[i];
       star->x     = randint(global.SnowWinWidth);
@@ -116,11 +113,10 @@ void stars_draw(cairo_t *cr)
 {
    if (!Flags.Stars)
       return;
-   int i;
    cairo_save(cr);
    cairo_set_line_width(cr,1);
    cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
-   for (i=0; i<NStars; i++)
+   for (int i=0; i<NStars; i++)
    {
       P("stars_draw i: %d %d %d\n",i,NStars,counter++);
       Skoordinaten *star = &Stars[i];
@@ -138,8 +134,7 @@ void stars_erase()
 {
    if (!Flags.Stars)
       return;
-   int i;
-   for (i=0; i<NStars; i++)
+   for (int i=0; i<NStars; i++)
    {
       P("stars_erase i: %d %d %d\n",i,NStars,counter++);
       Skoordinaten *star = &Stars[i];
@@ -171,8 +166,7 @@ int do_ustars(void *d)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;
-   int i;
-   for (i=0; i<NStars; i++)
+   for (int i=0; i<NStars; i++)
       if (drand48() > 0.8)
 	 Stars[i].color = randint(STARANIMATIONS);
    return TRUE;

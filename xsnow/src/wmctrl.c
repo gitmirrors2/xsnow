@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -46,24 +46,25 @@
 
 #include "vroot.h"
 
+#if 0
 static void FindWindows(Display *display,Window window, long unsigned int *nwindows,Window **windows);
 static void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows);
 
-/* this one is not needed any more, but I keep the source */
+/* these functions are not needed any more, but I keep the source */
 void FindWindows(Display *display,Window window,long unsigned int *nwindows,Window **windows)
 {
    *nwindows = 0;
    *windows  = NULL;
    FindWindows_r(display,window,nwindows,windows);
-   int i;
-   for (i=0; i<(int)(*nwindows); i++)
+   for (int i=0; i<(int)(*nwindows); i++)
       P("window: %#lx\n",(*windows)[i]);
 }
+
+
 void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Window **windows)
 {
    Window root,parent,*children;
    unsigned int nchildren;
-   int i;
    static int generations = 0;
 
    XQueryTree(display,window,&root,&parent,&children,&nchildren);
@@ -77,7 +78,8 @@ void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Wi
 
       ++generations;
 
-      for (i = 0, child = children; i < (int)nchildren; ++i, ++child)
+      child = children;
+      for (int i = 0; i < (int)nchildren; ++i, ++child)
 	 FindWindows_r(display,*child,nwindows,windows);
 
       --generations;
@@ -86,6 +88,7 @@ void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Wi
 
    return;
 }
+#endif
 
 long int GetCurrentWorkspace()
 {
@@ -237,11 +240,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 XFree(children);
 	 children = NULL;
       }
-      if(0)
-      {
-	 FindWindows(getdisplay,RootWindow(getdisplay,DefaultScreen(getdisplay)),&nchildren,(Window **)&properties);
-      }
-      else
+
       {
 	 Window dummy;
 	 unsigned int n;
@@ -283,9 +282,8 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
    }
 
-   unsigned long i;
    assert(w);
-   for (i=0; i<nchildren; i++)
+   for (unsigned long i=0; i<nchildren; i++)
    {
       int x0,y0,xr,yr;
       unsigned int depth;
@@ -340,8 +338,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if (type == XA_ATOM)
       {
-	 int i;
-	 for(i=0; (unsigned long)i<nitems; i++)
+	 for(int i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = NULL;
 	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
@@ -368,8 +365,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if(format == 32)
       {
-	 int i;
-	 for(i=0; (unsigned long)i<nitems; i++)
+	 for(int i=0; (unsigned long)i<nitems; i++)
 	 {
 	    char *s = NULL;
 	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
@@ -404,8 +400,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
 	 if(format == 32)
 	 {
-	    unsigned long i;
-	    for (i=0; i<nitems; i++)
+	    for (unsigned long i=0; i<nitems; i++)
 	    {
 	       char *s = NULL;
 	       s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
@@ -514,8 +509,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
 {
    WinInfo *w = windows;
-   int i;
-   for (i=0; i<nwin; i++)
+   for (int i=0; i<nwin; i++)
    {
       if (w->id == id)
 	 return w;
@@ -527,8 +521,7 @@ WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
 void printwindows(Display *dpy,WinInfo *windows, int nwin)
 {
    WinInfo *w = windows;
-   int i;
-   for (i=0; i<nwin; i++)
+   for (int i=0; i<nwin; i++)
    {
       char *name;
       XFetchName(dpy, w->id, &name);

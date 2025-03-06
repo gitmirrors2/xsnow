@@ -78,8 +78,19 @@ nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
 		  version.h doit.h
 
+# The man page and the help infor are created by xsnow.
+# In case of cross compiling, xsnow cannot be used (it is made for another 
+# architecture), therefore the program makeman is created.
+# makeman is only capable to produce the man page. When cross compiling
+# we need to make sure that the compiler and it's flags are taken from the
+# system this Makefile is running on.
+# The output of the compile step is removed: it generates positives for blhc
+# which are of no importance, because makeman is used only during the creation
+# of xsnow, and is discarded afterwards.
+
+
 makeman$(EXEEXT): changelog.inc $(makeman_SOURCES)
-	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
+	@echo "creating makeman";$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DVERSION=\"$(VERSION)\" -DMAKEMAN -I$(top_srcdir)/src -I. -o $@ \
 		$(top_srcdir)/src/makeman.c $(top_srcdir)/src/docs.c $(top_srcdir)/src/flags.c  
 
 if MAKESELFREP

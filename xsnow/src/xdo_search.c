@@ -56,7 +56,6 @@ static void find_matching_windows(const xdo_t *xdo, Window window,
 
 int xdo_search_windows(const xdo_t *xdo, const xdo_search_t *search,
                       Window **windowlist_ret, unsigned int *nwindows_ret) {
-  int i = 0;
 
   unsigned int windowlist_size = 100;
   *nwindows_ret = 0;
@@ -77,7 +76,7 @@ int xdo_search_windows(const xdo_t *xdo, const xdo_search_t *search,
                             &windowlist_size, 1);
   } else {
     const int screencount = ScreenCount(xdo->xdpy);
-    for (i = 0; i < screencount; i++) {
+    for (int i = 0; i < screencount; i++) {
       Window root = RootWindow(xdo->xdpy, i);
       if (check_window_match(xdo, root, search)) {
         (*windowlist_ret)[*nwindows_ret] = root;
@@ -116,7 +115,6 @@ static int _xdo_match_window_name(const xdo_t *xdo, Window window, regex_t *re) 
    * match in _xdo_match_window_classname. But really, most of the time 'name'
    * refers to the window manager name for the window, which is displayed in
    * the titlebar */
-  int i;
   int count = 0;
   char **list = NULL;
   XTextProperty tp;
@@ -126,7 +124,7 @@ static int _xdo_match_window_name(const xdo_t *xdo, Window window, regex_t *re) 
   if (tp.nitems > 0) {
     //XmbTextPropertyToTextList(xdo->xdpy, &tp, &list, &count);
     Xutf8TextPropertyToTextList(xdo->xdpy, &tp, &list, &count);
-    for (i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       if (regexec(re, list[i], 0, NULL, 0) == 0) {
         XFreeStringList(list);
         XFree(tp.value);
@@ -361,7 +359,7 @@ static void find_matching_windows(const xdo_t *xdo, Window window,
 
   Window dummy;
   Window *children;
-  unsigned int i, nchildren;
+  unsigned int nchildren;
 
   /* Break early, if we have enough windows already. */
   if (search->limit > 0 && *nwindows_ret >= search->limit) {
@@ -384,7 +382,7 @@ static void find_matching_windows(const xdo_t *xdo, Window window,
   }
 
   /* Breadth first, check all children for matches */
-  for (i = 0; i < nchildren; i++) {
+  for (unsigned int i = 0; i < nchildren; i++) {
     Window child = children[i];
     if (!check_window_match(xdo, child, search))
       continue;
@@ -406,7 +404,7 @@ static void find_matching_windows(const xdo_t *xdo, Window window,
 
   /* Now check children-children */
   if (search->max_depth == -1 || (current_depth + 1) <= search->max_depth) {
-    for (i = 0; i < nchildren; i++) {
+    for (unsigned int i = 0; i < nchildren; i++) {
       find_matching_windows(xdo, children[i], search, windowlist_ret,
                             nwindows_ret, windowlist_size,
                             current_depth + 1);

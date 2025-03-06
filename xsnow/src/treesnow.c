@@ -87,14 +87,12 @@ int do_snow_on_trees(void *d)
 void ConvertOnTreeToFlakes()
 {
    P("ConvertOnTreeToFlakes %d\n",global.OnTrees);
-   int i;
-   for (i=0; i<global.OnTrees; i++)
+   for (int i=0; i<global.OnTrees; i++)
    {
-      int j;
-      for (j=0; j<2; j++)
+      for (int j=0; j<2; j++)
       {
-	 int k, kmax = BlowOff();
-	 for (k=0; k<kmax; k++)
+	 int kmax = BlowOff();
+	 for (int k=0; k<kmax; k++)
 	 {
 	    Snow *flake   = MakeFlake(-1);
 	    flake->rx     = global.SnowOnTrees[i].x;

@@ -555,20 +555,18 @@ static void report_tree_type(int p, gint active)
    }
    else
    {
-      int i;
-      for (i=0; i<n; i++)
+      for (int i=0; i<n; i++)
 	 if(a[i] == p)
 	    a[i] = -1;
    }
    int *b = (int *)malloc(sizeof(*b)*n);
    assert(b);
-   int i,m=0;
-   for(i=0; i<n; i++)
+   int m=0;
+   for(int i=0; i<n; i++)
    {
-      int j;
       int unique = (a[i] >= 0);
       if(unique)
-	 for (j=0; j<m; j++)
+	 for (int j=0; j<m; j++)
 	    if(a[i] == b[j])
 	    {
 	       unique = 0;
@@ -633,10 +631,9 @@ static void init_santa_pixmaps()
    SANTA_ALL;
 #include "undefall.inc"
 
-   int i;
    GtkImage *image; 
    GdkPixbuf *pixbuf;
-   for (i=0; i<NBUTTONS; i++)
+   for (int i=0; i<NBUTTONS; i++)
    {
       pixbuf = xpm2gdk(global.display, (char **)Santas[i/2][i%2][0],NULL);
       image = GTK_IMAGE(gtk_builder_get_object(builder,santa_barray[i]->imid));
@@ -693,11 +690,10 @@ static void set_tree_buttons()
    NEWLINE gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tree_buttons.tree_##x.button),FALSE);
    TREE_ALL;
 #include "undefall.inc"
-   int i;
    int *a,n;
    csvpos(Flags.TreeType,&a,&n);
 
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       P("set_tree_buttons::::::::::::::::::::: %s %d %d\n",Flags.TreeType,n,a[i]);
       switch (a[i])
@@ -1195,8 +1191,7 @@ void ui()
 
    char *s = NULL;
    int p = 0;
-   int i;
-   for (i=0; i<Nscreens; i++)
+   for (int i=0; i<Nscreens; i++)
    {
       snprintf(sbuffer,nsbuffer,_("monitor %d"),i);
       s = (char*) realloc(s,p+1+strlen(sbuffer));
@@ -1241,7 +1236,7 @@ void ui()
    }
 
    gtk_combo_box_set_active(GTK_COMBO_BOX(LangButton),0);
-   for (i=0; i<nlang; i++)
+   for (int i=0; i<nlang; i++)
    {
       if (!strcmp(lang[i],Flags.Language))
       {

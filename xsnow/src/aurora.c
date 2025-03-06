@@ -243,7 +243,6 @@ void *do_aurora(void *d)
 	 P("%d do_aurora\n",global.counter++);
 	 lock_init();
 	 AuroraMap *a = (AuroraMap *) d;
-	 int j;
 	 aurora_changeparms(a);
 
 	 cairo_save(aurora_cr);
@@ -278,8 +277,7 @@ void *do_aurora(void *d)
 	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_SCREEN);
 	 //cairo_set_operator(aurora_cr,CAIRO_OPERATOR_XOR);
 
-	 // draw aurora surface rectangle
-	 if(0)
+	 if(0) // draw aurora surface rectangle, for debugging
 	 {
 	    cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
 	    cairo_set_line_width(aurora_cr,4);
@@ -312,7 +310,7 @@ void *do_aurora(void *d)
 
 	 int zmin = a->step*a->z[0].x;
 	 int zmax = a->step*a->z[0].x;
-	 for (j=0; j<a->nz; j++)
+	 for (int j=0; j<a->nz; j++)
 	 {
 	    double alpha = 1.0;
 	    double d = 100;
@@ -329,9 +327,8 @@ void *do_aurora(void *d)
 	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
 	       cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
 	    }
-	    if(0)
+	    if(0) // draw one aurora pillar 
 	    {
-	       // draw one aurora pillar
 	       cairo_set_source_surface (aurora_cr, vertsurf, 2000, 400);
 	       cairo_paint(aurora_cr);
 	    }
@@ -346,7 +343,7 @@ void *do_aurora(void *d)
 	 if(1)
 	 {
 	    // draw fuzz
-	    for (j=0; j<a->nfuzz; j++)
+	    for (int j=0; j<a->nfuzz; j++)
 	    {
 	       double alpha = 1.0;
 	       double d = 100;
@@ -367,19 +364,18 @@ void *do_aurora(void *d)
 	       }
 	    }
 	 }
-	 if(0)
+	 if(0) // draw base of aurora
 	 {
-	    // draw base of aurora
 	    cairo_save(aurora_cr);
 	    cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
 	    cairo_set_source_rgba(aurora_cr,1,1,0,1);
-	    for(j=0; j<a->nz; j++)
+	    for (int j=0; j<a->nz; j++)
 	    {
 	       cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
 	    }
 	    cairo_fill(aurora_cr);
 	    cairo_set_source_rgba(aurora_cr,1,0,0,1);
-	    for(j=0; j<a->nfuzz; j++)
+	    for (int j=0; j<a->nfuzz; j++)
 	    {
 	       cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
 	    }
@@ -446,8 +442,7 @@ void aurora_setparms(AuroraMap *a)
    //a->y = Flags.AuroraBase  *global.SnowWinHeight*0.01;
    a->y = 0;
 
-   int i;
-   for (i=0; i<AURORA_POINTS; i++)
+   for (int i=0; i<AURORA_POINTS; i++)
    {
       a->points[i]  = 0.2+0.4*drand48();
       a->dpoints[i] = (2*(i%2)-1)*0.0005;
@@ -455,7 +450,7 @@ void aurora_setparms(AuroraMap *a)
    }
 
    a->slantmax = 3;
-   for(i=0; i<AURORA_S; i++)
+   for(int i=0; i<AURORA_S; i++)
    {
       a->slant[i]  = a->slantmax*(2*drand48()-1);
       a->dslant[i] = (2*(i%2)-1)*0.02;
@@ -471,17 +466,17 @@ void aurora_setparms(AuroraMap *a)
    a->hmax      = 0.6*a->base;
    if (a->hmax < 3)
       a->hmax = 3;
-   for (i=0; i<AURORA_H; i++)
+   for (int i=0; i<AURORA_H; i++)
    {
       a->h[i] = 0.8*drand48()+0.2;
       a->dh[i] = (2*(i%2)-1)*0.01;
    }
-   for (i=0; i<AURORA_A; i++)
+   for (int i=0; i<AURORA_A; i++)
    {
       a->a[i] = 0.5*drand48()+0.5;
       a->da[i] = (2*(i%2)-1)*0.01;
    }
-   for (i=0; i<AURORA_AA; i++)
+   for (int i=0; i<AURORA_AA; i++)
    {
       a->aa[i]  = drand48();
       a->daa[i] = (2*(i%2)-1)*0.01;
@@ -492,7 +487,6 @@ void aurora_setparms(AuroraMap *a)
 
 void aurora_changeparms(AuroraMap *a)
 {
-   int i;
    if(1)
    {
       a->alpha += a->dalpha;
@@ -506,7 +500,7 @@ void aurora_changeparms(AuroraMap *a)
    if(1)
    {
       // global shape of aurora
-      for (i=0; i<AURORA_POINTS; i++)
+      for (int i=0; i<AURORA_POINTS; i++)
       {
 	 a->points[i] += a->dpoints[i]*erand48(xsubi);
 	 if (a->points[i] > 1)
@@ -522,64 +516,25 @@ void aurora_changeparms(AuroraMap *a)
       }
    }
 
-   if(1)
    {
-      // rotation angle, including some not used methods
-      if(0)
+      double dt = 0.2;
+      a->theta += dt*a->dtheta*(erand48(xsubi)+0.5);
+      if (a->theta < 175)
       {
-	 if (a->theta > -8 && a->theta < 8)
-	 {
-	    a->theta += 0.2*a->dtheta;
-	 }
-	 else
-	 {
-	    a->theta += a->dtheta;
-	    //if (a->theta > 40)
-	    if (a->theta > 360)
-	    {
-	       a->theta  = 360;
-	       a->dtheta = -fabs(a->dtheta);
-	    }
-	    //else if(a->theta < -40)
-	    else if(a->theta < 0)
-	    {
-	       a->theta = 0;
-	       a->dtheta  = fabs(a->dtheta);
-	    }
-	 }
+	 a->theta = 175;
+	 a->dtheta = fabs(a->dtheta);
       }
-      if(0)
+      else if (a->theta > 185)
       {
-	 double dt;
-	 // around 90 and 270 degrees, the changes are relatively large, that is why
-	 // cos() is used.
-	 dt = fabs(cos(M_PI*a->theta/180.0))+0.2*a->dtheta;
-	 a->theta += dt*a->dtheta*(erand48(xsubi)+0.5);
-	 if (a->theta > 360)
-	    a->theta -= 360;
-	 P("a.theta: %f %f %f\n",a->theta,dt,a->dtheta);
+	 a->theta = 185;
+	 a->dtheta = -fabs(a->dtheta);
       }
-      if(1)
-      {
-	 double dt = 0.2;
-	 a->theta += dt*a->dtheta*(erand48(xsubi)+0.5);
-	 if (a->theta < 175)
-	 {
-	    a->theta = 175;
-	    a->dtheta = fabs(a->dtheta);
-	 }
-	 else if (a->theta > 185)
-	 {
-	    a->theta = 185;
-	    a->dtheta = -fabs(a->dtheta);
-	 }
-	 P("a.theta: %f\n",a->theta);
-      }
+      P("a.theta: %f\n",a->theta);
    }
    // slant
    if(1)
    {
-      for(i=0; i<AURORA_S; i++)
+      for(int i=0; i<AURORA_S; i++)
       {
 	 a->slant[i] += a->dslant[i]*erand48(xsubi);
 	 if (a->slant[i] > a->slantmax)
@@ -599,7 +554,7 @@ void aurora_changeparms(AuroraMap *a)
    if(1)
    {
       // height of aurora
-      for (i=0; i<AURORA_H; i++)
+      for (int i=0; i<AURORA_H; i++)
       {
 	 a->h[i] += a->dh[i]*erand48(xsubi);
 	 if (a->h[i] > 1)
@@ -617,7 +572,7 @@ void aurora_changeparms(AuroraMap *a)
    if(1)
    {
       // transparency of aurora
-      for (i=0; i<AURORA_A; i++)
+      for (int i=0; i<AURORA_A; i++)
       {
 	 a->a[i] += a->da[i]*erand48(xsubi);
 	 if (a->a[i] > 1.2)
@@ -635,7 +590,7 @@ void aurora_changeparms(AuroraMap *a)
    if(1)
    {
       // high frequency transparency of aurora
-      for (i=0; i<AURORA_AA; i++)
+      for (int i=0; i<AURORA_AA; i++)
       {
 	 a->aa[i] += a->daa[i]*erand48(xsubi);
 	 if (a->aa[i] > 1.2)
@@ -655,7 +610,6 @@ void aurora_changeparms(AuroraMap *a)
 
 void aurora_computeparms(AuroraMap *a)
 {
-   int i;
    if (a->z)
    {
       free(a->z);
@@ -666,7 +620,7 @@ void aurora_computeparms(AuroraMap *a)
    // normalize z.y values and z.x
    double ymin = a->z[0].y;
    double ymax = a->z[0].y;
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
    {
       if (a->z[i].y< ymin)
 	 ymin = a->z[i].y;
@@ -716,7 +670,7 @@ void aurora_computeparms(AuroraMap *a)
       d = 0.1;
    double s = (a->base-a->hmax)/d;
    P("ymin %f %f %f %f\n",ymin,ymax,d,s);
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
    {
       a->z[i].y = a->base - (a->z[i].y-ymin)*s;
       P("a->z[i].y: %d %f\n",i,z[i].y);
@@ -725,7 +679,7 @@ void aurora_computeparms(AuroraMap *a)
    // height
    double dx;
    double px[AURORA_H];
-   for (i=0; i<AURORA_H; i++)
+   for (int i=0; i<AURORA_H; i++)
       px[i] = i;
    // 'gcc-14 -fanalyzer -O2 -Wall' thinks that px[AURORA_H -1] 
    // is uninitialized, so:
@@ -740,7 +694,7 @@ void aurora_computeparms(AuroraMap *a)
    a->zh     = (double *)malloc(a->nz*sizeof(double));
    assert(a->zh);
    dx = (double)(AURORA_H-1)/(double)(a->nz - 1);
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
       x[i] = i*dx;
 
    x[a->nz-1] = px[AURORA_H-1];
@@ -748,7 +702,7 @@ void aurora_computeparms(AuroraMap *a)
 
    // alpha values
    double pa[AURORA_A];
-   for (i=0; i<AURORA_A; i++)
+   for (int i=0; i<AURORA_A; i++)
       pa[i] = i;
    if(a->za)
    {
@@ -757,14 +711,14 @@ void aurora_computeparms(AuroraMap *a)
    }
    a->za     = (double *)malloc(a->nz*sizeof(double));
    dx = (double)(AURORA_A-1)/(double)(a->nz - 1);
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
       x[i] = i*dx;
    x[a->nz - 1] = pa[AURORA_A - 1];
    spline_interpol(pa,AURORA_A,a->a,x,a->nz,a->za);
 
    // high frequency alpha
    double paa[AURORA_AA];
-   for (i=0; i<AURORA_AA; i++)
+   for (int i=0; i<AURORA_AA; i++)
       paa[i] = i;
    if(a->zaa)
    {
@@ -774,14 +728,14 @@ void aurora_computeparms(AuroraMap *a)
    a->zaa    = (double *)malloc(a->nz*sizeof(double));
    assert(a->zaa);
    dx = (double)(AURORA_AA-1)/(double)(a->nz - 1);
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
       x[i] = i*dx;
    x[a->nz - 1] = paa[AURORA_AA - 1];
    spline_interpol(paa,AURORA_AA,a->aa,x,a->nz,a->zaa);
 
    free(x);
 
-   for (i=0; i<a->nz; i++)
+   for (int i=0; i<a->nz; i++)
    {
       double alpha = 1;
       if (i < a->fuzzleft*a->nz)
@@ -802,7 +756,7 @@ void aurora_computeparms(AuroraMap *a)
       a->nfuzz = 0;
       int f = turnfuzz * global.SnowWinWidth;
       int d0   = a->z[1].x - a->z[0].x;
-      i = 0;
+      int i = 0;
       while(1)
       {
 	 i++;
@@ -826,37 +780,42 @@ void aurora_computeparms(AuroraMap *a)
 	       if (jmax > a->nz-1) jmax = a->nz-1;
 	       int jj = jmax;
 
-	       int j;
-	       for (j=i; j<jj; j++)
 	       {
-		  if (a->z[j+1].x - a->z[j].x != d)
-		     break;
-	       }
-	       if(jmax > j)
-	       {
-		  P("adjust jmax: %d %d\n",jmax,j);
-		  jmax  = j;
+		  int j;
+		  for (j=i; j<jj; j++) // j used after loop
+		  {
+		     if (a->z[j+1].x - a->z[j].x != d)
+			break;
+		  }
+		  if(jmax > j)
+		  {
+		     P("adjust jmax: %d %d\n",jmax,j);
+		     jmax  = j;
+		  }
 	       }
 
 	       jj = i - jmax;
 	       if (jj < 1)
 		  jj = 1;
-	       for (j=i-1; j > jj; j--)
 	       {
-		  P("a d: %d %d\n",d,(a->z[j-1].x - a->z[j].x));
-		  if (a->z[j-1].x - a->z[j].x != d)
+		  int j;
+		  for (j=i-1; j > jj; j--) // j used after loop
 		  {
-		     P("break %d\n",j);
-		     break;
+		     P("a d: %d %d\n",d,(a->z[j-1].x - a->z[j].x));
+		     if (a->z[j-1].x - a->z[j].x != d)
+		     {
+			P("break %d\n",j);
+			break;
+		     }
+		  }
+		  if (jmax + j > 2*i)
+		  {
+		     P("Adjust\n");
+		     jmax = 2*i - j;
 		  }
 	       }
-	       if (jmax + j > 2*i)
-	       {
-		  P("Adjust\n");
-		  jmax = 2*i - j;
-	       }
 
-	       for (j=i; j<jmax; j++)
+	       for (int j=i; j<jmax; j++)
 	       {
 		  a->fuzz[a->nfuzz].x = a->z[i].x+j-i;
 		  a->fuzz[a->nfuzz].y = a->z[i].y;
@@ -876,36 +835,41 @@ void aurora_computeparms(AuroraMap *a)
 	       int jj = i + f;
 	       if (jj > a->nz-1)
 		  jj = a->nz-1;
-	       int j;
-	       for (j=i+1; j<jj; j++)
 	       {
-		  if (a->z[j].x - a->z[j-1].x != d)
-		     break;
-	       }
-	       if (j+jmin < 2*i)
-	       {
-		  P("adjust jmin:  %d %d %d %d\n",jmin,j,a->z[i].x,global.counter++);
-		  jmin = 2*i - j;
+		  int j;
+		  for (j=i+1; j<jj; j++) // j used after loop
+		  {
+		     if (a->z[j].x - a->z[j-1].x != d)
+			break;
+		  }
+		  if (j+jmin < 2*i)
+		  {
+		     P("adjust jmin:  %d %d %d %d\n",jmin,j,a->z[i].x,global.counter++);
+		     jmin = 2*i - j;
+		  }
 	       }
 
 	       jj = i - jmin;
 	       if (jj < 1)
 		  jj = 1;
-	       for (j=i; j > jj; j--)
 	       {
-		  P("a d: %d %d\n",d,(a->z[j-1].x - a->z[j].x));
-		  if (a->z[j-1].x - a->z[j].x != d)
+		  int j;
+		  for (j=i; j > jj; j--) // j used after loop
 		  {
-		     P("break %d\n",j);
-		     break;
+		     P("a d: %d %d\n",d,(a->z[j-1].x - a->z[j].x));
+		     if (a->z[j-1].x - a->z[j].x != d)
+		     {
+			P("break %d\n",j);
+			break;
+		     }
+		  }
+		  if (j > jmin)
+		  {
+		     jmin = j;
 		  }
 	       }
-	       if (j > jmin)
-	       {
-		  jmin = j;
-	       }
 
-	       for (j=i; j>jmin; j--)
+	       for (int j=i; j>jmin; j--)
 	       {
 		  a->fuzz[a->nfuzz].x = a->z[i].x-i+j;
 		  a->fuzz[a->nfuzz].y = a->z[i].y;
@@ -940,7 +904,7 @@ void aurora_computeparms(AuroraMap *a)
 //   using free()
 // int *nz: output: number of output values in z
 // The output values are available as in:
-// for (i=0; i<nz; i++)
+// for (int i=0; i<nz; i++)
 // {
 //    int x    = z[i].x;
 //    double y = z[i].y;
@@ -950,7 +914,6 @@ void aurora_computeparms(AuroraMap *a)
 void create_aurora_base(const double *y, int n, 
       double *slant, int nslant, double theta, int nw, int np, aurora_t **z, int *nz)
 {
-   int i;
    struct pq
    {
       double x;
@@ -960,9 +923,9 @@ void create_aurora_base(const double *y, int n,
    double *s = (double*)malloc(nslant*sizeof(double));
    assert(x);
    assert(s);
-   for(i=0; i<n; i++)
+   for (int i=0; i<n; i++)
       x[i] = i;
-   for(i=0; i<nslant; i++)
+   for (int i=0; i<nslant; i++)
       s[i] = i;
 
    gsl_interp_accel *acc = gsl_interp_accel_alloc();
@@ -987,7 +950,7 @@ void create_aurora_base(const double *y, int n,
    pp->y = -1.234;   // Same for this one.
 		     // so we give them values here, which will be overwritten later on.
 
-   for (i=0; i<nw; i++)
+   for (int i=0; i<nw; i++)
    {
       double xi;
       if (i == nw-1)
@@ -1005,7 +968,7 @@ void create_aurora_base(const double *y, int n,
    pp = p;
    double pmin = pp->x;
    double pmax = pp->x;
-   for(i=0; i<nw; i++)
+   for (int i=0; i<nw; i++)
    {
       double px = pp->x;
       if(px < pmin)
@@ -1026,7 +989,7 @@ void create_aurora_base(const double *y, int n,
    pz[0].x = pp->x;
 
    int k = 1;
-   for (i=1; i<nw; i++)
+   for (int i=1; i<nw; i++)
    {
       int m;
       pp++;
@@ -1039,10 +1002,9 @@ void create_aurora_base(const double *y, int n,
 	 assert(pz);
       }
 
-      int j;
       if (m > m1)
       {
-	 for (j=m1+1; j<=m; j++)
+	 for (int j=m1+1; j<=m; j++)
 	 {
 	    pz[k].y = pp->y;
 	    pz[k].x = j;
@@ -1052,7 +1014,7 @@ void create_aurora_base(const double *y, int n,
       }
       else if (m < m1)
       {
-	 for (j=m1-1; j>=m; j--)
+	 for (int j=m1-1; j>=m; j--)
 	 {
 	    pz[k].y = pp->y;
 	    pz[k].x = j;

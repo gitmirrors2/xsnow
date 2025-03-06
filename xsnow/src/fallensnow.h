@@ -49,7 +49,7 @@ extern void   fallensnow_ui(void);
 extern void   CleanFallenArea(FallenSnow *fsnow, int x, int w);
 extern void   CleanFallen(Window id);
 extern void   DrawFallen(FallenSnow *fsnow);
-extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy);
+extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float amount);
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 extern void   SetMaxScreenSnowDepth(void);

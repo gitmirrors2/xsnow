@@ -87,9 +87,8 @@ char *Get_Display_Name(
    int argc = *pargc;
    char **pargv = argv+1;
    char *displayname = NULL;
-   int i;
 
-   for (i = 1; i < argc; i++) {
+   for (int i = 1; i < argc; i++) {
       char *arg = argv[i];
 
       if (!strcmp (arg, "-display") || !strcmp (arg, "-d")) {
@@ -327,7 +326,6 @@ Window Window_With_Name(
 {
    Window *children, dummy;
    unsigned int nchildren;
-   int i;
    Window w=0;
    char *window_name;
 
@@ -345,7 +343,7 @@ Window Window_With_Name(
    if (!XQueryTree(dpy, top, &dummy, &dummy, &children, &nchildren))
       return(0);
 
-   for (i=0; (unsigned int)i<nchildren; i++) {
+   for (int i=0; (unsigned int)i<nchildren; i++) {
       w = Window_With_Name(dpy, children[i], name);
       if (w)
 	 break;

@@ -112,8 +112,6 @@ int              SnowWinChanged = 1;
 cairo_t         *CairoDC = NULL;
 cairo_surface_t *CairoSurface = NULL;
 
-
-
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 
@@ -169,9 +167,11 @@ static int do_stopafter(void *);
 static int do_show_desktop_type(void *);
 static int do_display_dimensions(void *);
 static int do_drawit(void*);
+static int do_check_stop(void*);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 static volatile int signal_caught = 0;
+static char *StopFile;
 /**********************************************************************************************/
 
 /* About some technicalities of this program
@@ -269,6 +269,8 @@ int main_c(int argc, char *argv[])
    P("srand %d\n",(int)(fmod(wallcl()*1.0e6,1.0e8)));
    srand48((int)(fmod(wallcl()*1.0e6,1.0e8)));
 
+   const char *STOPFILE = ".xsnowstop";
+
    memset(&global,0,sizeof(global));
 
    XInitThreads();
@@ -320,14 +322,17 @@ int main_c(int argc, char *argv[])
    global.DoCapella           = DOCAPELLA;
    global.time_to_write_flags = TRUE;
 
-   int i;
-
+   StopFile = (char*) malloc(sizeof(char)*(strlen(getenv("HOME"))+1+strlen(STOPFILE)+1));
+   assert(StopFile);
+   strcpy(StopFile,getenv("HOME"));
+   strcat(StopFile,"/");
+   strcat(StopFile,STOPFILE);
 
    InitFlags();
    // we search for flags that only produce output to stdout,
    // to enable to run in a non-X environment, in which case 
    // gtk_init() would fail.
-   for (i=0; i<argc; i++)
+   for (int i=0; i<argc; i++)
    {
       char *arg = argv[i];
       if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
@@ -396,7 +401,7 @@ int main_c(int argc, char *argv[])
    Argv = (char**) malloc((argc+1)*sizeof(char**));
    assert(Argv);
    Argc = 0;
-   for (i=0; i<argc; i++)
+   for (int i=0; i<argc; i++)
    {
       if ((strcmp("-screen",argv[i])==0) || (strcmp("-lang",argv[i])==0))
 	 i++; // found -screen or -lang
@@ -582,6 +587,7 @@ int main_c(int argc, char *argv[])
    add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
    add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
    add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
+   add_to_mainloop(PRIORITY_DEFAULT, time_check_stop,         do_check_stop         );
 
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
@@ -682,8 +688,7 @@ void GetDesktopSession()
 	 NULL
       };
 
-      int i;
-      for (i=0; desktops[i]; i++)
+      for (int i=0; desktops[i]; i++)
       {
 	 desktopsession = getenv(desktops[i]);
 	 if (desktopsession)
@@ -1137,8 +1142,22 @@ int do_event(void *d)
 	 } 
       }
    }  
-
    return TRUE;
+}
+
+// force stop if writeable file StopFile ($Home/.xsnowstop) exists
+int do_check_stop(void*dummy)
+{
+   (void)dummy;
+   if (access(StopFile,F_OK)) // 0: access, else no access
+      return TRUE;
+   if (access(StopFile,W_OK)) // 0: access, else no access
+      return TRUE;
+   if (unlink(StopFile) != 0)
+      return TRUE;
+   printf("Xsnow: halting because of existence of '%s'\n",StopFile);
+   Flags.Done = 1;
+   return FALSE;
 }
 
 void RestartDisplay()
@@ -1521,65 +1540,6 @@ void mybindtestdomain()
 
    // todo: naar restart of ui?
 
-   if(0)
-   {
-      if (strcmp(Flags.Language,"sys")) // if "sys" , do not change locale
-      {  // Language != sys
-	 char lc[100];
-	 if (!strcmp(Flags.Language,"en"))
-	    strcpy(lc,"en_US.UTF-8");
-	 else
-	 {
-	    strcpy(lc,Flags.Language);
-	    strcat(lc,"_");
-
-	    int i;
-	    int l = strlen(lc);
-	    for (i=0; i<(int)strlen(Flags.Language); i++)
-	       lc[l+i] = toupper(lc[i]);
-	    lc[l+i] = 0;
-
-	    strcat(lc,".UTF-8");
-	 }
-
-	 // in order for this to work, no gettext call must have been
-	 // made yet:
-
-	 //setenv("LC_ALL",lc,1);
-	 //setenv("LANG",lc,1);
-	 setenv("LANGUAGE",Flags.Language,1);
-	 P("LC_ALL: %s\n",getenv("LC_ALL"));
-	 P("LANG: %s\n",getenv("LANG"));
-	 P("LANGUAGE: %s\n",getenv("LANGUAGE"));
-      }
-      else // Language == sys
-      {
-	 unsetenv("LANGUAGE");
-	 unsetenv("LC_ALL");
-	 if(0)
-	 {
-	    char *l=getenv("LANG");
-	    if(l && !getenv("LANGUAGE"))
-	    {
-	       char *lang = strdup(l);
-	       P("lang: %s\n",lang);
-	       char *p = strchr(lang,'_');
-	       if(p)
-	       {
-		  *p = 0;  // TODO: wrong
-		  P("lang: %s\n",lang);
-		  setenv("LANGUAGE",lang,1);
-	       }
-	       free(lang);
-	    }
-	 }
-	 P("LC_ALL: %s\n",getenv("LC_ALL"));
-	 P("LANG: %s\n",getenv("LANG"));
-	 P("LANGUAGE: %s\n",getenv("LANGUAGE"));
-      }
-      //setenv("LANG","nl_NL.UTF8",1);
-      //setenv("LANGUAGE","nl",1);
-   }
 
    P("textdomain: %s\n",textdomain(NULL));
    P("bindtextdomain: %s\n",bindtextdomain(TEXTDOMAIN,NULL));

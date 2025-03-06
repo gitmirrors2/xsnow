@@ -83,8 +83,6 @@ static const float  LocalScale = 0.8;
 
 void snow_init()
 {
-   int i;
-
    MaxFlakeTypes = 0;
    while(snow_xpm[MaxFlakeTypes])
       MaxFlakeTypes++;
@@ -100,7 +98,7 @@ void snow_init()
 
    P("MaxFlakeTypes: %d\n",MaxFlakeTypes);
 
-   for (i=0; i<MaxFlakeTypes; i++)
+   for (int i=0; i<MaxFlakeTypes; i++)
    {
       snowPix[i].surface = NULL;
    }
@@ -117,7 +115,7 @@ void snow_init()
 
    // now we would like to be able to get rid of the snow xpms:
    /*
-      for (i=0; i<MaxFlakeTypes; i++)
+      for (int i=0; i<MaxFlakeTypes; i++)
       xpm_destroy(xsnow_xpm[i]);
       free(xsnow_xpm);
       */
@@ -166,9 +164,8 @@ void snow_ui()
 void init_snow_pix()
 {
    (void)LocalScale;
-   int flake;
    P("%d init_snow_pix\n",counter++);
-   for (flake=0; flake<MaxFlakeTypes; flake++) 
+   for (int flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
       int w,h;
@@ -281,8 +278,7 @@ int do_genflakes(void *d)
    else
       sumdt = 0;
 
-   int i;
-   for(i=0; i<desflakes; i++)
+   for (int i=0; i<desflakes; i++)
    {
       MakeFlake(-1);
    }
@@ -405,15 +401,15 @@ int do_UpdateSnowFlake(Snow *flake)
 	    //if(fsnow->win.id == 0 ||(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky))
 	    if(fsnow->win.id == 0 ||(IsVisibleFallen(fsnow) || fsnow->win.sticky))
 	    {
-	       if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
+	       //if (nx >= fsnow->x && nx <= fsnow->x + fsnow->w &&
+	       if (nx >= fsnow->x - Flags.SnowSize && nx <= fsnow->x + fsnow->w && // debug
 		     ny < fsnow->y+2)
 	       {
-		  int i;
 		  int istart = nx     - fsnow->x;
 		  int imax   = istart + flakew;
 		  if (istart < 0) istart = 0;
 		  if (imax > fsnow->w) imax = fsnow->w;
-		  for (i = istart; i < imax; i++)
+		  for (int i = istart; i < imax; i++)
 		     if (ny > fsnow->y - fsnow->acth[i] - 1)
 		     {
 			if(fsnow->acth[i] < fsnow->desh[i])
@@ -495,10 +491,9 @@ int do_UpdateSnowFlake(Snow *flake)
 	 //     move upwards until pixel is not in TreeRegion
 	 //     That pixel will be designated as snow-on-tree
 	 // Only one snow-on-tree pixel has to be found.
-	 int i;
 	 int found = 0;
 	 int xfound,yfound;
-	 for(i=0; i<flakew; i++)
+	 for (int i=0; i<flakew; i++)
 	 {
 	    if(found) break;
 	    int ybot = y+flakeh;
@@ -508,8 +503,7 @@ int do_UpdateSnowFlake(Snow *flake)
 	    if (in != CAIRO_REGION_OVERLAP_IN) // if bottom pixel not in TreeRegion, skip
 	       continue;
 	    // move upwards, until pixel is not in TreeRegion
-	    int j;
-	    for (j=ybot-1; j >= y; j--)
+	    for (int j=ybot-1; j >= y; j--)
 	    {
 	       cairo_rectangle_int_t grect = {xbot,j,1,1};
 	       cairo_region_overlap_t in = cairo_region_contains_rectangle(global.TreeRegion,&grect); 
@@ -700,20 +694,19 @@ void genxpmflake(char ***xpm, int w, int h)
    assert(x);
    assert(y);
 
-   int i,j;
    float w2 = 0.5*w;
    float h2 = 0.5*h;
 
    y[0] = 0;
    x[0] = 0;    // to have at least one pixel in the centre
    int n = 1;
-   for (i=0; i<h; i++)
+   for (int i=0; i<h; i++)
    {
       float yy = i;
       if (yy > h2)
 	 yy = h - yy;
       float py = 2*yy/h;
-      for (j=0; j<w; j++)
+      for (int j=0; j<w; j++)
       {
 	 float xx = j;
 	 if (xx > w2)
@@ -741,7 +734,7 @@ void genxpmflake(char ***xpm, int w, int h)
    assert(ya);
 
 
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       xa[i] = x[i]*cosf(a)-y[i]*sinf(a);
       ya[i] = x[i]*sinf(a)+y[i]*cosf(a);
@@ -752,7 +745,7 @@ void genxpmflake(char ***xpm, int w, int h)
    float ymin = ya[0];
    float ymax = ya[0];
 
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       // smallest xa:
       if (xa[i] < xmin)
@@ -806,21 +799,21 @@ void genxpmflake(char ***xpm, int w, int h)
    int offset = 3;
    P("allocating %d\n",nw+1);
    assert(nw>=0);
-   for (i=0; i<nh; i++)
+   for (int i=0; i<nh; i++)
    {
       X[i+offset] = (char *) malloc((nw+1)*sizeof(char));
       assert(X[i+offset]);
    }
 
-   for (i=0; i<nh; i++)
+   for (int i=0; i<nh; i++)
    {
-      for(j=0; j<nw; j++)
+      for (int j=0; j<nw; j++)
 	 X[i+offset][j] = ' ';
       X[i+offset][nw] = 0;
    }
 
    P("max: %d %f %f %f %f\n",n,ymin,ymax,xmin,xmax);
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       X[offset + (int)(ya[i]-ymin)] [(int)(xa[i]-xmin)] = c;
       P("%f %f\n",ya[i]-ymin,xa[i]-xmin);
@@ -833,11 +826,10 @@ void genxpmflake(char ***xpm, int w, int h)
 
 void add_random_flakes(int n)
 {
-   int i;
    // create a new array with snow-xpm's:
    if (xsnow_xpm)
    {
-      for (i=0; i<MaxFlakeTypes; i++)
+      for (int i=0; i<MaxFlakeTypes; i++)
 	 xpm_destroy(xsnow_xpm[i]);
       free(xsnow_xpm);
    }
@@ -847,13 +839,13 @@ void add_random_flakes(int n)
    x = (char ***)malloc((n+NFlakeTypesVintage+1)*sizeof(char **));
    int lines;
    // copy Rick's vintage flakes:
-   for (i=0; i<NFlakeTypesVintage; i++)
+   for (int i=0; i<NFlakeTypesVintage; i++)
    {
       xpm_set_color((char **)snow_xpm[i],&x[i],&lines,"snow");
       //xpm_print((char**)snow_xpm[i]);
    }
    // add n flakes:
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       int w,h;
       int m = Flags.SnowSize;

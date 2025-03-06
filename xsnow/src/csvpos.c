@@ -53,10 +53,9 @@ void vsc(char **s, int *k, int n)
 {
    *s = strdup("");
    assert(*s);
-   int i;
    char p[256];
    int l = strlen(*s);
-   for (i=0; i<n; i++)
+   for (int i=0; i<n; i++)
    {
       snprintf(p,250,"%d,",k[i]);
       l += strlen(p);

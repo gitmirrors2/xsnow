@@ -29,13 +29,12 @@
 
 void spline_interpol(const double *px, int np, const double *py, const double *x, int nx, double *y)
 {
-   int i;
    gsl_interp_accel *acc = gsl_interp_accel_alloc();
    gsl_spline *spline    = gsl_spline_alloc(SPLINE_INTERP, np);
    gsl_spline_init(spline, px, py, np);
 
 
-   for(i=0; i<nx; i++)
+   for (int i=0; i<nx; i++)
       y[i] = gsl_spline_eval(spline, x[i], acc);
    
    gsl_spline_free (spline);

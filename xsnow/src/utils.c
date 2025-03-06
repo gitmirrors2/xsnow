@@ -226,14 +226,13 @@ void my_cairo_paint_with_alpha(cairo_t *cr, double alpha)
 void PrintVersion()
 {
    int l = 4 + strlen(PACKAGE_STRING);
-   int i;
    printf("   ");
-   for (i=0; i<l; i++)
+   for (int i=0; i<l; i++)
       printf("*");
    printf("\n   * %s *\n",
 	 PACKAGE_STRING);
    printf("   ");
-   for (i=0; i<l; i++)
+   for (int i=0; i<l; i++)
       printf("*");
    printf("\n%s\n",VERSIONBY);
 }
@@ -282,25 +281,24 @@ int ScaleChanged(int *prevscale)
 void randomuniqarray(double *a, int n, double d, unsigned short *seed)
 {
    const int debug = 0;
-   int i;
    if (seed)
    {
 
       P("seed != NULL\n");
-      for (i=0; i<n; i++)
+      for (int i=0; i<n; i++)
 	 a[i] = erand48(seed);
    }
    else
    {
       P("seed = NULL\n");
-      for (i=0; i<n; i++)
+      for (int i=0; i<n; i++)
 	 a[i] = drand48();
    }
    gsl_sort(a,1,n);
    if(debug)
    {
       printf("\n");
-      for (i=0; i<n; i++)
+      for (int i=0; i<n; i++)
 	 printf("x %d %f\n",i,a[i]);
    }
 
@@ -308,7 +306,7 @@ void randomuniqarray(double *a, int n, double d, unsigned short *seed)
    while (1)
    {
       int changed = 0;
-      for (i=0; i<n-1; i++)
+      for (int i=0; i<n-1; i++)
 	 if (fabs(a[i+1] - a[i]) < d)
 	 {
 	    // draw a new random number for a[i]
@@ -335,9 +333,8 @@ void randomuniqarray(double *a, int n, double d, unsigned short *seed)
 	    {
 	       printf("changes %d\n",changes);
 	    }
-	    int i;
 	    double s = 1.0/n;
-	    for(i=0; i<n; i++)
+	    for (int i=0; i<n; i++)
 	       a[i] = i*s;
 	    return;
 	 }
@@ -403,11 +400,10 @@ Window  largest_window_with_name(xdo_t *myxdo, const char *name)
 
    xdo_search_windows(myxdo, &search, &windows, &nwindows);
    P("nwindows: %s %d\n",search.winname,nwindows);
-   unsigned int i;
    Window w = 0;
    unsigned int maxsize = 0;
 
-   for (i=0; i<nwindows; i++)
+   for (unsigned int i=0; i<nwindows; i++)
    {
       unsigned int width,height;
       xdo_get_window_size(myxdo, windows[i], &width, &height);

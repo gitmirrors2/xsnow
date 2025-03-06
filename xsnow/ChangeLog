@@ -1,3 +1,26 @@
+version 3.8.4
+	01: main.c: add code to stop if ~/.xsnowstop is present.
+	    test2.sh: get rid of kill, killall by using xvfb-run
+	    and touching ~/.xsnowstop when testing is done.
+	    main.c, flags,c: make them acceptable for c++.
+	02: adapt for loops to C99, except a few where the lopp variable 
+	    is used after the loop
+	    pofiles/nl.po: Some minor translation changes for nl.
+	    ui.glade: change step increment for nbirds from 5 to 1.
+	    Santa.c, xsnow.h: make SantaRegion global for use in fallensnow.c.
+	03: fallensnow.c: turn fallensnow in flakes for Santa occupied zones.
+	    ui.glade: remove donate button
+	    ui.glade: minor alignments of bottom buttons
+	04: snow.c: take care that start of fallensnow's are covered by snow
+	    by subtracting SnowSize from x-coordinate.
+	    fallensnow.c: do not smooth start and end points of fallensnow.
+	                  allow start and end-points >= 0.
+	    draw half circles at start and end to simulate snow overflow
+	    xsnow.h, fallensnow.c: every 30 seconds 0.3 change that desired
+	           height of fallen snow is re-established
+	05: fallensnow.c: let desired heights between 0.3 and 1.0
+	    fallensnow.c, aurora.c, main.c, wmctrl.c: removed some dead code
+
 version 3.8.3
 	01: with the exception of xdo.c:
 	    make 'gcc-14 -fanalyzer -O2 -Wno-analyzer-imprecise-fp-arithmetic' happy

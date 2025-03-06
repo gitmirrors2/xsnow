@@ -69,7 +69,7 @@ if [ -d $deb ] ; then
    for f in $deb/tests/test?.sh ; do
       echo "     `basename $f`" >> $deb/tests/control                  || exit 1
    done
-   echo "Depends: @, x11-utils, xvfb, xdotool, scrot, psmisc" >> $deb/tests/control
+   echo "Depends: @, xvfb, xauth, xdotool, scrot" >> $deb/tests/control
 fi
 
 echo "$0 done"

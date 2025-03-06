@@ -35,7 +35,7 @@ if [ "$XSNOW_FAST_CHECK" ] ; then
    exit 0
 fi
 
-apps="Xvfb xdotool scrot xdpyinfo killall"
+apps="xvfb-run xdotool scrot"
 
 missing=0
 for app in $apps ; do
@@ -59,44 +59,30 @@ fi
 echo "XSNOW: $XSNOW, PWD: $PWD"
 
 rcfile="$HOME/.xsnowrc"
+stopfile="$HOME/.xsnowstop"
 sumerr=0
-
-killall -q -9 Xvfb
-
-if [ "$XSNOW_USEXVFB" ] ; then
-   export DISPLAY=":23.0"
-   Xvfb "$DISPLAY" 2>&1 &
-   p_xfvb="$!"
-   # from https://unix.stackexchange.com/questions/310679/how-to-poll-for-xvfb-to-be-ready
-   MAX_ATTEMPTS=300 # About 60 seconds
-   COUNT=0
-   echo -n "Waiting for Xvfb to be ready "
-   while ! xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1; do
-     echo -n "."
-     sleep 0.2
-     COUNT=`expr "$COUNT" + 1`
-     if [ "${COUNT}" -ge "${MAX_ATTEMPTS}" ]; then
-       echo "  Gave up waiting for X server on ${DISPLAY}"
-       exit 1
-     fi
-   done
-   echo " Done - Xvfb is ready!"
-else
-   echo "Using your screen to run a test."
-   echo "Do not move your mouse...."
-   sleep 1
-fi
 
 first=`mktemp --tmpdir tmp.XXXXXXX.png`
 second=`mktemp --tmpdir tmp.XXXXXXX.png`
 
-killall -q -9 xsnow
-
-"$XSNOW"  2>&1 &
-p_xsnow="$!"
+rm -f "$stopfile"
+if [ "$XSNOW_USEXVFB" ] ; then
+   SERVER_NUMBER=23
+   export XAUTHORITY=`mktemp`
+   echo "XAUTHORITY: $XAUTHORITY"
+   xvfb-run -f "$XAUTHORITY" -n "$SERVER_NUMBER" "$XSNOW" 2>&1 &
+   export DISPLAY=":$SERVER_NUMBER"
+else
+   echo "Using your screen to run a test."
+   echo "Do not move your mouse...."
+   sleep 1
+   "$XSNOW"  2>&1 &
+fi
 
 rcbak=`mktemp`
 > "$rcbak"
+test -r "$rcfile" && cp "$rcfile" "$rcbak" 2>/dev/null
+rm -f "$rcfile"
 
 # test if xsnow is changing screen
 
@@ -116,7 +102,6 @@ scrot -z -o $first   # take first screenshot
 sleep 3              # let xsnow run a few seconds
 scrot -z -o $second  # and take second screenshot
 
-
 cmp "$first" "$second"
 rc="$?"
 rm -f $first $second
@@ -125,8 +110,8 @@ if [ "$rc" != 0 ] ; then
 else
    echo "FAILED: xsnow is not running or changing the screen"
    sumerr=`expr "$sumerr" + 1`
-   kill -9 "$p_xsnow"
-   test "$XSNOW_USEXVFB" && kill -9 "$p_xfvb"
+   touch "$stopfile"
+   sleep 2
    cp "$rcbak" "$rcfile"
    exit 1
 fi
@@ -197,8 +182,6 @@ check()
 
 sleep 2
 
-test -f "$rcfile" && cp "$rcfile" "$rcbak"
-
 click alldefaults
 check Aurora 1
 click allvintage
@@ -236,10 +219,12 @@ check ThemeXsnow 1
 click ThemeXsnow
 check ThemeXsnow 0
 
-kill -9 "$p_xsnow" 2>&1
-cp "$rcbak" "$rcfile"
+cp "$rcbak" "$rcfile" 2>&1
 
-test "$XSNOW_USEXVFB" && kill -9 "$p_xfvb" 2>&1
+touch "$stopfile"
+sleep 2
+
+rm -f "$XAUTHORITY" "$rcbak"
 
 if [ "$sumerr" = 0 ] ; then
    echo "All ok"

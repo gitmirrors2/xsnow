@@ -53,7 +53,7 @@ FLAGS OldFlags;
 FLAGS DefaultFlags;
 FLAGS VintageFlags;
 
-static void write_button_location(char *x, FILE *f);
+static void write_button_location(const char *x, FILE *f);
 static void write_tabs_locations(FILE *f);
 
 #ifndef MAKEMAN
@@ -127,9 +127,7 @@ int HandleFlags(int argc, char*argv[])
 {
    SetDefaultFlags();
    char *arg;
-   int ax;
-   int pass;
-   for(pass = 1; pass <=2; pass++)
+   for (int pass = 1; pass <=2; pass++)
    {
       if (pass == 2)
       {
@@ -137,7 +135,7 @@ int HandleFlags(int argc, char*argv[])
 	    break;
 	 ReadFlags();
       }
-      for (ax=1; ax<argc; ax++) 
+      for (int ax=1; ax<argc; ax++) 
       {
 	 arg = argv[ax];
 	 if(!strcmp(arg, "-bg"))
@@ -482,7 +480,7 @@ void WriteFlags(int output_locations)
 
       write_tabs_locations(f);
 
-      write_button_location("alldefaults",f);
+      write_button_location((char const *) "alldefaults",f);
       write_button_location("allvintage",f);
       write_button_location("general-default",f); // button "defaults" in settings
 
@@ -494,7 +492,7 @@ void WriteFlags(int output_locations)
 
 void write_tabs_locations(FILE *f)
 {
-   char *tab_names[] = // names of tabs in header
+   const char *tab_names[] = // names of tabs in header
    {
       "welcome",
       "snow",
@@ -538,10 +536,11 @@ void write_tabs_locations(FILE *f)
       //const char *label = gtk_button_get_label(GTK_BUTTON(plist->data));
       gtk_buildable_set_name(GTK_BUILDABLE(plist->data),tab_names[c]);
       gint wx,wy;
-      gboolean rc = gtk_widget_translate_coordinates(plist->data, gtk_widget_get_toplevel(plist->data), 0, 0, &wx, &wy);
+      gboolean rc = gtk_widget_translate_coordinates(GTK_WIDGET(plist->data), 
+	    gtk_widget_get_toplevel(GTK_WIDGET(plist->data)), 0, 0, &wx, &wy);
       (void)rc;
       GtkAllocation alloc;
-      gtk_widget_get_allocation(plist->data, &alloc);
+      gtk_widget_get_allocation(GTK_WIDGET(plist->data), &alloc);
       P("wx wy: %d %d --  %d\n",wx,wy,rc);
       GtkWindow *hauptfenster = GTK_WINDOW(gtk_builder_get_object(builder,"hauptfenster"));
       GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(hauptfenster));
@@ -563,12 +562,12 @@ void write_tabs_locations(FILE *f)
    }
 }
 
-void write_button_location(char *x,FILE *f)
+void write_button_location(const char *x,FILE *f)
 {
    (void)f;
    const char *prefix = "id-";
    char *id;
-   id = malloc(strlen(x)+strlen(prefix)+1);
+   id = (char *) malloc(strlen(x)+strlen(prefix)+1);
    assert(id);
    strcpy(id,prefix);
    strcat(id,x);

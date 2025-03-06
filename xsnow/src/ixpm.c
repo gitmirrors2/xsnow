@@ -57,9 +57,8 @@ static void xpmCreatePixmapFromImage(
 
 void paintit(XImage *img, long int color)
 {
-   int x,y;
-   for (y=0; y<img->height; y++)
-      for (x=0; x<img->width; x++)
+   for (int y=0; y<img->height; y++)
+      for (int x=0; x<img->width; x++)
       {
 	 XPutPixel(img, x,y,color);
       }
@@ -73,12 +72,11 @@ static void strrevert(char*s, size_t l)
    assert(l>0);
    assert(s);
    size_t n = strlen(s)/l;
-   size_t i;
    char *c = (char *)malloc(l*sizeof(*c));
    assert(c);
    char *a = s;
    char *b = s+strlen(s)-l;
-   for (i=0; i<n/2; i++)
+   for (size_t i=0; i<n/2; i++)
    {
       strncpy(c,a,l);
       strncpy(a,b,l);
@@ -97,7 +95,7 @@ static void strrevert(char*s, size_t l)
 int iXpmCreatePixmapFromData(Display *display, Drawable d, 
       const char *data[], Pixmap *p, Pixmap *s, XpmAttributes *attr, int flop)
 {
-   int rc, lines, i, ncolors, height, w;
+   int rc, lines, ncolors, height, w;
    char **idata;
 
    sscanf(data[0],"%*s %d %d %d", &height, &ncolors, &w);
@@ -105,11 +103,11 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
    assert(lines>0);
    idata = (char **)malloc(lines*sizeof(*idata));
    assert(idata);
-   for (i=0; i<lines; i++)
+   for (int i=0; i<lines; i++)
       idata[i] = strdup(data[i]);
    if(flop)
       // flop the image data
-      for (i=1+ncolors; i<lines; i++)
+      for (int i=1+ncolors; i<lines; i++)
 	 strrevert(idata[i],w);
 
    XImage *ximage = NULL,*shapeimage = NULL;
@@ -123,7 +121,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       {
 	 case 1:
 	    printf("XpmColorError\n");
-	    for (i=0; i<lines; i++)
+	    for (int i=0; i<lines; i++)
 	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 case -1:
@@ -137,7 +135,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
 	    break;
 	 case -4:
 	    printf("XpmColorFailed\n");
-	    for (i=0; i<lines; i++)
+	    for (int i=0; i<lines; i++)
 	       printf("\"%s\",\n",idata[i]);
 	    break;
 	 default:
@@ -155,7 +153,7 @@ int iXpmCreatePixmapFromData(Display *display, Drawable d,
       xpmCreatePixmapFromImage(display, d, shapeimage, s);
    if(ximage)XDestroyImage(ximage);
    if(shapeimage)XDestroyImage(shapeimage);
-   for(i=0; i<lines; i++) free(idata[i]);
+   for (int i=0; i<lines; i++) free(idata[i]);
    free(idata);
    return rc;
 }
@@ -169,13 +167,12 @@ Region regionfromxpm(const char **data, int flop, float scale)
    // width, height, #colors, $chars to code color
    sscanf(*data,"%d %d %d %d",&w,&h,&nc,&n);
    // find color "None":
-   int i;
    char *code = (char*)malloc(sizeof(char));
    assert(code);
    code[0] = 0;
 
    int offset = nc + 1;
-   for(i=1; i<=nc; i++)
+   for (int i=1; i<=nc; i++)
    {
       char s[101];
       P("%s\n",data[i]);
@@ -191,16 +188,14 @@ Region regionfromxpm(const char **data, int flop, float scale)
    XRectangle rect;
    rect.width = 1;
    rect.height = 1;
-   int y;
    assert(code);
-   for (y=0; y<h; y++)
+   for (int y=0; y<h; y++)
    {
-      int x;
       char*s = strdup(data[y+offset]);
       assert(s);
       if(flop)
 	 strrevert(s,n);
-      for(x=0; x<w; x++)
+      for (int x=0; x<w; x++)
       {
 	 if (strncmp(s+n*x,code,n))
 	 {
@@ -273,17 +268,16 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
    bits = (unsigned char*) realloc(bits,sizeof(unsigned char)*(l*h+1));
    REALLOC_CHECK(bits);
    *bitsreturn = bits;
-   int i;
-   for(i=0; i<l*h; i++)
+   for (int i=0; i<l*h; i++)
       bits[i] = 0;
 
    char *code = (char *)malloc(sizeof(char)*cpp);
    assert(code);
-   for (i=0; i<cpp; i++)
+   for (int i=0; i<cpp; i++)
       code[i] = ' ';
 
    int offset = nc + 1;
-   for(i=1; i<=nc; i++)
+   for (int i=1; i<=nc; i++)
    {
       char s[101];
       if (strlen(xpm[i]) > (size_t)cpp + 6)
@@ -298,16 +292,15 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
       }
    }
    assert(code);
-   int y;
    unsigned char c = 0;
    int j = 0;
    if (is_little_endian())
-      for (y=0; y<h; y++)         // little endian
+      for (int y=0; y<h; y++)         // little endian
       {
-	 int x,k=0;
+	 int k=0;
 	 const char *s = xpm[y+offset];
 	 int l = strlen(s);
-	 for(x=0; x<w; x++)
+	 for (int x=0; x<w; x++)
 	 {
 	    c >>= 1;
 	    if (cpp*x + cpp <= l)
@@ -326,12 +319,12 @@ int xpmtobits(char *xpm[],unsigned char **bitsreturn, int *wreturn, int *hreturn
 	    bits[j++] = c>>(8-k);
       }
    else  
-      for (y=0; y<h; y++)      // big endian  NOT tested
+      for (int y=0; y<h; y++)      // big endian  NOT tested
       {
-	 int x,k=0;
+	 int k=0;
 	 const char *s = xpm[y+offset];
 	 int l = strlen(s);
-	 for(x=0; x<w; x++)
+	 for (int x=0; x<w; x++)
 	 {
 	    c <<= 1;
 	    if (cpp*x + cpp <= l)
@@ -378,8 +371,7 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
    *out = (char**)malloc(sizeof(char *)*(n+3));
    assert(*out);
    char **x = *out;
-   int j;
-   for (j=0; j<2; j++)
+   for (int j=0; j<2; j++)
       x[j] = strdup(data[j]);
    x[2] = (char *)malloc(5+strlen(color));
    assert(x[2]);
@@ -388,7 +380,7 @@ void xpm_set_color(char **data, char ***out, int *lines, const char *color)
    strcat(x[2],color);
    P("c: [%s]\n",x[2]);
 
-   for (j=3; j<n+3; j++)
+   for (int j=3; j<n+3; j++)
    {
       x[j] = strdup(data[j]);
       P("%d %s\n",j,x[j]);
@@ -400,8 +392,7 @@ void xpm_destroy(char **data)
 {
    int h,nc;
    sscanf(data[0],"%*d %d %d",&h,&nc);
-   int i;
-   for (i=0; i<h+nc+1; i++)
+   for (int i=0; i<h+nc+1; i++)
       free(data[i]);
    free(data);
 }
@@ -410,22 +401,21 @@ void xpm_print(char **xpm)
 {
    int w,h,nc;
    sscanf(xpm[0],"%d %d %d",&w,&h,&nc);
-   int i,j;
    printf("%s\n",xpm[0]);
-   for (i=1; i<1+nc; i++)
+   for (int i=1; i<1+nc; i++)
       printf("%s\n",xpm[i]);
-   for (i=0; i<2*w+2; i++)
+   for (int i=0; i<2*w+2; i++)
       printf("_");
    printf("\n");
-   for (i=0; i<h; i++)
+   for (int i=0; i<h; i++)
    {
       printf("|");
-      for (j=0; j<w; j++)
+      for (int j=0; j<w; j++)
 	 printf("%2c",xpm[i+nc+1][j]);
       printf("|");
       printf("\n");
    }
-   for (i=0; i<2*w+2; i++)
+   for (int i=0; i<2*w+2; i++)
       printf("-");
    printf("\n");
 }

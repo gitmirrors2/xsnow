@@ -74,7 +74,7 @@
     <property name="lower">1</property>
     <property name="upper">400</property>
     <property name="value">50</property>
-    <property name="step-increment">5</property>
+    <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="birds-neighbours-adjustment">
@@ -876,14 +876,12 @@ Use the &lt;b&gt;birds&lt;/b&gt; tab if birds are misbehaving.</property>
                 <child>
                   <object class="GtkButton" id="id-alldefaults">
                     <property name="label" translatable="yes">All defaults</property>
-                    <property name="width-request">120</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -893,15 +891,16 @@ Flag: -defaults</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLinkButton" id="donate-button1">
-                    <property name="label" translatable="yes">Donate</property>
-                    <property name="name">donate</property>
-                    <property name="width-request">120</property>
+                  <object class="GtkButton" id="id-allvintage">
+                    <property name="label" translatable="yes">All vintage</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Donate one euro or so to inspire the maintainer of xsnow, here is a paypal link. </property>
-                    <property name="uri">https://paypal.me/wvermin</property>
+                    <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
+Flag: -vintage</property>
+                    <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
@@ -909,35 +908,14 @@ Flag: -defaults</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="id-allvintage">
-                    <property name="label" translatable="yes">All vintage</property>
-                    <property name="width-request">120</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
-Flag: -vintage</property>
-                    <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="button_all_vintage" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Hide menu</property>
-                    <property name="width-request">120</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
@@ -947,14 +925,15 @@ Flag: -nomenu</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLinkButton" id="contact-button1">
-                    <property name="label" translatable="yes">Contact</property>
-                    <property name="width-request">120</property>
+                  <object class="GtkButton" id="general-quit2">
+                    <property name="label" translatable="yes">Quit xsnow</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Please report any comments to the maintainer of xsnow.</property>
-                    <property name="uri">https://ratrabbit.nl/ratrabbit/contact</property>
+                    <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
@@ -962,22 +941,22 @@ Flag: -nomenu</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="general-quit2">
-                    <property name="label" translatable="yes">Quit xsnow</property>
-                    <property name="width-request">120</property>
+                  <object class="GtkLinkButton" id="contact-button1">
+                    <property name="label" translatable="yes">Contact</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
-                    <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
+                    <property name="tooltip-text" translatable="yes">Please report any comments to the maintainer of xsnow.</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="button_quit" swapped="no"/>
+                    <property name="uri">https://ratrabbit.nl/ratrabbit/contact</property>
                   </object>
                   <packing>
                     <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -1451,7 +1430,6 @@ Flag: -maxontrees</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.
 </property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_snow" swapped="no"/>
                   </object>
@@ -1469,7 +1447,6 @@ Flag: -maxontrees</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_snow" swapped="no"/>
                   </object>
@@ -1500,6 +1477,7 @@ Flag: -maxontrees</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -1529,7 +1507,6 @@ Flag: -nomenu</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flags: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -1548,7 +1525,6 @@ Flags: -defaults</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
@@ -1578,6 +1554,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -2379,7 +2356,6 @@ Flag: -santaspeedfactor</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_santa" swapped="no"/>
                   </object>
@@ -2397,7 +2373,6 @@ Flag: -santaspeedfactor</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_santa" swapped="no"/>
                   </object>
@@ -2428,6 +2403,7 @@ Flag: -santaspeedfactor</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -2457,7 +2433,6 @@ Flag: -nomenu</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -2476,7 +2451,6 @@ Flag: -defaults</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
@@ -2506,6 +2480,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -2942,7 +2917,6 @@ Flags: -treetype 7 or: -treetype all</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_scenery" swapped="no"/>
                   </object>
@@ -2960,7 +2934,6 @@ Flags: -treetype 7 or: -treetype all</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_scenery" swapped="no"/>
                   </object>
@@ -2991,6 +2964,7 @@ Flags: -treetype 7 or: -treetype all</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -3020,7 +2994,6 @@ Flag: -nomenu</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -3039,7 +3012,6 @@ Flag: -defaults</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
@@ -3069,6 +3041,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -3443,7 +3416,6 @@ Flag: sceneryscale &lt;n&gt;</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_celestials" swapped="no"/>
                   </object>
@@ -3460,7 +3432,6 @@ Flag: sceneryscale &lt;n&gt;</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_celestials" swapped="no"/>
                   </object>
@@ -3490,7 +3461,6 @@ Flag: sceneryscale &lt;n&gt;</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for all preferences (except settings).
 Flag: -defaults</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -3508,7 +3478,6 @@ Flag: -defaults</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for all preferences (except settings).
 Flag: -vintage</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
@@ -3538,6 +3507,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -3565,6 +3535,7 @@ Flag: -nomenu</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -4448,6 +4419,7 @@ Flag: -mooncolor [0,1]</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">All defaults</property>
@@ -4457,7 +4429,6 @@ Flag: -mooncolor [0,1]</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flags: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
@@ -4476,7 +4447,6 @@ Flags: -defaults</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
@@ -4497,6 +4467,7 @@ Flag: -vintage</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkButton" id="general-quit3">
                     <property name="label" translatable="yes">Quit xsnow</property>
@@ -4505,6 +4476,7 @@ Flag: -vintage</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -4524,6 +4496,7 @@ Flag: -vintage</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">end</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Hide menu</property>
@@ -4533,6 +4506,7 @@ Flag: -vintage</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -4552,6 +4526,7 @@ Flag: -nomenu</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">end</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkButton">
                     <property name="label" translatable="yes">Defaults</property>
@@ -4560,7 +4535,6 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_birds" swapped="no"/>
                   </object>
@@ -4578,7 +4552,6 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_birds" swapped="no"/>
                   </object>
@@ -5620,6 +5593,7 @@ Flag: -ignorebottom</property>
                     <property name="tooltip-text" translatable="yes">Leave menu.
 Flag: -nomenu</property>
                     <property name="double-buffered">False</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_iconify" swapped="no"/>
                   </object>
                   <packing>
@@ -5648,6 +5622,7 @@ Flag: -nomenu</property>
                     <property name="tooltip-text" translatable="yes">Quit xsnow.</property>
                     <property name="double-buffered">False</property>
                     <property name="halign">start</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_quit" swapped="no"/>
                   </object>
                   <packing>
@@ -5676,7 +5651,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply default values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_defaults_general" swapped="no"/>
                   </object>
                   <packing>
@@ -5693,7 +5668,7 @@ Flag: -nomenu</property>
                     <property name="receives-default">True</property>
                     <property name="tooltip-text" translatable="yes">Apply vintage values for the preferences in this tab.</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_vintage_general" swapped="no"/>
                   </object>
                   <packing>
@@ -5723,7 +5698,7 @@ Flag: -nomenu</property>
                     <property name="tooltip-text" translatable="yes">Apply defaults for all preferences (except settings).
 Flag: -defaults</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">end</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_defaults" swapped="no"/>
                   </object>
                   <packing>
@@ -5741,7 +5716,7 @@ Flag: -defaults</property>
                     <property name="tooltip-text" translatable="yes">Use vintage values for all preferences (except settings).
 Flag: -vintage</property>
                     <property name="double-buffered">False</property>
-                    <property name="halign">start</property>
+                    <property name="valign">center</property>
                     <signal name="clicked" handler="button_all_vintage" swapped="no"/>
                   </object>
                   <packing>

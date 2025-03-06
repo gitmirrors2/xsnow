@@ -82,7 +82,6 @@ Find_Client_In_Children(Display * dpy, Window win)
     Window root, parent;
     Window *children;
     unsigned int n_children;
-    int i;
 
     if (!XQueryTree(dpy, win, &root, &parent, &children, &n_children))
         return None;
@@ -91,7 +90,7 @@ Find_Client_In_Children(Display * dpy, Window win)
 
     /* Check each child for WM_STATE and other validity */
     win = None;
-    for (i = (int) n_children - 1; i >= 0; i--) {
+    for (int i = (int) n_children - 1; i >= 0; i--) {
         if (!Window_Is_Viewable(dpy, children[i])) {
             children[i] = None; /* Don't bother descending into this one */
             continue;
@@ -105,7 +104,7 @@ Find_Client_In_Children(Display * dpy, Window win)
     }
 
     /* No children matched, now descend into each child */
-    for (i = (int) n_children - 1; i >= 0; i--) {
+    for (int i = (int) n_children - 1; i >= 0; i--) {
         if (children[i] == None)
             continue;
         win = Find_Client_In_Children(dpy, children[i]);
@@ -185,12 +184,12 @@ Window
 Find_Client(Display * dpy, Window root, Window subwin)
 {
     unsigned long *roots;
-    unsigned int i, n_roots;
+    unsigned int n_roots;
     Window win;
 
     /* Check if subwin is a virtual root */
     roots = Find_Roots(dpy, root, &n_roots);
-    for (i = 0; i < n_roots; i++) {
+    for (unsigned int i = 0; i < n_roots; i++) {
         if (subwin != roots[i])
             continue;
         win = Find_Child_At_Pointer(dpy, subwin);

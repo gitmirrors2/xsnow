@@ -85,10 +85,9 @@ void scenery_init()
       int *a;
       int n;
       csvpos(Flags.TreeType,&a,&n);
-      int i;
       int *b = (int *)malloc(sizeof(int)*n);
       int m = 0;
-      for (i=0; i<n; i++)
+      for (int i=0; i<n; i++)
       {
 	 if(a[i] >=0 && a[i] <= MAXTREETYPE-1) 
 	 {
@@ -126,11 +125,10 @@ int compartrees(const void *a, const void *b)
 
 int scenery_draw(cairo_t *cr)
 {
-   int i;
 
    if(Flags.NoTrees)
       return TRUE;
-   for (i=0; i<NTrees; i++)
+   for (int i=0; i<NTrees; i++)
    {
       Treeinfo *tree = Trees[i];
       P("scenery: %d\n",tree->y+tree->h);
@@ -228,9 +226,9 @@ int do_initbaum(void *d)
    ClearScreen();
    Newtrees = 0;
 
-   int i,h,w;
+   int h,w;
 
-   for (i=0; i<NTrees; i++)
+   for (int i=0; i<NTrees; i++)
       free(Trees[i]);
    free(Trees);
    Trees = NULL;
@@ -262,8 +260,7 @@ int do_initbaum(void *d)
 	 ntemp = 1+MAXTREETYPE;
 	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
 	 assert(tmptreetype);
-	 int i;
-	 for (i=0; i<ntemp; i++)
+	 for (int i=0; i<ntemp; i++)
 	    tmptreetype[i] = i;
       }
       else if (strlen(Flags.TreeType) == 0) 
@@ -272,8 +269,7 @@ int do_initbaum(void *d)
 	 ntemp = MAXTREETYPE-1;
 	 tmptreetype = (int *)malloc(sizeof(*tmptreetype)*ntemp);
 	 assert(tmptreetype);
-	 int i;
-	 for (i=0; i<ntemp; i++)
+	 for (int i=0; i<ntemp; i++)
 	    tmptreetype[i] = i+1;
       }
       else
@@ -283,18 +279,17 @@ int do_initbaum(void *d)
       }
 
       NtreeTypes = 0;
-      for (i=0; i<ntemp; i++)
+      for (int i=0; i<ntemp; i++)
       {
 	 if (tmptreetype[i] >=0 && tmptreetype[i]<=MAXTREETYPE-1)
 	 {
-	    int j;
 	    int unique = 1;
 	    // investigate if this is already contained in TreeType.
 	    // if so, do not use it. Note that this algorithm is not
 	    // good scalable, when ntemp is large (100 ...) one should
 	    // consider an algorithm involving qsort()
 	    //
-	    for (j=0; j<NtreeTypes; j++)
+	    for (int j=0; j<NtreeTypes; j++)
 	       if (tmptreetype[i] == TreeType[j])
 	       {
 		  unique = 0;
@@ -322,7 +317,7 @@ int do_initbaum(void *d)
    // determine placement of trees and NTrees:
 
    NTrees    = 0;
-   for (i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted in certain cases
+   for (int i=0; i< 4*Flags.DesiredNumberOfTrees; i++) // no overlap permitted in certain cases
    {
       if (NTrees >= Flags.DesiredNumberOfTrees)
 	 break;
@@ -406,8 +401,7 @@ int do_initbaum(void *d)
 
 void create_tree_surfaces()
 {
-   int i;
-   for (i=0; i<NTrees; i++)
+   for (int i=0; i<NTrees; i++)
    {
       Treeinfo *tree = Trees[i];
       if(tree->surface)
@@ -437,8 +431,7 @@ void InitTreePixmaps()
       int rc = XpmReadFileToData(path,&TreeXpm);
       if(rc == XpmSuccess)
       {
-	 int i;
-	 for(i=0; i<2; i++)
+	 for (int i=0; i<2; i++)
 	 {
 	    P("iXpmCreatePixmapFromData %d\n",i);
 	    iXpmCreatePixmapFromData(global.display, global.SnowWin, (const char **)TreeXpm, 
@@ -465,11 +458,9 @@ void InitTreePixmaps()
    }
    else
    {
-      int i;
-      for(i=0; i<2; i++)
+      for (int i=0; i<2; i++)
       {
-	 int tt;
-	 for (tt=0; tt<=MAXTREETYPE; tt++)
+	 for (int tt=0; tt<=MAXTREETYPE; tt++)
 	 {
 	    iXpmCreatePixmapFromData(global.display, global.SnowWin, xpmtrees[tt],
 		  &TreePixmap[tt][i],&TreeMaskPixmap[tt][i],&attributes,i);
@@ -497,12 +488,10 @@ void ReInitTree0()
    XpmAttributes attributes;
    attributes.valuemask = XpmDepth;
    attributes.depth     = global.SnowWinDepth;
-   int i;
    int n = TreeHeight[0]+3;
    char **xpmtmp = (char **)malloc(n*sizeof(char *));
    assert(xpmtmp);
-   int j;
-   for (j=0; j<2; j++)
+   for (int j=0; j<2; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
    //xpmtmp[2] = strdup(". c ");
    //xpmtmp[2] = (char *)realloc(xpmtmp[2],strlen(xpmtmp[2])+strlen(Flags.TreeColor)+1);
@@ -511,17 +500,17 @@ void ReInitTree0()
    assert(xpmtmp[2]);
    strcpy(xpmtmp[2],COLORPREFIX);
    strcat(xpmtmp[2],Flags.TreeColor);
-   for(j=3; j<n; j++)
+   for (int j=3; j<n; j++)
       xpmtmp[j] = strdup(xpmtrees[0][j]);
    //P("xpmtmp:\n");xpm_print(xpmtmp);
-   for(i=0; i<2; i++)
+   for (int i=0; i<2; i++)
    {
       XFreePixmap(global.display,TreePixmap[0][i]);
       iXpmCreatePixmapFromData(global.display, global.SnowWin, (const char **)xpmtmp,
 	    &TreePixmap[0][i],&TreeMaskPixmap[0][i],&attributes,i);
       create_tree_dimensions(0);
    }
-   for (i=0; i<NTrees; i++)
+   for (int i=0; i<NTrees; i++)
    {
       Treeinfo *tree = Trees[i];
       P("tree->type %d\n",tree->type);
@@ -531,7 +520,7 @@ void ReInitTree0()
       }
    }
 
-   for (j=0; j<n; j++)
+   for (int j=0; j<n; j++)
       free(xpmtmp[j]);
    free(xpmtmp);
 }

@@ -342,6 +342,9 @@ void docs_usage(int man)
    manout(".","    NOTE: the file also contains the screen locations of a number of buttons,");
    manout(".","          which can be used for testing purposes.");
    manout(" "," ");
+   manout("$HOME/.xsnowstop", "Xsnow checks regularly the existence of this file.");
+   manout(" ","If present, xsnow will remove the file and stop.");
+   manout(" "," ");
    manout("$HOME/xsnow/pixmaps/tree.xpm", "If present, xsnow will try this file for displaying");
    manout(" ", "the trees. The format must be xpm (X PixMap) format, see");
    manout(" ", "https://en.wikipedia.org/wiki/X_PixMap .");

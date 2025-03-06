@@ -273,12 +273,12 @@ int kd_insert3f(struct kdtree *tree, float x, float y, float z, void *data)
 static int find_nearest(struct kdnode *node, const double *pos, double range, struct res_node *list, int ordered, int dim)
 {
    double dist_sq, dx;
-   int i, ret, added_res = 0;
+   int ret, added_res = 0;
 
    if(!node) return 0;
 
    dist_sq = 0;
-   for(i=0; i<dim; i++) {
+   for (int i=0; i<dim; i++) {
       dist_sq += SQ(node->pos[i] - pos[i]);
    }
    if(dist_sq <= SQ(range)) {
@@ -307,13 +307,13 @@ static int find_nearest(struct kdnode *node, const double *pos, double range, st
 static int find_nearest_n(struct kdnode *node, const double *pos, double range, int num, struct rheap *heap, int dim)
 {
    double dist_sq, dx;
-   int i, ret, added_res = 0;
+   int ret, added_res = 0;
 
    if(!node) return 0;
 
    /* if the photon is close enough, add it to the result heap */
    dist_sq = 0;
-   for(i=0; i<dim; i++) {
+   for (int i=0; i<dim; i++) {
       dist_sq += SQ(node->pos[i] - pos[i]);
    }
    if(dist_sq <= range_sq) {
@@ -356,7 +356,6 @@ static int find_nearest_n(struct kdnode *node, const double *pos, double range, 
 static void kd_nearest_i(struct kdnode *node, const double *pos, struct kdnode **result, double *result_dist_sq, struct kdhyperrect* rect)
 {
    int dir = node->dir;
-   int i;
    double dummy, dist_sq;
    struct kdnode *nearer_subtree, *farther_subtree;
    double *nearer_hyperrect_coord, *farther_hyperrect_coord;
@@ -388,7 +387,7 @@ static void kd_nearest_i(struct kdnode *node, const double *pos, struct kdnode *
    /* Check the distance of the point at the current node, compare it
     * with our best so far */
    dist_sq = 0;
-   for(i=0; i < rect->dim; i++) {
+   for (int i=0; i < rect->dim; i++) {
       dist_sq += SQ(node->pos[i] - pos[i]);
    }
    if (dist_sq < *result_dist_sq) {
@@ -418,7 +417,6 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
    struct kdnode *result;
    struct kdres *rset;
    double dist_sq;
-   int i;
 
    if (!kd) return NULL;
    if (!kd->rect) return NULL;
@@ -443,7 +441,7 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
    /* Our first guesstimate is the root node */
    result = kd->root;
    dist_sq = 0;
-   for (i = 0; i < kd->dim; i++)
+   for (int i = 0; i < kd->dim; i++)
       dist_sq += SQ(result->pos[i] - pos[i]);
 
    /* Search for the nearest neighbour recursively */
@@ -666,8 +664,7 @@ void *kd_res_itemf(struct kdres *rset, float *pos)
 {
    if(rset->riter) {
       if(pos) {
-	 int i;
-	 for(i=0; i<rset->tree->dim; i++) {
+	 for (int i=0; i<rset->tree->dim; i++) {
 	    pos[i] = rset->riter->item->pos[i];
 	 }
       }
@@ -744,9 +741,7 @@ static struct kdhyperrect* hyperrect_duplicate(const struct kdhyperrect *rect)
 
 static void hyperrect_extend(struct kdhyperrect *rect, const double *pos)
 {
-   int i;
-
-   for (i=0; i < rect->dim; i++) {
+   for (int i=0; i < rect->dim; i++) {
       if (pos[i] < rect->min[i]) {
 	 rect->min[i] = pos[i];
       }
@@ -758,10 +753,9 @@ static void hyperrect_extend(struct kdhyperrect *rect, const double *pos)
 
 static double hyperrect_dist_sq(struct kdhyperrect *rect, const double *pos)
 {
-   int i;
    double result = 0;
 
-   for (i=0; i < rect->dim; i++) {
+   for (int i=0; i < rect->dim; i++) {
       if (pos[i] < rect->min[i]) {
 	 result += SQ(rect->min[i] - pos[i]);
       } else if (pos[i] > rect->max[i]) {

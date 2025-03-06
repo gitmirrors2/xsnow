@@ -927,14 +927,13 @@ int xdo_get_mouse_location2(const xdo_t *xdo, int *x_ret, int *y_ret,
       int *screen_num_ret, Window *window_ret) {
    int ret = False;
    int x = 0, y = 0, screen_num = 0;
-   int i = 0;
    Window window = 0;
    Window root = 0;
    int dummy_int = 0;
    unsigned int dummy_uint = 0;
    int screencount = ScreenCount(xdo->xdpy);
 
-   for (i = 0; i < screencount; i++) {
+   for (int i = 0; i < screencount; i++) {
       Screen *screen = ScreenOfDisplay(xdo->xdpy, i);
       ret = XQueryPointer(xdo->xdpy, RootWindowOfScreen(screen),
 	    &root, &window,
@@ -1086,7 +1085,6 @@ int _xdo_send_keysequence_window_do(const xdo_t *xdo, Window window, const char 
 
 int xdo_send_keysequence_window_list_do(const xdo_t *xdo, Window window, charcodemap_t *keys, 
       int nkeys, int pressed, int *modifier, useconds_t delay) {
-   int i = 0;
    int modstate = 0;
    int keymapchanged = 0;
 
@@ -1099,10 +1097,9 @@ int xdo_send_keysequence_window_list_do(const xdo_t *xdo, Window window, charcod
 	 &keysyms_per_keycode);
 
    /* Find a keycode that is unused for scratchspace */
-   for (i = xdo->keycode_low; i <= xdo->keycode_high; i++) {
-      int j = 0;
+   for (int i = xdo->keycode_low; i <= xdo->keycode_high; i++) {
       int key_is_empty = 1;
-      for (j = 0; j < keysyms_per_keycode; j++) {
+      for (int j = 0; j < keysyms_per_keycode; j++) {
 	 /*char *symname;*/
 	 int symindex = (i - xdo->keycode_low) * keysyms_per_keycode + j;
 	 /*symname = XKeysymToString(keysyms[symindex]);*/
@@ -1124,41 +1121,48 @@ int xdo_send_keysequence_window_list_do(const xdo_t *xdo, Window window, charcod
    if (modifier == NULL)
       modifier = &modstate;
 
-   for (i = 0; i < nkeys; i++) {
-      if (keys[i].needs_binding == 1) {
-	 KeySym keysym_list[] = { keys[i].symbol };
-	 _xdo_debug(xdo, "Mapping sym %lu to %d", keys[i].symbol, scratch_keycode);
+   {
+      int i;
+      for (i = 0; i < nkeys; i++) // i used after loop
+      {
+	 if (keys[i].needs_binding == 1) {
+	    KeySym keysym_list[] = { keys[i].symbol };
+	    _xdo_debug(xdo, "Mapping sym %lu to %d", keys[i].symbol, scratch_keycode);
+	    XChangeKeyboardMapping(xdo->xdpy, scratch_keycode, 1, keysym_list, 1);
+	    XSync(xdo->xdpy, False);
+	    /* override the code in our current key to use the scratch_keycode */
+	    keys[i].code = scratch_keycode;
+	    keymapchanged = 1;
+	 }
+
+	 //fprintf(stderr, "keyseqlist_do: Sending %lc %s (%d, mods %x)\n",
+	 //keys[i].key, (pressed ? "down" : "up"), keys[i].code, *modifier);
+	 _xdo_send_key(xdo, window, &(keys[i]), *modifier, pressed, delay);
+
+	 if (keys[i].needs_binding == 1) {
+	    /* If we needed to make a new keymapping for this keystroke, we
+	     * should sync with the server now, after the keypress, so that
+	     * the next mapping or removal doesn't conflict. */
+	    XSync(xdo->xdpy, False);
+	 }
+
+	 if (pressed) {
+	    *modifier |= keys[i].modmask;
+	 } else {
+	    *modifier &= ~(keys[i].modmask);
+	 }
+      }
+
+      // wwvv the following assumes that i has a valid value (nkeys)
+      // but this is only an issue if xdo->debug is TRUE
+      // I suspect that this has to go before the last brace,
+      // but leave it here: the 3.20160805 version of xdotool has the same issue.
+      if (keymapchanged) {
+	 KeySym keysym_list[] = { 0 };
+	 _xdo_debug(xdo, "Reverting scratch keycode (sym %lu to %d)",
+	       keys[i].symbol, scratch_keycode);
 	 XChangeKeyboardMapping(xdo->xdpy, scratch_keycode, 1, keysym_list, 1);
-	 XSync(xdo->xdpy, False);
-	 /* override the code in our current key to use the scratch_keycode */
-	 keys[i].code = scratch_keycode;
-	 keymapchanged = 1;
       }
-
-      //fprintf(stderr, "keyseqlist_do: Sending %lc %s (%d, mods %x)\n",
-      //keys[i].key, (pressed ? "down" : "up"), keys[i].code, *modifier);
-      _xdo_send_key(xdo, window, &(keys[i]), *modifier, pressed, delay);
-
-      if (keys[i].needs_binding == 1) {
-	 /* If we needed to make a new keymapping for this keystroke, we
-	  * should sync with the server now, after the keypress, so that
-	  * the next mapping or removal doesn't conflict. */
-	 XSync(xdo->xdpy, False);
-      }
-
-      if (pressed) {
-	 *modifier |= keys[i].modmask;
-      } else {
-	 *modifier &= ~(keys[i].modmask);
-      }
-   }
-
-
-   if (keymapchanged) {
-      KeySym keysym_list[] = { 0 };
-      _xdo_debug(xdo, "Reverting scratch keycode (sym %lu to %d)",
-	    keys[i].symbol, scratch_keycode);
-      XChangeKeyboardMapping(xdo->xdpy, scratch_keycode, 1, keysym_list, 1);
    }
 
    /* Necessary? */
@@ -1266,10 +1270,9 @@ int xdo_find_window_client(const xdo_t *xdo, Window window, Window *window_ret,
 	    window = parent;
 	 } else if (direction == XDO_FIND_CHILDREN) {
 	    _xdo_debug(xdo, "searching %d children", nchildren);
-	    unsigned int i = 0;
 	    int ret;
 	    done = True; /* recursion should end us */
-	    for (i = 0; i < nchildren; i++) {
+	    for (unsigned int i = 0; i < nchildren; i++) {
 	       ret = xdo_find_window_client(xdo, children[i], &window, direction);
 	       //fprintf(stderr, "findclient: %ld\n", window);
 	       if (ret == XDO_SUCCESS) {
@@ -1299,11 +1302,10 @@ int xdo_find_window_client(const xdo_t *xdo, Window window, Window *window_ret,
 
 /* Helper functions */
 static KeySym _xdo_keysym_from_char(const xdo_t *xdo, wchar_t key) {
-   int i = 0;
    int len = xdo->charcodes_len;
 
    //printf("Finding symbol for key '%c'\n", key);
-   for (i = 0; i < len; i++) {
+   for (int i = 0; i < len; i++) {
       //printf("  => %c vs %c (%d)\n",
       //key, xdo->charcodes[i].key, (xdo->charcodes[i].key == key));
       if (xdo->charcodes[i].key == key) {
@@ -1323,7 +1325,6 @@ static void _xdo_charcodemap_from_char(const xdo_t *xdo, charcodemap_t *key) {
 }
 
 static void _xdo_charcodemap_from_keysym(const xdo_t *xdo, charcodemap_t *key, KeySym keysym) {
-   int i = 0;
    int len = xdo->charcodes_len;
 
    assert(key);
@@ -1333,7 +1334,7 @@ static void _xdo_charcodemap_from_keysym(const xdo_t *xdo, charcodemap_t *key, K
    key->modmask = 0;
    key->needs_binding = 1;
 
-   for (i = 0; i < len; i++) {
+   for (int i = 0; i < len; i++) {
       if (xdo->charcodes[i].symbol == keysym) {
 	 key->code = xdo->charcodes[i].code;
 	 key->group = xdo->charcodes[i].group;
@@ -1353,7 +1354,7 @@ static void _xdo_populate_charcode_map(xdo_t *xdo) {
    /* assert xdo->display is valid */
    int keycodes_length = 0;
    int idx = 0;
-   int keycode, group, groups, level, modmask, num_map;
+   int groups, modmask;
 
    XDisplayKeycodes(xdo->xdpy, &(xdo->keycode_low), &(xdo->keycode_high));
    XModifierKeymap *modmap = XGetModifierMapping(xdo->xdpy);
@@ -1370,15 +1371,15 @@ static void _xdo_populate_charcode_map(xdo_t *xdo) {
    xdo->charcodes = (charcodemap_t *)calloc(keycodes_length, sizeof(charcodemap_t));
    XkbDescPtr desc = XkbGetMap(xdo->xdpy, XkbAllClientInfoMask, XkbUseCoreKbd);
 
-   for (keycode = xdo->keycode_low; keycode <= xdo->keycode_high; keycode++) {
+   for (int keycode = xdo->keycode_low; keycode <= xdo->keycode_high; keycode++) {
       groups = XkbKeyNumGroups(desc, keycode);
-      for (group = 0; group < groups; group++) {
+      for (int group = 0; group < groups; group++) {
 	 XkbKeyTypePtr key_type = XkbKeyKeyType(desc, keycode, group);
-	 for (level = 0; level < key_type->num_levels; level++) {
+	 for (int level = 0; level < key_type->num_levels; level++) {
 	    KeySym keysym = XkbKeycodeToKeysym(xdo->xdpy, keycode, group, level);
 	    modmask = 0;
 
-	    for (num_map = 0; num_map < key_type->map_count; num_map++) {
+	    for (int num_map = 0; num_map < key_type->map_count; num_map++) {
 	       XkbKTMapEntryRec map = key_type->map[num_map];
 	       if (map.active && map.level == level) {
 		  modmask = map.mods.mask;
@@ -1416,7 +1417,6 @@ int _xdo_send_keysequence_window_to_keycode_list(const xdo_t *xdo, const char *k
    char *tokctx = NULL;
    const char *tok = NULL;
    char *keyseq_copy = NULL, *strptr = NULL;
-   int i = 0;
 
    /* Array of keys to press, in order given by keyseq */
    int keys_size = 10;
@@ -1438,7 +1438,7 @@ int _xdo_send_keysequence_window_to_keycode_list(const xdo_t *xdo, const char *k
 
       /* Check if 'tok' (string keysym) is an alias to another key */
       /* symbol_map comes from xdo.util */
-      for (i = 0; symbol_map[i] != NULL; i+=2)
+      for (int i = 0; symbol_map[i] != NULL; i+=2)
 	 if (!strcasecmp(tok, symbol_map[i]))
 	    tok = symbol_map[i + 1];
 
@@ -1546,7 +1546,6 @@ int _xdo_ewmh_is_supported(const xdo_t *xdo, const char *feature) {
    long nitems = 0L;
    int size = 0;
    Atom *results = NULL;
-   long i = 0;
 
    Window root;
    Atom request;
@@ -1557,7 +1556,7 @@ int _xdo_ewmh_is_supported(const xdo_t *xdo, const char *feature) {
    root = XDefaultRootWindow(xdo->xdpy);
 
    results = (Atom *) (void*)xdo_get_window_property_by_atom(xdo, root, request, &nitems, &type, &size);
-   for (i = 0L; i < nitems; i++) {
+   for (long i = 0L; i < nitems; i++) {
       if (results[i] == feature_atom)
 	 return True;
    }
@@ -1624,11 +1623,10 @@ void _xdo_send_key(const xdo_t *xdo, Window window, charcodemap_t *key,
 }
 
 int _xdo_query_keycode_to_modifier(XModifierKeymap *modmap, KeyCode keycode) {
-   int i = 0, j = 0;
    int max = modmap->max_keypermod;
 
-   for (i = 0; i < 8; i++) { /* 8 modifier types, per XGetModifierMapping(3X) */
-      for (j = 0; j < max && modmap->modifiermap[(i * max) + j]; j++) {
+   for (int i = 0; i < 8; i++) { /* 8 modifier types, per XGetModifierMapping(3X) */
+      for (int j = 0; j < max && modmap->modifiermap[(i * max) + j]; j++) {
 	 if (keycode == modmap->modifiermap[(i * max) + j]) {
 	    switch (i) {
 	       case ShiftMapIndex: return ShiftMask; break;
@@ -1650,11 +1648,11 @@ int _xdo_query_keycode_to_modifier(XModifierKeymap *modmap, KeyCode keycode) {
 
 void _xdo_send_modifier(const xdo_t *xdo, int modmask, int is_press) {
    XModifierKeymap *modifiers = XGetModifierMapping(xdo->xdpy);
-   int mod_index, mod_key, keycode;
+   int keycode;
 
-   for (mod_index = ShiftMapIndex; mod_index <= Mod5MapIndex; mod_index++) {
+   for (int mod_index = ShiftMapIndex; mod_index <= Mod5MapIndex; mod_index++) {
       if (modmask & (1 << mod_index)) {
-	 for (mod_key = 0; mod_key < modifiers->max_keypermod; mod_key++) {
+	 for (int mod_key = 0; mod_key < modifiers->max_keypermod; mod_key++) {
 	    keycode = modifiers->modifiermap[mod_index * modifiers->max_keypermod + mod_key];
 	    if (keycode) {
 	       XTestFakeKeyEvent(xdo->xdpy, keycode, is_press, CurrentTime);
@@ -1676,15 +1674,14 @@ int xdo_get_active_modifiers(const xdo_t *xdo, charcodemap_t **keys,
    char keymap[32]; /* keycode map: 256 bits */
    int keys_size = 10;
    int keycode = 0;
-   int mod_index, mod_key;
    XModifierKeymap *modifiers = XGetModifierMapping(xdo->xdpy);
    *nkeys = 0;
    *keys = (charcodemap_t *)malloc(keys_size * sizeof(charcodemap_t));
 
    XQueryKeymap(xdo->xdpy, keymap);
 
-   for (mod_index = ShiftMapIndex; mod_index <= Mod5MapIndex; mod_index++) {
-      for (mod_key = 0; mod_key < modifiers->max_keypermod; mod_key++) {
+   for (int mod_index = ShiftMapIndex; mod_index <= Mod5MapIndex; mod_index++) {
+      for (int mod_key = 0; mod_key < modifiers->max_keypermod; mod_key++) {
 	 keycode = modifiers->modifiermap[mod_index * modifiers->max_keypermod + mod_key];
 	 if (keycode && keymap[(keycode / 8)] & (1 << (keycode % 8))) {
 	    /* This keycode is active and is a modifier, record it. */
