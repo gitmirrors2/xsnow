@@ -23,7 +23,7 @@ XPM_TYPE *tree_1_100px[] = {
 /* columns rows colors chars-per-pixel */
 "80 100 4 1 ",
 "  c None",
-". c #00bb00",
+". c #387007",
 "b c #8b4513",
 "g c #006400",
 /* pixels */

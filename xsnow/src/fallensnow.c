@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -48,6 +48,7 @@
 #include "wind.h"
 #include "debug.h"
 #include "spline_interpol.h"
+#include "clocks.h"
 
 #define NOTACTIVE \
    (Flags.BirdsOnly || !WorkspaceActive() || Flags.NoSnowFlakes || (Flags.NoKeepSWin && Flags.NoKeepSBot))
@@ -127,6 +128,9 @@ void fallensnow_draw(cairo_t *cr)
 	    P("acth; %d %d\n",fsnow->acth[0],fsnow->acth[1]);
 	    compute_mixed_color(&color);
 	    cairo_set_source_rgba(cr, color.red, color.green, color.blue, ALPHA);
+	    //cairo_set_source_rgba(cr, 1, 0, 0, ALPHA);
+
+	    P("#%d %d %d %d %d %d\n",global.counter++,fsnow->win.w,fsnow->w,fsnow->x, fsnow->y,fsnow->firsth);
 	    cairo_arc(cr,fsnow->x,fsnow->y,fsnow->firsth,M_PI/2,3*M_PI/2);
 	    cairo_close_path(cr);
 	    cairo_fill(cr);
@@ -236,12 +240,41 @@ void *do_fallen(void *d)
       {
 	 P("%d do_fallen\n",global.counter++);
 	 Lock_fallen();
+	 // Now and then, convert blob into flakes
+	 // interval between two calls of this function is ca. time_fallen seconds
+	 // so, if we want N seconds between two blobconversions
+	 // we have to wait N/time_fallen times.
+	 static int counter  = 0;
+	 static int countmax = -1;
+	 int dropblobtime;
+	 counter++;
+	 if (counter > countmax)
+	 {
+	    counter = 0;
+	    countmax = (1.5*drand48()+0.5)*time_dropblob/time_fallen;
+	    dropblobtime = 1;
+	 }
+	 else
+	    dropblobtime = 0;
 
 	 FallenSnow *fsnow = global.FsnowFirst;
+	 int nfsnow = 0;
 	 while(fsnow)
 	 {
 	    if (HandleFallenSnow(fsnow)) 
-	       DrawFallen(fsnow);
+	       nfsnow++;
+	    fsnow  = fsnow->next;
+	 }
+	 fsnow = global.FsnowFirst;
+	 int idropblob = drand48()*nfsnow;
+	 nfsnow = 0;
+	 while(fsnow)
+	 {
+	    if (HandleFallenSnow(fsnow)) 
+	    {
+	       DrawFallen(fsnow,nfsnow == idropblob && dropblobtime);
+	       nfsnow++;
+	    }
 	    fsnow = fsnow->next;
 	 }
 	 XFlush(global.display);
@@ -286,6 +319,10 @@ void CreateDesh(FallenSnow *p)
 #define N 6
    double splinex[N];
    double spliney[N];
+
+   // Make h not too big compared with w:
+   if (h > w/2)
+      h = w/2;
 
    randomuniqarray(splinex,N,0.0000001,NULL);
    for (int i=0; i<N; i++)
@@ -334,6 +371,8 @@ void PushFallenSnow(FallenSnow **first, WinInfo *win, int x, int y, int w, int h
 		    //                  computing splines etc.
    FallenSnow *p = (FallenSnow *)malloc(sizeof(FallenSnow));
    assert(p);
+   P("#%d %#lx\n",global.counter++,win->id);
+
    p->win        = *win;
    p->x          = x;
    p->y          = y;
@@ -599,7 +638,9 @@ void CreateSurfaceFromFallen(FallenSnow *f)
       // compute averages for 10 points, draw spline through them
       // and use that to draw fallensnow
 
-      const int m = 10;
+      int m = w/2;
+      if (m > 10)
+	 m = 10;
       int nav = 3+(w-2)/m;
 
       double *av = (double *)malloc(nav*sizeof(double));
@@ -611,7 +652,10 @@ void CreateSurfaceFromFallen(FallenSnow *f)
       {
 	 double s = 0;
 	 for (int j=0; j<m; j++)
+	 {
+	    //assert(m*i+j <  w);
 	    s += acth[m*i+j];
+	 }
 	 av[i+1] = s/m;
 	 x[i+1]  = m*i + 0.5*m;
       }
@@ -714,7 +758,7 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    cairo_destroy(cr);
 }
 
-void DrawFallen(FallenSnow *fsnow)
+void DrawFallen(FallenSnow *fsnow, int dropblobtime)
 {
    // threads: locking done by caller
    if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
@@ -739,7 +783,7 @@ void DrawFallen(FallenSnow *fsnow)
 		  }
 
 		  P("generate flakes %d %d %d\n",global.counter++,x,w);
-		  GenerateFlakesFromFallen(fsnow, x, w, -100, 0.05);
+		  GenerateFlakesFromFallen(fsnow, x, w, -100, 0.05, 1);
 		  CleanFallenArea(fsnow,x,w);
 		  for (int i=0; i<fsnow->w; i++)
 		     if (i < x+w && i>=x)
@@ -776,12 +820,12 @@ void DrawFallen(FallenSnow *fsnow)
 	       {
 		  if (global.SantaDirection == 0)  // left to right
 		  {
-		     GenerateFlakesFromFallen(fsnow,xfront,         clearing,vy,0.15);
+		     GenerateFlakesFromFallen(fsnow,xfront,         clearing,vy,0.15, 1);
 		     CleanFallenArea(fsnow,xback-clearing,global.SantaWidth+2*clearing);
 		  }
 		  else
 		  {
-		     GenerateFlakesFromFallen(fsnow,xfront-clearing,clearing,vy,0.15);
+		     GenerateFlakesFromFallen(fsnow,xfront-clearing,clearing,vy,0.15, 1);
 		     CleanFallenArea(fsnow,xback+clearing,global.SantaWidth+2*clearing);
 		  }
 	       }
@@ -800,13 +844,55 @@ void DrawFallen(FallenSnow *fsnow)
 	       XFlush(global.display);
 	    }
 	 }
-	 CreateSurfaceFromFallen(fsnow);
-	 // drawing is handled in fallensnow_draw
+
+	 if (dropblobtime && drand48() > 0.5)
+	 {
+	    if (drand48() > 0.5)
+	    {  // drop left
+	       if (fsnow->acth[0] > fsnow->h/4)
+	       {
+		  P("blob->flakes left %d\n",fsnow->w);
+		  GenerateFlakesFromFallen(fsnow, 0, 20, 999, 0.15, 0); // vy is taken care off 
+		  int m = 20;
+		  if (m > fsnow->w) 
+		     m = fsnow->w;
+		  float p = (float)fsnow->acth[m-1]/(float)m;
+		  for(int i=0; i<m; i++)
+		  {
+		     fsnow->acth[i] = i*p;
+		     P("%f %d %d %d %d\n",p,fsnow->w,fsnow->h,i,fsnow->acth[i]);
+		     //assert(fsnow->acth[i] <= fsnow->h);
+		  }
+	       }
+	    }
+	    else
+	    {  //drop right
+	       if (fsnow->acth[fsnow->w-1] > fsnow->h/4)
+	       {
+		  int w = fsnow->w;
+		  P("blob->flakes right %d\n",w);
+		  GenerateFlakesFromFallen(fsnow, w-20, 20, 999, 0.15, 0); // vy is taken care off 
+		  int m = w - 20;
+		  if (m < 0) 
+		     m = 0;
+		  float p = (float)fsnow->acth[w-m-1]/(float)(w-m);
+		  for(int i=m; i<w; i++)
+		  {
+		     fsnow->acth[i] = p*(w-i);
+		     P("%f %d %d %d %d\n",p,fsnow->w,fsnow->h,i,fsnow->acth[i]);
+		     //assert(fsnow->acth[i] <= fsnow->h);
+		  }
+	       }
+	    }
+	 }
       }
+   CreateSurfaceFromFallen(fsnow);
+   // drawing is handled in fallensnow_draw
 }
 
-void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float amount)
+void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float amount, int accum)
 {
+   const int maxkmax = 20;
    // threads: locking by caller
    P("GenerateFlakes %d %d %d %f\n",global.counter++,x,w,vy);
    if (!Flags.BlowSnow || Flags.NoSnowFlakes)
@@ -827,13 +913,20 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float a
    P("maxheight: %d maxw: %d\n",global.MaxSnowFlakeHeight,global.MaxSnowFlakeWidth);
    for (int i=ifirst; i<ilast; i+=1)
    {
-      for (int j=0; j<fsnow->acth[i]; j++)
+      int jmax = fsnow->acth[i];
+      for (int j=0; j<jmax; j++)
       {
 	 int kmax = BlowOff();
+	 if(i==0 || i == fsnow->w-1)
+	 {
+	    kmax = 0.1*jmax*jmax;
+	    P("width x y %d %d %d #%d\n",fsnow->w,fsnow->x,fsnow->y, global.counter++);
+	 }
+	 if (kmax > maxkmax)
+	    kmax = maxkmax;
 	 for (int k=0; k<kmax; k++)
 	 {
-	    float p = 0;
-	    p = drand48();
+	    float p = drand48();
 	    // In X11, (global.Trans!=1) we want not too much
 	    // generated flakes
 	    // Otherwize, we go for more dramatic effects
@@ -850,6 +943,23 @@ void GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy, float a
 		  flake->vx      = global.NewWind/8;
 	       flake->vy         = vy;
 	       flake->cyclic     = 0;
+	       flake->accum      = accum;
+	       if (i == 0)
+	       {
+		  //flake->accum   = accum;  // to prevent forming a new blob immediately
+		  flake->vx      = -10*drand48();
+		  flake->vy      = 0;
+		  flake->rx     -= fsnow->acth[i];
+		  flake->counter = 0;
+	       }
+	       if (i == fsnow->w - 1)
+	       {
+		  //flake->accum   = accum;  // to prevent forming a new blob immediately
+		  flake->vx      = 10*drand48();
+		  flake->vy      = 0;
+		  flake->rx     += fsnow->acth[i];
+		  flake->counter = 0;
+	       }
 	    }
 	 }
       }

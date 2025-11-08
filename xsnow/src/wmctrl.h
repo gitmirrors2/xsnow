@@ -28,4 +28,5 @@ extern long int     GetCurrentWorkspace();
 extern int          GetWindows(WinInfo **w, int *nw);
 extern WinInfo     *FindWindow(WinInfo *windows, int nwin, Window id);
 extern void         printwindows(Display *dpy,WinInfo *windows, int nwin);
+extern void         GetAbsoluteCoordinates(Display *display, Window win, int *x, int *y, int *w, int *h);
 

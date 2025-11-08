@@ -346,7 +346,7 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="staradjustment">
-    <property name="upper">50</property>
+    <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
@@ -1572,18 +1572,6 @@ Flag: -vintage</property>
             </child>
             <child>
               <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="vexpand">True</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">12</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
                 <property name="width-request">100</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -1884,10 +1872,29 @@ Flag: -enablesc2</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Lift snow on windows or screen: click </property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">11</property>
+                <property name="width">2</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Settings</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left-attach">2</property>
+                <property name="top-attach">11</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

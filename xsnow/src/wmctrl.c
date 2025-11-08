@@ -90,6 +90,24 @@ void FindWindows_r(Display *display,Window window,long unsigned int *nwindows,Wi
 }
 #endif
 
+void GetAbsoluteCoordinates(Display *display, Window win, int *x, int *y, int *w, int *h)
+{
+   Window child;
+   XWindowAttributes xwa;
+   int xx,yy;
+   XTranslateCoordinates( display, win, DefaultRootWindow(display), 0, 0, &xx, &yy, &child );
+   XGetWindowAttributes( display, win, &xwa );
+   P( "window: %p x: %d y: %d w: %d h: %d\n", (void*)win, xx - xwa.x, yy - xwa.y, xwa.width, xwa.height );
+   if(x)
+      *x = xx - xwa.x;
+   if(y)
+      *y = yy - xwa.y;
+   if(w)
+      *w = xwa.width;
+   if(h)
+      *h = xwa.height;
+}
+
 long int GetCurrentWorkspace()
 {
    Atom type;
@@ -192,6 +210,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    static Atom atom_win_client_list;
    static Atom atom_win_workspace;
    static Atom atom_wm_state;
+   static Atom atom_ignore;
 
    static int firstcall = 1;
    if(firstcall)
@@ -209,6 +228,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       atom_win_client_list      = XInternAtom(getdisplay, "_WIN_CLIENT_LIST"     ,False);
       atom_win_workspace        = XInternAtom(getdisplay, "_WIN_WORKSPACE"       ,False);
       atom_wm_state             = XInternAtom(getdisplay, "WM_STATE"             ,False);
+      atom_ignore               = XInternAtom(getdisplay, ignore_atom            ,False);
    }
 
    XGetWindowProperty(getdisplay, DefaultRootWindow(getdisplay), atom_net_client_list, 0, 1000000, False, 
@@ -254,6 +274,8 @@ int GetWindows(WinInfo **windows, int *nwin)
    if(nchildren>0)
       (*windows) = (WinInfo *)malloc(nchildren*sizeof(WinInfo));
    WinInfo *w = (*windows);
+   if(w)
+      memset(w,0,sizeof(WinInfo));
    int k = 0;
 
    // and yet another check if window is hidden (needed e.g. in KDE/plasma after 'hide all windows')
@@ -285,6 +307,11 @@ int GetWindows(WinInfo **windows, int *nwin)
    assert(w);
    for (unsigned long i=0; i<nchildren; i++)
    {
+      // loop over all children of root
+      // all children are included in windows
+      // except those with depth=0
+      // sticky, dock, hidden and ignore are set as appropriate
+
       int x0,y0,xr,yr;
       unsigned int depth;
 
@@ -299,7 +326,8 @@ int GetWindows(WinInfo **windows, int *nwin)
       w->h  = winattr.height;
       depth = winattr.depth;
 
-      P("%d %#lx %d %d %d %d %d\n",counter++,w->id,x0,y0,w->w,w->h,depth);
+      //if (w->id == global.SnowWin)
+      P("#%d %#lx %d %d %d %d %d\n",global.counter++,w->id,x0,y0,w->w,w->h,depth);
       // if this window is showing nothing, we ignore it:
       if (depth == 0)
 	 continue;
@@ -318,6 +346,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
       if(type != XA_CARDINAL)
       {
+	 // workspace number
 	 if(properties) XFree(properties);
 	 properties = NULL;
 	 XGetWindowProperty(getdisplay, w->id, atom_win_workspace, 0, 1, False, 
@@ -330,6 +359,18 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
       else
 	 w->ws = 0;
+
+      // to be ignored by Atom ignore_atom?
+      XGetWindowProperty(getdisplay, w->id, atom_ignore, 0, (~0L), False,
+	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if(type == None)
+	 w->ignore = 0;
+      else
+	 w->ignore = 1;
+      if(properties)
+	 XFree(properties);
+      P("ignore #%lx %d %d\n",w->id,w->ignore,rc);
+
       // maybe this window is sticky:
       w->sticky = 0;
       properties = NULL;
@@ -371,7 +412,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_WINDOW_TYPE_DOCK"))
 	    { 
-	       P("%#lx is dock %d\n",w->id, counter++);
+	       P("%#lx is dock #%d\n",w->id, global.counter++);
 	       w->dock = 1;
 	       if(s) XFree(s);
 	       break;

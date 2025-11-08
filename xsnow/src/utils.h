@@ -66,7 +66,7 @@ extern int     IsReadableFile(char *path);
 extern float   gaussf(float x, float mu, float sigma);
 extern void    traceback(void);
 extern char   *guess_language(void);
-extern Window  largest_window_with_name(xdo_t *myxdo, const char *name);
+extern Window  largest_window_with_name(xdo_t *myxdo, const char *name, int x, int y);
 extern void    fill_xdo_search(xdo_search_t *search);
 extern void    mixcolors(const char *color1, const char *color2, const double t, char *mixed);
 

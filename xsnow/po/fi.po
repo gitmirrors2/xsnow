@@ -1,13 +1,13 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) XsnoW
-# # (abc_1001) xsnow
-# # (abc_1002) Xscreensaver
-# # (abc_1003) %l#x
+# # (abc_1000) xsnow
+# # (abc_1001) Xscreensaver
+# # (abc_1002) XsnoW
+# # (abc_1003) Xsnow
 # # (abc_1004) &#8195;
-# # (abc_1005) XSNOW
-# # (abc_1006) Rick Jansen
-# # (abc_1007) Xsnow
-# # (abc_1008) \n
+# # (abc_1005) \n
+# # (abc_1006) XSNOW
+# # (abc_1007) %l#x
+# # (abc_1008) Rick Jansen
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -16,10 +16,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: xsnow 3.6.1.gettext~pre7\n"
+"Project-Id-Version: xsnow-3.8.6\n"
 "Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
-"POT-Creation-Date: 2024-03-10 14:19+0100\n"
-"PO-Revision-Date: 2024-03-10 14:19+0100\n"
+"POT-Creation-Date: 2025-03-26 12:50+0100\n"
+"PO-Revision-Date: 2025-03-26 12:50+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: fi\n"
@@ -27,204 +27,204 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:379
+#: src/main.c:391
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Saatavilla olevat kielet ovat: %s\n"
 
-#: src/main.c:382
+#: src/main.c:394
 msgid "Warning: don't eat yellow snow!"
 msgstr "Varoitus: älä syö keltaista lunta!"
 
-#: src/main.c:403
+#: src/main.c:417
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Optimaalista palautusta varten lisää %s:\n"
 
-#: src/main.c:411
+#: src/main.c:425
 #, c-format
 msgid "unknown\n"
 msgstr "tuntematon\n"
 
-#: src/main.c:420
+#: src/main.c:434
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Havaittu Wayland-työpöytä\n"
 
-#: src/main.c:435
+#: src/main.c:447
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow tarvitsee gtk-version >= %s, löytyi versio %s \n"
 
-#: src/main.c:445
+#: src/main.c:457
 msgid "Continuing with flag"
 msgstr "Jatketaan liputuksella"
 
-#: src/main.c:483
+#: src/main.c:494
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: ei voida yhdistää X-palvelimeen %s\n"
 
-#: src/main.c:484
+#: src/main.c:495
 msgid "(default)"
 msgstr "(oletuksena)"
 
-#: src/main.c:602
+#: src/main.c:620
 msgid "restarting"
 msgstr "uudelleenkäynnistys"
 
-#: src/main.c:649
+#: src/main.c:667
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Napauta ikkunaa ...\n"
 
-#: src/main.c:683
+#: src/main.c:700
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Havaittu työpöytäistunto: %s\n"
 
-#: src/main.c:686
+#: src/main.c:703
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Työpöytäistuntoa ei voitu määrittää\n"
 
-#: src/main.c:718
+#: src/main.c:735
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Yritetään lunta juuri-ikkunassa\n"
 
-#: src/main.c:762
+#: src/main.c:780
 #, c-format
 msgid "Using transparent window\n"
 msgstr "Käyttämällä läpinäkyvää ikkunaa\n"
 
-#: src/main.c:767
+#: src/main.c:785
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr ""
 "Läpinäkyvä lumiikkuna ei todennäköisesti ole napsautettava, "
 "valitettavasti..\n"
 
-#: src/main.c:776
+#: src/main.c:794
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Läpinäkyvää ikkunaa ei voi luoda\n"
 
-#: src/main.c:778
+#: src/main.c:796
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "HUOMAUTUS: xsnow todennäköisesti toimii, mutta joitakin virheitä on "
 "odotettavissa.\n"
 
-#: src/main.c:788
+#: src/main.c:806
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE-istunto löytyi, käyttäen ikkunaa 'pcmanfm'.\n"
 
-#: src/main.c:795
+#: src/main.c:813
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Käytä ikkunaa 'Työpöytä'.\n"
 
-#: src/main.c:799
+#: src/main.c:817
 #, c-format
 msgid "Using root window\n"
 msgstr "Käytetään pääikkunaa\n"
 
-#: src/main.c:843
+#: src/main.c:895
 #, c-format
 msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
 msgstr "Lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:888
+#: src/main.c:923
 #, c-format
 msgid "Using double buffer: %#lx. %dx%d\n"
 msgstr "Käytetään kaksinkertaista puskuria: %#lx. %dx%d\n"
 
-#: src/main.c:895
+#: src/main.c:930
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "EI kaksoispuskurointia:"
 
-#: src/main.c:897
+#: src/main.c:932
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr ""
 " koska kaksinkertainen puskurointi ei ole käytettävissä tässä "
 "järjestelmässä\n"
 
-#: src/main.c:899
+#: src/main.c:934
 #, c-format
 msgid " on your request.\n"
 msgstr " pyynnöstäsi.\n"
 
-#: src/main.c:900
+#: src/main.c:935
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "HUOMAA: odota välähdystä.\n"
 
-#: src/main.c:1042
+#: src/main.c:1105
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Käynnistä uudelleen näytön tai kielen asetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1056
+#: src/main.c:1119
 msgid "Restart due to change of display settings...\n"
 msgstr "Käynnistä uudelleen näyttöasetusten muutoksen vuoksi...\n"
 
-#: src/main.c:1147
+#: src/main.c:1222
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Odottaa jonkin verran slugginess)"
 
-#: src/main.c:1151
+#: src/main.c:1226
 msgid "Probably X11"
 msgstr "Todennäköisesti X11"
 
-#: src/main.c:1153
+#: src/main.c:1228
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Lumiikkuna: %#lx"
 
-#: src/main.c:1205
+#: src/main.c:1270
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Yli %d virhettä, lopetan!"
 
-#: src/main.c:1355
+#: src/main.c:1427
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Ikkunan koko muutettu, nyt lunta %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1424
+#: src/main.c:1497
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Keskeytetään lipun %s takia\n"
 
-#: src/selfrep.c:34
+#: src/selfrep.c:35
 #, c-format
 msgid "Not sending tar file to terminal.\n"
 msgstr "Tar-tiedostoa ei lähetetä päätteeseen.\n"
 
-#: src/selfrep.c:35
+#: src/selfrep.c:36
 #, c-format
 msgid "Try redirecting to a file (e.g: %s,\n"
 msgstr "Yritä ohjata tiedostoon (esim. %s,\n"
 
-#: src/selfrep.c:36
+#: src/selfrep.c:37
 #, c-format
 msgid "or use a %s"
 msgstr "tai käytä %s"
 
-#: src/selfrep.c:42
+#: src/selfrep.c:43
 msgid "Problems encountered during production of the tar ball.\n"
 msgstr "Ongelmia tervapallon valmistuksen aikana.\n"
 
-#: src/selfrep.c:47
+#: src/selfrep.c:48
 #, c-format
 msgid "Self replication is not compiled in.\n"
 msgstr "Itsekopiointia ei ole käännetty.\n"
 
-#: src/utils.c:248
+#: src/utils.c:250
 #, c-format
 msgid ""
 "\n"
@@ -233,7 +233,7 @@ msgstr ""
 "\n"
 "Xsnow: Saimme signaalin %d\n"
 
-#: src/utils.c:251
+#: src/utils.c:253
 #, c-format
 msgid ""
 "\n"
@@ -242,48 +242,48 @@ msgstr ""
 "\n"
 "Kiitos, että käytät xsnow\n"
 
-#: src/windows.c:633
+#: src/windows.c:631
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Asetetaan taustaa kohteesta %s\n"
 
-#: src/ui.c:1050
+#: src/ui.c:1051
 #, c-format
 msgid "Range: %d\n"
 msgstr "Alue: %d\n"
 
-#: src/ui.c:1052
+#: src/ui.c:1053
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Keskimääräinen etäisyys: %3d\n"
 
-#: src/ui.c:1060
+#: src/ui.c:1061
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Työpöydän tyyppi: %s"
 
-#: src/ui.c:1175 src/ui.glade:5910
+#: src/ui.c:1190 src/ui.glade:5875
 msgid "all monitors"
 msgstr "kaikki näytöt"
 
-#: src/ui.c:1182
+#: src/ui.c:1196
 #, c-format
 msgid "monitor %d"
 msgstr "näyttö %d"
 
-#: src/ui.c:1200
+#: src/ui.c:1215
 msgid "Available languages are: "
 msgstr "Tämä lehdistötiedote on saatavissa seuraavilla kielillä: "
 
-#: src/ui.c:1203
+#: src/ui.c:1218
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Käytä \"sys\" oletuskielelläsi.\n"
 
-#: src/ui.c:1204
+#: src/ui.c:1219
 msgid "See also the man page."
 msgstr "Katso myös Man Page."
 
-#: src/ui.glade:144
+#: src/ui.glade:127
 msgid ""
 "\n"
 "Alas! This not an X11 session, xsnow will probably not run.\n"
@@ -309,11 +309,11 @@ msgstr ""
 "conf.\n"
 "\n"
 
-#: src/ui.glade:162
+#: src/ui.glade:145
 msgid "Ok, things are as they are. "
 msgstr "Asiat ovat niin kuin ovat. "
 
-#: src/ui.glade:477
+#: src/ui.glade:460
 msgid ""
 "If everything is ok, it is now snowing on your desktop, and birds are "
 "flying. You are encouraged to define your own preferences using the tabs "
@@ -323,7 +323,7 @@ msgstr ""
 "kannustetaan määrittelemään omat mieltymyksesi käyttämällä yllä olevia "
 "välilehtiä."
 
-#: src/ui.glade:492
+#: src/ui.glade:475
 msgid ""
 "Use the <b>settings</b> tab if xsnow is misbehaving.\n"
 "Use the <b>birds</b> tab if birds are misbehaving."
@@ -331,56 +331,56 @@ msgstr ""
 "Käytä <b>asetukset</b>, jos xsnow käyttäytyy huonosti.\n"
 "Käytä <b>linnut</b>, jos lintu käyttäytyy huonosti."
 
-#: src/ui.glade:509
+#: src/ui.glade:492
 msgid "In every tab you find the following rescue buttons:"
 msgstr "Jokaisessa välilehdessä on seuraavat pelastuspainikkeet:"
 
-#: src/ui.glade:529
+#: src/ui.glade:512
 msgid "<b>Defaults </b>"
 msgstr "<b>Oletusarvot </b>"
 
-#: src/ui.glade:544
+#: src/ui.glade:527
 msgid "Set default preferences for this tab."
 msgstr "Aseta oletusasetukset tälle välilehdelle."
 
-#: src/ui.glade:571
+#: src/ui.glade:554
 msgid "<b>Vintage </b>"
 msgstr "<b>Vintage </b>"
 
-#: src/ui.glade:586
+#: src/ui.glade:569
 msgid "Set vintage preferences for this tab."
 msgstr "Aseta vintage-asetukset tälle välilehdelle."
 
-#: src/ui.glade:613
+#: src/ui.glade:596
 msgid "<b>All defaults </b>"
 msgstr "<b>Kaikki oletusarvot </b>"
 
-#: src/ui.glade:628
+#: src/ui.glade:611
 msgid "Set default preferences for all (except settings) tabs."
 msgstr "Aseta oletusasetukset kaikille (paitsi asetuksille) välilehdille."
 
-#: src/ui.glade:655
+#: src/ui.glade:638
 msgid "<b>All vintage </b>"
 msgstr "<b>Kaikki vintage </b>"
 
-#: src/ui.glade:670
+#: src/ui.glade:653
 msgid "Set vintage preferences for all (except settings) tabs."
 msgstr "Aseta vintage-asetukset kaikille (paitsi asetuksille) välilehdille."
 
-#: src/ui.glade:690 src/ui.glade:701 src/ui.glade:840 src/ui.glade:1045
-#: src/ui.glade:2870 src/ui.glade:2919 src/ui.glade:4688
+#: src/ui.glade:673 src/ui.glade:684 src/ui.glade:823 src/ui.glade:1007
+#: src/ui.glade:2835 src/ui.glade:2884 src/ui.glade:4651
 msgid "  "
 msgstr "  "
 
-#: src/ui.glade:712
+#: src/ui.glade:695
 msgid "   "
 msgstr "   "
 
-#: src/ui.glade:746
+#: src/ui.glade:729
 msgid "Welcome at xsnow!"
 msgstr "Tervetuloa xsnow!"
 
-#: src/ui.glade:804
+#: src/ui.glade:787
 msgid ""
 "Vintage preferences: the look and feel of the original xsnow, created in "
 "1993 by Rick Jansen."
@@ -388,12 +388,12 @@ msgstr ""
 "Vintage-asetukset: Rick Jansenin vuonna 1993 luoman alkuperäisen xsnow'n "
 "ulkoasu ja tuntuma."
 
-#: src/ui.glade:895 src/ui.glade:1542 src/ui.glade:2470 src/ui.glade:3033
-#: src/ui.glade:3504 src/ui.glade:4470 src/ui.glade:5736
+#: src/ui.glade:878 src/ui.glade:1503 src/ui.glade:2436 src/ui.glade:2997
+#: src/ui.glade:3465 src/ui.glade:4432 src/ui.glade:5701
 msgid "All defaults"
 msgstr "Kaikki oletusarvot"
 
-#: src/ui.glade:900 src/ui.glade:2474 src/ui.glade:3037 src/ui.glade:5740
+#: src/ui.glade:882 src/ui.glade:2440 src/ui.glade:3001 src/ui.glade:5705
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -401,25 +401,13 @@ msgstr ""
 "Käytä oletusasetuksia kaikkiin asetuksiin (paitsi asetuksiin).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:914
-msgid "Donate"
-msgstr "Lahjoita"
-
-#: src/ui.glade:920
-msgid ""
-"Donate one euro or so to inspire the maintainer of xsnow, here is a paypal "
-"link. "
-msgstr ""
-"Lahjoita yksi euro tai niin innostaa ylläpitäjä xsnow, tässä on paypal-"
-"linkki. "
-
-#: src/ui.glade:930 src/ui.glade:1561 src/ui.glade:2489 src/ui.glade:3052
-#: src/ui.glade:3522 src/ui.glade:4489 src/ui.glade:5754
+#: src/ui.glade:895 src/ui.glade:1521 src/ui.glade:2454 src/ui.glade:3015
+#: src/ui.glade:3482 src/ui.glade:4450 src/ui.glade:5719
 msgid "All vintage"
 msgstr "Kaikki vintage"
 
-#: src/ui.glade:935 src/ui.glade:1565 src/ui.glade:2493 src/ui.glade:3056
-#: src/ui.glade:4493 src/ui.glade:5758
+#: src/ui.glade:899 src/ui.glade:1525 src/ui.glade:2458 src/ui.glade:3019
+#: src/ui.glade:4454 src/ui.glade:5723
 msgid ""
 "Use vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -427,13 +415,13 @@ msgstr ""
 "Käytä vintage-arvoja kaikille asetuksille (paitsi asetuksille).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:949 src/ui.glade:1513 src/ui.glade:2441 src/ui.glade:3004
-#: src/ui.glade:3552 src/ui.glade:4546 src/ui.glade:5633
+#: src/ui.glade:912 src/ui.glade:1473 src/ui.glade:2406 src/ui.glade:2967
+#: src/ui.glade:3511 src/ui.glade:4509 src/ui.glade:5596
 msgid "Hide menu"
 msgstr "Piilota valikko"
 
-#: src/ui.glade:954 src/ui.glade:1517 src/ui.glade:2445 src/ui.glade:3008
-#: src/ui.glade:3556 src/ui.glade:4550 src/ui.glade:5637
+#: src/ui.glade:916 src/ui.glade:1477 src/ui.glade:2410 src/ui.glade:2971
+#: src/ui.glade:3515 src/ui.glade:4513 src/ui.glade:5600
 msgid ""
 "Leave menu.\n"
 "Flag: -nomenu"
@@ -441,25 +429,25 @@ msgstr ""
 "Poistu ruokalistalta.\n"
 "Flag: -nomenu"
 
-#: src/ui.glade:968
-msgid "Contact"
-msgstr "Yhteys"
-
-#: src/ui.glade:973
-msgid "Please report any comments to the maintainer of xsnow."
-msgstr "Ilmoita mahdollisista kommenteista ylläpitäjälle xsnow."
-
-#: src/ui.glade:983 src/ui.glade:1592 src/ui.glade:2520 src/ui.glade:3083
-#: src/ui.glade:3580 src/ui.glade:4519 src/ui.glade:5661
+#: src/ui.glade:929 src/ui.glade:1551 src/ui.glade:2484 src/ui.glade:3045
+#: src/ui.glade:3540 src/ui.glade:4480 src/ui.glade:5625
 msgid "Quit xsnow"
 msgstr "Lopeta xsnow"
 
-#: src/ui.glade:988 src/ui.glade:1596 src/ui.glade:2524 src/ui.glade:3087
-#: src/ui.glade:3584 src/ui.glade:4523 src/ui.glade:5665
+#: src/ui.glade:933 src/ui.glade:1555 src/ui.glade:2488 src/ui.glade:3049
+#: src/ui.glade:3544 src/ui.glade:4484 src/ui.glade:5629
 msgid "Quit xsnow."
 msgstr "Lopeta xsnow."
 
-#: src/ui.glade:1028
+#: src/ui.glade:945
+msgid "Contact"
+msgstr "Yhteys"
+
+#: src/ui.glade:949
+msgid "Please report any comments to the maintainer of xsnow."
+msgstr "Ilmoita mahdollisista kommenteista ylläpitäjälle xsnow."
+
+#: src/ui.glade:990
 msgid ""
 "If the system is too busy, all panels get this color, in which case you "
 "could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
@@ -469,33 +457,33 @@ msgstr ""
 "jolloin voit  säätää joitain asetuksia \"lumi\", \"linnut\", \"asetukset\" "
 "tai \"taivaalliset\"."
 
-#: src/ui.glade:1222
+#: src/ui.glade:1184
 msgid "Welcome"
 msgstr "Tervetuloa"
 
-#: src/ui.glade:1239
+#: src/ui.glade:1201
 msgid "Blow off:"
 msgstr "Puhaltaa pois:"
 
-#: src/ui.glade:1252
+#: src/ui.glade:1214
 msgid "On windows:"
 msgstr "Ikkunoissa:"
 
-#: src/ui.glade:1265
+#: src/ui.glade:1227
 msgid "On bottom:"
 msgstr "Pohjassa:"
 
-#: src/ui.glade:1278
+#: src/ui.glade:1240
 msgid "On scenery:"
 msgstr "Maisemissa:"
 
-#: src/ui.glade:1288 src/ui.glade:1304 src/ui.glade:1320 src/ui.glade:1336
-#: src/ui.glade:3745 src/ui.glade:3838 src/ui.glade:3941 src/ui.glade:4011
-#: src/ui.glade:4047 src/ui.glade:6001
+#: src/ui.glade:1250 src/ui.glade:1266 src/ui.glade:1282 src/ui.glade:1298
+#: src/ui.glade:3706 src/ui.glade:3799 src/ui.glade:3902 src/ui.glade:3972
+#: src/ui.glade:4008 src/ui.glade:5966
 msgid "Show"
 msgstr "Näytä"
 
-#: src/ui.glade:1292
+#: src/ui.glade:1254
 msgid ""
 "If set, show snow blowing away.\n"
 "Flags: -blowsnow, -noblowsnow"
@@ -503,7 +491,7 @@ msgstr ""
 "Jos asetettu, näytä, että lumi puhaltaa pois.\n"
 "Flags: -blowsnow, -noblowsnow"
 
-#: src/ui.glade:1308
+#: src/ui.glade:1270
 msgid ""
 "If set, show fallen snow on windows.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
@@ -511,7 +499,7 @@ msgstr ""
 "Jos asetettu, näytä ikkunoissa kaatunutta lunta.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
 
-#: src/ui.glade:1324
+#: src/ui.glade:1286
 msgid ""
 "If set, show fallen snow on bottom of the desktop.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
@@ -519,7 +507,7 @@ msgstr ""
 "Jos asetettu, näytä lumisade työpöydän pohjassa.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
 
-#: src/ui.glade:1340
+#: src/ui.glade:1302
 msgid ""
 "If set, snow will collect on the trees.\n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
@@ -527,7 +515,7 @@ msgstr ""
 "Jos asetettu, lumi kerääntyy puihin.\n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
 
-#: src/ui.glade:1354
+#: src/ui.glade:1316
 msgid ""
 "The higher this setting, the more snow will be generated  because of Santa "
 "ploughing, wind or disappearing windows. \n"
@@ -537,7 +525,7 @@ msgstr ""
 "kyntöjen, tuulen tai ikkunoiden katoamisen vuoksi. \n"
 "Flag: -blowofffactor"
 
-#: src/ui.glade:1373
+#: src/ui.glade:1335
 msgid ""
 "The higher this setting, the more snow will collect on the windows. \n"
 "Note: in Wayland, there is no snow on the windows. \n"
@@ -547,7 +535,7 @@ msgstr ""
 "Huomaa: Waylandissa ei ole lunta ikkunoissa. \n"
 "Flag: -wsnowdepth"
 
-#: src/ui.glade:1393
+#: src/ui.glade:1355
 msgid ""
 "The higher this setting, the more snow will collect on the  bottom of the "
 "desktop.\n"
@@ -557,7 +545,7 @@ msgstr ""
 "pohjaan.\n"
 "Flag: -ssnowdepth"
 
-#: src/ui.glade:1412
+#: src/ui.glade:1374
 msgid ""
 "The higher this setting, the more snow will collect on the trees.\n"
 "Flag: -maxontrees"
@@ -565,36 +553,35 @@ msgstr ""
 "Mitä korkeampi tämä asetus on, sitä enemmän lunta kerääntyy puihin.\n"
 "Flag: -maxontrees"
 
-#: src/ui.glade:1433
+#: src/ui.glade:1395
 msgid "Choose your favorite snow"
 msgstr "Valitse suosikkilumi"
 
-#: src/ui.glade:1450 src/ui.glade:1618 src/ui.glade:2564 src/ui.glade:2859
-#: src/ui.glade:4887 src/ui.glade:5964 src/ui.glade:5975 src/ui.glade:6039
-#: src/ui.glade:6065
+#: src/ui.glade:1412 src/ui.glade:2529 src/ui.glade:2824 src/ui.glade:4850
+#: src/ui.glade:5929 src/ui.glade:5940 src/ui.glade:6004 src/ui.glade:6030
 msgid " "
 msgstr " "
 
-#: src/ui.glade:1464 src/ui.glade:2393 src/ui.glade:2956 src/ui.glade:3458
-#: src/ui.glade:4574 src/ui.glade:5690
+#: src/ui.glade:1426 src/ui.glade:2360 src/ui.glade:2921 src/ui.glade:3421
+#: src/ui.glade:4539 src/ui.glade:5655
 msgid "Defaults"
 msgstr "Oletusarvot"
 
-#: src/ui.glade:1468
+#: src/ui.glade:1430
 msgid "Apply default values for the preferences in this tab.\n"
 msgstr "Käytä oletusarvoja tämän välilehden asetuksille.\n"
 
-#: src/ui.glade:1483 src/ui.glade:2411 src/ui.glade:2974 src/ui.glade:3475
-#: src/ui.glade:4592 src/ui.glade:5707
+#: src/ui.glade:1444 src/ui.glade:2377 src/ui.glade:2938 src/ui.glade:3437
+#: src/ui.glade:4556 src/ui.glade:5672
 msgid "Vintage"
 msgstr "Vintage"
 
-#: src/ui.glade:1487 src/ui.glade:2415 src/ui.glade:2978 src/ui.glade:3479
-#: src/ui.glade:4596 src/ui.glade:5711
+#: src/ui.glade:1448 src/ui.glade:2381 src/ui.glade:2942 src/ui.glade:3441
+#: src/ui.glade:4560 src/ui.glade:5676
 msgid "Apply vintage values for the preferences in this tab."
 msgstr "Käytä vintage-arvoja tämän välilehden asetuksiin."
 
-#: src/ui.glade:1546 src/ui.glade:4474
+#: src/ui.glade:1507 src/ui.glade:4436
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flags: -defaults"
@@ -602,11 +589,11 @@ msgstr ""
 "Käytä oletusasetuksia kaikkiin asetuksiin (paitsi asetuksiin).\n"
 "Flags: -defaults"
 
-#: src/ui.glade:1632 src/ui.glade:3895
+#: src/ui.glade:1580 src/ui.glade:3856
 msgid "Size:"
 msgstr "Koko:"
 
-#: src/ui.glade:1644
+#: src/ui.glade:1592
 msgid ""
 "Size of snowflakes, works only for non-vintage snow flakes.\n"
 "Flag: -snowsize"
@@ -614,16 +601,16 @@ msgstr ""
 "Lumihiutaleiden koko, toimii vain muille kuin vintage-lumihiutaleille.\n"
 "Flag: -snowsize"
 
-#: src/ui.glade:1664 src/ui.glade:2357 src/ui.glade:3861 src/ui.glade:4145
-#: src/ui.glade:5002
+#: src/ui.glade:1612 src/ui.glade:2324 src/ui.glade:3822 src/ui.glade:4106
+#: src/ui.glade:4965
 msgid "Speed:"
 msgstr "Nopeus:"
 
-#: src/ui.glade:1678
+#: src/ui.glade:1626
 msgid "Max # snowflakes:"
 msgstr "Enintään # lumihiutaletta"
 
-#: src/ui.glade:1691
+#: src/ui.glade:1639
 msgid ""
 "Maximum amount of snowflakes.\n"
 "Flag: -flakecountmax"
@@ -631,19 +618,19 @@ msgstr ""
 "Lumihiutaleiden enimmäismäärä.\n"
 "Flag: -flakecountmax"
 
-#: src/ui.glade:1716
+#: src/ui.glade:1664
 msgid "# Snowflakes:"
 msgstr "# Lumihiutaleet:"
 
-#: src/ui.glade:1732 src/ui.glade:5173 src/ui.glade:5189
+#: src/ui.glade:1680 src/ui.glade:5136 src/ui.glade:5152
 msgid "label"
 msgstr "tunniste"
 
-#: src/ui.glade:1741
+#: src/ui.glade:1689
 msgid "Show fluff"
 msgstr "Näytä fluffi"
 
-#: src/ui.glade:1745
+#: src/ui.glade:1693
 msgid ""
 "If set, try to show fluff on fallen snow and trees if possible.\n"
 "Flags: -fluffy, -nofluffy"
@@ -652,12 +639,12 @@ msgstr ""
 "mahdollista.\n"
 "Flags: -fluffy, -nofluffy"
 
-#: src/ui.glade:1759 src/ui.glade:1771 src/ui.glade:2575 src/ui.glade:3798
-#: src/ui.glade:3810 src/ui.glade:5139 src/ui.glade:5151
+#: src/ui.glade:1707 src/ui.glade:1719 src/ui.glade:2540 src/ui.glade:3759
+#: src/ui.glade:3771 src/ui.glade:5102 src/ui.glade:5114
 msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
-#: src/ui.glade:1783
+#: src/ui.glade:1731
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -665,11 +652,11 @@ msgstr ""
 "Lumihiutaleiden nopeus.\n"
 "Flag: -snowspeedfactor"
 
-#: src/ui.glade:1804
+#: src/ui.glade:1752
 msgid "Intensity:"
 msgstr "Intensiteetti:"
 
-#: src/ui.glade:1816
+#: src/ui.glade:1764
 msgid ""
 "The higher, the more snowflakes.\n"
 "Flag: -snowflakes"
@@ -677,11 +664,11 @@ msgstr ""
 "Mitä korkeampi, sitä enemmän lumihiutaleita.\n"
 "Flag: -snowflakes"
 
-#: src/ui.glade:1836
+#: src/ui.glade:1784
 msgid "Show snow"
 msgstr "Näytä lumi"
 
-#: src/ui.glade:1840
+#: src/ui.glade:1788
 msgid ""
 "If set, show snowflakes.\n"
 "Flags: -snow, -nosnow"
@@ -689,7 +676,7 @@ msgstr ""
 "Jos asetettu, näytä lumihiutaleet.\n"
 "Flags: -snow, -nosnow"
 
-#: src/ui.glade:1855
+#: src/ui.glade:1803
 msgid ""
 "The color of the snow.\n"
 "Flag: -sc"
@@ -697,15 +684,15 @@ msgstr ""
 "Lumen väri.\n"
 "Flag: -sc"
 
-#: src/ui.glade:1872
+#: src/ui.glade:1820
 msgid "Color:"
 msgstr "Väri:"
 
-#: src/ui.glade:1886
+#: src/ui.glade:1834
 msgid "Second color:"
 msgstr "Toinen väri:"
 
-#: src/ui.glade:1899
+#: src/ui.glade:1847
 msgid ""
 "The second color of the snow.\n"
 "Flag: -sc2"
@@ -713,22 +700,31 @@ msgstr ""
 "Lumen toinen väri. \n"
 "Flag: -sc2"
 
-#: src/ui.glade:1912
+#: src/ui.glade:1860
 msgid "Enable"
 msgstr "ota käyttöön"
 
-#: src/ui.glade:1916
+#: src/ui.glade:1864
 msgid ""
 "If set, use two colors.\n"
 "Flag: -enablesc2"
-msgstr "Jos asetettu, käytä kahta väriä.\n"
+msgstr ""
+"Jos asetettu, käytä kahta väriä.\n"
 "Flag: -enablesc2"
 
-#: src/ui.glade:1974
+#: src/ui.glade:1878
+msgid "Lift snow on windows or screen: click "
+msgstr "Nosta lunta ikkunoissa tai näytöllä: Napsauta "
+
+#: src/ui.glade:1891 src/ui.glade:5264 src/ui.glade:6480
+msgid "Settings"
+msgstr "Asetukset"
+
+#: src/ui.glade:1941
 msgid "Snow"
 msgstr "Lumi"
 
-#: src/ui.glade:1992
+#: src/ui.glade:1959
 msgid ""
 "Tiny Santa with three reindeers.\n"
 "Flags: -santa 0 -norudolph"
@@ -736,7 +732,7 @@ msgstr ""
 "Pieni Joulupukki kolmen poron kanssa.\n"
 "Flags: -santa 0 -norudolph"
 
-#: src/ui.glade:2021
+#: src/ui.glade:1988
 msgid ""
 "Small Santa with three reindeers.\n"
 "Flags: -santa 1 -norudolph"
@@ -744,7 +740,7 @@ msgstr ""
 "Pieni Joulupukki kolmen poron kanssa.\n"
 "Flags: -santa 1 -norudolph"
 
-#: src/ui.glade:2050
+#: src/ui.glade:2017
 msgid ""
 "Santa with three reindeers.\n"
 "Flags: -santa 2 -norudolph"
@@ -752,7 +748,7 @@ msgstr ""
 "Joulupukki kolmen poron kanssa.\n"
 "Flags: -santa 2 -norudolph"
 
-#: src/ui.glade:2079
+#: src/ui.glade:2046
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
 "Flags: -santa 3 -norudolph"
@@ -761,7 +757,7 @@ msgstr ""
 "Dunderin ja Blixemin kanssa.\n"
 "Flags: -santa 3 -norudolph"
 
-#: src/ui.glade:2108
+#: src/ui.glade:2075
 msgid ""
 "Santa using the train with two reindeers.\n"
 "Flags: -santa 4 -norudolph"
@@ -769,7 +765,7 @@ msgstr ""
 "Joulupukki käyttää junaa kahden poron kanssa.\n"
 "Flags: -santa 4 -norudolph"
 
-#: src/ui.glade:2137
+#: src/ui.glade:2104
 msgid ""
 "Santa using the train with one reindeer and Rudolph.\n"
 "Flags: -santa 4 -showrudolph"
@@ -777,7 +773,7 @@ msgstr ""
 "Joulupukki käyttää junaa yhden poron ja Rudolphin kanssa.\n"
 "Flags: -santa 4 -showrudolph"
 
-#: src/ui.glade:2165
+#: src/ui.glade:2132
 msgid ""
 "Tiny Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 0 -showrudolph"
@@ -785,7 +781,7 @@ msgstr ""
 "Pieni Joulupukki, jossa on kaksi poroa ja Rudolph.\n"
 "Flags: -santa 0 -showrudolph"
 
-#: src/ui.glade:2195
+#: src/ui.glade:2162
 msgid ""
 "Small Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 1 -showrudolph"
@@ -793,7 +789,7 @@ msgstr ""
 "Pieni Joulupukki kahden poron ja Rudolphin kanssa.\n"
 "Flags: -santa 1 -showrudolph"
 
-#: src/ui.glade:2223
+#: src/ui.glade:2190
 msgid ""
 "Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 2 -showrudolph"
@@ -801,7 +797,7 @@ msgstr ""
 "Joulupukki kahden poron ja Rudolphin kanssa.\n"
 "Flags: -santa 2 -showrudolph"
 
-#: src/ui.glade:2251
+#: src/ui.glade:2218
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
 "and  Rudolph.\n"
@@ -811,27 +807,27 @@ msgstr ""
 "Blixem ja  Rudolph.\n"
 "Flags: -santa 3 -showrudolph"
 
-#: src/ui.glade:2282
+#: src/ui.glade:2249
 msgid "Without Rudolph"
 msgstr "Ilman Rudolfia"
 
-#: src/ui.glade:2297
+#: src/ui.glade:2264
 msgid "With Rudolph"
 msgstr "Pääosat Rudolph"
 
-#: src/ui.glade:2308
+#: src/ui.glade:2275
 msgid "Choose your Santa"
 msgstr "Valitse Joulupukki"
 
-#: src/ui.glade:2326
+#: src/ui.glade:2293
 msgid "Choose your favorite Santa"
 msgstr "Valitse suosikkijoulupukki"
 
-#: src/ui.glade:2342 src/ui.glade:3444
+#: src/ui.glade:2309 src/ui.glade:3407
 msgid "    "
 msgstr "    "
 
-#: src/ui.glade:2369
+#: src/ui.glade:2336
 msgid ""
 "Santa's speed.\n"
 "Flag: -santaspeedfactor"
@@ -839,16 +835,16 @@ msgstr ""
 "Joulupukin nopeus.\n"
 "Flag: -santaspeedfactor"
 
-#: src/ui.glade:2397 src/ui.glade:2960 src/ui.glade:3462 src/ui.glade:4578
-#: src/ui.glade:5694
+#: src/ui.glade:2364 src/ui.glade:2925 src/ui.glade:3425 src/ui.glade:4543
+#: src/ui.glade:5659
 msgid "Apply default values for the preferences in this tab."
 msgstr "Käytä oletusarvoja tämän välilehden asetuksille."
 
-#: src/ui.glade:2543
+#: src/ui.glade:2508
 msgid "Show Santa"
 msgstr "Näytä Joulupukki"
 
-#: src/ui.glade:2547
+#: src/ui.glade:2512
 msgid ""
 "To show or not to show Santa.\n"
 "Flags: -showsanta, -nosanta"
@@ -856,11 +852,11 @@ msgstr ""
 "Näytetäänkö vai eikö näytetä Joulupukkia.\n"
 "Flags: -showsanta, -nosanta"
 
-#: src/ui.glade:2590 src/ui.glade:3229
+#: src/ui.glade:2555 src/ui.glade:3192
 msgid "Scale:"
 msgstr "Mittakaava:"
 
-#: src/ui.glade:2602
+#: src/ui.glade:2567
 msgid ""
 "Scale of Santa.\n"
 "Flags: -santascale <n>"
@@ -868,15 +864,15 @@ msgstr ""
 "Joulupukin mittakaava. \n"
 "Flags: -santascale <n>"
 
-#: src/ui.glade:2647
+#: src/ui.glade:2612
 msgid "Santa"
 msgstr "Joulupukki"
 
-#: src/ui.glade:2662
+#: src/ui.glade:2627
 msgid "Show  scenery"
 msgstr "Näytä  maisema"
 
-#: src/ui.glade:2666
+#: src/ui.glade:2631
 msgid ""
 "To show or not to show scenery.\n"
 "Flags: -showtrees, -notrees"
@@ -884,7 +880,7 @@ msgstr ""
 "Näytetäänkö maisema vai ei.\n"
 "Flags: -showtrees, -notrees"
 
-#: src/ui.glade:2683
+#: src/ui.glade:2648
 msgid ""
 "Vintage tree, you can set the color.\n"
 "Flag: -treetype 0"
@@ -892,7 +888,7 @@ msgstr ""
 "Vintage-puu, voit asettaa värin.\n"
 "Flag: -treetype 0"
 
-#: src/ui.glade:2706
+#: src/ui.glade:2671
 msgid ""
 "Woody tree.\n"
 "Flags: -treetype 1 or: -treetype all"
@@ -900,7 +896,7 @@ msgstr ""
 "Puinen puu.\n"
 "Flags: -treetype 1 or: -treetype all"
 
-#: src/ui.glade:2729
+#: src/ui.glade:2694
 msgid ""
 "Leavy tree.\n"
 "Flags: -treetype 2 or: -treetype all"
@@ -908,7 +904,7 @@ msgstr ""
 "Lehtipuu.\n"
 "Flags: -treetype 2 or: -treetype all"
 
-#: src/ui.glade:2752
+#: src/ui.glade:2717
 msgid ""
 "Small house.\n"
 "Flags: -treetype 3 or: -treetype all"
@@ -916,7 +912,7 @@ msgstr ""
 "Pieni talo.\n"
 "Flags: -treetype 3 or: -treetype all"
 
-#: src/ui.glade:2775
+#: src/ui.glade:2740
 msgid ""
 "Reindeer.\n"
 "Flags: -treetype 4 or: -treetype all"
@@ -924,7 +920,7 @@ msgstr ""
 "Poro.\n"
 "Flags: -treetype 4 or: -treetype all"
 
-#: src/ui.glade:2798
+#: src/ui.glade:2763
 msgid ""
 "Moose.\n"
 "Flags: -treetype 5 or: -treetype all"
@@ -932,7 +928,7 @@ msgstr ""
 "Hirvi.\n"
 "Flags: -treetype 5 or: -treetype all"
 
-#: src/ui.glade:2821
+#: src/ui.glade:2786
 msgid ""
 "Snowy tree.\n"
 "Flags: -treetype 6 or: -treetype all"
@@ -940,7 +936,7 @@ msgstr ""
 "Luminen puu.\n"
 "Flags: -treetype 6 or: -treetype all"
 
-#: src/ui.glade:2844
+#: src/ui.glade:2809
 msgid ""
 "Set color of vintage tree.\n"
 "Flag: -tc"
@@ -948,15 +944,15 @@ msgstr ""
 "Aseta vintage-puun väri.\n"
 "Flag: -tc"
 
-#: src/ui.glade:2884
+#: src/ui.glade:2849
 msgid "Compose your favorite scenery"
 msgstr "Luo suosikkimaisemaasi"
 
-#: src/ui.glade:2900
+#: src/ui.glade:2865
 msgid "Try and click any image!"
 msgstr "Kokeile ja klikkaa mitä tahansa kuvaa!"
 
-#: src/ui.glade:2931
+#: src/ui.glade:2896
 msgid ""
 "Polar bear.\n"
 "Flags: -treetype 7 or: -treetype all"
@@ -964,11 +960,11 @@ msgstr ""
 "Jääkarhu.\n"
 "Flags: -treetype 7 or: -treetype all"
 
-#: src/ui.glade:3141
+#: src/ui.glade:3104
 msgid "# Items:"
 msgstr "# Tuotteet:"
 
-#: src/ui.glade:3156
+#: src/ui.glade:3119
 msgid ""
 "Desired number of scenery items.\n"
 "Flag: -trees"
@@ -976,11 +972,11 @@ msgstr ""
 "Maiseman kohteiden haluttu määrä.\n"
 "Flag: -trees"
 
-#: src/ui.glade:3179
+#: src/ui.glade:3142
 msgid "% Window fill:"
 msgstr "Ikkunan täyttö %:"
 
-#: src/ui.glade:3190
+#: src/ui.glade:3153
 msgid ""
 "Bottom percentage of screen available for scenery.\n"
 "Flag: -treefill"
@@ -988,11 +984,11 @@ msgstr ""
 "Näyttöruudun alin prosenttiosuus on käytettävissä maisemia varten.\n"
 "Flag: -treefill"
 
-#: src/ui.glade:3209
+#: src/ui.glade:3172
 msgid "Allow overlap"
 msgstr "Salli päällekkäisyys"
 
-#: src/ui.glade:3213
+#: src/ui.glade:3176
 msgid ""
 "To allow overlap or not when placing scenery.\n"
 "Flags: -treeoverlap, -notreeoverlap"
@@ -1000,7 +996,7 @@ msgstr ""
 "Päällekkäisyyksien salliminen tai kieltäminen maisemia sijoitettaessa.\n"
 "Flags: -treeoverlap, -notreeoverlap"
 
-#: src/ui.glade:3240
+#: src/ui.glade:3203
 msgid ""
 "Scale of scenery.\n"
 "Flag: sceneryscale <n>"
@@ -1008,15 +1004,15 @@ msgstr ""
 "Maiseman mittakaava. \n"
 "Flag: sceneryscale <n>"
 
-#: src/ui.glade:3409
+#: src/ui.glade:3372
 msgid "Scenery"
 msgstr "Maisemat"
 
-#: src/ui.glade:3428
+#: src/ui.glade:3391
 msgid "Compose here your favorite celestial conditions"
 msgstr "Kirjoita tähän suosikkisi taivaallisista olosuhteista"
 
-#: src/ui.glade:3508
+#: src/ui.glade:3469
 msgid ""
 "Apply default values for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -1024,7 +1020,7 @@ msgstr ""
 "Käytä oletusarvoja kaikkiin asetuksiin (paitsi asetuksiin).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:3526
+#: src/ui.glade:3486
 msgid ""
 "Apply vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -1032,15 +1028,15 @@ msgstr ""
 "Käytä vintage-arvoja kaikkiin asetuksiin (paitsi asetuksiin).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:3612
+#: src/ui.glade:3573
 msgid "Wind"
 msgstr "Tuulivoima"
 
-#: src/ui.glade:3626
+#: src/ui.glade:3587
 msgid "Windy"
 msgstr "Tuulinen"
 
-#: src/ui.glade:3631
+#: src/ui.glade:3592
 msgid ""
 "If set, there will be wind.\n"
 "Flags: -wind, -nowind"
@@ -1048,11 +1044,11 @@ msgstr ""
 "Jos asetettu, tuulee.\n"
 "Flags: -wind, -nowind"
 
-#: src/ui.glade:3648
+#: src/ui.glade:3609
 msgid "Whirl:"
 msgstr "Sekoitus:"
 
-#: src/ui.glade:3660
+#: src/ui.glade:3621
 msgid ""
 "The higher this setting, the more the wind will whirl.\n"
 "Flag: -whirlfactor"
@@ -1060,11 +1056,11 @@ msgstr ""
 "Mitä korkeampi tämä asetus on, sitä enemmän tuuli pyörii.\n"
 "Flag: -whirlfactor"
 
-#: src/ui.glade:3682
+#: src/ui.glade:3643
 msgid "Timer:"
 msgstr "Ajastin:"
 
-#: src/ui.glade:3695
+#: src/ui.glade:3656
 msgid ""
 "This setting determines how many seconds pass between  two  gusts of wind.\n"
 "Flag: -windtimer"
@@ -1073,19 +1069,19 @@ msgstr ""
 "välillä.\n"
 "Flag: -windtimer"
 
-#: src/ui.glade:3711
+#: src/ui.glade:3672
 msgid "Now!"
 msgstr "Nyt!"
 
-#: src/ui.glade:3715
+#: src/ui.glade:3676
 msgid "Force a gust of wind immediately."
 msgstr "Pakota tuulenpuuska välittömästi."
 
-#: src/ui.glade:3732
+#: src/ui.glade:3693
 msgid "Stars"
 msgstr "Tähdet"
 
-#: src/ui.glade:3750
+#: src/ui.glade:3711
 msgid ""
 "To show or not show stars.\n"
 "Flag: -stars  (0 means: no stars)"
@@ -1093,11 +1089,11 @@ msgstr ""
 "Tähtien näyttäminen tai näyttämättä jättäminen.\n"
 "Flag: -stars  (0 means: no stars)"
 
-#: src/ui.glade:3767
+#: src/ui.glade:3728
 msgid "Number:"
-msgstr "Lukumäärä:"
+msgstr "Määrä:"
 
-#: src/ui.glade:3779
+#: src/ui.glade:3740
 msgid ""
 "Number of twinkling stars.\n"
 "Flag: -stars"
@@ -1105,11 +1101,11 @@ msgstr ""
 "Tuikkivien tähtien määrä.\n"
 "Flag: -stars"
 
-#: src/ui.glade:3825
+#: src/ui.glade:3786
 msgid "Moon"
 msgstr "Kuu"
 
-#: src/ui.glade:3843
+#: src/ui.glade:3804
 msgid ""
 "To show or not show moon.\n"
 "Flags: -moon 1, -moon 0"
@@ -1117,7 +1113,7 @@ msgstr ""
 "Näytetäänkö kuu vai ei.\n"
 "Flags: -moon 1, -moon 0"
 
-#: src/ui.glade:3873
+#: src/ui.glade:3834
 msgid ""
 "Speed of moon in pixels/minute.\n"
 "Flag: -moonspeed"
@@ -1125,7 +1121,7 @@ msgstr ""
 "Kuun nopeus pikseleinä minuutissa.\n"
 "Flag: -moonspeed"
 
-#: src/ui.glade:3907
+#: src/ui.glade:3868
 msgid ""
 "Relative size of the moon.\n"
 "Flag: -moonsize"
@@ -1133,11 +1129,11 @@ msgstr ""
 "Kuun suhteellinen koko.\n"
 "Flag: -moonsize"
 
-#: src/ui.glade:3928
+#: src/ui.glade:3889
 msgid "Halo"
 msgstr "Halo"
 
-#: src/ui.glade:3946
+#: src/ui.glade:3907
 msgid ""
 "To show or not to show halo around moon.\n"
 "Flags: -halo 1, -halo 0"
@@ -1145,11 +1141,11 @@ msgstr ""
 "Halon näyttäminen tai näyttämättä jättäminen kuun ympärillä.\n"
 "Flags: -halo 1, -halo 0"
 
-#: src/ui.glade:3964 src/ui.glade:4179
+#: src/ui.glade:3925 src/ui.glade:4140
 msgid "Bright:"
 msgstr "Kirkaus:"
 
-#: src/ui.glade:3976
+#: src/ui.glade:3937
 msgid ""
 "Brightness of moon's halo.\n"
 "Flag: -halobrightness"
@@ -1157,11 +1153,11 @@ msgstr ""
 "Kuun sädekehän kirkkaus.\n"
 "Flag: -halobrightness"
 
-#: src/ui.glade:3998
+#: src/ui.glade:3959
 msgid "Meteors"
 msgstr "Meteorit"
 
-#: src/ui.glade:4016
+#: src/ui.glade:3977
 msgid ""
 "To show or not to show meteors.\n"
 "Flags: -meteors, -nometeors"
@@ -1169,11 +1165,11 @@ msgstr ""
 "Näytetäänkö vai eikö näytetä meteoreja.\n"
 "Flags: -meteors, -nometeors"
 
-#: src/ui.glade:4034
+#: src/ui.glade:3995
 msgid "Aurora"
 msgstr "Aurora"
 
-#: src/ui.glade:4052
+#: src/ui.glade:4013
 msgid ""
 "To show or not show aurora.\n"
 "Note: the aurora is best viewed using a dark background.\n"
@@ -1183,11 +1179,11 @@ msgstr ""
 "Huomaa: revontulia voi parhaiten katsella tummalla taustalla.\n"
 "Flags: -aurora 1, -aurora 0"
 
-#: src/ui.glade:4071
+#: src/ui.glade:4032
 msgid "Width:"
 msgstr "Leveys:"
 
-#: src/ui.glade:4083
+#: src/ui.glade:4044
 msgid ""
 "Width of aurora in percentage of screen width.\n"
 "Flag: -aurorawidth"
@@ -1195,11 +1191,11 @@ msgstr ""
 "Auroran leveys prosentteina näytön leveydestä.\n"
 "Flag: -aurorawidth"
 
-#: src/ui.glade:4108
+#: src/ui.glade:4069
 msgid "Height:"
 msgstr "Korkeus:"
 
-#: src/ui.glade:4120
+#: src/ui.glade:4081
 msgid ""
 "Vertical size of aurora.\n"
 "Flag: -auroraheight"
@@ -1207,7 +1203,7 @@ msgstr ""
 "Auroran pystysuuntainen koko.\n"
 "Flag: -auroraheight"
 
-#: src/ui.glade:4157
+#: src/ui.glade:4118
 msgid ""
 "Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
 "Flag: -auroraspeed"
@@ -1216,7 +1212,7 @@ msgstr ""
 "100\n"
 "Flag: -auroraspeed"
 
-#: src/ui.glade:4191
+#: src/ui.glade:4152
 msgid ""
 "Brightness of aurora.\n"
 "Flags: -aurorabrightness"
@@ -1224,11 +1220,11 @@ msgstr ""
 "Auroran kirkkaus.\n"
 "Flags: -aurorabrightness"
 
-#: src/ui.glade:4208
+#: src/ui.glade:4169
 msgid "Left"
 msgstr "Vasen"
 
-#: src/ui.glade:4212
+#: src/ui.glade:4173
 msgid ""
 "Place aurora left on the screen.\n"
 "Flag: -auroraleft"
@@ -1236,11 +1232,11 @@ msgstr ""
 "Aseta aurora vasemmalle näytölle.\n"
 "Flag: -auroraleft"
 
-#: src/ui.glade:4225
+#: src/ui.glade:4186
 msgid "Middle"
 msgstr "Keski"
 
-#: src/ui.glade:4229
+#: src/ui.glade:4190
 msgid ""
 "Place aurora in the middle of the screen.\n"
 "Flag: -auroramiddle"
@@ -1248,11 +1244,11 @@ msgstr ""
 "Aseta aurora näytön keskelle.\n"
 "Flag: -auroramiddle"
 
-#: src/ui.glade:4243
+#: src/ui.glade:4204
 msgid "Right"
 msgstr "Oikea"
 
-#: src/ui.glade:4247
+#: src/ui.glade:4208
 msgid ""
 "Place aurora in the right of the screen.\n"
 "Flag: -auroraright"
@@ -1260,11 +1256,11 @@ msgstr ""
 "Aseta aurora näytön oikealle puolelle.\n"
 "Flag: -auroraright"
 
-#: src/ui.glade:4266
+#: src/ui.glade:4227
 msgid "Frequency:"
 msgstr "Toistuvuus:"
 
-#: src/ui.glade:4278
+#: src/ui.glade:4239
 msgid ""
 "Frequency of meteors to appear.\n"
 "Flags: -meteorfrequency"
@@ -1272,11 +1268,11 @@ msgstr ""
 "Meteorien esiintymistiheys.\n"
 "Flags: -meteorfrequency"
 
-#: src/ui.glade:4300
+#: src/ui.glade:4261
 msgid "Base:"
 msgstr "Perusarvo:"
 
-#: src/ui.glade:4312
+#: src/ui.glade:4273
 msgid ""
 "Baseline height of aurora, in percentage of screen height.\n"
 "Flag: -aurorabase"
@@ -1284,11 +1280,11 @@ msgstr ""
 "Auroran lähtötason korkeus prosentteina näytön korkeudesta.\n"
 "Flag: -aurorabase"
 
-#: src/ui.glade:4329
+#: src/ui.glade:4290
 msgid "Color"
 msgstr "Väri"
 
-#: src/ui.glade:4333
+#: src/ui.glade:4294
 msgid ""
 "Choose between yellow-ish and white-ish moon.\n"
 "Flag: -mooncolor [0,1]"
@@ -1296,19 +1292,19 @@ msgstr ""
 "Valitse keltaisen ja valkoisen kuun välillä. \n"
 "Flag: -mooncolor [0,1]"
 
-#: src/ui.glade:4433
+#: src/ui.glade:4394
 msgid "Celestials"
 msgstr "Taivaalliset"
 
-#: src/ui.glade:4453
+#: src/ui.glade:4414
 msgid "Birds settings"
 msgstr "Lintujen asetukset"
 
-#: src/ui.glade:4617
+#: src/ui.glade:4580
 msgid "Show birds"
 msgstr "Näytä linnut"
 
-#: src/ui.glade:4621
+#: src/ui.glade:4584
 msgid ""
 "If set: show birds.\n"
 "Flags: -showbirds 1, -showbirds 0"
@@ -1316,11 +1312,11 @@ msgstr ""
 "Jos asetettu: näytä linnut.\n"
 "Flags: -showbirds 1, -showbirds 0"
 
-#: src/ui.glade:4634
+#: src/ui.glade:4597
 msgid "Birds only"
 msgstr "Vain linnut"
 
-#: src/ui.glade:4638
+#: src/ui.glade:4601
 msgid ""
 "If set: show no Santa, snow or scenery.\n"
 "Flags: -birdsonly 0, -birdsony 1"
@@ -1328,11 +1324,11 @@ msgstr ""
 "Jos asetettu: älä näytä joulupukkia, lunta tai maisemia.\n"
 "Flags: -birdsonly 0, -birdsony 1"
 
-#: src/ui.glade:4655
+#: src/ui.glade:4618
 msgid "Preferred distance:"
 msgstr "Suositeltu etäisyys:"
 
-#: src/ui.glade:4669
+#: src/ui.glade:4632
 msgid ""
 "Preferred distance from other birds.\n"
 "Flag: -prefdistance"
@@ -1340,19 +1336,19 @@ msgstr ""
 "Suositeltava etäisyys muihin lintuihin.\n"
 "Flag: -prefdistance"
 
-#: src/ui.glade:4697
+#: src/ui.glade:4660
 msgid "Restart"
 msgstr "Käynnistä uudelleen"
 
-#: src/ui.glade:4701
+#: src/ui.glade:4664
 msgid "Restart birds."
 msgstr "Käynnistä linnut uudelleen."
 
-#: src/ui.glade:4718
+#: src/ui.glade:4681
 msgid "Viewing distance:"
 msgstr "Katseluetäisyys:"
 
-#: src/ui.glade:4731
+#: src/ui.glade:4694
 msgid ""
 "Viewing distance.\n"
 "NOTE: Santa has no knowledge of viewing distance, so when birds are "
@@ -1368,11 +1364,11 @@ msgstr ""
 "havaittavissa vain silloin, kun linnut seuraavat joulupukkia.Flag: -"
 "viewingdistance"
 
-#: src/ui.glade:4752
+#: src/ui.glade:4715
 msgid "Focus to attraction point:"
 msgstr "Keskity vetovoimapisteeseen:"
 
-#: src/ui.glade:4766
+#: src/ui.glade:4729
 msgid ""
 "Tendency to concentrate on the attraction point.\n"
 "Flag: -focuscentre"
@@ -1380,7 +1376,7 @@ msgstr ""
 "Taipumus keskittyä vetovoimapisteeseen.\n"
 "Flag: -focuscentre"
 
-#: src/ui.glade:4784
+#: src/ui.glade:4747
 msgid ""
 "Desired number of birds. If zero, no birds are shown.\n"
 "Flag: -nbirds"
@@ -1388,11 +1384,11 @@ msgstr ""
 "Toivottu määrä lintuja. Jos nolla, lintuja ei näytetä.\n"
 "Flag: -nbirds"
 
-#: src/ui.glade:4807
+#: src/ui.glade:4770
 msgid "# Birds:"
 msgstr "# Linnut:"
 
-#: src/ui.glade:4821
+#: src/ui.glade:4784
 msgid ""
 "Number of nearest neighbours the birds should look at.\n"
 "Flag: -neighbours"
@@ -1400,11 +1396,11 @@ msgstr ""
 "Niiden lähimpien naapureiden lukumäärä, joita lintujen tulisi katsoa.\n"
 "Flag: -neighbours"
 
-#: src/ui.glade:4841
+#: src/ui.glade:4804
 msgid "Neighbours:"
 msgstr "Naapurit:"
 
-#: src/ui.glade:4856
+#: src/ui.glade:4819
 msgid ""
 "Give the birds a fancy color.\n"
 "Flag: -birdscolor"
@@ -1412,15 +1408,15 @@ msgstr ""
 "Anna linnuille hieno väri.\n"
 "Flag: -birdscolor"
 
-#: src/ui.glade:4874
+#: src/ui.glade:4837
 msgid "Bird color"
 msgstr "Lintujen väri"
 
-#: src/ui.glade:4900
+#: src/ui.glade:4863
 msgid "Anarchy:"
 msgstr "Anarkia:"
 
-#: src/ui.glade:4914
+#: src/ui.glade:4877
 msgid ""
 "Anarchy level: the higher, the more anarchy.\n"
 "Flag: -anarchy"
@@ -1428,11 +1424,11 @@ msgstr ""
 "Anarkiataso: mitä korkeampi, sitä enemmän anarkiaa.\n"
 "Flag: -anarchy"
 
-#: src/ui.glade:4934
+#: src/ui.glade:4897
 msgid "Distance weight:"
 msgstr "Etäisyyspaino:"
 
-#: src/ui.glade:4948
+#: src/ui.glade:4911
 msgid ""
 "Tendency to keep desired distance to neighbours.\n"
 "Flag: -disweight"
@@ -1440,11 +1436,11 @@ msgstr ""
 "Taipumus pitää haluttu etäisyys naapureihin.\n"
 "Flag: -disweight"
 
-#: src/ui.glade:4968
+#: src/ui.glade:4931
 msgid "Adjust speed to neighbours:"
 msgstr "Säädä nopeutta naapureille:"
 
-#: src/ui.glade:4982
+#: src/ui.glade:4945
 msgid ""
 "Tendency to adjust speed to neighbours.\n"
 "Flag: -followneighbours"
@@ -1452,7 +1448,7 @@ msgstr ""
 "Taipumus säätää nopeutta naapureille.\n"
 "Flag: -followneighbours"
 
-#: src/ui.glade:5016
+#: src/ui.glade:4979
 msgid ""
 "Speed of birds in arbitrary units.\n"
 "Flag: -birdsspeed"
@@ -1460,11 +1456,11 @@ msgstr ""
 "Lintujen nopeus mielivaltaisissa yksiköissä.\n"
 "Flag: -birdsspeed"
 
-#: src/ui.glade:5036
+#: src/ui.glade:4999
 msgid "Drawing scale:"
 msgstr "Piirustusmittakaava:"
 
-#: src/ui.glade:5050
+#: src/ui.glade:5013
 msgid ""
 "Influence the size of the birds.\n"
 "Flag: -birdsscale\n"
@@ -1472,7 +1468,7 @@ msgstr ""
 "Vaikuta lintujen kokoon.\n"
 "Flag: -birdsscale\n"
 
-#: src/ui.glade:5067
+#: src/ui.glade:5030
 msgid ""
 "Show \n"
 "attr point"
@@ -1480,7 +1476,7 @@ msgstr ""
 "Näytä \n"
 "nattr-piste"
 
-#: src/ui.glade:5073
+#: src/ui.glade:5036
 msgid ""
 "Show the point where the birds want to go.\n"
 "Flags: -showattr 0, -showattr 1"
@@ -1488,7 +1484,7 @@ msgstr ""
 "Näytä kohta, johon linnut haluavat mennä.\n"
 "Flags: -showattr 0, -showattr 1"
 
-#: src/ui.glade:5084
+#: src/ui.glade:5047
 msgid ""
 "Follow \n"
 "Santa"
@@ -1496,7 +1492,7 @@ msgstr ""
 "Seuraa \n"
 "Joulupukkia"
 
-#: src/ui.glade:5090
+#: src/ui.glade:5053
 msgid ""
 "Birds are attracted by an attraction point. Here you can choose to follow "
 "Santa.\n"
@@ -1505,7 +1501,7 @@ msgstr ""
 "Lintuja houkuttelee vetovoimapiste. Täällä voit seurata Joulupukkia.\n"
 "Flags: -followsanta 0, -followsanta 1"
 
-#: src/ui.glade:5103
+#: src/ui.glade:5066
 msgid ""
 "Percentage of screen to be used for the attraction point.\n"
 "Flag: -attrspace"
@@ -1513,35 +1509,31 @@ msgstr ""
 "Vetovoimapisteessä käytettävän näytön prosenttiosuus.\n"
 "Flag: -attrspace"
 
-#: src/ui.glade:5125
+#: src/ui.glade:5088
 msgid "Attraction point range"
 msgstr "Nähtävyyskohdan vaihteluväli"
 
-#: src/ui.glade:5168
+#: src/ui.glade:5131
 msgid "Actual mean distance from neighbours."
 msgstr "Todellinen keskimääräinen etäisyys naapureista."
 
-#: src/ui.glade:5185
+#: src/ui.glade:5148
 msgid "Distance used to get the desired number of neighbours."
 msgstr "Etäisyydellä saatiin haluttu määrä naapureita."
 
-#: src/ui.glade:5268
+#: src/ui.glade:5231
 msgid "Birds"
 msgstr "Linnut"
 
-#: src/ui.glade:5286
+#: src/ui.glade:5249
 msgid "version"
 msgstr "versio"
 
-#: src/ui.glade:5301 src/ui.glade:6515
-msgid "Settings"
-msgstr "Asetukset"
-
-#: src/ui.glade:5323
+#: src/ui.glade:5286
 msgid "Transparency "
 msgstr "Avoimuus "
 
-#: src/ui.glade:5340
+#: src/ui.glade:5303
 msgid ""
 "Transparency of painted items:\n"
 "0: no transparency.\n"
@@ -1553,11 +1545,11 @@ msgstr ""
 "100: täysin läpinäkyvä, et näe mitään!\n"
 "Flag: -transparency"
 
-#: src/ui.glade:5367
+#: src/ui.glade:5330
 msgid "Lift snow on bottom"
 msgstr "Nosta lumi pohjaan"
 
-#: src/ui.glade:5383
+#: src/ui.glade:5346
 msgid ""
 "Use this if snow falls below the bottom of your screen, or  fallen snow "
 "hides something that should not be hidden.\n"
@@ -1567,11 +1559,11 @@ msgstr ""
 "piilottaa jotain, jota ei pitäisi piilottaa.\n"
 "Flag: -offsets"
 
-#: src/ui.glade:5408
+#: src/ui.glade:5371
 msgid "Lift snow on windows"
 msgstr "Nosta lunta ikkunoihin"
 
-#: src/ui.glade:5424
+#: src/ui.glade:5387
 msgid ""
 "Use this if no snow collects on your windows, or if snow  collects separated "
 "from your windows. \n"
@@ -1585,11 +1577,11 @@ msgstr ""
 "tarvitsee yleensä arvon 25 .. 28).\n"
 "Flag: -offsety"
 
-#: src/ui.glade:5449
+#: src/ui.glade:5412
 msgid "Cpu factor"
 msgstr "Cpu-kerroin"
 
-#: src/ui.glade:5467
+#: src/ui.glade:5430
 msgid ""
 "The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
 "Flag: -cpuload"
@@ -1598,11 +1590,11 @@ msgstr ""
 "tehoa.\n"
 "Flag: -cpuload"
 
-#: src/ui.glade:5493
+#: src/ui.glade:5456
 msgid "Scale"
 msgstr "Asteikko"
 
-#: src/ui.glade:5510
+#: src/ui.glade:5473
 msgid ""
 "Overall drawing scale.\n"
 "Flag: -scale"
@@ -1610,11 +1602,11 @@ msgstr ""
 "Kokonaispiirustusasteikko.\n"
 "Flag: -scale"
 
-#: src/ui.glade:5543
+#: src/ui.glade:5506
 msgid "Ignore large top windows"
 msgstr "Ohita suuret yläikkunat"
 
-#: src/ui.glade:5559
+#: src/ui.glade:5522
 msgid ""
 "Windows wider than 80 percent of the screen and closer to the top  than the "
 "number in this widget will not collect snow.\n"
@@ -1632,11 +1624,11 @@ msgstr ""
 "Flag: -ignoretop\n"
 "\n"
 
-#: src/ui.glade:5583
+#: src/ui.glade:5546
 msgid "Ignore large bottom windows"
 msgstr "Ohita suuret alaikkunat"
 
-#: src/ui.glade:5599
+#: src/ui.glade:5562
 msgid ""
 "Windows wider than 80 percent of the screen and closer to the  bottom than "
 "the number in this widget will not collect snow.\n"
@@ -1655,11 +1647,11 @@ msgstr ""
 "tähän sopivan  numeron, tämä ei-toivottu käyttäytyminen voidaan välttää.\n"
 "Flag: -ignorebottom"
 
-#: src/ui.glade:5791
+#: src/ui.glade:5756
 msgid "window type etc."
 msgstr "ikkunatyyppi jne."
 
-#: src/ui.glade:5814
+#: src/ui.glade:5779
 msgid ""
 "Menu\n"
 "colors"
@@ -1667,7 +1659,7 @@ msgstr ""
 "Valikko\n"
 "värit"
 
-#: src/ui.glade:5819
+#: src/ui.glade:5784
 msgid ""
 "Toggle between xsnow's own menu colors and standard menu colors.\n"
 "Activated: use xsnow colors.\n"
@@ -1679,7 +1671,7 @@ msgstr ""
 "Poista käytöstä: käytä oletusvärejä.\n"
 "Flags: -theme 1, -theme 0"
 
-#: src/ui.glade:5833
+#: src/ui.glade:5798
 msgid ""
 "On all\n"
 "workspaces"
@@ -1687,7 +1679,7 @@ msgstr ""
 "Kaikissa\n"
 "työtiloissa"
 
-#: src/ui.glade:5838
+#: src/ui.glade:5803
 msgid ""
 "Use all workspaces to snow in.\n"
 "NOTE: this doesn't work properly in enlightenment.\n"
@@ -1697,7 +1689,7 @@ msgstr ""
 "Huomio: tämä ei toimi oikein valaistumisessa.\n"
 "Flags: -allworkspaces 1, -allworkspaces 0"
 
-#: src/ui.glade:5856
+#: src/ui.glade:5821
 msgid ""
 "Below\n"
 "windows"
@@ -1705,7 +1697,7 @@ msgstr ""
 "Alla\n"
 "ikkunat"
 
-#: src/ui.glade:5861
+#: src/ui.glade:5826
 msgid ""
 "When activated, it will be snowing below your windows, else  it will be "
 "snowing upon you windows too.\n"
@@ -1723,7 +1715,7 @@ msgstr ""
 "ovat kunnossa.\n"
 "Flag: -above"
 
-#: src/ui.glade:5880
+#: src/ui.glade:5845
 msgid ""
 "Click to\n"
 "confirm"
@@ -1731,11 +1723,11 @@ msgstr ""
 "Napsauta\n"
 "vahvistaaksesi"
 
-#: src/ui.glade:5885
+#: src/ui.glade:5850
 msgid "To make sure you can click."
 msgstr "Varmista, että voit napsauttaa."
 
-#: src/ui.glade:5904
+#: src/ui.glade:5869
 msgid ""
 "If you have more than one monitor, choose where you want snow falling. "
 "Choose 'all monitors' if you want snow in all monitors.\n"
@@ -1747,11 +1739,11 @@ msgstr ""
 "Huomio: kun vaihdat näyttöä, xsnow käynnistyy uudelleen.\n"
 "Flag: -screen"
 
-#: src/ui.glade:5911
+#: src/ui.glade:5876
 msgid "monitor 1"
 msgstr "näyttö 1"
 
-#: src/ui.glade:5922
+#: src/ui.glade:5887
 msgid ""
 "Create\n"
 "outline"
@@ -1759,7 +1751,7 @@ msgstr ""
 "Luo\n"
 "ulkoviiva"
 
-#: src/ui.glade:5927
+#: src/ui.glade:5892
 msgid ""
 "To draw an outline around the snow window.\n"
 "Flag: -outline 1/0"
@@ -1767,7 +1759,7 @@ msgstr ""
 "Piirrä ääriviivat lumiikkunan ympärille.\n"
 "Flag: -outline 1/0"
 
-#: src/ui.glade:5951
+#: src/ui.glade:5916
 msgid ""
 "  \n"
 "  "
@@ -1775,7 +1767,7 @@ msgstr ""
 "  \n"
 "  "
 
-#: src/ui.glade:5986
+#: src/ui.glade:5951
 msgid ""
 "Choose here the picture you want as background when  xscreensaver is "
 "active.\n"
@@ -1784,11 +1776,11 @@ msgstr ""
 "Valitse tässä taustakuvaksi haluamasi kuva, kun xscreensaver on aktiivinen.\n"
 "Flag: -bg"
 
-#: src/ui.glade:5990
+#: src/ui.glade:5955
 msgid "Choose background"
 msgstr "Valitse tausta"
 
-#: src/ui.glade:6005
+#: src/ui.glade:5970
 msgid ""
 "Activate xscreensaver.\n"
 "Click and don't touch mouse and keyboard for a few seconds..."
@@ -1796,7 +1788,7 @@ msgstr ""
 "Aktivoi xscreensaver.\n"
 "Napsauta äläkä koske hiireen tai näppäimistöön muutamaan sekuntiin..."
 
-#: src/ui.glade:6019
+#: src/ui.glade:5984
 msgid ""
 "Settings for Xscreensaver. You can choose a background, and choose to use it "
 "or not.\n"
@@ -1820,15 +1812,15 @@ msgstr ""
 "Katso myös man-sivu:\n"
 "man xsnow"
 
-#: src/ui.glade:6028
+#: src/ui.glade:5993
 msgid "Xscreensaver: "
 msgstr "Xscreensaver: "
 
-#: src/ui.glade:6048
+#: src/ui.glade:6013
 msgid "Black"
 msgstr "Musta"
 
-#: src/ui.glade:6052
+#: src/ui.glade:6017
 msgid ""
 "When activated, the background will be black.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
@@ -1836,7 +1828,7 @@ msgstr ""
 "Kun se on aktivoitu, tausta on musta.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
 
-#: src/ui.glade:6076
+#: src/ui.glade:6041
 msgid ""
 " \n"
 " \n"
@@ -1858,13 +1850,23 @@ msgstr ""
 " \n"
 " \n"
 
-#: src/ui.glade:6551
+#: src/ui.glade:6516
 msgid "en"
 msgstr "fi"
 
-#: src/ui.glade:6554
+#: src/ui.glade:6519
 msgid "it"
 msgstr "it"
+
+#~ msgid "Donate"
+#~ msgstr "Lahjoita"
+
+#~ msgid ""
+#~ "Donate one euro or so to inspire the maintainer of xsnow, here is a "
+#~ "paypal link. "
+#~ msgstr ""
+#~ "Lahjoita yksi euro tai niin innostaa ylläpitäjä xsnow, tässä on paypal-"
+#~ "linkki. "
 
 #~ msgid ""
 #~ "If set, use two colors.\n"

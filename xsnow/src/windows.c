@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -111,7 +111,7 @@ int do_sendevent(void *dummy)
 int do_wupdate(void *dummy)
 {
    static long PrevWorkSpace = -123;
-   P("do_wupdate %d %d\n",counter++,global.WindowsChanged);
+   P("do_wupdate #%d %d\n",global.counter++,global.WindowsChanged);
    if (Flags.Done)
       return FALSE;
 
@@ -159,7 +159,8 @@ int do_wupdate(void *dummy)
 
    P("Update windows\n");
 
-   if(Windows) free(Windows);
+   if(Windows) 
+      free(Windows);
 
    // special hack too keep global.SnowWin below (needed for example in FVWM/xcompmgr, 
    // where global.SnowWin is not click-through)
@@ -370,12 +371,15 @@ void UpdateFallenSnowRegions()
 	    // add it, but not if we are snowing or birding in this window (Desktop for example)
 	    // and also not if this window has y <= 0
 	    // and also not if this window is a "dock"
-	    P("               %#lx %d\n",w->id,w->dock);
-	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock)) 
+	    // and also not if this window is "hidden"
+	    // and also not if this window is to be ignored
+	    P("               %#lx %d %d %d\n",w->id,w->dock,w->w,w->ignore);
+	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock) && !(w->hidden) && !(w->ignore)) 
 	    {
+	       P("dock? %#lx %d %d %d\n",w->id,w->dock,w->hidden,w->w);
 	       if(((int)(w->w) == global.SnowWinWidth && w->x == 0 && w->y <100)) //maybe a transparent xpenguins window?
 	       {
-		  P("skipping: %d %#lx %d %d %d\n",global.counter++, w->id, w->w, w->x, w->y);
+		  P("skipping: #%d %#lx %d %d %d\n",global.counter++, w->id, w->w, w->x, w->y);
 	       }
 	       else
 	       {
@@ -416,7 +420,7 @@ void UpdateFallenSnowRegions()
 	   )
 	 {
 	    P("Gone...\n");
-	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
+	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
 
@@ -429,7 +433,7 @@ void UpdateFallenSnowRegions()
 	    P("%#lx is hidden %d\n",fsnow->win.id, global.counter++);
 	    if(global.DoCapella)
 	    {
-	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
 	       toremove[ntoremove++] = fsnow->win.id;
 	    }
 	    else
@@ -457,7 +461,7 @@ void UpdateFallenSnowRegions()
 	    {
 	       if (global.DoCapella)
 	       {
-		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
+		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
 		  toremove[ntoremove++] = fsnow->win.id;
 	       }
 	       else
@@ -473,7 +477,7 @@ void UpdateFallenSnowRegions()
 	 else
 	 {
 	    if(global.DoCapella)
-	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15);
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
       }
@@ -516,7 +520,7 @@ int xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h)
    if (info == NULL)
    {
       I("No xinerama...\n");
-      return FALSE;
+      return 0;
    }
    else
    {
@@ -537,25 +541,32 @@ int xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h)
       {
 	 // set x,y to 0,0
 	 // set width and height to maximum values found
-	 *x = 0;
-	 *y = 0;
-	 *w = 0;
-	 *h = 0;
+	 if(x)
+	    *x = 0;
+	 if(y)
+	    *y = 0;
+	 if(w)
+	    *w = 0;
+	 if(h)
+	    *h = 0;
 	 for (int i=0; i<number; i++)
 	 {
-	    if (info[i].width > *w)
+	    if (w && info[i].width > *w)
 	       *w = info[i].width;
-	    if (info[i].height > *h)
+	    if (h && info[i].height > *h)
 	       *h = info[i].height;
 	 }
       }
       else
       {
-
-	 *x = info[scr].x_org;
-	 *y = info[scr].y_org;
-	 *w = info[scr].width;
-	 *h = info[scr].height;
+	 if(x)
+	    *x = info[scr].x_org;
+	 if(y)
+	    *y = info[scr].y_org;
+	 if(w)
+	    *w = info[scr].width;
+	 if(h)
+	    *h = info[scr].height;
       }
       P("Xinerama window: %d+%d %dx%d\n",*x,*y,*w,*h);
 
@@ -588,8 +599,6 @@ void DisplayDimensions()
    unsigned int w,h,b,d;
    int x,y;
    Window root;
-
-   xdo_wait_for_window_map_state(global.xdo,global.SnowWin,IsViewable);
 
    int rc = XGetGeometry(global.display,global.SnowWin,&root, &x, &y, &w, &h, &b, &d); 
 
@@ -704,4 +713,19 @@ void SetBackground()
    XDestroyImage(ximage);
    //free(pixels1);  //This is already freed by XDestroyImage
    return;
+}
+
+// add property with name and value
+int SetProperty(Display *display, Window window, const char *name, const char *value)
+{
+   return XChangeProperty(
+	 display,
+	 window,
+	 XInternAtom(display, name, False),      // property
+	 XInternAtom(display, "STRING", False),  // type
+	 8,                                      // format
+	 PropModeReplace,                        // mode
+	 (unsigned char*)value,                  // data
+	 strlen(value)                           // nelements
+	 );
 }

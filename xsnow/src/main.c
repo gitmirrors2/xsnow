@@ -112,6 +112,7 @@ int              SnowWinChanged = 1;
 cairo_t         *CairoDC = NULL;
 cairo_surface_t *CairoSurface = NULL;
 
+int lxdefound = False;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 
@@ -154,6 +155,7 @@ static void   SetWindowScale(void);
 static void   GetDesktopSession(void);
 static void   rectangle_draw(cairo_t *cr);
 static void   mybindtestdomain(void);
+static void   PrintAbsoluteCoordinates(void);
 
 // callbacks
 static int do_displaychanged(void *);
@@ -166,8 +168,8 @@ static int do_ui_check(void *);
 static int do_stopafter(void *);
 static int do_show_desktop_type(void *);
 static int do_display_dimensions(void *);
-static int do_drawit(void*);
-static int do_check_stop(void*);
+static int do_drawit(void *);
+static int do_check_stop(void *);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 static volatile int signal_caught = 0;
@@ -580,14 +582,14 @@ int main_c(int argc, char *argv[])
    loadmeasure_init();
    fallensnow_init();
 
-   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged     );
-   add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event              );
-   add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing            );
-   add_to_mainloop(PRIORITY_DEFAULT, time_writeflags,         do_write_flags        );
-   add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions );
-   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check           );
-   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc     );
-   add_to_mainloop(PRIORITY_DEFAULT, time_check_stop,         do_check_stop         );
+   add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged           );
+   add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event                    );
+   add_to_mainloop(PRIORITY_DEFAULT, time_testing,            do_testing                  );
+   add_to_mainloop(PRIORITY_DEFAULT, time_writeflags,         do_write_flags              );
+   add_to_mainloop(PRIORITY_DEFAULT, time_display_dimensions, do_display_dimensions       );
+   add_to_mainloop(PRIORITY_HIGH,    time_ui_check,           do_ui_check                 );
+   add_to_mainloop(PRIORITY_DEFAULT, time_show_range_etc,     do_show_range_etc           );
+   add_to_mainloop(PRIORITY_DEFAULT, time_check_stop,         do_check_stop               );
 
    if (Flags.StopAfter > 0)
       add_to_mainloop(PRIORITY_DEFAULT, Flags.StopAfter, do_stopafter);
@@ -600,7 +602,8 @@ int main_c(int argc, char *argv[])
 
    if (!Flags.NoConfig)
       global.time_to_write_flags = TRUE;
-   //WriteFlags(1);
+
+   PrintAbsoluteCoordinates();
 
    P("Entering main loop\n");
    // main loop
@@ -635,18 +638,23 @@ void set_below_above()
 {
    P("%d set_below_above %d\n",global.counter++,Flags.BelowAll);
    XWindowChanges changes;
+
    // to be sure: we do it in gtk mode and window mode
    if (Flags.BelowAll)
    {
-      if(TransA)setbelow(GTK_WINDOW(TransA));
+      if(TransA)
+	 setbelow(GTK_WINDOW(TransA));
       changes.stack_mode = Below;
-      if(global.SnowWin)XConfigureWindow(global.display,global.SnowWin,CWStackMode,&changes);
+      if(global.SnowWin)
+	 XConfigureWindow(global.display,global.SnowWin,CWStackMode,&changes);
    }
    else
    {
-      if(TransA)setabove(GTK_WINDOW(TransA));
+      if(TransA)
+	 setabove(GTK_WINDOW(TransA));
       changes.stack_mode = Above;
-      if(global.SnowWin)XConfigureWindow(global.display,global.SnowWin,CWStackMode,&changes);
+      if(global.SnowWin)
+	 XConfigureWindow(global.display,global.SnowWin,CWStackMode,&changes);
    }
 }
 
@@ -712,7 +720,7 @@ int StartWindow()
 
    global.Trans     = 0;
    global.xxposures = 0;
-   global.Desktop   = 0;
+   global.Desktop   = 0;  // well, it seems that it always becomes 1, so canditate for deletion
    global.UseDouble = 0;
    global.IsDouble  = 0;
    global.XscreensaverMode = 0;
@@ -742,6 +750,7 @@ int StartWindow()
    }
    else
    {
+      P("Flags.Screen:%d\n",Flags.Screen);
       // default behaviour
       // try to create a transparent clickthrough window
       GtkWidget *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -755,14 +764,15 @@ int StartWindow()
 	    Flags.Screen,        // full screen or xinerama
 	    Flags.AllWorkspaces, // sticky 
 	    Flags.BelowAll,      // below
-	    1,                   // dock
+				 //1,                   // dock
+	    0,                   // dock  see "IGNORE_ME" for xpenguins and others
 	    NULL,                // gdk_window
 	    &xwin,               // x11_window
 	    &wantx,              // make_trans_window tries to place the window here,
 				 //                      but, depending on window manager that does not always succeed
 	    &wanty
 	    );
-      if (rc)
+      if (rc) // we have a transparent snow window
       {
 	 global.Trans            = 1;
 	 global.IsDouble         = 1;
@@ -781,9 +791,8 @@ int StartWindow()
 	 {
 	    printf(_("The transparent snow-window is probably not click-through, alas..\n"));
 	 }
-
       }
-      else
+      else  // we don't have a transparent snow window
       {
 	 global.Desktop  = 1;
 	 X11cairo = 1;
@@ -796,15 +805,22 @@ int StartWindow()
 	 // if envvar DESKTOP_SESSION == LXDE, search for window with name pcmanfm
 	 // largest_window_with_name uses name argument as regex, hence the '^' and '$'.
 	 // Note that the name is still case-insensitive
+
+	 int x,y;
+	 xinerama(global.display, Flags.Screen, &x, &y, NULL, NULL);
+	 P("Screen: %d x: %d y: %d\n",Flags.Screen, x, y);
+
+	 // In LXDE, there are many windows named pcmanfm
 	 if (!strncmp(global.DesktopSession,"LXDE",4) && 
-	       (xwin = largest_window_with_name(global.xdo,"^pcmanfm$"))
+	       (xwin = largest_window_with_name(global.xdo,"^pcmanfm$",x,y))
 	    )
 	 {
+	    lxdefound = True;
 	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
 	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
 	 }
 	 else if (
-	       (xwin = largest_window_with_name(global.xdo,"^Desktop$"))
+	       (xwin = largest_window_with_name(global.xdo,"^Desktop$",x,y))
 	       )
 	 {
 	    printf(_("Using window 'Desktop'.\n"));
@@ -816,13 +832,18 @@ int StartWindow()
 	 }
 	 global.SnowWin = xwin;
 	 int winw,winh;
+	 P("global.Desktop: %d\n",global.Desktop);
 	 if (Flags.Screen >=0 && global.Desktop)
+	 {
 	    xinerama(global.display,Flags.Screen,&wantx,&wanty,&winw,&winh);
+	    P("wantx: %d, wanty: %d, winw: %d, winh: %d\n",wantx, wanty, winw, winh);
+	 }
       }
    }
 
    if(X11cairo)
    {
+      P("X11cairo lxdefound: %d\n",lxdefound);
       HandleX11Cairo();
       drawit_id = add_to_mainloop1(PRIORITY_HIGH, time_draw_all, do_drawit, CairoDC);
       global.WindowOffsetX = 0;
@@ -849,15 +870,21 @@ int StartWindow()
       xdo_move_window(global.xdo,global.SnowWin,wantx,wanty);
       P("wantx wanty: %d %d\n",wantx,wanty);
    }
+
    xdo_wait_for_window_map_state(global.xdo,global.SnowWin,IsViewable);
+
+   if (global.Trans)
+      SetProperty(global.display,global.SnowWin,ignore_atom,"xsnow");
+
+   P("SnowWinWidth: %d SnowWinHeight: %d\n", global.SnowWinWidth, global.SnowWinHeight);
    InitDisplayDimensions();
 
    global.SnowWinX = wantx;
    global.SnowWinY = wanty;
 
-   printf(_("Snowing in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
    PrevW = global.SnowWinWidth;
    PrevH = global.SnowWinHeight;
+   P("PrevW: %d PrevH: %d\n",PrevW,PrevH);
 
    P("woffx: %d %d\n",global.WindowOffsetX,global.WindowOffsetY);
 
@@ -876,8 +903,23 @@ int StartWindow()
    return TRUE;
 }
 
+void PrintAbsoluteCoordinates()
+{
+
+   // we did our best to place the snow window, but you never know what
+   // the window manager is cooking for us. So we ask politely the
+   // whereabouts of the snowwindow:
+
+   int x,y,w,h;
+   GetAbsoluteCoordinates(global.display, global.SnowWin, &x, &y, &w, &h);
+   printf(_("Snowing in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,x,y,w,h);
+   P("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,x,y,w,h);
+   fflush(stdout);
+}
+
 int HandleX11Cairo()
 {
+   P("Eentering HandleX11Cairo: SnowWin: 0x%lx\n",global.SnowWin);
    unsigned int w,h;
    xdo_get_window_size(global.xdo, global.SnowWin, &w, &h);
    Visual *visual = DefaultVisual(global.display,DefaultScreen(global.display));
@@ -900,12 +942,14 @@ int HandleX11Cairo()
       CairoSurface = cairo_xlib_surface_create(global.display, backBuf, visual, w, h);
       global.UseDouble = 1;
       global.IsDouble  = 1;
-      printf(_("Using double buffer: %#lx. %dx%d\n"),backBuf,w,h);
+      printf(_("Using double buffer: %#lx %dx%d\n"),backBuf,w,h);
       rcv = TRUE;
    }
 #endif
    if(!dodouble)
    {
+      if (CairoSurface)
+	 cairo_surface_destroy(CairoSurface);
       CairoSurface = cairo_xlib_surface_create(global.display, global.SnowWin, visual, w, h);
       printf(_("NOT using double buffering:"));
       if (Flags.UseDouble)
@@ -924,21 +968,84 @@ int HandleX11Cairo()
    cairo_xlib_surface_set_size(CairoSurface,w,h);
    global.SnowWinWidth  = w;
    global.SnowWinHeight = h;
+
+   // We are not able to create a transparent, click-through window so we have to paint
+   // in an existing window.
+   //
+   // Placement of the snow window:
+   // In multi-screen environments, it depends on your desktop manager how we
+   // should proceed.
+   // Simple X (also fvwm ant twm): There is one big (root) window, covering all screens.
+   //    In that case, we use cairo_rectangle and cairo_clip to abtain a drawing area
+   //    that starts at global.SnowWinX, global.SnowWinY, 
+   //       width: global.SnowWinWidth, height: global.SnowWinHeight
+   //
+   // Others, like LXDE, have already created windows, precisely covering
+   // the screens. We can check this by searching for a window that
+   // precisely covers the requested screen. The drawing coordinates of the
+   // must be 0,0 in that case.
+   //
+   // So, we find, using xinerama(), the coordinates and dimensions of the snow window.
+   //
+   // If there is a window with the same coordinates and sizes, we use that to draw in,
+   // and set the drawing coordinates to 0,0.
+   //
+   // Otherwize, we use cairo_rectangle and cairo_clip to define our drawing area.
+   //
+
+   int x1,y1,w1,h1;
+   xinerama(global.display, Flags.Screen, &x1, &y1, &w1, &h1);
+
+   WinInfo *windows;
+   int      nwin;
+
+   GetWindows(&windows,&nwin);
+   int ownwindow = False;
+   for (int i=0; i<nwin; i++)
+   {
+      WinInfo *w = &windows[i];
+      if (w->xa == x1 && w->ya == y1 && (int)w->w == w1 && (int)w->h == h1)
+      {
+	 P("match found: x1: %d y1: %d w1: %d h1: %d screen: %d id: %p\n",x1,y1,w1,h1,Flags.Screen,(void*)w->id);
+	 ownwindow = True;
+	 break;
+      }
+   }
+   if(windows)
+      free(windows);
+
+
    if (Flags.Screen >= 0 && global.Desktop)
    {
-      int winx, winy, winw, winh;
-      int rc = xinerama(global.display,Flags.Screen,&winx, &winy, &winw, &winh);
+      int winx=0, winy=0, winw, winh;
+      //int rc = xinerama(global.display,Flags.Screen,NULL, NULL, &winw, &winh);
+      int rc = xinerama(global.display, Flags.Screen, &winx, &winy, &winw, &winh);
+      P("rc: %d winx: %d winy: %d winw: %d winh: %d\n",rc,winx,winy,winw,winh);
       //if (rc && winx==0 && winy==0)
       if(rc)
       {
-	 global.SnowWinX      = winx;
-	 global.SnowWinY      = winy;
+	 if(ownwindow)
+	 {
+	    global.SnowWinX = 0;
+	    global.SnowWinY = 0;
+	 }
+	 else
+	 {
+	    global.SnowWinX = winx;
+	    global.SnowWinY = winy;
+	 }
 	 global.SnowWinWidth  = winw;
 	 global.SnowWinHeight = winh;
+	 PrevW                = winw;
+	 PrevH                = winh;
       }
-      cairo_rectangle(CairoDC,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
-      P("clipsnow %d %d %d %d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
-      cairo_clip(CairoDC);
+      //cairo_rectangle(CairoDC,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      if(!ownwindow)
+      {
+	 cairo_rectangle(CairoDC,winx,winy,global.SnowWinWidth,global.SnowWinHeight);
+	 P("clipsnow winx: %d winy: %d snowwinx: %d snowwiny:%d snowwinwidth: %d snowwimheight: %d\n",winx, winy, global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+	 cairo_clip(CairoDC);
+      }
    }
    return rcv;
 }
@@ -1180,8 +1287,6 @@ void RestartDisplay()
       ClearScreen();
 }
 
-
-
 int do_show_range_etc(void *d)
 {
    if (Flags.Done)
@@ -1219,7 +1324,9 @@ int do_testing(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
+   P("SnowWinX: %d SnowWinY: %d SnowWinWidth: %d SnowWinHeight: %d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth, global.SnowWinHeight);
 
+   //PrintAbsoluteCoordinates();
    return TRUE;
 }
 
@@ -1392,13 +1499,23 @@ int do_display_dimensions(void *d)
       return TRUE;
    SnowWinChanged = 0;
 
-   P("%d do_display_dimensions %dx%d %dx%d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight,PrevW,PrevH);
    DisplayDimensions();
    if (!global.Trans)
+   {
       HandleX11Cairo();
+   }
+   P("%d do_display_dimensions %dx%d %dx%d %d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight,PrevW,PrevH,global.Trans);
    if (PrevW != global.SnowWinWidth || PrevH != global.SnowWinHeight)
    {
-      printf(_("Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+      {
+	 // we did our best to place the snow window, but you never know what
+	 // the window manager is cooking for us. So we ask politely the
+	 // whereabouts of the snowwindow:
+
+	 int x,y,w,h;
+	 GetAbsoluteCoordinates(global.display, global.SnowWin, &x, &y, &w, &h);
+	 printf(_("Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,x,y,w,h);
+      }
       P("Calling RestartDisplay\n");
       RestartDisplay();
       PrevW = global.SnowWinWidth;

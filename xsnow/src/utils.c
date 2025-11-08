@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -383,7 +383,7 @@ char *guess_language()
 }
 
 // find largest window with name
-Window  largest_window_with_name(xdo_t *myxdo, const char *name)
+Window  largest_window_with_name(xdo_t *myxdo, const char *name, int x, int y)
 {
    xdo_search_t search;
 
@@ -407,9 +407,12 @@ Window  largest_window_with_name(xdo_t *myxdo, const char *name)
    {
       unsigned int width,height;
       xdo_get_window_size(myxdo, windows[i], &width, &height);
-      P("window: 0x%lx %d %d\n",windows[i],width,height);
       unsigned int size = width*height;
-      if (size <= maxsize)
+      P("window: 0x%lx %d %d %d %d\n",windows[i],width,height,size,maxsize);
+      int xx,yy;
+      xdo_get_window_location(myxdo, windows[i], &xx, &yy, NULL);
+      P("location: want: %d %d got: %d %d\n",x,y,xx,yy);
+      if (size <= maxsize || x != xx || y != yy)
 	 continue;
       P("width %d height %d size %d prev maxsize %d\n",width,height, size, maxsize);
       maxsize = size;

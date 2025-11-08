@@ -57,6 +57,7 @@
 #define time_desktop_type         2.0    // time between showing desktop type
 #define time_display_dimensions   0.5    // time between check of screen dimensions
 #define time_displaychanged       1.00   // time between checks if display has changed
+#define time_dropblob             3.0    // time between fall of snow blobs at the edges of the windows
 #define time_emeteor              0.60   // time between meteors erasures
 #define time_event                0.50   // time between checking events
 #define time_flakecount           1.00   // time between updates of show flakecount
@@ -80,7 +81,7 @@
 #define time_ui_check             0.25   // time between checking values from ui
 #define time_umoon                0.04   // time between update position of moon
 #define time_usanta               0.04   // time between update of santa position
-#define time_ustar                2.00   // time between updating stars
+#define time_ustar                0.40   // time between updating stars
 #define time_wind                 0.10   // time between starting or ending wind
 #define time_wupdate              0.20   // time between getting windows information
 
@@ -94,6 +95,7 @@
 #define XPM_TYPE const char
 
 #define DOCAPELLA                  1  // to convert fallensnow into flakes or not when moving window
+				      //
 
 /* ------------------------------------------------------------------ */
 
@@ -108,6 +110,7 @@ typedef struct _WinInfo
    unsigned int sticky BITS(1); // is visible on all workspaces
    unsigned int dock   BITS(1); // is a "dock" (panel)
    unsigned int hidden BITS(1); // is hidden (iconified)
+   unsigned int ignore BITS(1); // should be ignored (maybe a xpenguins transparent window)
 } WinInfo;
 
 typedef struct _FallenSnow {
@@ -160,6 +163,7 @@ typedef struct _Snow {
    float ry;                         // y position
    int   ix;
    int   iy;                         // position after draw
+   int   counter;                    // counts updates
    float vx;                         // speed in x-direction, pixels/second
    float vy;                         // speed in y-direction, pixels/second
    float m;                          // mass of flake
@@ -171,6 +175,7 @@ typedef struct _Snow {
    unsigned int cyclic     BITS(1);  // flake is cyclic 
    unsigned int fluff      BITS(1);  // flake is in fluff state
    unsigned int freeze     BITS(1);  // flake does not move
+   unsigned int accum      BITS(1);  // flake does accumulate fallensnow
    unsigned int testing    BITS(2);  // for testing purposes
 
 } Snow;

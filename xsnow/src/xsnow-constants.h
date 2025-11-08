@@ -45,3 +45,4 @@
 #define WHIRL 150
 #define MAXVISWORKSPACES 100   // should be enough...
 #define USE_EXTRATREE
+#define ignore_atom                "IGNORE_ME"

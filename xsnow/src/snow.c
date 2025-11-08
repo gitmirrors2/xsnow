@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024 Willem Vermin
@@ -164,7 +164,7 @@ void snow_ui()
 void init_snow_pix()
 {
    (void)LocalScale;
-   P("%d init_snow_pix\n",counter++);
+   P("%d init_snow_pix\n",global.counter++);
    for (int flake=0; flake<MaxFlakeTypes; flake++) 
    {
       SnowMap *rp = &snowPix[flake];
@@ -204,13 +204,13 @@ int snow_draw(cairo_t *cr)
 {
    if (Flags.NoSnowFlakes)
       return TRUE;
-   P("snow_draw %d\n",counter++);
+   P("snow_draw %d\n",global.counter++);
 
    set_begin();
    Snow *flake;
    while( (flake = (Snow *)set_next()) )
    {
-      P("snow_draw %d %f\n",counter++,ALPHA);
+      P("snow_draw %d %f\n",global.counter++,ALPHA);
       cairo_set_source_surface (cr, snowPix[flake->whatFlake].surface, flake->rx, flake->ry);
       double alpha = ALPHA;
       if (flake->fluff)
@@ -237,7 +237,7 @@ int snow_erase(int force)
       EraseSnowFlake1(flake);
       n++;
    }
-   P("snow_erase %d %d\n",counter++,n);
+   P("snow_erase %d %d\n",global.counter++,n);
    return TRUE;
 }
 
@@ -304,6 +304,17 @@ int do_UpdateSnowFlake(Snow *flake)
    float NewX = flake->rx + (flake->vx*FlakesDT)*SnowSpeedFactor;
    float NewY = flake->ry + (flake->vy*FlakesDT)*SnowSpeedFactor;
 
+   // restore accumulation on fallensnow after some calls
+   if (flake->accum == 0)
+   {
+      const int countmax = 200;
+      flake->counter++;
+      if (flake->counter > countmax)
+      {
+	 flake->counter = 0;
+	 flake->accum   = 1;
+      }
+   }
    // handle fluff and KillFlakes
    if (KillFlakes || (flake->fluff && flake->flufftimer > flake->flufftime))
    {
@@ -384,7 +395,7 @@ int do_UpdateSnowFlake(Snow *flake)
    int nx = lrintf(NewX);
    int ny = lrintf(NewY);
 
-   if (!flake->fluff)
+   if (!flake->fluff && flake->accum)
    {
       Lock_fallen();
       // determine if non-fluffy-flake touches the fallen snow,
@@ -613,6 +624,8 @@ void InitFlake(Snow *flake)
    flake->ry         = -randint(global.SnowWinHeight/10)-flakeh;
    flake->cyclic     = 1;
    flake->fluff      = 0;
+   flake->accum      = 1;
+   flake->counter    = 0;
    flake->flufftimer = 0;
    flake->flufftime  = 0;
    flake->m          = drand48()+0.1;

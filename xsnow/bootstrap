@@ -20,6 +20,7 @@
 #-endcopyright-
 debroot=../xsnow-debian
 deb=$debroot/debian
+version=`getversion`
 
 curdir=`pwd`
 if [ -f Makefile ] ; then
@@ -27,11 +28,14 @@ if [ -f Makefile ] ; then
 fi
 rm -f configure
 # Create make.inc for the Pixmaps folder
+
 (
+
 cd src/Pixmaps
 echo "EXTRA_DIST = \\" > make.inc
 echo "make.inc \\" >> make.inc
 ls *.xpm *.xbm *.svg | sed 's/$/ \\/' | sed '$s/\\//' >> make.inc
+
 )
 
 ./addcopyright.sh Makefile.am afterburner/Makefile.am addcopyright.sh bootstrap \
@@ -44,13 +48,23 @@ cd $curdir
 date +%s > bootdate
 
 autoreconf -fvi || exit 1
-(
-echo removing po/*.gmo and po/*.po
-rm -f po/*.gmo po/*.po
-echo "Copying pofiles/*.po to po/"
-cp pofiles/*.po po
-cd po
 
+(
+
+echo "removing po/*.gmo and po/*.po"
+rm -f po/*.gmo po/*.po
+
+(
+
+echo "Copying pofiles/*.po to po/"
+cd pofiles || exit 1
+for p in *.po ; do
+   sed '1,/^"Project-Id-Version:/s/someversion/'"$version"'/' $p > ../po/$p
+done
+
+)
+
+cd po
 pofiles=`echo *.po`
 languages=`echo $pofiles | sed 's/\.po//g'`
 echo '# Set of available languages.' > LINGUAS
@@ -58,6 +72,7 @@ echo "$languages" >> LINGUAS
 echo "Created po/LINGUAS:"
 cat LINGUAS
 echo 
+
 )
 
 # create autopkg suite in debian directory, if present
@@ -69,7 +84,7 @@ if [ -d $deb ] ; then
    for f in $deb/tests/test?.sh ; do
       echo "     `basename $f`" >> $deb/tests/control                  || exit 1
    done
-   echo "Depends: @, xvfb, xauth, xdotool, scrot" >> $deb/tests/control
+   echo "Depends: @, xvfb, xauth, xdotool, scrot, psmisc" >> $deb/tests/control
 fi
 
 echo "$0 done"

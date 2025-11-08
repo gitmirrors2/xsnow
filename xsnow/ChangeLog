@@ -1,3 +1,47 @@
+version 3.8.6
+	01: some adaptions to test2.sh
+
+version 3.8.5
+	01: src/windows.c: add test for "hidden" to determine if snow
+	       should fall on window.
+	    src/fallensnow.c: generate more fallensnow for first and last
+	       item of fallensnow.
+	    src/main.c: do not specify "dock" for the snow window.
+	       "dock" causes KDE PLASMA 6 to have the snow window always 
+	       on top.
+	    src/main.c, src/windows.c: add property "TRANSPARENCY" "YES"
+	       to snow window if transparent, else
+	       "TRANSPARENCY" "NO"
+	       so that other apps, like xpenguins, can determine if this
+	       window is to be ignored or not.
+	    src/fallensnow.c: transform blob into snow now and then.
+	       prevent direct accumulation of snow from transformed blob.
+	    src/snow.c: after about 2 seconds, make accumulation possible
+	       again.
+	    src/fallensnow.c: CreateSurfaceFromFallen(FallenSnow *f):
+	       fix bug with regard to the number of points to average.
+	       make height max height of fallensnow dependent on width.
+	    birds.c: lower default number of birds
+	    stars.c: if CIRCLESTARS is defined, paint circle-like stars
+	       suggestion by Mihai Dobrescu.
+	    doit.h: increase default nr of stars.
+	    ui.glade: increase max number of starts.
+	02: change snowtree.xpm and tree-1_100px.xpm (Thanks to Carla)
+	    Create halo around stars (thanks to Carla)
+	    Create src/transwindow.c: GetYOffset() to determine absolute
+	      value of y-coordinate of an window. This is used to properly
+	      size a snow window.
+	    flags.c: check value of Flags.ForceRoot before
+	      using gtk_builder_get_object().
+	    pofiles/*.po: update translations
+	    src/transwindow.c: force snow window to have 
+	       _NET_WM_WINDOW_TYPE(ATOM) = _NET_WM_WINDOW_TYPE_NORMAL
+	       by calling
+	       gdk_window_set_type_hint(gdkwin,GDK_WINDOW_TYPE_HINT_NORMAL);
+	03: src/main.c: HandleX11Cairo(): set SnowWinX, SnowWinY to 0,0 .
+	    In LXDE, monitor 0 and 1 are used correctly now.
+	04: bootstrap,pofiles/*.po: insert correct xsnow version in po/*.po.
+
 version 3.8.4
 	01: main.c: add code to stop if ~/.xsnowstop is present.
 	    test2.sh: get rid of kill, killall by using xvfb-run

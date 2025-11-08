@@ -94,7 +94,7 @@
    DOIT_I(NoSnowFlakes         ,0          ,0          ) \
    DOIT_I(NoTrees              ,0          ,0          ) \
    DOIT_I(NoWind               ,0          ,0          ) \
-   DOIT_I(NStars               ,20         ,0          ) \
+   DOIT_I(NStars               ,40         ,0          ) \
    DOIT_I(OffsetS              ,0          ,0          ) \
    DOIT_I(OffsetW              ,-8         ,-8         ) \
    DOIT_I(OffsetX              ,4          ,4          ) \
@@ -134,7 +134,7 @@
    DOIT_I(DisWeight            ,20  ,20 ) \
    DOIT_I(FollowWeight         ,30  ,30 ) \
    DOIT_I(FollowSanta          ,0   ,0  ) \
-   DOIT_I(Nbirds               ,70  ,70 ) \
+   DOIT_I(Nbirds               ,20  ,20 ) \
    DOIT_I(Neighbours           ,7   ,7  ) \
    DOIT_I(PrefDistance         ,40  ,40 ) \
    DOIT_I(ShowAttrPoint        ,0   ,0  ) \

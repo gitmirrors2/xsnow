@@ -418,8 +418,7 @@ void docs_usage(int man)
    manout(".","With compositor: unworkable.");
    manout("JVM","No issues.");
    manout("LXDE","With compositor: no issues.");
-   manout(".","Without compositor: works with one monitor.");
-   manout(".","Maybe you need to run with the flag -xwininfo");
+   manout(".","Without compositor: icons in snow window disappear.");
    manout("LXQT","Without compositor: unworkable.");
    manout(" ","With compositor: no issues.");
    manout("MATE","No issues.");
@@ -461,8 +460,6 @@ void docs_usage(int man)
    manout(" ","  when you click on the desktop. Sadly, no FVWM menu will appear...");
    manout(".","- Remnants of fluffy snow can persist after removing the");
    manout(" ","    fallen snow. These will gradually disappear, so no big deal.");
-   manout(".","- Remnants of meteors can persist after passage of Santa.");
-   manout(" ","    These will eventually be wiped out by snow or Santa.");
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","    settings are changed while xsnow is running.");
    manout(" ","    This does not function always well.");
@@ -475,6 +472,8 @@ void docs_usage(int man)
    manout(" ","    and try again.");
    manout(".","- In XFCE, compositing must be enabled for xsnow.");
    manout(" ","    Settings -> Window Manager Tweaks -> Compositor -> Enable display compositing");
+   manout(".","- Dependng on the window manager, snowing in 'all monitors' results in snowing");
+   manout(" ","    in one of the monitors. This happens for example in KDE.");
 
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");

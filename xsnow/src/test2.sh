@@ -35,7 +35,7 @@ if [ "$XSNOW_FAST_CHECK" ] ; then
    exit 0
 fi
 
-apps="xvfb-run xdotool scrot"
+apps="xvfb-run xdotool scrot killall"
 
 missing=0
 for app in $apps ; do
@@ -65,6 +65,14 @@ sumerr=0
 first=`mktemp --tmpdir tmp.XXXXXXX.png`
 second=`mktemp --tmpdir tmp.XXXXXXX.png`
 
+rcbak=`mktemp`
+> "$rcbak"
+test -r "$rcfile" && cp "$rcfile" "$rcbak" 2>/dev/null
+rm -f "$rcfile"
+
+killall Xvfb 2>&1
+sleep 1
+
 rm -f "$stopfile"
 if [ "$XSNOW_USEXVFB" ] ; then
    SERVER_NUMBER=23
@@ -79,15 +87,10 @@ else
    "$XSNOW"  2>&1 &
 fi
 
-rcbak=`mktemp`
-> "$rcbak"
-test -r "$rcfile" && cp "$rcfile" "$rcbak" 2>/dev/null
-rm -f "$rcfile"
-
 # test if xsnow is changing screen
 
 for i in `seq 20` ; do
-   sleep 0.2
+   sleep 1
    test -f "$rcfile" && break
 done
 
@@ -97,9 +100,9 @@ if [ ! -f "$rcfile" ] ; then
    exit 1
 fi
 
-sleep 2  # wait to let xsnow paint it's things
+sleep 4  # wait to let xsnow paint it's things
 scrot -z -o $first   # take first screenshot
-sleep 3              # let xsnow run a few seconds
+sleep 5              # let xsnow run a few seconds
 scrot -z -o $second  # and take second screenshot
 
 cmp "$first" "$second"
@@ -111,7 +114,7 @@ else
    echo "FAILED: xsnow is not running or changing the screen"
    sumerr=`expr "$sumerr" + 1`
    touch "$stopfile"
-   sleep 2
+   sleep 4
    cp "$rcbak" "$rcfile"
    exit 1
 fi
@@ -124,14 +127,10 @@ fi
 
 waitfor()
 {
-   #while test -f "$rcfile" ; do
-   #   rm -f "$rcfile"
-   #   sleep 0.2
-   #done
    local i
    for i in `seq 20` ; do
       #echo waitfor $1 $i
-      sleep 0.1
+      sleep 1
       if test -f "$rcfile" ; then
 	 if grep -q "$1" "$rcfile" ; then
 	    return 0

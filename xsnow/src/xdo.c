@@ -203,6 +203,7 @@ int xdo_wait_for_window_map_state_orig(const xdo_t *xdo, Window wid, int map_sta
 
 // wv:
 int xdo_wait_for_window_map_state(const xdo_t *xdo, Window wid, int map_state) {
+   XMapWindow(xdo->xdpy,wid);
    XWindowAttributes attr;
    attr.map_state = IsUnmapped;
    useconds_t usecs = 20000;

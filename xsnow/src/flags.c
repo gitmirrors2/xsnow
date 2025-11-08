@@ -474,7 +474,7 @@ void WriteFlags(int output_locations)
 #define DOIT_I(x,d,v) write_button_location(# x,f);
 #define DOIT_L(x,d,v) write_button_location(# x,f);
 #define DOIT_S(x,f,v) ;
-   if(output_locations && !Flags.NoMenu)
+   if(output_locations && !Flags.NoMenu && !Flags.ForceRoot)
    {
       fprintf(f,"# Positions of widgets on the screen:\n");
 
