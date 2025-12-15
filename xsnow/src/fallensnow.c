@@ -66,6 +66,7 @@ static int    lock_swap(void);
 static int    unlock_swap(void);
 static void   check_fallen(void);
 static void   compute_mixed_color(GdkRGBA *color);
+static void   SetMaxScreenSnowDepthWithLock(void);
 
 // pop first element
 static int    PopFallenSnow(FallenSnow **list);
@@ -95,7 +96,11 @@ void UpdateFallenSnowAtBottom()
    // threads: locking by caller
    FallenSnow *fsnow = FindFallen(global.FsnowFirst, 0);
    if (fsnow)
-      fsnow->y = global.SnowWinHeight;
+   {
+      fsnow->y = global.SnowWinHeight + Flags.OffsetS;
+      fsnow->w = global.SnowWinWidth;
+      P("fsnow.y: %d\n",fsnow->y);
+   }
 }
 
 void fallensnow_draw(cairo_t *cr)
@@ -152,7 +157,10 @@ void fallensnow_draw(cairo_t *cr)
 
 void fallensnow_ui()
 {
-   UIDO(MaxWinSnowDepth   , InitFallenSnow(); ClearScreen(); );
+   UIDO(MaxWinSnowDepth   , 
+	 SetMaxWinSnowDepth();
+	 InitFallenSnow(); 
+	 ClearScreen(); );
    UIDO(MaxScrSnowDepth   , 
 	 SetMaxScreenSnowDepthWithLock();
 	 InitFallenSnow();
@@ -1037,11 +1045,20 @@ void SetMaxScreenSnowDepthWithLock()
 void SetMaxScreenSnowDepth()
 {
    // threads: locking by caller
-   global.MaxScrSnowDepth = Flags.MaxScrSnowDepth;
+   // if user specifies 100, 15% of height of screen is chosen
+   global.MaxScrSnowDepth = Flags.MaxScrSnowDepth *0.01 * 0.15 * (global.SnowWinHeight+Flags.OffsetS);
+   P("MaxScrSnowDepth: %d\n",global.MaxScrSnowDepth);
    if (global.MaxScrSnowDepth > (int)(global.SnowWinHeight-SNOWFREE)) {
       printf("** Maximum snow depth set to %d\n", global.SnowWinHeight-SNOWFREE);
       global.MaxScrSnowDepth = global.SnowWinHeight-SNOWFREE;
    }
+}
+
+void SetMaxWinSnowDepth()
+{
+   // if user specifies 100, 10% of height of screen is chosen
+   global.MaxWinSnowDepth = Flags.MaxWinSnowDepth * 0.01 * 0.10 * (global.SnowWinHeight+Flags.OffsetS);
+   P("MaxWinSnowDepth: %d\n",global.MaxWinSnowDepth);
 }
 
 

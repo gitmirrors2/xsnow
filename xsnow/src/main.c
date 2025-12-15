@@ -63,6 +63,11 @@
 #include <assert.h>
 #include "mygettext.h"
 
+//#ifdef assert
+//#undef assert
+//#define assert(x) {} 
+//#endif
+
 #include "xsnow-constants.h"
 
 #include "aurora.h"
@@ -156,20 +161,24 @@ static void   GetDesktopSession(void);
 static void   rectangle_draw(cairo_t *cr);
 static void   mybindtestdomain(void);
 static void   PrintAbsoluteCoordinates(void);
+static void   DisplayDimensions(void);
+static void   InitDisplayDimensions();
+static void   make_fullmaxscreen(void);
 
 // callbacks
-static int do_displaychanged(void *);
-static int do_write_flags(void *);
-static int do_draw_all(gpointer widget);
-static int do_event(void *);
-static int do_show_range_etc(void *);
-static int do_testing(void *);
-static int do_ui_check(void *);
-static int do_stopafter(void *);
-static int do_show_desktop_type(void *);
-static int do_display_dimensions(void *);
-static int do_drawit(void *);
-static int do_check_stop(void *);
+static int  do_displaychanged(void *);
+static int  do_write_flags(void *);
+static int  do_draw_all(gpointer widget);
+static int  do_event(void *);
+static int  do_show_range_etc(void *);
+static int  do_testing(void *);
+static int  do_ui_check(void *);
+static int  do_stopafter(void *);
+static int  do_show_desktop_type(void *);
+static int  do_display_dimensions(void *);
+static int  do_drawit(void *);
+static int  do_check_stop(void *);
+static int  do_full_trans(gpointer widget);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
 static volatile int signal_caught = 0;
@@ -537,6 +546,9 @@ int main_c(int argc, char *argv[])
       return 1;
    }
 
+   P("snowinx: %d, snowiny: %d, snowinwidth: %d, snowwinheight: %d\n",
+	 global.SnowWinX, global.SnowWinY, global.SnowWinWidth, global.SnowWinHeight);
+
 
 #define DOIT_I(x,d,v) OldFlags.x = Flags.x;
 #define DOIT_L(x,d,v) DOIT_I(x,d,v);
@@ -581,6 +593,8 @@ int main_c(int argc, char *argv[])
    treesnow_init();
    loadmeasure_init();
    fallensnow_init();
+
+   add_to_mainloop(PRIORITY_HIGH,    0.001,                      do_full_trans               );
 
    add_to_mainloop(PRIORITY_DEFAULT, time_displaychanged,     do_displaychanged           );
    add_to_mainloop(PRIORITY_DEFAULT, time_event,              do_event                    );
@@ -723,6 +737,7 @@ int StartWindow()
    global.Desktop   = 0;  // well, it seems that it always becomes 1, so canditate for deletion
    global.UseDouble = 0;
    global.IsDouble  = 0;
+   global.UseClip   = 0;
    global.XscreensaverMode = 0;
 
    global.Rootwindow = DefaultRootWindow(global.display);
@@ -754,13 +769,15 @@ int StartWindow()
       // default behaviour
       // try to create a transparent clickthrough window
       GtkWidget *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-      gtk_widget_set_can_focus(gtkwin, TRUE);
-      gtk_window_set_decorated(GTK_WINDOW(gtkwin), FALSE);
-      gtk_window_set_type_hint(GTK_WINDOW(gtkwin), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
+      //gtk_widget_set_can_focus(gtkwin, TRUE);
+      //gtk_window_set_decorated(GTK_WINDOW(gtkwin), FALSE);
+      //gtk_window_set_type_hint(GTK_WINDOW(gtkwin), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
 
 
       GdkWindow *gdkwin; (void)gdkwin;
-      int rc = make_trans_window(global.display, gtkwin,
+      int rc = make_trans_window(
+	    global.display, 
+	    gtkwin,
 	    Flags.Screen,        // full screen or xinerama
 	    Flags.AllWorkspaces, // sticky 
 	    Flags.BelowAll,      // below
@@ -774,6 +791,7 @@ int StartWindow()
 	    );
       if (rc) // we have a transparent snow window
       {
+	 // SnowWinWidth etc are determined in DisplayDimensions, called by do_display_dimensions
 	 global.Trans            = 1;
 	 global.IsDouble         = 1;
 	 global.Desktop          = 1;
@@ -784,7 +802,12 @@ int StartWindow()
 	 P("calling set_below_above\n");
 	 set_below_above();
 	 global.SnowWin = xwin;
-	 printf(_("Using transparent window\n"));
+
+	 int w,h;
+	 gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
+	 global.SnowWinWidth = w;
+	 global.SnowWinHeight = h;
+	 printf(_("Using transparent window: %dx%d\n"),w,h);
 	 P("wantx, wanty: %d %d\n",wantx,wanty);
 	 if(!strncasecmp(global.DesktopSession,"fvwm",4) ||
 	       !strncasecmp(global.DesktopSession,"lxqt",4))
@@ -910,16 +933,21 @@ void PrintAbsoluteCoordinates()
    // the window manager is cooking for us. So we ask politely the
    // whereabouts of the snowwindow:
 
-   int x,y,w,h;
-   GetAbsoluteCoordinates(global.display, global.SnowWin, &x, &y, &w, &h);
-   printf(_("Snowing in %#lx: %s %d+%d %dx%d\n"),global.SnowWin,SnowWinName,x,y,w,h);
-   P("Snowing in %#lx: %s %d+%d %dx%d\n",global.SnowWin,SnowWinName,x,y,w,h);
+   if (global.Trans){
+      //XWindowAttributes xwa;
+      //XGetWindowAttributes(global.display, global.SnowWin, &xwa );
+      int w,h;
+      gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
+      printf(_("Snowing in %#lx: %s size: %dx%d\n"),global.SnowWin,SnowWinName, 
+	    w,h);
+   }
+
    fflush(stdout);
 }
 
 int HandleX11Cairo()
 {
-   P("Eentering HandleX11Cairo: SnowWin: 0x%lx\n",global.SnowWin);
+   P("Entering HandleX11Cairo: SnowWin: 0x%lx\n",global.SnowWin);
    unsigned int w,h;
    xdo_get_window_size(global.xdo, global.SnowWin, &w, &h);
    Visual *visual = DefaultVisual(global.display,DefaultScreen(global.display));
@@ -940,6 +968,7 @@ int HandleX11Cairo()
       if (CairoSurface)
 	 cairo_surface_destroy(CairoSurface);
       CairoSurface = cairo_xlib_surface_create(global.display, backBuf, visual, w, h);
+      // TODO do not use w,h but clipped w and h
       global.UseDouble = 1;
       global.IsDouble  = 1;
       printf(_("Using double buffer: %#lx %dx%d\n"),backBuf,w,h);
@@ -966,6 +995,7 @@ int HandleX11Cairo()
 
    CairoDC = cairo_create(CairoSurface);
    cairo_xlib_surface_set_size(CairoSurface,w,h);
+   P("setting snowwinwidth\n");
    global.SnowWinWidth  = w;
    global.SnowWinHeight = h;
 
@@ -996,6 +1026,7 @@ int HandleX11Cairo()
    int x1,y1,w1,h1;
    xinerama(global.display, Flags.Screen, &x1, &y1, &w1, &h1);
 
+
    WinInfo *windows;
    int      nwin;
 
@@ -1014,14 +1045,11 @@ int HandleX11Cairo()
    if(windows)
       free(windows);
 
-
    if (Flags.Screen >= 0 && global.Desktop)
    {
       int winx=0, winy=0, winw, winh;
-      //int rc = xinerama(global.display,Flags.Screen,NULL, NULL, &winw, &winh);
       int rc = xinerama(global.display, Flags.Screen, &winx, &winy, &winw, &winh);
       P("rc: %d winx: %d winy: %d winw: %d winh: %d\n",rc,winx,winy,winw,winh);
-      //if (rc && winx==0 && winy==0)
       if(rc)
       {
 	 if(ownwindow)
@@ -1034,21 +1062,29 @@ int HandleX11Cairo()
 	    global.SnowWinX = winx;
 	    global.SnowWinY = winy;
 	 }
+	 P("setting snowwinwidth\n");
 	 global.SnowWinWidth  = winw;
 	 global.SnowWinHeight = winh;
 	 PrevW                = winw;
 	 PrevH                = winh;
       }
-      //cairo_rectangle(CairoDC,global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
       if(!ownwindow)
       {
-	 cairo_rectangle(CairoDC,winx,winy,global.SnowWinWidth,global.SnowWinHeight);
+	 cairo_rectangle(CairoDC,winx,winy,winw,winh);
 	 P("clipsnow winx: %d winy: %d snowwinx: %d snowwiny:%d snowwinwidth: %d snowwimheight: %d\n",winx, winy, global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
 	 cairo_clip(CairoDC);
+	 global.UseClip        = 1;
+	 global.SnowClipWidth  = winw;
+	 global.SnowClipHeight = winh;
+	 P("setting snowwinwidth\n");
+	 global.SnowWinWidth   = winw;      // will be overwitten by displaydimensions
+	 global.SnowWinHeight  = winh;     //  idem
+	 UpdateFallenSnowAtBottom();
       }
    }
    return rcv;
 }
+
 
 void DoAllWorkspaces()
 {
@@ -1178,12 +1214,10 @@ int do_displaychanged(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
-   P("Trans: %d xxposures: %d Desktop: %d\n",
-	 global.Trans,   
-	 global.xxposures, global.Desktop);
+   P("Trans: %d xxposures: %d Desktop: %d\n", global.Trans,   global.xxposures, global.Desktop);
 
-   if (!global.Desktop)
-      return TRUE;
+   //if (!global.Desktop)
+   //  return TRUE;
 
    if (global.ForceRestart)
    {
@@ -1193,12 +1227,13 @@ int do_displaychanged(void *d)
    }
    else
    {
+      return TRUE; // TODO: disabling this section
       unsigned int w,h;
       Display* display = XOpenDisplay(Flags.DisplayName);
       Screen* screen   = DefaultScreenOfDisplay(display);
       w = WidthOfScreen(screen);
       h = HeightOfScreen(screen);
-      P("width height: %d %d %d %d\n",w,h,global.Wroot,global.Hroot);
+      P("w: %d, h: %d, Wroot: %d, Hroot: %d\n",w,h,global.Wroot,global.Hroot);
       if(global.Wroot != w || global.Hroot != h)
       {
 	 DoRestart = 1;
@@ -1270,6 +1305,7 @@ int do_check_stop(void*dummy)
 void RestartDisplay()
 {
    P("Restartdisplay: %d W: %d H: %d\n",global.counter++,global.SnowWinWidth,global.SnowWinHeight);
+
    fflush(stdout);
    InitFallenSnow();
    init_stars();
@@ -1324,7 +1360,11 @@ int do_testing(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
+
    P("SnowWinX: %d SnowWinY: %d SnowWinWidth: %d SnowWinHeight: %d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth, global.SnowWinHeight);
+   //int w,h;
+   //gtk_window_get_size(GTK_WINDOW(TransA),&w,&h); P("w: %d, h:%d\n",w,h);
+   P("SnowClipWidth: %d, SnowClipHeight: %d\n", global.SnowClipWidth, global.SnowClipHeight);
 
    //PrintAbsoluteCoordinates();
    return TRUE;
@@ -1391,6 +1431,7 @@ void drawit(cairo_t *cr)
    //   start of xsnow.
    // This is not harmful, but a bit annoying, so we do not draw anything 
    //   the first few times this function is called.
+
    if (counter*time_draw_all < 1.5)
    {
       counter++;
@@ -1490,15 +1531,43 @@ void SetWindowScale()
    P("WindowScale: %f\n",global.WindowScale);
 }
 
+int do_full_trans(gpointer widget)  // TODO can probably go
+{
+   (void) widget;
+   static int nscreens = -2;
+   static int counter = 0;
+   if(nscreens == -2)
+      nscreens = xinerama(global.display,-1,NULL,NULL,NULL,NULL);
+   P("do_full_trans\n");
+
+   // Make sure TransA is fullscreen or maximized and below or above as desired.
+   if(global.Trans)
+   {
+      if (Flags.Screen < 0 && nscreens > 1) 
+      {
+	 make_fullmaxscreen();
+      }
+      else
+	 gtk_window_maximize(GTK_WINDOW(TransA));
+      set_below_above();
+   }
+
+   if (counter++ > 10)
+      return FALSE;
+   return FALSE;
+}
+
 int do_display_dimensions(void *d)
 {
    (void)d;
    if (Flags.Done)
       return FALSE;
+
    if (!SnowWinChanged)
       return TRUE;
    SnowWinChanged = 0;
 
+   P("do_displaydimensions: calling DisplayDimensions()\n");
    DisplayDimensions();
    if (!global.Trans)
    {
@@ -1528,11 +1597,15 @@ int do_display_dimensions(void *d)
 
 int do_draw_all(gpointer widget)
 {
+   static int counter = 0;
    if (Flags.Done)
       return FALSE;
    P("do_draw_all %d %p\n",global.counter++,(void *)widget);
+   if (global.Trans && counter < 4) // to be sure we repeat this 5 times
+      make_fullmaxscreen();  // a bit strange that we have to repeat this here ...
+   counter++;
 
-   // this will result in a call off on_draw_event():
+   // this will result in a call of on_draw_event():
    gtk_widget_queue_draw(GTK_WIDGET(widget));
    return TRUE;
 }
@@ -1541,13 +1614,14 @@ int do_draw_all(gpointer widget)
 // handle callbacks for things whose timings depend on cpufactor
 void HandleCpuFactor()
 {
+
    // re-add things whose timing is dependent on cpufactor
    if (Flags.CpuLoad <= 0)
       global.cpufactor = 1;
    else
       global.cpufactor = 100.0/Flags.CpuLoad;
 
-   P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,counter++);
+   P("handlecpufactor %f %f %d\n",oldcpufactor,cpufactor,global.counter++);
    add_to_mainloop(PRIORITY_HIGH, time_init_snow , do_initsnow);  // remove flakes
 
    restart_do_draw_all();
@@ -1555,6 +1629,8 @@ void HandleCpuFactor()
 
 void restart_do_draw_all()
 {
+
+
    if (global.Trans)
    {
       if (draw_all_id)
@@ -1570,8 +1646,10 @@ void restart_do_draw_all()
       P("started do_drawit %d %p %f\n",drawit_id, (void *)CairoDC, time_draw_all);
    }
 }
+
 void rectangle_draw(cairo_t *cr)
 {
+
    const int lw = 8;
    cairo_save(cr);
    cairo_set_source_rgba(cr,1,1,0,0.5);
@@ -1579,6 +1657,7 @@ void rectangle_draw(cairo_t *cr)
    cairo_set_line_width(cr,lw);
    cairo_stroke(cr);
    cairo_restore(cr);
+
 }
 
 int do_stopafter(void *d)
@@ -1664,3 +1743,94 @@ void mybindtestdomain()
 
 #endif
 }
+
+void DisplayDimensions()
+{
+   P("Displaydimensions\n");
+   Lock_fallen();
+   unsigned int w,h,b,d;
+   int x,y;
+
+   Window root;
+
+   int rc = XGetGeometry(global.display,global.SnowWin,&root, &x, &y, &w, &h, &b, &d); 
+
+   if (rc == 0)
+   {
+      P("Oeps\n");
+      I("\nSnow window %#lx has disappeared, it seems. I quit.\n",global.SnowWin);
+      Thanks();
+      exit(1);
+      return;
+   }
+
+   P("setting snowwinwidth Trans: %d\n",global.Trans);
+   if (global.Trans) 
+      gtk_window_get_size(GTK_WINDOW(TransA),(int *)&w,(int *)&h);
+   P("w: %d, h:%d\n",w,h);
+
+   if (global.UseClip)
+   {
+      global.SnowWinWidth  = global.SnowClipWidth;
+      global.SnowWinHeight = global.SnowClipHeight;
+   }
+   else
+   {
+      global.SnowWinWidth  = w;
+      global.SnowWinHeight = h;
+   }
+
+   P("DisplayDimensions: SnowWinX: %d Y:%d W:%d H:%d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
+
+   global.SnowWinBorderWidth = b;
+   global.SnowWinDepth       = d;
+
+   UpdateFallenSnowAtBottom();
+
+   RedrawTrees();
+
+   SetMaxScreenSnowDepth();
+   SetMaxWinSnowDepth();
+   if(!global.IsDouble)
+      ClearScreen();
+   Unlock_fallen();
+}
+
+void InitDisplayDimensions()
+{
+
+   unsigned int w,h;
+   int x,y;
+   xdo_get_window_location(global.xdo, global.Rootwindow, &x, &y,NULL);
+   xdo_get_window_size    (global.xdo, global.Rootwindow, &w, &h);
+
+   P("InitDisplayDimensions root: %p %d %d %d %d\n",(void*)global.Rootwindow,x,y,w,h);
+
+   global.Xroot = x;
+   global.Yroot = y;
+   global.Wroot = w;
+   global.Hroot = h;
+
+   DisplayDimensions();
+}
+
+void make_fullmaxscreen()
+{
+   P("make_maxfullscreen...\n");
+   if (Flags.Screen < 0)
+   {
+      static GdkWindow *gdkwin = NULL;
+      static int nmonitors = 0;
+      if (!nmonitors)
+	 nmonitors = xinerama(global.display, -1, NULL, NULL, NULL, NULL);
+      if (nmonitors == 1)  // return if number of monitors == 1
+	 return;
+      if (!gdkwin)
+	 gdkwin = gtk_widget_get_window(TransA);
+      gdk_window_set_fullscreen_mode(gdkwin,GDK_FULLSCREEN_ON_ALL_MONITORS);
+      gtk_window_fullscreen(GTK_WINDOW(TransA));
+   }
+   else
+      gtk_window_maximize(GTK_WINDOW(TransA));
+}
+

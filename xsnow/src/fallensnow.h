@@ -53,7 +53,7 @@ extern void   GenerateFlakesFromFallen(FallenSnow *fsnow, int x, int w, float vy
 extern void   InitFallenSnow(void);
 extern void   UpdateFallenSnowWithWind(FallenSnow *fsnow,int w, int h);
 extern void   SetMaxScreenSnowDepth(void);
-extern void   SetMaxScreenSnowDepthWithLock(void);
+extern void   SetMaxWinSnowDepth(void);
 extern void   UpdateFallenSnowAtBottom(void);
 extern int    lock_fallen(void);
 extern int    unlock_fallen(void);

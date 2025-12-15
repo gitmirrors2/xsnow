@@ -51,6 +51,8 @@ static WinInfo      *Windows = NULL;
 static int          NWindows;
 static int          do_wupdate(void *);
 static void         DetermineVisualWorkspaces(void);
+static int          waitmax(gpointer widget);
+static int          waitfull(gpointer widget);
 
 
 void windows_ui()
@@ -64,6 +66,7 @@ void windows_draw()
 
 void windows_init()
 {
+   P("windows_init: global.Desktop: %d\n",global.Desktop);
    if (global.Desktop)
    {
       DetermineVisualWorkspaces();
@@ -385,10 +388,10 @@ void UpdateFallenSnowRegions()
 	       {
 		  PushFallenSnow(&global.FsnowFirst, w,
 			w->x+Flags.OffsetX, w->y+Flags.OffsetY, w->w+Flags.OffsetW, 
-			Flags.MaxWinSnowDepth); 
+			global.MaxWinSnowDepth); 
 	       }
 	    }
-	    //P("UpdateFallenSnowRegions:\n");PrintFallenSnow(global.FsnowFirst);
+	    //P("UpdateFallenSnowRegions:\n");PrintFallenSnow(global.FsnowFirst);fflush(0);
 	 }
       }
       w++;
@@ -423,6 +426,20 @@ void UpdateFallenSnowRegions()
 	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
 	    toremove[ntoremove++] = fsnow->win.id;
 	 }
+
+	 {
+	    // remove if name contains "Desktop"
+	    XTextProperty text_prop;
+	    int rc = XGetWMName(global.display,fsnow->win.id,&text_prop);
+	    if(rc)
+	       if (strstr((char *)text_prop.value,"Desktop") ||
+		     strstr((char *)text_prop.value,"desktop"))
+	       {
+		  P("removing: %s\n",text_prop.value);
+		  toremove[ntoremove++] = fsnow->win.id;
+	       }
+	 }
+
 
 	 // test if fsnow->win.id is hidden. If so: clear the area and notify in fsnow
 	 // we have to test that here, because the hidden status of the window
@@ -575,59 +592,6 @@ int xinerama(Display *display, int xscreen, int *x, int *y, int *w, int *h)
    return number;
 }
 
-void InitDisplayDimensions()
-{
-   unsigned int w,h;
-   int x,y;
-   xdo_get_window_location(global.xdo, global.Rootwindow, &x, &y,NULL);
-   xdo_get_window_size    (global.xdo, global.Rootwindow, &w, &h);
-
-   P("InitDisplayDimensions root: %p %d %d %d %d\n",(void*)global.Rootwindow,x,y,w,h);
-
-   global.Xroot = x;
-   global.Yroot = y;
-   global.Wroot = w;
-   global.Hroot = h;
-
-   DisplayDimensions();
-}
-
-void DisplayDimensions()
-{
-   P("Displaydimensions\n");
-   Lock_fallen();
-   unsigned int w,h,b,d;
-   int x,y;
-   Window root;
-
-   int rc = XGetGeometry(global.display,global.SnowWin,&root, &x, &y, &w, &h, &b, &d); 
-
-   if (rc == 0)
-   {
-      P("Oeps\n");
-      I("\nSnow window %#lx has disappeared, it seems. I quit.\n",global.SnowWin);
-      Thanks();
-      exit(1);
-      return;
-   }
-
-   global.SnowWinWidth  = w;
-   global.SnowWinHeight = h + Flags.OffsetS;
-
-   P("DisplayDimensions: SnowWinX: %d Y:%d W:%d H:%d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth,global.SnowWinHeight);
-
-   global.SnowWinBorderWidth = b;
-   global.SnowWinDepth       = d;
-
-   UpdateFallenSnowAtBottom();
-
-   RedrawTrees();
-
-   SetMaxScreenSnowDepth();
-   if(!global.IsDouble)
-      ClearScreen();
-   Unlock_fallen();
-}
 
 void SetBackground()
 {
@@ -729,3 +693,82 @@ int SetProperty(Display *display, Window window, const char *name, const char *v
 	 strlen(value)                           // nelements
 	 );
 }
+
+int waitmax(gpointer widget)
+{
+   static int counter = 0;
+   int w,h;
+   int m = gtk_window_is_maximized(GTK_WINDOW(widget));
+   gtk_window_get_size(GTK_WINDOW(widget),&w,&h);
+   P("waitmax, maximized: %d, w: %d, h: %d\n",m,w,h);
+   if ( m && h>200 && w>200 )
+   {
+      P("waitmax quitting\n");
+      fflush(stdout);
+      gtk_main_quit();
+      return FALSE;
+   }
+   if (counter++ > 100)
+   {
+      P("waitmax quitting after %d cycles\n",counter);
+      return FALSE;
+   }
+   return TRUE;
+}
+
+void wait_for_maximized(GtkWidget * widget)
+{
+   gtk_window_unfullscreen(GTK_WINDOW(widget));
+   gtk_window_maximize(GTK_WINDOW(widget));
+   gtk_widget_show(widget);
+   g_timeout_add(20,waitmax,widget);
+   P("calling gtk_main from wait_for_maximized\n");
+   gtk_main();
+}
+
+
+int waitfull(gpointer widget)
+{
+   static int counter = 0;
+   int w,h;
+
+   gtk_window_fullscreen(GTK_WINDOW(widget));
+   gtk_window_get_size(GTK_WINDOW(widget),&w,&h);
+   P("waitfull, w: %d, h: %d counter: %d\n",w,h,counter);
+   if ( h>200 && w>200  && counter > 40)
+   {
+      P("waitfull quitting\n");
+      gtk_main_quit();
+      return FALSE;
+   }
+
+   if (counter++ > 200)
+   {
+      P("waitfull quitting after %d cycles\n",counter);
+      return FALSE;
+   }
+   return TRUE;
+}
+
+void wait_for_fullscreen(GtkWidget * widget)
+{
+   //gtk_window_move(GTK_WINDOW(widget),40,40);
+   gtk_widget_show_all(widget);
+
+   GdkWindow *gdkwin = gtk_widget_get_window(widget);
+   gdk_window_set_fullscreen_mode(gdkwin,GDK_FULLSCREEN_ON_ALL_MONITORS);
+
+   gtk_widget_show_all(widget);
+   gtk_window_fullscreen(GTK_WINDOW(widget));
+   //gtk_window_move(GTK_WINDOW(widget),0,0);
+   g_timeout_add(20,waitfull,widget);
+   P("calling gtk_main from wait_for_fullscreen\n");
+   gtk_main();
+   if(1)
+   {
+      int w,h;
+      gtk_window_get_size(GTK_WINDOW(widget),&w,&h);
+      P("wait_for_fullscreen: w: %d, h:%d\n",w,h);
+   }
+}
+

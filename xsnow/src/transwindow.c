@@ -53,6 +53,7 @@ static int GetYOffset(Display *mydisplay, int x, int y, int w, int h);
 int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int sticky, int below, int dock,  
       GdkWindow **gdk_window, Window *x11_window, int *wantx, int *wanty)
 {
+   (void) GetYOffset; // TODO getyoffset can go
    P("Entering make_trans_window... wantx: %d wanty: %d\n",*wantx, *wanty);
    if(gdk_window)
       *gdk_window = NULL;
@@ -107,63 +108,49 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
 
    int winx, winy; // desired position of window
    int winw, winh; // desired size of window
-   int wantxin = (xscreen >=0);
    // set full screen if so desired:
    P("xscreen: %d\n",xscreen);
 
    if(xscreen < 0)
    {
       P("fullscreen\n");
-      XWindowAttributes attr;
-      XGetWindowAttributes(display,DefaultRootWindow(display),&attr);
-      P("width, height %d %d\n",attr.width,attr.height);
+      // fullscreen, but if there is only one screen, maximize in stead of fullscreen
       winx = 0;
       winy = 0;
-      winw = attr.width;
-      int x,y,w,h,yoffset;
-      int nscreens = xinerama(display, -1, &x, &y, &w, &h);
-      if (nscreens == 0)
-      {
-	 yoffset = GetYOffset(display,0,0,w,10);
-	 P("nscreens = 0, yoffset: %d\n",yoffset);
-      }
-      else
-      {
-	 yoffset = 0;
-	 for (int screen=0; screen<nscreens; screen++)
-	 {
-	    xinerama(display,screen, &x, &y, &w, &h);
-	    int q = GetYOffset(display,x,y,w,10);
-	    if (q > yoffset)
-	    {
-	       yoffset = q;
-	       P("yoffset %d, x %d, y %d,w %d,h %d\n",yoffset,x,y,w,h);
-	    }
-	 }
-      }
-      winh = attr.height-yoffset;
-      P("GetYOffset: %d\n",yoffset);
-      gtk_widget_set_size_request(GTK_WIDGET(transwindow),winw,winh);
+      //choose a not too small and not too large size for our initial window:
+      gtk_window_set_default_size(GTK_WINDOW(transwindow),100,100);
+      gtk_window_move(GTK_WINDOW(transwindow),40,40);
+      //gtk_widget_show_all(transwindow);
+      int nscreens = xinerama(display, -1, NULL, NULL, NULL, NULL); 
+      P("nscreens: %d\n",nscreens);
 
+      if (nscreens == 1)
+      // make window maximized and wait until ready:
+	 wait_for_maximized(transwindow);
+      else
+      // make window full screen and wait until ready:
+	 wait_for_fullscreen(transwindow);
+      gtk_window_get_size(GTK_WINDOW(transwindow),&winw,&winh);
+      P("winw: %d, winh: %d\n",winw,winh);
    }
    else  // xscreen >= 0
    {
       P("NOT fullscreen, but xineramascreen %d\n",xscreen);
-      wantxin = xinerama(display,xscreen,&winx,&winy,&winw,&winh);
-      int yoffset = GetYOffset(display,winx,winy,winw,10) - winy;
-      P("yoffset: %d %d %d wantxin: %d\n",yoffset,winx,winy,wantxin);
-      winh -= yoffset;
-      P("winh: %d\n",winh);
-      if(wantxin)
-      {
-	 P("winx ... %d %d %d %d\n",winx,winy,winw,winh);
-	 gtk_widget_set_size_request(GTK_WIDGET(transwindow),winw,winh);
-      }
+      xinerama(display,xscreen,&winx,&winy,&winw,&winh);
+      //choose a not too small and not too large size for our initial window:
+      gtk_window_set_default_size(GTK_WINDOW(transwindow),100,100);
+
+      // move it to the desired monitor:
+      gtk_window_move(GTK_WINDOW(transwindow),winx,winy);
+
+      // make window maximized and wait until ready:
+      wait_for_maximized(transwindow);
+      gtk_window_get_size(GTK_WINDOW(transwindow),&winw,&winh);
+      P("winw: %d, winh: %d\n",winw,winh);
    }
 
    gtk_widget_show_all(transwindow);
    GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(transwindow));
-
 
    // so that apps like xsnow will ignore this window:
    if(dock)
@@ -175,13 +162,15 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
 
    gdk_window_show(gdkwin);
 
-   if (x11_window)
+   if (x11_window || gdk_window)
    {
-      *x11_window = gdk_x11_window_get_xid(gdkwin);
+      Window win = gdk_x11_window_get_xid(gdkwin);
+      if(x11_window)
+	 *x11_window = win;
 
       P("resize %p: %d %d\n",(void*)*x11_window,winw,winh);
-      XResizeWindow(display,*x11_window,winw,winh);  // necessary in xmonad, don't know why, 
-      XFlush(display);                               // in combination with this one
+      //XResizeWindow(display,*x11_window,winw,winh);  // necessary in xmonad, don't know why,  // TODO 
+      //XFlush(display);                               // in combination with this one
 
       if (gdk_window)
 	 *gdk_window = gdkwin;
@@ -191,18 +180,7 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
       usleep(200000);  // seems sometimes to be necessary with nvidia
 
       // just to be sure all settings are communicated with the server
-      gtk_widget_hide(transwindow);
-      gtk_widget_show_all(transwindow);
-      if(xscreen < 0)
-      {
-	 P("Calling gtk_window_move %d %d\n",winx,winy);
-	 gtk_window_move(GTK_WINDOW(transwindow),0,0);
-      }
-      else if (wantxin)
-      {
-	 P("Calling gtk_window_move %d %d\n",winx,winy);
-	 gtk_window_move(GTK_WINDOW(transwindow),winx,winy);
-      }
+      gtk_widget_hide(transwindow);  // TODO
       gtk_widget_show_all(transwindow);
 
       // set some things, but note that this has to be repeated in the gkt_main loop.
@@ -211,7 +189,6 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
       setvaria(transwindow);
       P("end explicit call\n");
       g_object_steal_data(G_OBJECT(transwindow),"trans_done");
-
    }
    return TRUE;
 }

@@ -190,6 +190,7 @@ typedef struct _SnowMap {
 
 extern struct _global
 {
+   int testing             ;
    SnowMap        *fluffpix;
    int             counter;
    unsigned int    xxposures BITS(1);
@@ -197,6 +198,7 @@ extern struct _global
    unsigned int    Trans     BITS(1);
    unsigned int    UseDouble BITS(1);
    unsigned int    IsDouble  BITS(1);
+   unsigned int    UseClip   BITS(1);
 
    int             XscreensaverMode;
 
@@ -225,6 +227,8 @@ extern struct _global
    int             SnowWinBorderWidth;
    int             SnowWinWidth;
    int             SnowWinHeight;
+   int             SnowClipWidth;
+   int             SnowClipHeight;
    int             WindowOffsetX;    // when using the root window for drawing, we need
 				     //                                   these offsets to correct for the position of the
 				     //                                   windows.
@@ -253,6 +257,7 @@ extern struct _global
 
    FallenSnow     *FsnowFirst;
    int             MaxScrSnowDepth;
+   int             MaxWinSnowDepth;
    int             RemoveFluff;
 
    double          moonX;

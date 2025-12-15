@@ -304,7 +304,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       }
    }
 
-   assert(w);
+   //assert(w);
    for (unsigned long i=0; i<nchildren; i++)
    {
       // loop over all children of root

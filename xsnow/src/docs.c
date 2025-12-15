@@ -458,8 +458,6 @@ void docs_usage(int man)
    manout(" ","  in for example FVWM/xcompmgr. In that case, xsnow tries to keep");
    manout(" ","  the snow window below all others, resulting in a transient effect");
    manout(" ","  when you click on the desktop. Sadly, no FVWM menu will appear...");
-   manout(".","- Remnants of fluffy snow can persist after removing the");
-   manout(" ","    fallen snow. These will gradually disappear, so no big deal.");
    manout(".","- Xsnow tries to adapt its snowing window if the display");
    manout(" ","    settings are changed while xsnow is running.");
    manout(" ","    This does not function always well.");
@@ -472,11 +470,16 @@ void docs_usage(int man)
    manout(" ","    and try again.");
    manout(".","- In XFCE, compositing must be enabled for xsnow.");
    manout(" ","    Settings -> Window Manager Tweaks -> Compositor -> Enable display compositing");
-   manout(".","- Dependng on the window manager, snowing in 'all monitors' results in snowing");
+   manout(".","- Depending on the window manager, snowing in 'all monitors' results in snowing");
    manout(" ","    in one of the monitors. This happens for example in KDE.");
 
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");
+
+   manout(".","- No snow on windows with 'desktop' or 'Desktop' in the name.");
+
+   manout(".","- In multi-screen environments, it depends on the window manager");
+   manout(" ","    if panels remain visible when running on 'all monitors'.");
 
    manout(".","");
    manout(".","Please report your comments via:");

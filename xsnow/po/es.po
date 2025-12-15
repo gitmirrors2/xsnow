@@ -15,7 +15,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: xsnow-3.8.6\n"
+"Project-Id-Version: xsnow-3.9.0\n"
 "Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
 "POT-Creation-Date: 2025-03-26 12:50+0100\n"
 "PO-Revision-Date: 2025-03-26 12:50+0100\n"

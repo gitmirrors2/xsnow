@@ -159,7 +159,7 @@ void scenery_ui()
 
 void RedrawTrees()
 {
-   Newtrees = 1;     // this signals initbaum to recreate the trees
+   Newtrees = 1;     // this signals do_initbaum to recreate the trees
    reinit_treesnow_region();
    ClearScreen();
 }
@@ -212,7 +212,7 @@ int do_initbaum(void *d)
    (void)d;
    if (Flags.Done)
       return FALSE;
-   P("%d initbaum %d %d\n",global.counter++,Newtrees, Flags.NoTrees);
+   P("%d do_initbaum %d %d\n",global.counter++,Newtrees, Flags.NoTrees);
 
    static int count = 0;
 
@@ -222,7 +222,7 @@ int do_initbaum(void *d)
    if (Flags.NoTrees || Newtrees == 0)
       return TRUE;
 
-   P("%d initbaum really...\n",global.counter++);
+   P("%d do_initbaum really...\n",global.counter++);
    ClearScreen();
    Newtrees = 0;
 
@@ -332,8 +332,8 @@ int do_initbaum(void *d)
       w = TreeWidth[tt];
       h = TreeHeight[tt];
 
-      int y1 = global.SnowWinHeight - global.MaxScrSnowDepth - h*treeScale;
-      int y2 = global.SnowWinHeight*(1.0 - 0.01*Flags.TreeFill);
+      int y1 = (global.SnowWinHeight+Flags.OffsetS) - global.MaxScrSnowDepth - h*treeScale;
+      int y2 = (global.SnowWinHeight+Flags.OffsetS)*(1.0 - 0.01*Flags.TreeFill);
       if (y2>y1) y1=y2+1;
 
       int x = randint(global.SnowWinWidth-w*treeScale);

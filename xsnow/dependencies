@@ -28,6 +28,10 @@ gettext
 libgtk-3-0
 gtk3-devel
 pkg-config
+gcc
+gcc-c++
+gsl-devel
+gmake      (run configure as follows: MAKE=gmake ./configure)
 
 ## for running 'make check:'
 see README.md
