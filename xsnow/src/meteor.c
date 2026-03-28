@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -157,13 +157,15 @@ int do_meteor(void *d)
    if (!(NOTACTIVE || meteor.active || Flags.NoMeteors))
    {
       meteor.x1 = randint(global.SnowWinWidth);
-      meteor.y1 = randint(global.SnowWinHeight/4);
-      meteor.x2 = meteor.x1 + global.SnowWinWidth/10 - randint(global.SnowWinWidth/5);
+      meteor.y1 = randint(global.SnowWinHeight*0.25);
+      //meteor.x2 = meteor.x1 + global.SnowWinWidth/10 - randint(global.SnowWinWidth/5);
+      meteor.x2 = meteor.x1 + (drand48()-0.5)*global.SnowWinWidth*0.1;
       if (meteor.x2 == meteor.x1)
-	 meteor.x2 +=5;
-      meteor.y2 = meteor.y1 + global.SnowWinHeight/5 - randint(global.SnowWinHeight/5);
+	 meteor.x2 += 5;
+      //meteor.y2 = meteor.y1 + global.SnowWinHeight/5 - randint(global.SnowWinHeight/5);
+      meteor.y2 = meteor.y1 + (drand48() - 0.5)*global.SnowWinHeight*0.2;
       if (meteor.y2 == meteor.y1)
-	 meteor.y2 +=5;
+	 meteor.y2 += 5;
       meteor.active   = 1;
       meteor.colornum = drand48()*NUMCOLORS;
    }
@@ -171,7 +173,7 @@ int do_meteor(void *d)
    if (Flags.MeteorFrequency < 0 || Flags.MeteorFrequency > 100)
       Flags.MeteorFrequency = DefaultFlags.MeteorFrequency;
    // when to start next meteor:
-   float t = (0.5+drand48())*(Flags.MeteorFrequency*(0.1-time_meteor)/100 + time_meteor);
+   float t = (0.5+drand48())*(Flags.MeteorFrequency*(0.1-time_meteor)*0.01 + time_meteor);
    P("do_meteor %f\n",t);
    add_to_mainloop (PRIORITY_DEFAULT, t, do_meteor);
    return FALSE;

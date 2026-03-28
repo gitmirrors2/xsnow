@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,9 +36,6 @@
 /*         code           type               name              modifier */
 #define ALL_TOGGLES  \
    BUTTON(togglecode     ,xsnow_celestials  ,Aurora               ,1  )         \
-   BUTTON(togglecode     ,xsnow_celestials  ,AuroraLeft           ,1  )         \
-   BUTTON(togglecode     ,xsnow_celestials  ,AuroraMiddle         ,1  )         \
-   BUTTON(togglecode     ,xsnow_celestials  ,AuroraRight          ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,BirdsOnly            ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,FollowSanta          ,1  )         \
    BUTTON(togglecode     ,xsnow_birds       ,ShowAttrPoint        ,1  )         \
@@ -47,6 +44,7 @@
    BUTTON(togglecode     ,xsnow_settings    ,BelowAll             ,1  )         \
    BUTTON(togglecode     ,xsnow_settings    ,BelowConfirm         ,0  )         \
    BUTTON(togglecode     ,xsnow_settings    ,ThemeXsnow           ,1  )         \
+   BUTTON(togglecode     ,xsnow_settings    ,Screenshots          ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,NoMeteors            ,-1 )   /*i*/ \
    BUTTON(togglecode     ,xsnow_celestials  ,Halo                 ,1  )         \
    BUTTON(togglecode     ,xsnow_celestials  ,Moon                 ,1  )         \
@@ -86,6 +84,7 @@
    BUTTON(scalecode      ,xsnow_settings    ,Scale                ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreTop            ,1  )         \
    BUTTON(scalecode      ,xsnow_settings    ,IgnoreBottom         ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,AuroraX              ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraWidth          ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraBase           ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,AuroraBrightness     ,1  )         \
@@ -95,6 +94,8 @@
    BUTTON(scalecode      ,xsnow_celestials  ,MeteorFrequency      ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSize             ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,MoonSpeed            ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,MoonX                ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,MoonY                ,1  )         \
    BUTTON(scalecode      ,xsnow_santa       ,SantaSpeedFactor     ,1  )         \
    BUTTON(scalecode      ,xsnow_santa       ,SantaScale           ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,BlowOffFactor        ,1  )         \
@@ -111,6 +112,7 @@
    BUTTON(scalecode      ,xsnow_scenery     ,TreeScale            ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,WhirlFactor          ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,WindTimer            ,1  )         \
+   BUTTON(scalecode      ,xsnow_celestials  ,StarSize             ,1  )         \
 
 
 #define ALL_COLORS \

@@ -1,7 +1,7 @@
 ######  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ games_PROGRAMS = xsnow
 
 noinst_PROGRAMS = makeman
 
-xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
+xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) $(CV_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
 		    -DLANGUAGES='"$(LANGUAGES)"'
-xsnow_LDADD       = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
+xsnow_LDADD       = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(CV_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
 if USE_NLS
@@ -71,7 +71,9 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
 		safe_malloc.h mygettext.h gettext.h  \
-		xpm2cairo-gdk.c xpm2cairo-gdk.h
+		xpm2cairo-gdk.c xpm2cairo-gdk.h \
+		scr2tops.cpp scr2tops.h \
+		wv_matalloc.c wv_matalloc.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 

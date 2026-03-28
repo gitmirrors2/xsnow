@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,3 +30,6 @@
 #define R(...) do {fprintf (stderr,"%s: %d: ",__FILE__,__LINE__);fprintf(stderr,__VA_ARGS__);fflush(stderr);} while(0)
 #define I(...) do {fprintf (stderr,"Xsnow info: %s: %d: ",__FILE__,__LINE__);fprintf(stderr,__VA_ARGS__);fflush(stderr);} while(0)
 
+//#define SHOW_BASE_AT_START
+//#define DRAW_SNOW_REGIONS
+//#define USESCROT

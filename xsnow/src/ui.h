@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ extern void  ui_set_birds_header(const char *text);
 extern void  ui_set_celestials_header(const char *text);
 extern void  ui_show_range_etc(void);
 extern void  ui_show_desktop_type(const char *s);
+extern void  ui_show_something(const char *s);
 extern void  ui_set_sticky(int x);
 extern void  ui_background(int m);
 extern void  ui_ui(void);
@@ -42,7 +43,8 @@ extern GtkBuilder    *builder;
 extern void  ui_gray_ww(const int m);
 extern void  ui_gray_erase(const int m);
 extern void  ui_gray_below(const int m);
-extern void  ui_gray_birds(int m);
+extern void  ui_gray_moonpos(int m);
+//extern void  ui_gray_birds(int m);
 extern int   ui_checkgtk(void);
 extern char *ui_gtk_version(void);
 extern char *ui_gtk_required(void);

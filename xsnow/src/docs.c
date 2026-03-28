@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -102,6 +102,12 @@ void docs_usage(int man)
    manout("-H, -manpage"            ,"print man page.");
    manout("-v, -version"            ,"prints version of xsnow.");
    manout("-changelog"              ,"prints ChangeLog.");
+   manout("-config <f>"             ,"use <f> as config file, default is '.xsnowrc'."); 
+   manout("."                       ,"If <f> does not start with '/', <f> is taken relative to your HOME directory.");
+   manout("."                       ,"<f> MUST contain the string 'xsnow'. Examples:");
+   manout("."                       ,"  .myxsnowrc          # will expand to '$HOME/.myxsnowrc'.");
+   manout("."                       ,"  .config/xsnow       # will expand to '$HOME/.config/xsnow'.");
+   manout("."                       ,"  /etc/default/xsnow  # will be used as is.");
 #ifdef SELFREP
    manout("-selfrep"                ,"put tar ball on stdout, so you can do:");
    manout("."                       ,"xsnow -selfrep > xsnow.tar.gz");
@@ -151,6 +157,7 @@ void docs_usage(int man)
    manout("-noisy     "             ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
    manout("-cpuload <n>"            ,"How busy is your system with xsnow:");
    manout(" "                       ,"the higher, the more load on the system (default: %d).",F(CpuLoad));
+   manout("-screenshot <n>"         ,"1: use screenshots to find the windows, 0: use X11 (default: %d).",F(Screenshots));
 
    if(doman)
    {
@@ -232,6 +239,7 @@ void docs_usage(int man)
    manout("-windtimer <n>"        ,"With -windtimer you can specify how often it gets  windy. It's");
    manout(" "                     ,"sort of a period in seconds, default value is %d.",F(WindTimer));
    manout("-stars <n>"            ,"The number of stars (default: %d).",F(NStars));
+   manout("-starsize <n>"         ,"Relative size of stars, default value is %d.",F(StarSize));
    manout("-meteors"              ,"(Default) Show meteors.");
    manout("-nometeors"            ,"Do not show meteors.");
    manout("-meteorfrequency"      ,"Frequency of falling of meteors, 0..100 (default: %d).",F(MeteorFrequency));
@@ -239,15 +247,15 @@ void docs_usage(int man)
    manout("."                     ,"Picture of moon thanks to  Pedro Lasta on Unsplash.");
    manout("."                     ,"https://unsplash.com/photos/wCujVcf0JDw");
    manout("-moonspeed <n>"        ,"Speed of moon in pixels/minute (default: %d).",F(MoonSpeed));
+   manout("-moonx <n>"            ,"Horizontal position of moon (only if speed = 0) (default: %d).",F(MoonX));
+   manout("-moony <n>"            ,"Vertical position of moon (only if speed = 0) (default: %d).",F(MoonY));
    manout("-moonsize <n>"         ,"Relative size of moon (default: %d).",F(MoonSize));
    manout("-mooncolor <n>"        ,"Color of moon 0: yellow-ish; 1: white-ish (default: %d).",F(MoonColor));
    manout("-halo <n>"             ,"1: show halo around moon, 0: do not show halo (default: %d).",F(Halo));
    manout("-halobrightness <n>"   ,"Brightness of halo (default: %d).",F(HaloBright));
    manout("-aurora <n>"           ,"To show (1) or not to show(0) aurora (default: %d).",F(Aurora));
    manout("."                     ,"  On most desktops aurora works, but not on all. Try!");
-   manout("-auroraleft"           ,"Place aurora in top left of screen.");
-   manout("-auroramiddle"         ,"Place aurora in top middle of screen.");
-   manout("-auroraright"          ,"Place aurora in top right of screen (default).");
+   manout("-aurorax <n>"          ,"Place aurora horizontally in percents of screen-width (default: %d).",F(AuroraX));
    manout("-aurorawidth <n>"      ,"Width of aurora in percentage of screen width (default: %d).",F(AuroraWidth));
    manout("-aurorabase <n>"       ,"Height of aurora's base line in percentage of screen height (default: %d).",F(AuroraBase));
    manout("-auroraheight <n>"     ,"Height of aurora (default: %d).",F(AuroraHeight));
@@ -281,8 +289,8 @@ void docs_usage(int man)
    manout("-offsetw <n>"         ,"Correction for window-manager provided width of window. Default %d.",F(OffsetW));
    manout("-offsets <n>"         ,"Correction for bottom coordinate of your screen. A negative value lifts");
    manout(" "                    ,"the xsnow screen up. Default %d.",F(OffsetS));
-   manout("-ignoretop <n>"       ,"Do not collect snow on window > 0.8*width of screen and closer than");
-   manout(" "                    ,"<n> pixels from the top. Sometimes an hidden window is sitting there,");
+   manout("-ignoretop <n>"       ,"Do not collect snow on windows closer than <n> pixels from the top.");
+   manout(" "                    ,"Sometimes an hidden window is sitting there,");
    manout(" "                    ,"but treated as a normal window by xsnow. Default %d.",F(IgnoreTop));
    manout("-ignorebottom <n>"    ,"Analog to -ignoretop, but now for the bottom. Default %d.",F(IgnoreBottom));
 

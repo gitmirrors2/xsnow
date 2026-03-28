@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
 
    int winx, winy; // desired position of window
    int winw, winh; // desired size of window
-   // set full screen if so desired:
+		   // set full screen if so desired:
    P("xscreen: %d\n",xscreen);
 
    if(xscreen < 0)
@@ -125,13 +125,15 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
       P("nscreens: %d\n",nscreens);
 
       if (nscreens == 1)
-      // make window maximized and wait until ready:
+	 // make window maximized and wait until ready:
 	 wait_for_maximized(transwindow);
       else
-      // make window full screen and wait until ready:
+	 // make window full screen and wait until ready:
 	 wait_for_fullscreen(transwindow);
       gtk_window_get_size(GTK_WINDOW(transwindow),&winw,&winh);
       P("winw: %d, winh: %d\n",winw,winh);
+      gtk_window_get_position (GTK_WINDOW(transwindow), &winx, &winy);
+      P("winx winy: %d %d\n",winx,winy);
    }
    else  // xscreen >= 0
    {
@@ -142,11 +144,13 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
 
       // move it to the desired monitor:
       gtk_window_move(GTK_WINDOW(transwindow),winx,winy);
+      P("winx: %d, winy: %d\n",winx,winy);
 
       // make window maximized and wait until ready:
       wait_for_maximized(transwindow);
       gtk_window_get_size(GTK_WINDOW(transwindow),&winw,&winh);
-      P("winw: %d, winh: %d\n",winw,winh);
+      gtk_window_get_position (GTK_WINDOW(transwindow), &winx, &winy);
+      P("winx winy: %d %d\n",winx,winy);
    }
 
    gtk_widget_show_all(transwindow);
@@ -158,12 +162,15 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
    else
       gdk_window_set_type_hint(gdkwin,GDK_WINDOW_TYPE_HINT_NORMAL);
 
+
    gdk_window_hide(gdkwin);
 
    gdk_window_show(gdkwin);
 
    if (x11_window || gdk_window)
    {
+      //gtk_window_get_position (GTK_WINDOW(transwindow), &winx, &winy);
+      //P("winx winy: %d %d\n",winx,winy);
       Window win = gdk_x11_window_get_xid(gdkwin);
       if(x11_window)
 	 *x11_window = win;
@@ -175,6 +182,7 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
       if (gdk_window)
 	 *gdk_window = gdkwin;
 
+      P("winx winy: %d %d\n",winx,winy);
       *wantx = winx;
       *wanty = winy;
       usleep(200000);  // seems sometimes to be necessary with nvidia

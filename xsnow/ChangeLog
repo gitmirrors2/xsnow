@@ -1,3 +1,34 @@
+version 3.9.1
+	01: main.c: make_fullmaxscreen():
+	      Prevent the appearance of the xsnow icon for the snow-window
+	      in window-lists, taskbars etc.  using 
+	      gtk_window_set_skip_taskbar_hint() and
+	      gtk_window_set_skip_pager_hint().
+	    main.c, flags.c, docs.c, xsnow.h, xsnow-constants.h:
+	      create flag '-config' to use other configuration file
+	      than $HOME/.xsnowrc. The file name must contain the string
+	      'xsnow' to protect against accidentally overwriting a
+	      precious file.
+	02: stars.c, ui.glade, docs.c: allow setting size of stars.
+	03: aurora.c, aurora.h, flags.c ... : replace position left, 
+	      middle and right with slider for horizontal position.
+	04: moon.c e.a.: user can define fixed position for the moon
+	      if the speed of the moon is set to zero.
+	05: move stars also, like the moon but always left to right
+	    meteor.c: small adaptations
+	06: update language translations
+	07: bootstrap: create new file 'bootdate' only if it does not
+	    exixst. Advice: when creating a new version (see AC_INIT in 
+	    configure.ac), remove bootdate before running ./bootstrap.
+	08: add option to use screenshots to determine the placement
+	    of windows. Hopefully this will assist in running under
+	    wayland, but first we have to wait until a suitable 
+	    screenshotter is available for wayland. 
+	    It creates an extra dependency for opencv4.
+	    wmctrl.c: fixed bug in using XTranslateCoordinates().
+	    windows.c: ignore windows at bottom and top: this is for
+	      all windows now.
+
 version 3.9.0
 	01: many changes in defining a window to snow in.
 	    When snowing in one monitor: the window is created with

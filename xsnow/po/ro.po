@@ -1,13 +1,13 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) \n
-# # (abc_1001) Xsnow
-# # (abc_1002) xsnow
-# # (abc_1003) XSNOW
+# # (abc_1000) &#8195;
+# # (abc_1001) XSNOW
+# # (abc_1002) \n
+# # (abc_1003) Rick Jansen
 # # (abc_1004) Xscreensaver
-# # (abc_1005) XsnoW
-# # (abc_1006) %l#x
-# # (abc_1007) Rick Jansen
-# # (abc_1008) &#8195;
+# # (abc_1005) Xsnow
+# # (abc_1006) XsnoW
+# # (abc_1007) %l#x
+# # (abc_1008) xsnow
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -16,10 +16,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: xsnow-3.9.0\n"
+"Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
-"POT-Creation-Date: 2025-03-26 12:50+0100\n"
-"PO-Revision-Date: 2025-03-26 12:50+0100\n"
+"POT-Creation-Date: 2026-03-22 14:44+0100\n"
+"PO-Revision-Date: 2026-03-22 14:44+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: ro\n"
@@ -27,170 +27,179 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:391
+#: src/main.c:411
+#, c-format
+msgid "Configuration file: %s\n"
+msgstr "Fișier de configurare: %s\n"
+
+#: src/main.c:413
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Limbile disponibile sunt: %s\n"
 
-#: src/main.c:394
+#: src/main.c:416
 msgid "Warning: don't eat yellow snow!"
 msgstr "Atenție: nu mâncați zăpadă galbenă!"
 
-#: src/main.c:417
+#: src/main.c:439
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Pentru rezultate optime, adăugați la dvs. %s:\n"
 
-#: src/main.c:425
+#: src/main.c:447
 #, c-format
 msgid "unknown\n"
 msgstr "necunoscut\n"
 
-#: src/main.c:434
+#: src/main.c:456
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Desktop Wayland detectat\n"
 
-#: src/main.c:447
+#: src/main.c:472
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow are nevoie de versiunea gtk >= %s, a găsit versiunea %s \n"
 
-#: src/main.c:457
+#: src/main.c:482
 msgid "Continuing with flag"
 msgstr "Continuând cu steag"
 
-#: src/main.c:494
+#: src/main.c:519
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: nu se poate conecta la serverul X %s\n"
 
-#: src/main.c:495
+#: src/main.c:520
 msgid "(default)"
 msgstr "(Mod implicit)"
 
-#: src/main.c:620
+#: src/main.c:593
+msgid "Configuration file: "
+msgstr "Fișier de configurare: "
+
+#: src/main.c:658
 msgid "restarting"
 msgstr "repornind"
 
-#: src/main.c:667
+#: src/main.c:710
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Faceți clic pe o fereastră ...\n"
 
-#: src/main.c:700
+#: src/main.c:743
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Sesiune desktop detectată: %s\n"
 
-#: src/main.c:703
+#: src/main.c:746
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Nu s-a putut determina sesiunea desktop \n"
 
-#: src/main.c:735
+#: src/main.c:779
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Încerc să zăpadă în fereastra rădăcină \n"
 
-#: src/main.c:780
+#: src/main.c:835
 #, c-format
-msgid "Using transparent window\n"
-msgstr "Utilizarea ferestrei transparente \n"
+msgid "Using transparent window: %dx%d\n"
+msgstr "Utilizând o fereastră transparentă: %dx%d\n"
 
-#: src/main.c:785
+#: src/main.c:840
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr "Fereastra transparentă de zăpadă probabil că nu face clic, vai...\n"
 
-#: src/main.c:794
+#: src/main.c:848
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Nu se poate crea o fereastră transparentă \n"
 
-#: src/main.c:796
+#: src/main.c:850
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr "NOTĂ: xsnow va rula probabil, dar sunt de așteptat unele erori.\n"
 
-#: src/main.c:806
+#: src/main.c:867
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "Sesiunea LXDE a fost găsită, folosind fereastra „pcmanfm”.\n"
 
-#: src/main.c:813
+#: src/main.c:875
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Folosind fereastra „Desktop”.\n"
 
-#: src/main.c:817
+#: src/main.c:879
 #, c-format
 msgid "Using root window\n"
 msgstr "Folosind fereastra rădăcină \n"
 
-#: src/main.c:895
+#: src/main.c:970
 #, c-format
-msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
-msgstr "Ninsoare în %#lx: %s %d+%d %dx%d\n"
+msgid "Snowing in %#lx: %s size: %dx%d\n"
+msgstr "Ninsoare în %#lx: dimensiunea %s: %dx%d\n"
 
-#: src/main.c:923
+#: src/main.c:1003
 #, c-format
-msgid "Using double buffer: %#lx. %dx%d\n"
-msgstr "Folosind tampon dublu: %#lx. %dx%d\n"
+msgid "Using double buffer: %#lx %dx%d\n"
+msgstr "Folosind tampon dublu: %#lx %dx%d\n"
 
-#: src/main.c:930
+#: src/main.c:1012
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "NU se utilizează tamponarea dublă:"
 
-#: src/main.c:932
+#: src/main.c:1014
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " deoarece tamponarea dublă nu este disponibilă pe acest sistem \n"
 
-#: src/main.c:934
+#: src/main.c:1016
 #, c-format
 msgid " on your request.\n"
 msgstr " la cererea dvs. \n"
 
-#: src/main.c:935
+#: src/main.c:1017
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "NOTĂ: așteptați o pâlpâire.\n"
 
-#: src/main.c:1105
+#: src/main.c:1260
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Reporniți din cauza modificării setărilor de ecran sau de limbă...\n"
 
-#: src/main.c:1119
+#: src/main.c:1275
 msgid "Restart due to change of display settings...\n"
 msgstr "Reporniți din cauza modificării setărilor de afișare...\n"
 
-#: src/main.c:1222
+#: src/main.c:1381
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (Așteptați-vă la ceva leneș)"
 
-#: src/main.c:1226
+#: src/main.c:1385
 msgid "Probably X11"
 msgstr "Probabil X11"
 
-#: src/main.c:1228
+#: src/main.c:1387
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Fereastra de zăpadă: %#lx"
 
-#: src/main.c:1270
+#: src/main.c:1436
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Mai mult de %d erori, am renunțat!"
 
-#: src/main.c:1427
+#: src/main.c:1631
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr ""
 "Dimensiunea ferestrei s-a schimbat, acum ninge în %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1497
+#: src/main.c:1711
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Oprire din cauza steagului %s\n"
@@ -237,48 +246,48 @@ msgstr ""
 "\n"
 "Vă mulțumim că ați folosit xsnow\n"
 
-#: src/windows.c:631
+#: src/windows.c:843
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Se setează fundalul de la %s\n"
 
-#: src/ui.c:1051
+#: src/ui.c:1053
 #, c-format
 msgid "Range: %d\n"
 msgstr "Interval: %d\n"
 
-#: src/ui.c:1053
+#: src/ui.c:1055
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Distanța medie: %3d\n"
 
-#: src/ui.c:1061
+#: src/ui.c:1063
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Tip desktop: %s"
 
-#: src/ui.c:1190 src/ui.glade:5875
+#: src/ui.c:1205 src/ui.glade:5988
 msgid "all monitors"
 msgstr "toate monitoarele"
 
-#: src/ui.c:1196
+#: src/ui.c:1211
 #, c-format
 msgid "monitor %d"
 msgstr "monitorizează %d"
 
-#: src/ui.c:1215
+#: src/ui.c:1230
 msgid "Available languages are: "
 msgstr "Limbile disponibile sunt: "
 
-#: src/ui.c:1218
+#: src/ui.c:1233
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Utilizați \"sys\" pentru limba dvs. implicită.\n"
 
-#: src/ui.c:1219
+#: src/ui.c:1234
 msgid "See also the man page."
 msgstr "Vezi și pagina de manual."
 
-#: src/ui.glade:127
+#: src/ui.glade:132
 msgid ""
 "\n"
 "Alas! This not an X11 session, xsnow will probably not run.\n"
@@ -288,8 +297,8 @@ msgid ""
 "\n"
 "    XSNOW_FORCE_RUN=1 xsnow\n"
 "\n"
-"Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon."
-"conf.\n"
+"Or, you could force an X11 session, for example by tweaking /etc/gdm3/"
+"daemon.conf.\n"
 "\n"
 msgstr ""
 "\n"
@@ -300,15 +309,15 @@ msgstr ""
 "    XSNOW_FORCE_RUN=1 xsnow\n"
 " \n"
 "\n"
-" Sau puteți forța o sesiune X11, de exemplu, modificând /etc/gdm3/daemon."
-"conf.\n"
+" Sau puteți forța o sesiune X11, de exemplu, modificând /etc/gdm3/"
+"daemon.conf.\n"
 "\n"
 
-#: src/ui.glade:145
+#: src/ui.glade:150
 msgid "Ok, things are as they are. "
 msgstr "Ok, lucrurile stau așa cum sunt. "
 
-#: src/ui.glade:460
+#: src/ui.glade:482
 msgid ""
 "If everything is ok, it is now snowing on your desktop, and birds are "
 "flying. You are encouraged to define your own preferences using the tabs "
@@ -317,7 +326,7 @@ msgstr ""
 "Dacă totul este în regulă, acum ninge pe desktop și păsările zboară. Sunteți "
 "încurajat să vă definiți propriile preferințe folosind filele de mai sus."
 
-#: src/ui.glade:475
+#: src/ui.glade:497
 msgid ""
 "Use the <b>settings</b> tab if xsnow is misbehaving.\n"
 "Use the <b>birds</b> tab if birds are misbehaving."
@@ -325,58 +334,58 @@ msgstr ""
 "Folosiți fila <b>Setări</b> dacă xsnow se comportă greșit. \n"
 " Folosiți fila <b>Păsări</b> dacă păsările se comportă greșit."
 
-#: src/ui.glade:492
+#: src/ui.glade:514
 msgid "In every tab you find the following rescue buttons:"
 msgstr "În fiecare filă găsiți următoarele butoane de salvare:"
 
-#: src/ui.glade:512
+#: src/ui.glade:534
 msgid "<b>Defaults </b>"
 msgstr "<b>Valori implicite </b>"
 
-#: src/ui.glade:527
+#: src/ui.glade:549
 msgid "Set default preferences for this tab."
 msgstr "Setați preferințele implicite pentru această filă."
 
-#: src/ui.glade:554
+#: src/ui.glade:576
 msgid "<b>Vintage </b>"
 msgstr "<b>Vintage </b>"
 
-#: src/ui.glade:569
+#: src/ui.glade:591
 msgid "Set vintage preferences for this tab."
 msgstr "Setați preferințele vintage pentru această filă."
 
-#: src/ui.glade:596
+#: src/ui.glade:618
 msgid "<b>All defaults </b>"
 msgstr "<b>Toate setările implicite </b>"
 
-#: src/ui.glade:611
+#: src/ui.glade:633
 msgid "Set default preferences for all (except settings) tabs."
 msgstr ""
 "Setați preferințele implicite pentru toate filele (cu excepția setărilor)."
 
-#: src/ui.glade:638
+#: src/ui.glade:660
 msgid "<b>All vintage </b>"
 msgstr "<b>Toate de vintage </b>"
 
-#: src/ui.glade:653
+#: src/ui.glade:675
 msgid "Set vintage preferences for all (except settings) tabs."
 msgstr ""
 "Setați preferințele vintage pentru toate filele (cu excepția setărilor)."
 
-#: src/ui.glade:673 src/ui.glade:684 src/ui.glade:823 src/ui.glade:1007
-#: src/ui.glade:2835 src/ui.glade:2884 src/ui.glade:4651
+#: src/ui.glade:695 src/ui.glade:706 src/ui.glade:845 src/ui.glade:1029
+#: src/ui.glade:2857 src/ui.glade:2906 src/ui.glade:4764
 msgid "  "
 msgstr "  "
 
-#: src/ui.glade:695
+#: src/ui.glade:717
 msgid "   "
 msgstr "   "
 
-#: src/ui.glade:729
+#: src/ui.glade:751
 msgid "Welcome at xsnow!"
 msgstr "Bun venit la xsnow!"
 
-#: src/ui.glade:787
+#: src/ui.glade:809
 msgid ""
 "Vintage preferences: the look and feel of the original xsnow, created in "
 "1993 by Rick Jansen."
@@ -384,12 +393,12 @@ msgstr ""
 "Preferințe vintage: aspectul și senzația originalului xsnow, creat în 1993 "
 "de Rick Jansen."
 
-#: src/ui.glade:878 src/ui.glade:1503 src/ui.glade:2436 src/ui.glade:2997
-#: src/ui.glade:3465 src/ui.glade:4432 src/ui.glade:5701
+#: src/ui.glade:900 src/ui.glade:1525 src/ui.glade:2458 src/ui.glade:3019
+#: src/ui.glade:3487 src/ui.glade:4545 src/ui.glade:5815
 msgid "All defaults"
 msgstr "Toate valorile implicite"
 
-#: src/ui.glade:882 src/ui.glade:2440 src/ui.glade:3001 src/ui.glade:5705
+#: src/ui.glade:904 src/ui.glade:2462 src/ui.glade:3023 src/ui.glade:5819
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -398,13 +407,13 @@ msgstr ""
 "setărilor).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:895 src/ui.glade:1521 src/ui.glade:2454 src/ui.glade:3015
-#: src/ui.glade:3482 src/ui.glade:4450 src/ui.glade:5719
+#: src/ui.glade:917 src/ui.glade:1543 src/ui.glade:2476 src/ui.glade:3037
+#: src/ui.glade:3504 src/ui.glade:4563 src/ui.glade:5833
 msgid "All vintage"
 msgstr "Toate vintage"
 
-#: src/ui.glade:899 src/ui.glade:1525 src/ui.glade:2458 src/ui.glade:3019
-#: src/ui.glade:4454 src/ui.glade:5723
+#: src/ui.glade:921 src/ui.glade:1547 src/ui.glade:2480 src/ui.glade:3041
+#: src/ui.glade:4567 src/ui.glade:5837
 msgid ""
 "Use vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -412,13 +421,13 @@ msgstr ""
 "Utilizați valori vintage pentru toate preferințele (cu excepția setărilor).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:912 src/ui.glade:1473 src/ui.glade:2406 src/ui.glade:2967
-#: src/ui.glade:3511 src/ui.glade:4509 src/ui.glade:5596
+#: src/ui.glade:934 src/ui.glade:1495 src/ui.glade:2428 src/ui.glade:2989
+#: src/ui.glade:3533 src/ui.glade:4622 src/ui.glade:5710
 msgid "Hide menu"
 msgstr "Ascunde meniul"
 
-#: src/ui.glade:916 src/ui.glade:1477 src/ui.glade:2410 src/ui.glade:2971
-#: src/ui.glade:3515 src/ui.glade:4513 src/ui.glade:5600
+#: src/ui.glade:938 src/ui.glade:1499 src/ui.glade:2432 src/ui.glade:2993
+#: src/ui.glade:3537 src/ui.glade:4626 src/ui.glade:5714
 msgid ""
 "Leave menu.\n"
 "Flag: -nomenu"
@@ -426,25 +435,25 @@ msgstr ""
 "Ieși din meniu.\n"
 "Flag: -nomenu"
 
-#: src/ui.glade:929 src/ui.glade:1551 src/ui.glade:2484 src/ui.glade:3045
-#: src/ui.glade:3540 src/ui.glade:4480 src/ui.glade:5625
+#: src/ui.glade:951 src/ui.glade:1573 src/ui.glade:2506 src/ui.glade:3067
+#: src/ui.glade:3562 src/ui.glade:4593 src/ui.glade:5739
 msgid "Quit xsnow"
 msgstr "Ieșire xsnow"
 
-#: src/ui.glade:933 src/ui.glade:1555 src/ui.glade:2488 src/ui.glade:3049
-#: src/ui.glade:3544 src/ui.glade:4484 src/ui.glade:5629
+#: src/ui.glade:955 src/ui.glade:1577 src/ui.glade:2510 src/ui.glade:3071
+#: src/ui.glade:3566 src/ui.glade:4597 src/ui.glade:5743
 msgid "Quit xsnow."
 msgstr "Ieșire xsnow."
 
-#: src/ui.glade:945
+#: src/ui.glade:967
 msgid "Contact"
 msgstr "A lua legatura"
 
-#: src/ui.glade:949
+#: src/ui.glade:971
 msgid "Please report any comments to the maintainer of xsnow."
 msgstr "Vă rugăm să raportați orice comentariu administratorului xsnow."
 
-#: src/ui.glade:990
+#: src/ui.glade:1012
 msgid ""
 "If the system is too busy, all panels get this color, in which case you "
 "could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
@@ -454,33 +463,33 @@ msgstr ""
 "în care ați putea adapta unele setări în \"zăpadă\", \"păsări\", \"setări\", "
 "sau \"cereste\"."
 
-#: src/ui.glade:1184
+#: src/ui.glade:1206
 msgid "Welcome"
 msgstr "Bine ati venit"
 
-#: src/ui.glade:1201
+#: src/ui.glade:1223
 msgid "Blow off:"
 msgstr "Suflați:"
 
-#: src/ui.glade:1214
+#: src/ui.glade:1236
 msgid "On windows:"
 msgstr "Pe ferestre:"
 
-#: src/ui.glade:1227
+#: src/ui.glade:1249
 msgid "On bottom:"
 msgstr "Pe jos:"
 
-#: src/ui.glade:1240
+#: src/ui.glade:1262
 msgid "On scenery:"
 msgstr "Pe peisaj:"
 
-#: src/ui.glade:1250 src/ui.glade:1266 src/ui.glade:1282 src/ui.glade:1298
-#: src/ui.glade:3706 src/ui.glade:3799 src/ui.glade:3902 src/ui.glade:3972
-#: src/ui.glade:4008 src/ui.glade:5966
+#: src/ui.glade:1272 src/ui.glade:1288 src/ui.glade:1304 src/ui.glade:1320
+#: src/ui.glade:3728 src/ui.glade:3821 src/ui.glade:3924 src/ui.glade:3994
+#: src/ui.glade:4030 src/ui.glade:6101
 msgid "Show"
 msgstr "Spectacol"
 
-#: src/ui.glade:1254
+#: src/ui.glade:1276
 msgid ""
 "If set, show snow blowing away.\n"
 "Flags: -blowsnow, -noblowsnow"
@@ -488,7 +497,7 @@ msgstr ""
 "Dacă este setat, afișați zăpada care curge.\n"
 "Flags: -blowsnow, -noblowsnow"
 
-#: src/ui.glade:1270
+#: src/ui.glade:1292
 msgid ""
 "If set, show fallen snow on windows.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
@@ -496,7 +505,7 @@ msgstr ""
 "Dacă este setat, afișați zăpada căzută pe ferestre.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
 
-#: src/ui.glade:1286
+#: src/ui.glade:1308
 msgid ""
 "If set, show fallen snow on bottom of the desktop.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
@@ -504,7 +513,7 @@ msgstr ""
 "Dacă este setat, afișați zăpada căzută în partea de jos a desktopului.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
 
-#: src/ui.glade:1302
+#: src/ui.glade:1324
 msgid ""
 "If set, snow will collect on the trees.\n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
@@ -512,7 +521,7 @@ msgstr ""
 "Dacă este setat, zăpada se va aduna pe copaci.\n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
 
-#: src/ui.glade:1316
+#: src/ui.glade:1338
 msgid ""
 "The higher this setting, the more snow will be generated  because of Santa "
 "ploughing, wind or disappearing windows. \n"
@@ -522,7 +531,7 @@ msgstr ""
 "din cauza arăturii Moșului, a vântului sau a ferestrelor care dispar. \n"
 "Flag: -blowofffactor"
 
-#: src/ui.glade:1335
+#: src/ui.glade:1357
 msgid ""
 "The higher this setting, the more snow will collect on the windows. \n"
 "Note: in Wayland, there is no snow on the windows. \n"
@@ -533,7 +542,7 @@ msgstr ""
 "Notă: în Wayland, nu există zăpadă pe ferestre. \n"
 "Flag: -wsnowdepth"
 
-#: src/ui.glade:1355
+#: src/ui.glade:1377
 msgid ""
 "The higher this setting, the more snow will collect on the  bottom of the "
 "desktop.\n"
@@ -543,7 +552,7 @@ msgstr ""
 "în partea de jos a desktopului.\n"
 "Flag: -ssnowdepth"
 
-#: src/ui.glade:1374
+#: src/ui.glade:1396
 msgid ""
 "The higher this setting, the more snow will collect on the trees.\n"
 "Flag: -maxontrees"
@@ -552,35 +561,35 @@ msgstr ""
 "copaci.\n"
 "Flag: -maxontrees"
 
-#: src/ui.glade:1395
+#: src/ui.glade:1417
 msgid "Choose your favorite snow"
 msgstr "Alege zapada ta preferata"
 
-#: src/ui.glade:1412 src/ui.glade:2529 src/ui.glade:2824 src/ui.glade:4850
-#: src/ui.glade:5929 src/ui.glade:5940 src/ui.glade:6004 src/ui.glade:6030
+#: src/ui.glade:1434 src/ui.glade:2551 src/ui.glade:2846 src/ui.glade:4963
+#: src/ui.glade:6064 src/ui.glade:6075 src/ui.glade:6139 src/ui.glade:6165
 msgid " "
 msgstr " "
 
-#: src/ui.glade:1426 src/ui.glade:2360 src/ui.glade:2921 src/ui.glade:3421
-#: src/ui.glade:4539 src/ui.glade:5655
+#: src/ui.glade:1448 src/ui.glade:2382 src/ui.glade:2943 src/ui.glade:3443
+#: src/ui.glade:4652 src/ui.glade:5769
 msgid "Defaults"
 msgstr "Valori implicite"
 
-#: src/ui.glade:1430
+#: src/ui.glade:1452
 msgid "Apply default values for the preferences in this tab.\n"
 msgstr "Aplicați valorile implicite pentru preferințe din această filă.\n"
 
-#: src/ui.glade:1444 src/ui.glade:2377 src/ui.glade:2938 src/ui.glade:3437
-#: src/ui.glade:4556 src/ui.glade:5672
+#: src/ui.glade:1466 src/ui.glade:2399 src/ui.glade:2960 src/ui.glade:3459
+#: src/ui.glade:4669 src/ui.glade:5786
 msgid "Vintage"
 msgstr "Vintage"
 
-#: src/ui.glade:1448 src/ui.glade:2381 src/ui.glade:2942 src/ui.glade:3441
-#: src/ui.glade:4560 src/ui.glade:5676
+#: src/ui.glade:1470 src/ui.glade:2403 src/ui.glade:2964 src/ui.glade:3463
+#: src/ui.glade:4673 src/ui.glade:5790
 msgid "Apply vintage values for the preferences in this tab."
 msgstr "Aplicați valori vintage pentru preferințele din această filă."
 
-#: src/ui.glade:1507 src/ui.glade:4436
+#: src/ui.glade:1529 src/ui.glade:4549
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flags: -defaults"
@@ -589,11 +598,11 @@ msgstr ""
 "setărilor).\n"
 "Flags: -defaults"
 
-#: src/ui.glade:1580 src/ui.glade:3856
+#: src/ui.glade:1602 src/ui.glade:3878 src/ui.glade:4279
 msgid "Size:"
 msgstr "Mărimea:"
 
-#: src/ui.glade:1592
+#: src/ui.glade:1614
 msgid ""
 "Size of snowflakes, works only for non-vintage snow flakes.\n"
 "Flag: -snowsize"
@@ -602,16 +611,16 @@ msgstr ""
 "non-vintage.\n"
 "Flag: -snowsize"
 
-#: src/ui.glade:1612 src/ui.glade:2324 src/ui.glade:3822 src/ui.glade:4106
-#: src/ui.glade:4965
+#: src/ui.glade:1634 src/ui.glade:2346 src/ui.glade:3844 src/ui.glade:4128
+#: src/ui.glade:5078
 msgid "Speed:"
 msgstr "Viteză:"
 
-#: src/ui.glade:1626
+#: src/ui.glade:1648
 msgid "Max # snowflakes:"
 msgstr "Max # fulgi de zăpadă:"
 
-#: src/ui.glade:1639
+#: src/ui.glade:1661
 msgid ""
 "Maximum amount of snowflakes.\n"
 "Flag: -flakecountmax"
@@ -619,19 +628,19 @@ msgstr ""
 "Cantitatea maximă de fulgi de zăpadă.\n"
 "Flag: -flakecountmax"
 
-#: src/ui.glade:1664
+#: src/ui.glade:1686
 msgid "# Snowflakes:"
 msgstr "# Fulgi de zapada:"
 
-#: src/ui.glade:1680 src/ui.glade:5136 src/ui.glade:5152
+#: src/ui.glade:1702 src/ui.glade:5249 src/ui.glade:5265
 msgid "label"
 msgstr "eticheta"
 
-#: src/ui.glade:1689
+#: src/ui.glade:1711
 msgid "Show fluff"
 msgstr "Arată puf"
 
-#: src/ui.glade:1693
+#: src/ui.glade:1715
 msgid ""
 "If set, try to show fluff on fallen snow and trees if possible.\n"
 "Flags: -fluffy, -nofluffy"
@@ -640,12 +649,12 @@ msgstr ""
 "dacă este posibil.\n"
 "Flags: -fluffy, -nofluffy"
 
-#: src/ui.glade:1707 src/ui.glade:1719 src/ui.glade:2540 src/ui.glade:3759
-#: src/ui.glade:3771 src/ui.glade:5102 src/ui.glade:5114
+#: src/ui.glade:1729 src/ui.glade:1741 src/ui.glade:2562 src/ui.glade:3781
+#: src/ui.glade:3793 src/ui.glade:5215 src/ui.glade:5227
 msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
-#: src/ui.glade:1731
+#: src/ui.glade:1753
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -653,11 +662,11 @@ msgstr ""
 "Viteza fulgilor de zăpadă.\n"
 "Flag: -snowspeedfactor"
 
-#: src/ui.glade:1752
+#: src/ui.glade:1774
 msgid "Intensity:"
 msgstr "Intensitate:"
 
-#: src/ui.glade:1764
+#: src/ui.glade:1786
 msgid ""
 "The higher, the more snowflakes.\n"
 "Flag: -snowflakes"
@@ -665,11 +674,11 @@ msgstr ""
 "Cu cât mai sus, cu atât mai mulți fulgi de zăpadă.\n"
 "Flag: -snowflakes"
 
-#: src/ui.glade:1784
+#: src/ui.glade:1806
 msgid "Show snow"
 msgstr "Arată zăpadă"
 
-#: src/ui.glade:1788
+#: src/ui.glade:1810
 msgid ""
 "If set, show snowflakes.\n"
 "Flags: -snow, -nosnow"
@@ -677,7 +686,7 @@ msgstr ""
 "Dacă setați, afișați fulgii de zăpadă.\n"
 "Flags: -snow, -nosnow"
 
-#: src/ui.glade:1803
+#: src/ui.glade:1825
 msgid ""
 "The color of the snow.\n"
 "Flag: -sc"
@@ -685,15 +694,15 @@ msgstr ""
 "Culoarea zăpezii.\n"
 "Flag: -sc"
 
-#: src/ui.glade:1820
+#: src/ui.glade:1842
 msgid "Color:"
 msgstr "Culoare:"
 
-#: src/ui.glade:1834
+#: src/ui.glade:1856
 msgid "Second color:"
 msgstr "A doua culoare:"
 
-#: src/ui.glade:1847
+#: src/ui.glade:1869
 msgid ""
 "The second color of the snow.\n"
 "Flag: -sc2"
@@ -701,11 +710,11 @@ msgstr ""
 "A doua culoare a zăpezii.\n"
 "Flag: -sc2"
 
-#: src/ui.glade:1860
+#: src/ui.glade:1882
 msgid "Enable"
 msgstr "Permite"
 
-#: src/ui.glade:1864
+#: src/ui.glade:1886
 msgid ""
 "If set, use two colors.\n"
 "Flag: -enablesc2"
@@ -713,19 +722,19 @@ msgstr ""
 "Dacă este setat, utilizați două culori.\n"
 "Flag: -enablesc2"
 
-#: src/ui.glade:1878
+#: src/ui.glade:1900
 msgid "Lift snow on windows or screen: click "
 msgstr "Ridicați zăpada pe ferestre sau ecran: faceți clic pe "
 
-#: src/ui.glade:1891 src/ui.glade:5264 src/ui.glade:6480
+#: src/ui.glade:1913 src/ui.glade:5377 src/ui.glade:6615
 msgid "Settings"
 msgstr "Setări"
 
-#: src/ui.glade:1941
+#: src/ui.glade:1963
 msgid "Snow"
 msgstr "Zăpadă"
 
-#: src/ui.glade:1959
+#: src/ui.glade:1981
 msgid ""
 "Tiny Santa with three reindeers.\n"
 "Flags: -santa 0 -norudolph"
@@ -733,7 +742,7 @@ msgstr ""
 "Moș Crăciun mic cu trei reni.\n"
 "Flags: -santa 0 -norudolph"
 
-#: src/ui.glade:1988
+#: src/ui.glade:2010
 msgid ""
 "Small Santa with three reindeers.\n"
 "Flags: -santa 1 -norudolph"
@@ -741,7 +750,7 @@ msgstr ""
 "Moș Crăciun mic cu trei reni.\n"
 "Flags: -santa 1 -norudolph"
 
-#: src/ui.glade:2017
+#: src/ui.glade:2039
 msgid ""
 "Santa with three reindeers.\n"
 "Flags: -santa 2 -norudolph"
@@ -749,7 +758,7 @@ msgstr ""
 "Moș Crăciun cu trei reni.\n"
 "Flags: -santa 2 -norudolph"
 
-#: src/ui.glade:2046
+#: src/ui.glade:2068
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
 "Flags: -santa 3 -norudolph"
@@ -758,7 +767,7 @@ msgstr ""
 "Blixem.\n"
 "Flags: -santa 3 -norudolph"
 
-#: src/ui.glade:2075
+#: src/ui.glade:2097
 msgid ""
 "Santa using the train with two reindeers.\n"
 "Flags: -santa 4 -norudolph"
@@ -766,7 +775,7 @@ msgstr ""
 "Moș Crăciun folosind trenul cu doi reni.\n"
 "Flags: -santa 4 -norudolph"
 
-#: src/ui.glade:2104
+#: src/ui.glade:2126
 msgid ""
 "Santa using the train with one reindeer and Rudolph.\n"
 "Flags: -santa 4 -showrudolph"
@@ -774,7 +783,7 @@ msgstr ""
 "Moș Crăciun folosind trenul cu un ren și Rudolph.\n"
 "Flags: -santa 4 -showrudolph"
 
-#: src/ui.glade:2132
+#: src/ui.glade:2154
 msgid ""
 "Tiny Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 0 -showrudolph"
@@ -782,7 +791,7 @@ msgstr ""
 "Moș Crăciun mic cu doi reni și Rudolph.\n"
 "Flags: -santa 0 -showrudolph"
 
-#: src/ui.glade:2162
+#: src/ui.glade:2184
 msgid ""
 "Small Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 1 -showrudolph"
@@ -790,7 +799,7 @@ msgstr ""
 "Moș Crăciun mic cu doi reni și Rudolph.\n"
 "Flags: -santa 1 -showrudolph"
 
-#: src/ui.glade:2190
+#: src/ui.glade:2212
 msgid ""
 "Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 2 -showrudolph"
@@ -798,7 +807,7 @@ msgstr ""
 "Moș Crăciun cu doi reni și Rudolph.\n"
 "Flags: -santa 2 -showrudolph"
 
-#: src/ui.glade:2218
+#: src/ui.glade:2240
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
 "and  Rudolph.\n"
@@ -808,27 +817,27 @@ msgstr ""
 "Blixem și Rudolph.\n"
 "Flags: -santa 3 -showrudolph"
 
-#: src/ui.glade:2249
+#: src/ui.glade:2271
 msgid "Without Rudolph"
 msgstr "Fără Rudolph"
 
-#: src/ui.glade:2264
+#: src/ui.glade:2286
 msgid "With Rudolph"
 msgstr "Cu Rudolph"
 
-#: src/ui.glade:2275
+#: src/ui.glade:2297
 msgid "Choose your Santa"
 msgstr "Alege-ți Moș Crăciun"
 
-#: src/ui.glade:2293
+#: src/ui.glade:2315
 msgid "Choose your favorite Santa"
 msgstr "Alege-ti Mos Craciun preferat"
 
-#: src/ui.glade:2309 src/ui.glade:3407
+#: src/ui.glade:2331 src/ui.glade:3429
 msgid "    "
 msgstr "    "
 
-#: src/ui.glade:2336
+#: src/ui.glade:2358
 msgid ""
 "Santa's speed.\n"
 "Flag: -santaspeedfactor"
@@ -836,16 +845,16 @@ msgstr ""
 "Viteza lui Moș Crăciun.\n"
 "Flag: -santaspeedfactor"
 
-#: src/ui.glade:2364 src/ui.glade:2925 src/ui.glade:3425 src/ui.glade:4543
-#: src/ui.glade:5659
+#: src/ui.glade:2386 src/ui.glade:2947 src/ui.glade:3447 src/ui.glade:4656
+#: src/ui.glade:5773
 msgid "Apply default values for the preferences in this tab."
 msgstr "Aplicați valorile implicite pentru preferințe din această filă."
 
-#: src/ui.glade:2508
+#: src/ui.glade:2530
 msgid "Show Santa"
 msgstr "Arată Moș Crăciun"
 
-#: src/ui.glade:2512
+#: src/ui.glade:2534
 msgid ""
 "To show or not to show Santa.\n"
 "Flags: -showsanta, -nosanta"
@@ -853,11 +862,11 @@ msgstr ""
 "A arăta sau nu a arăta Moș Crăciun.\n"
 "Flags: -showsanta, -nosanta"
 
-#: src/ui.glade:2555 src/ui.glade:3192
+#: src/ui.glade:2577 src/ui.glade:3214
 msgid "Scale:"
 msgstr "Scară:"
 
-#: src/ui.glade:2567
+#: src/ui.glade:2589
 msgid ""
 "Scale of Santa.\n"
 "Flags: -santascale <n>"
@@ -865,15 +874,15 @@ msgstr ""
 "Cântarul lui Moș Crăciun.\n"
 "Flags: -santascale <n>"
 
-#: src/ui.glade:2612
+#: src/ui.glade:2634
 msgid "Santa"
 msgstr "Moș Crăciun"
 
-#: src/ui.glade:2627
+#: src/ui.glade:2649
 msgid "Show  scenery"
 msgstr "Arată peisaj"
 
-#: src/ui.glade:2631
+#: src/ui.glade:2653
 msgid ""
 "To show or not to show scenery.\n"
 "Flags: -showtrees, -notrees"
@@ -881,7 +890,7 @@ msgstr ""
 "A arăta sau a nu arăta peisaje.\n"
 "Flags: -showtrees, -notrees"
 
-#: src/ui.glade:2648
+#: src/ui.glade:2670
 msgid ""
 "Vintage tree, you can set the color.\n"
 "Flag: -treetype 0"
@@ -889,7 +898,7 @@ msgstr ""
 "Arborele de vintage, puteți seta culoarea.\n"
 "Flag: -treetype 0"
 
-#: src/ui.glade:2671
+#: src/ui.glade:2693
 msgid ""
 "Woody tree.\n"
 "Flags: -treetype 1 or: -treetype all"
@@ -897,7 +906,7 @@ msgstr ""
 "Arbore lemnos.\n"
 "Flags: -treetype 1 or: -treetype all"
 
-#: src/ui.glade:2694
+#: src/ui.glade:2716
 msgid ""
 "Leavy tree.\n"
 "Flags: -treetype 2 or: -treetype all"
@@ -905,7 +914,7 @@ msgstr ""
 "Arbore cu frunze.\n"
 "Flags: -treetype 2 or: -treetype all"
 
-#: src/ui.glade:2717
+#: src/ui.glade:2739
 msgid ""
 "Small house.\n"
 "Flags: -treetype 3 or: -treetype all"
@@ -913,7 +922,7 @@ msgstr ""
 "Casă mică.\n"
 "Flags: -treetype 3 or: -treetype all"
 
-#: src/ui.glade:2740
+#: src/ui.glade:2762
 msgid ""
 "Reindeer.\n"
 "Flags: -treetype 4 or: -treetype all"
@@ -921,7 +930,7 @@ msgstr ""
 "Ren.\n"
 "Flags: -treetype 4 or: -treetype all"
 
-#: src/ui.glade:2763
+#: src/ui.glade:2785
 msgid ""
 "Moose.\n"
 "Flags: -treetype 5 or: -treetype all"
@@ -929,7 +938,7 @@ msgstr ""
 "Elan.\n"
 "Flags: -treetype 5 or: -treetype all"
 
-#: src/ui.glade:2786
+#: src/ui.glade:2808
 msgid ""
 "Snowy tree.\n"
 "Flags: -treetype 6 or: -treetype all"
@@ -937,7 +946,7 @@ msgstr ""
 "Copac înzăpezit.\n"
 "Flags: -treetype 6 or: -treetype all"
 
-#: src/ui.glade:2809
+#: src/ui.glade:2831
 msgid ""
 "Set color of vintage tree.\n"
 "Flag: -tc"
@@ -945,15 +954,15 @@ msgstr ""
 "Setați culoarea copacului de vintage.\n"
 "Flag: -tc"
 
-#: src/ui.glade:2849
+#: src/ui.glade:2871
 msgid "Compose your favorite scenery"
 msgstr "Compune peisajul tău preferat"
 
-#: src/ui.glade:2865
+#: src/ui.glade:2887
 msgid "Try and click any image!"
 msgstr "Încercați și faceți clic pe orice imagine!"
 
-#: src/ui.glade:2896
+#: src/ui.glade:2918
 msgid ""
 "Polar bear.\n"
 "Flags: -treetype 7 or: -treetype all"
@@ -961,11 +970,11 @@ msgstr ""
 "Urs polar.\n"
 "Flags: -treetype 7 or: -treetype all"
 
-#: src/ui.glade:3104
+#: src/ui.glade:3126
 msgid "# Items:"
 msgstr "# articole:"
 
-#: src/ui.glade:3119
+#: src/ui.glade:3141
 msgid ""
 "Desired number of scenery items.\n"
 "Flag: -trees"
@@ -973,11 +982,11 @@ msgstr ""
 "Numărul dorit de elemente de peisaj.\n"
 "Flag: -trees"
 
-#: src/ui.glade:3142
+#: src/ui.glade:3164
 msgid "% Window fill:"
 msgstr "% umplere fereastră:"
 
-#: src/ui.glade:3153
+#: src/ui.glade:3175
 msgid ""
 "Bottom percentage of screen available for scenery.\n"
 "Flag: -treefill"
@@ -985,11 +994,11 @@ msgstr ""
 "Procentajul inferior al ecranului disponibil pentru peisaj.\n"
 "Flag: -treefill"
 
-#: src/ui.glade:3172
+#: src/ui.glade:3194
 msgid "Allow overlap"
 msgstr "Permite suprapunerea"
 
-#: src/ui.glade:3176
+#: src/ui.glade:3198
 msgid ""
 "To allow overlap or not when placing scenery.\n"
 "Flags: -treeoverlap, -notreeoverlap"
@@ -997,7 +1006,7 @@ msgstr ""
 "Pentru a permite sau nu suprapunerea atunci când plasați peisajul.\n"
 "Flags: -treeoverlap, -notreeoverlap"
 
-#: src/ui.glade:3203
+#: src/ui.glade:3225
 msgid ""
 "Scale of scenery.\n"
 "Flag: sceneryscale <n>"
@@ -1005,15 +1014,15 @@ msgstr ""
 "Scara peisajului.\n"
 "Flag: sceneryscale <n>"
 
-#: src/ui.glade:3372
+#: src/ui.glade:3394
 msgid "Scenery"
 msgstr "Decor"
 
-#: src/ui.glade:3391
+#: src/ui.glade:3413
 msgid "Compose here your favorite celestial conditions"
 msgstr "Compune aici condițiile cerești preferate"
 
-#: src/ui.glade:3469
+#: src/ui.glade:3491
 msgid ""
 "Apply default values for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -1022,7 +1031,7 @@ msgstr ""
 "setărilor).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:3486
+#: src/ui.glade:3508
 msgid ""
 "Apply vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -1030,15 +1039,15 @@ msgstr ""
 "Aplicați valori vintage pentru toate preferințele (cu excepția setărilor).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:3573
+#: src/ui.glade:3595
 msgid "Wind"
 msgstr "Vânt"
 
-#: src/ui.glade:3587
+#: src/ui.glade:3609
 msgid "Windy"
 msgstr "Vânt"
 
-#: src/ui.glade:3592
+#: src/ui.glade:3614
 msgid ""
 "If set, there will be wind.\n"
 "Flags: -wind, -nowind"
@@ -1046,11 +1055,11 @@ msgstr ""
 "Dacă este setat, va fi vânt.\n"
 "Flags: -wind, -nowind"
 
-#: src/ui.glade:3609
+#: src/ui.glade:3631
 msgid "Whirl:"
 msgstr "Vârtej:"
 
-#: src/ui.glade:3621
+#: src/ui.glade:3643
 msgid ""
 "The higher this setting, the more the wind will whirl.\n"
 "Flag: -whirlfactor"
@@ -1058,11 +1067,11 @@ msgstr ""
 "Cu cât această setare este mai mare, cu atât vântul se va învârti mai mult.\n"
 "Flag: -whirlfactor"
 
-#: src/ui.glade:3643
+#: src/ui.glade:3665
 msgid "Timer:"
 msgstr "Temporizator:"
 
-#: src/ui.glade:3656
+#: src/ui.glade:3678
 msgid ""
 "This setting determines how many seconds pass between  two  gusts of wind.\n"
 "Flag: -windtimer"
@@ -1070,19 +1079,19 @@ msgstr ""
 "Această setare determină câte secunde trec între două rafale de vânt.\n"
 "Flag: -windtimer"
 
-#: src/ui.glade:3672
+#: src/ui.glade:3694
 msgid "Now!"
 msgstr "Acum!"
 
-#: src/ui.glade:3676
+#: src/ui.glade:3698
 msgid "Force a gust of wind immediately."
 msgstr "Forțați imediat o rafală de vânt."
 
-#: src/ui.glade:3693
+#: src/ui.glade:3715
 msgid "Stars"
 msgstr "Stele"
 
-#: src/ui.glade:3711
+#: src/ui.glade:3733
 msgid ""
 "To show or not show stars.\n"
 "Flag: -stars  (0 means: no stars)"
@@ -1090,11 +1099,11 @@ msgstr ""
 "Pentru a afișa sau nu stele.\n"
 "Flag: -stars  (0 means: no stars)"
 
-#: src/ui.glade:3728
+#: src/ui.glade:3750
 msgid "Number:"
 msgstr "Număr:"
 
-#: src/ui.glade:3740
+#: src/ui.glade:3762
 msgid ""
 "Number of twinkling stars.\n"
 "Flag: -stars"
@@ -1102,11 +1111,11 @@ msgstr ""
 "Numărul de stele sclipitoare.\n"
 "Flag: -stars"
 
-#: src/ui.glade:3786
+#: src/ui.glade:3808
 msgid "Moon"
 msgstr "Luna"
 
-#: src/ui.glade:3804
+#: src/ui.glade:3826
 msgid ""
 "To show or not show moon.\n"
 "Flags: -moon 1, -moon 0"
@@ -1114,7 +1123,7 @@ msgstr ""
 "Pentru a afișa sau nu luna.\n"
 "Flags: -moon 1, -moon 0"
 
-#: src/ui.glade:3834
+#: src/ui.glade:3856
 msgid ""
 "Speed of moon in pixels/minute.\n"
 "Flag: -moonspeed"
@@ -1122,7 +1131,7 @@ msgstr ""
 "Viteza lunii în pixeli/minut.\n"
 "Flag: -moonspeed"
 
-#: src/ui.glade:3868
+#: src/ui.glade:3890
 msgid ""
 "Relative size of the moon.\n"
 "Flag: -moonsize"
@@ -1130,11 +1139,11 @@ msgstr ""
 "Mărimea relativă a lunii.\n"
 "Flag: -moonsize"
 
-#: src/ui.glade:3889
+#: src/ui.glade:3911
 msgid "Halo"
 msgstr "Aura"
 
-#: src/ui.glade:3907
+#: src/ui.glade:3929
 msgid ""
 "To show or not to show halo around moon.\n"
 "Flags: -halo 1, -halo 0"
@@ -1142,11 +1151,11 @@ msgstr ""
 "A arăta sau a nu arăta aureola în jurul lunii.\n"
 "Flags: -halo 1, -halo 0"
 
-#: src/ui.glade:3925 src/ui.glade:4140
+#: src/ui.glade:3947 src/ui.glade:4162
 msgid "Bright:"
 msgstr "Luminos:"
 
-#: src/ui.glade:3937
+#: src/ui.glade:3959
 msgid ""
 "Brightness of moon's halo.\n"
 "Flag: -halobrightness"
@@ -1154,11 +1163,11 @@ msgstr ""
 "Luminozitatea aureolei lunii.\n"
 "Flag: -halobrightness"
 
-#: src/ui.glade:3959
+#: src/ui.glade:3981
 msgid "Meteors"
 msgstr "Meteorii"
 
-#: src/ui.glade:3977
+#: src/ui.glade:3999
 msgid ""
 "To show or not to show meteors.\n"
 "Flags: -meteors, -nometeors"
@@ -1166,11 +1175,11 @@ msgstr ""
 "Pentru a afișa sau nu meteoriți.\n"
 "Flags: -meteors, -nometeors"
 
-#: src/ui.glade:3995
+#: src/ui.glade:4017
 msgid "Aurora"
 msgstr "Aurora"
 
-#: src/ui.glade:4013
+#: src/ui.glade:4035
 msgid ""
 "To show or not show aurora.\n"
 "Note: the aurora is best viewed using a dark background.\n"
@@ -1180,11 +1189,11 @@ msgstr ""
 "Notă: aurora este cel mai bine vizualizată folosind un fundal întunecat.\n"
 "Flags: -aurora 1, -aurora 0"
 
-#: src/ui.glade:4032
+#: src/ui.glade:4054
 msgid "Width:"
 msgstr "Lăţime:"
 
-#: src/ui.glade:4044
+#: src/ui.glade:4066
 msgid ""
 "Width of aurora in percentage of screen width.\n"
 "Flag: -aurorawidth"
@@ -1192,11 +1201,11 @@ msgstr ""
 "Lățimea aurorei în procent din lățimea ecranului.\n"
 "Flag: -aurorawidth"
 
-#: src/ui.glade:4069
+#: src/ui.glade:4091
 msgid "Height:"
 msgstr "Înălţime:"
 
-#: src/ui.glade:4081
+#: src/ui.glade:4103
 msgid ""
 "Vertical size of aurora.\n"
 "Flag: -auroraheight"
@@ -1204,7 +1213,7 @@ msgstr ""
 "Dimensiunea verticală a aurorei.\n"
 "Flag: -auroraheight"
 
-#: src/ui.glade:4118
+#: src/ui.glade:4140
 msgid ""
 "Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
 "Flag: -auroraspeed"
@@ -1213,7 +1222,7 @@ msgstr ""
 "100\n"
 "Flag: -auroraspeed"
 
-#: src/ui.glade:4152
+#: src/ui.glade:4174
 msgid ""
 "Brightness of aurora.\n"
 "Flags: -aurorabrightness"
@@ -1221,47 +1230,11 @@ msgstr ""
 "Luminozitatea aurorei.\n"
 "Flags: -aurorabrightness"
 
-#: src/ui.glade:4169
-msgid "Left"
-msgstr "Stânga"
-
-#: src/ui.glade:4173
-msgid ""
-"Place aurora left on the screen.\n"
-"Flag: -auroraleft"
-msgstr ""
-"Plasați aurora la stânga pe ecran.\n"
-"Flag: -auroraleft"
-
-#: src/ui.glade:4186
-msgid "Middle"
-msgstr "Mijloc"
-
-#: src/ui.glade:4190
-msgid ""
-"Place aurora in the middle of the screen.\n"
-"Flag: -auroramiddle"
-msgstr ""
-"Plasați aurora în mijlocul ecranului.\n"
-"Flag: -auroramiddle"
-
-#: src/ui.glade:4204
-msgid "Right"
-msgstr "Dreapta"
-
-#: src/ui.glade:4208
-msgid ""
-"Place aurora in the right of the screen.\n"
-"Flag: -auroraright"
-msgstr ""
-"Plasați aurora în partea dreaptă a ecranului.\n"
-"Flag: -auroraright"
-
-#: src/ui.glade:4227
+#: src/ui.glade:4196
 msgid "Frequency:"
 msgstr "Frecvență:"
 
-#: src/ui.glade:4239
+#: src/ui.glade:4208
 msgid ""
 "Frequency of meteors to appear.\n"
 "Flags: -meteorfrequency"
@@ -1269,11 +1242,11 @@ msgstr ""
 "Frecvența de apariție a meteorilor.\n"
 "Flags: -meteorfrequency"
 
-#: src/ui.glade:4261
-msgid "Base:"
-msgstr "Baza:"
+#: src/ui.glade:4230
+msgid "Vertical:"
+msgstr "Vertical:"
 
-#: src/ui.glade:4273
+#: src/ui.glade:4242
 msgid ""
 "Baseline height of aurora, in percentage of screen height.\n"
 "Flag: -aurorabase"
@@ -1281,11 +1254,11 @@ msgstr ""
 "Înălțimea inițială a aurorei, în procente din înălțimea ecranului.\n"
 "Flag: -aurorabase"
 
-#: src/ui.glade:4290
+#: src/ui.glade:4259
 msgid "Color"
 msgstr "Culoare"
 
-#: src/ui.glade:4294
+#: src/ui.glade:4263
 msgid ""
 "Choose between yellow-ish and white-ish moon.\n"
 "Flag: -mooncolor [0,1]"
@@ -1293,19 +1266,67 @@ msgstr ""
 "Alegeți între lună galbenă și alb-ish.\n"
 "Flag: -mooncolor [0,1]"
 
-#: src/ui.glade:4394
+#: src/ui.glade:4291
+msgid ""
+"Size of stars.\n"
+"Flag: -starsize"
+msgstr ""
+"Dimensiunea stelelor.\n"
+"Flag: -starsize"
+
+#: src/ui.glade:4309
+msgid "Horizontal:"
+msgstr "Orizontală:"
+
+#: src/ui.glade:4320
+msgid ""
+"Horizontal place of aurora\n"
+"Flags: -aurorax"
+msgstr ""
+"Locul orizontal al aurorei\n"
+"Flags: -aurorax"
+
+#: src/ui.glade:4339
+msgid "Position:"
+msgstr "Poziţie:"
+
+#: src/ui.glade:4353
+msgid "X-position:"
+msgstr "Poziția X:"
+
+#: src/ui.glade:4368
+msgid "Y-position"
+msgstr "Poziția Y"
+
+#: src/ui.glade:4379
+msgid ""
+"Horizontal position of moon if speed equals 0.\n"
+"Flag: -moonx"
+msgstr ""
+"Poziția orizontală a lunii dacă viteza este egală cu 0.\n"
+"Flag: -moonx"
+
+#: src/ui.glade:4398
+msgid ""
+"Vertical position of moon if speed equals 0.\n"
+"Flag: -moony"
+msgstr ""
+"Poziția verticală a lunii dacă viteza este egală cu 0.\n"
+"Flag: -moony"
+
+#: src/ui.glade:4507
 msgid "Celestials"
 msgstr "Celestii"
 
-#: src/ui.glade:4414
+#: src/ui.glade:4527
 msgid "Birds settings"
 msgstr "Configurarea păsărilor"
 
-#: src/ui.glade:4580
+#: src/ui.glade:4693
 msgid "Show birds"
 msgstr "Arată păsări"
 
-#: src/ui.glade:4584
+#: src/ui.glade:4697
 msgid ""
 "If set: show birds.\n"
 "Flags: -showbirds 1, -showbirds 0"
@@ -1313,11 +1334,11 @@ msgstr ""
 "Dacă este setat: arată păsările.\n"
 "Flags: -showbirds 1, -showbirds 0"
 
-#: src/ui.glade:4597
+#: src/ui.glade:4710
 msgid "Birds only"
 msgstr "Doar păsări"
 
-#: src/ui.glade:4601
+#: src/ui.glade:4714
 msgid ""
 "If set: show no Santa, snow or scenery.\n"
 "Flags: -birdsonly 0, -birdsony 1"
@@ -1325,11 +1346,11 @@ msgstr ""
 "Dacă este setat: nu afișați Moș Crăciun, zăpadă sau peisaj.\n"
 "Flags: -birdsonly 0, -birdsony 1"
 
-#: src/ui.glade:4618
+#: src/ui.glade:4731
 msgid "Preferred distance:"
 msgstr "Distanta preferata:"
 
-#: src/ui.glade:4632
+#: src/ui.glade:4745
 msgid ""
 "Preferred distance from other birds.\n"
 "Flag: -prefdistance"
@@ -1337,19 +1358,19 @@ msgstr ""
 "Distanța preferată față de alte păsări.\n"
 "Flag: -prefdistance"
 
-#: src/ui.glade:4660
+#: src/ui.glade:4773
 msgid "Restart"
 msgstr "Repornire"
 
-#: src/ui.glade:4664
+#: src/ui.glade:4777
 msgid "Restart birds."
 msgstr "Reporniți păsările."
 
-#: src/ui.glade:4681
+#: src/ui.glade:4794
 msgid "Viewing distance:"
 msgstr "Distanta de vizualizare:"
 
-#: src/ui.glade:4694
+#: src/ui.glade:4807
 msgid ""
 "Viewing distance.\n"
 "NOTE: Santa has no knowledge of viewing distance, so when birds are "
@@ -1366,11 +1387,11 @@ msgstr ""
 "pe Moș Crăciun.\n"
 "Flag: -viewingdistance"
 
-#: src/ui.glade:4715
+#: src/ui.glade:4828
 msgid "Focus to attraction point:"
 msgstr "Concentrare către punctul de atracție:"
 
-#: src/ui.glade:4729
+#: src/ui.glade:4842
 msgid ""
 "Tendency to concentrate on the attraction point.\n"
 "Flag: -focuscentre"
@@ -1378,7 +1399,7 @@ msgstr ""
 "Tendința de a se concentra asupra punctului de atracție.\n"
 "Flag: -focuscentre"
 
-#: src/ui.glade:4747
+#: src/ui.glade:4860
 msgid ""
 "Desired number of birds. If zero, no birds are shown.\n"
 "Flag: -nbirds"
@@ -1386,11 +1407,11 @@ msgstr ""
 "Numărul dorit de păsări. Dacă zero, nu sunt afișate păsări.\n"
 "Flag: -nbirds"
 
-#: src/ui.glade:4770
+#: src/ui.glade:4883
 msgid "# Birds:"
 msgstr "# Păsări:"
 
-#: src/ui.glade:4784
+#: src/ui.glade:4897
 msgid ""
 "Number of nearest neighbours the birds should look at.\n"
 "Flag: -neighbours"
@@ -1398,11 +1419,11 @@ msgstr ""
 "Numărul de vecini cei mai apropiați la care ar trebui să se uite păsările.\n"
 "Flag: -neighbours"
 
-#: src/ui.glade:4804
+#: src/ui.glade:4917
 msgid "Neighbours:"
 msgstr "Vecini:"
 
-#: src/ui.glade:4819
+#: src/ui.glade:4932
 msgid ""
 "Give the birds a fancy color.\n"
 "Flag: -birdscolor"
@@ -1410,15 +1431,15 @@ msgstr ""
 "Oferă păsărilor o culoare elegantă.\n"
 "Flag: -birdscolor"
 
-#: src/ui.glade:4837
+#: src/ui.glade:4950
 msgid "Bird color"
 msgstr "Culoarea păsărilor"
 
-#: src/ui.glade:4863
+#: src/ui.glade:4976
 msgid "Anarchy:"
 msgstr "Anarhie:"
 
-#: src/ui.glade:4877
+#: src/ui.glade:4990
 msgid ""
 "Anarchy level: the higher, the more anarchy.\n"
 "Flag: -anarchy"
@@ -1426,11 +1447,11 @@ msgstr ""
 "Nivel de anarhie: cu cât este mai mare, cu atât mai multă anarhie.\n"
 "Flag: -anarchy"
 
-#: src/ui.glade:4897
+#: src/ui.glade:5010
 msgid "Distance weight:"
 msgstr "Greutate la distanta:"
 
-#: src/ui.glade:4911
+#: src/ui.glade:5024
 msgid ""
 "Tendency to keep desired distance to neighbours.\n"
 "Flag: -disweight"
@@ -1438,11 +1459,11 @@ msgstr ""
 "Tendința de a păstra distanța dorită față de vecini.\n"
 "Flag: -disweight"
 
-#: src/ui.glade:4931
+#: src/ui.glade:5044
 msgid "Adjust speed to neighbours:"
 msgstr "Ajustați viteza la vecini:"
 
-#: src/ui.glade:4945
+#: src/ui.glade:5058
 msgid ""
 "Tendency to adjust speed to neighbours.\n"
 "Flag: -followneighbours"
@@ -1450,7 +1471,7 @@ msgstr ""
 "Tendința de a ajusta viteza la vecini.\n"
 "Flag: -followneighbours"
 
-#: src/ui.glade:4979
+#: src/ui.glade:5092
 msgid ""
 "Speed of birds in arbitrary units.\n"
 "Flag: -birdsspeed"
@@ -1458,11 +1479,11 @@ msgstr ""
 "Viteza păsărilor în unități arbitrare.\n"
 "Flag: -birdsspeed"
 
-#: src/ui.glade:4999
+#: src/ui.glade:5112
 msgid "Drawing scale:"
 msgstr "Scara de desen:"
 
-#: src/ui.glade:5013
+#: src/ui.glade:5126
 msgid ""
 "Influence the size of the birds.\n"
 "Flag: -birdsscale\n"
@@ -1470,7 +1491,7 @@ msgstr ""
 "Influențează dimensiunea păsărilor.\n"
 "Flag: -birdsscale\n"
 
-#: src/ui.glade:5030
+#: src/ui.glade:5143
 msgid ""
 "Show \n"
 "attr point"
@@ -1478,7 +1499,7 @@ msgstr ""
 "Afișați punctul \n"
 "attr"
 
-#: src/ui.glade:5036
+#: src/ui.glade:5149
 msgid ""
 "Show the point where the birds want to go.\n"
 "Flags: -showattr 0, -showattr 1"
@@ -1486,7 +1507,7 @@ msgstr ""
 "Arată punctul în care vor să meargă păsările.\n"
 "Flags: -showattr 0, -showattr 1"
 
-#: src/ui.glade:5047
+#: src/ui.glade:5160
 msgid ""
 "Follow \n"
 "Santa"
@@ -1494,7 +1515,7 @@ msgstr ""
 "Urmăriți \n"
 " Moș Crăciun"
 
-#: src/ui.glade:5053
+#: src/ui.glade:5166
 msgid ""
 "Birds are attracted by an attraction point. Here you can choose to follow "
 "Santa.\n"
@@ -1504,7 +1525,7 @@ msgstr ""
 "pe Moș Crăciun.\n"
 "Flags: -followsanta 0, -followsanta 1"
 
-#: src/ui.glade:5066
+#: src/ui.glade:5179
 msgid ""
 "Percentage of screen to be used for the attraction point.\n"
 "Flag: -attrspace"
@@ -1512,31 +1533,31 @@ msgstr ""
 "Procentul de ecran care trebuie utilizat pentru punctul de atracție.\n"
 "Flag: -attrspace"
 
-#: src/ui.glade:5088
+#: src/ui.glade:5201
 msgid "Attraction point range"
 msgstr "Gama punctelor de atracție"
 
-#: src/ui.glade:5131
+#: src/ui.glade:5244
 msgid "Actual mean distance from neighbours."
 msgstr "Distanța medie reală față de vecini."
 
-#: src/ui.glade:5148
+#: src/ui.glade:5261
 msgid "Distance used to get the desired number of neighbours."
 msgstr "Distanța folosită pentru a obține numărul dorit de vecini."
 
-#: src/ui.glade:5231
+#: src/ui.glade:5344
 msgid "Birds"
 msgstr "Păsări"
 
-#: src/ui.glade:5249
+#: src/ui.glade:5362
 msgid "version"
 msgstr "versiune"
 
-#: src/ui.glade:5286
+#: src/ui.glade:5399
 msgid "Transparency "
 msgstr "Transparenţă "
 
-#: src/ui.glade:5303
+#: src/ui.glade:5416
 msgid ""
 "Transparency of painted items:\n"
 "0: no transparency.\n"
@@ -1548,11 +1569,11 @@ msgstr ""
 "100: complet transparent, nu veți vedea nimic!\n"
 "Flag: -transparency"
 
-#: src/ui.glade:5330
+#: src/ui.glade:5443
 msgid "Lift snow on bottom"
 msgstr "Ridicați zăpada de jos"
 
-#: src/ui.glade:5346
+#: src/ui.glade:5459
 msgid ""
 "Use this if snow falls below the bottom of your screen, or  fallen snow "
 "hides something that should not be hidden.\n"
@@ -1562,11 +1583,11 @@ msgstr ""
 "căzută ascunde ceva care nu ar trebui să fie ascuns.\n"
 "Flag: -offsets"
 
-#: src/ui.glade:5371
+#: src/ui.glade:5484
 msgid "Lift snow on windows"
 msgstr "Ridicați zăpada pe ferestre"
 
-#: src/ui.glade:5387
+#: src/ui.glade:5500
 msgid ""
 "Use this if no snow collects on your windows, or if snow  collects separated "
 "from your windows. \n"
@@ -1580,11 +1601,11 @@ msgstr ""
 "TWM are nevoie în general de o valoare de 25 .. 28).\n"
 "Flag: -offsety"
 
-#: src/ui.glade:5412
+#: src/ui.glade:5525
 msgid "Cpu factor"
 msgstr "factor CPU"
 
-#: src/ui.glade:5430
+#: src/ui.glade:5543
 msgid ""
 "The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
 "Flag: -cpuload"
@@ -1593,11 +1614,11 @@ msgstr ""
 "mai multă putere CPU.\n"
 "Flag: -cpuload"
 
-#: src/ui.glade:5456
+#: src/ui.glade:5569
 msgid "Scale"
 msgstr "Scară"
 
-#: src/ui.glade:5473
+#: src/ui.glade:5586
 msgid ""
 "Overall drawing scale.\n"
 "Flag: -scale"
@@ -1605,37 +1626,39 @@ msgstr ""
 "Scara generală a desenului.\n"
 "Flag: -scale"
 
-#: src/ui.glade:5506
-msgid "Ignore large top windows"
-msgstr "Ignorați ferestrele mari de sus"
+#: src/ui.glade:5619
+msgid "Ignore top windows"
+msgstr "Ignorați ferestrele de sus"
 
-#: src/ui.glade:5522
+#: src/ui.glade:5635
 msgid ""
-"Windows wider than 80 percent of the screen and closer to the top  than the "
-"number in this widget will not collect snow.\n"
+"Windows closer to the top  than the number in this widget will not collect "
+"snow.\n"
+"\n"
 "In some cases, there are invisible windows near the top of the screen, which "
 "are handled by xsnow as normal windows: snow is collected upon them. By "
 "entering a suitable number here, this undesired behaviour can be avoided.\n"
 "Flag: -ignoretop\n"
 "\n"
 msgstr ""
-"Ferestrele mai late de 80% din ecran și mai aproape de partea de sus decât "
-"numărul din acest widget nu vor colecta zăpadă.\n"
+"Ferestrele mai aproape de partea de sus decât numărul din acest widget nu "
+"vor colecta zăpadă.\n"
+"\n"
 "În unele cazuri, există ferestre invizibile în partea de sus a ecranului, "
-"care sunt gestionate de xsnow ca ferestre normale: zăpada se adună peste "
-"ele. Prin introducerea unui număr adecvat aici, acest comportament nedorit "
-"poate fi evitat.\n"
+"care sunt tratate de xsnow ca ferestre normale: zăpada este adunată pe ele. "
+"Prin introducerea unui număr adecvat aici, acest comportament nedorit poate "
+"fi evitat.\n"
 "Flag: -ignoretop\n"
 "\n"
 
-#: src/ui.glade:5546
-msgid "Ignore large bottom windows"
-msgstr "Ignorați ferestrele mari de jos"
+#: src/ui.glade:5660
+msgid "Ignore bottom windows"
+msgstr "Ignorați ferestrele de jos"
 
-#: src/ui.glade:5562
+#: src/ui.glade:5676
 msgid ""
-"Windows wider than 80 percent of the screen and closer to the  bottom than "
-"the number in this widget will not collect snow.\n"
+"Windows closer to the  bottom than the number in this widget will not "
+"collect snow.\n"
 "\n"
 "In some cases, there are invisible windows near the bottom  of  the screen, "
 "which are handled by xsnow as normal windows: snow is collected upon them. "
@@ -1643,20 +1666,16 @@ msgid ""
 "avoided.\n"
 "Flag: -ignorebottom"
 msgstr ""
-"Ferestrele mai late de 80% din ecran și mai aproape de partea de jos decât "
-"numărul din acest widget nu vor colecta zăpadă.\n"
+"Ferestrele mai aproape de partea de jos decât numărul din acest widget nu "
+"vor colecta zăpadă.\n"
 "\n"
 "În unele cazuri, există ferestre invizibile în partea de jos a ecranului, "
-"care sunt gestionate de xsnow ca ferestre normale: zăpada se adună peste "
+"care sunt gestionate de xsnow ca ferestre normale: zăpada este adunată pe "
 "ele. Prin introducerea unui număr adecvat aici, acest comportament nedorit "
 "poate fi evitat.\n"
 "Flag: -ignorebottom"
 
-#: src/ui.glade:5756
-msgid "window type etc."
-msgstr "tip de fereastră etc."
-
-#: src/ui.glade:5779
+#: src/ui.glade:5892
 msgid ""
 "Menu\n"
 "colors"
@@ -1664,7 +1683,7 @@ msgstr ""
 "Meniu\n"
 "culori"
 
-#: src/ui.glade:5784
+#: src/ui.glade:5897
 msgid ""
 "Toggle between xsnow's own menu colors and standard menu colors.\n"
 "Activated: use xsnow colors.\n"
@@ -1676,7 +1695,7 @@ msgstr ""
 "Dezactivat: utilizați culorile implicite.\n"
 "Flags: -theme 1, -theme 0"
 
-#: src/ui.glade:5798
+#: src/ui.glade:5911
 msgid ""
 "On all\n"
 "workspaces"
@@ -1684,7 +1703,7 @@ msgstr ""
 "Pe toate \n"
 "spațiile de lucru"
 
-#: src/ui.glade:5803
+#: src/ui.glade:5916
 msgid ""
 "Use all workspaces to snow in.\n"
 "NOTE: this doesn't work properly in enlightenment.\n"
@@ -1694,7 +1713,7 @@ msgstr ""
 "NOTĂ: acest lucru nu funcționează corect în iluminare.\n"
 "Flags: -allworkspaces 1, -allworkspaces 0"
 
-#: src/ui.glade:5821
+#: src/ui.glade:5934
 msgid ""
 "Below\n"
 "windows"
@@ -1702,7 +1721,7 @@ msgstr ""
 "Sub \n"
 " ferestre"
 
-#: src/ui.glade:5826
+#: src/ui.glade:5939
 msgid ""
 "When activated, it will be snowing below your windows, else  it will be "
 "snowing upon you windows too.\n"
@@ -1720,7 +1739,7 @@ msgstr ""
 "că lucrurile sunt OK.\n"
 "Flag: -above"
 
-#: src/ui.glade:5845
+#: src/ui.glade:5958
 msgid ""
 "Click to\n"
 "confirm"
@@ -1728,11 +1747,11 @@ msgstr ""
 "Faceți clic pentru a\n"
 " confirmare"
 
-#: src/ui.glade:5850
+#: src/ui.glade:5963
 msgid "To make sure you can click."
 msgstr "Pentru a vă asigura că puteți face clic."
 
-#: src/ui.glade:5869
+#: src/ui.glade:5982
 msgid ""
 "If you have more than one monitor, choose where you want snow falling. "
 "Choose 'all monitors' if you want snow in all monitors.\n"
@@ -1744,11 +1763,11 @@ msgstr ""
 "NOTĂ: când schimbați monitorul, xsnow va reporni.\n"
 "Flag: -screen"
 
-#: src/ui.glade:5876
+#: src/ui.glade:5989
 msgid "monitor 1"
 msgstr "monitor 1"
 
-#: src/ui.glade:5887
+#: src/ui.glade:6000
 msgid ""
 "Create\n"
 "outline"
@@ -1756,7 +1775,7 @@ msgstr ""
 "Creați\n"
 "contur"
 
-#: src/ui.glade:5892
+#: src/ui.glade:6005
 msgid ""
 "To draw an outline around the snow window.\n"
 "Flag: -outline 1/0"
@@ -1764,7 +1783,19 @@ msgstr ""
 "Pentru a desena un contur în jurul ferestrei de zăpadă.\n"
 "Flag: -outline 1/0"
 
-#: src/ui.glade:5916
+#: src/ui.glade:6023
+msgid ""
+"Use \n"
+"screenshots"
+msgstr ""
+"Utilizați \n"
+" capturi de ecran"
+
+#: src/ui.glade:6028
+msgid "Use screenshots for the location of windows. Experimental."
+msgstr "Utilizați capturi de ecran pentru locația ferestrelor. Experimental."
+
+#: src/ui.glade:6051
 msgid ""
 "  \n"
 "  "
@@ -1772,7 +1803,7 @@ msgstr ""
 "  \n"
 "  "
 
-#: src/ui.glade:5951
+#: src/ui.glade:6086
 msgid ""
 "Choose here the picture you want as background when  xscreensaver is "
 "active.\n"
@@ -1782,11 +1813,11 @@ msgstr ""
 "activ.\n"
 "Flag: -bg"
 
-#: src/ui.glade:5955
+#: src/ui.glade:6090
 msgid "Choose background"
 msgstr "Alege imagine de fundal"
 
-#: src/ui.glade:5970
+#: src/ui.glade:6105
 msgid ""
 "Activate xscreensaver.\n"
 "Click and don't touch mouse and keyboard for a few seconds..."
@@ -1794,7 +1825,7 @@ msgstr ""
 "Activați xscreensaver.\n"
 "Dați clic și nu atingeți mouse-ul și tastatura pentru câteva secunde..."
 
-#: src/ui.glade:5984
+#: src/ui.glade:6119
 msgid ""
 "Settings for Xscreensaver. You can choose a background, and choose to use it "
 "or not.\n"
@@ -1818,15 +1849,15 @@ msgstr ""
 "Vezi și pagina de manual:\n"
 "man xsnow"
 
-#: src/ui.glade:5993
+#: src/ui.glade:6128
 msgid "Xscreensaver: "
 msgstr "Xscreensaver: "
 
-#: src/ui.glade:6013
+#: src/ui.glade:6148
 msgid "Black"
 msgstr "Negru"
 
-#: src/ui.glade:6017
+#: src/ui.glade:6152
 msgid ""
 "When activated, the background will be black.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
@@ -1834,7 +1865,7 @@ msgstr ""
 "Când este activat, fundalul va fi negru.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
 
-#: src/ui.glade:6041
+#: src/ui.glade:6176
 msgid ""
 " \n"
 " \n"
@@ -1856,13 +1887,108 @@ msgstr ""
 " \n"
 " \n"
 
-#: src/ui.glade:6516
+#: src/ui.glade:6651
 msgid "en"
 msgstr "ro"
 
-#: src/ui.glade:6519
+#: src/ui.glade:6654
 msgid "it"
 msgstr "aceasta"
+
+#~ msgid "Use screenshots"
+#~ msgstr "Utilizați capturi de ecran"
+
+#~ msgid "Ignore large top windows"
+#~ msgstr "Ignorați ferestrele mari de sus"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the top  than "
+#~ "the number in this widget will not collect snow.\n"
+#~ "In some cases, there are invisible windows near the top of the screen, "
+#~ "which are handled by xsnow as normal windows: snow is collected upon "
+#~ "them. By entering a suitable number here, this undesired behaviour can be "
+#~ "avoided.\n"
+#~ "Flag: -ignoretop\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Ferestrele mai late de 80% din ecran și mai aproape de partea de sus "
+#~ "decât numărul din acest widget nu vor colecta zăpadă.\n"
+#~ "În unele cazuri, există ferestre invizibile în partea de sus a ecranului, "
+#~ "care sunt gestionate de xsnow ca ferestre normale: zăpada se adună peste "
+#~ "ele. Prin introducerea unui număr adecvat aici, acest comportament "
+#~ "nedorit poate fi evitat.\n"
+#~ "Flag: -ignoretop\n"
+#~ "\n"
+
+#~ msgid "Ignore large bottom windows"
+#~ msgstr "Ignorați ferestrele mari de jos"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the  bottom "
+#~ "than the number in this widget will not collect snow.\n"
+#~ "\n"
+#~ "In some cases, there are invisible windows near the bottom  of  the "
+#~ "screen, which are handled by xsnow as normal windows: snow is collected "
+#~ "upon them. By entering a suitable  number here, this undesired behaviour "
+#~ "can be avoided.\n"
+#~ "Flag: -ignorebottom"
+#~ msgstr ""
+#~ "Ferestrele mai late de 80% din ecran și mai aproape de partea de jos "
+#~ "decât numărul din acest widget nu vor colecta zăpadă.\n"
+#~ "\n"
+#~ "În unele cazuri, există ferestre invizibile în partea de jos a ecranului, "
+#~ "care sunt gestionate de xsnow ca ferestre normale: zăpada se adună peste "
+#~ "ele. Prin introducerea unui număr adecvat aici, acest comportament "
+#~ "nedorit poate fi evitat.\n"
+#~ "Flag: -ignorebottom"
+
+#, c-format
+#~ msgid "Using transparent window\n"
+#~ msgstr "Utilizarea ferestrei transparente \n"
+
+#, c-format
+#~ msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
+#~ msgstr "Ninsoare în %#lx: %s %d+%d %dx%d\n"
+
+#, c-format
+#~ msgid "Using double buffer: %#lx. %dx%d\n"
+#~ msgstr "Folosind tampon dublu: %#lx. %dx%d\n"
+
+#~ msgid "Left"
+#~ msgstr "Stânga"
+
+#~ msgid ""
+#~ "Place aurora left on the screen.\n"
+#~ "Flag: -auroraleft"
+#~ msgstr ""
+#~ "Plasați aurora la stânga pe ecran.\n"
+#~ "Flag: -auroraleft"
+
+#~ msgid "Middle"
+#~ msgstr "Mijloc"
+
+#~ msgid ""
+#~ "Place aurora in the middle of the screen.\n"
+#~ "Flag: -auroramiddle"
+#~ msgstr ""
+#~ "Plasați aurora în mijlocul ecranului.\n"
+#~ "Flag: -auroramiddle"
+
+#~ msgid "Right"
+#~ msgstr "Dreapta"
+
+#~ msgid ""
+#~ "Place aurora in the right of the screen.\n"
+#~ "Flag: -auroraright"
+#~ msgstr ""
+#~ "Plasați aurora în partea dreaptă a ecranului.\n"
+#~ "Flag: -auroraright"
+
+#~ msgid "Base:"
+#~ msgstr "Baza:"
+
+#~ msgid "window type etc."
+#~ msgstr "tip de fereastră etc."
 
 #~ msgid "Donate"
 #~ msgstr "Donează"

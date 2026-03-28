@@ -1,13 +1,13 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) XSNOW
-# # (abc_1001) \n
-# # (abc_1002) XsnoW
-# # (abc_1003) &#8195;
-# # (abc_1004) xsnow
-# # (abc_1005) Xscreensaver
-# # (abc_1006) %l#x
-# # (abc_1007) Rick Jansen
-# # (abc_1008) Xsnow
+# # (abc_1000) xsnow
+# # (abc_1001) Xsnow
+# # (abc_1002) XSNOW
+# # (abc_1003) Xscreensaver
+# # (abc_1004) XsnoW
+# # (abc_1005) %l#x
+# # (abc_1006) Rick Jansen
+# # (abc_1007) &#8195;
+# # (abc_1008) \n
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -16,10 +16,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: xsnow-3.9.0\n"
+"Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
-"POT-Creation-Date: 2025-03-26 12:50+0100\n"
-"PO-Revision-Date: 2025-03-26 12:50+0100\n"
+"POT-Creation-Date: 2026-03-22 14:44+0100\n"
+"PO-Revision-Date: 2026-03-22 14:44+0100\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: lt\n"
@@ -27,171 +27,180 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:391
+#: src/main.c:411
+#, c-format
+msgid "Configuration file: %s\n"
+msgstr "Konfigūracijos failas: %s\n"
+
+#: src/main.c:413
 #, c-format
 msgid "Available languages are: %s\n"
 msgstr "Galimos kalbos: %s\n"
 
-#: src/main.c:394
+#: src/main.c:416
 msgid "Warning: don't eat yellow snow!"
 msgstr "Įspėjimas: nevalgykite geltono sniego!"
 
-#: src/main.c:417
+#: src/main.c:439
 #, c-format
 msgid "For optimal resuts, add to your %s:\n"
 msgstr "Norėdami gauti optimalius rezultatus, pridėkite prie savo %s:\n"
 
-#: src/main.c:425
+#: src/main.c:447
 #, c-format
 msgid "unknown\n"
 msgstr "nežinomas \n"
 
-#: src/main.c:434
+#: src/main.c:456
 #, c-format
 msgid "Detected Wayland desktop\n"
 msgstr "Aptiktas „Wayland“ darbalaukis \n"
 
-#: src/main.c:447
+#: src/main.c:472
 #, c-format
 msgid "Xsnow needs gtk version >= %s, found version %s \n"
 msgstr "Xsnow reikia gtk versijos >u003d %s, rasta versija %s \n"
 
-#: src/main.c:457
+#: src/main.c:482
 msgid "Continuing with flag"
 msgstr "Tęsinys su vėliava"
 
-#: src/main.c:494
+#: src/main.c:519
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
 msgstr "%s: nepavyksta prisijungti prie X serverio %s\n"
 
-#: src/main.c:495
+#: src/main.c:520
 msgid "(default)"
 msgstr "(numatytas)"
 
-#: src/main.c:620
+#: src/main.c:593
+msgid "Configuration file: "
+msgstr "Konfigūracijos failas: "
+
+#: src/main.c:658
 msgid "restarting"
 msgstr "paleidimas iš naujo"
 
-#: src/main.c:667
+#: src/main.c:710
 #, c-format
 msgid "Click on a window ...\n"
 msgstr "Spustelėkite langą...\n"
 
-#: src/main.c:700
+#: src/main.c:743
 #, c-format
 msgid "Detected desktop session: %s\n"
 msgstr "Aptikta darbalaukio sesija: %s\n"
 
-#: src/main.c:703
+#: src/main.c:746
 #, c-format
 msgid "Could not determine desktop session\n"
 msgstr "Nepavyko nustatyti darbalaukio seanso \n"
 
-#: src/main.c:735
+#: src/main.c:779
 #, c-format
 msgid "Trying to snow in root window\n"
 msgstr "Bandoma snigti šakniniame lange \n"
 
-#: src/main.c:780
+#: src/main.c:835
 #, c-format
-msgid "Using transparent window\n"
-msgstr "Naudojant skaidrų langą \n"
+msgid "Using transparent window: %dx%d\n"
+msgstr "Naudojant permatomą langą: %dx%d\n"
 
-#: src/main.c:785
+#: src/main.c:840
 #, c-format
 msgid "The transparent snow-window is probably not click-through, alas..\n"
 msgstr "Deja, permatomas sniego langas tikriausiai nepaspaudžiamas..\n"
 
-#: src/main.c:794
+#: src/main.c:848
 #, c-format
 msgid "Cannot create transparent window\n"
 msgstr "Negalima sukurti skaidraus lango \n"
 
-#: src/main.c:796
+#: src/main.c:850
 #, c-format
 msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
 msgstr ""
 "PASTABA: xsnow tikriausiai veiks, bet galima tikėtis tam tikrų "
 "nesklandumų. \n"
 
-#: src/main.c:806
+#: src/main.c:867
 #, c-format
 msgid "LXDE session found, using window 'pcmanfm'.\n"
 msgstr "LXDE sesija rasta naudojant langą „pcmanfm“.\n"
 
-#: src/main.c:813
+#: src/main.c:875
 #, c-format
 msgid "Using window 'Desktop'.\n"
 msgstr "Naudojant langą „Darbalaukis“.\n"
 
-#: src/main.c:817
+#: src/main.c:879
 #, c-format
 msgid "Using root window\n"
 msgstr "Naudojant šakninį langą \n"
 
-#: src/main.c:895
+#: src/main.c:970
 #, c-format
-msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
-msgstr "Sninga %#lx: %s %d+%d %dx%d\n"
+msgid "Snowing in %#lx: %s size: %dx%d\n"
+msgstr "Sninga %#lx: %s dydis: %dx%d\n"
 
-#: src/main.c:923
+#: src/main.c:1003
 #, c-format
-msgid "Using double buffer: %#lx. %dx%d\n"
-msgstr "Naudojant dvigubą buferį: %#lx. %dx%d\n"
+msgid "Using double buffer: %#lx %dx%d\n"
+msgstr "Naudojant dvigubą buferį: %#lx %dx%d\n"
 
-#: src/main.c:930
+#: src/main.c:1012
 #, c-format
 msgid "NOT using double buffering:"
 msgstr "NEnaudojamas dvigubas buferis:"
 
-#: src/main.c:932
+#: src/main.c:1014
 #, c-format
 msgid " because double buffering is not available on this system\n"
 msgstr " nes dvigubas buferis šioje sistemoje negalimas \n"
 
-#: src/main.c:934
+#: src/main.c:1016
 #, c-format
 msgid " on your request.\n"
 msgstr " pagal jūsų prašymą. \n"
 
-#: src/main.c:935
+#: src/main.c:1017
 #, c-format
 msgid "NOTE: expect some flicker.\n"
 msgstr "PASTABA: tikėkitės mirgėjimo. \n"
 
-#: src/main.c:1105
+#: src/main.c:1260
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "Paleisti iš naujo dėl ekrano ar kalbos nustatymų pasikeitimo...\n"
 
-#: src/main.c:1119
+#: src/main.c:1275
 msgid "Restart due to change of display settings...\n"
 msgstr "Paleisti iš naujo, nes pasikeitė ekrano nustatymai...\n"
 
-#: src/main.c:1222
+#: src/main.c:1381
 msgid "Wayland (Expect some slugginess)"
 msgstr "Veilendas (Tikėkitės vangumo)"
 
-#: src/main.c:1226
+#: src/main.c:1385
 msgid "Probably X11"
 msgstr "Tikriausiai X11"
 
-#: src/main.c:1228
+#: src/main.c:1387
 #, c-format
 msgid "%s. Snow window: %#lx"
 msgstr "%s. Sniego langas: %#lx"
 
-#: src/main.c:1270
+#: src/main.c:1436
 #, c-format
 msgid "More than %d errors, I quit!"
 msgstr "Daugiau nei %d klaidų, išėjau!"
 
-#: src/main.c:1427
+#: src/main.c:1631
 #, c-format
 msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
 msgstr "Pakeistas lango dydis, dabar sninga po %#lx: %s %d+%d %dx%d\n"
 
-#: src/main.c:1497
+#: src/main.c:1711
 #, c-format
 msgid "Halting because of flag %s\n"
 msgstr "Sustabdoma dėl vėliavėlės %s\n"
@@ -238,48 +247,48 @@ msgstr ""
 "\n"
 "Dėkojame, kad naudojatės xsnow\n"
 
-#: src/windows.c:631
+#: src/windows.c:843
 #, c-format
 msgid "Setting background from %s\n"
 msgstr "Fono nustatymas iš %s\n"
 
-#: src/ui.c:1051
+#: src/ui.c:1053
 #, c-format
 msgid "Range: %d\n"
 msgstr "Diapazonas: %d\n"
 
-#: src/ui.c:1053
+#: src/ui.c:1055
 #, c-format
 msgid "Mean distance: %3d\n"
 msgstr "Vidutinis atstumas: %3d\n"
 
-#: src/ui.c:1061
+#: src/ui.c:1063
 #, c-format
 msgid "Desktop type: %s"
 msgstr "Darbalaukio tipas: %s"
 
-#: src/ui.c:1190 src/ui.glade:5875
+#: src/ui.c:1205 src/ui.glade:5988
 msgid "all monitors"
 msgstr "visi monitoriai"
 
-#: src/ui.c:1196
+#: src/ui.c:1211
 #, c-format
 msgid "monitor %d"
 msgstr "stebėti %d"
 
-#: src/ui.c:1215
+#: src/ui.c:1230
 msgid "Available languages are: "
 msgstr "Galimos kalbos: "
 
-#: src/ui.c:1218
+#: src/ui.c:1233
 msgid "Use \"sys\" for your default language.\n"
 msgstr "Naudokite \"sys\" kaip numatytąją kalbą. \n"
 
-#: src/ui.c:1219
+#: src/ui.c:1234
 msgid "See also the man page."
 msgstr "Taip pat žiūrėkite vadovo puslapį."
 
-#: src/ui.glade:127
+#: src/ui.glade:132
 msgid ""
 "\n"
 "Alas! This not an X11 session, xsnow will probably not run.\n"
@@ -289,8 +298,8 @@ msgid ""
 "\n"
 "    XSNOW_FORCE_RUN=1 xsnow\n"
 "\n"
-"Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon."
-"conf.\n"
+"Or, you could force an X11 session, for example by tweaking /etc/gdm3/"
+"daemon.conf.\n"
 "\n"
 msgstr ""
 "\n"
@@ -305,11 +314,11 @@ msgstr ""
 "gdm3/daemon.conf.\n"
 "\n"
 
-#: src/ui.glade:145
+#: src/ui.glade:150
 msgid "Ok, things are as they are. "
 msgstr "Gerai, viskas yra taip, kaip yra. "
 
-#: src/ui.glade:460
+#: src/ui.glade:482
 msgid ""
 "If everything is ok, it is now snowing on your desktop, and birds are "
 "flying. You are encouraged to define your own preferences using the tabs "
@@ -319,7 +328,7 @@ msgstr ""
 "Rekomenduojame apibrėžti savo nuostatas naudojant aukščiau esančius "
 "skirtukus."
 
-#: src/ui.glade:475
+#: src/ui.glade:497
 msgid ""
 "Use the <b>settings</b> tab if xsnow is misbehaving.\n"
 "Use the <b>birds</b> tab if birds are misbehaving."
@@ -327,58 +336,58 @@ msgstr ""
 "Jei xsnow elgiasi netinkamai, naudokite <b>nustatymų</b> skirtuką. \n"
 " Jei paukščiai elgiasi netinkamai, naudokite skirtuką <b>paukščiai</b>."
 
-#: src/ui.glade:492
+#: src/ui.glade:514
 msgid "In every tab you find the following rescue buttons:"
 msgstr "Kiekviename skirtuke rasite šiuos atkūrimo mygtukus:"
 
-#: src/ui.glade:512
+#: src/ui.glade:534
 msgid "<b>Defaults </b>"
 msgstr "<b>Numatytieji </b>"
 
-#: src/ui.glade:527
+#: src/ui.glade:549
 msgid "Set default preferences for this tab."
 msgstr "Nustatykite numatytąsias šio skirtuko nuostatas."
 
-#: src/ui.glade:554
+#: src/ui.glade:576
 msgid "<b>Vintage </b>"
 msgstr "<b>Senovinis </b>"
 
-#: src/ui.glade:569
+#: src/ui.glade:591
 msgid "Set vintage preferences for this tab."
 msgstr "Nustatykite šio skirtuko senovines nuostatas."
 
-#: src/ui.glade:596
+#: src/ui.glade:618
 msgid "<b>All defaults </b>"
 msgstr "<b>Visi numatytieji nustatymai </b>"
 
-#: src/ui.glade:611
+#: src/ui.glade:633
 msgid "Set default preferences for all (except settings) tabs."
 msgstr ""
 "Nustatykite numatytąsias visų (išskyrus nustatymus) skirtukų nuostatas."
 
-#: src/ui.glade:638
+#: src/ui.glade:660
 msgid "<b>All vintage </b>"
 msgstr "<b>Visas senovinis </b>"
 
-#: src/ui.glade:653
+#: src/ui.glade:675
 msgid "Set vintage preferences for all (except settings) tabs."
 msgstr ""
 "Nustatykite vintage nuostatas visiems (išskyrus nustatymus) skirtukams."
 
-#: src/ui.glade:673 src/ui.glade:684 src/ui.glade:823 src/ui.glade:1007
-#: src/ui.glade:2835 src/ui.glade:2884 src/ui.glade:4651
+#: src/ui.glade:695 src/ui.glade:706 src/ui.glade:845 src/ui.glade:1029
+#: src/ui.glade:2857 src/ui.glade:2906 src/ui.glade:4764
 msgid "  "
 msgstr "  "
 
-#: src/ui.glade:695
+#: src/ui.glade:717
 msgid "   "
 msgstr "   "
 
-#: src/ui.glade:729
+#: src/ui.glade:751
 msgid "Welcome at xsnow!"
 msgstr "Sveiki atvykę į xsnow!"
 
-#: src/ui.glade:787
+#: src/ui.glade:809
 msgid ""
 "Vintage preferences: the look and feel of the original xsnow, created in "
 "1993 by Rick Jansen."
@@ -386,12 +395,12 @@ msgstr ""
 "Senovinės nuostatos: originalo xsnow, kurį 1993 m. sukūrė Rick Jansen, "
 "išvaizda ir pojūtis."
 
-#: src/ui.glade:878 src/ui.glade:1503 src/ui.glade:2436 src/ui.glade:2997
-#: src/ui.glade:3465 src/ui.glade:4432 src/ui.glade:5701
+#: src/ui.glade:900 src/ui.glade:1525 src/ui.glade:2458 src/ui.glade:3019
+#: src/ui.glade:3487 src/ui.glade:4545 src/ui.glade:5815
 msgid "All defaults"
 msgstr "Visi numatytieji"
 
-#: src/ui.glade:882 src/ui.glade:2440 src/ui.glade:3001 src/ui.glade:5705
+#: src/ui.glade:904 src/ui.glade:2462 src/ui.glade:3023 src/ui.glade:5819
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -399,13 +408,13 @@ msgstr ""
 "Taikyti numatytuosius nustatymus visoms nuostatoms (išskyrus nustatymus).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:895 src/ui.glade:1521 src/ui.glade:2454 src/ui.glade:3015
-#: src/ui.glade:3482 src/ui.glade:4450 src/ui.glade:5719
+#: src/ui.glade:917 src/ui.glade:1543 src/ui.glade:2476 src/ui.glade:3037
+#: src/ui.glade:3504 src/ui.glade:4563 src/ui.glade:5833
 msgid "All vintage"
 msgstr "Visas vintažas"
 
-#: src/ui.glade:899 src/ui.glade:1525 src/ui.glade:2458 src/ui.glade:3019
-#: src/ui.glade:4454 src/ui.glade:5723
+#: src/ui.glade:921 src/ui.glade:1547 src/ui.glade:2480 src/ui.glade:3041
+#: src/ui.glade:4567 src/ui.glade:5837
 msgid ""
 "Use vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -413,13 +422,13 @@ msgstr ""
 "Naudokite vintage vertes visoms nuostatoms (išskyrus nustatymus).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:912 src/ui.glade:1473 src/ui.glade:2406 src/ui.glade:2967
-#: src/ui.glade:3511 src/ui.glade:4509 src/ui.glade:5596
+#: src/ui.glade:934 src/ui.glade:1495 src/ui.glade:2428 src/ui.glade:2989
+#: src/ui.glade:3533 src/ui.glade:4622 src/ui.glade:5710
 msgid "Hide menu"
 msgstr "Slėpti meniu"
 
-#: src/ui.glade:916 src/ui.glade:1477 src/ui.glade:2410 src/ui.glade:2971
-#: src/ui.glade:3515 src/ui.glade:4513 src/ui.glade:5600
+#: src/ui.glade:938 src/ui.glade:1499 src/ui.glade:2432 src/ui.glade:2993
+#: src/ui.glade:3537 src/ui.glade:4626 src/ui.glade:5714
 msgid ""
 "Leave menu.\n"
 "Flag: -nomenu"
@@ -427,25 +436,25 @@ msgstr ""
 "Išeiti iš meniu.\n"
 "Flag: -nomenu"
 
-#: src/ui.glade:929 src/ui.glade:1551 src/ui.glade:2484 src/ui.glade:3045
-#: src/ui.glade:3540 src/ui.glade:4480 src/ui.glade:5625
+#: src/ui.glade:951 src/ui.glade:1573 src/ui.glade:2506 src/ui.glade:3067
+#: src/ui.glade:3562 src/ui.glade:4593 src/ui.glade:5739
 msgid "Quit xsnow"
 msgstr "Baigti xsnow"
 
-#: src/ui.glade:933 src/ui.glade:1555 src/ui.glade:2488 src/ui.glade:3049
-#: src/ui.glade:3544 src/ui.glade:4484 src/ui.glade:5629
+#: src/ui.glade:955 src/ui.glade:1577 src/ui.glade:2510 src/ui.glade:3071
+#: src/ui.glade:3566 src/ui.glade:4597 src/ui.glade:5743
 msgid "Quit xsnow."
 msgstr "Baigti xsnow."
 
-#: src/ui.glade:945
+#: src/ui.glade:967
 msgid "Contact"
 msgstr "kontaktas"
 
-#: src/ui.glade:949
+#: src/ui.glade:971
 msgid "Please report any comments to the maintainer of xsnow."
 msgstr "Praneškite apie bet kokius komentarus xsnow prižiūrėtojui."
 
-#: src/ui.glade:990
+#: src/ui.glade:1012
 msgid ""
 "If the system is too busy, all panels get this color, in which case you "
 "could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
@@ -455,33 +464,33 @@ msgstr ""
 "galite pritaikyti kai kuriuos nustatymus \"sniegas\", \"paukščiai\", "
 "\"nustatymai\" arba \"dangus\"."
 
-#: src/ui.glade:1184
+#: src/ui.glade:1206
 msgid "Welcome"
 msgstr "Sveiki"
 
-#: src/ui.glade:1201
+#: src/ui.glade:1223
 msgid "Blow off:"
 msgstr "Nupūsti:"
 
-#: src/ui.glade:1214
+#: src/ui.glade:1236
 msgid "On windows:"
 msgstr "Ant langų:"
 
-#: src/ui.glade:1227
+#: src/ui.glade:1249
 msgid "On bottom:"
 msgstr "Apačioje:"
 
-#: src/ui.glade:1240
+#: src/ui.glade:1262
 msgid "On scenery:"
 msgstr "Ant peizažo:"
 
-#: src/ui.glade:1250 src/ui.glade:1266 src/ui.glade:1282 src/ui.glade:1298
-#: src/ui.glade:3706 src/ui.glade:3799 src/ui.glade:3902 src/ui.glade:3972
-#: src/ui.glade:4008 src/ui.glade:5966
+#: src/ui.glade:1272 src/ui.glade:1288 src/ui.glade:1304 src/ui.glade:1320
+#: src/ui.glade:3728 src/ui.glade:3821 src/ui.glade:3924 src/ui.glade:3994
+#: src/ui.glade:4030 src/ui.glade:6101
 msgid "Show"
 msgstr "Rodyti"
 
-#: src/ui.glade:1254
+#: src/ui.glade:1276
 msgid ""
 "If set, show snow blowing away.\n"
 "Flags: -blowsnow, -noblowsnow"
@@ -489,7 +498,7 @@ msgstr ""
 "Jei nustatyta, parodykite, kaip pučia sniegas. \n"
 "Flags: -blowsnow, -noblowsnow"
 
-#: src/ui.glade:1270
+#: src/ui.glade:1292
 msgid ""
 "If set, show fallen snow on windows.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
@@ -497,7 +506,7 @@ msgstr ""
 "Jei nustatyta, ant langų rodyti iškritusį sniegą.\n"
 "Flags: -keepsnowonwindows, -nokeepsnowonwindows"
 
-#: src/ui.glade:1286
+#: src/ui.glade:1308
 msgid ""
 "If set, show fallen snow on bottom of the desktop.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
@@ -505,7 +514,7 @@ msgstr ""
 "Jei nustatyta, darbalaukio apačioje rodyti iškritusį sniegą.\n"
 "Flags: -keepsnowonscreen, -nokeepsnowonscreen"
 
-#: src/ui.glade:1302
+#: src/ui.glade:1324
 msgid ""
 "If set, snow will collect on the trees.\n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
@@ -513,7 +522,7 @@ msgstr ""
 "Jei nustatyta, sniegas rinksis ant medžių. \n"
 "Flags: -keepsnowontrees, -nokeepsnowontrees"
 
-#: src/ui.glade:1316
+#: src/ui.glade:1338
 msgid ""
 "The higher this setting, the more snow will be generated  because of Santa "
 "ploughing, wind or disappearing windows. \n"
@@ -523,7 +532,7 @@ msgstr ""
 "arimo, vėjo ar dingusių langų. \n"
 "Flag: -blowofffactor"
 
-#: src/ui.glade:1335
+#: src/ui.glade:1357
 msgid ""
 "The higher this setting, the more snow will collect on the windows. \n"
 "Note: in Wayland, there is no snow on the windows. \n"
@@ -533,7 +542,7 @@ msgstr ""
 "Pastaba: Veilende ant langų nėra sniego. \n"
 "Flag: -wsnowdepth"
 
-#: src/ui.glade:1355
+#: src/ui.glade:1377
 msgid ""
 "The higher this setting, the more snow will collect on the  bottom of the "
 "desktop.\n"
@@ -543,7 +552,7 @@ msgstr ""
 "apačioje. \n"
 "Flag: -ssnowdepth"
 
-#: src/ui.glade:1374
+#: src/ui.glade:1396
 msgid ""
 "The higher this setting, the more snow will collect on the trees.\n"
 "Flag: -maxontrees"
@@ -551,35 +560,35 @@ msgstr ""
 "Kuo didesnis šis nustatymas, tuo daugiau sniego kaupsis ant medžių.\n"
 "Flag: -maxontrees"
 
-#: src/ui.glade:1395
+#: src/ui.glade:1417
 msgid "Choose your favorite snow"
 msgstr "Pasirinkite savo mėgstamą sniegą"
 
-#: src/ui.glade:1412 src/ui.glade:2529 src/ui.glade:2824 src/ui.glade:4850
-#: src/ui.glade:5929 src/ui.glade:5940 src/ui.glade:6004 src/ui.glade:6030
+#: src/ui.glade:1434 src/ui.glade:2551 src/ui.glade:2846 src/ui.glade:4963
+#: src/ui.glade:6064 src/ui.glade:6075 src/ui.glade:6139 src/ui.glade:6165
 msgid " "
 msgstr " "
 
-#: src/ui.glade:1426 src/ui.glade:2360 src/ui.glade:2921 src/ui.glade:3421
-#: src/ui.glade:4539 src/ui.glade:5655
+#: src/ui.glade:1448 src/ui.glade:2382 src/ui.glade:2943 src/ui.glade:3443
+#: src/ui.glade:4652 src/ui.glade:5769
 msgid "Defaults"
 msgstr "Numatytieji nustatymai"
 
-#: src/ui.glade:1430
+#: src/ui.glade:1452
 msgid "Apply default values for the preferences in this tab.\n"
 msgstr "Taikyti numatytąsias šio skirtuko nuostatų vertes.\n"
 
-#: src/ui.glade:1444 src/ui.glade:2377 src/ui.glade:2938 src/ui.glade:3437
-#: src/ui.glade:4556 src/ui.glade:5672
+#: src/ui.glade:1466 src/ui.glade:2399 src/ui.glade:2960 src/ui.glade:3459
+#: src/ui.glade:4669 src/ui.glade:5786
 msgid "Vintage"
 msgstr "Vintažinis"
 
-#: src/ui.glade:1448 src/ui.glade:2381 src/ui.glade:2942 src/ui.glade:3441
-#: src/ui.glade:4560 src/ui.glade:5676
+#: src/ui.glade:1470 src/ui.glade:2403 src/ui.glade:2964 src/ui.glade:3463
+#: src/ui.glade:4673 src/ui.glade:5790
 msgid "Apply vintage values for the preferences in this tab."
 msgstr "Taikyti vintage vertes šio skirtuko nuostatoms."
 
-#: src/ui.glade:1507 src/ui.glade:4436
+#: src/ui.glade:1529 src/ui.glade:4549
 msgid ""
 "Apply defaults for all preferences (except settings).\n"
 "Flags: -defaults"
@@ -587,11 +596,11 @@ msgstr ""
 "Taikyti numatytuosius nustatymus visoms nuostatoms (išskyrus nustatymus).\n"
 "Flags: -defaults"
 
-#: src/ui.glade:1580 src/ui.glade:3856
+#: src/ui.glade:1602 src/ui.glade:3878 src/ui.glade:4279
 msgid "Size:"
 msgstr "Dydis:"
 
-#: src/ui.glade:1592
+#: src/ui.glade:1614
 msgid ""
 "Size of snowflakes, works only for non-vintage snow flakes.\n"
 "Flag: -snowsize"
@@ -599,16 +608,16 @@ msgstr ""
 "Snaigių dydis, tinka tik nevintažinėms snaigėms.\n"
 "Flag: -snowsize"
 
-#: src/ui.glade:1612 src/ui.glade:2324 src/ui.glade:3822 src/ui.glade:4106
-#: src/ui.glade:4965
+#: src/ui.glade:1634 src/ui.glade:2346 src/ui.glade:3844 src/ui.glade:4128
+#: src/ui.glade:5078
 msgid "Speed:"
 msgstr "Greitis:"
 
-#: src/ui.glade:1626
+#: src/ui.glade:1648
 msgid "Max # snowflakes:"
 msgstr "Maksimalus snaigių skaičius:"
 
-#: src/ui.glade:1639
+#: src/ui.glade:1661
 msgid ""
 "Maximum amount of snowflakes.\n"
 "Flag: -flakecountmax"
@@ -616,19 +625,19 @@ msgstr ""
 "Maksimalus snaigių kiekis \n"
 "Flag: -flakecountmax"
 
-#: src/ui.glade:1664
+#: src/ui.glade:1686
 msgid "# Snowflakes:"
 msgstr "# Snaigės:"
 
-#: src/ui.glade:1680 src/ui.glade:5136 src/ui.glade:5152
+#: src/ui.glade:1702 src/ui.glade:5249 src/ui.glade:5265
 msgid "label"
 msgstr "etiketė"
 
-#: src/ui.glade:1689
+#: src/ui.glade:1711
 msgid "Show fluff"
 msgstr "Rodyti pūkus"
 
-#: src/ui.glade:1693
+#: src/ui.glade:1715
 msgid ""
 "If set, try to show fluff on fallen snow and trees if possible.\n"
 "Flags: -fluffy, -nofluffy"
@@ -637,12 +646,12 @@ msgstr ""
 "matyti pūkus.\n"
 "Flags: -fluffy, -nofluffy"
 
-#: src/ui.glade:1707 src/ui.glade:1719 src/ui.glade:2540 src/ui.glade:3759
-#: src/ui.glade:3771 src/ui.glade:5102 src/ui.glade:5114
+#: src/ui.glade:1729 src/ui.glade:1741 src/ui.glade:2562 src/ui.glade:3781
+#: src/ui.glade:3793 src/ui.glade:5215 src/ui.glade:5227
 msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
-#: src/ui.glade:1731
+#: src/ui.glade:1753
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -650,11 +659,11 @@ msgstr ""
 "Snaigių greitis \n"
 "Flag: -snowspeedfactor"
 
-#: src/ui.glade:1752
+#: src/ui.glade:1774
 msgid "Intensity:"
 msgstr "Intensyvumas:"
 
-#: src/ui.glade:1764
+#: src/ui.glade:1786
 msgid ""
 "The higher, the more snowflakes.\n"
 "Flag: -snowflakes"
@@ -662,11 +671,11 @@ msgstr ""
 "Kuo aukščiau, tuo daugiau snaigių. \n"
 "Flag: -snowflakes"
 
-#: src/ui.glade:1784
+#: src/ui.glade:1806
 msgid "Show snow"
 msgstr "Rodyti sniegą"
 
-#: src/ui.glade:1788
+#: src/ui.glade:1810
 msgid ""
 "If set, show snowflakes.\n"
 "Flags: -snow, -nosnow"
@@ -674,7 +683,7 @@ msgstr ""
 "Jei nustatyta, rodyti snaiges.\n"
 "Flags: -snow, -nosnow"
 
-#: src/ui.glade:1803
+#: src/ui.glade:1825
 msgid ""
 "The color of the snow.\n"
 "Flag: -sc"
@@ -682,15 +691,15 @@ msgstr ""
 "Sniego spalva. \n"
 "Flag: -sc"
 
-#: src/ui.glade:1820
+#: src/ui.glade:1842
 msgid "Color:"
 msgstr "Spalva:"
 
-#: src/ui.glade:1834
+#: src/ui.glade:1856
 msgid "Second color:"
 msgstr "Antra spalva:"
 
-#: src/ui.glade:1847
+#: src/ui.glade:1869
 msgid ""
 "The second color of the snow.\n"
 "Flag: -sc2"
@@ -698,11 +707,11 @@ msgstr ""
 "Antroji sniego spalva. \n"
 "Flag: -sc2"
 
-#: src/ui.glade:1860
+#: src/ui.glade:1882
 msgid "Enable"
 msgstr "Įgalinti"
 
-#: src/ui.glade:1864
+#: src/ui.glade:1886
 msgid ""
 "If set, use two colors.\n"
 "Flag: -enablesc2"
@@ -710,19 +719,19 @@ msgstr ""
 "Jei nustatyta, naudokite dvi spalvas.\n"
 "Flag: -enablesc2"
 
-#: src/ui.glade:1878
+#: src/ui.glade:1900
 msgid "Lift snow on windows or screen: click "
 msgstr "Pakelkite sniegą ant langų ar ekrano: spustelėkite "
 
-#: src/ui.glade:1891 src/ui.glade:5264 src/ui.glade:6480
+#: src/ui.glade:1913 src/ui.glade:5377 src/ui.glade:6615
 msgid "Settings"
 msgstr "Nustatymai"
 
-#: src/ui.glade:1941
+#: src/ui.glade:1963
 msgid "Snow"
 msgstr "Sniegas"
 
-#: src/ui.glade:1959
+#: src/ui.glade:1981
 msgid ""
 "Tiny Santa with three reindeers.\n"
 "Flags: -santa 0 -norudolph"
@@ -730,7 +739,7 @@ msgstr ""
 "Mažytis Kalėdų Senelis su trimis elniais.\n"
 "Flags: -santa 0 -norudolph"
 
-#: src/ui.glade:1988
+#: src/ui.glade:2010
 msgid ""
 "Small Santa with three reindeers.\n"
 "Flags: -santa 1 -norudolph"
@@ -738,7 +747,7 @@ msgstr ""
 "Mažas Kalėdų Senelis su trimis šiaurės elniais. \n"
 "Flags: -santa 1 -norudolph"
 
-#: src/ui.glade:2017
+#: src/ui.glade:2039
 msgid ""
 "Santa with three reindeers.\n"
 "Flags: -santa 2 -norudolph"
@@ -746,7 +755,7 @@ msgstr ""
 "Kalėdų Senelis su trimis elniais. \n"
 "Flags: -santa 2 -norudolph"
 
-#: src/ui.glade:2046
+#: src/ui.glade:2068
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
 "Flags: -santa 3 -norudolph"
@@ -755,7 +764,7 @@ msgstr ""
 "Dunderis ir Bliksem.\n"
 "Flags: -santa 3 -norudolph"
 
-#: src/ui.glade:2075
+#: src/ui.glade:2097
 msgid ""
 "Santa using the train with two reindeers.\n"
 "Flags: -santa 4 -norudolph"
@@ -763,7 +772,7 @@ msgstr ""
 "Kalėdų Senelis naudojasi traukiniu su dviem šiaurės elniais. \n"
 "Flags: -santa 4 -norudolph"
 
-#: src/ui.glade:2104
+#: src/ui.glade:2126
 msgid ""
 "Santa using the train with one reindeer and Rudolph.\n"
 "Flags: -santa 4 -showrudolph"
@@ -771,7 +780,7 @@ msgstr ""
 "Kalėdų Senelis naudojasi traukiniu su vienu elniu ir Rudolfu.\n"
 "Flags: -santa 4 -showrudolph"
 
-#: src/ui.glade:2132
+#: src/ui.glade:2154
 msgid ""
 "Tiny Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 0 -showrudolph"
@@ -779,7 +788,7 @@ msgstr ""
 "Mažytis Kalėdų Senelis su dviem šiaurės elniais ir Rudolfu.\n"
 "Flags: -santa 0 -showrudolph"
 
-#: src/ui.glade:2162
+#: src/ui.glade:2184
 msgid ""
 "Small Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 1 -showrudolph"
@@ -787,7 +796,7 @@ msgstr ""
 "Mažas Kalėdų Senelis su dviem šiaurės elniais ir Rudolfu.\n"
 "Flags: -santa 1 -showrudolph"
 
-#: src/ui.glade:2190
+#: src/ui.glade:2212
 msgid ""
 "Santa with two reindeers and Rudolph.\n"
 "Flags: -santa 2 -showrudolph"
@@ -795,7 +804,7 @@ msgstr ""
 "Kalėdų Senelis su dviem šiaurės elniais ir Rudolfu. \n"
 "Flags: -santa 2 -showrudolph"
 
-#: src/ui.glade:2218
+#: src/ui.glade:2240
 msgid ""
 "Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
 "and  Rudolph.\n"
@@ -805,27 +814,27 @@ msgstr ""
 "Dunderis, Bliksemu ir Rudolfu.\n"
 "Flags: -santa 3 -showrudolph"
 
-#: src/ui.glade:2249
+#: src/ui.glade:2271
 msgid "Without Rudolph"
 msgstr "Be Rudolfo"
 
-#: src/ui.glade:2264
+#: src/ui.glade:2286
 msgid "With Rudolph"
 msgstr "Su Rudolfu"
 
-#: src/ui.glade:2275
+#: src/ui.glade:2297
 msgid "Choose your Santa"
 msgstr "Pasirinkite savo Kalėdų Senelį"
 
-#: src/ui.glade:2293
+#: src/ui.glade:2315
 msgid "Choose your favorite Santa"
 msgstr "Pasirinkite savo mėgstamiausią Kalėdų Senelį"
 
-#: src/ui.glade:2309 src/ui.glade:3407
+#: src/ui.glade:2331 src/ui.glade:3429
 msgid "    "
 msgstr "    "
 
-#: src/ui.glade:2336
+#: src/ui.glade:2358
 msgid ""
 "Santa's speed.\n"
 "Flag: -santaspeedfactor"
@@ -833,16 +842,16 @@ msgstr ""
 "Kalėdų Senelio greitis \n"
 "Flag: -santaspeedfactor"
 
-#: src/ui.glade:2364 src/ui.glade:2925 src/ui.glade:3425 src/ui.glade:4543
-#: src/ui.glade:5659
+#: src/ui.glade:2386 src/ui.glade:2947 src/ui.glade:3447 src/ui.glade:4656
+#: src/ui.glade:5773
 msgid "Apply default values for the preferences in this tab."
 msgstr "Taikyti numatytąsias šio skirtuko nuostatų vertes."
 
-#: src/ui.glade:2508
+#: src/ui.glade:2530
 msgid "Show Santa"
 msgstr "Parodyk Kalėdų Senelį"
 
-#: src/ui.glade:2512
+#: src/ui.glade:2534
 msgid ""
 "To show or not to show Santa.\n"
 "Flags: -showsanta, -nosanta"
@@ -850,11 +859,11 @@ msgstr ""
 "Rodyti ar nerodyti Kalėdų Senelio.\n"
 "Flags: -showsanta, -nosanta"
 
-#: src/ui.glade:2555 src/ui.glade:3192
+#: src/ui.glade:2577 src/ui.glade:3214
 msgid "Scale:"
 msgstr "Skalė:"
 
-#: src/ui.glade:2567
+#: src/ui.glade:2589
 msgid ""
 "Scale of Santa.\n"
 "Flags: -santascale <n>"
@@ -862,15 +871,15 @@ msgstr ""
 "Kalėdų Senelio mastas. \n"
 "Flags: -santascale <n>"
 
-#: src/ui.glade:2612
+#: src/ui.glade:2634
 msgid "Santa"
 msgstr "Kalėdų Senelis"
 
-#: src/ui.glade:2627
+#: src/ui.glade:2649
 msgid "Show  scenery"
 msgstr "Rodyti peizažą"
 
-#: src/ui.glade:2631
+#: src/ui.glade:2653
 msgid ""
 "To show or not to show scenery.\n"
 "Flags: -showtrees, -notrees"
@@ -878,7 +887,7 @@ msgstr ""
 "Rodyti peizažą ar nerodyti.\n"
 "Flags: -showtrees, -notrees"
 
-#: src/ui.glade:2648
+#: src/ui.glade:2670
 msgid ""
 "Vintage tree, you can set the color.\n"
 "Flag: -treetype 0"
@@ -886,7 +895,7 @@ msgstr ""
 "Senovinis medis, galite nustatyti spalvą. \n"
 "Flag: -treetype 0"
 
-#: src/ui.glade:2671
+#: src/ui.glade:2693
 msgid ""
 "Woody tree.\n"
 "Flags: -treetype 1 or: -treetype all"
@@ -894,7 +903,7 @@ msgstr ""
 "Sumedėjęs medis. \n"
 "Flags: -treetype 1 or: -treetype all"
 
-#: src/ui.glade:2694
+#: src/ui.glade:2716
 msgid ""
 "Leavy tree.\n"
 "Flags: -treetype 2 or: -treetype all"
@@ -902,7 +911,7 @@ msgstr ""
 "Lapinis medis. \n"
 "Flags: -treetype 2 or: -treetype all"
 
-#: src/ui.glade:2717
+#: src/ui.glade:2739
 msgid ""
 "Small house.\n"
 "Flags: -treetype 3 or: -treetype all"
@@ -910,7 +919,7 @@ msgstr ""
 "Mažas namas. \n"
 "Flags: -treetype 3 or: -treetype all"
 
-#: src/ui.glade:2740
+#: src/ui.glade:2762
 msgid ""
 "Reindeer.\n"
 "Flags: -treetype 4 or: -treetype all"
@@ -918,7 +927,7 @@ msgstr ""
 "Šiaurės elniai. \n"
 "Flags: -treetype 4 or: -treetype all"
 
-#: src/ui.glade:2763
+#: src/ui.glade:2785
 msgid ""
 "Moose.\n"
 "Flags: -treetype 5 or: -treetype all"
@@ -926,7 +935,7 @@ msgstr ""
 "Briedis. \n"
 "Flags: -treetype 5 or: -treetype all"
 
-#: src/ui.glade:2786
+#: src/ui.glade:2808
 msgid ""
 "Snowy tree.\n"
 "Flags: -treetype 6 or: -treetype all"
@@ -934,7 +943,7 @@ msgstr ""
 "Snieguotas medis. \n"
 "Flags: -treetype 6 or: -treetype all"
 
-#: src/ui.glade:2809
+#: src/ui.glade:2831
 msgid ""
 "Set color of vintage tree.\n"
 "Flag: -tc"
@@ -942,15 +951,15 @@ msgstr ""
 "Nustatykite vintažinio medžio spalvą. \n"
 "Flag: -tc"
 
-#: src/ui.glade:2849
+#: src/ui.glade:2871
 msgid "Compose your favorite scenery"
 msgstr "Sukurkite savo mėgstamą peizažą"
 
-#: src/ui.glade:2865
+#: src/ui.glade:2887
 msgid "Try and click any image!"
 msgstr "Išbandykite ir spustelėkite bet kurį vaizdą!"
 
-#: src/ui.glade:2896
+#: src/ui.glade:2918
 msgid ""
 "Polar bear.\n"
 "Flags: -treetype 7 or: -treetype all"
@@ -958,11 +967,11 @@ msgstr ""
 "Baltasis lokys. \n"
 "Flags: -treetype 7 or: -treetype all"
 
-#: src/ui.glade:3104
+#: src/ui.glade:3126
 msgid "# Items:"
 msgstr "# prekės:"
 
-#: src/ui.glade:3119
+#: src/ui.glade:3141
 msgid ""
 "Desired number of scenery items.\n"
 "Flag: -trees"
@@ -970,11 +979,11 @@ msgstr ""
 "Pageidaujamas dekoracijos elementų skaičius \n"
 "Flag: -trees"
 
-#: src/ui.glade:3142
+#: src/ui.glade:3164
 msgid "% Window fill:"
 msgstr "% lango užpildymas:"
 
-#: src/ui.glade:3153
+#: src/ui.glade:3175
 msgid ""
 "Bottom percentage of screen available for scenery.\n"
 "Flag: -treefill"
@@ -982,11 +991,11 @@ msgstr ""
 "Apatinė ekrano dalis, skirta peizažams. \n"
 "Flag: -treefill"
 
-#: src/ui.glade:3172
+#: src/ui.glade:3194
 msgid "Allow overlap"
 msgstr "Leisti persidengti"
 
-#: src/ui.glade:3176
+#: src/ui.glade:3198
 msgid ""
 "To allow overlap or not when placing scenery.\n"
 "Flags: -treeoverlap, -notreeoverlap"
@@ -994,7 +1003,7 @@ msgstr ""
 "Leisti persidengti arba ne persidengti dedant peizažą.\n"
 "Flags: -treeoverlap, -notreeoverlap"
 
-#: src/ui.glade:3203
+#: src/ui.glade:3225
 msgid ""
 "Scale of scenery.\n"
 "Flag: sceneryscale <n>"
@@ -1002,15 +1011,15 @@ msgstr ""
 "Peizažo mastelis. \n"
 "Flag: sceneryscale <n>"
 
-#: src/ui.glade:3372
+#: src/ui.glade:3394
 msgid "Scenery"
 msgstr "Peizažas"
 
-#: src/ui.glade:3391
+#: src/ui.glade:3413
 msgid "Compose here your favorite celestial conditions"
 msgstr "Čia surašykite savo mėgstamas dangaus sąlygas"
 
-#: src/ui.glade:3469
+#: src/ui.glade:3491
 msgid ""
 "Apply default values for all preferences (except settings).\n"
 "Flag: -defaults"
@@ -1018,7 +1027,7 @@ msgstr ""
 "Taikyti numatytąsias vertes visoms nuostatoms (išskyrus nustatymus).\n"
 "Flag: -defaults"
 
-#: src/ui.glade:3486
+#: src/ui.glade:3508
 msgid ""
 "Apply vintage values for all preferences (except settings).\n"
 "Flag: -vintage"
@@ -1026,15 +1035,15 @@ msgstr ""
 "Taikyti vintage vertes visoms nuostatoms (išskyrus nustatymus).\n"
 "Flag: -vintage"
 
-#: src/ui.glade:3573
+#: src/ui.glade:3595
 msgid "Wind"
 msgstr "Vėjas"
 
-#: src/ui.glade:3587
+#: src/ui.glade:3609
 msgid "Windy"
 msgstr "Vėjuotas"
 
-#: src/ui.glade:3592
+#: src/ui.glade:3614
 msgid ""
 "If set, there will be wind.\n"
 "Flags: -wind, -nowind"
@@ -1042,11 +1051,11 @@ msgstr ""
 "Jei nustatyta, bus vėjas. \n"
 "Flags: -wind, -nowind"
 
-#: src/ui.glade:3609
+#: src/ui.glade:3631
 msgid "Whirl:"
 msgstr "Sūkurys:"
 
-#: src/ui.glade:3621
+#: src/ui.glade:3643
 msgid ""
 "The higher this setting, the more the wind will whirl.\n"
 "Flag: -whirlfactor"
@@ -1054,11 +1063,11 @@ msgstr ""
 "Kuo didesnis šis nustatymas, tuo labiau suksis vėjas. \n"
 "Flag: -whirlfactor"
 
-#: src/ui.glade:3643
+#: src/ui.glade:3665
 msgid "Timer:"
 msgstr "Laikmatis:"
 
-#: src/ui.glade:3656
+#: src/ui.glade:3678
 msgid ""
 "This setting determines how many seconds pass between  two  gusts of wind.\n"
 "Flag: -windtimer"
@@ -1066,19 +1075,19 @@ msgstr ""
 "Šis nustatymas nustato, kiek sekundžių praeina tarp dviejų vėjo gūsių. \n"
 "Flag: -windtimer"
 
-#: src/ui.glade:3672
+#: src/ui.glade:3694
 msgid "Now!"
 msgstr "Dabar!"
 
-#: src/ui.glade:3676
+#: src/ui.glade:3698
 msgid "Force a gust of wind immediately."
 msgstr "Nedelsdami priverskite vėjo gūsį."
 
-#: src/ui.glade:3693
+#: src/ui.glade:3715
 msgid "Stars"
 msgstr "Žvaigždės"
 
-#: src/ui.glade:3711
+#: src/ui.glade:3733
 msgid ""
 "To show or not show stars.\n"
 "Flag: -stars  (0 means: no stars)"
@@ -1086,11 +1095,11 @@ msgstr ""
 "Rodyti ar nerodyti žvaigždžių.\n"
 "Flag: -stars  (0 means: no stars)"
 
-#: src/ui.glade:3728
+#: src/ui.glade:3750
 msgid "Number:"
 msgstr "Skaičius:"
 
-#: src/ui.glade:3740
+#: src/ui.glade:3762
 msgid ""
 "Number of twinkling stars.\n"
 "Flag: -stars"
@@ -1098,11 +1107,11 @@ msgstr ""
 "Mirksinčių žvaigždžių skaičius. \n"
 "Flag: -stars"
 
-#: src/ui.glade:3786
+#: src/ui.glade:3808
 msgid "Moon"
 msgstr "Mėnulis"
 
-#: src/ui.glade:3804
+#: src/ui.glade:3826
 msgid ""
 "To show or not show moon.\n"
 "Flags: -moon 1, -moon 0"
@@ -1110,7 +1119,7 @@ msgstr ""
 "Rodyti ar nerodyti mėnulį.\n"
 "Flags: -moon 1, -moon 0"
 
-#: src/ui.glade:3834
+#: src/ui.glade:3856
 msgid ""
 "Speed of moon in pixels/minute.\n"
 "Flag: -moonspeed"
@@ -1118,7 +1127,7 @@ msgstr ""
 "Mėnulio greitis pikseliais per minutę \n"
 "Flag: -moonspeed"
 
-#: src/ui.glade:3868
+#: src/ui.glade:3890
 msgid ""
 "Relative size of the moon.\n"
 "Flag: -moonsize"
@@ -1126,11 +1135,11 @@ msgstr ""
 "Santykinis mėnulio dydis. \n"
 "Flag: -moonsize"
 
-#: src/ui.glade:3889
+#: src/ui.glade:3911
 msgid "Halo"
 msgstr "Halo"
 
-#: src/ui.glade:3907
+#: src/ui.glade:3929
 msgid ""
 "To show or not to show halo around moon.\n"
 "Flags: -halo 1, -halo 0"
@@ -1138,11 +1147,11 @@ msgstr ""
 "Rodyti ar nerodyti aureolę aplink mėnulį. \n"
 "Flags: -halo 1, -halo 0"
 
-#: src/ui.glade:3925 src/ui.glade:4140
+#: src/ui.glade:3947 src/ui.glade:4162
 msgid "Bright:"
 msgstr "Ryškus:"
 
-#: src/ui.glade:3937
+#: src/ui.glade:3959
 msgid ""
 "Brightness of moon's halo.\n"
 "Flag: -halobrightness"
@@ -1150,11 +1159,11 @@ msgstr ""
 "Mėnulio aureolės ryškumas \n"
 "Flag: -halobrightness"
 
-#: src/ui.glade:3959
+#: src/ui.glade:3981
 msgid "Meteors"
 msgstr "Meteorai"
 
-#: src/ui.glade:3977
+#: src/ui.glade:3999
 msgid ""
 "To show or not to show meteors.\n"
 "Flags: -meteors, -nometeors"
@@ -1162,11 +1171,11 @@ msgstr ""
 "Rodyti ar nerodyti meteorus.\n"
 "Flags: -meteors, -nometeors"
 
-#: src/ui.glade:3995
+#: src/ui.glade:4017
 msgid "Aurora"
 msgstr "Aurora"
 
-#: src/ui.glade:4013
+#: src/ui.glade:4035
 msgid ""
 "To show or not show aurora.\n"
 "Note: the aurora is best viewed using a dark background.\n"
@@ -1176,11 +1185,11 @@ msgstr ""
 "Pastaba: aurorą geriausia matyti tamsiame fone.\n"
 "Flags: -aurora 1, -aurora 0"
 
-#: src/ui.glade:4032
+#: src/ui.glade:4054
 msgid "Width:"
 msgstr "Plotis:"
 
-#: src/ui.glade:4044
+#: src/ui.glade:4066
 msgid ""
 "Width of aurora in percentage of screen width.\n"
 "Flag: -aurorawidth"
@@ -1188,11 +1197,11 @@ msgstr ""
 "Auroros plotis ekrano pločio procentais. \n"
 "Flag: -aurorawidth"
 
-#: src/ui.glade:4069
+#: src/ui.glade:4091
 msgid "Height:"
 msgstr "Aukštis:"
 
-#: src/ui.glade:4081
+#: src/ui.glade:4103
 msgid ""
 "Vertical size of aurora.\n"
 "Flag: -auroraheight"
@@ -1200,7 +1209,7 @@ msgstr ""
 "Vertikalus auroros dydis. \n"
 "Flag: -auroraheight"
 
-#: src/ui.glade:4118
+#: src/ui.glade:4140
 msgid ""
 "Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
 "Flag: -auroraspeed"
@@ -1209,7 +1218,7 @@ msgstr ""
 "pasirinkite: 100 \n"
 "Flag: -auroraspeed"
 
-#: src/ui.glade:4152
+#: src/ui.glade:4174
 msgid ""
 "Brightness of aurora.\n"
 "Flags: -aurorabrightness"
@@ -1217,47 +1226,11 @@ msgstr ""
 "Auroros ryškumas. \n"
 "Flags: -aurorabrightness"
 
-#: src/ui.glade:4169
-msgid "Left"
-msgstr "Kairė"
-
-#: src/ui.glade:4173
-msgid ""
-"Place aurora left on the screen.\n"
-"Flag: -auroraleft"
-msgstr ""
-"Padėkite aurorą kairėje ekrane. \n"
-"Flag: -auroraleft"
-
-#: src/ui.glade:4186
-msgid "Middle"
-msgstr "Vidurio"
-
-#: src/ui.glade:4190
-msgid ""
-"Place aurora in the middle of the screen.\n"
-"Flag: -auroramiddle"
-msgstr ""
-"Padėkite aurorą ekrano viduryje. \n"
-"Flag: -auroramiddle"
-
-#: src/ui.glade:4204
-msgid "Right"
-msgstr "Teisingai"
-
-#: src/ui.glade:4208
-msgid ""
-"Place aurora in the right of the screen.\n"
-"Flag: -auroraright"
-msgstr ""
-"Įdėkite aurorą ekrano dešinėje. \n"
-"Flag: -auroraright"
-
-#: src/ui.glade:4227
+#: src/ui.glade:4196
 msgid "Frequency:"
 msgstr "Dažnis:"
 
-#: src/ui.glade:4239
+#: src/ui.glade:4208
 msgid ""
 "Frequency of meteors to appear.\n"
 "Flags: -meteorfrequency"
@@ -1265,11 +1238,11 @@ msgstr ""
 "Meteorų atsiradimo dažnis \n"
 "Flags: -meteorfrequency"
 
-#: src/ui.glade:4261
-msgid "Base:"
-msgstr "Bazė:"
+#: src/ui.glade:4230
+msgid "Vertical:"
+msgstr "Vertikalus:"
 
-#: src/ui.glade:4273
+#: src/ui.glade:4242
 msgid ""
 "Baseline height of aurora, in percentage of screen height.\n"
 "Flag: -aurorabase"
@@ -1277,11 +1250,11 @@ msgstr ""
 "Pradinis auroros aukštis, ekrano aukščio procentais. \n"
 "Flag: -aurorabase"
 
-#: src/ui.glade:4290
+#: src/ui.glade:4259
 msgid "Color"
 msgstr "Spalva"
 
-#: src/ui.glade:4294
+#: src/ui.glade:4263
 msgid ""
 "Choose between yellow-ish and white-ish moon.\n"
 "Flag: -mooncolor [0,1]"
@@ -1289,19 +1262,67 @@ msgstr ""
 "Pasirinkite iš geltono ir balto mėnulio. \n"
 "Flag: -mooncolor [0,1]"
 
-#: src/ui.glade:4394
+#: src/ui.glade:4291
+msgid ""
+"Size of stars.\n"
+"Flag: -starsize"
+msgstr ""
+"Žvaigždžių dydis. \n"
+"Flag: -starsize"
+
+#: src/ui.glade:4309
+msgid "Horizontal:"
+msgstr "Horizontalus:"
+
+#: src/ui.glade:4320
+msgid ""
+"Horizontal place of aurora\n"
+"Flags: -aurorax"
+msgstr ""
+"Horizontali auroros vieta \n"
+"Flags: -aurorax"
+
+#: src/ui.glade:4339
+msgid "Position:"
+msgstr "Padėtis:"
+
+#: src/ui.glade:4353
+msgid "X-position:"
+msgstr "X padėtis:"
+
+#: src/ui.glade:4368
+msgid "Y-position"
+msgstr "Y padėtis"
+
+#: src/ui.glade:4379
+msgid ""
+"Horizontal position of moon if speed equals 0.\n"
+"Flag: -moonx"
+msgstr ""
+"Horizontali mėnulio padėtis, jei greitis lygus 0.\n"
+"Flag: -moonx"
+
+#: src/ui.glade:4398
+msgid ""
+"Vertical position of moon if speed equals 0.\n"
+"Flag: -moony"
+msgstr ""
+"Vertikali mėnulio padėtis, jei greitis lygus 0.\n"
+"Flag: -moony"
+
+#: src/ui.glade:4507
 msgid "Celestials"
 msgstr "Danguolės"
 
-#: src/ui.glade:4414
+#: src/ui.glade:4527
 msgid "Birds settings"
 msgstr "Paukščių nustatymai"
 
-#: src/ui.glade:4580
+#: src/ui.glade:4693
 msgid "Show birds"
 msgstr "Parodyk paukščius"
 
-#: src/ui.glade:4584
+#: src/ui.glade:4697
 msgid ""
 "If set: show birds.\n"
 "Flags: -showbirds 1, -showbirds 0"
@@ -1309,11 +1330,11 @@ msgstr ""
 "Jei nustatyta: rodyti paukščius.\n"
 "Flags: -showbirds 1, -showbirds 0"
 
-#: src/ui.glade:4597
+#: src/ui.glade:4710
 msgid "Birds only"
 msgstr "Tik paukščiai"
 
-#: src/ui.glade:4601
+#: src/ui.glade:4714
 msgid ""
 "If set: show no Santa, snow or scenery.\n"
 "Flags: -birdsonly 0, -birdsony 1"
@@ -1321,11 +1342,11 @@ msgstr ""
 "Jei nustatyta: nerodykite Kalėdų senelio, sniego ar peizažo. \n"
 "Flags: -birdsonly 0, -birdsony 1"
 
-#: src/ui.glade:4618
+#: src/ui.glade:4731
 msgid "Preferred distance:"
 msgstr "Pageidaujamas atstumas:"
 
-#: src/ui.glade:4632
+#: src/ui.glade:4745
 msgid ""
 "Preferred distance from other birds.\n"
 "Flag: -prefdistance"
@@ -1333,19 +1354,19 @@ msgstr ""
 "Pageidaujamas atstumas nuo kitų paukščių.\n"
 "Flag: -prefdistance"
 
-#: src/ui.glade:4660
+#: src/ui.glade:4773
 msgid "Restart"
 msgstr "Perkrauti"
 
-#: src/ui.glade:4664
+#: src/ui.glade:4777
 msgid "Restart birds."
 msgstr "Iš naujo paleiskite paukščius."
 
-#: src/ui.glade:4681
+#: src/ui.glade:4794
 msgid "Viewing distance:"
 msgstr "Žiūrėjimo atstumas:"
 
-#: src/ui.glade:4694
+#: src/ui.glade:4807
 msgid ""
 "Viewing distance.\n"
 "NOTE: Santa has no knowledge of viewing distance, so when birds are "
@@ -1361,11 +1382,11 @@ msgstr ""
 "sekant Kalėdų senelį.\n"
 "Flag: -viewingdistance"
 
-#: src/ui.glade:4715
+#: src/ui.glade:4828
 msgid "Focus to attraction point:"
 msgstr "Sutelkti dėmesį į traukos tašką:"
 
-#: src/ui.glade:4729
+#: src/ui.glade:4842
 msgid ""
 "Tendency to concentrate on the attraction point.\n"
 "Flag: -focuscentre"
@@ -1373,7 +1394,7 @@ msgstr ""
 "Tendencija sutelkti dėmesį į traukos tašką. \n"
 "Flag: -focuscentre"
 
-#: src/ui.glade:4747
+#: src/ui.glade:4860
 msgid ""
 "Desired number of birds. If zero, no birds are shown.\n"
 "Flag: -nbirds"
@@ -1381,11 +1402,11 @@ msgstr ""
 "Norimas paukščių skaičius. Jei nulis, paukščiai nerodomi. \n"
 "Flag: -nbirds"
 
-#: src/ui.glade:4770
+#: src/ui.glade:4883
 msgid "# Birds:"
 msgstr "# Paukščiai:"
 
-#: src/ui.glade:4784
+#: src/ui.glade:4897
 msgid ""
 "Number of nearest neighbours the birds should look at.\n"
 "Flag: -neighbours"
@@ -1393,11 +1414,11 @@ msgstr ""
 "Artimiausių kaimynų, į kuriuos paukščiai turėtų žiūrėti, skaičius \n"
 "Flag: -neighbours"
 
-#: src/ui.glade:4804
+#: src/ui.glade:4917
 msgid "Neighbours:"
 msgstr "Kaimynai:"
 
-#: src/ui.glade:4819
+#: src/ui.glade:4932
 msgid ""
 "Give the birds a fancy color.\n"
 "Flag: -birdscolor"
@@ -1405,15 +1426,15 @@ msgstr ""
 "Suteikite paukščiams puošnią spalvą. \n"
 "Flag: -birdscolor"
 
-#: src/ui.glade:4837
+#: src/ui.glade:4950
 msgid "Bird color"
 msgstr "Paukščių spalva"
 
-#: src/ui.glade:4863
+#: src/ui.glade:4976
 msgid "Anarchy:"
 msgstr "Anarchija:"
 
-#: src/ui.glade:4877
+#: src/ui.glade:4990
 msgid ""
 "Anarchy level: the higher, the more anarchy.\n"
 "Flag: -anarchy"
@@ -1421,11 +1442,11 @@ msgstr ""
 "Anarchijos lygis: kuo aukštesnis, tuo daugiau anarchijos. \n"
 "Flag: -anarchy"
 
-#: src/ui.glade:4897
+#: src/ui.glade:5010
 msgid "Distance weight:"
 msgstr "Atstumo svoris:"
 
-#: src/ui.glade:4911
+#: src/ui.glade:5024
 msgid ""
 "Tendency to keep desired distance to neighbours.\n"
 "Flag: -disweight"
@@ -1433,11 +1454,11 @@ msgstr ""
 "Tendencija išlaikyti norimą atstumą su kaimynais. \n"
 "Flag: -disweight"
 
-#: src/ui.glade:4931
+#: src/ui.glade:5044
 msgid "Adjust speed to neighbours:"
 msgstr "Pritaikykite greitį kaimynams:"
 
-#: src/ui.glade:4945
+#: src/ui.glade:5058
 msgid ""
 "Tendency to adjust speed to neighbours.\n"
 "Flag: -followneighbours"
@@ -1445,7 +1466,7 @@ msgstr ""
 "Tendencija reguliuoti greitį prie kaimynų.\n"
 "Flag: -followneighbours"
 
-#: src/ui.glade:4979
+#: src/ui.glade:5092
 msgid ""
 "Speed of birds in arbitrary units.\n"
 "Flag: -birdsspeed"
@@ -1453,11 +1474,11 @@ msgstr ""
 "Paukščių greitis savavališkais vienetais.\n"
 "Flag: -birdsspeed"
 
-#: src/ui.glade:4999
+#: src/ui.glade:5112
 msgid "Drawing scale:"
 msgstr "Brėžinio skalė:"
 
-#: src/ui.glade:5013
+#: src/ui.glade:5126
 msgid ""
 "Influence the size of the birds.\n"
 "Flag: -birdsscale\n"
@@ -1465,7 +1486,7 @@ msgstr ""
 "Įtaka paukščių dydį. \n"
 "Flag: -birdsscale\n"
 
-#: src/ui.glade:5030
+#: src/ui.glade:5143
 msgid ""
 "Show \n"
 "attr point"
@@ -1473,7 +1494,7 @@ msgstr ""
 "Rodyti \n"
 "attr tašką"
 
-#: src/ui.glade:5036
+#: src/ui.glade:5149
 msgid ""
 "Show the point where the birds want to go.\n"
 "Flags: -showattr 0, -showattr 1"
@@ -1481,7 +1502,7 @@ msgstr ""
 "Parodykite tašką, kur paukščiai nori eiti. \n"
 "Flags: -showattr 0, -showattr 1"
 
-#: src/ui.glade:5047
+#: src/ui.glade:5160
 msgid ""
 "Follow \n"
 "Santa"
@@ -1489,7 +1510,7 @@ msgstr ""
 "Sekite \n"
 " Kalėdų Senelį"
 
-#: src/ui.glade:5053
+#: src/ui.glade:5166
 msgid ""
 "Birds are attracted by an attraction point. Here you can choose to follow "
 "Santa.\n"
@@ -1499,7 +1520,7 @@ msgstr ""
 "Senelį.\n"
 "Flags: -followsanta 0, -followsanta 1"
 
-#: src/ui.glade:5066
+#: src/ui.glade:5179
 msgid ""
 "Percentage of screen to be used for the attraction point.\n"
 "Flag: -attrspace"
@@ -1507,31 +1528,31 @@ msgstr ""
 "Ekrano, kuris bus naudojamas traukos taškui, procentas \n"
 "Flag: -attrspace"
 
-#: src/ui.glade:5088
+#: src/ui.glade:5201
 msgid "Attraction point range"
 msgstr "Traukos taškų diapazonas"
 
-#: src/ui.glade:5131
+#: src/ui.glade:5244
 msgid "Actual mean distance from neighbours."
 msgstr "Faktinis vidutinis atstumas nuo kaimynų."
 
-#: src/ui.glade:5148
+#: src/ui.glade:5261
 msgid "Distance used to get the desired number of neighbours."
 msgstr "Atstumas naudojamas norint gauti norimą kaimynų skaičių."
 
-#: src/ui.glade:5231
+#: src/ui.glade:5344
 msgid "Birds"
 msgstr "Paukščiai"
 
-#: src/ui.glade:5249
+#: src/ui.glade:5362
 msgid "version"
 msgstr "versija"
 
-#: src/ui.glade:5286
+#: src/ui.glade:5399
 msgid "Transparency "
 msgstr "Skaidrumas "
 
-#: src/ui.glade:5303
+#: src/ui.glade:5416
 msgid ""
 "Transparency of painted items:\n"
 "0: no transparency.\n"
@@ -1543,11 +1564,11 @@ msgstr ""
 "100: visiškai skaidrus, nieko nematysite!\n"
 "Flag: -transparency"
 
-#: src/ui.glade:5330
+#: src/ui.glade:5443
 msgid "Lift snow on bottom"
 msgstr "Pakelkite sniegą ant dugno"
 
-#: src/ui.glade:5346
+#: src/ui.glade:5459
 msgid ""
 "Use this if snow falls below the bottom of your screen, or  fallen snow "
 "hides something that should not be hidden.\n"
@@ -1557,11 +1578,11 @@ msgstr ""
 "sniegas paslepia tai, ko nereikėtų paslėpti. \n"
 "Flag: -offsets"
 
-#: src/ui.glade:5371
+#: src/ui.glade:5484
 msgid "Lift snow on windows"
 msgstr "Pakelkite sniegą ant langų"
 
-#: src/ui.glade:5387
+#: src/ui.glade:5500
 msgid ""
 "Use this if no snow collects on your windows, or if snow  collects separated "
 "from your windows. \n"
@@ -1575,11 +1596,11 @@ msgstr ""
 "(pvz., TWM paprastai reikia 25 .. 28 reikšmės).\n"
 "Flag: -offsety"
 
-#: src/ui.glade:5412
+#: src/ui.glade:5525
 msgid "Cpu factor"
 msgstr "Cpu faktorius"
 
-#: src/ui.glade:5430
+#: src/ui.glade:5543
 msgid ""
 "The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
 "Flag: -cpuload"
@@ -1588,11 +1609,11 @@ msgstr ""
 "procesoriaus galios. \n"
 "Flag: -cpuload"
 
-#: src/ui.glade:5456
+#: src/ui.glade:5569
 msgid "Scale"
 msgstr "Skalė"
 
-#: src/ui.glade:5473
+#: src/ui.glade:5586
 msgid ""
 "Overall drawing scale.\n"
 "Flag: -scale"
@@ -1600,36 +1621,38 @@ msgstr ""
 "Bendra brėžinio skalė. \n"
 "Flag: -scale"
 
-#: src/ui.glade:5506
-msgid "Ignore large top windows"
-msgstr "Nepaisykite didelių viršutinių langų"
+#: src/ui.glade:5619
+msgid "Ignore top windows"
+msgstr "Ignoruoti viršutinius langus"
 
-#: src/ui.glade:5522
+#: src/ui.glade:5635
 msgid ""
-"Windows wider than 80 percent of the screen and closer to the top  than the "
-"number in this widget will not collect snow.\n"
+"Windows closer to the top  than the number in this widget will not collect "
+"snow.\n"
+"\n"
 "In some cases, there are invisible windows near the top of the screen, which "
 "are handled by xsnow as normal windows: snow is collected upon them. By "
 "entering a suitable number here, this undesired behaviour can be avoided.\n"
 "Flag: -ignoretop\n"
 "\n"
 msgstr ""
-"Langai, platesni nei 80 procentų ekrano ir arčiau viršaus nei nurodytas "
-"šiame valdiklyje, nerinks sniego.\n"
-"Kai kuriais atvejais netoli ekrano viršaus yra nematomi langai, kuriuos "
-"tvarko xsnow kaip normalūs langai: ant jų kaupiasi sniegas. Čia įvedus "
-"tinkamą skaičių galima išvengti šio nepageidaujamo elgesio.\n"
+"Langai, esantys arčiau viršaus nei skaičius šiame valdiklyje, nerinks "
+"sniego.\n"
+"\n"
+"Kai kuriais atvejais šalia ekrano viršaus yra nematomi langai, kuriuos xsnow "
+"tvarko kaip įprastus langus: ant jų kaupiasi sniegas. Čia įvedus tinkamą "
+"skaičių galima išvengti šio nepageidaujamo elgesio.\n"
 "Flag: -ignoretop\n"
 "\n"
 
-#: src/ui.glade:5546
-msgid "Ignore large bottom windows"
-msgstr "Nepaisykite didelių apatinių langų"
+#: src/ui.glade:5660
+msgid "Ignore bottom windows"
+msgstr "Ignoruoti apatinius langus"
 
-#: src/ui.glade:5562
+#: src/ui.glade:5676
 msgid ""
-"Windows wider than 80 percent of the screen and closer to the  bottom than "
-"the number in this widget will not collect snow.\n"
+"Windows closer to the  bottom than the number in this widget will not "
+"collect snow.\n"
 "\n"
 "In some cases, there are invisible windows near the bottom  of  the screen, "
 "which are handled by xsnow as normal windows: snow is collected upon them. "
@@ -1637,19 +1660,15 @@ msgid ""
 "avoided.\n"
 "Flag: -ignorebottom"
 msgstr ""
-"Langai, platesni nei 80 procentų ekrano ir arčiau apačios nei nurodytas "
-"šiame valdiklyje, sniego nesurinks.\n"
+"Langai, esantys arčiau apačios nei skaičius šiame valdiklyje, nerinks "
+"sniego.\n"
 "\n"
 "Kai kuriais atvejais netoli ekrano apačios yra nematomi langai, kuriuos "
-"tvarko xsnow kaip įprasti langai: ant jų kaupiasi sniegas. Čia įvedus "
+"xsnow tvarko kaip įprastus langus: ant jų kaupiasi sniegas. Čia įvedus "
 "tinkamą skaičių galima išvengti šio nepageidaujamo elgesio.\n"
 "Flag: -ignorebottom"
 
-#: src/ui.glade:5756
-msgid "window type etc."
-msgstr "lango tipas ir kt."
-
-#: src/ui.glade:5779
+#: src/ui.glade:5892
 msgid ""
 "Menu\n"
 "colors"
@@ -1657,7 +1676,7 @@ msgstr ""
 "Meniu\n"
 "spalvos"
 
-#: src/ui.glade:5784
+#: src/ui.glade:5897
 msgid ""
 "Toggle between xsnow's own menu colors and standard menu colors.\n"
 "Activated: use xsnow colors.\n"
@@ -1669,7 +1688,7 @@ msgstr ""
 "Išjungta: naudoti numatytąsias spalvas.\n"
 "Flags: -theme 1, -theme 0"
 
-#: src/ui.glade:5798
+#: src/ui.glade:5911
 msgid ""
 "On all\n"
 "workspaces"
@@ -1677,7 +1696,7 @@ msgstr ""
 "Visose \n"
 " darbo srityse"
 
-#: src/ui.glade:5803
+#: src/ui.glade:5916
 msgid ""
 "Use all workspaces to snow in.\n"
 "NOTE: this doesn't work properly in enlightenment.\n"
@@ -1687,7 +1706,7 @@ msgstr ""
 "PASTABA: tai neveikia tinkamai apšviestoje aplinkoje.\n"
 "Flags: -allworkspaces 1, -allworkspaces 0"
 
-#: src/ui.glade:5821
+#: src/ui.glade:5934
 msgid ""
 "Below\n"
 "windows"
@@ -1695,7 +1714,7 @@ msgstr ""
 "Po \n"
 " langais"
 
-#: src/ui.glade:5826
+#: src/ui.glade:5939
 msgid ""
 "When activated, it will be snowing below your windows, else  it will be "
 "snowing upon you windows too.\n"
@@ -1712,7 +1731,7 @@ msgstr ""
 "gerai. \n"
 "Flag: -above"
 
-#: src/ui.glade:5845
+#: src/ui.glade:5958
 msgid ""
 "Click to\n"
 "confirm"
@@ -1720,11 +1739,11 @@ msgstr ""
 "Spustelėkite \n"
 " patvirtinti"
 
-#: src/ui.glade:5850
+#: src/ui.glade:5963
 msgid "To make sure you can click."
 msgstr "Norėdami įsitikinti, kad galite spustelėti."
 
-#: src/ui.glade:5869
+#: src/ui.glade:5982
 msgid ""
 "If you have more than one monitor, choose where you want snow falling. "
 "Choose 'all monitors' if you want snow in all monitors.\n"
@@ -1737,11 +1756,11 @@ msgstr ""
 "PASTABA: pakeitus monitorių, xsnow bus paleistas iš naujo.\n"
 "Flag: -screen"
 
-#: src/ui.glade:5876
+#: src/ui.glade:5989
 msgid "monitor 1"
 msgstr "monitorius 1"
 
-#: src/ui.glade:5887
+#: src/ui.glade:6000
 msgid ""
 "Create\n"
 "outline"
@@ -1749,7 +1768,7 @@ msgstr ""
 "Sukurkite \n"
 " kontūrą"
 
-#: src/ui.glade:5892
+#: src/ui.glade:6005
 msgid ""
 "To draw an outline around the snow window.\n"
 "Flag: -outline 1/0"
@@ -1757,7 +1776,20 @@ msgstr ""
 "Norėdami nubrėžti kontūrą aplink sniego langą. \n"
 "Flag: -outline 1/0"
 
-#: src/ui.glade:5916
+#: src/ui.glade:6023
+msgid ""
+"Use \n"
+"screenshots"
+msgstr ""
+"Naudokite \n"
+" ekrano kopijas"
+
+#: src/ui.glade:6028
+msgid "Use screenshots for the location of windows. Experimental."
+msgstr ""
+"Norėdami nustatyti langų vietą, naudokite ekrano kopijas. Eksperimentinis."
+
+#: src/ui.glade:6051
 msgid ""
 "  \n"
 "  "
@@ -1765,7 +1797,7 @@ msgstr ""
 "  \n"
 "  "
 
-#: src/ui.glade:5951
+#: src/ui.glade:6086
 msgid ""
 "Choose here the picture you want as background when  xscreensaver is "
 "active.\n"
@@ -1775,11 +1807,11 @@ msgstr ""
 "xscreensaver.\n"
 "Flag: -bg"
 
-#: src/ui.glade:5955
+#: src/ui.glade:6090
 msgid "Choose background"
 msgstr "Pasirinkite foną"
 
-#: src/ui.glade:5970
+#: src/ui.glade:6105
 msgid ""
 "Activate xscreensaver.\n"
 "Click and don't touch mouse and keyboard for a few seconds..."
@@ -1787,7 +1819,7 @@ msgstr ""
 "Suaktyvinkite xscreensaver.\n"
 "Spustelėkite ir nelieskite pelės bei klaviatūros kelias sekundes..."
 
-#: src/ui.glade:5984
+#: src/ui.glade:6119
 msgid ""
 "Settings for Xscreensaver. You can choose a background, and choose to use it "
 "or not.\n"
@@ -1809,15 +1841,15 @@ msgstr ""
 "Taip pat žiūrėkite vadovo puslapį:\n"
 "man xsnow"
 
-#: src/ui.glade:5993
+#: src/ui.glade:6128
 msgid "Xscreensaver: "
 msgstr "Xscreensaver: "
 
-#: src/ui.glade:6013
+#: src/ui.glade:6148
 msgid "Black"
 msgstr "Juoda"
 
-#: src/ui.glade:6017
+#: src/ui.glade:6152
 msgid ""
 "When activated, the background will be black.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
@@ -1825,7 +1857,7 @@ msgstr ""
 "Kai suaktyvinta, fonas bus juodas.\n"
 "Flag: -bg  (this button will be automatically desactivated when -bg is given)"
 
-#: src/ui.glade:6041
+#: src/ui.glade:6176
 msgid ""
 " \n"
 " \n"
@@ -1847,13 +1879,106 @@ msgstr ""
 " \n"
 " \n"
 
-#: src/ui.glade:6516
+#: src/ui.glade:6651
 msgid "en"
 msgstr "lt"
 
-#: src/ui.glade:6519
+#: src/ui.glade:6654
 msgid "it"
 msgstr "tai"
+
+#~ msgid "Use screenshots"
+#~ msgstr "Naudokite ekrano kopijas"
+
+#~ msgid "Ignore large top windows"
+#~ msgstr "Nepaisykite didelių viršutinių langų"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the top  than "
+#~ "the number in this widget will not collect snow.\n"
+#~ "In some cases, there are invisible windows near the top of the screen, "
+#~ "which are handled by xsnow as normal windows: snow is collected upon "
+#~ "them. By entering a suitable number here, this undesired behaviour can be "
+#~ "avoided.\n"
+#~ "Flag: -ignoretop\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Langai, platesni nei 80 procentų ekrano ir arčiau viršaus nei nurodytas "
+#~ "šiame valdiklyje, nerinks sniego.\n"
+#~ "Kai kuriais atvejais netoli ekrano viršaus yra nematomi langai, kuriuos "
+#~ "tvarko xsnow kaip normalūs langai: ant jų kaupiasi sniegas. Čia įvedus "
+#~ "tinkamą skaičių galima išvengti šio nepageidaujamo elgesio.\n"
+#~ "Flag: -ignoretop\n"
+#~ "\n"
+
+#~ msgid "Ignore large bottom windows"
+#~ msgstr "Nepaisykite didelių apatinių langų"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the  bottom "
+#~ "than the number in this widget will not collect snow.\n"
+#~ "\n"
+#~ "In some cases, there are invisible windows near the bottom  of  the "
+#~ "screen, which are handled by xsnow as normal windows: snow is collected "
+#~ "upon them. By entering a suitable  number here, this undesired behaviour "
+#~ "can be avoided.\n"
+#~ "Flag: -ignorebottom"
+#~ msgstr ""
+#~ "Langai, platesni nei 80 procentų ekrano ir arčiau apačios nei nurodytas "
+#~ "šiame valdiklyje, sniego nesurinks.\n"
+#~ "\n"
+#~ "Kai kuriais atvejais netoli ekrano apačios yra nematomi langai, kuriuos "
+#~ "tvarko xsnow kaip įprasti langai: ant jų kaupiasi sniegas. Čia įvedus "
+#~ "tinkamą skaičių galima išvengti šio nepageidaujamo elgesio.\n"
+#~ "Flag: -ignorebottom"
+
+#, c-format
+#~ msgid "Using transparent window\n"
+#~ msgstr "Naudojant skaidrų langą \n"
+
+#, c-format
+#~ msgid "Snowing in %#lx: %s %d+%d %dx%d\n"
+#~ msgstr "Sninga %#lx: %s %d+%d %dx%d\n"
+
+#, c-format
+#~ msgid "Using double buffer: %#lx. %dx%d\n"
+#~ msgstr "Naudojant dvigubą buferį: %#lx. %dx%d\n"
+
+#~ msgid "Left"
+#~ msgstr "Kairė"
+
+#~ msgid ""
+#~ "Place aurora left on the screen.\n"
+#~ "Flag: -auroraleft"
+#~ msgstr ""
+#~ "Padėkite aurorą kairėje ekrane. \n"
+#~ "Flag: -auroraleft"
+
+#~ msgid "Middle"
+#~ msgstr "Vidurio"
+
+#~ msgid ""
+#~ "Place aurora in the middle of the screen.\n"
+#~ "Flag: -auroramiddle"
+#~ msgstr ""
+#~ "Padėkite aurorą ekrano viduryje. \n"
+#~ "Flag: -auroramiddle"
+
+#~ msgid "Right"
+#~ msgstr "Teisingai"
+
+#~ msgid ""
+#~ "Place aurora in the right of the screen.\n"
+#~ "Flag: -auroraright"
+#~ msgstr ""
+#~ "Įdėkite aurorą ekrano dešinėje. \n"
+#~ "Flag: -auroraright"
+
+#~ msgid "Base:"
+#~ msgstr "Bazė:"
+
+#~ msgid "window type etc."
+#~ msgstr "lango tipas ir kt."
 
 #~ msgid "Donate"
 #~ msgstr "Paaukoti"

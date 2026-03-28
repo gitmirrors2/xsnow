@@ -71,6 +71,7 @@
 #include "xdo.h"
 #include "xdo_util.h"
 #include "xdo_version.h"
+#include "debug.h"
 
 #define DEFAULT_DELAY 12
 
@@ -1256,7 +1257,11 @@ int xdo_find_window_client(const xdo_t *xdo, Window window, Window *window_ret,
 
       long items;
       _xdo_debug(xdo, "get_window_property on %lu", window);
-      xdo_get_window_property_by_atom(xdo, window, atom_wmstate, &items, NULL, NULL);
+      // wwvv remove things returned by xdo_get_window_property_by_atom
+      unsigned char*things = NULL;
+      things = xdo_get_window_property_by_atom(xdo, window, atom_wmstate, &items, NULL, NULL);
+      if(things)
+	 free(things);
 
       if (items == 0) {
 	 /* This window doesn't have WM_STATE property, keep searching. */
@@ -1559,9 +1564,14 @@ int _xdo_ewmh_is_supported(const xdo_t *xdo, const char *feature) {
    results = (Atom *) (void*)xdo_get_window_property_by_atom(xdo, root, request, &nitems, &type, &size);
    for (long i = 0L; i < nitems; i++) {
       if (results[i] == feature_atom)
+      {
+	 if(results)  // wwvv free results
+	    free(results);
 	 return True;
+      }
    }
-   free(results);
+   if(results)  // wwvv check for non-null
+      free(results);
 
    return False;
 }
@@ -1848,12 +1858,15 @@ int xdo_get_desktop_viewport(const xdo_t *xdo, int *x_ret, int *y_ret) {
    Atom type = 0;
    int size;
    long nitems;
-   unsigned char *data;
+   unsigned char *data = NULL;
    Atom request = XInternAtom(xdo->xdpy, "_NET_DESKTOP_VIEWPORT", False);
    Window root = RootWindow(xdo->xdpy, 0);
    data = xdo_get_window_property_by_atom(xdo, root, request, &nitems, &type, &size);
 
    if (type != XA_CARDINAL) {
+      // wwvv free data
+      if(data)
+	 free(data);
       fprintf(stderr, 
 	    "Got unexpected type returned from _NET_DESKTOP_VIEWPORT."
 	    " Expected CARDINAL, got %s\n",
@@ -1862,6 +1875,9 @@ int xdo_get_desktop_viewport(const xdo_t *xdo, int *x_ret, int *y_ret) {
    }
 
    if (nitems != 2) {
+      // wwvv free data
+      if(data)
+	 free(data);
       fprintf(stderr, "Expected 2 items for _NET_DESKTOP_VIEWPORT, got %ld\n",
 	    nitems);
       return XDO_ERROR;
@@ -1870,6 +1886,10 @@ int xdo_get_desktop_viewport(const xdo_t *xdo, int *x_ret, int *y_ret) {
    int *viewport_data = (int *)(void*)data;
    *x_ret = viewport_data[0];
    *y_ret = viewport_data[1];
+
+   // wwvv free data
+   if(data)
+      free(data);
 
    return XDO_SUCCESS;
 }

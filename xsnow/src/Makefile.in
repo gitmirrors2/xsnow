@@ -148,13 +148,14 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
 	xsnow-transwindow.$(OBJEXT) xsnow-selfrep.$(OBJEXT) \
 	xsnow-aurora.$(OBJEXT) xsnow-spline_interpol.$(OBJEXT) \
-	xsnow-xpm2cairo-gdk.$(OBJEXT)
+	xsnow-xpm2cairo-gdk.$(OBJEXT) xsnow-scr2tops.$(OBJEXT) \
+	xsnow-wv_matalloc.$(OBJEXT)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
 xsnow_DEPENDENCIES = libxdo.a $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -183,12 +184,13 @@ am__depfiles_remade = ./$(DEPDIR)/docs.Po ./$(DEPDIR)/flags.Po \
 	./$(DEPDIR)/xsnow-main.Po ./$(DEPDIR)/xsnow-mainstub.Po \
 	./$(DEPDIR)/xsnow-meteor.Po ./$(DEPDIR)/xsnow-moon.Po \
 	./$(DEPDIR)/xsnow-pixmaps.Po ./$(DEPDIR)/xsnow-scenery.Po \
-	./$(DEPDIR)/xsnow-selfrep.Po ./$(DEPDIR)/xsnow-snow.Po \
-	./$(DEPDIR)/xsnow-spline_interpol.Po \
+	./$(DEPDIR)/xsnow-scr2tops.Po ./$(DEPDIR)/xsnow-selfrep.Po \
+	./$(DEPDIR)/xsnow-snow.Po ./$(DEPDIR)/xsnow-spline_interpol.Po \
 	./$(DEPDIR)/xsnow-stars.Po ./$(DEPDIR)/xsnow-transwindow.Po \
 	./$(DEPDIR)/xsnow-treesnow.Po ./$(DEPDIR)/xsnow-ui.Po \
 	./$(DEPDIR)/xsnow-utils.Po ./$(DEPDIR)/xsnow-wind.Po \
 	./$(DEPDIR)/xsnow-windows.Po ./$(DEPDIR)/xsnow-wmctrl.Po \
+	./$(DEPDIR)/xsnow-wv_matalloc.Po \
 	./$(DEPDIR)/xsnow-xpm2cairo-gdk.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -524,6 +526,8 @@ CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
 CPP_FOR_BUILD = @CPP_FOR_BUILD@
 CSCOPE = @CSCOPE@
 CTAGS = @CTAGS@
+CV_CFLAGS = @CV_CFLAGS@
+CV_LIBS = @CV_LIBS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
@@ -657,7 +661,7 @@ top_srcdir = @top_srcdir@
 ######  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -678,9 +682,9 @@ TOCC = $(top_srcdir)/src/tocc.sh
 TOASCII = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) \
-	-DLOCALEDIR=\"$(LOCALEDIR)\" -DLANGUAGES='"$(LANGUAGES)"' \
-	$(am__append_1) $(am__append_2)
-xsnow_LDADD = libxdo.a $(GTK_LIBS)   $(X11_LIBS)   $(GSL_LIBS) $(LIBINTL)
+	$(CV_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
+	-DLANGUAGES='"$(LANGUAGES)"' $(am__append_1) $(am__append_2)
+xsnow_LDADD = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(CV_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 noinst_LIBRARIES = libxdo.a
 libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
@@ -707,7 +711,9 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		aurora.c aurora.h \
 		spline_interpol.c spline_interpol.h \
 		safe_malloc.h mygettext.h gettext.h  \
-		xpm2cairo-gdk.c xpm2cairo-gdk.h
+		xpm2cairo-gdk.c xpm2cairo-gdk.h \
+		scr2tops.cpp scr2tops.h \
+		wv_matalloc.c wv_matalloc.h
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
@@ -849,6 +855,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-moon.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-pixmaps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scenery.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-scr2tops.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-selfrep.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-snow.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-spline_interpol.Po@am__quote@ # am--include-marker
@@ -860,6 +867,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wind.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-windows.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wmctrl.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-wv_matalloc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsnow-xpm2cairo-gdk.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -1344,6 +1352,20 @@ xsnow-xpm2cairo-gdk.obj: xpm2cairo-gdk.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-xpm2cairo-gdk.obj `if test -f 'xpm2cairo-gdk.c'; then $(CYGPATH_W) 'xpm2cairo-gdk.c'; else $(CYGPATH_W) '$(srcdir)/xpm2cairo-gdk.c'; fi`
 
+xsnow-wv_matalloc.o: wv_matalloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-wv_matalloc.o -MD -MP -MF $(DEPDIR)/xsnow-wv_matalloc.Tpo -c -o xsnow-wv_matalloc.o `test -f 'wv_matalloc.c' || echo '$(srcdir)/'`wv_matalloc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-wv_matalloc.Tpo $(DEPDIR)/xsnow-wv_matalloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wv_matalloc.c' object='xsnow-wv_matalloc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-wv_matalloc.o `test -f 'wv_matalloc.c' || echo '$(srcdir)/'`wv_matalloc.c
+
+xsnow-wv_matalloc.obj: wv_matalloc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT xsnow-wv_matalloc.obj -MD -MP -MF $(DEPDIR)/xsnow-wv_matalloc.Tpo -c -o xsnow-wv_matalloc.obj `if test -f 'wv_matalloc.c'; then $(CYGPATH_W) 'wv_matalloc.c'; else $(CYGPATH_W) '$(srcdir)/wv_matalloc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-wv_matalloc.Tpo $(DEPDIR)/xsnow-wv_matalloc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wv_matalloc.c' object='xsnow-wv_matalloc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xsnow-wv_matalloc.obj `if test -f 'wv_matalloc.c'; then $(CYGPATH_W) 'wv_matalloc.c'; else $(CYGPATH_W) '$(srcdir)/wv_matalloc.c'; fi`
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
@@ -1385,6 +1407,20 @@ xsnow-hashtable.obj: hashtable.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='hashtable.cpp' object='xsnow-hashtable.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-hashtable.obj `if test -f 'hashtable.cpp'; then $(CYGPATH_W) 'hashtable.cpp'; else $(CYGPATH_W) '$(srcdir)/hashtable.cpp'; fi`
+
+xsnow-scr2tops.o: scr2tops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-scr2tops.o -MD -MP -MF $(DEPDIR)/xsnow-scr2tops.Tpo -c -o xsnow-scr2tops.o `test -f 'scr2tops.cpp' || echo '$(srcdir)/'`scr2tops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-scr2tops.Tpo $(DEPDIR)/xsnow-scr2tops.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='scr2tops.cpp' object='xsnow-scr2tops.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-scr2tops.o `test -f 'scr2tops.cpp' || echo '$(srcdir)/'`scr2tops.cpp
+
+xsnow-scr2tops.obj: scr2tops.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xsnow-scr2tops.obj -MD -MP -MF $(DEPDIR)/xsnow-scr2tops.Tpo -c -o xsnow-scr2tops.obj `if test -f 'scr2tops.cpp'; then $(CYGPATH_W) 'scr2tops.cpp'; else $(CYGPATH_W) '$(srcdir)/scr2tops.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xsnow-scr2tops.Tpo $(DEPDIR)/xsnow-scr2tops.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='scr2tops.cpp' object='xsnow-scr2tops.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xsnow_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xsnow-scr2tops.obj `if test -f 'scr2tops.cpp'; then $(CYGPATH_W) 'scr2tops.cpp'; else $(CYGPATH_W) '$(srcdir)/scr2tops.cpp'; fi`
 install-man6: $(man6_MANS)
 	@$(NORMAL_INSTALL)
 	@list1='$(man6_MANS)'; \
@@ -1878,6 +1914,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
+	-rm -f ./$(DEPDIR)/xsnow-scr2tops.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
 	-rm -f ./$(DEPDIR)/xsnow-spline_interpol.Po
@@ -1889,6 +1926,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-wind.Po
 	-rm -f ./$(DEPDIR)/xsnow-windows.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
+	-rm -f ./$(DEPDIR)/xsnow-wv_matalloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-xpm2cairo-gdk.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -1961,6 +1999,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-moon.Po
 	-rm -f ./$(DEPDIR)/xsnow-pixmaps.Po
 	-rm -f ./$(DEPDIR)/xsnow-scenery.Po
+	-rm -f ./$(DEPDIR)/xsnow-scr2tops.Po
 	-rm -f ./$(DEPDIR)/xsnow-selfrep.Po
 	-rm -f ./$(DEPDIR)/xsnow-snow.Po
 	-rm -f ./$(DEPDIR)/xsnow-spline_interpol.Po
@@ -1972,6 +2011,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xsnow-wind.Po
 	-rm -f ./$(DEPDIR)/xsnow-windows.Po
 	-rm -f ./$(DEPDIR)/xsnow-wmctrl.Po
+	-rm -f ./$(DEPDIR)/xsnow-wv_matalloc.Po
 	-rm -f ./$(DEPDIR)/xsnow-xpm2cairo-gdk.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

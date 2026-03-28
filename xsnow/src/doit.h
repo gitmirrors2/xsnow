@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,9 +62,7 @@
    DOIT_I(AuroraHeight         ,30         ,30         ) \
    DOIT_I(AuroraSpeed          ,50         ,50         ) \
    DOIT_I(AuroraWidth          ,60         ,60         ) \
-   DOIT_I(AuroraLeft           ,0          ,0          ) \
-   DOIT_I(AuroraMiddle         ,1          ,1          ) \
-   DOIT_I(AuroraRight          ,0          ,0          ) \
+   DOIT_I(AuroraX              ,50         ,50         ) \
    DOIT_I(AllWorkspaces        ,1          ,1          ) \
    DOIT_I(BlowOffFactor        ,40         ,40         ) \
    DOIT_I(BlowSnow             ,1          ,0          ) \
@@ -82,6 +80,8 @@
    DOIT_I(MeteorFrequency      ,40         ,40         ) \
    DOIT_I(Moon                 ,1          ,0          ) \
    DOIT_I(MoonSpeed            ,120        ,120        ) \
+   DOIT_I(MoonX                ,50         ,50         ) \
+   DOIT_I(MoonY                ,20         ,20         ) \
    DOIT_I(MoonSize             ,100        ,100        ) \
    DOIT_I(MoonColor            ,0          ,0          ) \
    DOIT_I(NoFluffy             ,0          ,0          ) \
@@ -108,11 +108,13 @@
    DOIT_I(SnowSize             ,8          ,8          ) \
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
    DOIT_I(Stars                ,1          ,0          ) \
+   DOIT_I(StarSize             ,50         ,50         ) \
    DOIT_I(ThemeXsnow           ,1          ,1          ) \
    DOIT_I(Outline              ,0          ,0          ) \
    DOIT_I(TreeFill             ,30         ,30         ) \
    DOIT_I(TreeScale            ,100        ,100        ) \
    DOIT_I(UseColor2            ,0          ,0          ) \
+   DOIT_I(Screenshots          ,0          ,0          ) \
    DOIT_I(VintageFlakes        ,0          ,1          ) /* internal flag */\
    DOIT_I(WhirlFactor          ,100        ,100        ) \
    DOIT_I(WindTimer            ,30         ,30         ) \

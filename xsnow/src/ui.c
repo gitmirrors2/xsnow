@@ -1,8 +1,8 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -193,9 +193,11 @@
 GtkBuilder    *builder;
 static GtkWidget     *mean_distance;
 static GtkWidget     *range;
-static GtkWidget     *desktop_type;
+static GtkWidget     *something;
+static GtkWidget     *moonxlabel;
+static GtkWidget     *moonylabel;
 static GtkContainer  *birdsgrid;
-static GtkContainer  *moonbox;
+//static GtkContainer  *moonbox;
 static GtkImage      *preview;
 static int Nscreens;
 static int HaveXinerama;
@@ -208,7 +210,7 @@ static void set_buttons1(void);
 static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void handle_css(void);
-static void birdscb(GtkWidget *w, void *m);
+// static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(void *);
 static int  ui_running = False;
 static void show_bct_countdown(void);
@@ -1059,7 +1061,14 @@ void ui_show_desktop_type(const char *s)
    if(!ui_running)
       return;
    snprintf(sbuffer,nsbuffer,_("Desktop type: %s"),s);
-   my_gtk_label_set_text(GTK_LABEL(desktop_type),sbuffer);
+   my_gtk_label_set_text(GTK_LABEL(something),sbuffer);
+}
+
+void ui_show_something(const char *s)
+{
+   if(!ui_running)
+      return;
+   my_gtk_label_set_text(GTK_LABEL(something),s);
 }
 
 void ui_set_sticky(int x)
@@ -1112,7 +1121,7 @@ void headerfunc(GtkWidget *w, gpointer data)
    P("headerfunc: now: %lf last: %lf\n",now,last);
    last = now;
    global.time_to_write_flags = TRUE;
-   
+
    (void) w;
    (void) data;
 }
@@ -1130,9 +1139,13 @@ void ui()
    hauptfenster  = GTK_WIDGET   (gtk_builder_get_object(builder, "hauptfenster"));
    mean_distance = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-mean-distance"));
    range         = GTK_WIDGET   (gtk_builder_get_object(builder, "birds-range"));
-   desktop_type  = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-desktop-type"));
+   something     = GTK_WIDGET   (gtk_builder_get_object(builder, "settings-show-something"));
+   moonxlabel    = GTK_WIDGET   (gtk_builder_get_object(builder, "Label-MoonX"));
+   moonylabel    = GTK_WIDGET   (gtk_builder_get_object(builder, "Label-MoonY"));
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
-   moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
+   //moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
+   P("moonbox: %p\n",(void*)moonbox);
+   P("birdsgrid: %p\n",(void*)birdsgrid);
 
    {
       g_signal_connect(G_OBJECT(hauptfenster),
@@ -1154,6 +1167,8 @@ void ui()
    connect_signals();
    init_pixmaps();
    set_buttons();
+   if(global.IsWayland)
+      gtk_widget_set_sensitive(Button.Screenshots,0);
    preview = GTK_IMAGE(gtk_image_new());
    gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(Button.BackgroundFile), GTK_WIDGET(preview));
    g_signal_connect (GTK_FILE_CHOOSER(Button.BackgroundFile), "update-preview",
@@ -1265,11 +1280,14 @@ void ui()
 	 g_signal_connect(G_OBJECT(p->data),"clicked",G_CALLBACK(headerfunc),NULL);
 	 p = p->next;
       }
+      g_list_free(list); // todo ok?
    }
 
    global.builder = builder;
    if(s)
       free(s);
+   if(languages)
+      free(languages);
 }
 
 // Set the style provider for the widgets
@@ -1326,6 +1344,7 @@ void handle_css()
       "button.confirm                                    { background:       #FFFF00; }"   // color for confirm above windows
       ".xsnow button.confirm                             { background-color: #FFFF00; }"   // yes we need both, but why?
       "label.busymessage                                 { background:       #FFC0CB; }"   // info message in welcome tab
+      "label.disabled                                    { color:            #8FB39B; }"
       ;
 
    static GtkCssProvider *cssProvider = NULL;
@@ -1373,18 +1392,42 @@ void ui_gray_below(int m)
    gtk_widget_set_sensitive(Button.BelowAll, !m);
 }
 
-void birdscb(GtkWidget *w, void *m)
+// m=0: make active
+// m=1: make inactive
+void ui_gray_moonpos(int m)
 {
-   gtk_widget_set_sensitive(w,!(int *)m);
+   GtkStyleContext *moonxlabelsc = gtk_widget_get_style_context(moonxlabel);
+   GtkStyleContext *moonylabelsc = gtk_widget_get_style_context(moonylabel);
+   if (m == 0)
+   {
+      gtk_style_context_remove_class(moonxlabelsc,"disabled");
+      gtk_style_context_remove_class(moonylabelsc,"disabled");
+      gtk_widget_set_sensitive(GTK_WIDGET(Button.MoonX),TRUE);
+      gtk_widget_set_sensitive(GTK_WIDGET(Button.MoonY),TRUE);
+   }
+   else
+   {
+      gtk_style_context_add_class(moonxlabelsc,"disabled");
+      gtk_style_context_add_class(moonylabelsc,"disabled");
+      gtk_widget_set_sensitive(GTK_WIDGET(Button.MoonX),FALSE);
+      gtk_widget_set_sensitive(GTK_WIDGET(Button.MoonY),FALSE);
+   }
 }
 
-void ui_gray_birds(int m)
-{
-   if(!ui_running)
-      return;
-   gtk_container_foreach(birdsgrid, birdscb, &m);
-   gtk_container_foreach(moonbox, birdscb, &m);
-}
+
+// void birdscb(GtkWidget *w, void *m)
+// {
+//    gtk_widget_set_sensitive(w,!(int *)m);
+// }
+
+//void ui_gray_birds(int m)
+//{
+//   if(!ui_running)
+//      return;
+//   P("ui_gray_birds: birdsgrid: %p, moonbox: %p\n",(void*)birdsgrid, (void*)moonbox);
+//   gtk_container_foreach(birdsgrid, birdscb, &m);
+//   gtk_container_foreach(moonbox, birdscb, &m);
+//}
 
 char * ui_gtk_version()
 {

@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@
 #include "windows.h"
 #include "dsimple.h"
 #include "debug.h"
+#include "utils.h"
 
 #include "vroot.h"
 
@@ -99,9 +100,9 @@ void GetAbsoluteCoordinates(Display *display, Window win, int *x, int *y, int *w
    XGetWindowAttributes( display, win, &xwa );
    P( "window: %p x: %d y: %d w: %d h: %d\n", (void*)win, xx - xwa.x, yy - xwa.y, xwa.width, xwa.height );
    if(x)
-      *x = xx - xwa.x;
+      *x = xx;// - xwa.x;
    if(y)
-      *y = yy - xwa.y;
+      *y = yy;// - xwa.y;
    if(w)
       *w = xwa.width;
    if(h)
@@ -197,7 +198,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    unsigned char *properties = NULL;
    (*windows) = NULL;
    static Display *getdisplay;;
-   Window *children;
+   Window *children = NULL;
    long unsigned int nchildren;
 
    static Atom atom_gtk_frame_extents;
@@ -282,7 +283,7 @@ int GetWindows(WinInfo **windows, int *nwin)
    int globalhidden = 0;
    {
       if (w)
-      {P("hidden3 %d %#lx\n",counter++,w->id);}
+      {P("hidden3 %d %#lx\n",counter++,w->xxid);}
       else
       {P("hidden3 %d %#lx\n",counter++,w);}
 
@@ -314,11 +315,14 @@ int GetWindows(WinInfo **windows, int *nwin)
 
       int x0,y0,xr,yr;
       unsigned int depth;
+      int rc;
 
-      w->id = children[i];
+      w->xxid = children[i];
 
       XWindowAttributes winattr;
-      XGetWindowAttributes(getdisplay, w->id, &winattr);
+      rc = XGetWindowAttributes(getdisplay, w->xxid, &winattr);
+      if (rc == 0)
+	 continue;
 
       x0    = winattr.x;
       y0    = winattr.y;
@@ -326,57 +330,91 @@ int GetWindows(WinInfo **windows, int *nwin)
       w->h  = winattr.height;
       depth = winattr.depth;
 
-      //if (w->id == global.SnowWin)
-      P("#%d %#lx %d %d %d %d %d\n",global.counter++,w->id,x0,y0,w->w,w->h,depth);
+      P("#%d %#lx %d %d %d %d %d\n",global.counter++,w->xxid,x0,y0,w->w,w->h,depth);
       // if this window is showing nothing, we ignore it:
       if (depth == 0)
 	 continue;
 
+      // xa, ya coordinates in root window
       Window child_return;
-      XTranslateCoordinates(getdisplay, w->id, global.Rootwindow, 0, 0, &xr,     &yr,     &child_return);
-      w->xa = xr - x0;
-      w->ya = yr - y0;
-      P("%d %#lx %d %d %d %d %d\n",counter++,w->id,w->xa,w->ya,w->w,w->h,depth);
+      GetAbsoluteCoordinates(getdisplay, w->xxid, &xr, &yr, NULL, NULL);
+      w->xa = xr;
+      w->ya = yr;
+      P("%d %#lx %d %d %d %d %d\n",global.counter++,w->xxid,xr,yr,w->w,w->h,depth);
 
-      XTranslateCoordinates(getdisplay, w->id, global.SnowWin,    0, 0, &(w->x), &(w->y), &child_return);
+      // x,y coordinates in SnowWin
+      rc = XTranslateCoordinates(getdisplay, w->xxid, global.SnowWin, 0, 0, &(w->x), &(w->y), &child_return);
+      if (!rc)
+	 continue;
 
       enum{NET,GTK};
-      Atom type; int format; unsigned long nitems,b; unsigned char *properties = NULL;
-      XGetWindowProperty(getdisplay, w->id, atom_net_wm_desktop, 0, 1, False, 
+      Atom type; 
+      int format; 
+      unsigned long nitems,b; 
+      unsigned char *properties = NULL;
+      rc = XGetWindowProperty(getdisplay, w->xxid, atom_net_wm_desktop, 0, 1, False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (rc != Success)
+      {
+	 if(properties) XFree(properties);
+	 properties = NULL;
+	 continue;
+      }
       if(type != XA_CARDINAL)
       {
 	 // workspace number
 	 if(properties) XFree(properties);
 	 properties = NULL;
-	 XGetWindowProperty(getdisplay, w->id, atom_win_workspace, 0, 1, False, 
+	 rc =XGetWindowProperty(getdisplay, w->xxid, atom_win_workspace, 0, 1, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if (rc != Success)
+	 {
+	    if(properties) XFree(properties);
+	    properties = NULL;
+	    continue;
+	 }
       }
       if(properties)
       {
 	 w->ws = *(long*) (void*)properties;
-	 if(properties) XFree(properties);
+	 XFree(properties);
+	 properties = NULL;
       }
       else
 	 w->ws = 0;
 
       // to be ignored by Atom ignore_atom?
-      XGetWindowProperty(getdisplay, w->id, atom_ignore, 0, (~0L), False,
+      rc = XGetWindowProperty(getdisplay, w->xxid, atom_ignore, 0, (~0L), False,
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (rc != Success)
+      {
+	 if(properties) XFree(properties);
+	 properties = NULL;
+	 continue;
+      }
       if(type == None)
 	 w->ignore = 0;
       else
 	 w->ignore = 1;
       if(properties)
+      {
 	 XFree(properties);
-      P("ignore #%lx %d %d\n",w->id,w->ignore,rc);
+	 properties = NULL;
+      }
+      P("ignore #%lx %d %d\n",w->xxid,w->ignore,rc);
 
       // maybe this window is sticky:
       w->sticky = 0;
       properties = NULL;
       nitems = 0;
-      XGetWindowProperty(getdisplay, w->id, atom_net_wm_state, 0, (~0L), False,
+      rc = XGetWindowProperty(getdisplay, w->xxid, atom_net_wm_state, 0, (~0L), False,
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (rc != Success)
+      {
+	 if(properties) XFree(properties);
+	 properties = NULL;
+	 continue;
+      }
       if (type == XA_ATOM)
       {
 	 for(int i=0; (unsigned long)i<nitems; i++)
@@ -385,7 +423,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_STATE_STICKY"))
 	    { 
-	       P("%#lx is sticky\n",w->id);
+	       P("%#lx is sticky\n",w->xxid);
 	       w->sticky = 1;
 	       if(s) XFree(s);
 	       break;
@@ -396,14 +434,20 @@ int GetWindows(WinInfo **windows, int *nwin)
       // another sticky test, needed in KDE en LXDE:
       if (w->ws == -1)
 	 w->sticky = 1;
-      if(properties) XFree(properties);
+      if(properties) 
+      {
+	 XFree(properties);
+	 properties = NULL;
+      }
 
       // check if window is a "dock". 
       w->dock = 0;
       properties = NULL;
       nitems = 0;
-      XGetWindowProperty(getdisplay, w->id, atom_net_wm_window_type, 0, (~0L), False, 
+      rc = XGetWindowProperty(getdisplay, w->xxid, atom_net_wm_window_type, 0, (~0L), False, 
 	    AnyPropertyType, &type, &format, &nitems, &b, &properties);
+      if (rc != Success)
+	 continue;
       if(format == 32)
       {
 	 for(int i=0; (unsigned long)i<nitems; i++)
@@ -412,7 +456,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	    if (!strcmp(s,"_NET_WM_WINDOW_TYPE_DOCK"))
 	    { 
-	       P("%#lx is dock #%d\n",w->id, global.counter++);
+	       P("%#lx is dock #%d\n",w->xxid, global.counter++);
 	       w->dock = 1;
 	       if(s) XFree(s);
 	       break;
@@ -420,7 +464,11 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    if(s) XFree(s);
 	 }
       }
-      if(properties) XFree(properties);
+      if(properties) 
+      {
+	 XFree(properties);
+	 properties = NULL;
+      }
 
       // check if window is hidden
       w->hidden = globalhidden;
@@ -428,7 +476,7 @@ int GetWindows(WinInfo **windows, int *nwin)
       {
 	 if (winattr.map_state != IsViewable)
 	 {
-	    P("map_state: %#lx %d\n",w->id,winattr.map_state);
+	    P("map_state: %#lx %d\n",w->xxid,winattr.map_state);
 	    w->hidden = 1;
 	 }
       }
@@ -437,8 +485,14 @@ int GetWindows(WinInfo **windows, int *nwin)
       {
 	 properties = NULL;
 	 nitems = 0;
-	 XGetWindowProperty(getdisplay, w->id, atom_net_wm_state, 0, (~0L), False, 
+	 rc = XGetWindowProperty(getdisplay, w->xxid, atom_net_wm_state, 0, (~0L), False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if (rc != Success)
+	 {
+	    if(properties) XFree(properties);
+	    properties = NULL;
+	    continue;
+	 }
 	 if(format == 32)
 	 {
 	    for (unsigned long i=0; i<nitems; i++)
@@ -447,7 +501,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       s = XGetAtomName(getdisplay,((Atom*)(void*)properties)[i]);
 	       if (!strcmp(s,"_NET_WM_STATE_HIDDEN"))
 	       { 
-		  P("%#lx is hidden %d\n",w->id, counter++);
+		  P("%#lx is hidden %d\n",w->xxid, counter++);
 		  w->hidden = 1;
 		  if(s) XFree(s);
 		  break;
@@ -455,17 +509,27 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       if(s) XFree(s);
 	    }
 	 }
-	 if(properties) XFree(properties);
+	 if(properties)
+	 {
+	    XFree(properties);
+	    properties = NULL;
+	 }
       }
 
       // yet another check if window is hidden:
       if(!w->hidden)
       {
-	 P("hidden2 %#lx\n",w->id);
+	 P("hidden2 %#lx\n",w->xxid);
 	 properties = NULL;
 	 nitems = 0;
-	 XGetWindowProperty(getdisplay, w->id, atom_wm_state, 0, (~0L), False, 
+	 rc = XGetWindowProperty(getdisplay, w->xxid, atom_wm_state, 0, (~0L), False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if (rc != Success)
+	 {
+	    if(properties) XFree(properties);
+	    properties = NULL;
+	    continue;
+	 }
 	 if(format == 32 && nitems >=1)
 	 {
 	    // see https://tronche.com/gui/x/icccm/sec-4.html#s-4.1.3.1
@@ -475,7 +539,11 @@ int GetWindows(WinInfo **windows, int *nwin)
 	    if(*(long*) (void*)properties != NormalState)
 	       w->hidden = 1;
 	 }
-	 if(properties) XFree(properties);
+	 if(properties)
+	 {
+	    XFree(properties);
+	    properties = NULL;
+	 }
       }
 
       properties = NULL;
@@ -483,17 +551,35 @@ int GetWindows(WinInfo **windows, int *nwin)
 
       // first try to get adjustments for _GTK_FRAME_EXTENTS
       if (atom_gtk_frame_extents)
-	 XGetWindowProperty(getdisplay, w->id, atom_gtk_frame_extents, 0, 4, False, 
+      {
+	 rc = XGetWindowProperty(getdisplay, w->xxid, atom_gtk_frame_extents, 0, 4, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if (rc != Success)
+	 {
+	    if(properties) XFree(properties);
+	    properties = NULL;
+	    continue;
+	 }
+      }
       int wintype = GTK;
       // if not succesfull, try _NET_FRAME_EXTENTS
       if (nitems != 4)
       {
-	 if(properties) XFree(properties);
+	 if(properties) 
+	 {
+	    XFree(properties);
+	    properties = NULL;
+	 }
 	 properties = NULL;
 	 P("trying net...\n");
-	 XGetWindowProperty(getdisplay, w->id, atom_net_frame_extents, 0, 4, False, 
+	 rc = XGetWindowProperty(getdisplay, w->xxid, atom_net_frame_extents, 0, 4, False, 
 	       AnyPropertyType, &type, &format, &nitems, &b, &properties);
+	 if (rc != Success)
+	 {
+	    if(properties) XFree(properties);
+	    properties = NULL;
+	    continue;
+	 }
 	 wintype = NET;
       }
       P("nitems: %ld %ld %d\n",type,nitems,format);
@@ -523,7 +609,7 @@ int GetWindows(WinInfo **windows, int *nwin)
 	       exit(1);
 	       break;
 	 }
-	 P("%d: NET/GTK: %#lx %d %d %d %d\n",w->id,w->ws,w->x,w->y,w->w,w->h);
+	 P("%d: NET/GTK: %#lx %d %d %d %d\n",w->xxid,w->ws,w->x,w->y,w->w,w->h);
       }
       else
       {
@@ -532,9 +618,13 @@ int GetWindows(WinInfo **windows, int *nwin)
 	 // Let us try this one:
 	 w->x = x0;
 	 w->y = y0;
-	 P("%d %#lx %d %d\n",counter++,w->id,w->x,w->y);
+	 P("%d %#lx %d %d\n",counter++,w->xxid,w->x,w->y);
       }
-      if(properties)XFree(properties);
+      if(properties)
+      {
+	 XFree(properties);
+	 properties = NULL;
+      }
       w++;
       k++;
    }
@@ -547,13 +637,40 @@ int GetWindows(WinInfo **windows, int *nwin)
 
 
 
-WinInfo *FindWindow(WinInfo *windows, int nwin, Window id)
+WinInfo *FindWindow(WinInfo *windows, int nwin, Window xxid)
 {
    WinInfo *w = windows;
    for (int i=0; i<nwin; i++)
    {
-      if (w->id == id)
+      if (w->xxid == xxid)
 	 return w;
+      w++;
+   }
+   return NULL;
+}
+
+WinInfo *FindWindowTol(WinInfo *windows, int nwin, WinInfo *needle, int tol)
+{
+   P("needle:    x: %3d y %3d w %3d xa %3d ya %3d\n",needle->x, needle->y, needle->w, needle->xa, needle->ya);
+   WinInfo *w = windows;
+   for (int i=0; i<nwin; i++)
+   {
+      if (w->xxid == needle->xxid)
+	 return w;
+      if (
+	    within(w->x, needle->x, tol) &&
+	    within(w->y, needle->y, tol) &&
+	    within(w->w, needle->w, tol) 
+	 )
+	 return w;
+
+      if (
+	    within(w->xa, needle->xa, tol) &&
+	    within(w->ya, needle->ya, tol) &&
+	    within(w->w , needle->w , tol)
+	 )
+	 return w;
+      P("rejected:  x: %3d y %3d w %3d xa %3d ya %3d\n",w->x, w->y, w->w, w->xa, w->ya);
       w++;
    }
    return NULL;
@@ -565,14 +682,14 @@ void printwindows(Display *dpy,WinInfo *windows, int nwin)
    for (int i=0; i<nwin; i++)
    {
       char *name;
-      XFetchName(dpy, w->id, &name);
+      XFetchName(dpy, w->xxid, &name);
       if (!name)
 	 name = strdup("No name");
       assert(name);
       if (strlen(name)>20)
 	 name[20] = '\0';
-      printf("id:%#10lx ws:%3ld x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",
-	    w->id,w->ws,w->x,w->y,w->xa,w->ya,w->w,w->h,w->sticky,w->dock,w->hidden,name);
+      printf("xxid:%#10lx ws:%3ld x:%6d y:%6d xa:%6d ya:%6d w:%6d h:%6d sticky:%d dock:%d hidden:%d name:%s\n",
+	    w->xxid,w->ws,w->x,w->y,w->xa,w->ya,w->w,w->h,w->sticky,w->dock,w->hidden,name);
       XFree(name);
       w++;
    }

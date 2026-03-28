@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ typedef struct _fuzz_t
 typedef struct _AuroraMap {
    int width;                // size of aurora surface
    int base;                 // base of aurora surface
-   int x,y;                  // coordinates of aurora painting in screen coordinates
+   int x;                    // x-coordinate of aurora painting in screen coordinates
    int xoffset;              // value to add to x value of aurora
    int w;                    // width of aurora painting
    float hmax;               // max height of corona

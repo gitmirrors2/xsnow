@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,15 +45,15 @@ static int              NStars;  // is copied from Flags.NStars in init_stars. W
 				 //                               // NStars is changed outside init_stars
 static Skoordinaten    *Stars = NULL;
 static char            *StarColor[STARANIMATIONS] = { (char *)"white", (char *)"snow", 
-   (char *)"snow2", (char *)"snow3" };
+   (char *)"snow2", (char *)"yellow" };
 static int              do_ustars(void *);
 static void             set_star_surfaces(void);
 
 #ifdef CIRCLESTARS  // suggestion by Mihai Dobrescu
-static const double   StarSize = 1.5;
-//static const double   StarSize = 30;     // stardebug
+static const double   STARSIZE = 3;
+//static const double   STARSIZE = 30;     // stardebug
 #else
-static const int   StarSize = 9;
+static const int   STARSIZE = 9;
 #endif
 static const float LocalScale = 0.8;
 
@@ -65,14 +65,15 @@ void stars_init()
    for (int i=0; i<STARANIMATIONS; i++)
       surfaces[i] = NULL;
    set_star_surfaces();
-   add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars);
+   //add_to_mainloop(PRIORITY_DEFAULT, time_ustar, do_ustars);
+   add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_ustars);
 }
 
 void set_star_surfaces()
 {
    for (int i=0; i<STARANIMATIONS; i++)
    {
-      float size = LocalScale*global.WindowScale*0.01*Flags.Scale*StarSize;
+      float size = LocalScale*global.WindowScale*0.01*Flags.Scale*STARSIZE*Flags.StarSize*0.015;
 #ifdef CIRCLESTARS
       size *= 0.25*(1+4*drand48());
 #else
@@ -83,9 +84,10 @@ void set_star_surfaces()
 	 cairo_surface_destroy(surfaces[i]);
 #ifdef CIRCLESTARS
       double r = size/2;
-      double haloR = r*4;
-      double midpoint = haloR;
-      surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*haloR,2*haloR);
+      double midpoint = r;
+      //surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*haloR,2*haloR);
+      P("size: %f r:%f\n",size,r);
+      surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,2*r,2*r);
 #else
       surfaces[i] = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,size,size);
 #endif
@@ -95,33 +97,14 @@ void set_star_surfaces()
       cairo_set_source_rgba(cr,color.red, color.green, color.blue,color.alpha);
 #ifdef CIRCLESTARS
       {
-	 //cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
+	 cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
 	 cairo_arc(cr,midpoint,midpoint,r,0,2*M_PI);
 	 cairo_close_path(cr);
 	 cairo_fill(cr);
-
-	 // create halo
-	 cairo_pattern_t *pattern;
-	 pattern = cairo_pattern_create_radial(midpoint, midpoint, r, midpoint, midpoint, haloR);  
-	 //double bright = 25 * ALPHA * 0.01;
-	 //cairo_pattern_add_color_stop_rgba(pattern, 0.0, 234.0/255, 244.0/255, 252.0/255, bright);
-	 //cairo_pattern_add_color_stop_rgba(pattern, 1.0, 234.0/255, 244.0/255, 252.0/255, 0.0);
-	 cairo_pattern_add_color_stop_rgba(pattern, 0.0, color.red, color.green, color.blue, 1.0);
-	 cairo_pattern_add_color_stop_rgba(pattern, 1.0, color.red, color.green, color.blue, 0.0);
-	 //cairo_surface_t *halo_surface;
-	 //halo_surface      = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2*haloR, 2*haloR);
-	 cairo_t *halocr = cr;
-	 cairo_set_source_rgba(halocr, 0, 0, 0, 0);
-	 cairo_paint          (halocr);
-	 cairo_set_source     (halocr, pattern);
-	 cairo_arc            (halocr, midpoint, midpoint, haloR, 0, M_PI * 2);
-	 cairo_fill           (halocr);     
-	 cairo_pattern_destroy  (pattern);
-
       }
 #else
       {
-	 cairo_set_line_width(cr,1.0*size/StarSize);
+	 cairo_set_line_width(cr,1.0*size/STARSIZE);
 	 cairo_move_to(cr, 0           , 0 );
 	 cairo_line_to(cr, size        , size );
 	 cairo_move_to(cr, 0           , size );
@@ -188,7 +171,7 @@ void stars_erase()
       Skoordinaten *star = &Stars[i];
       int x = star->x;
       int y = star->y;
-      myXClearArea(global.display,global.SnowWin,x,y,StarSize,StarSize,global.xxposures);
+      myXClearArea(global.display,global.SnowWin,x,y,STARSIZE,STARSIZE,global.xxposures);
    }
 }
 
@@ -196,6 +179,7 @@ void stars_ui()
 {
    UIDO(NStars, init_stars(); ClearScreen(););
    UIDO(Stars, ClearScreen(););
+   UIDO(StarSize, set_star_surfaces(); init_stars(); ClearScreen(););
 
    static int prev = 100;
    P("stars_ui %d\n",prev);
@@ -207,7 +191,6 @@ void stars_ui()
    }
 }
 
-
 int do_ustars(void *d)
 {
    if (Flags.Done)
@@ -215,8 +198,17 @@ int do_ustars(void *d)
    if (NOTACTIVE)
       return TRUE;
    for (int i=0; i<NStars; i++)
-      if (drand48() > 0.8)
+   {
+      Stars[i].x += 0.8*time_umoon*Flags.MoonSpeed/60.0;
+      P("dx: %f\n",time_umoon*Flags.MoonSpeed/60.0);
+
+      if (Stars[i].x > global.SnowWinWidth)
+	 Stars[i].x = 0;
+
+      if (drand48() > 0.95)
 	 Stars[i].color = randint(STARANIMATIONS);
+      // Note: color not only defines color but also size
+   }
    return TRUE;
    (void)d;
 }

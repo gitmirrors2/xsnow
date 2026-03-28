@@ -96,6 +96,7 @@ static Window VirtualRootWindowOfScreen(Screen *screen)
 		     (unsigned char **) &newRoot) == Success
 		  && newRoot) {
 	       root = *newRoot;
+	       XFree(newRoot);
 	       break;
 	    }
 	 }

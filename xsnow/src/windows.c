@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,16 +43,20 @@
 #include "dsimple.h"
 #include "xdo.h"
 #include "scenery.h"
+#include "scr2tops.h"
 
 static int    do_sendevent(void *);
 static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
 
-static WinInfo      *Windows = NULL;
-static int          NWindows;
-static int          do_wupdate(void *);
-static void         DetermineVisualWorkspaces(void);
-static int          waitmax(gpointer widget);
-static int          waitfull(gpointer widget);
+static WinInfo         *Windows = NULL;
+static int             NWindows = 0;
+static int             do_wupdate(void *);
+static void            DetermineVisualWorkspaces(void);
+static int             waitmax(gpointer widget);
+static int             waitfull(gpointer widget);
+static sem_t           Windows_sem;
+static pthread_mutex_t mutex;
+static pthread_t       thread;
 
 
 void windows_ui()
@@ -74,6 +78,20 @@ void windows_init()
    }
    if (!global.IsDouble)
       add_to_mainloop(PRIORITY_DEFAULT, time_sendevent, do_sendevent);
+   sem_init(&Windows_sem,0,1);
+   pthread_mutex_init(&mutex, NULL);
+}
+
+static int lock_Windows()
+{
+   P("lock_Windows\n");
+   return sem_wait(&Windows_sem);
+}
+
+static int unlock_Windows()
+{
+   P("unlock_Windows\n");
+   return sem_post(&Windows_sem);
 }
 
 int WorkspaceActive()
@@ -110,9 +128,171 @@ int do_sendevent(void *dummy)
    (void)dummy;
 }
 
+void *call_GetWindows(void *d)
+{
+   (void)d;
+   P("entered call_GetWindows\n");
+   WinInfo *w;
+   int     n;
+
+   int busy = pthread_mutex_trylock(&mutex);
+   if( busy == EBUSY)
+   {
+      P("Busy: %d\n",busy);
+      return NULL;
+   }
+
+   if(Flags.Screenshots)
+   {
+      /*
+	 int usescrot,    // whether to use scrot for screenshot or not
+	 int kernelrows;  // number of rows to be matched
+	 int kernelcols;  // number of cols to be matched
+	 int max0;        // number of pixels that can be missed
+	 int X;           // x-coordinate of sreenshot to consider
+	 int Y;           // y-coordinate of sreenshot to consider
+	 int Width;       // width of sreenshot to consider
+	 int Height;      // height of sreenshot to consider
+	 int min_y;       // tops with y < min_y are neglected (to ignore a panel, for instance)
+	 int min_width;   // minimal accepted width of top of window
+	 int max_width;   // maximal accepted width of top of window
+	 int removearea;  // remove shadowed tops if closer than removearea pixels from top above
+			  // if < 0: do not remove shadowed tops
+			  tops_t *tops;    // output: x,y,w of top of windows
+					   // can be destroyed by free().
+					   int ntops;       // output: number of tops
+					   */
+      P("Using screenshots\n");
+      tops_t *tops;
+      int ntops, usescrot;
+      switch (Flags.Screenshots)
+      {
+	 case 1:
+	 default:  /* fallthru */
+	    P("Using x11 for screenshot\n");
+	    usescrot = 0;
+	    break;
+	 case 2:
+	    P("Using scrot for screenshot\n");
+	    usescrot = 1;
+	    break;
+
+      }
+
+      //global.WindowOffsetX = 0;
+      P("location: %d+%d %dx%d %d++%d\n",global.ScreenShotX,global.ScreenShotY,global.SnowWinWidth,global.SnowWinHeight,global.WindowOffsetX,global.WindowOffsetY);
+      int kr,kc;
+      if (global.SnowWinWidth > 1900)
+      {
+	 kr = 60;
+	 kc = 60;
+      }
+      else
+      {
+	 kr = 40;
+	 kc = 40;
+      }
+
+      scr2tops(
+	    usescrot,
+	    kr,kc, // kernelrow/col
+	    6,     //max0
+	    global.ScreenShotX,global.ScreenShotY,global.SnowWinWidth,global.SnowWinHeight,
+	    2,
+	    70,
+	    2000,
+	    100,
+	    &tops, &ntops
+	    );
+
+      lock_Windows();
+
+      WinInfo *orig = NULL;
+      int norig     = NWindows;
+
+      if(NWindows > 0)
+      {
+	 orig = (WinInfo *)malloc(sizeof(WinInfo)*NWindows);
+	 memcpy(orig, Windows, sizeof(WinInfo)*NWindows);
+      }
+
+      Windows = (WinInfo *)realloc(Windows,sizeof(WinInfo)*ntops);
+
+      NWindows = 0;
+      for (int i=0; i<ntops; i++)
+      {
+	 int x = tops[i].x;
+	 int y = tops[i].y;
+	 unsigned int w = tops[i].w;
+
+	 // compare x,y,w with corresponding values in orig
+	 // if close enough, use the original xxid
+
+	 Window xxid = 0;
+	 for (int j=0; j<norig; j++)
+	 {
+	    if ( 
+		  within(x, orig[j].x, global.tolxyw) &&
+		  within(y, orig[j].y, global.tolxyw) &&
+		  within(w, orig[j].w, global.tolxyw)
+	       )
+	    {
+	       xxid = orig[j].xxid;
+	       P("Using original xxid x: %d, y: %d, w: %d,xxid: %ld\n",x,y,w,xxid);
+	       P("USING original xxid x: %d, y: %d, w: %d,xxid: %ld\n",orig[j].x,orig[j].y,orig[j].w,orig[j].xxid);
+	       break;
+	    }
+	 }
+
+	 if (xxid == 0)
+	 {
+	    xxid = global.SnowWinWidth/2*(global.SnowWinWidth/2 * x/2 + y/2) + w/2 ;
+	    P("Not Using original xxid x: %d, y: %d, w: %d,xxid: %ld\n",x,y,w,xxid);
+	 }
+
+	 Windows[i].xxid   = xxid;
+	 Windows[i].x      = x;
+	 Windows[i].y      = y;
+	 Windows[i].xa     = x;
+	 Windows[i].ya     = y;
+	 Windows[i].w      = w;
+	 Windows[i].h      = 100;
+	 Windows[i].ws     = -1;
+	 Windows[i].sticky = 1;
+	 Windows[i].dock   = 0;
+	 Windows[i].hidden = 0;
+	 Windows[i].ignore = 0;
+	 NWindows++;
+	 P("Window locations: x: %d, y: %d, w: %d\n",x,y,w);
+      }
+      free(tops);
+      free(orig);
+   }
+   else
+   {
+      P("Using GetWindows\n");
+      if (GetWindows(&w, &n)<0)
+      {
+	 I("Cannot get windows\n");
+	 Flags.Done = 1;
+      }
+      lock_Windows();
+      Windows = (WinInfo *)realloc(Windows,sizeof(WinInfo)*n);
+      for (int i=0; i<n; i++)
+	 Windows[i] = w[i];
+      NWindows = n;
+      free(w);
+   }
+
+   P("calling unlock\n");
+   unlock_Windows();
+   pthread_mutex_unlock(&mutex);
+   return NULL;
+}
 
 int do_wupdate(void *dummy)
 {
+   int got_Windows_lock = 0;
    static long PrevWorkSpace = -123;
    P("do_wupdate #%d %d\n",global.counter++,global.WindowsChanged);
    if (Flags.Done)
@@ -141,6 +321,7 @@ int do_wupdate(void *dummy)
 
    global.WindowsChanged = 0;
 
+   int rc;
    long r;
    r = GetCurrentWorkspace();
    if(r>=0) 
@@ -160,10 +341,6 @@ int do_wupdate(void *dummy)
       goto end;
    }
 
-   P("Update windows\n");
-
-   if(Windows) 
-      free(Windows);
 
    // special hack too keep global.SnowWin below (needed for example in FVWM/xcompmgr, 
    // where global.SnowWin is not click-through)
@@ -177,25 +354,41 @@ int do_wupdate(void *dummy)
       }
    }
 
-   if (GetWindows(&Windows, &NWindows)<0)
-   {
-      I("Cannot get windows\n");
-      Flags.Done = 1;
-      goto end;
-   }
+   pthread_attr_t attr;
+   pthread_attr_init(&attr);
+   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-   for (int i=0; i<NWindows; i++)
+   rc = pthread_create(&thread,&attr,call_GetWindows,NULL);
+   (void)rc;
+   P("returncode from pthread_create: %d\n",rc);
+   //pthread_join(thread,NULL);
+   pthread_attr_destroy(&attr);
+
+   got_Windows_lock = (sem_trywait(&Windows_sem) == 0);
+   P("got_Windows_lock: %d\n",got_Windows_lock);
+
+   if(!got_Windows_lock)
+      goto end;
+
+   P("Update windows\n");
+
+   if (Flags.Screenshots == 0)
    {
-      WinInfo *w = &Windows[i];
-      P("SnowWinX SnowWinY: %d %d\n",global.SnowWinX,global.SnowWinY);
-      w->x += global.WindowOffsetX-global.SnowWinX;
-      w->y += global.WindowOffsetY-global.SnowWinY;
+      for (int i=0; i<NWindows; i++)
+      {
+	 WinInfo *w = &Windows[i];
+	 P("SnowWinX SnowWinY: %d %d\n",global.SnowWinX,global.SnowWinY);
+	 w->x += global.WindowOffsetX-global.SnowWinX;
+	 w->y += global.WindowOffsetY-global.SnowWinY;
+      }
    }
 
 
    // Take care of the situation that the transparent window changes from workspace, 
    // which can happen if in a dynamic number of workspaces environment
    // a workspace is emptied.
+
+   // todo when using screenshots, this will not work
    WinInfo *winfo;
    winfo = FindWindow(Windows,NWindows,global.SnowWin);
 
@@ -216,17 +409,25 @@ int do_wupdate(void *dummy)
    }
 
    P("do_wupdate: %d %p\n",global.Trans,(void *)winfo);
-   if (global.SnowWin != global.Rootwindow)
-      //if (!TransA && !winfo)  // let op
-      if (!global.Trans && !winfo)
-      {
-	 I("No transparent window & no SnowWin %#lx found\n",global.SnowWin); 
-	 Flags.Done = 1;
-      }
+   if(0)  // skipping this test
+   {
+      if (global.SnowWin != global.Rootwindow)
+	 //if (!TransA && !winfo)  // let op
+	 if (!global.Trans && !winfo)
+	 {
+	    I("No transparent window & no SnowWin %#lx found\n",global.SnowWin); 
+	    Flags.Done = 1;
+	 }
+   }
 
    UpdateFallenSnowRegions();
 
 end:
+   if (got_Windows_lock)
+   {
+      P("calling unlock\n");
+      unlock_Windows();
+   }
    Unlock_fallen();
    return TRUE;
    (void)dummy;
@@ -302,10 +503,13 @@ void DetermineVisualWorkspaces()
    int prev = -SOMENUMBER;
    for (int i=0; i<number; i++)
    {
+      int n = info[i].screen_number;  (void)n;
       int x = info[i].x_org;
       int y = info[i].y_org;
       int w = info[i].width;
       int h = info[i].height;
+
+      P("Screeninfo[%d]: n: %d x: %d y: %d w: %d h: %d\n",i,n,x,y,w,h);
 
       // place ProbeWindow in the center of xinerama screen[i]
 
@@ -333,6 +537,7 @@ void DetermineVisualWorkspaces()
 	 prev = desktop;
       }
    }
+   XFree(info); // todo is dit ok?
    xdo_unmap_window(global.xdo,ProbeWindow);
 }
 
@@ -340,7 +545,9 @@ void DetermineVisualWorkspaces()
 void UpdateFallenSnowRegionsWithLock()
 {
    Lock_fallen();
+   lock_Windows();
    UpdateFallenSnowRegions();
+   unlock_Windows();
    Unlock_fallen();
 }
 
@@ -355,10 +562,14 @@ void UpdateFallenSnowRegions()
    w = Windows;
    for (int i=0; i<NWindows; i++)
    {
-      //P("%d %#lx\n",i,w->id);
+      //P("%d %#lx\n",i,w->xxid);
       {
-	 fsnow = FindFallen(global.FsnowFirst,w->id);
-	 P("%#lx %d\n",w->id,w->dock);
+	 if (Flags.Screenshots == 0)
+	    fsnow = FindFallen(global.FsnowFirst,w->xxid);
+	 else
+	    fsnow = FindFallenTol(global.FsnowFirst,w,global.tolxyw);
+
+	 P("%#lx %d\n",w->xxid,w->dock);
 	 if(fsnow)
 	 {
 	    fsnow->win = *w;   // update window properties
@@ -376,13 +587,13 @@ void UpdateFallenSnowRegions()
 	    // and also not if this window is a "dock"
 	    // and also not if this window is "hidden"
 	    // and also not if this window is to be ignored
-	    P("               %#lx %d %d %d\n",w->id,w->dock,w->w,w->ignore);
-	    if (w->id != global.SnowWin && w->y > 0 && !(w->dock) && !(w->hidden) && !(w->ignore)) 
+	    P("               %#lx %d %d %d\n",w->xxid,w->dock,w->w,w->ignore);
+	    if (w->xxid != global.SnowWin && w->y > 0 && !(w->dock) && !(w->hidden) && !(w->ignore)) 
 	    {
-	       P("dock? %#lx %d %d %d\n",w->id,w->dock,w->hidden,w->w);
+	       P("dock? %#lx %d %d %d\n",w->xxid,w->dock,w->hidden,w->w);
 	       if(((int)(w->w) == global.SnowWinWidth && w->x == 0 && w->y <100)) //maybe a transparent xpenguins window?
 	       {
-		  P("skipping: #%d %#lx %d %d %d\n",global.counter++, w->id, w->w, w->x, w->y);
+		  P("skipping: #%d %#lx %d %d %d\n",global.counter++, w->xxid, w->w, w->x, w->y);
 	       }
 	       else
 	       {
@@ -411,47 +622,58 @@ void UpdateFallenSnowRegions()
    fsnow = global.FsnowFirst;
    while(fsnow)
    {
-      if (fsnow->win.id != 0)  // fsnow->id=0: this is the snow at the bottom
+      if (fsnow->win.xxid != 0)  // fsnow->xxid=0: this is the snow at the bottom
       {
-	 w = FindWindow(Windows,NWindows,fsnow->win.id);
-	 if(
-	       !w                                                       // this window is gone
-	       || ( w->w > 0.8*global.SnowWinWidth 
-		  && w->ya < Flags.IgnoreTop)                           // too wide&too close to top   
-	       || ( w->w > 0.8*global.SnowWinWidth 
-		  && (int)global.SnowWinHeight - w->ya < Flags.IgnoreBottom) // too wide&too close to bottom
-	   )
+	 WinInfo *w;
+	 if (Flags.Screenshots == 0)
+	    w = FindWindow(Windows,NWindows,fsnow->win.xxid);
+	 else
 	 {
-	    P("Gone...\n");
-	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
-	    toremove[ntoremove++] = fsnow->win.id;
+	    w = FindWindowTol(Windows,NWindows,&fsnow->win,global.tolxyw);
 	 }
 
+	 if(
+	       !w                                                       // this window is gone
+	       || ( /*w->w > 0.8*global.SnowWinWidth && */ 
+		  w->ya < Flags.IgnoreTop)                           // /*too wide&*/too close to top   
+	       || ( /* w->w > 0.8*global.SnowWinWidth && */ 
+		  (int)global.SnowWinHeight - w->ya < Flags.IgnoreBottom) // /*too wide*/&too close to bottom
+	   )
+	 {
+	    P("Gone... Generate flakes from fallen x: %d y: %d w: %d\n",fsnow->win.x, fsnow->win.y,fsnow->w);
+	    GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.08,1);
+	    toremove[ntoremove++] = fsnow->win.xxid;
+	 }
+
+	 if (!Flags.Screenshots)
 	 {
 	    // remove if name contains "Desktop"
 	    XTextProperty text_prop;
-	    int rc = XGetWMName(global.display,fsnow->win.id,&text_prop);
+	    int rc = XGetWMName(global.display,fsnow->win.xxid,&text_prop);
 	    if(rc)
 	       if (strstr((char *)text_prop.value,"Desktop") ||
 		     strstr((char *)text_prop.value,"desktop"))
 	       {
 		  P("removing: %s\n",text_prop.value);
-		  toremove[ntoremove++] = fsnow->win.id;
+		  toremove[ntoremove++] = fsnow->win.xxid;
 	       }
+	    if (text_prop.value)
+	       XFree(text_prop.value);
 	 }
 
 
-	 // test if fsnow->win.id is hidden. If so: clear the area and notify in fsnow
+	 // test if fsnow->win.xxid is hidden. If so: clear the area and notify in fsnow
 	 // we have to test that here, because the hidden status of the window
 	 // can change
-	 P("%#lx hidden:%d\n",fsnow->win.id,fsnow->win.hidden);
-	 if (fsnow->win.hidden)
+	 P("%#lx hidden:%d\n",fsnow->win.xxid,fsnow->win.hidden);
+	 if (fsnow->win.hidden && !Flags.Screenshots)
 	 {
-	    P("%#lx is hidden %d\n",fsnow->win.id, global.counter++);
+	    P("%#lx is hidden %d\n",fsnow->win.xxid, global.counter++);
 	    if(global.DoCapella)
 	    {
-	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
-	       toremove[ntoremove++] = fsnow->win.id;
+	       P("Hidden... Generate flakes from fallen\n");
+	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.08,1);
+	       toremove[ntoremove++] = fsnow->win.xxid;
 	    }
 	    else
 	    {
@@ -464,22 +686,29 @@ void UpdateFallenSnowRegions()
    }
 
    // test if window has been moved or resized
-   // moved: move fallen area accordingly
+   // moved: move fallen area accordingly, but not if docapella ;-)
    // resized: remove fallen area: add it to toremove
    w = Windows;
    for (int i=0; i<NWindows; i++)
    {
-      fsnow = FindFallen(global.FsnowFirst,w->id);
+      if (Flags.Screenshots == 0)
+	 fsnow = FindFallen(global.FsnowFirst,w->xxid);
+      else
+	 fsnow = FindFallenTol(global.FsnowFirst,w,global.tolxyw);
       if (fsnow)
       {
-	 if ((unsigned int)fsnow->w == w->w+Flags.OffsetW) // width has not changed
+	 //if ((unsigned int)fsnow->w < w->w+Flags.OffsetW) // width has not changed
+	 if (within(fsnow->w, w->w+Flags.OffsetW, global.tolxyw)) // width has not changed
 	 {
-	    if (fsnow->x != w->x + Flags.OffsetX || fsnow->y != w->y + Flags.OffsetY)
+	    //if (fsnow->x != w->x + Flags.OffsetX || fsnow->y != w->y + Flags.OffsetY)
+	    if (!within(fsnow->x, w->x + Flags.OffsetX,global.tolxyw) || 
+		  !within(fsnow->y, w->y + Flags.OffsetY, global.tolxyw))
 	    {
 	       if (global.DoCapella)
 	       {
+		  P("Moved... Generate flakes from fallen\n");
 		  GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
-		  toremove[ntoremove++] = fsnow->win.id;
+		  toremove[ntoremove++] = fsnow->win.xxid;
 	       }
 	       else
 	       {
@@ -491,11 +720,14 @@ void UpdateFallenSnowRegions()
 	       }
 	    }
 	 }
-	 else
+	 else // width has changed
 	 {
 	    if(global.DoCapella)
+	    {
+	       P("Resized... Generate flakes from fallen\n");
 	       GenerateFlakesFromFallen(fsnow,0,fsnow->w,-10.0,0.15,1);
-	    toremove[ntoremove++] = fsnow->win.id;
+	    }
+	    toremove[ntoremove++] = fsnow->win.xxid;
 	 }
       }
       w++;
@@ -772,3 +1004,35 @@ void wait_for_fullscreen(GtkWidget * widget)
    }
 }
 
+void snow_regions_draw(cairo_t *cr)
+{
+   P("snow_regions_draw: NWindows: %d\n",NWindows);
+   cairo_save(cr);
+   const int hw = 6;
+   const int l = 8;
+   lock_Windows();
+   for (int i=0; i<NWindows; i++)
+   {
+      int x1 = Windows[i].x;
+      int y1 = Windows[i].y - hw/2;
+      int x2 = Windows[i].x+Windows[i].w;
+      int y2 = y1;
+
+      P("x1: %d, y1: %d, x2: %d, y2: %d\n",x1,y1,x2,y2);
+
+      cairo_set_line_width(cr,hw);
+      cairo_move_to(cr,x1+l,y1); 
+      cairo_line_to(cr,x2-l,y2);
+      cairo_set_source_rgba(cr,1,0,0,1);
+      cairo_stroke(cr);
+
+      cairo_move_to(cr,x1,y1); 
+      cairo_line_to(cr,x1+l,y1);
+      cairo_move_to(cr,x2-l,y2);
+      cairo_line_to(cr,x2,y2);
+      cairo_set_source_rgba(cr,0,1,0,1);
+      cairo_stroke(cr);
+   }
+   unlock_Windows();
+   cairo_restore(cr);
+}

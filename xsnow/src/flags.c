@@ -1,8 +1,8 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@
 
 #include "flags.h"
 #include "doit.h"
+#include "mygettext.h"
 
 FLAGS Flags;
 FLAGS OldFlags;
@@ -55,6 +56,7 @@ FLAGS VintageFlags;
 
 static void write_button_location(const char *x, FILE *f);
 static void write_tabs_locations(FILE *f);
+static void makeflagsfilename(void);
 
 #ifndef MAKEMAN
 
@@ -73,7 +75,7 @@ static long int S2PosInt(char *s)  //string to positive integer
    return x;
 }
 
-static char *FlagsFile          = NULL;
+//static char *FlagsFile          = NULL;
 static int   FlagsFileAvailable = 1;
 
 #endif
@@ -125,6 +127,7 @@ void InitFlags()
 
 int HandleFlags(int argc, char*argv[])
 {
+   makeflagsfilename();
    SetDefaultFlags();
    char *arg;
    for (int pass = 1; pass <=2; pass++)
@@ -162,6 +165,23 @@ int HandleFlags(int argc, char*argv[])
 	    docs_changelog();
 	    return 1;
 	 }
+	 else if (!strcmp(arg,"-config"))
+	 {
+	    checkax;
+	    char* ff = argv[++ax];
+	    if ( !strstr(ff,"xsnow"))
+	    {
+	       printf("Found '%s' for configfile\n",ff);
+	       printf("But configfilename must contain the string 'xsnow'\n");
+	       printf("Examples:\n");
+	       printf(".config/xsnowrc  # this will translate to '$HOME/.config/xsnowrc'\n");
+	       printf("/etc/default/xsnow\n");
+	       return -1;
+	    }
+	    free(global.FlagsFile);
+	    global.FlagsFile = strdup(ff);
+	    makeflagsfilename();
+	 }
 #ifdef SELFREP
 	 else if (!strcmp(arg, "-selfrep"))
 	 {
@@ -194,20 +214,24 @@ int HandleFlags(int argc, char*argv[])
 	 else if (strcmp(arg, "-desktop") == 0) {
 	    Flags.Desktop = 1;
 	 }
-	 else if (strcmp(arg, "-auroraleft") == 0) {
-	    Flags.AuroraLeft   = 1;
-	    Flags.AuroraRight  = 0;
-	    Flags.AuroraMiddle = 0;
+	 // backward compatability for auroraleft/middle/right:
+	 else if (strcmp(arg, "-auroraleft") == 0)
+	 {
+	    if(pass == 1)
+	       printf(_("Warning: '-auroraleft' is deprecated, using 'aurorax 25' .\n"));
+	    Flags.AuroraX = 25;
 	 }
-	 else if (strcmp(arg, "-auroraright") == 0) {
-	    Flags.AuroraLeft   = 0;
-	    Flags.AuroraRight  = 1;
-	    Flags.AuroraMiddle = 0;
+	 else if (strcmp(arg, "-auroramiddle") == 0)
+	 {
+	    if(pass == 1)
+	       printf(_("Warning: '-auroramiddle' is deprecated, using 'aurorax 50' .\n"));
+	    Flags.AuroraX = 50;
 	 }
-	 else if (strcmp(arg, "-auroramiddle") == 0) {
-	    Flags.AuroraLeft   = 0;
-	    Flags.AuroraRight  = 0;
-	    Flags.AuroraMiddle = 1;
+	 else if (strcmp(arg, "-auroraright") == 0)
+	 {
+	    if(pass == 1)
+	       printf(_("Warning: '-auroraright' is deprecated, using 'aurorax 75' .\n"));
+	    Flags.AuroraX = 75;
 	 }
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-aurora              ,Aurora                           );
@@ -216,6 +240,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-auroraheight        ,AuroraHeight                     );
 	 handle_ia(-auroraspeed         ,AuroraSpeed                      );
 	 handle_ia(-aurorabrightness    ,AuroraBrightness                 );
+	 handle_ia(-aurorax             ,AuroraX                          );
 	 handle_ia(-blowofffactor       ,BlowOffFactor                    );
 	 handle_ia(-checkgtk            ,CheckGtk                         );
 	 handle_ia(-cpuload             ,CpuLoad                          );
@@ -229,6 +254,8 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-moon                ,Moon                             );
 	 handle_ia(-mooncolor           ,MoonColor                        );
 	 handle_ia(-moonspeed           ,MoonSpeed                        );
+	 handle_ia(-moonx               ,MoonX                            );
+	 handle_ia(-moony               ,MoonY                            );
 	 handle_ia(-moonsize            ,MoonSize                         );
 	 handle_ia(-halo                ,Halo                             );
 	 handle_ia(-halobrightness      ,HaloBright                       );
@@ -245,6 +272,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-snowsize            ,SnowSize                         );
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
+	 handle_ia(-starsize            ,StarSize                         );
 	 handle_ia(-stopafter           ,StopAfter                        );
 	 handle_ia(-theme               ,ThemeXsnow                       );
 	 handle_ia(-treefill            ,TreeFill                         );
@@ -259,6 +287,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_im(-screen              ,Screen                           );
 	 handle_ia(-outline             ,Outline                          );
 	 handle_ia(-enablesc2           ,UseColor2                        );
+	 handle_ia(-screenshot          ,Screenshots                      );
 
 
 	 handle_is(-display             ,DisplayName                      );
@@ -357,21 +386,28 @@ int HandleFlags(int argc, char*argv[])
 #undef handle_ia
 
 
-static void makeflagsfile()
+void makeflagsfilename()
 {
-   if (FlagsFile != NULL || FlagsFileAvailable == 0) return;
+   P("FlagsFile: %s\n",global.FlagsFile);
+   if (FlagsFileAvailable == 0) return;
    if (getenv("HOME") == NULL)
    {
       FlagsFileAvailable = 0;
-      printf("Warning: cannot create or read $HOME/%s\n",FLAGSFILE);
+      printf("Warning: cannot create or read $HOME/%s\n",global.FlagsFile);
       return;
    }
-   FlagsFile = (char *)malloc(sizeof(char)*(strlen(getenv("HOME")) + 1 + strlen(FLAGSFILE) + 1));
-   assert(FlagsFile);
-   strcpy(FlagsFile,getenv("HOME"));
-   strcat(FlagsFile,"/");
-   strcat(FlagsFile,FLAGSFILE);
-   P("FlagsFile: %s\n",FlagsFile);
+   if (global.FlagsFile[0] != '/')
+   {
+      char *ff = strdup(global.FlagsFile);
+      global.FlagsFile = (char *)realloc(global.FlagsFile,
+	    sizeof(char)*(strlen(getenv("HOME")) + 1 + strlen(global.FlagsFile) + 1));
+      assert(global.FlagsFile);
+      strcpy(global.FlagsFile,getenv("HOME"));
+      strcat(global.FlagsFile,"/");
+      strcat(global.FlagsFile,ff);
+      free(ff);
+   }
+   P("FlagsFile: %s\n",global.FlagsFile);
 }
 
 void findflag(FILE *f, const char *x, char **value)
@@ -416,13 +452,13 @@ void ReadFlags()
 {
    FILE *f;
    long int intval;
-   makeflagsfile();
+   //makeflagsfilename();
    if (!FlagsFileAvailable)
       return;
-   f=fopen(FlagsFile,"r");
+   f=fopen(global.FlagsFile,"r");
    if (f == NULL)
    {
-      I("Cannot read %s\n",FlagsFile);
+      I("Cannot read %s\n",global.FlagsFile);
       return;
    }
    char *value = NULL;;
@@ -455,13 +491,13 @@ void ReadFlags()
 void WriteFlags(int output_locations)
 {
    FILE *f;
-   makeflagsfile();
+   //makeflagsfilename();
    if (!FlagsFileAvailable) 
       return;
-   f = fopen(FlagsFile,"w");
+   f = fopen(global.FlagsFile,"w");
    if (f == NULL)
    {
-      I("Cannot write %s\n",FlagsFile);
+      I("Cannot write %s\n",global.FlagsFile);
       return;
    }
    fprintf(f,"# Xsnow version %s\n",VERSION);
@@ -560,6 +596,7 @@ void write_tabs_locations(FILE *f)
       else
 	 break;
    }
+   g_list_free(list); // todo ok?
 }
 
 void write_button_location(const char *x,FILE *f)

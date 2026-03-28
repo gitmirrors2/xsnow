@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 
 static void *do_aurora(void *);
 static void  aurora_setparms(AuroraMap *a);
+static void  aurora_setx(AuroraMap *a);
 static void  aurora_changeparms(AuroraMap *a);
 static void  aurora_computeparms(AuroraMap *a);
 static void  create_aurora_base(const double *y, int n, 
@@ -86,15 +87,17 @@ static unsigned short xsubi[3]; // this is used by erand48() in the compute thre
 
 void aurora_init()
 {
-   // lock everything
-   P("init: 1\n");
-   lock_init();
-   P("init: 2\n");
-
    static int firstcall = 1;
+   // lock everything
+   P("aurorainit: 1 firstcall: %d\n",firstcall);
+   lock_init();
+   P("aurorainit: 2\n");
+
    if (!firstcall)
       if(!global.IsDouble)
 	 aurora_erase();
+   if(firstcall)
+      memset(&a,0,sizeof(a));
 
    if (!gdk_rgba_parse(&color, AuroraColor))
       gdk_rgba_parse(&color,"rgb(255,165,0)");
@@ -135,10 +138,20 @@ void aurora_init()
    if (firstcall)
    {
       firstcall = 0;
+      if(a.z)
+	 free(a.z);
       a.z     = NULL;
+      if(a.zh)
+	 free(a.zh);
       a.zh    = NULL;
+      if(a.za)
+	 free(a.za);
       a.za    = NULL;
+      if(a.zaa)
+	 free(a.zaa);
       a.zaa   = NULL;
+      if(a.fuzz)
+	 free(a.fuzz);
       a.fuzz  = NULL;
       a.lfuzz = 0;
       xsubi[0] = drand48()*100;
@@ -191,15 +204,13 @@ int unlock_copy()
 
 void aurora_ui()
 {
-   UIDO(Aurora            , );
-   UIDO(AuroraWidth       , aurora_init(); );
-   UIDO(AuroraBase        , aurora_init(); );
-   UIDO(AuroraHeight      , aurora_init(); );
-   UIDO(AuroraLeft        , aurora_init(); );
-   UIDO(AuroraMiddle      , aurora_init(); );
-   UIDO(AuroraRight       , aurora_init(); );
-   UIDO(AuroraBrightness  ,  );
-   UIDO(AuroraSpeed       ,  );
+   UIDO(Aurora            ,                  );
+   UIDO(AuroraWidth       , aurora_init();   );
+   UIDO(AuroraBase        , aurora_init();   );
+   UIDO(AuroraHeight      , aurora_init();   );
+   UIDO(AuroraBrightness  ,                  );
+   UIDO(AuroraSpeed       ,                  );
+   UIDO(AuroraX           , aurora_setx(&a); );
 }
 
 void aurora_draw(cairo_t *cr)
@@ -221,9 +232,9 @@ void aurora_draw(cairo_t *cr)
 
 void aurora_erase()
 {
-   P("aurora_erase %d %d %d %d \n",a.x,a.y,a.width,a.height);
+   P("aurora_erase %d %d %d %d \n",a.x,0,a.width,a.height);
    myXClearArea(global.display, global.SnowWin,
-	 a.x, a.y,     
+	 a.x, 0,     
 	 a.width, a.base,
 	 global.xxposures);
 }
@@ -279,8 +290,8 @@ void *do_aurora(void *d)
 
 	 if(0) // draw aurora surface rectangle, for debugging
 	 {
-	    cairo_set_source_rgba(aurora_cr,color.red, color.green, color.blue,1);
-	    cairo_set_line_width(aurora_cr,4);
+	    cairo_set_source_rgba(aurora_cr,1,0.5,0,1);
+	    cairo_set_line_width(aurora_cr,10);
 	    cairo_move_to(aurora_cr,0,        0);
 	    cairo_line_to(aurora_cr,a->width, 0);
 	    cairo_line_to(aurora_cr,a->width, a->base);
@@ -326,6 +337,7 @@ void *do_aurora(void *d)
 	       // draw aurora
 	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
 	       cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
+	       P("z.x: %d, z.y: %f\n",a->z[j].x,a->z[j].y);
 	    }
 	    if(0) // draw one aurora pillar 
 	    {
@@ -364,20 +376,21 @@ void *do_aurora(void *d)
 	       }
 	    }
 	 }
-	 if(0) // draw base of aurora
+	 if(0) // draw base of aurora for debugging  
 	 {
+	    int offset = 100;
 	    cairo_save(aurora_cr);
 	    cairo_set_operator(aurora_cr,CAIRO_OPERATOR_OVER);
 	    cairo_set_source_rgba(aurora_cr,1,1,0,1);
 	    for (int j=0; j<a->nz; j++)
 	    {
-	       cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-2,1,1);
+	       cairo_rectangle(aurora_cr,a->step*a->z[j].x, a->z[j].y-offset,1,1);
 	    }
 	    cairo_fill(aurora_cr);
 	    cairo_set_source_rgba(aurora_cr,1,0,0,1);
 	    for (int j=0; j<a->nfuzz; j++)
 	    {
-	       cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-2,1,1);
+	       cairo_rectangle(aurora_cr,a->step*a->fuzz[j].x, a->fuzz[j].y-offset,1,1);
 	    }
 	    cairo_fill(aurora_cr);
 	    cairo_restore(aurora_cr);
@@ -424,23 +437,22 @@ double cscale(double d, int imax, float ah, double az, double h)
    return scale;
 }
 
-void aurora_setparms(AuroraMap *a)
+void aurora_setx(AuroraMap *a)
 {
-
    int f = turnfuzz * global.SnowWinWidth + 2;
    a->w = a->width - 2*f; //Flags.AuroraWidth*0.01*global.SnowWinWidth;
 
    a->xoffset = f;
-   if (Flags.AuroraLeft)
-      a->x = -f/2; //a->x = f;
-   else if (Flags.AuroraMiddle)
-      a->x = (global.SnowWinWidth - a->width)/2; // + f;
-   else // AuroraRight assumed
-      a->x = global.SnowWinWidth - a->width; // - f;
+   //a->x = (global.SnowWinWidth - a->width)/2; // + f;
+   a->x = global.SnowWinWidth*Flags.AuroraX/100.0  - a->width/2; // + f;
+}
+
+void aurora_setparms(AuroraMap *a)
+{
+
+   aurora_setx(a);
 
    P("a-> a->width %d %d %d\n",a->w,a->width,a->x);
-   //a->y = Flags.AuroraBase  *global.SnowWinHeight*0.01;
-   a->y = 0;
 
    for (int i=0; i<AURORA_POINTS; i++)
    {
@@ -513,6 +525,7 @@ void aurora_changeparms(AuroraMap *a)
 	    a->points[i]  = 0;
 	    a->dpoints[i] = fabs(a->dpoints[i]);
 	 }
+	 P("a.points a.dpoints %d %f %f\n",i,a->points[i],a->dpoints[i]);
       }
    }
 
@@ -628,6 +641,7 @@ void aurora_computeparms(AuroraMap *a)
 	 ymax = a->z[i].y;
       a->z[i].x += a->xoffset;
    }
+   P("ymin: %lf, ymax: %lf\n",ymin,ymax);
 
 
    if(1)

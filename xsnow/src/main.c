@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
  * see mainstub.cpp and mainstub.h
  */
 
-#define dosync 0  /* synchronise X-server. Change to 1 will detoriate the performance
+#define dosync 0  /* 0: do not synchronise X-server. Change to 1 will detoriate the performance
 		     but allow for better analysis
 		     */
 
@@ -117,6 +117,7 @@ int              SnowWinChanged = 1;
 cairo_t         *CairoDC = NULL;
 cairo_surface_t *CairoSurface = NULL;
 
+
 int lxdefound = False;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
@@ -131,7 +132,8 @@ static int Argc;
 static int          DoRestart      = 0;
 static guint        draw_all_id    = 0;
 static guint        drawit_id      = 0;
-static GtkWidget   *TransA         = NULL;
+//static GtkWidget   *TransA         = NULL;
+GtkWidget   *TransA         = NULL;
 static char        *SnowWinName    = NULL;
 static int          wantx          = 0;
 static int          wanty          = 0;
@@ -181,7 +183,7 @@ static int  do_check_stop(void *);
 static int  do_full_trans(gpointer widget);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 
-static volatile int signal_caught = 0;
+static int signal_caught = 0;
 static char *StopFile;
 /**********************************************************************************************/
 
@@ -329,9 +331,15 @@ int main_c(int argc, char *argv[])
    global.Message[0]          = 0;
 
    global.SantaPlowRegion     = 0;
+   global.gSnowOnTreesRegion  = NULL;
+   global.TreeRegion          = NULL;
 
    global.DoCapella           = DOCAPELLA;
    global.time_to_write_flags = TRUE;
+
+   global.tolxyw              = 4;
+
+   global.FlagsFile           = strdup(FLAGSFILE);
 
    StopFile = (char*) malloc(sizeof(char)*(strlen(getenv("HOME"))+1+strlen(STOPFILE)+1));
    assert(StopFile);
@@ -346,6 +354,7 @@ int main_c(int argc, char *argv[])
    for (int i=0; i<argc; i++)
    {
       char *arg = argv[i];
+
       if(!strcmp(arg, "-h") || !strcmp(arg, "-help")) 
       {
 	 docs_usage(0);
@@ -376,6 +385,7 @@ int main_c(int argc, char *argv[])
    }
    int rc = HandleFlags(argc, argv);
 
+
    handle_language(0); // the langues used is from flags or .xsnowrc
 		       //                     this changes env LANGUAGE accordingly
 		       //                     so that the desired translation is in effect
@@ -397,6 +407,8 @@ int main_c(int argc, char *argv[])
 	 break;
    }
    PrintVersion();
+
+   printf(_("Configuration file: %s\n"),global.FlagsFile);
 
    printf(_("Available languages are: %s\n"),LANGUAGES);
    /* Eskimo warning */
@@ -448,6 +460,9 @@ int main_c(int argc, char *argv[])
       global.IsWayland = 0;
 
    gtk_init(&argc, &argv);
+
+   if (global.IsWayland)   // at this moment: cannot take screenshot in wayland
+      Flags.Screenshots = 0;
 
    if (Flags.BelowAllForce)
       Flags.BelowAll = 0;
@@ -574,6 +589,14 @@ int main_c(int argc, char *argv[])
    if(!Flags.NoMenu && !global.XscreensaverMode)
    {
       ui();
+      {
+	 char *x = _("Configuration file: ");
+	 char *s = (char *) malloc(strlen(x) + strlen(global.FlagsFile) + 1); 
+	 strcpy(s,x);
+	 strcat(s,global.FlagsFile);
+	 ui_show_something(s);
+	 free(s);
+      }
       ui_gray_erase(global.Trans);
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, time_desktop_type, do_show_desktop_type);
@@ -807,6 +830,8 @@ int StartWindow()
 	 gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
 	 global.SnowWinWidth = w;
 	 global.SnowWinHeight = h;
+	 //P("w and h: %d %d\n",w,h);
+	 //exit(0);
 	 printf(_("Using transparent window: %dx%d\n"),w,h);
 	 P("wantx, wanty: %d %d\n",wantx,wanty);
 	 if(!strncasecmp(global.DesktopSession,"fvwm",4) ||
@@ -840,7 +865,8 @@ int StartWindow()
 	 {
 	    lxdefound = True;
 	    printf(_("LXDE session found, using window 'pcmanfm'.\n"));
-	    P("lxdefound: %d %#lx\n",lxdefound,*xwin);
+	    P("lxdefound: %d %#lx x: %d y: %d w: %d h: %d\n",lxdefound,xwin,
+		  global.SnowWinX,global.SnowWinY, global.SnowWinWidth,global.SnowWinHeight);
 	 }
 	 else if (
 	       (xwin = largest_window_with_name(global.xdo,"^Desktop$",x,y))
@@ -904,6 +930,9 @@ int StartWindow()
 
    global.SnowWinX = wantx;
    global.SnowWinY = wanty;
+
+   global.ScreenShotX = wantx;
+   global.ScreenShotY = wanty;
 
    PrevW = global.SnowWinWidth;
    PrevH = global.SnowWinHeight;
@@ -995,7 +1024,7 @@ int HandleX11Cairo()
 
    CairoDC = cairo_create(CairoSurface);
    cairo_xlib_surface_set_size(CairoSurface,w,h);
-   P("setting snowwinwidth\n");
+   P("setting snowwinwidth: w: %d, h:%d\n",w,h);
    global.SnowWinWidth  = w;
    global.SnowWinHeight = h;
 
@@ -1025,6 +1054,7 @@ int HandleX11Cairo()
 
    int x1,y1,w1,h1;
    xinerama(global.display, Flags.Screen, &x1, &y1, &w1, &h1);
+   P("Flags.SCreen: %d, x1: %d, y1: %d, w1: %d, h1: %d\n",Flags.Screen,x1,y1,w1,h1);
 
 
    WinInfo *windows;
@@ -1037,7 +1067,7 @@ int HandleX11Cairo()
       WinInfo *w = &windows[i];
       if (w->xa == x1 && w->ya == y1 && (int)w->w == w1 && (int)w->h == h1)
       {
-	 P("match found: x1: %d y1: %d w1: %d h1: %d screen: %d id: %p\n",x1,y1,w1,h1,Flags.Screen,(void*)w->id);
+	 P("match found: x1: %d y1: %d w1: %d h1: %d screen: %d id: %p\n",x1,y1,w1,h1,Flags.Screen,(void*)w->xxid);
 	 ownwindow = True;
 	 break;
       }
@@ -1062,6 +1092,8 @@ int HandleX11Cairo()
 	    global.SnowWinX = winx;
 	    global.SnowWinY = winy;
 	 }
+	 global.ScreenShotX = winx;
+	 global.ScreenShotY = winy;
 	 P("setting snowwinwidth\n");
 	 global.SnowWinWidth  = winw;
 	 global.SnowWinHeight = winh;
@@ -1165,6 +1197,8 @@ int do_ui_check(void *d)
    UIDO (BelowAll            , set_below_above();                 );
    UIDOS(BackgroundFile      ,                                    );
    UIDO (BlackBackground     ,                                    );
+   if (!global.IsWayland)
+      UIDO (Screenshots         ,                                    );
 
    if (Flags.Changes > 0)
    {
@@ -1261,6 +1295,7 @@ int do_event(void *d)
 	       || ev.type == UnmapNotify) 
 	 {
 	    global.WindowsChanged++;
+	    // this is a signal for do_wupdate (windows.c) to rescan the windows
 	    P("WindowsChanged %d %d\n",counter++,global.WindowsChanged);
 	 }
 	 switch (ev.type) 
@@ -1316,7 +1351,8 @@ void RestartDisplay()
    }
    if(!Flags.NoTrees)
    {
-      cairo_region_destroy(global.TreeRegion);
+      if(global.TreeRegion)
+	 cairo_region_destroy(global.TreeRegion);
       global.TreeRegion = cairo_region_create();
    }
    if(!global.IsDouble)
@@ -1349,7 +1385,7 @@ int do_show_desktop_type(void *d)
       s = (char *)_("Probably X11");
    char t[128];
    snprintf(t,64,_("%s. Snow window: %#lx"),s,global.SnowWin);
-   ui_show_desktop_type(t);
+   //ui_show_desktop_type(t);
    return TRUE;
    (void)d;
 }
@@ -1387,12 +1423,14 @@ void SigHandler(int signum)
 int XsnowErrors(Display *dpy, XErrorEvent *err)
 {
    static int count   = 0;
-   const int countmax = 1000;
+   const int countmax = -1;
    char msg[1024];
    XGetErrorText(dpy, err->error_code, msg,sizeof(msg));
    if(Flags.Noisy)
       I("%d %s\n",global.counter++,msg);
 
+   if (countmax < 0)
+      return 0;
    if (++count > countmax)
    {
       snprintf(global.Message,sizeof(global.Message),_("More than %d errors, I quit!"),countmax);
@@ -1431,6 +1469,7 @@ void drawit(cairo_t *cr)
    //   start of xsnow.
    // This is not harmful, but a bit annoying, so we do not draw anything 
    //   the first few times this function is called.
+
 
    if (counter*time_draw_all < 1.5)
    {
@@ -1494,7 +1533,7 @@ void drawit(cairo_t *cr)
       scenery_draw(cr);
    }
 
-   P("birds %d\n",counter++);
+   P("birds %d \n",counter++);
    birds_draw(cr);
 
    if (skipit)
@@ -1507,6 +1546,7 @@ void drawit(cairo_t *cr)
 
    treesnow_draw(cr);
 
+
    snow_draw(cr);
 
 end:
@@ -1515,8 +1555,13 @@ end:
 
    cairo_restore(cr);
 
+#ifdef DRAW_SNOW_REGIONS
+   snow_regions_draw(cr);
+#endif
+
    XFlush(global.display);
 }
+
 
 void SetWindowScale()
 {
@@ -1692,6 +1737,7 @@ void mybindtestdomain()
    P("LC_ALL: %s\n",getenv("LC_ALL"));
    P("LANG: %s\n",getenv("LANG"));
    P("LANGUAGE: %s\n",getenv("LANGUAGE"));
+   free(startlocale);
    textdomain (TEXTDOMAIN);
    char *textd = bindtextdomain(TEXTDOMAIN,LOCALEDIR);
    (void) textd;
@@ -1817,6 +1863,9 @@ void InitDisplayDimensions()
 void make_fullmaxscreen()
 {
    P("make_maxfullscreen...\n");
+   // prevent from appearing in taskbar:
+   gtk_window_set_skip_taskbar_hint(GTK_WINDOW(TransA),TRUE);
+   gtk_window_set_skip_pager_hint  (GTK_WINDOW(TransA),TRUE);
    if (Flags.Screen < 0)
    {
       static GdkWindow *gdkwin = NULL;

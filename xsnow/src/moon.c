@@ -1,8 +1,8 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include "utils.h"
 #include "windows.h"
 #include "xpm2cairo-gdk.h"
+#include "ui.h"
 
 
 #define LEAVE_IF_INACTIVE\
@@ -43,7 +44,10 @@ static int  do_umoon(void *);
 static void init_moon_surface(void);
 static void init_halo_surface(void);
 static void halo_draw(cairo_t *cr);
-static void halo_erase();
+static void halo_erase(void);
+static void handle_moon_speed(void);
+static void handle_moonx(void);
+static void handle_moony(void);
 
 static cairo_surface_t *moon_surface = NULL;
 static cairo_surface_t *halo_surface = NULL;
@@ -60,13 +64,14 @@ void moon_init(void)
    init_moon_surface();
    add_to_mainloop(PRIORITY_DEFAULT, time_umoon, do_umoon);
    /*
-   if (global.SnowWinWidth > 400*moonScale)
-   {
+      if (global.SnowWinWidth > 400*moonScale)
+      {
       global.moonX = moonScale*200+drand48()*(global.SnowWinWidth - 400*moonScale - 2*global.moonR);
-   }
-   */
+      }
+      */
    global.moonX = (global.SnowWinWidth-2*global.moonR)*drand48();
    global.moonY = global.moonR + drand48()*global.moonR;
+   handle_moon_speed();
    P("moonX moonY: %f %f\n",global.moonX,global.moonY);
 }
 
@@ -102,10 +107,33 @@ int moon_erase(int force)
    return 0;
 }
 
+void handle_moon_speed()
+{
+   if (Flags.MoonSpeed == 0)
+   {
+      ui_gray_moonpos(0);
+      handle_moonx();
+      handle_moony();
+   }
+   else
+      ui_gray_moonpos(1);
+}
+
+void handle_moonx()
+{
+   global.moonX = 0.01*Flags.MoonX*global.SnowWinWidth - global.moonR;
+}
+
+void handle_moony()
+{
+   global.moonY = 0.01*Flags.MoonY*global.SnowWinHeight - global.moonR;
+}
 
 void moon_ui()
 {
-   UIDO(MoonSpeed,                         );
+   UIDO(MoonSpeed   ,handle_moon_speed();  );
+   UIDO(MoonX       ,handle_moonx();       );
+   UIDO(MoonY       ,handle_moony();       );
    UIDO(Halo        ,halo_erase();         );
    UIDO(Moon        ,moon_erase(1);        );
    UIDO(MoonSize    ,init_moon_surface();  );
@@ -172,6 +200,8 @@ int do_umoon(void *d)
    if(!Flags.Moon)
       return TRUE;
 
+   if (Flags.MoonSpeed == 0)
+      return TRUE;
 
    global.moonX += xdirection*time_umoon*Flags.MoonSpeed/60.0;
    global.moonY += 0.2*ydirection*time_umoon*Flags.MoonSpeed/60.0;

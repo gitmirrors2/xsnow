@@ -9,6 +9,7 @@ libxinerama-dev
 libxtst-dev
 libgtk-3-dev
 libgsl-dev
+libopencv-dev
 pkg-config
 gettext
 gcc
@@ -24,6 +25,7 @@ libXt-devel
 libXext-devel
 libXinerama-devel
 libXtst-devel
+opencv-devel
 gettext
 libgtk-3-0
 gtk3-devel

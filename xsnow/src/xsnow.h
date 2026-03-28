@@ -2,7 +2,7 @@
    -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@
 #define time_display_dimensions   0.5    // time between check of screen dimensions
 #define time_displaychanged       1.00   // time between checks if display has changed
 #define time_dropblob             3.0    // time between fall of snow blobs at the edges of the windows
-#define time_emeteor              0.60   // time between meteors erasures
+#define time_emeteor              0.40   // time between meteors erasures
 #define time_event                0.50   // time between checking events
 #define time_flakecount           1.00   // time between updates of show flakecount
 #define time_fuse                 1.00   // time between testing on too much flakes
@@ -101,7 +101,7 @@
 
 typedef struct _WinInfo
 {
-   Window id              ;
+   Window xxid              ;
    int x,y                ; // x,y coordinates
    int xa,ya              ; // x,y coordinates absolute
    unsigned int w,h       ; // width, height
@@ -129,7 +129,8 @@ typedef struct _FallenSnow {
 } FallenSnow;
 
 typedef struct _MeteorMap {
-   int x1,x2,y1,y2,active,colornum;
+   double x1, x2, y1, y2;
+   int active, colornum;
 } MeteorMap;
 
 
@@ -141,8 +142,8 @@ typedef struct _StarMap {
 } StarMap;
 
 typedef struct _Skoordinaten {
-   int x; 
-   int y; 
+   float x; 
+   float y; 
    int color; 
 } Skoordinaten;
 
@@ -225,10 +226,14 @@ extern struct _global
    int             Screen;
    Window          SnowWin;
    int             SnowWinBorderWidth;
+   int             SnowWinX; 
+   int             SnowWinY; 
    int             SnowWinWidth;
    int             SnowWinHeight;
    int             SnowClipWidth;
    int             SnowClipHeight;
+   int             ScreenShotX;      // x,y coordinates of screenshots
+   int             ScreenShotY;
    int             WindowOffsetX;    // when using the root window for drawing, we need
 				     //                                   these offsets to correct for the position of the
 				     //                                   windows.
@@ -250,8 +255,6 @@ extern struct _global
    int             Yroot;
    unsigned int    Wroot;
    unsigned int    Hroot;
-   int             SnowWinX; 
-   int             SnowWinY; 
    int             WindowsChanged;
    int             ForceRestart;
 
@@ -296,7 +299,9 @@ extern struct _global
    int            DoCapella;  // if true, Marc Capella's method is used to
 			      // deal with fallensnow on resized or moved windows:
 			      // fallensnow is turned into flakes.
-   volatile int time_to_write_flags;
+   int            time_to_write_flags;
+   int            tolxyw;     // tolerance used by comparing position and width of windows
+   char*          FlagsFile;  // default: $HOME/.xsnowrc
 } global;
 
 extern int set_sticky(int s);

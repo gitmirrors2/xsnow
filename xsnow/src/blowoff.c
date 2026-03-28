@@ -2,7 +2,7 @@
  -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
-#              2019,2020,2021,2022,2023,2024 Willem Vermin
+#              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ int do_blowoff(void *d)
    {
       P("blowoff ...\n");
       if (HandleFallenSnow(fsnow) && !Flags.NoSnowFlakes) 
-	 if(fsnow->win.id == 0 || (!fsnow->win.hidden &&
+	 if(fsnow->win.xxid == 0 || (!fsnow->win.hidden &&
 		  //(fsnow->win.ws == global.CWorkSpace || fsnow->win.sticky)))
 		  (IsVisibleFallen(fsnow) || fsnow->win.sticky)))
 	    UpdateFallenSnowWithWind(fsnow,fsnow->w/4,fsnow->h/4); 
