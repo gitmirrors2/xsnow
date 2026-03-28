@@ -1,5 +1,4 @@
 version 3.9.1
-
 	01: main.c: make_fullmaxscreen():
 	      Prevent the appearance of the xsnow icon for the snow-window
 	      in window-lists, taskbars etc.  using 
