@@ -18,12 +18,11 @@
 # 
 #-endcopyright-
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = . src data po afterburner
+SUBDIRS = . src data po afterpo afterburner
 
 EXTRA_DIST = bootstrap Changes README README.md \
 	     addcopyright.sh \
-	     dependencies simplemake.sh getversion bootdate \
-	     pofiles
+	     dependencies simplemake.sh getversion bootdate 
 
 tarfile = $(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz
 

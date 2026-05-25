@@ -1,0 +1,1617 @@
+# # Sometimes the translations contain rubbish, please replace them.
+# # 'abc_1000' xsnow
+# # 'abc_1001' xscreensaver
+# # 'abc_1002' Xsnow
+# # 'abc_1003' XsnoW
+# # 'abc_1004' \n
+# # 'abc_1005' Xscreensaver
+# # 'abc_1006' Rick Jansen
+# # 'abc_1007' %l#x
+# # 'abc_1008' &#8195;
+# # 'abc_1009' XSNOW
+msgid ""
+msgstr ""
+"Project-Id-Version: xsnow-3.8.6\n"
+"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
+"PO-Revision-Date: 2026-05-15 12:59+0200\n"
+"Last-Translator: Willem Vermin wvermin@gmail.com\n"
+"Language-Team: None\n"
+"Language: cn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, c-format
+msgid "Configuration file: %s\n"
+msgstr "配置文件：%s\n"
+
+#, c-format
+msgid "Available languages are: %s\n"
+msgstr "可用语言有：%s\n"
+
+msgid "Warning: don't eat yellow snow!"
+msgstr "警告：不要吃黄色的雪！（懂的都懂）"
+
+#, c-format
+msgid "For optimal results, add to your %s:\n"
+msgstr "为了获得最佳结果，请添加到您的 %s:\n"
+
+#, c-format
+msgid "unknown\n"
+msgstr "未知\n"
+
+#, c-format
+msgid "Detected Wayland desktop\n"
+msgstr "检测到 Wayland 桌面\n"
+
+#, c-format
+msgid "Xsnow needs gtk version >= %s, found version %s \n"
+msgstr "Xsnow 需要 GTK 版本 >= %s，当前版本 %s \n"
+
+msgid "Continuing with flag"
+msgstr "继续标记"
+
+#, c-format
+msgid "%s: cannot connect to X server %s\n"
+msgstr "%s：无法连接到 X 服务器 %s（请检查 DISPLAY 环境变量）\n"
+
+msgid "(default)"
+msgstr "(默认)"
+
+msgid "Configuration file: "
+msgstr "配置文件： "
+
+msgid "restarting"
+msgstr "正在重启"
+
+#, c-format
+msgid "Click on a window ...\n"
+msgstr "单击窗口...\n"
+
+#, c-format
+msgid "Detected desktop session: %s\n"
+msgstr "检测到的桌面会话：%s\n"
+
+#, c-format
+msgid "Could not determine desktop session\n"
+msgstr "无法确定桌面会话\n"
+
+#, c-format
+msgid "Trying to snow in root window\n"
+msgstr "尝试在桌面上下雪\n"
+
+#, c-format
+msgid "Using transparent window: %dx%d\n"
+msgstr "使用透明窗口：%dx%d\n"
+
+#, c-format
+msgid "The transparent snow-window is probably not click-through, alas..\n"
+msgstr "糟糕，透明的下雪窗口好像把鼠标挡住了，点不到下面的东西..\n"
+
+#, c-format
+msgid "Cannot create transparent window\n"
+msgstr "无法创建透明窗口\n"
+
+#, c-format
+msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
+msgstr "提示：xsnow 虽然能跑，但估计会有一些小花屏或贴图错误。\n"
+
+#, c-format
+msgid "LXDE session found, using window 'pcmanfm'.\n"
+msgstr "检测到 LXDE 会话，将使用“pcmanfm”窗口进行绘图。\n"
+
+#, c-format
+msgid "Using window 'Desktop'.\n"
+msgstr "使用窗口“桌面”。\n"
+
+#, c-format
+msgid "Using root window\n"
+msgstr "正在使用桌面背景层\n"
+
+#, c-format
+msgid "Snowing in %#lx: %s size: %dx%d\n"
+msgstr "正在窗口 %#lx (%s) 中绘雪，尺寸：%dx%d\n"
+
+#, c-format
+msgid "Using double buffer: %#lx %dx%d\n"
+msgstr "使用双缓冲区：%#lx %dx%d\n"
+
+#, c-format
+msgid "NOT using double buffering:"
+msgstr "不使用双缓冲："
+
+#, c-format
+msgid " because double buffering is not available on this system\n"
+msgstr " 因为双缓冲在此系统上不可用\n"
+
+#, c-format
+msgid " on your request.\n"
+msgstr " 根据您的要求。\n"
+
+#, c-format
+msgid "NOTE: expect some flicker.\n"
+msgstr "注意：预计会出现一些闪烁。\n"
+
+msgid "Restart due to change of screen or language settings ...\n"
+msgstr "由于屏幕或语言设置更改而重新启动...\n"
+
+msgid "Restart due to change of display settings...\n"
+msgstr "由于显示设置更改而重新启动...\n"
+
+msgid "Wayland (Expect some slugginess)"
+msgstr "Wayland（预计会有些迟缓）"
+
+msgid "Probably X11"
+msgstr "可能是X11"
+
+#, c-format
+msgid "%s. Snow window: %#lx"
+msgstr "%s。绘雪窗口 ID：%#lx"
+
+#, c-format
+msgid "More than %d errors, I quit!"
+msgstr "报错超过 %d 个，老子不干了！"
+
+#, c-format
+msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
+msgstr "窗口尺寸已更改，现在降雪于 %#lx: %s %d+%d %dx%d\n"
+
+#, c-format
+msgid "Halting because of flag %s\n"
+msgstr ""
+"由于标志 %s\n"
+" 而停止\n"
+
+#, c-format
+msgid "Not sending tar file to terminal.\n"
+msgstr "未将 tar 文件发送到终端。\n"
+
+#, c-format
+msgid "Try redirecting to a file (e.g: %s,\n"
+msgstr "尝试重定向到文件（例如：%s,\n"
+
+#, c-format
+msgid "or use a %s"
+msgstr "或者使用 %s"
+
+msgid "Problems encountered during production of the tar ball.\n"
+msgstr "制作 tar 压缩包时遇到问题。\n"
+
+#, c-format
+msgid "Self replication is not compiled in.\n"
+msgstr "自我复制功能（Self-replication）未编译到此版本中。\n"
+
+#, c-format
+msgid ""
+"\n"
+"Xsnow: Caught signal %d\n"
+msgstr ""
+"\n"
+"Xsnow: 捕获到信号 %d\n"
+
+#, c-format
+msgid ""
+"\n"
+"Thanks for using xsnow\n"
+msgstr ""
+"\n"
+"感谢使用 Xsnow\n"
+
+#, c-format
+msgid "Setting background from %s\n"
+msgstr ""
+"从 %s\n"
+" 设置背景\n"
+
+#, c-format
+msgid "Range: %d\n"
+msgstr "范围：%d\n"
+
+#, c-format
+msgid "Mean distance: %3d\n"
+msgstr "平均距离：%3d\n"
+
+#, c-format
+msgid "Desktop type: %s"
+msgstr "桌面类型：%s"
+
+msgid "all monitors"
+msgstr "所有显示器"
+
+#, c-format
+msgid "monitor %d"
+msgstr "显示器 %d"
+
+msgid "Available languages are: "
+msgstr "可用的语言有： "
+
+msgid "Use \"sys\" for your default language.\n"
+msgstr "使用“sys”作为默认语言。\n"
+
+msgid "See also the man page."
+msgstr "另请参见手册页。"
+
+#, c-format
+msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgstr ""
+
+msgid ""
+"\n"
+"Alas! This not an X11 session, xsnow will probably not run.\n"
+"\n"
+"If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, "
+"eg:\n"
+"\n"
+"    XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"Or, you could force an X11 session, for example by tweaking /etc/gdm3/"
+"daemon.conf.\n"
+"\n"
+msgstr ""
+"\n"
+"哎呀！当前不是 X11 会话，Xsnow 可能无法运行。\n"
+"\n"
+"如果您仍想尝试，请设置环境变量 XSNOW_FORCE_RUN，例如：\n"
+"\n"
+"    XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"或者，您也可以通过修改 /etc/gdm3/daemon.conf 来强制启动 X11 会话。\n"
+"\n"
+
+msgid "Ok, things are as they are. "
+msgstr "好吧，事情就是这样。 "
+
+msgid ""
+"If everything is ok, it is now snowing on your desktop, and birds are "
+"flying. You are encouraged to define your own preferences using the tabs "
+"above."
+msgstr ""
+"如果一切就绪，现在你的桌面上应该已是雪花纷飞、百鸟翱翔了。快试试用上方的选项"
+"卡来定制你专属的冬日美景吧！"
+
+msgid ""
+"Use the <b>settings</b> tab if xsnow is misbehaving.\n"
+"Use the <b>birds</b> tab if birds are misbehaving."
+msgstr ""
+"如果 xsnow 行为不端，请使用<b>设置</b>选项卡。\n"
+"如果鸟类行为不端，请使用<b>鸟类</b>选项卡。"
+
+msgid "In every tab you find the following rescue buttons:"
+msgstr "在每个选项卡中，您都可以找到以下救援按钮："
+
+msgid "<b>Defaults </b>"
+msgstr "<b>默认值</b>"
+
+msgid "Set default preferences for this tab."
+msgstr "设置此选项卡的默认首选项。"
+
+msgid "<b>Vintage </b>"
+msgstr "<b>复古</b>"
+
+msgid "Set vintage preferences for this tab."
+msgstr "为此选项卡设置复古首选项。"
+
+msgid "<b>All defaults </b>"
+msgstr "<b>全部重置默认 </b>"
+
+msgid "Set default preferences for all (except settings) tabs."
+msgstr "为所有（设置除外）选项卡设置默认首选项。"
+
+msgid "<b>All vintage </b>"
+msgstr "<b>全部恢复复古外观 </b>"
+
+msgid "Set vintage preferences for all (except settings) tabs."
+msgstr "为所有（设置除外）选项卡设置复古首选项。"
+
+msgid "  "
+msgstr "  "
+
+msgid "   "
+msgstr "   "
+
+msgid "Welcome at xsnow!"
+msgstr "欢迎来到 Xsnow 的世界！"
+
+msgid ""
+"Vintage preferences: the look and feel of the original xsnow, created in "
+"1993 by Rick Jansen."
+msgstr "复古偏好：原版 xsnow 的外观和感觉，由 Rick Jansen 于 1993 年创建。"
+
+msgid "All defaults"
+msgstr "所有默认值"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"对所有首选项应用默认值（设置除外）。\n"
+"Flag: -defaults"
+
+msgid "All vintage"
+msgstr "全部复古"
+
+msgid ""
+"Use vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"对所有首选项使用复古值（设置除外）。\n"
+"Flag: -vintage"
+
+msgid "Hide menu"
+msgstr "隐藏菜单"
+
+msgid ""
+"Leave menu.\n"
+"Flag: -nomenu"
+msgstr ""
+"离开菜单。\n"
+"Flag: -nomenu"
+
+msgid "Quit xsnow"
+msgstr "退出 Xsnow"
+
+msgid "Quit xsnow."
+msgstr "退出 xsnow 。"
+
+msgid "Contact"
+msgstr "联系作者"
+
+msgid "Please report any comments to the maintainer of xsnow."
+msgstr "请将任何意见报告给 xsnow 的维护者。"
+
+msgid ""
+"If the system is too busy, all panels get this color, in which case you "
+"could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
+"\"celestials\"."
+msgstr ""
+"若系统负载过高，所有面板将显示此颜色以示预警。此时，建议您尝试调低“积雪”、“鸟"
+"类”、“通用设置”或“天体”选项卡中的参数。"
+
+msgid "Welcome"
+msgstr "欢迎"
+
+msgid "Blow off:"
+msgstr "积雪被吹走："
+
+msgid "On windows:"
+msgstr "在窗口上："
+
+msgid "On bottom:"
+msgstr "在底部："
+
+msgid "On scenery:"
+msgstr "在布景上："
+
+msgid "Show"
+msgstr "显示"
+
+msgid ""
+"If set, show snow blowing away.\n"
+"Flags: -blowsnow, -noblowsnow"
+msgstr ""
+"如果设置，则显示雪被吹走。\n"
+"Flags: -blowsnow, -noblowsnow"
+
+msgid ""
+"If set, show fallen snow on windows.\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+msgstr ""
+"如果设置，则在窗口上显示落雪。\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+
+msgid ""
+"If set, show fallen snow on bottom of the desktop.\n"
+"Flags: -keepsnowonscreen, -nokeepsnowonscreen"
+msgstr ""
+"如果设置，则在桌面底部显示落雪。\n"
+"Flags: -keepsnowonscreen, -nokeepsnowonscreen"
+
+msgid ""
+"If set, snow will collect on the trees.\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+msgstr ""
+"如果设置，雪会积聚在树上。\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+
+msgid ""
+"The higher this setting, the more snow will be generated  because of Santa "
+"ploughing, wind or disappearing windows. \n"
+"Flag: -blowofffactor"
+msgstr ""
+"该数值越高，由圣诞老人破雪、大风或窗口消失激起的雪花就越多。 \n"
+"Flag: -blowofffactor"
+
+msgid ""
+"The higher this setting, the more snow will collect on the windows. \n"
+"Note: in Wayland, there is no snow on the windows. \n"
+"Flag: -wsnowdepth"
+msgstr ""
+"此设置越高，窗口上积雪就越多。 \n"
+"注意：在Wayland，窗口上没有雪。 \n"
+"Flag: -wsnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the  bottom of the "
+"desktop.\n"
+"Flag: -ssnowdepth"
+msgstr ""
+"此设置越高，桌面底部积雪就越多。\n"
+"Flag: -ssnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the trees.\n"
+"Flag: -maxontrees"
+msgstr ""
+"此设置越高，树上积雪就越多。\n"
+"Flag: -maxontrees"
+
+msgid "Choose your favorite snow"
+msgstr "选择你喜欢的雪花风格"
+
+msgid " "
+msgstr " "
+
+msgid "Defaults"
+msgstr "默认值"
+
+msgid "Apply default values for the preferences in this tab.\n"
+msgstr "在此选项卡中应用首选项的默认值。\n"
+
+msgid "Vintage"
+msgstr "复古模式"
+
+msgid "Apply vintage values for the preferences in this tab."
+msgstr "在此选项卡中应用偏好设置的复古值。"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flags: -defaults"
+msgstr ""
+"对所有首选项应用默认值（设置除外）。\n"
+"Flags: -defaults"
+
+msgid "Size:"
+msgstr "大小："
+
+msgid ""
+"Size of snowflakes, works only for non-vintage snow flakes.\n"
+"Flag: -snowsize"
+msgstr ""
+"雪花的大小，仅适用于非复古雪花。\n"
+"Flag: -snowsize"
+
+msgid "Speed:"
+msgstr "速度："
+
+msgid "Max # snowflakes:"
+msgstr "最大雪花数："
+
+msgid ""
+"Maximum amount of snowflakes.\n"
+"Flag: -flakecountmax"
+msgstr ""
+"雪花的最大数量。\n"
+"Flag: -flakecountmax"
+
+msgid "# Snowflakes:"
+msgstr "雪花数量："
+
+msgid "label"
+msgstr "标签"
+
+msgid "Show fluff"
+msgstr "显示雪花粒子"
+
+msgid ""
+"If set, try to show fluff on fallen snow and trees if possible.\n"
+"Flags: -fluffy, -nofluffy"
+msgstr ""
+"开启后，尽可能在积雪和树木上显示松散的碎雪效果。\n"
+"Flags: -fluffy, -nofluffy"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+
+msgid ""
+"Speed of the snowflakes.\n"
+"Flag: -snowspeedfactor"
+msgstr ""
+"雪花的速度。\n"
+"Flag: -snowspeedfactor"
+
+msgid "Intensity:"
+msgstr "强度："
+
+msgid ""
+"The higher, the more snowflakes.\n"
+"Flag: -snowflakes"
+msgstr ""
+"越高，雪花越多。\n"
+"Flag: -snowflakes"
+
+msgid "Show snow"
+msgstr "显示降雪"
+
+msgid ""
+"If set, show snowflakes.\n"
+"Flags: -snow, -nosnow"
+msgstr ""
+"如果设置，则显示雪花。\n"
+"Flags: -snow, -nosnow"
+
+msgid ""
+"The color of the snow.\n"
+"Flag: -sc"
+msgstr ""
+"雪的颜色。\n"
+"Flag: -sc"
+
+msgid "Color:"
+msgstr "颜色："
+
+msgid "Second color:"
+msgstr "第二种颜色："
+
+msgid ""
+"The second color of the snow.\n"
+"Flag: -sc2"
+msgstr ""
+"雪的第二种颜色。\n"
+"Flag: -sc2"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid ""
+"If set, use two colors.\n"
+"Flag: -enablesc2"
+msgstr ""
+"如果设置，则使用两种颜色。\n"
+"Flag: -enablesc2"
+
+msgid "Lift snow on windows or screen: click "
+msgstr "清除窗口或屏幕上的积雪：单击 "
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Snow"
+msgstr "降雪"
+
+msgid ""
+"Tiny Santa with three reindeers.\n"
+"Flags: -santa 0 -norudolph"
+msgstr ""
+"袖珍圣诞老人（带三只驯鹿）。\n"
+"Flags: -santa 0 -norudolph"
+
+msgid ""
+"Small Santa with three reindeers.\n"
+"Flags: -santa 1 -norudolph"
+msgstr ""
+"小圣诞老人和三只驯鹿。\n"
+"Flags: -santa 1 -norudolph"
+
+msgid ""
+"Santa with three reindeers.\n"
+"Flags: -santa 2 -norudolph"
+msgstr ""
+"圣诞老人与三只驯鹿。\n"
+"Flags: -santa 2 -norudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
+"Flags: -santa 3 -norudolph"
+msgstr ""
+"圣诞老人与 Dasher、Dancer、Prancer、Vixen、Comet、Cupid、Dunder 和 Blixem。\n"
+"Flags: -santa 3 -norudolph"
+
+msgid ""
+"Santa using the train with two reindeers.\n"
+"Flags: -santa 4 -norudolph"
+msgstr ""
+"圣诞老人乘坐火车与两只驯鹿。\n"
+"Flags: -santa 4 -norudolph"
+
+msgid ""
+"Santa using the train with one reindeer and Rudolph.\n"
+"Flags: -santa 4 -showrudolph"
+msgstr ""
+"圣诞老人与一只驯鹿和鲁道夫一起乘坐火车。\n"
+"Flags: -santa 4 -showrudolph"
+
+msgid ""
+"Tiny Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 0 -showrudolph"
+msgstr ""
+"小圣诞老人带着两只驯鹿和鲁道夫。\n"
+"Flags: -santa 0 -showrudolph"
+
+msgid ""
+"Small Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 1 -showrudolph"
+msgstr ""
+"小圣诞老人与两只驯鹿和鲁道夫。\n"
+"Flags: -santa 1 -showrudolph"
+
+msgid ""
+"Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 2 -showrudolph"
+msgstr ""
+"圣诞老人与两只驯鹿和鲁道夫。\n"
+"Flags: -santa 2 -showrudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
+"and  Rudolph.\n"
+"Flags: -santa 3 -showrudolph"
+msgstr ""
+"圣诞老人与 Dasher、Dancer、Prancer、Vixen、Comet、Cupid、Dunder、Blixem 和 "
+"Rudolph。\n"
+"Flags: -santa 3 -showrudolph"
+
+msgid "Without Rudolph"
+msgstr "不带鲁道夫"
+
+msgid "With Rudolph"
+msgstr "带上鲁道夫(红鼻驯鹿)"
+
+msgid "Choose your Santa"
+msgstr "选择你的圣诞老人"
+
+msgid "Choose your favorite Santa"
+msgstr "选择你喜欢的圣诞老人风格"
+
+msgid "    "
+msgstr "    "
+
+msgid ""
+"Santa's speed.\n"
+"Flag: -santaspeedfactor"
+msgstr ""
+"圣诞老人的速度。\n"
+"Flag: -santaspeedfactor"
+
+msgid "Apply default values for the preferences in this tab."
+msgstr "在此选项卡中应用首选项的默认值。"
+
+msgid "Show Santa"
+msgstr "显示圣诞老人"
+
+msgid ""
+"To show or not to show Santa.\n"
+"Flags: -showsanta, -nosanta"
+msgstr ""
+"显示或不显示圣诞老人。\n"
+"Flags: -showsanta, -nosanta"
+
+msgid "Scale:"
+msgstr "规模："
+
+msgid ""
+"Scale of Santa.\n"
+"Flags: -santascale <n>"
+msgstr ""
+"圣诞老人的规模。\n"
+"Flags: -santascale <n>"
+
+msgid "Santa"
+msgstr "圣诞老人"
+
+msgid "Show  scenery"
+msgstr "展示风景"
+
+msgid ""
+"To show or not to show scenery.\n"
+"Flags: -showtrees, -notrees"
+msgstr ""
+"展示或不展示风景。\n"
+"Flags: -showtrees, -notrees"
+
+msgid ""
+"Vintage tree, you can set the color.\n"
+"Flag: -treetype 0"
+msgstr ""
+"复古树，可以设置颜色。\n"
+"Flag: -treetype 0"
+
+msgid ""
+"Woody tree.\n"
+"Flags: -treetype 1 or: -treetype all"
+msgstr ""
+"普通树木。\n"
+"Flags: -treetype 1 or: -treetype all"
+
+msgid ""
+"Leavy tree.\n"
+"Flags: -treetype 2 or: -treetype all"
+msgstr ""
+"茂盛的树木。\n"
+"Flags: -treetype 2 or: -treetype all"
+
+msgid ""
+"Small house.\n"
+"Flags: -treetype 3 or: -treetype all"
+msgstr ""
+"小房子。\n"
+"Flags: -treetype 3 or: -treetype all"
+
+msgid ""
+"Reindeer.\n"
+"Flags: -treetype 4 or: -treetype all"
+msgstr ""
+"驯鹿。\n"
+"Flags: -treetype 4 or: -treetype all"
+
+msgid ""
+"Moose.\n"
+"Flags: -treetype 5 or: -treetype all"
+msgstr ""
+"驼鹿。\n"
+"Flags: -treetype 5 or: -treetype all"
+
+msgid ""
+"Snowy tree.\n"
+"Flags: -treetype 6 or: -treetype all"
+msgstr ""
+"雪树。\n"
+"Flags: -treetype 6 or: -treetype all"
+
+msgid ""
+"Set color of vintage tree.\n"
+"Flag: -tc"
+msgstr ""
+"设置复古树的颜色。\n"
+"Flag: -tc"
+
+msgid "Compose your favorite scenery"
+msgstr "谱写你最喜欢的风景"
+
+msgid "Try and click any image!"
+msgstr "尝试单击任何图像！"
+
+msgid ""
+"Polar bear.\n"
+"Flags: -treetype 7 or: -treetype all"
+msgstr ""
+"北极熊。\n"
+"Flags: -treetype 7 or: -treetype all"
+
+msgid "# Items:"
+msgstr "物品数量："
+
+msgid ""
+"Desired number of scenery items.\n"
+"Flag: -trees"
+msgstr ""
+"所需的风景项目数量。\n"
+"Flag: -trees"
+
+msgid "% Window fill:"
+msgstr "% 窗口填充率："
+
+msgid ""
+"Bottom percentage of screen available for scenery.\n"
+"Flag: -treefill"
+msgstr ""
+"可用于风景的屏幕底部百分比。\n"
+"Flag: -treefill"
+
+msgid "Allow overlap"
+msgstr "允许重叠"
+
+msgid ""
+"To allow overlap or not when placing scenery.\n"
+"Flags: -treeoverlap, -notreeoverlap"
+msgstr ""
+"放置风景时是否允许重叠。\n"
+"Flags: -treeoverlap, -notreeoverlap"
+
+msgid ""
+"Scale of scenery.\n"
+"Flag: sceneryscale <n>"
+msgstr ""
+"风景规模。\n"
+"Flag: sceneryscale <n>"
+
+msgid "Scenery"
+msgstr "布景"
+
+msgid "Compose here your favorite celestial conditions"
+msgstr "在这里定制你专属的璀璨星空"
+
+msgid ""
+"Apply default values for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"对所有首选项应用默认值（设置除外）。\n"
+"Flag: -defaults"
+
+msgid ""
+"Apply vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"将复古值应用于所有首选项（设置除外）。\n"
+"Flag: -vintage"
+
+msgid "Wind"
+msgstr "风力"
+
+msgid "Windy"
+msgstr "起风了"
+
+msgid ""
+"If set, there will be wind.\n"
+"Flags: -wind, -nowind"
+msgstr ""
+"开启后，将启用风力效果。\n"
+"Flags: -wind, -nowind"
+
+msgid "Whirl:"
+msgstr "回旋风："
+
+msgid ""
+"The higher this setting, the more the wind will whirl.\n"
+"Flag: -whirlfactor"
+msgstr ""
+"此设置越高，风就越旋转。\n"
+"Flag: -whirlfactor"
+
+msgid "Timer:"
+msgstr "计时器："
+
+msgid ""
+"This setting determines how many seconds pass between  two  gusts of wind.\n"
+"Flag: -windtimer"
+msgstr ""
+"此设置确定两次阵风之间相隔多少秒。\n"
+"Flag: -windtimer"
+
+msgid "Now!"
+msgstr "立即执行！"
+
+msgid "Force a gust of wind immediately."
+msgstr "立即强行吹出一阵风。"
+
+msgid "Stars"
+msgstr "星星"
+
+msgid ""
+"To show or not show stars.\n"
+"Flag: -stars  (0 means: no stars)"
+msgstr ""
+"显示或不显示星星。\n"
+"Flag: -stars  (0 means: no stars)"
+
+msgid "Number:"
+msgstr "数字："
+
+msgid ""
+"Number of twinkling stars.\n"
+"Flag: -stars"
+msgstr ""
+"闪烁星星的数量。\n"
+"Flag: -stars"
+
+msgid "Moon"
+msgstr "月亮"
+
+msgid ""
+"To show or not show moon.\n"
+"Flags: -moon 1, -moon 0"
+msgstr ""
+"显示或不显示月亮。\n"
+"Flags: -moon 1, -moon 0"
+
+msgid ""
+"Speed of moon in pixels/minute.\n"
+"Flag: -moonspeed"
+msgstr ""
+"月球速度（像素/分钟）。\n"
+"Flag: -moonspeed"
+
+msgid ""
+"Relative size of the moon.\n"
+"Flag: -moonsize"
+msgstr ""
+"月球的相对大小。\n"
+"Flag: -moonsize"
+
+msgid "Halo"
+msgstr "光晕"
+
+msgid ""
+"To show or not to show halo around moon.\n"
+"Flags: -halo 1, -halo 0"
+msgstr ""
+"显示或不显示月亮周围的光晕。\n"
+"Flags: -halo 1, -halo 0"
+
+msgid "Bright:"
+msgstr "亮度："
+
+msgid ""
+"Brightness of moon's halo.\n"
+"Flag: -halobrightness"
+msgstr ""
+"月光晕亮度。\n"
+"Flag: -halobrightness"
+
+msgid "Meteors"
+msgstr "流星"
+
+msgid ""
+"To show or not to show meteors.\n"
+"Flags: -meteors, -nometeors"
+msgstr ""
+"显示或不显示流星。\n"
+"Flags: -meteors, -nometeors"
+
+msgid "Aurora"
+msgstr "极光"
+
+msgid ""
+"To show or not show aurora.\n"
+"Note: the aurora is best viewed using a dark background.\n"
+"Flags: -aurora 1, -aurora 0"
+msgstr ""
+"显示或不显示极光。\n"
+"注意：使用深色背景观看极光效果最佳。\n"
+"Flags: -aurora 1, -aurora 0"
+
+msgid "Width:"
+msgstr "宽度："
+
+msgid ""
+"Width of aurora in percentage of screen width.\n"
+"Flag: -aurorawidth"
+msgstr ""
+"极光宽度占屏幕宽度的百分比。\n"
+"Flag: -aurorawidth"
+
+msgid "Height:"
+msgstr "高度："
+
+msgid ""
+"Vertical size of aurora.\n"
+"Flag: -auroraheight"
+msgstr ""
+"极光的垂直尺寸。\n"
+"Flag: -auroraheight"
+
+msgid ""
+"Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
+"Flag: -auroraspeed"
+msgstr ""
+"极光动画速度：真实效果设为 10，若追求更震撼的视觉奇观请设为 100。\n"
+"Flag: -auroraspeed"
+
+msgid ""
+"Brightness of aurora.\n"
+"Flags: -aurorabrightness"
+msgstr ""
+"极光的亮度。\n"
+"Flags: -aurorabrightness"
+
+msgid "Frequency:"
+msgstr "频率："
+
+msgid ""
+"Frequency of meteors to appear.\n"
+"Flags: -meteorfrequency"
+msgstr ""
+"流星出现的频率。\n"
+"Flags: -meteorfrequency"
+
+msgid "Vertical:"
+msgstr "垂直的："
+
+msgid ""
+"Baseline height of aurora, in percentage of screen height.\n"
+"Flag: -aurorabase"
+msgstr ""
+"极光起始高度（占屏幕高度的百分比）。\n"
+"Flag: -aurorabase"
+
+msgid "Color"
+msgstr "颜色"
+
+msgid ""
+"Choose between yellow-ish and white-ish moon.\n"
+"Flag: -mooncolor [0,1]"
+msgstr "选择月亮色调：偏黄或偏白。Flag: -mooncolor [0,1]"
+
+msgid ""
+"Size of stars.\n"
+"Flag: -starsize"
+msgstr ""
+"星星的大小。\n"
+"Flag: -starsize"
+
+msgid "Horizontal:"
+msgstr "水平的："
+
+msgid ""
+"Horizontal place of aurora\n"
+"Flags: -aurorax"
+msgstr ""
+"极光的水平位置\n"
+"Flags: -aurorax"
+
+msgid "Position:"
+msgstr "位置："
+
+msgid "X-position:"
+msgstr "X 位置："
+
+msgid "Y-position"
+msgstr "Y 位置"
+
+msgid ""
+"Horizontal position of moon if speed equals 0.\n"
+"Flag: -moonx"
+msgstr ""
+"如果速度等于 0，月球的水平位置。\n"
+"Flag: -moonx"
+
+msgid ""
+"Vertical position of moon if speed equals 0.\n"
+"Flag: -moony"
+msgstr ""
+"如果速度等于 0，月球的垂直位置。\n"
+"Flag: -moony"
+
+msgid "Celestials"
+msgstr "天体"
+
+msgid "Birds settings"
+msgstr "鸟类设置"
+
+msgid "Show birds"
+msgstr "显示鸟类"
+
+msgid ""
+"If set: show birds.\n"
+"Flags: -showbirds 1, -showbirds 0"
+msgstr ""
+"如果设置：显示鸟类。\n"
+"Flags: -showbirds 1, -showbirds 0"
+
+msgid "Birds only"
+msgstr "仅显示鸟类"
+
+msgid ""
+"If set: show no Santa, snow or scenery.\n"
+"Flags: -birdsonly 0, -birdsony 1"
+msgstr ""
+"如果设置：不显示圣诞老人、雪或风景。\n"
+"Flags: -birdsonly 0, -birdsony 1"
+
+msgid "Preferred distance:"
+msgstr "首选距离："
+
+msgid ""
+"Preferred distance from other birds.\n"
+"Flag: -prefdistance"
+msgstr ""
+"与其他鸟类的首选距离。\n"
+"Flag: -prefdistance"
+
+msgid "Restart"
+msgstr "重启"
+
+msgid "Restart birds."
+msgstr "重启鸟。"
+
+msgid "Viewing distance:"
+msgstr "观看距离："
+
+msgid ""
+"Viewing distance.\n"
+"NOTE: Santa has no knowledge of viewing distance, so when birds are "
+"following Santa, the relative positions of Santa and birds will be "
+"temporarely out of sync when you change the viewing distance. This is only "
+"noticeable when the birds are following Santa.\n"
+"Flag: -viewingdistance"
+msgstr ""
+"视距高度。\n"
+"注意：圣诞老人的移动逻辑不计算视距。因此，当开启“鸟群跟随圣诞老人”时，调整视"
+"距会导致鸟儿与圣诞老人的相对位置暂时错位。这种现象仅在鸟群跟随模式下才会出"
+"现。\n"
+"参数：-viewingdistance"
+
+msgid "Focus to attraction point:"
+msgstr "聚焦景点："
+
+msgid ""
+"Tendency to concentrate on the attraction point.\n"
+"Flag: -focuscentre"
+msgstr ""
+"倾向于集中在吸引点上。\n"
+"Flag: -focuscentre"
+
+msgid ""
+"Desired number of birds. If zero, no birds are shown.\n"
+"Flag: -nbirds"
+msgstr ""
+"所需的鸟类数量。如果为零，则不会显示任何鸟类。\n"
+"Flag: -nbirds"
+
+msgid "# Birds:"
+msgstr "鸟类数量："
+
+msgid ""
+"Number of nearest neighbours the birds should look at.\n"
+"Flag: -neighbours"
+msgstr ""
+"同伴参考数量：每只鸟在飞行时会参考多少个邻近同伴的动作。\n"
+"Flag: -neighbours"
+
+msgid "Neighbours:"
+msgstr "同伴："
+
+msgid ""
+"Give the birds a fancy color.\n"
+"Flag: -birdscolor"
+msgstr ""
+"给小鸟一个漂亮的颜色。\n"
+"Flag: -birdscolor"
+
+msgid "Bird color"
+msgstr "鸟类颜色"
+
+msgid "Anarchy:"
+msgstr "无序度："
+
+msgid ""
+"Anarchy level: the higher, the more anarchy.\n"
+"Flag: -anarchy"
+msgstr ""
+"混乱程度：数值越高，鸟群的飞行轨迹就越狂野（不听指挥）。\n"
+"Flag: -anarchy"
+
+msgid "Distance weight:"
+msgstr "距离权重："
+
+msgid ""
+"Tendency to keep desired distance to neighbours.\n"
+"Flag: -disweight"
+msgstr ""
+"间距保持倾向：每只鸟与同伴保持理想距离的意愿。\n"
+"Flag: -disweight"
+
+msgid "Adjust speed to neighbours:"
+msgstr "同伴速度同步："
+
+msgid ""
+"Tendency to adjust speed to neighbours.\n"
+"Flag: -followneighbours"
+msgstr ""
+"倾向于将自己的飞行速度调整至与周围同伴一致。\n"
+"Flag: -followneighbours"
+
+msgid ""
+"Speed of birds in arbitrary units.\n"
+"Flag: -birdsspeed"
+msgstr ""
+"飞行基础速度（自定义单位）。\n"
+"Flag: -birdsspeed"
+
+msgid "Drawing scale:"
+msgstr "绘图比例："
+
+msgid ""
+"Influence the size of the birds.\n"
+"Flag: -birdsscale\n"
+msgstr ""
+"影响鸟类的大小。\n"
+"Flag: -birdsscale\n"
+
+msgid ""
+"Show \n"
+"attr point"
+msgstr ""
+"显示 \n"
+" 属性点"
+
+msgid ""
+"Show the point where the birds want to go.\n"
+"Flags: -showattr 0, -showattr 1"
+msgstr ""
+"显示鸟儿想去的地方。\n"
+"Flags: -showattr 0, -showattr 1"
+
+msgid ""
+"Follow \n"
+"Santa"
+msgstr ""
+"跟随\n"
+"圣诞老人"
+
+msgid ""
+"Birds are attracted by an attraction point. Here you can choose to follow "
+"Santa.\n"
+"Flags: -followsanta 0, -followsanta 1"
+msgstr ""
+"鸟类被吸引点所吸引。在这里您可以选择跟随圣诞老人。\n"
+"Flags: -followsanta 0, -followsanta 1"
+
+msgid ""
+"Percentage of screen to be used for the attraction point.\n"
+"Flag: -attrspace"
+msgstr ""
+"用于吸引点的屏幕百分比。\n"
+"Flag: -attrspace"
+
+msgid "Attraction point range"
+msgstr "景点范围"
+
+msgid "Actual mean distance from neighbours."
+msgstr "与邻居的实际平均距离。"
+
+msgid "Distance used to get the desired number of neighbours."
+msgstr "用于获得所需邻居数量的距离。"
+
+msgid "Birds"
+msgstr "鸟类"
+
+msgid "version"
+msgstr "版本"
+
+msgid "Transparency "
+msgstr "透明度 "
+
+msgid ""
+"Transparency of painted items:\n"
+"0: no transparency.\n"
+"100: fully transparent, you will see nothing!\n"
+"Flag: -transparency"
+msgstr ""
+"绘制项目的透明度：\n"
+"0：不透明。\n"
+"100：完全透明，你什么也看不到！\n"
+"Flag: -transparency"
+
+msgid "Lift snow on bottom"
+msgstr "清除底部积雪"
+
+msgid ""
+"Use this if snow falls below the bottom of your screen, or  fallen snow "
+"hides something that should not be hidden.\n"
+"Flag: -offsets"
+msgstr ""
+"如果雪落在屏幕底部以下，或者落下的雪隐藏了不应隐藏的内容，请使用此选项。\n"
+"Flag: -offsets"
+
+msgid "Lift snow on windows"
+msgstr "清除窗口积雪"
+
+msgid ""
+"Use this if no snow collects on your windows, or if snow  collects separated "
+"from your windows. \n"
+"Some basic window managers need this setting (e.g. TWM  needs in general a "
+"value of 25 .. 28).\n"
+"Flag: -offsety"
+msgstr ""
+"如果积雪没有落在窗口顶端，或者悬浮在窗口上方，请调整此项。\n"
+"某些窗口管理器（如 TWM）可能需要设置垂直偏移（通常设为 25 到 28 之间），以确"
+"保积雪准确落在标题栏上。\n"
+"参数：-offsety"
+
+msgid "Cpu factor"
+msgstr "中央处理器系数"
+
+msgid ""
+"The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
+"Flag: -cpuload"
+msgstr ""
+"越高，运行越流畅 xsnow，但也会使用更多的 CPU 功率。\n"
+"Flag: -cpuload"
+
+msgid "Scale"
+msgstr "缩放"
+
+msgid ""
+"Overall drawing scale.\n"
+"Flag: -scale"
+msgstr ""
+"总体绘图比例。\n"
+"Flag: -scale"
+
+msgid "Ignore top windows"
+msgstr "忽略顶部窗口"
+
+msgid ""
+"Windows closer to the top  than the number in this widget will not collect "
+"snow.\n"
+"\n"
+"In some cases, there are invisible windows near the top of the screen, which "
+"are handled by xsnow as normal windows: snow is collected upon them. By "
+"entering a suitable number here, this undesired behaviour can be avoided.\n"
+"Flag: -ignoretop\n"
+"\n"
+msgstr ""
+"设置顶部忽略区域：距离屏幕顶端小于此数值的窗口将不会积雪。\n"
+"\n"
+"某些桌面环境在屏幕顶部存在“不可见窗口”，Xsnow 会误将其识别为普通窗口并在上方"
+"堆积雪花。通过在此设置合适的数值，可以避开这些干扰区域。\n"
+"参数：-ignoretop\n"
+
+msgid "Ignore bottom windows"
+msgstr "忽略底部窗口"
+
+msgid ""
+"Windows closer to the  bottom than the number in this widget will not "
+"collect snow.\n"
+"\n"
+"In some cases, there are invisible windows near the bottom  of  the screen, "
+"which are handled by xsnow as normal windows: snow is collected upon them. "
+"By entering a suitable  number here, this undesired behaviour can be "
+"avoided.\n"
+"Flag: -ignorebottom"
+msgstr ""
+"设置底部忽略区域：距离屏幕底端小于此数值的窗口将不会积雪。\n"
+"\n"
+"某些桌面环境（如 Dock 栏或任务栏）在屏幕底部存在不可见窗口，Xsnow 会误将其识"
+"别为普通窗口并在上方堆积雪花。通过在此设置合适的数值，可以避免这种干扰。\n"
+"参数：-ignorebottom"
+
+msgid ""
+"Menu\n"
+"colors"
+msgstr ""
+"菜单\n"
+"配色"
+
+msgid ""
+"Toggle between xsnow's own menu colors and standard menu colors.\n"
+"Activated: use xsnow colors.\n"
+"Deactivated: use default colors.\n"
+"Flags: -theme 1, -theme 0"
+msgstr ""
+"在 xsnow 自己的菜单颜色和标准菜单颜色之间切换。\n"
+"激活：使用 xsnow 颜色。\n"
+"停用：使用默认颜色。\n"
+"Flags: -theme 1, -theme 0"
+
+msgid ""
+"On all\n"
+"workspaces"
+msgstr ""
+"在所有 \n"
+" 工作空间上"
+
+msgid ""
+"Use all workspaces to snow in.\n"
+"NOTE: this doesn't work properly in enlightenment.\n"
+"Flags: -allworkspaces 1, -allworkspaces 0"
+msgstr ""
+"在所有工作区（虚拟桌面）下雪。\n"
+"注意：此功能在 Enlightenment 桌面环境下可能无法正常工作。\n"
+"参数：-allworkspaces 1, -allworkspaces 0"
+
+msgid ""
+"Below\n"
+"windows"
+msgstr ""
+"置于窗口\n"
+"底层"
+
+msgid ""
+"When activated, it will be snowing below your windows, else  it will be "
+"snowing upon you windows too.\n"
+"On some desktop environments, when snowing above your  windows you will not "
+"be able to click on any window.\n"
+"Therefore, you will be asked to click a button, to be sure that  things are "
+"OK.\n"
+"Flag: -above"
+msgstr ""
+"启用时，雪花将飘落在窗口后方（不遮挡点击）；否则雪花将飘在窗口前方。\n"
+"\n"
+"在某些桌面环境下，若雪花飘在窗口前方，可能会导致鼠标无法点击任何窗口（被特效"
+"层遮挡）。\n"
+"因此，系统会要求您点击确认按钮，以确保您的桌面仍能正常操作。\n"
+"参数：-above"
+
+msgid ""
+"Click to\n"
+"confirm"
+msgstr ""
+"点击以\n"
+"确认"
+
+msgid "To make sure you can click."
+msgstr "以确保您可以点击。"
+
+msgid ""
+"If you have more than one monitor, choose where you want snow falling. "
+"Choose 'all monitors' if you want snow in all monitors.\n"
+"NOTE: when changing monitor, xsnow will restart.\n"
+"Flag: -screen"
+msgstr ""
+"如果您有多个显示器，请选择您想要降雪的位置。如果您希望所有监视器都下雪，请选"
+"择“所有监视器”。\n"
+"注意：更改监视器时，xsnow 将重新启动。\n"
+"Flag: -screen"
+
+msgid "monitor 1"
+msgstr "显示器 1"
+
+msgid ""
+"Create\n"
+"outline"
+msgstr ""
+"创建\n"
+"大纲"
+
+msgid ""
+"To draw an outline around the snow window.\n"
+"Flag: -outline 1/0"
+msgstr ""
+"在绘图区域周围绘制边框（用于调试）。\n"
+"Flag: -outline 1/0"
+
+msgid ""
+"Use \n"
+"screenshots"
+msgstr ""
+"使用 \n"
+" 屏幕截图"
+
+msgid "Use screenshots for the location of windows. Experimental."
+msgstr "使用屏幕截图来确定窗口的位置。实验性的。"
+
+msgid ""
+"  \n"
+"  "
+msgstr ""
+"  \n"
+"  "
+
+msgid ""
+"Choose here the picture you want as background when  xscreensaver is "
+"active.\n"
+"Flag: -bg"
+msgstr ""
+"当 xscreensaver 处于活动状态时，请在此处选择您想要作为背景的图片。\n"
+"Flag: -bg"
+
+msgid "Choose background"
+msgstr "选择背景"
+
+msgid ""
+"Activate xscreensaver.\n"
+"Click and don't touch mouse and keyboard for a few seconds..."
+msgstr ""
+"激活 xscreensaver。\n"
+"单击并在几秒钟内不要触摸鼠标和键盘..."
+
+msgid ""
+"Settings for Xscreensaver. You can choose a background, and choose to use it "
+"or not.\n"
+"Make sure you add a line like\n"
+"xsnow -root\n"
+"after the line 'programs:' in the file ~/.xscreensaver and you run "
+"xscreensaver-demo to choose for xsnow.\n"
+"To activate xscreensaver on the command line:\n"
+"xscreensaver-command  -activate\n"
+"See also the man page:\n"
+"man xsnow"
+msgstr ""
+"Xscreensaver 联动设置：您可以选择背景并决定是否启用。\n"
+"\n"
+"配置步骤：\n"
+"1. 编辑 ~/.xscreensaver 文件，在“programs:”行下方添加：\n"
+"   xsnow -root\n"
+"2. 运行 xscreensaver-demo 并从中勾选 xsnow。\n"
+"\n"
+"若要在命令行中手动激活屏保，请输入：\n"
+"xscreensaver-command -activate\n"
+"\n"
+"更多细节请参阅手册：man xsnow"
+
+msgid "Xscreensaver: "
+msgstr "屏幕保护程序(Xscreensaver): "
+
+msgid "Black"
+msgstr "纯黑背景"
+
+msgid ""
+"When activated, the background will be black.\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+msgstr ""
+"激活后，背景将为黑色。\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+
+msgid ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+msgstr ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+
+msgid "en"
+msgstr "zh_CN"
+
+msgid "it"
+msgstr "it"
+
+#, c-format
+#~ msgid "For optimal resuts, add to your %s:\n"
+#~ msgstr "为了获得最佳结果，请添加到您的 %s:\n"
+
+#~ msgid "Base:"
+#~ msgstr "基准高度："
+
+#~ msgid "Ignore large bottom windows"
+#~ msgstr "忽略底部大窗口"
+
+#~ msgid "Ignore large top windows"
+#~ msgstr "忽略顶部大窗口"
+
+#~ msgid "Left"
+#~ msgstr "靠左"
+
+#~ msgid "Middle"
+#~ msgstr "居中"
+
+#~ msgid "Right"
+#~ msgstr "靠右"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the  bottom "
+#~ "than the number in this widget will not collect snow.\n"
+#~ "\n"
+#~ "In some cases, there are invisible windows near the bottom  of  the "
+#~ "screen, which are handled by xsnow as normal windows: snow is collected "
+#~ "upon them. By entering a suitable  number here, this undesired behaviour "
+#~ "can be avoided.\n"
+#~ "Flag: -ignorebottom"
+#~ msgstr ""
+#~ "宽度超过屏幕 80% 且距离底部位置小于此数值的窗口将不会积雪。\n"
+#~ "\n"
+#~ "在某些情况下，屏幕底部附近存在一些透明/不可见的窗口，Xsnow 会将它们视为普"
+#~ "通窗口并在其上方积雪。通过在此处输入一个合适的数值，可以避免这种不符合预期"
+#~ "的行为。\n"
+#~ "参数: -ignorebottom"
+
+#~ msgid ""
+#~ "Windows wider than 80 percent of the screen and closer to the top  than "
+#~ "the number in this widget will not collect snow.\n"
+#~ "In some cases, there are invisible windows near the top of the screen, "
+#~ "which are handled by xsnow as normal windows: snow is collected upon "
+#~ "them. By entering a suitable number here, this undesired behaviour can be "
+#~ "avoided.\n"
+#~ "Flag: -ignoretop\n"
+#~ "\n"
+#~ msgstr ""
+#~ "宽度超过屏幕 80% 且距离顶部位置小于此数值的窗口将不会积雪。\n"
+#~ "在某些情况下，屏幕顶部附近存在一些不可见的窗口，Xsnow 会将其视为普通窗口并"
+#~ "积雪。通过在此处输入合适的数值，可以避免这种问题。\n"
+#~ "参数: -ignoretop\n"
+#~ "\n"
+
+#~ msgid "window type etc."
+#~ msgstr "窗口类型等"

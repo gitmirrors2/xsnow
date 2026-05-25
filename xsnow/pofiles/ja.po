@@ -1,0 +1,1564 @@
+# # Sometimes the translations contain rubbish, please replace them.
+# # 'abc_1000' xsnow
+# # 'abc_1001' XSNOW
+# # 'abc_1002' &#8195;
+# # 'abc_1003' XsnoW
+# # 'abc_1004' \n
+# # 'abc_1005' Rick Jansen
+# # 'abc_1006' xscreensaver
+# # 'abc_1007' %l#x
+# # 'abc_1008' Xsnow
+# # 'abc_1009' Xscreensaver
+# Language for xsnow
+# Copyright (C) 2023 Willem Vermin
+# Willem Vermin <wvermin@gmail.com>, 2023
+# This file is distributed under the same license as the xsnow package.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xsnow 3.9.2~pre02\n"
+"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
+"PO-Revision-Date: 2026-05-08 10:28+0200\n"
+"Last-Translator: Willem Vermin wvermin@gmail.com\n"
+"Language-Team: None\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, c-format
+msgid "Configuration file: %s\n"
+msgstr "構成ファイル: %s\n"
+
+#, c-format
+msgid "Available languages are: %s\n"
+msgstr "使用可能な言語は次のとおりです: %s\n"
+
+msgid "Warning: don't eat yellow snow!"
+msgstr "警告: 黄色い雪は食べないでください。"
+
+#, c-format
+msgid "For optimal results, add to your %s:\n"
+msgstr "最適な結果を得るには、%s: に追加してください。\n"
+
+#, c-format
+msgid "unknown\n"
+msgstr "不明\n"
+
+#, c-format
+msgid "Detected Wayland desktop\n"
+msgstr "Wayland デスクトップを検出しました\n"
+
+#, c-format
+msgid "Xsnow needs gtk version >= %s, found version %s \n"
+msgstr ""
+"Xsnow には gtk バージョン >= %s が必要ですが、バージョン %s \n"
+" が見つかりました\n"
+
+msgid "Continuing with flag"
+msgstr "フラグの続き"
+
+#, c-format
+msgid "%s: cannot connect to X server %s\n"
+msgstr "%s: X サーバー %s に接続できません\n"
+
+msgid "(default)"
+msgstr "（デフォルト）"
+
+msgid "Configuration file: "
+msgstr "設定ファイル: "
+
+msgid "restarting"
+msgstr "再起動する"
+
+#, c-format
+msgid "Click on a window ...\n"
+msgstr "ウィンドウをクリックしてください...\n"
+
+#, c-format
+msgid "Detected desktop session: %s\n"
+msgstr "検出されたデスクトップ セッション: %s\n"
+
+#, c-format
+msgid "Could not determine desktop session\n"
+msgstr "デスクトップセッションを特定できませんでした\n"
+
+#, c-format
+msgid "Trying to snow in root window\n"
+msgstr "ルートウィンドウに雪を降らせようとしています\n"
+
+#, c-format
+msgid "Using transparent window: %dx%d\n"
+msgstr "透明ウィンドウの使用: %dx%d\n"
+
+#, c-format
+msgid "The transparent snow-window is probably not click-through, alas..\n"
+msgstr ""
+"残念ながら、透明な雪のウィンドウはおそらくクリックスルーではありません。\n"
+
+#, c-format
+msgid "Cannot create transparent window\n"
+msgstr "透明ウィンドウを作成できません\n"
+
+#, c-format
+msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
+msgstr "注: xsnowはおそらく実行されますが、いくつかの不具合が予想されます。\n"
+
+#, c-format
+msgid "LXDE session found, using window 'pcmanfm'.\n"
+msgstr ""
+"LXDE セッションが見つかりました。ウィンドウ 'pcmanfm'. を使用しています\n"
+
+#, c-format
+msgid "Using window 'Desktop'.\n"
+msgstr "ウィンドウ「デスクトップ」.を使用しています\n"
+
+#, c-format
+msgid "Using root window\n"
+msgstr "ルート ウィンドウを使用する\n"
+
+#, c-format
+msgid "Snowing in %#lx: %s size: %dx%d\n"
+msgstr "%#lx で雪が降っています: %s サイズ: %dx%d\n"
+
+#, c-format
+msgid "Using double buffer: %#lx %dx%d\n"
+msgstr "ダブルバッファの使用: %#lx %dx%d\n"
+
+#, c-format
+msgid "NOT using double buffering:"
+msgstr "ダブルバッファリングを使用しない場合:"
+
+#, c-format
+msgid " because double buffering is not available on this system\n"
+msgstr " このシステムではダブルバッファリングが利用できないため\n"
+
+#, c-format
+msgid " on your request.\n"
+msgstr " あなたのリクエストに応じて。\n"
+
+#, c-format
+msgid "NOTE: expect some flicker.\n"
+msgstr "注: 多少のちらつきが予想されます。\n"
+
+msgid "Restart due to change of screen or language settings ...\n"
+msgstr "画面または言語設定の変更により再起動します...\n"
+
+msgid "Restart due to change of display settings...\n"
+msgstr "表示設定変更による再起動...\n"
+
+msgid "Wayland (Expect some slugginess)"
+msgstr "Wayland (多少の緩みが予想されます)"
+
+msgid "Probably X11"
+msgstr "おそらくX11"
+
+#, c-format
+msgid "%s. Snow window: %#lx"
+msgstr "%s。雪のウィンドウ: %#lx"
+
+#, c-format
+msgid "More than %d errors, I quit!"
+msgstr "%d 個を超えるエラーが発生したため、終了しました。"
+
+#, c-format
+msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
+msgstr "ウィンドウ サイズが変更され、%#lx に雪が降っています: %s %d+%d %dx%d\n"
+
+#, c-format
+msgid "Halting because of flag %s\n"
+msgstr "フラグ %s のため停止しています\n"
+
+#, c-format
+msgid "Not sending tar file to terminal.\n"
+msgstr "tar ファイルを端末に送信していません。\n"
+
+#, c-format
+msgid "Try redirecting to a file (e.g: %s,\n"
+msgstr "ファイルにリダイレクトしてみてください (例: %s,\n"
+
+#, c-format
+msgid "or use a %s"
+msgstr "または %s を使用してください"
+
+msgid "Problems encountered during production of the tar ball.\n"
+msgstr "タール ボールの生成中に問題が発生しました。\n"
+
+#, c-format
+msgid "Self replication is not compiled in.\n"
+msgstr "自己レプリケーションはコンパイルされていません。\n"
+
+#, c-format
+msgid ""
+"\n"
+"Xsnow: Caught signal %d\n"
+msgstr ""
+"\n"
+"Xsnow: 信号 %d をキャッチしました\n"
+
+#, c-format
+msgid ""
+"\n"
+"Thanks for using xsnow\n"
+msgstr ""
+"\n"
+"xsnowをご利用いただきありがとうございます\n"
+
+#, c-format
+msgid "Setting background from %s\n"
+msgstr "%s から背景を設定しています\n"
+
+#, c-format
+msgid "Range: %d\n"
+msgstr "範囲: %d\n"
+
+#, c-format
+msgid "Mean distance: %3d\n"
+msgstr "平均距離: %3d\n"
+
+#, c-format
+msgid "Desktop type: %s"
+msgstr "デスクトップの種類: %s"
+
+msgid "all monitors"
+msgstr "すべてのモニター"
+
+#, c-format
+msgid "monitor %d"
+msgstr "モニター %d"
+
+msgid "Available languages are: "
+msgstr "利用可能な言語は次のとおりです。 "
+
+msgid "Use \"sys\" for your default language.\n"
+msgstr "デフォルトの言語には「sys」を使用してください。\n"
+
+msgid "See also the man page."
+msgstr "マニュアルページも参照してください。"
+
+#, c-format
+msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgstr ""
+
+msgid ""
+"\n"
+"Alas! This not an X11 session, xsnow will probably not run.\n"
+"\n"
+"If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, "
+"eg:\n"
+"\n"
+"    XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"Or, you could force an X11 session, for example by tweaking /etc/gdm3/"
+"daemon.conf.\n"
+"\n"
+msgstr ""
+"\n"
+"ああ！これは X11 セッションではないため、xsnow はおそらく実行されません。\n"
+"\n"
+"とにかく試してみたい場合は、環境変数 XSNOW_FORCE_RUN を設定してください。"
+"例: \n"
+"\n"
+" XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"または、/etc/gdm3/daemon.conf を調整するなどして、X11 セッションを強制するこ"
+"ともできます。\n"
+"\n"
+
+msgid "Ok, things are as they are. "
+msgstr "わかりました、現状のままです。 "
+
+msgid ""
+"If everything is ok, it is now snowing on your desktop, and birds are "
+"flying. You are encouraged to define your own preferences using the tabs "
+"above."
+msgstr ""
+"すべてが順調であれば、デスクトップには雪が降り、鳥が飛んでいます。上のタブを"
+"使用して独自の設定を定義することをお勧めします。"
+
+msgid ""
+"Use the <b>settings</b> tab if xsnow is misbehaving.\n"
+"Use the <b>birds</b> tab if birds are misbehaving."
+msgstr ""
+"xsnowが不正な動作をしている場合は、[<b>設定</b>] タブを使用してください。\n"
+" 鳥が不正な動作をしている場合は、[<b>鳥</b>] タブを使用してください。"
+
+msgid "In every tab you find the following rescue buttons:"
+msgstr "すべてのタブに次のレスキュー ボタンがあります。"
+
+msgid "<b>Defaults </b>"
+msgstr "<b>デフォルト </b>"
+
+msgid "Set default preferences for this tab."
+msgstr "このタブのデフォルト設定を設定します。"
+
+msgid "<b>Vintage </b>"
+msgstr "<b>ヴィンテージ </b>"
+
+msgid "Set vintage preferences for this tab."
+msgstr "このタブのヴィンテージ設定を設定します。"
+
+msgid "<b>All defaults </b>"
+msgstr "<b>すべてデフォルト </b>"
+
+msgid "Set default preferences for all (except settings) tabs."
+msgstr "すべてのタブ (設定を除く) のデフォルトの環境設定を設定します。"
+
+msgid "<b>All vintage </b>"
+msgstr "<b>すべてヴィンテージ </b>"
+
+msgid "Set vintage preferences for all (except settings) tabs."
+msgstr "すべての (設定を除く) タブのヴィンテージ設定を設定します。"
+
+msgid "  "
+msgstr "  "
+
+msgid "   "
+msgstr "   "
+
+msgid "Welcome at xsnow!"
+msgstr "xsnowへようこそ！"
+
+msgid ""
+"Vintage preferences: the look and feel of the original xsnow, created in "
+"1993 by Rick Jansen."
+msgstr ""
+"ヴィンテージの好み: 1993 年に Rick Jansen によって作成されたオリジナルのxsnow"
+"の外観と雰囲気。"
+
+msgid "All defaults"
+msgstr "すべてのデフォルト"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"すべての環境設定 (設定を除く) にデフォルトを適用します。\n"
+"Flag: -defaults"
+
+msgid "All vintage"
+msgstr "すべてヴィンテージ"
+
+msgid ""
+"Use vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"すべての環境設定 (設定を除く) にヴィンテージ値を使用します。\n"
+"Flag: -vintage"
+
+msgid "Hide menu"
+msgstr "メニューを隠す"
+
+msgid ""
+"Leave menu.\n"
+"Flag: -nomenu"
+msgstr ""
+"メニューを終了します。\n"
+"Flag: -nomenu"
+
+msgid "Quit xsnow"
+msgstr "xsnowを終了します"
+
+msgid "Quit xsnow."
+msgstr "xsnowを終了します。"
+
+msgid "Contact"
+msgstr "接触"
+
+msgid "Please report any comments to the maintainer of xsnow."
+msgstr "コメントはxsnowの管理者に報告してください。"
+
+msgid ""
+"If the system is too busy, all panels get this color, in which case you "
+"could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
+"\"celestials\"."
+msgstr ""
+"システムがビジー状態の場合は、すべてのパネルがこの色になります。その場合は、"
+"「雪」、「鳥」、「設定」、または「天体」の設定を調整することができます。"
+
+msgid "Welcome"
+msgstr "いらっしゃいませ"
+
+msgid "Blow off:"
+msgstr "吹き飛ばす:"
+
+msgid "On windows:"
+msgstr "Windows の場合:"
+
+msgid "On bottom:"
+msgstr "一番下:"
+
+msgid "On scenery:"
+msgstr "風景について："
+
+msgid "Show"
+msgstr "見せる"
+
+msgid ""
+"If set, show snow blowing away.\n"
+"Flags: -blowsnow, -noblowsnow"
+msgstr ""
+"設定すると、雪が吹き飛ばされる様子が表示されます。Flags: -blowsnow, "
+"-noblowsnow"
+
+msgid ""
+"If set, show fallen snow on windows.\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+msgstr ""
+"設定すると、窓に降った雪が表示されます。\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+
+msgid ""
+"If set, show fallen snow on bottom of the desktop.\n"
+"Flags: -keepsnowonscreen, -nokeepsnowonscreen"
+msgstr ""
+"設定すると、デスクトップの下部に降った雪が表示されます。Flags: "
+"-keepsnowonscreen, -nokeepsnowonscreen"
+
+msgid ""
+"If set, snow will collect on the trees.\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+msgstr ""
+"設定すると、雪が木の上に集まります。\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+
+msgid ""
+"The higher this setting, the more snow will be generated  because of Santa "
+"ploughing, wind or disappearing windows. \n"
+"Flag: -blowofffactor"
+msgstr ""
+"この設定が高くなるほど、サンタの除雪、風、窓の消滅などにより生成される雪が多"
+"くなります。 \n"
+"Flag: -blowofffactor"
+
+msgid ""
+"The higher this setting, the more snow will collect on the windows. \n"
+"Note: in Wayland, there is no snow on the windows. \n"
+"Flag: -wsnowdepth"
+msgstr ""
+"この設定を高くすると、窓に積もる雪が多くなります。 \n"
+"注: ウェイランドでは窓に雪がありません。 \n"
+"Flag: -wsnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the  bottom of the "
+"desktop.\n"
+"Flag: -ssnowdepth"
+msgstr ""
+"この設定が高くなるほど、デスクトップの底に多くの雪が集まります。\n"
+"Flag: -ssnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the trees.\n"
+"Flag: -maxontrees"
+msgstr ""
+"この設定を高くすると、より多くの雪が木に集まります。\n"
+"Flag: -maxontrees"
+
+msgid "Choose your favorite snow"
+msgstr "好きな雪を選んでください"
+
+msgid " "
+msgstr " "
+
+msgid "Defaults"
+msgstr "デフォルト"
+
+msgid "Apply default values for the preferences in this tab.\n"
+msgstr "このタブの設定にデフォルト値を適用します。\n"
+
+msgid "Vintage"
+msgstr "ビンテージ"
+
+msgid "Apply vintage values for the preferences in this tab."
+msgstr "このタブの設定にヴィンテージ値を適用します。"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flags: -defaults"
+msgstr ""
+"すべての環境設定 (設定を除く) にデフォルトを適用します。\n"
+"Flags: -defaults"
+
+msgid "Size:"
+msgstr "サイズ："
+
+msgid ""
+"Size of snowflakes, works only for non-vintage snow flakes.\n"
+"Flag: -snowsize"
+msgstr ""
+"雪片のサイズ。ヴィンテージ以外の雪片に対してのみ機能します。\n"
+"Flag: -snowsize"
+
+msgid "Speed:"
+msgstr "スピード："
+
+msgid "Max # snowflakes:"
+msgstr "雪の結晶の最大数:"
+
+msgid ""
+"Maximum amount of snowflakes.\n"
+"Flag: -flakecountmax"
+msgstr ""
+"雪の結晶の最大量。\n"
+"Flag: -flakecountmax"
+
+msgid "# Snowflakes:"
+msgstr "# 雪の結晶:"
+
+msgid "label"
+msgstr "ラベル"
+
+msgid "Show fluff"
+msgstr "毛羽立ちを見せる"
+
+msgid ""
+"If set, try to show fluff on fallen snow and trees if possible.\n"
+"Flags: -fluffy, -nofluffy"
+msgstr ""
+"設定した場合、可能であれば、落ちた雪や木々に毛羽立ちを表示するようにしてくだ"
+"さい。\n"
+"Flags: -fluffy, -nofluffy"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+
+msgid ""
+"Speed of the snowflakes.\n"
+"Flag: -snowspeedfactor"
+msgstr ""
+"雪片の速度。\n"
+"Flag: -snowspeedfactor"
+
+msgid "Intensity:"
+msgstr "強度："
+
+msgid ""
+"The higher, the more snowflakes.\n"
+"Flag: -snowflakes"
+msgstr ""
+"高くなるほど、雪の結晶が多くなります。\n"
+"Flag: -snowflakes"
+
+msgid "Show snow"
+msgstr "雪を見せる"
+
+msgid ""
+"If set, show snowflakes.\n"
+"Flags: -snow, -nosnow"
+msgstr ""
+"設定されている場合、雪片を表示します。\n"
+"Flags: -snow, -nosnow"
+
+msgid ""
+"The color of the snow.\n"
+"Flag: -sc"
+msgstr ""
+"雪の色。\n"
+"Flag: -sc"
+
+msgid "Color:"
+msgstr "色："
+
+msgid "Second color:"
+msgstr "2 番目の色:"
+
+msgid ""
+"The second color of the snow.\n"
+"Flag: -sc2"
+msgstr ""
+"雪の 2 番目の色。\n"
+"Flag: -sc2"
+
+msgid "Enable"
+msgstr "有効にする"
+
+msgid ""
+"If set, use two colors.\n"
+"Flag: -enablesc2"
+msgstr ""
+"設定されている場合は、2 色を使用します。\n"
+"Flag: -enablesc2"
+
+msgid "Lift snow on windows or screen: click "
+msgstr "窓または画面上の雪を持ち上げる: クリック "
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Snow"
+msgstr "雪"
+
+msgid ""
+"Tiny Santa with three reindeers.\n"
+"Flags: -santa 0 -norudolph"
+msgstr ""
+"3 頭のトナカイを持つ小さなサンタ。\n"
+"Flags: -santa 0 -norudolph"
+
+msgid ""
+"Small Santa with three reindeers.\n"
+"Flags: -santa 1 -norudolph"
+msgstr ""
+"3 頭のトナカイを持つ小さなサンタ。\n"
+"Flags: -santa 1 -norudolph"
+
+msgid ""
+"Santa with three reindeers.\n"
+"Flags: -santa 2 -norudolph"
+msgstr ""
+"サンタと 3 頭のトナカイ。\n"
+"Flags: -santa 2 -norudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
+"Flags: -santa 3 -norudolph"
+msgstr ""
+"サンタとダッシャー、ダンサー、プランサー、ヴィクセン、コメット、キューピッ"
+"ド、ダンダー、ブリクセム。\n"
+"Flags: -santa 3 -norudolph"
+
+msgid ""
+"Santa using the train with two reindeers.\n"
+"Flags: -santa 4 -norudolph"
+msgstr ""
+"2 頭のトナカイと一緒に電車を利用するサンタ。\n"
+"Flags: -santa 4 -norudolph"
+
+msgid ""
+"Santa using the train with one reindeer and Rudolph.\n"
+"Flags: -santa 4 -showrudolph"
+msgstr ""
+"1 頭のトナカイとルドルフと一緒に電車を利用するサンタ。\n"
+"Flags: -santa 4 -showrudolph"
+
+msgid ""
+"Tiny Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 0 -showrudolph"
+msgstr ""
+"2 頭のトナカイとルドルフを連れた小さなサンタ。\n"
+"Flags: -santa 0 -showrudolph"
+
+msgid ""
+"Small Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 1 -showrudolph"
+msgstr ""
+"2 頭のトナカイとルドルフを持つ小さなサンタ。\n"
+"Flags: -santa 1 -showrudolph"
+
+msgid ""
+"Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 2 -showrudolph"
+msgstr ""
+"2 頭のトナカイとルドルフを連れたサンタ。\n"
+"Flags: -santa 2 -showrudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
+"and  Rudolph.\n"
+"Flags: -santa 3 -showrudolph"
+msgstr ""
+"サンタとダッシャー、ダンサー、プランサー、ヴィクセン、コメット、キューピッ"
+"ド、ダンダー、ブリクセム、ルドルフ。\n"
+"Flags: -santa 3 -showrudolph"
+
+msgid "Without Rudolph"
+msgstr "ルドルフがいないと"
+
+msgid "With Rudolph"
+msgstr "ルドルフと"
+
+msgid "Choose your Santa"
+msgstr "サンタさんを選んでください"
+
+msgid "Choose your favorite Santa"
+msgstr "好きなサンタさんを選んでください"
+
+msgid "    "
+msgstr "    "
+
+msgid ""
+"Santa's speed.\n"
+"Flag: -santaspeedfactor"
+msgstr ""
+"サンタさんのスピード。\n"
+"Flag: -santaspeedfactor"
+
+msgid "Apply default values for the preferences in this tab."
+msgstr "このタブの設定にデフォルト値を適用します。"
+
+msgid "Show Santa"
+msgstr "サンタさんを見せる"
+
+msgid ""
+"To show or not to show Santa.\n"
+"Flags: -showsanta, -nosanta"
+msgstr ""
+"サンタさんを見せるか見せないか。\n"
+"Flags: -showsanta, -nosanta"
+
+msgid "Scale:"
+msgstr "規模："
+
+msgid ""
+"Scale of Santa.\n"
+"Flags: -santascale <n>"
+msgstr ""
+"サンタのスケール。\n"
+"Flags: -santascale <n>"
+
+msgid "Santa"
+msgstr "サンタ"
+
+msgid "Show  scenery"
+msgstr "ショー風景"
+
+msgid ""
+"To show or not to show scenery.\n"
+"Flags: -showtrees, -notrees"
+msgstr ""
+"風景を見せるか見せないか。\n"
+"Flags: -showtrees, -notrees"
+
+msgid ""
+"Vintage tree, you can set the color.\n"
+"Flag: -treetype 0"
+msgstr ""
+"ヴィンテージツリー、色を設定できます。\n"
+"Flag: -treetype 0"
+
+msgid ""
+"Woody tree.\n"
+"Flags: -treetype 1 or: -treetype all"
+msgstr ""
+"木質の木。\n"
+"Flags: -treetype 1 or: -treetype all"
+
+msgid ""
+"Leavy tree.\n"
+"Flags: -treetype 2 or: -treetype all"
+msgstr ""
+"リービーツリー。\n"
+"Flags: -treetype 2 or: -treetype all"
+
+msgid ""
+"Small house.\n"
+"Flags: -treetype 3 or: -treetype all"
+msgstr ""
+"小さな家。\n"
+"Flags: -treetype 3 or: -treetype all"
+
+msgid ""
+"Reindeer.\n"
+"Flags: -treetype 4 or: -treetype all"
+msgstr ""
+"トナカイ。\n"
+"Flags: -treetype 4 or: -treetype all"
+
+msgid ""
+"Moose.\n"
+"Flags: -treetype 5 or: -treetype all"
+msgstr ""
+"ムース。\n"
+"Flags: -treetype 5 or: -treetype all"
+
+msgid ""
+"Snowy tree.\n"
+"Flags: -treetype 6 or: -treetype all"
+msgstr ""
+"雪に覆われた木。\n"
+"Flags: -treetype 6 or: -treetype all"
+
+msgid ""
+"Set color of vintage tree.\n"
+"Flag: -tc"
+msgstr ""
+"ヴィンテージツリーの色を設定します。\n"
+"Flag: -tc"
+
+msgid "Compose your favorite scenery"
+msgstr "好きな風景を構図に入れてみる"
+
+msgid "Try and click any image!"
+msgstr "任意の画像をクリックしてみてください。"
+
+msgid ""
+"Polar bear.\n"
+"Flags: -treetype 7 or: -treetype all"
+msgstr ""
+"シロクマ。\n"
+"Flags: -treetype 7 or: -treetype all"
+
+msgid "# Items:"
+msgstr "アイテム数:"
+
+msgid ""
+"Desired number of scenery items.\n"
+"Flag: -trees"
+msgstr ""
+"シーナリーアイテムの希望数。\n"
+"Flag: -trees"
+
+msgid "% Window fill:"
+msgstr "% ウィンドウの塗りつぶし:"
+
+msgid ""
+"Bottom percentage of screen available for scenery.\n"
+"Flag: -treefill"
+msgstr ""
+"風景に使用できる画面の下のパーセンテージ。\n"
+"Flag: -treefill"
+
+msgid "Allow overlap"
+msgstr "オーバーラップを許可する"
+
+msgid ""
+"To allow overlap or not when placing scenery.\n"
+"Flags: -treeoverlap, -notreeoverlap"
+msgstr ""
+"シーナリーを配置するときにオーバーラップを許可するかどうかを指定します。\n"
+"Flags: -treeoverlap, -notreeoverlap"
+
+msgid ""
+"Scale of scenery.\n"
+"Flag: sceneryscale <n>"
+msgstr ""
+"風景のスケール。\n"
+"Flag: sceneryscale <n>"
+
+msgid "Scenery"
+msgstr "景色"
+
+msgid "Compose here your favorite celestial conditions"
+msgstr "お気に入りの天体の状態をここに入力してください"
+
+msgid ""
+"Apply default values for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"すべての環境設定 (設定を除く) にデフォルト値を適用します。\n"
+"Flag: -defaults"
+
+msgid ""
+"Apply vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"すべての環境設定 (設定を除く) にヴィンテージ値を適用します。\n"
+"Flag: -vintage"
+
+msgid "Wind"
+msgstr "風"
+
+msgid "Windy"
+msgstr "風が強い"
+
+msgid ""
+"If set, there will be wind.\n"
+"Flags: -wind, -nowind"
+msgstr ""
+"設定すると風が発生します。\n"
+"Flags: -wind, -nowind"
+
+msgid "Whirl:"
+msgstr "渦巻き:"
+
+msgid ""
+"The higher this setting, the more the wind will whirl.\n"
+"Flag: -whirlfactor"
+msgstr ""
+"この設定が高くなるほど、風の渦が大きくなります。\n"
+"Flag: -whirlfactor"
+
+msgid "Timer:"
+msgstr "タイマー："
+
+msgid ""
+"This setting determines how many seconds pass between  two  gusts of wind.\n"
+"Flag: -windtimer"
+msgstr "この設定は、2 つの突風の間の経過秒数を決定します。Flag: -windtimer"
+
+msgid "Now!"
+msgstr "今！"
+
+msgid "Force a gust of wind immediately."
+msgstr "すぐに突風を起こしてください。"
+
+msgid "Stars"
+msgstr "スター"
+
+msgid ""
+"To show or not show stars.\n"
+"Flag: -stars  (0 means: no stars)"
+msgstr ""
+"星を表示するかどうか。\n"
+"Flag: -stars  (0 means: no stars)"
+
+msgid "Number:"
+msgstr "番号："
+
+msgid ""
+"Number of twinkling stars.\n"
+"Flag: -stars"
+msgstr ""
+"きらめく星の数。\n"
+"Flag: -stars"
+
+msgid "Moon"
+msgstr "月"
+
+msgid ""
+"To show or not show moon.\n"
+"Flags: -moon 1, -moon 0"
+msgstr ""
+"月を表示するかどうか。\n"
+"Flags: -moon 1, -moon 0"
+
+msgid ""
+"Speed of moon in pixels/minute.\n"
+"Flag: -moonspeed"
+msgstr ""
+"月の速度 (ピクセル/分)。\n"
+"Flag: -moonspeed"
+
+msgid ""
+"Relative size of the moon.\n"
+"Flag: -moonsize"
+msgstr ""
+"月の相対的なサイズ。\n"
+"Flag: -moonsize"
+
+msgid "Halo"
+msgstr "ハロー"
+
+msgid ""
+"To show or not to show halo around moon.\n"
+"Flags: -halo 1, -halo 0"
+msgstr ""
+"月の周りにハローを表示するかどうか。\n"
+"Flags: -halo 1, -halo 0"
+
+msgid "Bright:"
+msgstr "明るい："
+
+msgid ""
+"Brightness of moon's halo.\n"
+"Flag: -halobrightness"
+msgstr ""
+"月の暈の明るさ。\n"
+"Flag: -halobrightness"
+
+msgid "Meteors"
+msgstr "流星"
+
+msgid ""
+"To show or not to show meteors.\n"
+"Flags: -meteors, -nometeors"
+msgstr ""
+"流星を表示するかどうか。\n"
+"Flags: -meteors, -nometeors"
+
+msgid "Aurora"
+msgstr "オーロラ"
+
+msgid ""
+"To show or not show aurora.\n"
+"Note: the aurora is best viewed using a dark background.\n"
+"Flags: -aurora 1, -aurora 0"
+msgstr ""
+"オーロラを表示するかどうかを指定します。\n"
+"注: オーロラは、暗い背景を使用すると最適に表示されます。\n"
+"Flags: -aurora 1, -aurora 0"
+
+msgid "Width:"
+msgstr "幅："
+
+msgid ""
+"Width of aurora in percentage of screen width.\n"
+"Flag: -aurorawidth"
+msgstr ""
+"画面幅に対するオーロラの幅の割合。\n"
+"Flag: -aurorawidth"
+
+msgid "Height:"
+msgstr "身長："
+
+msgid ""
+"Vertical size of aurora.\n"
+"Flag: -auroraheight"
+msgstr ""
+"オーロラの縦サイズ。\n"
+"Flag: -auroraheight"
+
+msgid ""
+"Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
+"Flag: -auroraspeed"
+msgstr ""
+"オーロラのアニメーション速度: 実際: 10、より劇的な効果を得るには、選択: 100\n"
+"Flag: -auroraspeed"
+
+msgid ""
+"Brightness of aurora.\n"
+"Flags: -aurorabrightness"
+msgstr ""
+"オーロラの明るさ。\n"
+"Flags: -aurorabrightness"
+
+msgid "Frequency:"
+msgstr "頻度："
+
+msgid ""
+"Frequency of meteors to appear.\n"
+"Flags: -meteorfrequency"
+msgstr ""
+"流星の出現頻度。\n"
+"Flags: -meteorfrequency"
+
+msgid "Vertical:"
+msgstr "垂直："
+
+msgid ""
+"Baseline height of aurora, in percentage of screen height.\n"
+"Flag: -aurorabase"
+msgstr ""
+"オーロラのベースラインの高さ (画面の高さのパーセンテージ)。\n"
+"Flag: -aurorabase"
+
+msgid "Color"
+msgstr "色"
+
+msgid ""
+"Choose between yellow-ish and white-ish moon.\n"
+"Flag: -mooncolor [0,1]"
+msgstr ""
+"黄色っぽい月と白いような月からお選びください。\n"
+"Flag: -mooncolor [0,1]"
+
+msgid ""
+"Size of stars.\n"
+"Flag: -starsize"
+msgstr ""
+"星のサイズ。\n"
+"Flag: -starsize"
+
+msgid "Horizontal:"
+msgstr "水平:"
+
+msgid ""
+"Horizontal place of aurora\n"
+"Flags: -aurorax"
+msgstr ""
+"オーロラの横の場所\n"
+"Flags: -aurorax"
+
+msgid "Position:"
+msgstr "位置："
+
+msgid "X-position:"
+msgstr "X 位置:"
+
+msgid "Y-position"
+msgstr "Y 位置"
+
+msgid ""
+"Horizontal position of moon if speed equals 0.\n"
+"Flag: -moonx"
+msgstr ""
+"速度が 0 に等しい場合の月の水平位置。\n"
+"Flag: -moonx"
+
+msgid ""
+"Vertical position of moon if speed equals 0.\n"
+"Flag: -moony"
+msgstr ""
+"速度が 0 に等しい場合の月の垂直位置。\n"
+"Flag: -moony"
+
+msgid "Celestials"
+msgstr "天体"
+
+msgid "Birds settings"
+msgstr "鳥の設定"
+
+msgid "Show birds"
+msgstr "鳥を見せる"
+
+msgid ""
+"If set: show birds.\n"
+"Flags: -showbirds 1, -showbirds 0"
+msgstr ""
+"設定されている場合: 鳥を表示します。\n"
+"Flags: -showbirds 1, -showbirds 0"
+
+msgid "Birds only"
+msgstr "鳥のみ"
+
+msgid ""
+"If set: show no Santa, snow or scenery.\n"
+"Flags: -birdsonly 0, -birdsony 1"
+msgstr ""
+"設定した場合: サンタ、雪、風景を表示しません。Flags: -birdsonly 0, -birdsony "
+"1"
+
+msgid "Preferred distance:"
+msgstr "推奨距離:"
+
+msgid ""
+"Preferred distance from other birds.\n"
+"Flag: -prefdistance"
+msgstr ""
+"他の鳥からの好ましい距離。\n"
+"Flag: -prefdistance"
+
+msgid "Restart"
+msgstr "再起動"
+
+msgid "Restart birds."
+msgstr "鳥を再起動します。"
+
+msgid "Viewing distance:"
+msgstr "視聴距離:"
+
+msgid ""
+"Viewing distance.\n"
+"NOTE: Santa has no knowledge of viewing distance, so when birds are "
+"following Santa, the relative positions of Santa and birds will be "
+"temporarely out of sync when you change the viewing distance. This is only "
+"noticeable when the birds are following Santa.\n"
+"Flag: -viewingdistance"
+msgstr ""
+"視距離。\n"
+"注: サンタは視距離を知りません。そのため、鳥がサンタを追っている場合、視距離"
+"を変更すると、サンタと鳥の相対位置が一時的に同期しなくなります。これは、鳥が"
+"サンタさんを追っているときにのみ顕著です。\n"
+"Flag: -viewingdistance"
+
+msgid "Focus to attraction point:"
+msgstr "魅力的なポイントに焦点を当てる:"
+
+msgid ""
+"Tendency to concentrate on the attraction point.\n"
+"Flag: -focuscentre"
+msgstr ""
+"アトラクションポイントに集中する傾向。\n"
+"Flag: -focuscentre"
+
+msgid ""
+"Desired number of birds. If zero, no birds are shown.\n"
+"Flag: -nbirds"
+msgstr ""
+"希望羽数。 0 の場合、鳥は表示されません。\n"
+"Flag: -nbirds"
+
+msgid "# Birds:"
+msgstr "# 鳥:"
+
+msgid ""
+"Number of nearest neighbours the birds should look at.\n"
+"Flag: -neighbours"
+msgstr ""
+"鳥が注目すべき最近傍の数。\n"
+"Flag: -neighbours"
+
+msgid "Neighbours:"
+msgstr "隣人:"
+
+msgid ""
+"Give the birds a fancy color.\n"
+"Flag: -birdscolor"
+msgstr ""
+"鳥に派手な色を付けてください。\n"
+"Flag: -birdscolor"
+
+msgid "Bird color"
+msgstr "鳥の色"
+
+msgid "Anarchy:"
+msgstr "アナーキー:"
+
+msgid ""
+"Anarchy level: the higher, the more anarchy.\n"
+"Flag: -anarchy"
+msgstr ""
+"アナーキー レベル: 高いほど、よりアナーキーになります。\n"
+"Flag: -anarchy"
+
+msgid "Distance weight:"
+msgstr "距離の重み:"
+
+msgid ""
+"Tendency to keep desired distance to neighbours.\n"
+"Flag: -disweight"
+msgstr ""
+"隣人と望ましい距離を保つ傾向。\n"
+"Flag: -disweight"
+
+msgid "Adjust speed to neighbours:"
+msgstr "隣に合わせて速度を調整します。"
+
+msgid ""
+"Tendency to adjust speed to neighbours.\n"
+"Flag: -followneighbours"
+msgstr ""
+"隣人に速度を合わせる傾向があります。\n"
+"Flag: -followneighbours"
+
+msgid ""
+"Speed of birds in arbitrary units.\n"
+"Flag: -birdsspeed"
+msgstr ""
+"任意の単位での鳥の速度。\n"
+"Flag: -birdsspeed"
+
+msgid "Drawing scale:"
+msgstr "図面スケール:"
+
+msgid ""
+"Influence the size of the birds.\n"
+"Flag: -birdsscale\n"
+msgstr ""
+"鳥のサイズに影響を与えます。\n"
+"Flag: -birdsscale\n"
+
+msgid ""
+"Show \n"
+"attr point"
+msgstr "属性ポイントを表示"
+
+msgid ""
+"Show the point where the birds want to go.\n"
+"Flags: -showattr 0, -showattr 1"
+msgstr ""
+"鳥が行きたい場所を示します。\n"
+"Flags: -showattr 0, -showattr 1"
+
+msgid ""
+"Follow \n"
+"Santa"
+msgstr "サンタをフォロー"
+
+msgid ""
+"Birds are attracted by an attraction point. Here you can choose to follow "
+"Santa.\n"
+"Flags: -followsanta 0, -followsanta 1"
+msgstr ""
+"鳥は魅力的なポイントに引き寄せられます。ここでサンタさんをフォローするかどう"
+"かを選択できます。\n"
+"Flags: -followsanta 0, -followsanta 1"
+
+msgid ""
+"Percentage of screen to be used for the attraction point.\n"
+"Flag: -attrspace"
+msgstr ""
+"アトラクション ポイントに使用される画面の割合。\n"
+"Flag: -attrspace"
+
+msgid "Attraction point range"
+msgstr "アトラクションポイント範囲"
+
+msgid "Actual mean distance from neighbours."
+msgstr "隣人からの実際の平均距離。"
+
+msgid "Distance used to get the desired number of neighbours."
+msgstr "必要な数の近傍を取得するために使用される距離。"
+
+msgid "Birds"
+msgstr "鳥"
+
+msgid "version"
+msgstr "バージョン"
+
+msgid "Transparency "
+msgstr "透明性 "
+
+msgid ""
+"Transparency of painted items:\n"
+"0: no transparency.\n"
+"100: fully transparent, you will see nothing!\n"
+"Flag: -transparency"
+msgstr ""
+"ペイントされたアイテムの透明度:\n"
+"0: 透明度なし。\n"
+"100: 完全に透明で、何も表示されません。\n"
+"Flag: -transparency"
+
+msgid "Lift snow on bottom"
+msgstr "底の雪を持ち上げる"
+
+msgid ""
+"Use this if snow falls below the bottom of your screen, or  fallen snow "
+"hides something that should not be hidden.\n"
+"Flag: -offsets"
+msgstr ""
+"雪が画面の下に落ちた場合、または降った雪が隠してはいけないものを隠した場合に"
+"これを使用します。\n"
+"Flag: -offsets"
+
+msgid "Lift snow on windows"
+msgstr "窓に積もった雪を持ち上げる"
+
+msgid ""
+"Use this if no snow collects on your windows, or if snow  collects separated "
+"from your windows. \n"
+"Some basic window managers need this setting (e.g. TWM  needs in general a "
+"value of 25 .. 28).\n"
+"Flag: -offsety"
+msgstr ""
+"窓に雪が積もらない場合、または窓から離れて雪が積もる場合に使用します。 \n"
+"一部の基本的なウィンドウ マネージャーではこの設定が必要です (たとえば、TWM で"
+"は一般に 25 .. 28 の値が必要です)。Flag: -offsety"
+
+msgid "Cpu factor"
+msgstr "CPU係数"
+
+msgid ""
+"The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
+"Flag: -cpuload"
+msgstr ""
+"値が高いほど、xsnowはよりスムーズに実行されますが、より多くの CPU パワーを使"
+"用します。\n"
+"Flag: -cpuload"
+
+msgid "Scale"
+msgstr "規模"
+
+msgid ""
+"Overall drawing scale.\n"
+"Flag: -scale"
+msgstr ""
+"全体的な図面スケール。\n"
+"Flag: -scale"
+
+msgid "Ignore top windows"
+msgstr "上部のウィンドウを無視する"
+
+msgid ""
+"Windows closer to the top  than the number in this widget will not collect "
+"snow.\n"
+"\n"
+"In some cases, there are invisible windows near the top of the screen, which "
+"are handled by xsnow as normal windows: snow is collected upon them. By "
+"entering a suitable number here, this undesired behaviour can be avoided.\n"
+"Flag: -ignoretop\n"
+"\n"
+msgstr ""
+"このウィジェットの数値よりも上部に近いウィンドウには雪が集まりません。\n"
+"\n"
+"場合によっては、画面の上部近くに非表示のウィンドウがあり、これらは xsnow に"
+"よって通常のウィンドウとして処理され、その上に雪が集まります。ここに適切な数"
+"値を入力すると、この望ましくない動作を回避できます。Flag: -ignoretop\n"
+"\n"
+
+msgid "Ignore bottom windows"
+msgstr "下のウィンドウを無視する"
+
+msgid ""
+"Windows closer to the  bottom than the number in this widget will not "
+"collect snow.\n"
+"\n"
+"In some cases, there are invisible windows near the bottom  of  the screen, "
+"which are handled by xsnow as normal windows: snow is collected upon them. "
+"By entering a suitable  number here, this undesired behaviour can be "
+"avoided.\n"
+"Flag: -ignorebottom"
+msgstr ""
+"このウィジェットの数値よりも下部に近いウィンドウには雪が集まりません。\n"
+"\n"
+"場合によっては、画面の下部近くに非表示のウィンドウがあり、これらは xsnow に"
+"よって通常のウィンドウとして処理され、その上に雪が集まります。ここに適切な数"
+"値を入力すると、この望ましくない動作を回避できます。Flag: -ignorebottom"
+
+msgid ""
+"Menu\n"
+"colors"
+msgstr ""
+"メニュー\n"
+"の色"
+
+msgid ""
+"Toggle between xsnow's own menu colors and standard menu colors.\n"
+"Activated: use xsnow colors.\n"
+"Deactivated: use default colors.\n"
+"Flags: -theme 1, -theme 0"
+msgstr ""
+"xsnow独自のメニュー カラーと標準メニュー カラーを切り替えます。\n"
+"アクティブ化: xsnowカラーを使用します。\n"
+"非アクティブ化: デフォルトのカラーを使用します。\n"
+"Flags: -theme 1, -theme 0"
+
+msgid ""
+"On all\n"
+"workspaces"
+msgstr ""
+"すべての\n"
+"ワークスペース上"
+
+msgid ""
+"Use all workspaces to snow in.\n"
+"NOTE: this doesn't work properly in enlightenment.\n"
+"Flags: -allworkspaces 1, -allworkspaces 0"
+msgstr ""
+"雪を降らせるにはすべてのワークスペースを使用します。\n"
+"注: これは啓発では適切に機能しません。\n"
+"Flags: -allworkspaces 1, -allworkspaces 0"
+
+msgid ""
+"Below\n"
+"windows"
+msgstr "ウィンドウの下"
+
+msgid ""
+"When activated, it will be snowing below your windows, else  it will be "
+"snowing upon you windows too.\n"
+"On some desktop environments, when snowing above your  windows you will not "
+"be able to click on any window.\n"
+"Therefore, you will be asked to click a button, to be sure that  things are "
+"OK.\n"
+"Flag: -above"
+msgstr ""
+"アクティブにすると、ウィンドウの下に雪が降ります。そうでない場合は、ウィンド"
+"ウにも雪が降ります。\n"
+"一部のデスクトップ環境では、ウィンドウの上に雪が降っていると、どのウィンドウ"
+"もクリックできなくなります。\n"
+"そのため、問題がないことを確認するためにボタンをクリックするよう求められま"
+"す。\n"
+"Flag: -above"
+
+msgid ""
+"Click to\n"
+"confirm"
+msgstr ""
+"クリックして\n"
+"を確認します"
+
+msgid "To make sure you can click."
+msgstr "クリックできることを確認するため。"
+
+msgid ""
+"If you have more than one monitor, choose where you want snow falling. "
+"Choose 'all monitors' if you want snow in all monitors.\n"
+"NOTE: when changing monitor, xsnow will restart.\n"
+"Flag: -screen"
+msgstr ""
+"複数のモニターがある場合は、雪を降らせる場所を選択します。すべてのモニターに"
+"雪を表示したい場合は、「すべてのモニター」を選択します。\n"
+"注: モニターを変更すると、xsnowが再起動します。\n"
+"Flag: -screen"
+
+msgid "monitor 1"
+msgstr "モニター1"
+
+msgid ""
+"Create\n"
+"outline"
+msgstr "アウトラインを作成する"
+
+msgid ""
+"To draw an outline around the snow window.\n"
+"Flag: -outline 1/0"
+msgstr ""
+"雪窓の周囲に輪郭を描きます。\n"
+"Flag: -outline 1/0"
+
+msgid ""
+"Use \n"
+"screenshots"
+msgstr "のスクリーンショットを使用する"
+
+msgid "Use screenshots for the location of windows. Experimental."
+msgstr ""
+"ウィンドウの位置についてはスクリーンショットを使用してください。実験的。"
+
+msgid ""
+"  \n"
+"  "
+msgstr ""
+"  \n"
+"  "
+
+msgid ""
+"Choose here the picture you want as background when  xscreensaver is "
+"active.\n"
+"Flag: -bg"
+msgstr ""
+"xscreensaverがアクティブなときに背景として使用する画像をここで選択します。\n"
+"Flag: -bg"
+
+msgid "Choose background"
+msgstr "背景を選択してください"
+
+msgid ""
+"Activate xscreensaver.\n"
+"Click and don't touch mouse and keyboard for a few seconds..."
+msgstr ""
+"xscreensaverをアクティブ化します。\n"
+"をクリックして、数秒間マウスとキーボードに触れないでください..."
+
+msgid ""
+"Settings for Xscreensaver. You can choose a background, and choose to use it "
+"or not.\n"
+"Make sure you add a line like\n"
+"xsnow -root\n"
+"after the line 'programs:' in the file ~/.xscreensaver and you run "
+"xscreensaver-demo to choose for xsnow.\n"
+"To activate xscreensaver on the command line:\n"
+"xscreensaver-command  -activate\n"
+"See also the man page:\n"
+"man xsnow"
+msgstr ""
+"Xscreensaver の設定。背景を選択し、それを使用するかどうかを選択できます。\n"
+" ファイル ~/.xscreensaver の 'programs:' 行の後に、必ず \n"
+" abc_1000' -root\n"
+" のような行を追加し、xscreensaver-demo を実行して選択します。 xsnow.\n"
+"コマンド ラインで xscreensaver をアクティブにするには:\n"
+"xscreensaver-command -activate\n"
+"マニュアル ページも参照してください:\n"
+"man xsnow"
+
+msgid "Xscreensaver: "
+msgstr "Xscreensaver: "
+
+msgid "Black"
+msgstr "黒"
+
+msgid ""
+"When activated, the background will be black.\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+msgstr ""
+"アクティブ化すると、背景が黒になります。\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+
+msgid ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+msgstr ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+
+msgid "en"
+msgstr "jp"
+
+msgid "it"
+msgstr "それ"

@@ -1,0 +1,1582 @@
+# # Sometimes the translations contain rubbish, please replace them.
+# # 'abc_1000' Xsnow
+# # 'abc_1001' Rick Jansen
+# # 'abc_1002' \n
+# # 'abc_1003' Xscreensaver
+# # 'abc_1004' XSNOW
+# # 'abc_1005' &#8195;
+# # 'abc_1006' xscreensaver
+# # 'abc_1007' xsnow
+# # 'abc_1008' %l#x
+# # 'abc_1009' XsnoW
+# Language for xsnow
+# Copyright (C) 2023 Willem Vermin
+# Willem Vermin <wvermin@gmail.com>, 2023
+# This file is distributed under the same license as the xsnow package.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xsnow 3.9.2~pre02\n"
+"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
+"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"Last-Translator: Willem Vermin wvermin@gmail.com\n"
+"Language-Team: None\n"
+"Language: bo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, c-format
+msgid "Configuration file: %s\n"
+msgstr "རིམ་སྒྲིག་ཡིག་ཆ།: %s\n"
+
+#, c-format
+msgid "Available languages are: %s\n"
+msgstr ""
+"སྤྱོད་ཐུབ་པའི་སྐད་ཡིག་ནི། %s\n"
+" ཡིན།\n"
+
+msgid "Warning: don't eat yellow snow!"
+msgstr "ཉེན་བརྡ། གངས་ཀྱི་སེར་པོ་མ་ཟོས།"
+
+#, c-format
+msgid "For optimal results, add to your %s:\n"
+msgstr "ལེགས་ཤོས་ཀྱི་གྲུབ་འབྲས་ཆེད་དུ་ཁྱེད་རང་གི་ %s:ལ་ཁ་སྣོན་བྱེད་དགོས།\n"
+
+#, c-format
+msgid "unknown\n"
+msgstr "མ་ཤེས་\n"
+
+#, c-format
+msgid "Detected Wayland desktop\n"
+msgstr ""
+"ཝེ་ལེནཌ་ཌེཀ་སི་ཊོཔ་\n"
+" ཤེས་རྟོགས་བྱུང་།\n"
+
+#, c-format
+msgid "Xsnow needs gtk version >= %s, found version %s \n"
+msgstr "Xsnow ལ་ gtk ཐོན་རིམ་ >= %s དགོས་འདུག ཐོན་རིམ་ %s རྙེད།\n"
+
+msgid "Continuing with flag"
+msgstr "དར་ཆ་མུ་མཐུད།"
+
+#, c-format
+msgid "%s: cannot connect to X server %s\n"
+msgstr ""
+
+msgid "(default)"
+msgstr "(ལུགས་འགལ)"
+
+msgid "Configuration file: "
+msgstr "རིམ་སྒྲིག་ཡིག་ཆ། "
+
+msgid "restarting"
+msgstr "བསྐྱར་འགོ་འཛུགས་པ།"
+
+#, c-format
+msgid "Click on a window ...\n"
+msgstr "སྒེའུ་ཁུང་ཞིག་ལ་སྣུན། ...\n"
+
+#, c-format
+msgid "Detected desktop session: %s\n"
+msgstr "ཤེས་རྟོགས་བྱུང་བའི་ཌེཀ་སི་ཊོབ་ལས་རིམ་: %s\n"
+
+#, c-format
+msgid "Could not determine desktop session\n"
+msgstr ""
+"ཌེཀ་སི་ཊོབ་ལས་རིམ་\n"
+" གཏན་འཁེལ་བྱེད་མི་ཐུབ།\n"
+
+#, c-format
+msgid "Trying to snow in root window\n"
+msgstr ""
+"རྩ་བའི་སྒེའུ་ཁུང་\n"
+"ནང་གངས་ཀྱི་ཚོད་ལྟ་བྱེད་བཞིན་ཡོད།\n"
+
+#, c-format
+msgid "Using transparent window: %dx%d\n"
+msgstr "དྭངས་གསལ་གྱི་སྒེའུ་ཁུང་སྤྱད་དེ: %dx%d\n"
+
+#, c-format
+msgid "The transparent snow-window is probably not click-through, alas..\n"
+msgstr "དྭངས་གསལ་གྱི་གངས་ཀྱི་སྒེའུ་ཁུང་དེ་ཕལ་ཆེར་སྣུན་ཐུབ་ཀྱི་མ་རེད། ཡིན་ནའང་། \n"
+
+#, c-format
+msgid "Cannot create transparent window\n"
+msgstr "དྭངས་གསལ་གྱི་སྒེའུ་ཁུང་གསར་སྐྲུན་བྱེད་མི་ཐུབ།\n"
+
+#, c-format
+msgid "NOTE: xsnow will probably run, but some glitches are to be expected.\n"
+msgstr "དྲན་ཐོ། xsnow ཕལ་ཆེར་གཡོག་རྒྱུ་ཡིན་མོད། འོན་ཀྱང་སྐྱོན་ཆ་འགའ་ཤས་རེ་བ་བྱེད་ཀྱི་ཡོད། \n"
+
+#, c-format
+msgid "LXDE session found, using window 'pcmanfm'.\n"
+msgstr ""
+"སྒེའུ་ཁུང་'pcmanfm'.\n"
+"བཀོལ་ནས་LXDEལས་རིམ་རྙེད་སོང་།\n"
+
+#, c-format
+msgid "Using window 'Desktop'.\n"
+msgstr "'ཌེཀ་སི་ཊོཔ' སྒེའུ་ཁུང་བེད་སྤྱོད་བྱེད་བཞིན་ཡོད།\n"
+
+#, c-format
+msgid "Using root window\n"
+msgstr ""
+"རྩ་བའི་སྒེའུ་ཁུང་\n"
+"བེད་སྤྱོད་བྱེད་བཞིན་ཡོད།\n"
+
+#, c-format
+msgid "Snowing in %#lx: %s size: %dx%d\n"
+msgstr "%#lx: %s ནང་ཁ་བ་འབབ་བཞིན་འདུག ཆེ་ཆུང་: %dx%d\n"
+
+#, c-format
+msgid "Using double buffer: %#lx %dx%d\n"
+msgstr "བར་སྟོང་གཉིས་ལྡན་བཀོལ་སྤྱོད་བྱེད་པ།: %#lx %dx%d\n"
+
+#, c-format
+msgid "NOT using double buffering:"
+msgstr "བར་སྟོང་གཉིས་བེད་སྤྱོད་མི་བྱེད།"
+
+#, c-format
+msgid " because double buffering is not available on this system\n"
+msgstr " གང་ལགས་ཤེ་ན། མ་ལག་འདིའི་སྟེང་ལ་བར་སྟོང་གཉིས་ལྡན་མེད།\n"
+
+#, c-format
+msgid " on your request.\n"
+msgstr " ཁྱེད་ཀྱི་རེ་འདུན་ལྟར།\n"
+
+#, c-format
+msgid "NOTE: expect some flicker.\n"
+msgstr "དྲན་ཐོ། འོད་མདངས་འགའ་ཤས་རེ་བ་བྱེད། \n"
+
+msgid "Restart due to change of screen or language settings ...\n"
+msgstr "བརྙན་ཤེལ་ཡང་ན་སྐད་ཡིག་གི་སྒྲིག་སྟངས་བསྒྱུར་བའི་རྐྱེན་གྱིས་བསྐྱར་དུ་འགོ་འཛུགས། ...\n"
+
+msgid "Restart due to change of display settings...\n"
+msgstr "གསལ་སྟོན་སྒྲིག་སྟངས་བསྒྱུར་བའི་རྐྱེན་གྱིས་བསྐྱར་དུ་འགོ་འཛུགས།\n"
+
+msgid "Wayland (Expect some slugginess)"
+msgstr "ཝེ་ལན་ཌི། (མགྱོགས་པོ་འགའ་ཤས་རེ་བ་བྱེད།)"
+
+msgid "Probably X11"
+msgstr "ཕལ་ཆེར་X11"
+
+#, c-format
+msgid "%s. Snow window: %#lx"
+msgstr "%s. གངས་ཀྱི་སྒེའུ་ཁུང་: %#lx"
+
+#, c-format
+msgid "More than %d errors, I quit!"
+msgstr "ནོར་འཁྲུལ་%dལས་མང་བ་བྱུང་། ངས་མཚམས་འཇོག་བྱས།"
+
+#, c-format
+msgid "Window size changed, now snowing in in %#lx: %s %d+%d %dx%d\n"
+msgstr "སྒེའུ་ཁུང་གི་ཚད་བསྒྱུར་འདུག ད་ལྟ་ཁ་བ་འབབ་བཞིན་འདུག %#lx: %s %d+%d %dx%d\n"
+
+#, c-format
+msgid "Halting because of flag %s\n"
+msgstr ""
+"%s\n"
+" རྒྱལ་དར་གྱི་རྐྱེན་གྱིས་མཚམས་འཇོག\n"
+
+#, c-format
+msgid "Not sending tar file to terminal.\n"
+msgstr "ཊར་ཡིག་ཆ་དེ་ཊར་མི་ནཱལ་ལ་གཏོང་གི་མེད།\n"
+
+#, c-format
+msgid "Try redirecting to a file (e.g: %s,\n"
+msgstr "ཡིག་ཆ་ཞིག་ལ་བསྐྱར་ལོག་བྱེད་པར་འབད་བརྩོན་བྱོས།(དཔེར་ན།: %s,\n"
+
+#, c-format
+msgid "or use a %s"
+msgstr "ཡང་ན་ %s བེད་སྤྱོད།"
+
+msgid "Problems encountered during production of the tar ball.\n"
+msgstr "ཏར་སྤོ་ལོ་བཟོ་སྐྲུན་བྱེད་སྐབས་འཕྲད་པའི་དཀའ་ངལ།\n"
+
+#, c-format
+msgid "Self replication is not compiled in.\n"
+msgstr "རང་འགུལ་འདྲ་བཤུས་དེ་ནང་དུ་བསྡུ་རུབ་བྱས་མེད།\n"
+
+#, c-format
+msgid ""
+"\n"
+"Xsnow: Caught signal %d\n"
+msgstr ""
+"\n"
+"\n"
+": འཛིན་བཟུང་བརྡ་རྟགས་%d\n"
+
+#, c-format
+msgid ""
+"\n"
+"Thanks for using xsnow\n"
+msgstr ""
+"\n"
+"xsnow\n"
+"བེད་སྤྱོད་བྱས་པར་ཐུགས་རྗེ་ཆེ།\n"
+
+#, c-format
+msgid "Setting background from %s\n"
+msgstr ""
+"%s\n"
+" ནས་རྒྱབ་ལྗོངས་སྒྲིག་བཀོད་བྱེད་པ།\n"
+
+#, c-format
+msgid "Range: %d\n"
+msgstr "ཁྱབ་ཁོངས།: %d\n"
+
+#, c-format
+msgid "Mean distance: %3d\n"
+msgstr "ཆ་སྙོམས་བར་ཐག་: %3d\n"
+
+#, c-format
+msgid "Desktop type: %s"
+msgstr "ཌེཀ་སི་ཊོབ་རིགས་: %s"
+
+msgid "all monitors"
+msgstr "ལྟ་རྟོག་པ་ཚང་མ།"
+
+#, c-format
+msgid "monitor %d"
+msgstr "ལྟ་རྟོག %d"
+
+msgid "Available languages are: "
+msgstr "སྤྱོད་ཐུབ་པའི་སྐད་ཡིག་ནི། "
+
+msgid "Use \"sys\" for your default language.\n"
+msgstr "ཁྱེད་རང་གི་སྔོན་སྒྲིག་སྐད་ཡིག་ལ་\"sys\"བེད་སྤྱོད་བྱེད།\n"
+
+msgid "See also the man page."
+msgstr "མི་ཤོག་ངོས་ལ་ཡང་གཟིགས།"
+
+#, c-format
+msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgstr ""
+
+#, c-format
+msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgstr ""
+
+msgid ""
+"\n"
+"Alas! This not an X11 session, xsnow will probably not run.\n"
+"\n"
+"If you want to try it anyway, set the environment variable XSNOW_FORCE_RUN, "
+"eg:\n"
+"\n"
+"    XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"Or, you could force an X11 session, for example by tweaking /etc/gdm3/"
+"daemon.conf.\n"
+"\n"
+msgstr ""
+"\n"
+"ཨ་ཡ། \n"
+"འདི་ནི་X11ལས་རིམ་མིན་པས་xsnowཕལ་ཆེར་གཡོག་མི་ཐུབ།\n"
+"\n"
+"གལ་ཏེ་ཁྱེད་ཀྱིས་གང་ལྟར་ཡང་ཚོད་ལྟ་བྱེད་འདོད་ན་ཁོར་ཡུག་འགྱུར་ཅན་XSNOW_FORCE_RUN དཔེར་ན།:\n"
+"\n"
+"སྒྲིག་དགོས། XSNOW_FORCE_RUN=1 xsnow\n"
+"\n"
+"ཡང་ན་ཁྱེད་ཀྱིས་X11ལས་རིམ་བཙན་ཤེད་བྱེད་ཐུབ། དཔེར་ན། /etc/gdm3/daemon.conf.\n"
+
+msgid "Ok, things are as they are. "
+msgstr "ཡོང་ང་།དངོས་པོ་དེ་དག་སྔར་བཞིན་རེད། "
+
+msgid ""
+"If everything is ok, it is now snowing on your desktop, and birds are "
+"flying. You are encouraged to define your own preferences using the tabs "
+"above."
+msgstr ""
+"གལ་ཏེ་ཡོད་ཚད་བདེ་པོ་ཡོད་ན། ད་ལྟ་ཁྱེད་ཀྱི་ཡིག་ཆའི་སྟེང་ལ་གངས་ཀྱི་འབབ་བཞིན་ཡོད་པ་དང་། བྱིའུ་འཕུར་བཞིན་"
+"ཡོད། ཁྱེད་རང་གིས་གོང་དུ་བཀོད་པའི་མཆོང་ལྡེ་བེད་སྤྱད་དེ་རང་ཉིད་ཀྱི་དགའ་མོས་གཏན་འབེབས་བྱེད་པར་སྐུལ་མ་བྱེད་"
+"ཀྱི་ཡོད།"
+
+msgid ""
+"Use the <b>settings</b> tab if xsnow is misbehaving.\n"
+"Use the <b>birds</b> tab if birds are misbehaving."
+msgstr ""
+"གལ་ཏེ་ xsnow ནོར་འཁྲུལ་ཅན་ཡིན་ན་ <b>སྒྲིག་སྟངས་</b> མཆོང་ལྡེ་བེད་སྤྱོད་བྱེད།\n"
+"གལ་ཏེ་བྱ་སྤྱོད་ངན་པ་ཡོད་ན་ <b>བྱིའུ་</b> མཆོང་ལྡེ་བེད་སྤྱོད་བྱེད།"
+
+msgid "In every tab you find the following rescue buttons:"
+msgstr "མཆོང་ལྡེ་རེ་རེར་ཁྱོད་ཀྱིས་གཤམ་གྱི་སྐྱོབ་གསོའི་མཐེབ་རྙེད་ཐུབ།"
+
+msgid "<b>Defaults </b>"
+msgstr "<b>སྔོན་སྒྲིག </b>།"
+
+msgid "Set default preferences for this tab."
+msgstr "མཆོང་ལྡེ་འདིའི་ཆེད་དུ་སྔོན་སྒྲིག་དགའ་མོས་སྒྲིག་འཇུག་བྱེད།"
+
+msgid "<b>Vintage </b>"
+msgstr "<b>ཝིན་ཊེཇ་</b>"
+
+msgid "Set vintage preferences for this tab."
+msgstr "མཆོང་ལྡེ་འདིའི་ཆེད་དུ་རྙིང་མའི་དགའ་མོས་སྒྲིག་དགོས།"
+
+msgid "<b>All defaults </b>"
+msgstr "<b>སྔོན་སྒྲིག་ཚང་མ</b>།"
+
+msgid "Set default preferences for all (except settings) tabs."
+msgstr "མཆོང་ལྡེ་ཚང་མའི་ཆེད་དུ་སྔོན་སྒྲིག་དགའ་མོས་སྒྲིག་འཇུག་བྱེད།"
+
+msgid "<b>All vintage </b>"
+msgstr "<b>རྒུན་འབྲུམ་ཚང་མ། </b>"
+
+msgid "Set vintage preferences for all (except settings) tabs."
+msgstr "(སྒྲིག་སྟངས་མ་གཏོགས་)མཆོང་ལྡེ་ཚང་མའི་ཆེད་དུ་རྙིང་མའི་དགའ་མོས་སྒྲིག་དགོས།"
+
+msgid "  "
+msgstr "  "
+
+msgid "   "
+msgstr "   "
+
+msgid "Welcome at xsnow!"
+msgstr "xsnow ལ་ཕེབས་པར་དགའ་བསུ་ཞུ།"
+
+msgid ""
+"Vintage preferences: the look and feel of the original xsnow, created in "
+"1993 by Rick Jansen."
+msgstr "སྔོན་མའི་དགའ་མོས། ༡༩༩༣ལོར་Rick Jansenཡིས་བཟོས་པའི་xsnowཐོག་མའི་མཐོང་སྣང་དང་ཚོར་སྣང་།"
+
+msgid "All defaults"
+msgstr "སྔོན་སྒྲིག་ཚང་མ།"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"དགའ་མོས་ཡོད་ཚད་ལ་སྔོན་སྒྲིག་འཇུག་སྤྱོད་བྱེད།(སྒྲིག་སྟངས་མ་གཏོགས།)\n"
+"Flag: -defaults"
+
+msgid "All vintage"
+msgstr "རྒུན་འབྲུམ་ཚང་མ།"
+
+msgid ""
+"Use vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"དགའ་མོས་ཚང་མའི་ཆེད་དུ་སྔོན་མའི་རིན་ཐང་བེད་སྤྱོད་བྱེད་དགོས།(སྒྲིག་སྟངས་མ་གཏོགས)\n"
+"Flag: -vintage"
+
+msgid "Hide menu"
+msgstr "རེའུ་མིག་སྦས།"
+
+msgid ""
+"Leave menu.\n"
+"Flag: -nomenu"
+msgstr ""
+"རེའུ་མིག་བཞག་རོགས།\n"
+"Flag: -nomenu"
+
+msgid "Quit xsnow"
+msgstr "xsnow ཕྱིར་འཐེན་བྱེད།"
+
+msgid "Quit xsnow."
+msgstr "xsnow ཕྱིར་འཐེན་བྱེད།"
+
+msgid "Contact"
+msgstr "ཐུག་འཕྲད"
+
+msgid "Please report any comments to the maintainer of xsnow."
+msgstr "མཆན་གང་ཡོད་ན་ xsnow བདག་གཉེར་བྱེད་མཁན་ལ་སྙན་སེང་ཞུ་རོགས།"
+
+msgid ""
+"If the system is too busy, all panels get this color, in which case you "
+"could  adapt some settings in \"snow\", \"birds\", \"settings\", or "
+"\"celestials\"."
+msgstr ""
+"གལ་ཏེ་མ་ལག་དེ་ཧ་ཅང་བྲེལ་འཚུབ་ཆེ་ན། ཕྲ་རིང་ཚང་མར་ཚོས་གཞི་འདི་ཐོབ་ཀྱི་ཡོད། དེ་ལྟར་བྱས་ན་ཁྱེད་ཀྱིས་"
+"\"ཁ་བ\", \"བྱིའུ།\", \"སྒྲིག་སྟངས།\", ཡང་ན་\"མཁའ་དབྱིངས་རིགས།\" ནང་སྒྲིག་སྟངས་འགའ་ཤས་བསྒྱུར་"
+"ཐུབ།"
+
+msgid "Welcome"
+msgstr "དགའ་བསུ"
+
+msgid "Blow off:"
+msgstr "འཕུར།"
+
+msgid "On windows:"
+msgstr "སྒེའུ་ཁུང་སྟེང་།"
+
+msgid "On bottom:"
+msgstr "མཇུག་ཏུ།"
+
+msgid "On scenery:"
+msgstr "ཡུལ་ལྗོངས་སྟེང་།"
+
+msgid "Show"
+msgstr "མངོན་སྟོན"
+
+msgid ""
+"If set, show snow blowing away.\n"
+"Flags: -blowsnow, -noblowsnow"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ན་གངས་ཀྱིས་འཕུར་བཞིན་པ་སྟོན།\n"
+"Flags: -blowsnow, -noblowsnow"
+
+msgid ""
+"If set, show fallen snow on windows.\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ཡོད་ན། སྒེའུ་ཁུང་སྟེང་དུ་གངས་ཀྱི་ཆར་ལྷུང་བ་སྟོན།\n"
+"Flags: -keepsnowonwindows, -nokeepsnowonwindows"
+
+msgid ""
+"If set, show fallen snow on bottom of the desktop.\n"
+"Flags: -keepsnowonscreen, -nokeepsnowonscreen"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ཡོད་ན། ཡིག་ཆའི་མཐིལ་དུ་ཁ་བ་བབས་པ་སྟོན།\n"
+"Flags: -keepsnowonscreen, -nokeepsnowonscreen"
+
+msgid ""
+"If set, snow will collect on the trees.\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ན་ཤིང་སྡོང་སྟེང་གངས་ཀྱིས་བསྡུ་རུབ་བྱེད།\n"
+"Flags: -keepsnowontrees, -nokeepsnowontrees"
+
+msgid ""
+"The higher this setting, the more snow will be generated  because of Santa "
+"ploughing, wind or disappearing windows. \n"
+"Flag: -blowofffactor"
+msgstr ""
+"སྒྲིག་སྟངས་འདི་མཐོ་རུ་འགྲོ་ཚེ། སན་ཊ་ཡིས་ས་ཞིང་འདེབས་པ་དང་། རླུང་། ཡང་ན་སྒེའུ་ཁུང་ཡལ་འགྲོ་བ་སོགས་ཀྱི་"
+"རྐྱེན་གྱིས་གངས་ཀྱིས་གང་མང་ཐོན་རྒྱུ་རེད། \n"
+"Flag: -blowofffactor"
+
+msgid ""
+"The higher this setting, the more snow will collect on the windows. \n"
+"Note: in Wayland, there is no snow on the windows. \n"
+"Flag: -wsnowdepth"
+msgstr ""
+"སྒྲིག་སྟངས་འདི་མཐོ་རུ་སོང་ན་སྒེའུ་ཁུང་སྟེང་དུ་གངས་ཀྱིས་མང་བ་བསྡུ་རུབ་བྱེད། \n"
+"མཆན: ཝེ་ལེནཌ་ནང་སྒེའུ་ཁུང་སྟེང་ལ་གངས་མེད། \n"
+"Flag: -wsnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the  bottom of the "
+"desktop.\n"
+"Flag: -ssnowdepth"
+msgstr ""
+"སྒྲིག་སྟངས་འདི་མཐོ་རུ་སོང་ན་ཡིག་ཆའི་མཐིལ་དུ་གངས་ཀྱིས་མང་བ་བསྡུ་རུབ་བྱེད།\n"
+"Flag: -ssnowdepth"
+
+msgid ""
+"The higher this setting, the more snow will collect on the trees.\n"
+"Flag: -maxontrees"
+msgstr ""
+"སྒྲིག་སྟངས་འདི་མཐོ་རུ་སོང་ན་ཤིང་སྡོང་སྟེང་དུ་གངས་ཀྱིས་མང་པོ་བསྡུ་རུབ་བྱེད།\n"
+"Flag: -maxontrees"
+
+msgid "Choose your favorite snow"
+msgstr "རང་ཉིད་དགའ་ཤོས་ཀྱི་གངས་འདེམས།"
+
+msgid " "
+msgstr " "
+
+msgid "Defaults"
+msgstr "སྔོན་སྒྲིག"
+
+msgid "Apply default values for the preferences in this tab.\n"
+msgstr "མཆོང་ལྡེ་འདིའི་ནང་གི་དགའ་མོས་ལ་སྔོན་སྒྲིག་རིན་ཐང་འཇུག་སྤྱོད་བྱེད།\n"
+
+msgid "Vintage"
+msgstr "རྒུན་འབྲུམ་ཆང"
+
+msgid "Apply vintage values for the preferences in this tab."
+msgstr "མཆོང་ལྡེ་འདིའི་ནང་དུ་དགའ་མོས་ཆེད་དུ་རྒུན་འབྲུམ་གྱི་རིན་ཐང་འཇུག་སྤྱོད་བྱེད།"
+
+msgid ""
+"Apply defaults for all preferences (except settings).\n"
+"Flags: -defaults"
+msgstr ""
+"དགའ་མོས་ཡོད་ཚད་ལ་སྔོན་སྒྲིག་འཇུག་སྤྱོད་བྱེད།(སྒྲིག་སྟངས་མ་གཏོགས།)\n"
+"Flags: -defaults"
+
+msgid "Size:"
+msgstr "ཆེ་ཆུང:"
+
+msgid ""
+"Size of snowflakes, works only for non-vintage snow flakes.\n"
+"Flag: -snowsize"
+msgstr ""
+"གངས་ཀྱི་ཕྲེང་བ་ཀྱི་ཆེ་ཆུང་། གངས་ཀྱི་ཕྲེང་བ་རྙིང་པ་མ་ཡིན་པ་ཁོ་ནར་ཕན་ཐོགས་ཡོད།\n"
+"Flag: -snowsize"
+
+msgid "Speed:"
+msgstr "མྱུར་ཚད:"
+
+msgid "Max # snowflakes:"
+msgstr "མཐོ་ཤོས་གངས་ཀྱི་ཕྲེང་བ།"
+
+msgid ""
+"Maximum amount of snowflakes.\n"
+"Flag: -flakecountmax"
+msgstr "Flag: -flakecountmax"
+
+msgid "# Snowflakes:"
+msgstr "# གངས་ཀྱི་འདབ་མ།"
+
+msgid "label"
+msgstr "ཁ་བྱང་"
+
+msgid "Show fluff"
+msgstr "སྤུ་མདོག་སྟོན།"
+
+msgid ""
+"If set, try to show fluff on fallen snow and trees if possible.\n"
+"Flags: -fluffy, -nofluffy"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ཡོད་ན། གལ་ཏེ་ཐུབ་ན་གངས་དང་ཤིང་སྡོང་སྟེང་ལ་སྤུ་མདོག་སྟོན་པར་བྱོས།\n"
+"Flags: -fluffy, -nofluffy"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;."
+
+msgid ""
+"Speed of the snowflakes.\n"
+"Flag: -snowspeedfactor"
+msgstr ""
+"གངས་རིའི་མྱུར་ཚད།\n"
+"Flag: -snowspeedfactor"
+
+msgid "Intensity:"
+msgstr "ཤུགས་ཚད།"
+
+msgid ""
+"The higher, the more snowflakes.\n"
+"Flag: -snowflakes"
+msgstr ""
+"ཇི་ཙམ་མཐོ་ན་གངས་ཀྱི་འདབ་མ་མང་བ་ཡོད།\n"
+"Flag: -snowflakes"
+
+msgid "Show snow"
+msgstr "གངས་སྟོན་པ།"
+
+msgid ""
+"If set, show snowflakes.\n"
+"Flags: -snow, -nosnow"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ན་གངས་ཀྱི་ཕྲེང་བ་སྟོན།\n"
+"Flags: -snow, -nosnow"
+
+msgid ""
+"The color of the snow.\n"
+"Flag: -sc"
+msgstr ""
+"གངས་ཀྱི་ཁ་དོག.\n"
+"Flag: -sc"
+
+msgid "Color:"
+msgstr "ཁ་དོག:"
+
+msgid "Second color:"
+msgstr "ཁ་དོག་གཉིས་པ།"
+
+msgid ""
+"The second color of the snow.\n"
+"Flag: -sc2"
+msgstr ""
+"གངས་ཀྱི་ཁ་དོག་གཉིས་པ།\n"
+"Flag: -sc2"
+
+msgid "Enable"
+msgstr "སྲིད་པ"
+
+msgid ""
+"If set, use two colors.\n"
+"Flag: -enablesc2"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ན་ཚོན་མདོག་གཉིས་བེད་སྤྱོད་བྱེད།\n"
+"Flag: -enablesc2"
+
+msgid "Lift snow on windows or screen: click "
+msgstr "སྒེའུ་ཁུང་ཡང་ན་བརྙན་ཤེལ་སྟེང་དུ་གངས་ཀྱིས་འཐེན། སྣུན། "
+
+msgid "Settings"
+msgstr "སྒྲིག་སྟངས།"
+
+msgid "Snow"
+msgstr "ཁ་བ"
+
+msgid ""
+"Tiny Santa with three reindeers.\n"
+"Flags: -santa 0 -norudolph"
+msgstr ""
+"སན་ཏ་ཆུང་ཆུང་དང་གཅན་གཟན་གསུམ།\n"
+"Flags: -santa 0 -norudolph"
+
+msgid ""
+"Small Santa with three reindeers.\n"
+"Flags: -santa 1 -norudolph"
+msgstr ""
+"སན་ཊ་ཆུང་ཆུང་དང་གཅན་གཟན་གསུམ།\n"
+"Flags: -santa 1 -norudolph"
+
+msgid ""
+"Santa with three reindeers.\n"
+"Flags: -santa 2 -norudolph"
+msgstr ""
+"སན་ཏ་དང་གཅན་གཟན་གསུམ།\n"
+"Flags: -santa 2 -norudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Dunder and Blixem.\n"
+"Flags: -santa 3 -norudolph"
+msgstr ""
+"སན་ཊ་དང་ཌ་ཤར་དང་། ཞབས་བྲོ། པྲན་སར། ཝི་ཁེན། སྐར་མདའ་། ཀུ་པིཌ། ཌན་ཌར་དང་བི་ལི་སེམ་བཅས་"
+"ཡོད།\n"
+"Flags: -santa 3 -norudolph"
+
+msgid ""
+"Santa using the train with two reindeers.\n"
+"Flags: -santa 4 -norudolph"
+msgstr ""
+"སན་ཏ་ཡིས་གླང་ཆེན་གཉིས་དང་མཉམ་དུ་མེ་འཁོར་བེད་སྤྱོད་བྱེད་བཞིན་ཡོད།\n"
+"Flags: -santa 4 -norudolph"
+
+msgid ""
+"Santa using the train with one reindeer and Rudolph.\n"
+"Flags: -santa 4 -showrudolph"
+msgstr ""
+"སན་ཏ་ཡིས་གླང་ཆེན་གཅིག་དང་རུ་ཌོལ་ཕི་དང་མཉམ་དུ་མེ་འཁོར་བེད་སྤྱོད་བྱེད་བཞིན་ཡོད།\n"
+"Flags: -santa 4 -showrudolph"
+
+msgid ""
+"Tiny Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 0 -showrudolph"
+msgstr ""
+"སན་ཊ་ཆུང་ཆུང་དེ་གླང་ཆེན་གཉིས་དང་རུ་ཌོལ་ཕ།\n"
+"Flags: -santa 0 -showrudolph"
+
+msgid ""
+"Small Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 1 -showrudolph"
+msgstr ""
+"སན་ཊ་ཆུང་ཆུང་དང་གླང་ཆེན་གཉིས་དང་རུ་ཌོལ་ཕ།\n"
+"Flags: -santa 1 -showrudolph"
+
+msgid ""
+"Santa with two reindeers and Rudolph.\n"
+"Flags: -santa 2 -showrudolph"
+msgstr ""
+"སན་ཏ་གཅན་གཟན་གཉིས་དང་རུ་ཌོལ་ཕ། \n"
+"Flags: -santa 2 -showrudolph"
+
+msgid ""
+"Santa with Dasher, Dancer, Prancer, Vixen, Comet, Cupid,  Dunder,  Blixem "
+"and  Rudolph.\n"
+"Flags: -santa 3 -showrudolph"
+msgstr ""
+"སན་ཊ་དེ་ཌ་ཤར་དང་། ཞབས་བྲོ། པྲན་སར། ཝི་སེན། སྐར་མདའ་། ཀུ་པིཌ། ཌན་ཌར། བི་ལི་སེམ་དང་རུ་ཌོལ་ཕ་"
+"བཅས་དང་མཉམ་དུ་ཡོད།\n"
+"Flags: -santa 3 -showrudolph"
+
+msgid "Without Rudolph"
+msgstr "རུ་ཌོལ་ཕི་མེད་ན།"
+
+msgid "With Rudolph"
+msgstr "རུ་ཌོལ་ཕི་དང་མཉམ་དུ།"
+
+msgid "Choose your Santa"
+msgstr "ཁྱེད་རང་གི་སན་ཊ་འདེམས།"
+
+msgid "Choose your favorite Santa"
+msgstr "ཁྱེད་རང་དགའ་ཤོས་སན་ཊ་འདེམས།"
+
+msgid "    "
+msgstr "    "
+
+msgid ""
+"Santa's speed.\n"
+"Flag: -santaspeedfactor"
+msgstr ""
+"སན་ཊའི་མགྱོགས་ཚད།\n"
+"Flag: -santaspeedfactor"
+
+msgid "Apply default values for the preferences in this tab."
+msgstr "མཆོང་ལྡེ་འདིའི་ནང་གི་དགའ་མོས་ཆེད་དུ་སྔོན་སྒྲིག་གནས་གོང་འཇུག་སྤྱོད་བྱེད།"
+
+msgid "Show Santa"
+msgstr "སན་ཏ་སྟོན།"
+
+msgid ""
+"To show or not to show Santa.\n"
+"Flags: -showsanta, -nosanta"
+msgstr ""
+"སན་ཊ་སྟོན་དགོས་སམ་མི་སྟོན་དགོས།\n"
+"Flags: -showsanta, -nosanta"
+
+msgid "Scale:"
+msgstr "ཤུན་སྐོགས་སྲབ་མོ:"
+
+msgid ""
+"Scale of Santa.\n"
+"Flags: -santascale <n>"
+msgstr ""
+"སན་ཊའི་ཚད་གཞི།\n"
+"Flags: -santascale <n>"
+
+msgid "Santa"
+msgstr "སན་ཊ།"
+
+msgid "Show  scenery"
+msgstr "མཛེས་ལྗོངས་སྟོན་པ།"
+
+msgid ""
+"To show or not to show scenery.\n"
+"Flags: -showtrees, -notrees"
+msgstr ""
+"ཡུལ་ལྗོངས་སྟོན་པའམ་མི་སྟོན།\n"
+"Flags: -showtrees, -notrees"
+
+msgid ""
+"Vintage tree, you can set the color.\n"
+"Flag: -treetype 0"
+msgstr ""
+"རྙིང་མའི་ཤིང་སྡོང་། ཁྱོད་ཀྱིས་ཚོས་གཞི་སྒྲིག་ཐུབ།\n"
+"Flag: -treetype 0"
+
+msgid ""
+"Woody tree.\n"
+"Flags: -treetype 1 or: -treetype all"
+msgstr ""
+"ཤིང་སྡོང་།\n"
+"Flags: -treetype 1 or: -treetype all"
+
+msgid ""
+"Leavy tree.\n"
+"Flags: -treetype 2 or: -treetype all"
+msgstr ""
+"ལོ་མ་ཅན་གྱི་ཤིང་སྡོང་།\n"
+"Flags: -treetype 2 or: -treetype all"
+
+msgid ""
+"Small house.\n"
+"Flags: -treetype 3 or: -treetype all"
+msgstr ""
+"ཁང་པ་ཆུང་ཆུང་།\n"
+"Flags: -treetype 3 or: -treetype all"
+
+msgid ""
+"Reindeer.\n"
+"Flags: -treetype 4 or: -treetype all"
+msgstr ""
+"གཅན་གཟན།\n"
+"Flags: -treetype 4 or: -treetype all"
+
+msgid ""
+"Moose.\n"
+"Flags: -treetype 5 or: -treetype all"
+msgstr ""
+"མོ་སི།\n"
+"Flags: -treetype 5 or: -treetype all"
+
+msgid ""
+"Snowy tree.\n"
+"Flags: -treetype 6 or: -treetype all"
+msgstr ""
+"གངས་ཀྱི་ཤིང་སྡོང་།\n"
+"Flags: -treetype 6 or: -treetype all"
+
+msgid ""
+"Set color of vintage tree.\n"
+"Flag: -tc"
+msgstr ""
+"རྒུན་འབྲུམ་གྱི་ཤིང་སྡོང་གི་ཚོས་གཞི་སྒྲིག་དགོས།\n"
+"Flag: -tc"
+
+msgid "Compose your favorite scenery"
+msgstr "རང་ཉིད་དགའ་སའི་མཛེས་ལྗོངས་བརྩམས།"
+
+msgid "Try and click any image!"
+msgstr "ཚོད་ལྟ་བྱས་ནས་པར་རིས་གང་རུང་ཞིག་ལ་སྣུན་རོགས།"
+
+msgid ""
+"Polar bear.\n"
+"Flags: -treetype 7 or: -treetype all"
+msgstr ""
+"བྱང་སྣེའི་དོམ།\n"
+"Flags: -treetype 7 or: -treetype all"
+
+msgid "# Items:"
+msgstr "# རྣམ་གྲངས:"
+
+msgid ""
+"Desired number of scenery items.\n"
+"Flag: -trees"
+msgstr ""
+"འདོད་པའི་མཛེས་ལྗོངས་རྣམ་གྲངས་ཀྱི་གྲངས་འབོར།\n"
+"Flag: -trees"
+
+msgid "% Window fill:"
+msgstr "% སྒེའུ་ཁུང་བཀང་ཚད།"
+
+msgid ""
+"Bottom percentage of screen available for scenery.\n"
+"Flag: -treefill"
+msgstr ""
+"མཛེས་ལྗོངས་ཆེད་དུ་གློག་བརྙན་གྱི་གཤམ་གྱི་བརྒྱ་ཆ།\n"
+"Flag: -treefill"
+
+msgid "Allow overlap"
+msgstr "བརྗེ་རེས་བྱེད་དུ་འཇུག་པ།"
+
+msgid ""
+"To allow overlap or not when placing scenery.\n"
+"Flags: -treeoverlap, -notreeoverlap"
+msgstr ""
+"ཡུལ་ལྗོངས་འཇོག་སྐབས་བརྗེ་རེས་བྱེད་ཆོག་པའམ་མི་བྱེད་པ།\n"
+"Flags: -treeoverlap, -notreeoverlap"
+
+msgid ""
+"Scale of scenery.\n"
+"Flag: sceneryscale <n>"
+msgstr ""
+"ཡུལ་ལྗོངས་ཀྱི་ཚད་གཞི།\n"
+"Flag: sceneryscale <n>"
+
+msgid "Scenery"
+msgstr "ཡུལ་ལྗོངས"
+
+msgid "Compose here your favorite celestial conditions"
+msgstr "འདིར་ཁྱེད་རང་དགའ་ཤོས་ཀྱི་ནམ་མཁའི་ཆ་རྐྱེན་བྲིས།"
+
+msgid ""
+"Apply default values for all preferences (except settings).\n"
+"Flag: -defaults"
+msgstr ""
+"དགའ་མོས་ཚང་མའི་ཆེད་དུ་སྔོན་སྒྲིག་རིན་ཐང་འཇུག་སྤྱོད་བྱེད།(སྒྲིག་སྟངས་མ་གཏོགས།)\n"
+"Flag: -defaults"
+
+msgid ""
+"Apply vintage values for all preferences (except settings).\n"
+"Flag: -vintage"
+msgstr ""
+"དགའ་མོས་ཚང་མའི་ཆེད་དུ་སྔོན་མའི་རིན་ཐང་འཇུག་སྤྱོད་བྱེད།(སྒྲིག་སྟངས་མ་གཏོགས།)\n"
+"Flag: -vintage"
+
+msgid "Wind"
+msgstr "རླུང"
+
+msgid "Windy"
+msgstr "རླུང་པོ་ཚ"
+
+msgid ""
+"If set, there will be wind.\n"
+"Flags: -wind, -nowind"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ན་རླུང་འབྱུང་ངེས།\n"
+"Flags: -wind, -nowind"
+
+msgid "Whirl:"
+msgstr "འཁྱིལ།"
+
+msgid ""
+"The higher this setting, the more the wind will whirl.\n"
+"Flag: -whirlfactor"
+msgstr ""
+"སྒྲིག་སྟངས་འདི་མཐོ་རུ་སོང་ན་རླུང་དེ་མང་དུ་འཁོར་རྒྱུ་རེད།\n"
+"Flag: -whirlfactor"
+
+msgid "Timer:"
+msgstr "དུས་ཚོད།"
+
+msgid ""
+"This setting determines how many seconds pass between  two  gusts of wind.\n"
+"Flag: -windtimer"
+msgstr ""
+"སྒྲིག་སྟངས་འདིས་རླུང་འཚུབ་གཉིས་ཀྱི་བར་ལ་སྐར་ཆ་ག་ཚོད་འགྲོ་གི་ཡོད་མེད་གཏན་འབེབས་བྱེད།\n"
+"Flag: -windtimer"
+
+msgid "Now!"
+msgstr "ད་ལྟ!"
+
+msgid "Force a gust of wind immediately."
+msgstr "མྱུར་དུ་རླུང་འཚུབ་ཅིག་བཙན་ཤེད་ཀྱིས་གཏོང་དགོས།"
+
+msgid "Stars"
+msgstr "སྐར་མ།"
+
+msgid ""
+"To show or not show stars.\n"
+"Flag: -stars  (0 means: no stars)"
+msgstr ""
+"སྐར་མ་སྟོན་པའམ་མི་སྟོན།\n"
+"Flag: -stars  (0 means: no stars)"
+
+msgid "Number:"
+msgstr "ཨང་གྲངས:"
+
+msgid ""
+"Number of twinkling stars.\n"
+"Flag: -stars"
+msgstr ""
+"འོད་འཚེར་བའི་སྐར་མའི་གྲངས།\n"
+"Flag: -stars"
+
+msgid "Moon"
+msgstr "ཟླ་བ"
+
+msgid ""
+"To show or not show moon.\n"
+"Flags: -moon 1, -moon 0"
+msgstr ""
+"ཟླ་བ་སྟོན་པའམ་མི་སྟོན།\n"
+"Flags: -moon 1, -moon 0"
+
+msgid ""
+"Speed of moon in pixels/minute.\n"
+"Flag: -moonspeed"
+msgstr ""
+"ཟླ་བའི་མགྱོགས་ཚད་པིག་སེལ་/སྐར་མ་ནང་།\n"
+"Flag: -moonspeed"
+
+msgid ""
+"Relative size of the moon.\n"
+"Flag: -moonsize"
+msgstr ""
+"ཟླ་བའི་འབྲེལ་བའི་ཆེ་ཆུང་།\n"
+"Flag: -moonsize"
+
+msgid "Halo"
+msgstr "ཧ་ལོ།"
+
+msgid ""
+"To show or not to show halo around moon.\n"
+"Flags: -halo 1, -halo 0"
+msgstr ""
+"ཟླ་བའི་མཐའ་འཁོར་དུ་འོད་མདངས་སྟོན་དགོས་སམ་མི་སྟོན་དགོས།\n"
+"Flags: -halo 1, -halo 0"
+
+msgid "Bright:"
+msgstr "འོད་མདངས:"
+
+msgid ""
+"Brightness of moon's halo.\n"
+"Flag: -halobrightness"
+msgstr ""
+"ཟླ་བའི་འོད་ཀྱི་འོད་མདངས།\n"
+"Flag: -halobrightness"
+
+msgid "Meteors"
+msgstr "སྐར་མདའ་།"
+
+msgid ""
+"To show or not to show meteors.\n"
+"Flags: -meteors, -nometeors"
+msgstr ""
+"སྐར་མདའ་སྟོན་དགོས་སམ་མི་སྟོན་དགོས།\n"
+"Flags: -meteors, -nometeors"
+
+msgid "Aurora"
+msgstr "ཨོ་རོ་ར།"
+
+msgid ""
+"To show or not show aurora.\n"
+"Note: the aurora is best viewed using a dark background.\n"
+"Flags: -aurora 1, -aurora 0"
+msgstr ""
+"འོད་མདངས་སྟོན་པའམ་མི་སྟོན་པ།\n"
+"དྲན་ཐོ། འོད་མདངས་དེ་རྒྱབ་ལྗོངས་ནག་པོ་སྤྱད་ནས་བལྟ་ན་ཡག་ཤོས་རེད།\n"
+"Flags: -aurora 1, -aurora 0"
+
+msgid "Width:"
+msgstr "ཞེང:"
+
+msgid ""
+"Width of aurora in percentage of screen width.\n"
+"Flag: -aurorawidth"
+msgstr ""
+"འོད་ཀྱི་རྒྱ་ཁྱོན་དེ་གློག་བརྙན་གྱི་རྒྱ་ཁྱོན་གྱི་བརྒྱ་ཆའི་ནང་།\n"
+"Flag: -aurorawidth"
+
+msgid "Height:"
+msgstr "ལུས་པོའི་མཐོ་ཚད:"
+
+msgid ""
+"Vertical size of aurora.\n"
+"Flag: -auroraheight"
+msgstr ""
+"ཉི་མའི་ལངས་པའི་ཚད།\n"
+"Flag: -auroraheight"
+
+msgid ""
+"Animation speed of aurora: real: 10, for a more dramatic effect choose: 100\n"
+"Flag: -auroraspeed"
+msgstr ""
+"ཉི་མའི་འོད་ཀྱི་བསྒུལ་བདེའི་མགྱོགས་ཚད། དངོས་པོ། 10 འཁྲབ་སྟོན་གྱི་ནུས་པ་ཆེ་རུ་གཏོང་ཆེད་འདེམས། 100\n"
+"Flag: -auroraspeed"
+
+msgid ""
+"Brightness of aurora.\n"
+"Flags: -aurorabrightness"
+msgstr ""
+"ཉི་མའི་འོད་མདངས།\n"
+"Flags: -aurorabrightness"
+
+msgid "Frequency:"
+msgstr "ཡང་འཁོར་བསྐྱར་འཁོར:"
+
+msgid ""
+"Frequency of meteors to appear.\n"
+"Flags: -meteorfrequency"
+msgstr ""
+"སྐར་མདའ་འབྱུང་བའི་བསྐྱར་འབྱུང་།\n"
+"Flags: -meteorfrequency"
+
+msgid "Vertical:"
+msgstr "གྱེན་ཕྱོགས:"
+
+msgid ""
+"Baseline height of aurora, in percentage of screen height.\n"
+"Flag: -aurorabase"
+msgstr ""
+"ཉི་འོད་ཀྱི་གཞི་གྲངས་མཐོ་ཚད། གློག་བརྙན་གྱི་མཐོ་ཚད་ཀྱི་བརྒྱ་ཆ།\n"
+"Flag: -aurorabase"
+
+msgid "Color"
+msgstr "ཁ་དོག"
+
+msgid ""
+"Choose between yellow-ish and white-ish moon.\n"
+"Flag: -mooncolor [0,1]"
+msgstr ""
+"ཟླ་བ་སེར་པོ་དང་དཀར་པོ་གཉིས་ཀྱི་བར་ལ་འདེམས།\n"
+"Flag: -mooncolor [0,1]"
+
+msgid ""
+"Size of stars.\n"
+"Flag: -starsize"
+msgstr ""
+"སྐར་མའི་ཚད་གཞི།\n"
+"Flag: -starsize"
+
+msgid "Horizontal:"
+msgstr "འཕྲེད:"
+
+msgid ""
+"Horizontal place of aurora\n"
+"Flags: -aurorax"
+msgstr ""
+"འོད་ཀྱི་འཕྲེད་ཐིག་ས་ཆ།\n"
+"Flags: -aurorax"
+
+msgid "Position:"
+msgstr "གནས:"
+
+msgid "X-position:"
+msgstr "X-གནས་སྟངས།"
+
+msgid "Y-position"
+msgstr "Y-གནས་ཚུལ།"
+
+msgid ""
+"Horizontal position of moon if speed equals 0.\n"
+"Flag: -moonx"
+msgstr ""
+"གལ་ཏེ་མགྱོགས་ཚད་0དང་འདྲ་ན་ཟླ་བའི་ཐད་སྙོམས་གནས་བབ།\n"
+"Flag: -moonx"
+
+msgid ""
+"Vertical position of moon if speed equals 0.\n"
+"Flag: -moony"
+msgstr ""
+"གལ་ཏེ་མགྱོགས་ཚད་0དང་འདྲ་ན་ཟླ་བའི་ལངས་པའི་གནས་བབ།\n"
+"Flag: -moony"
+
+msgid "Celestials"
+msgstr "གནམ་གཤིས་རིགས།"
+
+msgid "Birds settings"
+msgstr "བྱིའུ་སྒྲིག་སྟངས།"
+
+msgid "Show birds"
+msgstr "བྱིའུ་སྟོན།"
+
+msgid ""
+"If set: show birds.\n"
+"Flags: -showbirds 1, -showbirds 0"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ཚེ། བྱིའུ་སྟོན།\n"
+"Flags: -showbirds 1, -showbirds 0"
+
+msgid "Birds only"
+msgstr "བྱིའུ་རྐྱང་རྐྱང་།"
+
+msgid ""
+"If set: show no Santa, snow or scenery.\n"
+"Flags: -birdsonly 0, -birdsony 1"
+msgstr ""
+"གལ་ཏེ་སྒྲིག་ཡོད་ན། སན་ཊ་དང་གངས་ཀྱི་ཡུལ་ལྗོངས། \n"
+"Flags: -birdsonly 0, -birdsony 1"
+
+msgid "Preferred distance:"
+msgstr "འདོད་པའི་ཐག་རིང་།"
+
+msgid ""
+"Preferred distance from other birds.\n"
+"Flag: -prefdistance"
+msgstr ""
+"བྱིའུ་གཞན་དང་བར་ཐག་འདོད་པ་ཡོད།\n"
+"Flag: -prefdistance"
+
+msgid "Restart"
+msgstr "བསྐྱར་དུ་འགོ་འཛུགས།"
+
+msgid "Restart birds."
+msgstr "བྱིའུ་བསྐྱར་དུ་འགོ་བཙུགས།"
+
+msgid "Viewing distance:"
+msgstr "ལྟ་བའི་བར་ཐག་ནི།"
+
+msgid ""
+"Viewing distance.\n"
+"NOTE: Santa has no knowledge of viewing distance, so when birds are "
+"following Santa, the relative positions of Santa and birds will be "
+"temporarely out of sync when you change the viewing distance. This is only "
+"noticeable when the birds are following Santa.\n"
+"Flag: -viewingdistance"
+msgstr ""
+"བལྟ་བའི་ཐག་རིང་།\n"
+"དྲན་ཐོ། སན་ཊ་ལ་མཐོང་བའི་ཐག་རིང་ཚད་ཀྱི་ཤེས་བྱ་མེད་པས་བྱིའུ་རྣམས་སན་ཊའི་རྗེས་སུ་འབྲང་སྐབས་ཁྱེད་ཀྱིས་བལྟ་"
+"བའི་ཐག་རིང་ཚད་བསྒྱུར་སྐབས་སན་ཊ་དང་བྱིའུ་གཉིས་ཀྱི་འབྲེལ་ཡོད་གནས་བབ་གནས་སྐབས་དུས་མཉམ་མིན་པར་འགྱུར། "
+"འདི་བྱིའུ་རྣམས་སན་ཊའི་རྗེས་སུ་འབྲང་སྐབས་རྐྱངམ་གཅིག་མངོན་ཐུབ།\n"
+"Flag: -viewingdistance"
+
+msgid "Focus to attraction point:"
+msgstr "ཡིད་འཕྲོག་ས་ཚིགས་ལ་དམིགས་པ།"
+
+msgid ""
+"Tendency to concentrate on the attraction point.\n"
+"Flag: -focuscentre"
+msgstr ""
+"འདྲེན་ཤུགས་ས་ཚིགས་ལ་དོ་སྣང་བྱེད་པའི་རང་གཤིས།\n"
+"Flag: -focuscentre"
+
+msgid ""
+"Desired number of birds. If zero, no birds are shown.\n"
+"Flag: -nbirds"
+msgstr ""
+"འདོད་པའི་བྱིའུ་གྲངས་འབོར། གལ་ཏེ་ཀླད་ཀོར་ཡིན་ན་བྱིའུ་གཅིག་ཀྱང་སྟོན་མི་ཐུབ།\n"
+"Flag: -nbirds"
+
+msgid "# Birds:"
+msgstr "# བྱིའུ།"
+
+msgid ""
+"Number of nearest neighbours the birds should look at.\n"
+"Flag: -neighbours"
+msgstr ""
+"བྱིའུ་ཡིས་ཁྱིམ་མཚེས་ཉེ་ཤོས་ལ་ལྟ་དགོས་པའི་གྲངས་འབོར།\n"
+"Flag: -neighbours"
+
+msgid "Neighbours:"
+msgstr "ཁྱིམ་མཚེས།"
+
+msgid ""
+"Give the birds a fancy color.\n"
+"Flag: -birdscolor"
+msgstr ""
+"བྱིའུ་ལ་ཚོན་མདོག་མཛེས་པོ་ཞིག་སྤྲོད་དགོས།\n"
+"Flag: -birdscolor"
+
+msgid "Bird color"
+msgstr "བྱིའུ་ཡི་ཁ་དོག།"
+
+msgid "Anarchy:"
+msgstr "གཞུང་མེད་རིང་ལུགས།"
+
+msgid ""
+"Anarchy level: the higher, the more anarchy.\n"
+"Flag: -anarchy"
+msgstr ""
+"གཞུང་མེད་རིང་ལུགས་ཀྱི་གནས་ཚད། མཐོ་རུ་སོང་ན་གཞུང་མེད་རིང་ལུགས་མང་བ་ཡོད།\n"
+"Flag: -anarchy"
+
+msgid "Distance weight:"
+msgstr "ཐག་རིང་གི་ལྗིད་ཚད།"
+
+msgid ""
+"Tendency to keep desired distance to neighbours.\n"
+"Flag: -disweight"
+msgstr ""
+"ཁྱིམ་མཚེས་ལ་འདོད་པའི་བར་ཐག་ཉར་བའི་རང་གཤིས།\n"
+"Flag: -disweight"
+
+msgid "Adjust speed to neighbours:"
+msgstr "ཁྱིམ་མཚེས་ལ་མགྱོགས་ཚད་སྙོམ་སྒྲིག་བྱེད་པ།"
+
+msgid ""
+"Tendency to adjust speed to neighbours.\n"
+"Flag: -followneighbours"
+msgstr ""
+"ཁྱིམ་མཚེས་ལ་མགྱོགས་ཚད་སྙོམ་སྒྲིག་བྱེད་པའི་རང་གཤིས།\n"
+"Flag: -followneighbours"
+
+msgid ""
+"Speed of birds in arbitrary units.\n"
+"Flag: -birdsspeed"
+msgstr ""
+"བྱིའུ་ཡི་མགྱོགས་ཚད་གང་འདོད་ཀྱི་ཚད་གཞི་ནང་།\n"
+"Flag: -birdsspeed"
+
+msgid "Drawing scale:"
+msgstr "རི་མོའི་ཚད་གཞི།"
+
+msgid ""
+"Influence the size of the birds.\n"
+"Flag: -birdsscale\n"
+msgstr ""
+"བྱིའུ་ཡི་ཆེ་ཆུང་ལ་ཤུགས་རྐྱེན་ཐེབས་ཡོད།\n"
+"Flag: -birdsscale\n"
+
+msgid ""
+"Show \n"
+"attr point"
+msgstr "ཡིད་འཕྲོག་པ་སྟོན་པ།"
+
+msgid ""
+"Show the point where the birds want to go.\n"
+"Flags: -showattr 0, -showattr 1"
+msgstr ""
+"བྱིའུ་རྣམས་འགྲོ་འདོད་པའི་ས་ཚིགས་སྟོན།\n"
+"Flags: -showattr 0, -showattr 1"
+
+msgid ""
+"Follow \n"
+"Santa"
+msgstr "སན་ཊ་ལ་རྗེས་འདེད་བྱེད།"
+
+msgid ""
+"Birds are attracted by an attraction point. Here you can choose to follow "
+"Santa.\n"
+"Flags: -followsanta 0, -followsanta 1"
+msgstr ""
+"བྱིའུ་རྣམས་ཡིད་འཕྲོག་ས་ཚིགས་ཤིག་གིས་ཡིད་འཕྲོག་པ་ཞིག་ཡིན། འདིར་ཁྱེད་ཀྱིས་སན་ཊ་ལ་རྗེས་འདེད་བྱེད་ཐུབ།\n"
+"Flags: -followsanta 0, -followsanta 1"
+
+msgid ""
+"Percentage of screen to be used for the attraction point.\n"
+"Flag: -attrspace"
+msgstr ""
+"འཐེན་ཤུགས་ས་ཚིགས་ལ་སྤྱོད་རྒྱུའི་བརྙན་ཤེལ་གྱི་བརྒྱ་ཆ།\n"
+"Flag: -attrspace"
+
+msgid "Attraction point range"
+msgstr "ཡིད་འཕྲོག་ས་ཚིགས་ཁྱབ་ཁོངས།"
+
+msgid "Actual mean distance from neighbours."
+msgstr "ཁྱིམ་མཚེས་བར་གྱི་ཆ་སྙོམས་བར་ཐག་དངོས་མ།"
+
+msgid "Distance used to get the desired number of neighbours."
+msgstr "ཁྱིམ་མཚེས་འདོད་པའི་གྲངས་འབོར་ཐོབ་པའི་བར་ཐག་བེད་སྤྱོད་བྱེད།"
+
+msgid "Birds"
+msgstr "བྱིའུ།"
+
+msgid "version"
+msgstr "པར་གཞི"
+
+msgid "Transparency "
+msgstr "ཕྱི་གསལ་ནང་གསལ། "
+
+msgid ""
+"Transparency of painted items:\n"
+"0: no transparency.\n"
+"100: fully transparent, you will see nothing!\n"
+"Flag: -transparency"
+msgstr ""
+"ཚོན་བཏང་བའི་རྣམ་གྲངས་ཀྱི་དྭངས་གསལ།:\n"
+"0: དྭངས་གསལ་མེད།\n"
+"100: ཆ་ཚང་དྭངས་གསལ་ཡིན་ན་ཁྱོད་ཀྱིས་གང་ཡང་མཐོང་མི་ཐུབ།\n"
+"Flag: -transparency"
+
+msgid "Lift snow on bottom"
+msgstr "འོག་ནས་གངས་འདེགས་པ།"
+
+msgid ""
+"Use this if snow falls below the bottom of your screen, or  fallen snow "
+"hides something that should not be hidden.\n"
+"Flag: -offsets"
+msgstr ""
+"གལ་ཏེ་ཁ་བ་ཁྱེད་ཀྱི་གློག་བརྙན་གྱི་གཤམ་གྱི་འོག་ལ་འབབ་ན་ཡང་ན་གངས་ཀྱིས་སྦས་མི་དགོས་པའི་དངོས་པོ་སྦས་ན་"
+"འདི་བེད་སྤྱོད་བྱོས།\n"
+"Flag: -offsets"
+
+msgid "Lift snow on windows"
+msgstr "སྒེའུ་ཁུང་སྟེང་གངས་འདེགས་པ།"
+
+msgid ""
+"Use this if no snow collects on your windows, or if snow  collects separated "
+"from your windows. \n"
+"Some basic window managers need this setting (e.g. TWM  needs in general a "
+"value of 25 .. 28).\n"
+"Flag: -offsety"
+msgstr ""
+"གལ་ཏེ་ཁྱེད་ཀྱི་སྒེའུ་ཁུང་སྟེང་ལ་གང་ཡང་མ་བསྡུ་བའམ་ཡང་ན་ཁྱེད་ཀྱི་སྒེའུ་ཁུང་ནས་ཁ་བྲལ་ནས་གངས་ཀྱིས་བསྡུ་རུབ་"
+"བྱེད་ཀྱི་ཡོད་ན། \n"
+"གཞི་རྩའི་སྒེའུ་ཁུང་འཛིན་སྐྱོང་པ་ཁ་ཤས་ལ་སྒྲིག་སྟངས་འདི་དགོས། (དཔེར་ན། TWM ལ་སྤྱིར་བཏང་དུ་རིན་ཐང་ "
+"25 .. 28 དགོས།)\n"
+"Flag: -offsety"
+
+msgid "Cpu factor"
+msgstr "CPU ཆ་རྐྱེན།"
+
+msgid ""
+"The higher, the smoother xsnow will run, but will also use  more cpu power.\n"
+"Flag: -cpuload"
+msgstr ""
+"མཐོ་རུ་འགྲོ་ཚེ། xsnow འཇམ་པོ་འགྲོ་སྲིད། འོན་ཀྱང་། ད་དུང་སི་པི་ཡུ་ནུས་ཤུགས་མང་བ་བེད་སྤྱོད་བྱེད།\n"
+"Flag: -cpuload"
+
+msgid "Scale"
+msgstr "ཤུན་སྐོགས་སྲབ་མོ"
+
+msgid ""
+"Overall drawing scale.\n"
+"Flag: -scale"
+msgstr ""
+"སྤྱིའི་རི་མོའི་ཚད་གཞི།\n"
+"Flag: -scale"
+
+msgid "Ignore top windows"
+msgstr "སྟེང་གི་སྒེའུ་ཁུང་ལ་སྣང་མེད་བྱེད་པ།"
+
+msgid ""
+"Windows closer to the top  than the number in this widget will not collect "
+"snow.\n"
+"\n"
+"In some cases, there are invisible windows near the top of the screen, which "
+"are handled by xsnow as normal windows: snow is collected upon them. By "
+"entering a suitable number here, this undesired behaviour can be avoided.\n"
+"Flag: -ignoretop\n"
+"\n"
+msgstr ""
+"ཝི་ཇེཊ་འདིའི་ནང་གི་ཨང་གྲངས་ལས་མགོ་ལ་ཉེ་བའི་སྒེའུ་ཁུང་གིས་གངས་ཀྱི་སྒེའུ་ཁུང་བསྡུ་རུབ་བྱེད་ཀྱི་མེད།\n"
+"\n"
+"གནས་སྟངས་འགའ་ཤས་ནང་གསལ་གཞིའི་མགོ་ལ་མཐོང་མི་ཐུབ་པའི་སྒེའུ་ཁུང་ཡོད། འདིར་འོས་འཚམ་གྱི་ཨང་གྲངས་བླུགས་"
+"ན་མི་འདོད་པའི་བྱ་སྤྱོད་འདི་སྔོན་འགོག་བྱེད་ཐུབ།\n"
+"Flag: -ignoretop\n"
+"\n"
+
+msgid "Ignore bottom windows"
+msgstr "འོག་གི་སྒེའུ་ཁུང་སྣང་མེད་དུ་གཏོང་བ།"
+
+msgid ""
+"Windows closer to the  bottom than the number in this widget will not "
+"collect snow.\n"
+"\n"
+"In some cases, there are invisible windows near the bottom  of  the screen, "
+"which are handled by xsnow as normal windows: snow is collected upon them. "
+"By entering a suitable  number here, this undesired behaviour can be "
+"avoided.\n"
+"Flag: -ignorebottom"
+msgstr ""
+"ཝི་ཇེཊ་འདིའི་ནང་གི་ཨང་གྲངས་ལས་མཇུག་ལ་ཉེ་བའི་སྒེའུ་ཁུང་གིས་གངས་བསྡུ་རུབ་བྱེད་ཀྱི་མེད།\n"
+"\n"
+"གནས་སྟངས་འགའ་ཤས་ནང་གསལ་གཞིའི་མཇུག་ཉེ་འགྲམ་དུ་མཐོང་མི་ཐུབ་པའི་སྒེའུ་ཁུང་ཡོད། འདིར་འོས་འཚམ་གྱི་ཨང་"
+"གྲངས་བླུགས་ན་མི་འདོད་པའི་བྱ་སྤྱོད་འདི་སྔོན་འགོག་བྱེད་ཐུབ།\n"
+"Flag: -ignorebottom"
+
+msgid ""
+"Menu\n"
+"colors"
+msgstr ""
+"རེའུ་མིག་\n"
+"ཚོས་གཞི།"
+
+msgid ""
+"Toggle between xsnow's own menu colors and standard menu colors.\n"
+"Activated: use xsnow colors.\n"
+"Deactivated: use default colors.\n"
+"Flags: -theme 1, -theme 0"
+msgstr ""
+"xsnow ཡི་རང་ཉིད་ཀྱི་དཀར་ཆག་ཚོས་གཞི་དང་ཚད་ལྡན་དཀར་ཆག་ཚོས་གཞིའི་བར་ལ་བརྗེ་སྒྱུར་བྱེད།\n"
+"ཤུགས་ལྡན་བཟོས་: xsnow ཚོས་གཞི་བེད་སྤྱོད་བྱེད།\n"
+"ཤུགས་མེད་བཟོས་: སྔོན་སྒྲིག་ཚོས་གཞི་བེད་སྤྱོད་བྱེད།\n"
+"Flags: -theme 1, -theme 0"
+
+msgid ""
+"On all\n"
+"workspaces"
+msgstr "ལས་ཀའི་ས་ཁོངས་ཚང་མའི་སྟེང་།"
+
+msgid ""
+"Use all workspaces to snow in.\n"
+"NOTE: this doesn't work properly in enlightenment.\n"
+"Flags: -allworkspaces 1, -allworkspaces 0"
+msgstr ""
+"ལས་ཀའི་ས་ཁོངས་ཚང་མ་བེད་སྤྱད་ནས་གངས་ཀྱི་ནང་དུ་འཇུག་དགོས།\n"
+"དྲན་ཐོ། འདི་འོད་གསལ་ནང་ལེགས་པར་ལས་ཀ་བྱེད་ཀྱི་མེད།\n"
+"Flags: -allworkspaces 1, -allworkspaces 0"
+
+msgid ""
+"Below\n"
+"windows"
+msgstr ""
+"གཤམ་གྱི་\n"
+"སྒེའུ་ཁུང་།"
+
+msgid ""
+"When activated, it will be snowing below your windows, else  it will be "
+"snowing upon you windows too.\n"
+"On some desktop environments, when snowing above your  windows you will not "
+"be able to click on any window.\n"
+"Therefore, you will be asked to click a button, to be sure that  things are "
+"OK.\n"
+"Flag: -above"
+msgstr ""
+"ཁྱེད་ཀྱི་སྒེའུ་ཁུང་གི་འོག་ལ་གངས་ཀྱི་འབབ་རྒྱུ་དང་། དེ་མིན་ན་ཁྱེད་ཀྱི་སྒེའུ་ཁུང་གི་སྟེང་ལ་ཡང་གངས་ཀྱི་འབབ་རྒྱུ་"
+"རེད། འགྲིག \n"
+"Flag: -above"
+
+msgid ""
+"Click to\n"
+"confirm"
+msgstr "གཏན་འཁེལ་བྱེད་པར་སྣུན།"
+
+msgid "To make sure you can click."
+msgstr "ཁྱོད་ཀྱིས་སྣུན་ཐུབ་པར་ངེས་གཏན་བཟོ་ཆེད།"
+
+msgid ""
+"If you have more than one monitor, choose where you want snow falling. "
+"Choose 'all monitors' if you want snow in all monitors.\n"
+"NOTE: when changing monitor, xsnow will restart.\n"
+"Flag: -screen"
+msgstr ""
+"གལ་ཏེ་ཁྱེད་ལ་འཆར་ཤེལ་གཅིག་ལས་མང་བ་ཡོད་ན། ཁྱེད་ལ་གང་དུ་གངས་ཀྱིས་འབབ་དགོས་མིན་འདེམས། གལ་ཏེ་ཁྱེད་"
+"ལ་འཆར་ཤེལ་ཚང་མའི་ནང་གངས་ཀྱིས་ཁེངས་དགོས་ན། 'འཆར་ཤེལ་ཚང་མ' འདེམས།\n"
+"དྲན་ཐོ། འཆར་ཤེལ་བརྗེ་སྒྱུར་བྱེད་སྐབས། xsnow བསྐྱར་དུ་འགོ་འཛུགས།\n"
+"Flag: -screen"
+
+msgid "monitor 1"
+msgstr "ལྟ་རྟོག ༡"
+
+msgid ""
+"Create\n"
+"outline"
+msgstr "བཀོད་རིས་གསར་བཟོ།"
+
+msgid ""
+"To draw an outline around the snow window.\n"
+"Flag: -outline 1/0"
+msgstr ""
+"གངས་ཀྱི་སྒེའུ་ཁུང་གི་མཐའ་འཁོར་དུ་ཕྱི་ཐིག་འབྲི་དགོས།\n"
+"Flag: -outline 1/0"
+
+msgid ""
+"Use \n"
+"screenshots"
+msgstr "ཡི་འཆར་ཤེལ་བེད་སྤྱོད་བྱེད།"
+
+msgid "Use screenshots for the location of windows. Experimental."
+msgstr "སྒེའུ་ཁུང་གི་གནས་ཡུལ་ལ་གློག་བརྙན་གྱི་པར་རིས་བེད་སྤྱོད་བྱེད། ཚོད་ལྟ།"
+
+msgid ""
+"  \n"
+"  "
+msgstr ""
+"  \n"
+"  "
+
+msgid ""
+"Choose here the picture you want as background when  xscreensaver is "
+"active.\n"
+"Flag: -bg"
+msgstr ""
+"xscreensaver ཤུགས་ལྡན་ཡིན་པའི་སྐབས་འདིར་ཁྱེད་རང་ལ་རྒྱབ་ལྗོངས་དགོས་པའི་པར་རིས་འདེམས།\n"
+"Flag: -bg"
+
+msgid "Choose background"
+msgstr "རྒྱབ་ལྗོངས་འདེམས།"
+
+msgid ""
+"Activate xscreensaver.\n"
+"Click and don't touch mouse and keyboard for a few seconds..."
+msgstr ""
+"xscreensaver ཤུགས་སྣོན་རྒྱོབ། \n"
+"སྣུན་ནས་སྐར་ཆ་འགའ་ཤས་རིང་བྱི་རིལ་དང་མཐེབ་གཞོང་ལ་མ་འཆང་།"
+
+msgid ""
+"Settings for Xscreensaver. You can choose a background, and choose to use it "
+"or not.\n"
+"Make sure you add a line like\n"
+"xsnow -root\n"
+"after the line 'programs:' in the file ~/.xscreensaver and you run "
+"xscreensaver-demo to choose for xsnow.\n"
+"To activate xscreensaver on the command line:\n"
+"xscreensaver-command  -activate\n"
+"See also the man page:\n"
+"man xsnow"
+msgstr ""
+
+msgid "Xscreensaver: "
+msgstr "Xscreensaver: "
+
+msgid "Black"
+msgstr "ནག་པོ"
+
+msgid ""
+"When activated, the background will be black.\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+msgstr ""
+"ཤུགས་ལྡན་བཟོས་ཚེ་རྒྱབ་ལྗོངས་ནག་པོ་ཆགས་རྒྱུ་རེད།\n"
+"Flag: -bg  (this button will be automatically desactivated when -bg is given)"
+
+msgid ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+msgstr ""
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+" \n"
+
+msgid "en"
+msgstr "bo"
+
+msgid "it"
+msgstr "ཐ་སྙད་འདས་མ་ཐག་པའི་དངོས་པོ་དང་སྐྱེས་བུའི་མིང་ཚབ་ལ་འཇུག"
+
+#~ msgid ""
+#~ "Settings for Xscreensaver. You can choose a background, and choose to use "
+#~ "it or not.\n"
+#~ "Make sure you add a line like\n"
+#~ "xsnow -root\n"
+#~ "after the line 'programs:' in the file ~/.xscreensaver and you run "
+#~ "xscreensaver-demo to choose for xsnow.\n"
+#~ "To activate xscreensaver on the command line:\n"
+#~ "xscreensaver-command  -activate\n"
+#~ "See also the man page:\n"
+#~ "man xsnow\n"
+#~ msgstr ""
+#~ "Xscreensaver ཡི་སྒྲིག་སྟངས།ཁྱོད་ཀྱིས་རྒྱབ་ལྗོངས་འདེམས་ནས་དེ་བེད་སྤྱོད་གཏོང་རྒྱུ་འདེམས།ཡང་ན་མིན།\n"
+#~ "ཁྱོད་ཀྱིས་གྲལ་ཐིག་འདི་ལྟ་བུ་ཁ་སྣོན་བྱེད་དགོས།\n"
+#~ "xsnow -root\n"
+#~ "ཡིག་ཆ་ ~/.xscreensaver ནང་དུ་ 'programs:' ཞེས་པའི་གྲལ་རིམ་གྱི་རྗེས་སུ་ཁྱེད་ཀྱིས་xsnow ལ་"
+#~ "འདེམས་པའི་ཆེད་དུ་xscreensaver-demo གཡོག་བཀོལ་དགོས།\n"
+#~ "བཀའ་ཚིག་གྲལ་ཐིག་སྟེང་ xscreensaver ཤུགས་སྣོན་གཏོང་བར།\n"
+#~ "xscreensaver-command  -activate\n"
+#~ "མི་ཤོག་ངོས་ལ་གཟིགས།\n"
+#~ "man xsnow\n"

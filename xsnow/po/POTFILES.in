@@ -4,4 +4,5 @@ src/selfrep.c
 src/utils.c
 src/windows.c
 src/ui.c
+src/flags.c
 src/ui.glade

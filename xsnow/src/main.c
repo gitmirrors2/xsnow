@@ -311,6 +311,7 @@ int main_c(int argc, char *argv[])
    global.VisWorkSpaces[0]    = 0;
    global.WindowsChanged      = 0;
    global.ForceRestart        = 0;
+   global.npw                 = 0;
 
    global.FsnowFirst          = NULL;
    global.MaxScrSnowDepth     = 0;
@@ -436,7 +437,7 @@ int main_c(int argc, char *argv[])
    assert(global.DesktopSession);
    if(!strncasecmp(global.DesktopSession,"bspwm",5))
    {
-      printf(_("For optimal resuts, add to your %s:\n"),"bspwmrc");
+      printf(_("For optimal results, add to your %s:\n"),"bspwmrc");
       printf("   bspc rule -a Xsnow state=floating border=off\n");
    }
    printf("GTK version: %s\n",ui_gtk_version());
@@ -1715,7 +1716,17 @@ int do_stopafter(void *d)
 
 void mybindtestdomain()
 {
-   global.Language = guess_language();
+   if (!strcmp(Flags.Language,"sys"))
+      global.Language = guess_language();
+   else
+      global.Language = Flags.Language;
+
+   P("global.Language: %s\n",global.Language);
+
+   setenv("LANGUAGE",global.Language,1);
+
+   P("LANGUAGE: %s\n",getenv("LANGUAGE"));
+
 #ifdef HAVE_GETTEXT
    // One would assume that gettext() uses the environment variable LOCPATH
    // to find locales, but no, it does not.

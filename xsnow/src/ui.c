@@ -273,11 +273,13 @@ void handle_screen()
 
 void handle_language(int restart)
 {
+   // the gettext machinery listens to the value of LANGUAGE
    P("handle_language: %s\n",Flags.Language);
    if (!strcmp(Flags.Language,"sys"))
       unsetenv("LANGUAGE");
    else
       setenv("LANGUAGE",Flags.Language,1);
+
    if(restart)
       global.ForceRestart = 1;
 }

@@ -53,19 +53,6 @@ autoreconf -fvi || exit 1
 
 (
 
-echo "removing po/*.gmo and po/*.po"
-rm -f po/*.gmo po/*.po
-
-(
-
-echo "Copying pofiles/*.po to po/"
-cd pofiles || exit 1
-for p in *.po ; do
-   sed '1,/^"Project-Id-Version:/s/someversion/'"$version"'/' $p > ../po/$p
-done
-
-)
-
 cd po
 pofiles=`echo *.po`
 languages=`echo $pofiles | sed 's/\.po//g'`

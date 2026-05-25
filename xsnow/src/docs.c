@@ -61,7 +61,7 @@ void docs_usage(int man)
    {
       doman = 1;
       printf(".\\\" DO NOT MODIFY THIS FILE! It was created by xsnow -manpage .\n");
-      printf(".TH XSNOW \"6\" \"2024\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
+      printf(".TH XSNOW \"6\" \"2026\" \"xsnow\\-" VERSION "\" \"User Commands\"\n");
       printf(".SH NAME\n");
       printf(".\\\" Turn of hyphenation:\n");
       printf(".hy 0\n");
@@ -78,7 +78,7 @@ void docs_usage(int man)
    else
    {
       doman = 0;
-      printf("XSNOW 2024 xsnow-" VERSION " User Commands\n");
+      printf("XSNOW 2026 xsnow-" VERSION " User Commands\n");
       printf("NAME\n");
       printf("xsnow - Snow and Santa on your desktop\n");
       printf("SYNOPSIS\n");

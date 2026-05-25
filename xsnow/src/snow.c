@@ -20,7 +20,6 @@
 #-endcopyright-
 */
 
-#include <pthread.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -206,6 +205,7 @@ int snow_draw(cairo_t *cr)
       return TRUE;
    P("snow_draw %d\n",global.counter++);
 
+   Lock_fallen();
    set_begin();
    Snow *flake;
    while( (flake = (Snow *)set_next()) )
@@ -222,6 +222,7 @@ int snow_draw(cairo_t *cr)
       flake->ix = lrint(flake->rx);
       flake->iy = lrint(flake->ry);
    }
+   Unlock_fallen();
    return TRUE;
 }
 
@@ -229,6 +230,7 @@ int snow_erase(int force)
 {
    if (!force && Flags.NoSnowFlakes)
       return TRUE;
+   Lock_fallen();
    set_begin();
    Snow *flake;
    int n = 0;
@@ -238,6 +240,7 @@ int snow_erase(int force)
       n++;
    }
    P("snow_erase %d %d\n",global.counter++,n);
+   Unlock_fallen();
    return TRUE;
 }
 
@@ -278,10 +281,12 @@ int do_genflakes(void *d)
    else
       sumdt = 0;
 
+   Lock_fallen();
    for (int i=0; i<desflakes; i++)
    {
       MakeFlake(-1);
    }
+   Unlock_fallen();
    RETURN;
    (void)d;
 #undef RETURN
@@ -550,6 +555,7 @@ int do_UpdateSnowFlake(Snow *flake)
 	    fluffify(flake,0.6);
 
 	    Snow *newflake;
+	    Lock_fallen();
 	    if(Flags.VintageFlakes)
 	       newflake = MakeFlake(0);
 	    else
@@ -558,6 +564,7 @@ int do_UpdateSnowFlake(Snow *flake)
 	    newflake->rx = xfound;
 	    newflake->ry = yfound-snowPix[1].height*0.3f;
 	    fluffify(newflake,8);
+	    Unlock_fallen();
 	    return TRUE;
 	 }
       }
@@ -636,8 +643,8 @@ void InitFlake(Snow *flake)
    flake->ivy        = INITIALYSPEED * sqrt(flake->m);
    flake->vy         = flake->ivy;
    flake->wsens      = drand48()*MAXWSENS;
-   flake->testing    = 0;
    flake->freeze     = 0;
+			    
    set_insert(flake); // will be picked up by snow_draw()
    P("wsens: %f\n",flake->wsens);
 }
@@ -894,6 +901,7 @@ int do_SwitchFlakes(void *d)
    static int prev = 0;
    if (Flags.VintageFlakes != prev)
    {
+      Lock_fallen();
       P("SwitchFlakes\n");
       set_begin();
       Snow *flake;
@@ -909,6 +917,7 @@ int do_SwitchFlakes(void *d)
 	 }
       }
       prev = Flags.VintageFlakes;
+      Unlock_fallen();
    }
    return TRUE;
 }

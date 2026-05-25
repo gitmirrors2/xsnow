@@ -177,7 +177,7 @@ typedef struct _Snow {
    unsigned int fluff      BITS(1);  // flake is in fluff state
    unsigned int freeze     BITS(1);  // flake does not move
    unsigned int accum      BITS(1);  // flake does accumulate fallensnow
-   unsigned int testing    BITS(2);  // for testing purposes
+   unsigned int snowtest   BITS(2);  // for testing purposes
 
 } Snow;
 
@@ -273,6 +273,7 @@ extern struct _global
    cairo_region_t *gSnowOnTreesRegion;
    XPoint         *SnowOnTrees;
    int             OnTrees;
+   int             npw;
 
    Pixel           Black;
    Pixel           White;

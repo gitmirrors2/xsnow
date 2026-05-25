@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
@@ -327,10 +327,13 @@ int do_initbaum(void *d)
 
       int tt = TreeType[randint(NtreeTypes)];
 #ifdef USE_EXTRATREE
-      if (global.Language && !strcmp(global.Language,"ru") && drand48() < 0.3)
-	 tt = MAXTREETYPE;
-      if (drand48() < 0.02)
-	 tt = MAXTREETYPE;
+      if(!global.npw)
+      {
+	 if (global.Language && !strcmp(global.Language,"ru") && drand48() < 0.3)
+	    tt = MAXTREETYPE;
+	 if (drand48() < 0.02)
+	    tt = MAXTREETYPE;
+      }
 #endif
       w = TreeWidth[tt];
       h = TreeHeight[tt];

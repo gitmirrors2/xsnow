@@ -360,19 +360,29 @@ char *guess_language()
    int i = 0;
    while (tries[i])
    {
+      P("trying: %s\n",tries[i]);
       a = getenv(tries[i]);
       if (a && strlen(a)>0)
       {
+	 P("found: %s\n",tries[i]);
 	 b = strdup(a);
 	 assert(b);
+	 if (strstr(b,"zh_CN"))
+	 {
+	    free(b);
+	    P("from %s: %s\n",tries[i],"cn");
+	    return "cn";
+	 }
 	 char *p = strchr(b,'_');
 	 if (p)
 	 {
 	    *p = 0;
+	    P("from %s: %s\n",tries[i],b);
 	    return b;
 	 }
 	 else
 	 {
+	    P("from %s: %s\n",tries[i],b);
 	    return b;
 	 }
 	 free(b);
