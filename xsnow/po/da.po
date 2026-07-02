@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) Rick Jansen
-# # (abc_1001) XsnoW
-# # (abc_1002) &#8195;
-# # (abc_1003) Xscreensaver
-# # (abc_1004) %l#x
-# # (abc_1005) XSNOW
-# # (abc_1006) \n
-# # (abc_1007) xsnow
-# # (abc_1008) Xsnow
+# # 'abc_1000' \n
+# # 'abc_1001' Xsnow
+# # 'abc_1002' XsnoW
+# # 'abc_1003' Rick Jansen
+# # 'abc_1004' %l#x
+# # 'abc_1005' xscreensaver
+# # 'abc_1006' Xscreensaver
+# # 'abc_1007' XSNOW
+# # 'abc_1008' &#8195;
+# # 'abc_1009' xsnow
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: da\n"
@@ -234,16 +235,16 @@ msgid "See also the man page."
 msgstr "Se også man-siden."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
-msgstr ""
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
+msgstr "Advarsel: -auroraleft er forældet, brug -aurorax 25 i stedet.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
-msgstr ""
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
+msgstr "Advarsel: -auroramiddle er forældet, brug -aurorax 50 i stedet.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
-msgstr ""
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
+msgstr "Advarsel: -auroraright er forældet, brug -auroraright 75 i stedet.\n"
 
 msgid ""
 "\n"
@@ -1580,6 +1581,33 @@ msgstr "da"
 
 msgid "it"
 msgstr "det"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Systemet er for travlt, foreslå at sænke 'cpu-belastning' i 'indstillinger'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr " eller se på 'sne': 'Intensitet', 'Maks. antal flager', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " eller angiv et mindre antal fugle i 'fugle'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr "Advarsel: '-auroraleft' er forældet ved hjælp af '-aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Advarsel: '-auroramiddle' er forældet ved hjælp af '-aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "Advarsel: '-auroraright' er forældet ved hjælp af '-auroraright 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

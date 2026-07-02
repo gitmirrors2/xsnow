@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) Xscreensaver
-# # (abc_1001) Rick Jansen
-# # (abc_1002) xsnow
-# # (abc_1003) XSNOW
-# # (abc_1004) Xsnow
-# # (abc_1005) XsnoW
-# # (abc_1006) \n
-# # (abc_1007) %l#x
-# # (abc_1008) &#8195;
+# # 'abc_1000' XSNOW
+# # 'abc_1001' Rick Jansen
+# # 'abc_1002' \n
+# # 'abc_1003' xsnow
+# # 'abc_1004' %l#x
+# # 'abc_1005' Xsnow
+# # 'abc_1006' xscreensaver
+# # 'abc_1007' XsnoW
+# # 'abc_1008' Xscreensaver
+# # 'abc_1009' &#8195;
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: ru\n"
@@ -235,16 +236,22 @@ msgid "See also the man page."
 msgstr "См. также справочную страницу."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"Предупреждение: параметр -auroraleft устарел, вместо него используйте "
+"-aurorax 25.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Предупреждение: параметр -auroramiddle устарел, вместо него используйте "
+"-aurorax 50.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"Предупреждение: параметр -auroraright устарел, вместо него используйте "
+"-aurorax 75.\n"
 
 msgid ""
 "\n"
@@ -1581,6 +1588,40 @@ msgstr "en"
 
 msgid "it"
 msgstr "Это"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Система слишком занята, предложите снизить загрузку процессора в "
+"настройках .\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" или посмотрите на «снег»: «Интенсивность», «Макс. количество "
+"хлопьев», ... \n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " или укажите меньшее количество птиц в «птицы»\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr ""
+#~ "Предупреждение: параметр «-auroraleft» устарел, используется «-aurorax "
+#~ "25». «abc_1000»."
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Предупреждение: параметр «-auroramiddle» устарел, используется «-aurorax "
+#~ "50». «abc_1000»."
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "Предупреждение: параметр «-auroraright» устарел, используется «-aurorax "
+#~ "75». «abc_1000»."
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

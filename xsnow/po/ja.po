@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' xsnow
-# # 'abc_1001' XSNOW
-# # 'abc_1002' &#8195;
-# # 'abc_1003' XsnoW
-# # 'abc_1004' \n
-# # 'abc_1005' Rick Jansen
+# # 'abc_1000' XSNOW
+# # 'abc_1001' \n
+# # 'abc_1002' Xscreensaver
+# # 'abc_1003' Rick Jansen
+# # 'abc_1004' %l#x
+# # 'abc_1005' Xsnow
 # # 'abc_1006' xscreensaver
-# # 'abc_1007' %l#x
-# # 'abc_1008' Xsnow
-# # 'abc_1009' Xscreensaver
+# # 'abc_1007' &#8195;
+# # 'abc_1008' XsnoW
+# # 'abc_1009' xsnow
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.9.2~pre02\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 10:28+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: ja\n"
@@ -238,16 +238,19 @@ msgid "See also the man page."
 msgstr "マニュアルページも参照してください。"
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"警告: -auroraleft は非推奨です。代わりに -aurorax 25 を使用してください。\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"警告: -auroramiddle は非推奨です。代わりに -aurorax 50 を使用してください。\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"警告: -auroraright は非推奨です。代わりに -aurorax 75 を使用してください。\n"
 
 msgid ""
 "\n"
@@ -1516,7 +1519,7 @@ msgid ""
 msgstr ""
 "Xscreensaver の設定。背景を選択し、それを使用するかどうかを選択できます。\n"
 " ファイル ~/.xscreensaver の 'programs:' 行の後に、必ず \n"
-" abc_1000' -root\n"
+" xsnow -root\n"
 " のような行を追加し、xscreensaver-demo を実行して選択します。 xsnow.\n"
 "コマンド ラインで xscreensaver をアクティブにするには:\n"
 "xscreensaver-command -activate\n"
@@ -1562,3 +1565,35 @@ msgstr "jp"
 
 msgid "it"
 msgstr "それ"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"システムがビジー状態です。「設定」の「CPU 負荷」を下げることをお勧めしま"
+"す。\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr " または、「雪」を見てください: '強度'、'フレークの最大数'、...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " または、'鳥' でより少ない数の鳥を指定します。\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr ""
+#~ "警告: '-auroraleft' は非推奨です。'-aurorax 25' .\n"
+#~ " を使用します。"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "警告: '-auroramiddle' は非推奨です。'-aurorax 50' .\n"
+#~ " を使用します。"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "警告: '-auroraright' は非推奨です。'-aurorax 75' .\n"
+#~ " を使用します。"

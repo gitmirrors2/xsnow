@@ -1,13 +1,13 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' Xsnow
+# # 'abc_1000' xsnow
 # # 'abc_1001' Rick Jansen
-# # 'abc_1002' \n
+# # 'abc_1002' Xsnow
 # # 'abc_1003' Xscreensaver
-# # 'abc_1004' XSNOW
-# # 'abc_1005' &#8195;
-# # 'abc_1006' xscreensaver
-# # 'abc_1007' xsnow
-# # 'abc_1008' %l#x
+# # 'abc_1004' xscreensaver
+# # 'abc_1005' XSNOW
+# # 'abc_1006' \n
+# # 'abc_1007' %l#x
+# # 'abc_1008' &#8195;
 # # 'abc_1009' XsnoW
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.9.2~pre02\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: bo\n"
@@ -63,7 +63,7 @@ msgstr "དར་ཆ་མུ་མཐུད།"
 
 #, c-format
 msgid "%s: cannot connect to X server %s\n"
-msgstr ""
+msgstr "%s: Xསར་བར་ %s ལ་མཐུད་མི་ཐུབ།\n"
 
 msgid "(default)"
 msgstr "(ལུགས་འགལ)"
@@ -252,16 +252,16 @@ msgid "See also the man page."
 msgstr "མི་ཤོག་ངོས་ལ་ཡང་གཟིགས།"
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
-msgstr ""
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
+msgstr "ཉེན་བརྡ། -auroraleft བེད་སྤྱོད་མེད་པར་གྱུར་ཡོད། དེའི་ཚབ་ཏུ་ -aurorax 25 བེད་སྤྱོད་བྱེད།\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
-msgstr ""
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
+msgstr "ཉེན་བརྡ། -ཨོ་རོ་རཱ་མིཌལ་བེད་སྤྱོད་མེད་པར་གྱུར་ཡོད། དེའི་ཚབ་ཏུ་-ཨོ་རོ་རེག་སི་༥༠བེད་སྤྱོད་བྱེད།\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
-msgstr ""
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
+msgstr "ཉེན་བརྡ། -ཨོ་རོ་རའིཊ་བེད་སྤྱོད་མེད་པར་གྱུར་ཡོད། དེའི་ཚབ་ཏུ་-ཨོ་རོ་རེག་སི་75བེད་སྤྱོད་བྱེད།\n"
 
 msgid ""
 "\n"
@@ -1518,6 +1518,14 @@ msgid ""
 "See also the man page:\n"
 "man xsnow"
 msgstr ""
+"Xscreensaver ཡི་སྒྲིག་སྟངས། ཁྱོད་ཀྱིས་རྒྱབ་ལྗོངས་འདེམས་ཆོག དེ་བེད་སྤྱོད་གཏོང་མིན་འདེམས་ཆོག \n"
+"ཡིག་ཆ་ ~/.xscreensaver ནང་ 'programs:' ཡི་རྗེས་སུ་\n"
+"xsnow -root\n"
+"ལྟ་བུའི་གྲལ་ཐིག་ཅིག་ཁ་སྣོན་བྱེད་དགོས། xsnow.\n"
+"བཀའ་ཚིག་གྲལ་ཐིག་སྟེང་xscreensaverཤུགས་ལྡན་བཟོ་བར།:\n"
+"xscreensaver-བཀའ་ཚིག་ -activate\n"
+"མན་ཤོག་ངོས་ལ་ཡང་གཟིགས།\n"
+"man xsnow."
 
 msgid "Xscreensaver: "
 msgstr "Xscreensaver: "
@@ -1558,6 +1566,32 @@ msgstr "bo"
 
 msgid "it"
 msgstr "ཐ་སྙད་འདས་མ་ཐག་པའི་དངོས་པོ་དང་སྐྱེས་བུའི་མིང་ཚབ་ལ་འཇུག"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"མ་ལག་དེ་ཧ་ཅང་བྲེལ་འཚུབ་ཆེ། 'settings'ནང་ 'cpu load' མར་ཕབ་དགོས་པའི་བསམ་འཆར་འདོན་གྱི་"
+"ཡོད།\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr " ཡང་ན་'གངས་'ལ་ལྟོས། 'ཤུགས་ཚད་', 'ཆེས་མཐོའི་ཕྲེང་བ', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " ཡང་ན་ 'birds' ནང་བྱ་གྲངས་ཆུང་བ་གཏན་འཁེལ་བྱེད།\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr "ཉེན་བརྡ། '-auroraleft' བེད་སྤྱོད་མེད་པར་བཟོས་ཡོད། '-aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr "ཉེན་བརྡ། '-ཨོ་རོ་རཱ་མིཌལ་' བེད་སྤྱོད་མེད་པར་བཟོས་ཡོད། '-ཨོ་རོ་རེགསི་ ༥༠' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr "ཉེན་བརྡ། '-ཨོ་རོ་རའིཊ་' བེད་སྤྱོད་མེད་པར་བཟོས་ཡོད། '-ཨོ་རོ་རེགསི་ ༧༥' .\n"
 
 #~ msgid ""
 #~ "Settings for Xscreensaver. You can choose a background, and choose to use "

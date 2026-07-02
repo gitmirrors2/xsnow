@@ -218,19 +218,19 @@ int HandleFlags(int argc, char*argv[])
 	 else if (strcmp(arg, "-auroraleft") == 0)
 	 {
 	    if(pass == 1)
-	       printf(_("Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"));
+	       printf(_("Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"));
 	    Flags.AuroraX = 25;
 	 }
 	 else if (strcmp(arg, "-auroramiddle") == 0)
 	 {
 	    if(pass == 1)
-	       printf(_("Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"));
+	       printf(_("Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"));
 	    Flags.AuroraX = 50;
 	 }
 	 else if (strcmp(arg, "-auroraright") == 0)
 	 {
 	    if(pass == 1)
-	       printf(_("Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"));
+	       printf(_("Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"));
 	    Flags.AuroraX = 75;
 	 }
 	 else if (strcmp(arg,"-npw") == 0)

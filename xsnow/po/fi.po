@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) XSNOW
-# # (abc_1001) XsnoW
-# # (abc_1002) xsnow
-# # (abc_1003) Xscreensaver
-# # (abc_1004) %l#x
-# # (abc_1005) Xsnow
-# # (abc_1006) \n
-# # (abc_1007) Rick Jansen
-# # (abc_1008) &#8195;
+# # 'abc_1000' %l#x
+# # 'abc_1001' XsnoW
+# # 'abc_1002' Rick Jansen
+# # 'abc_1003' xsnow
+# # 'abc_1004' Xscreensaver
+# # 'abc_1005' Xsnow
+# # 'abc_1006' xscreensaver
+# # 'abc_1007' &#8195;
+# # 'abc_1008' \n
+# # 'abc_1009' XSNOW
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: fi\n"
@@ -239,16 +240,19 @@ msgid "See also the man page."
 msgstr "Katso myös Man Page."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"Varoitus: -auroraleft on vanhentunut, käytä sen sijaan -aurorax 25:tä.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Varoitus: -auroramiddle on vanhentunut, käytä sen sijaan -aurorax 50:tä.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"Varoitus: -auroraright on vanhentunut, käytä sen sijaan -aurorax 75:tä.\n"
 
 msgid ""
 "\n"
@@ -1588,6 +1592,34 @@ msgstr "fi"
 
 msgid "it"
 msgstr "it"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Järjestelmä on liian kiireinen, ehdota prosessorin kuormituksen alentamista "
+"asetuksissa'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" tai katso 'lunta': 'intensiteetti', 'Enintään # lumihiutaletta', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " tai määritä pienempi määrä lintuja kohtaan 'lintuja'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr "Varoitus: '-auroraleft' on vanhentunut, käyttää '-aurorax '25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Varoitus: '-auroramiddle' on vanhentunut, ja se käyttää '-aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr "Varoitus: '-auroraright' on vanhentunut, käyttää '-aurorax 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

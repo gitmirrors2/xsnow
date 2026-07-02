@@ -44,5 +44,5 @@
 #define SNOWSPEED 0.7    // the higher, the speedier the snow
 #define WHIRL 150
 #define MAXVISWORKSPACES 100   // should be enough...
-#define USE_EXTRATREE
+//#define USE_EXTRATREE
 #define ignore_atom                "IGNORE_ME"

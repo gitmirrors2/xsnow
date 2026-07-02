@@ -1,5 +1,5 @@
 /* 
- -copyright-
+   -copyright-
 # xsnow: let it snow on your desktop
 # Copyright (C) 1984,1988,1990,1993-1995,2000-2001 Rick Jansen
 #              2019,2020,2021,2022,2023,2024,2025,2026 Willem Vermin
@@ -34,6 +34,7 @@
 #include "clocks.h"
 #include "xsnow.h"
 #include "flags.h"
+#include "mygettext.h"
 
 static int do_loadmeasure(void *);
 
@@ -63,7 +64,7 @@ int do_loadmeasure(void *d)
    static int warncount  = 0;
 
    if (tnow-tprev > 1.2*time_measure)
-      //if (tnow-tprev > 0.9*time_measure)   // for testing purposes
+      //   if (tnow-tprev > 0.9*time_measure)   // for testing purposes
       count++;
    else 
       count --;
@@ -77,9 +78,10 @@ int do_loadmeasure(void *d)
 	 {
 	    warncount++;
 	    P("pink %d %d %f %f\n",count,status,time_measure,tnow-tprev);
-	    printf("system is too busy, suggest to lower 'cpu load' in 'settings'\n");
-	    printf(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n");
-	    printf(" or specify a smaller number of birds in 'birds'\n");
+	    printf(_("The system is too busy, suggest to lower 'cpu load' in 'settings'\n"));
+	    printf(_(" or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"));
+	    printf(_(" or specify a smaller number of birds in 'birds'\n"));
+	    fflush(stdout);
 	 }
 	 if(!Flags.NoMenu)
 	    ui_background(1);

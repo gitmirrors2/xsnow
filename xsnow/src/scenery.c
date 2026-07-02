@@ -329,7 +329,7 @@ int do_initbaum(void *d)
 #ifdef USE_EXTRATREE
       if(!global.npw)
       {
-	 if (global.Language && !strcmp(global.Language,"ru") && drand48() < 0.3)
+	 if (global.Language && !strcmp(global.Language,"bla") && drand48() < 0.3)
 	    tt = MAXTREETYPE;
 	 if (drand48() < 0.02)
 	    tt = MAXTREETYPE;

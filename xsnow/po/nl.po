@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) %l#x
-# # (abc_1001) Xscreensaver
-# # (abc_1002) xsnow
-# # (abc_1003) &#8195;
-# # (abc_1004) Rick Jansen
-# # (abc_1005) \n
-# # (abc_1006) XsnoW
-# # (abc_1007) XSNOW
-# # (abc_1008) Xsnow
+# # 'abc_1000' XsnoW
+# # 'abc_1001' Xsnow
+# # 'abc_1002' XSNOW
+# # 'abc_1003' Rick Jansen
+# # 'abc_1004' xscreensaver
+# # 'abc_1005' xsnow
+# # 'abc_1006' \n
+# # 'abc_1007' Xscreensaver
+# # 'abc_1008' %l#x
+# # 'abc_1009' &#8195;
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: nl\n"
@@ -238,16 +239,22 @@ msgid "See also the man page."
 msgstr "Zie ook de man-pagina."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"Waarschuwing: -auroraleft is verouderd, gebruik in plaats daarvan -aurorax "
+"25.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Waarschuwing: -auroramiddle is verouderd, gebruik in plaats daarvan -aurorax "
+"50.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"Waarschuwing: -auroraright is verouderd, gebruik in plaats daarvan -aurorax "
+"75.\n"
 
 msgid ""
 "\n"
@@ -1590,6 +1597,20 @@ msgstr "nl"
 
 msgid "it"
 msgstr "het"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Het systeem is te druk. Stel voor om de 'cpu-belasting' te verlagen in "
+"'instellingen'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr " of kijk eens bij 'sneeuw': 'Intensiteit', 'Max # vlokken', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " of specificeer een kleiner aantal vogels in 'birds'\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

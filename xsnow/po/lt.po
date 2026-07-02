@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) %l#x
-# # (abc_1001) \n
-# # (abc_1002) Rick Jansen
-# # (abc_1003) Xscreensaver
-# # (abc_1004) xsnow
-# # (abc_1005) XsnoW
-# # (abc_1006) &#8195;
-# # (abc_1007) XSNOW
-# # (abc_1008) Xsnow
+# # 'abc_1000' %l#x
+# # 'abc_1001' \n
+# # 'abc_1002' Xscreensaver
+# # 'abc_1003' Xsnow
+# # 'abc_1004' Rick Jansen
+# # 'abc_1005' xsnow
+# # 'abc_1006' XSNOW
+# # 'abc_1007' &#8195;
+# # 'abc_1008' xscreensaver
+# # 'abc_1009' XsnoW
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: lt\n"
@@ -235,16 +236,16 @@ msgid "See also the man page."
 msgstr "Taip pat žiūrėkite vadovo puslapį."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
-msgstr ""
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
+msgstr "Įspėjimas: -auroraleft yra nebenaudojama, naudokite -aurorax 25.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
-msgstr ""
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
+msgstr "Įspėjimas: -auroramiddle yra nebenaudojamas, naudokite -aurorax 50.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
-msgstr ""
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
+msgstr "Įspėjimas: -auroraright yra nebenaudojamas, naudokite -aurorax 75.\n"
 
 msgid ""
 "\n"
@@ -1585,6 +1586,38 @@ msgstr "lt"
 
 msgid "it"
 msgstr "tai"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Sistema per daug užimta, siūlykite sumažinti procesoriaus apkrovą skiltyje "
+"'nustatymai'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" arba pažiūrėkite į 'sniegą': 'Intensyvumas', 'Maksimalus dribsnių "
+"skaičius', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " arba nurodykite mažesnį paukščių skaičių lauke 'paukščiai'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr ""
+#~ "Įspėjimas: „-auroraleft“ nebenaudojama, naudojant „-aurorax 25“ .'abc_1005"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Įspėjimas: „-auroramiddle“ yra nebenaudojamas, naudojant „-aurorax 50“ .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "Įspėjimas: „-auroraright“ nebenaudojama, naudojant „-aurorax "
+#~ "75“ .'abc_1005"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

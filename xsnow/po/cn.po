@@ -1,19 +1,19 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' xsnow
-# # 'abc_1001' xscreensaver
-# # 'abc_1002' Xsnow
-# # 'abc_1003' XsnoW
-# # 'abc_1004' \n
+# # 'abc_1000' Rick Jansen
+# # 'abc_1001' &#8195;
+# # 'abc_1002' XSNOW
+# # 'abc_1003' \n
+# # 'abc_1004' XsnoW
 # # 'abc_1005' Xscreensaver
-# # 'abc_1006' Rick Jansen
-# # 'abc_1007' %l#x
-# # 'abc_1008' &#8195;
-# # 'abc_1009' XSNOW
+# # 'abc_1006' Xsnow
+# # 'abc_1007' xscreensaver
+# # 'abc_1008' %l#x
+# # 'abc_1009' xsnow
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.8.6\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-15 12:59+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: cn\n"
@@ -232,16 +232,16 @@ msgid "See also the man page."
 msgstr "另请参见手册页。"
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
-msgstr ""
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
+msgstr "警告：-auroraleft 已弃用，请改用 -aurorax 25。\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
-msgstr ""
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
+msgstr "警告：-auroramiddle 已弃用，请改用 -aurorax 50。\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
-msgstr ""
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
+msgstr "警告：-auroraright 已弃用，请改用 -aurorax 75。\n"
 
 msgid ""
 "\n"
@@ -1557,6 +1557,34 @@ msgstr "zh_CN"
 
 msgid "it"
 msgstr "it"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr "系统太忙，建议在“设置”中降低“cpu负载”\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr " 或者看看“雪”：“强度”，“雪片最大数量”，...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " 或者在 'birds' 中指定较少数量的鸟\n"
+
+#, c-format
+#~ msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'"
+#~ msgstr "系统太忙，建议在“设置'中降低“cpu负载'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr "警告：'-auroraleft' 已弃用，使用 '-aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr "警告：'-auroramiddle' 已弃用，使用 '-aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr "警告：'-auroraright' 已弃用，使用 '-aurorax 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

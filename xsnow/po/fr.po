@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) \n
-# # (abc_1001) XSNOW
-# # (abc_1002) Xsnow
-# # (abc_1003) xsnow
-# # (abc_1004) &#8195;
-# # (abc_1005) Xscreensaver
-# # (abc_1006) XsnoW
-# # (abc_1007) Rick Jansen
-# # (abc_1008) %l#x
+# # 'abc_1000' &#8195;
+# # 'abc_1001' Xscreensaver
+# # 'abc_1002' Rick Jansen
+# # 'abc_1003' xscreensaver
+# # 'abc_1004' \n
+# # 'abc_1005' Xsnow
+# # 'abc_1006' %l#x
+# # 'abc_1007' XSNOW
+# # 'abc_1008' XsnoW
+# # 'abc_1009' xsnow
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # This file is distributed under the same license as the xsnow package.
@@ -17,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -242,16 +243,17 @@ msgid "See also the man page."
 msgstr "Voir aussi la page Man."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
-msgstr ""
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
+msgstr "Attention : -auroraleft est obsolète, utilisez plutôt -aurorax 25. \n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Attention : -auroramiddle est obsolète, utilisez plutôt -aurorax 50. \n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
-msgstr ""
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
+msgstr "Attention : -auroraright est obsolète, utilisez plutôt -aurorax 75. \n"
 
 msgid ""
 "\n"
@@ -1686,6 +1688,36 @@ msgstr "fr"
 
 msgid "it"
 msgstr "it"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Le système est trop occupé, suggérez de réduire la 'charge du processeur' "
+"dans les 'paramètres'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" ou jetez un œil à 'neige' : 'Intensité', 'Nombre maximum de flocons', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " ou spécifiez un plus petit nombre d'oiseaux dans 'oiseaux'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr ""
+#~ "Attention : '-auroraleft' est obsolète, en utilisant '-aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Attention : '-auroramiddle' est obsolète, en utilisant '-aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "Attention : '-auroraright' est obsolète, en utilisant '-aurorax 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

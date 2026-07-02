@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) \n
-# # (abc_1001) xsnow
-# # (abc_1002) XSNOW
-# # (abc_1003) %l#x
-# # (abc_1004) Rick Jansen
-# # (abc_1005) &#8195;
-# # (abc_1006) XsnoW
-# # (abc_1007) Xscreensaver
-# # (abc_1008) Xsnow
+# # 'abc_1000' \n
+# # 'abc_1001' Xscreensaver
+# # 'abc_1002' Xsnow
+# # 'abc_1003' xsnow
+# # 'abc_1004' XSNOW
+# # 'abc_1005' &#8195;
+# # 'abc_1006' Rick Jansen
+# # 'abc_1007' XsnoW
+# # 'abc_1008' xscreensaver
+# # 'abc_1009' %l#x
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: el\n"
@@ -240,16 +241,22 @@ msgid "See also the man page."
 msgstr "Δείτε επίσης τη σελίδα man."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"Προειδοποίηση: -auroraleft έχει καταργηθεί, χρησιμοποιήστε -aurorax 25 "
+"αντί.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Προειδοποίηση: -auroramiddle έχει καταργηθεί, χρησιμοποιήστε -aurorax 50 "
+"αντί.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"Προειδοποίηση: -το auroraright έχει καταργηθεί, χρησιμοποιήστε -aurorax 75 "
+"αντί.\n"
 
 msgid ""
 "\n"
@@ -1611,6 +1618,39 @@ msgstr "en"
 
 msgid "it"
 msgstr "το"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"Το σύστημα είναι πολύ απασχολημένο, προτείνετε να μειώσετε το 'φορτίο cpu' "
+"στο 'Ρυθμίσεις'\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" ή ρίξτε μια ματιά στο 'snow': 'Ένταση', 'Μέγιστος # νιφάδων χιονιού', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " ή καθορίστε έναν μικρότερο αριθμό πουλιών στο 'Πουλιά'\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr ""
+#~ "Προειδοποίηση: Το '-auroraleft' έχει καταργηθεί, χρησιμοποιώντας το '-"
+#~ "aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr ""
+#~ "Προειδοποίηση: Το '-auroramiddle' έχει καταργηθεί, χρησιμοποιώντας το '-"
+#~ "aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr ""
+#~ "Προειδοποίηση: Το '-auroraright' καταργήθηκε, χρησιμοποιώντας το '-"
+#~ "aurorax 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

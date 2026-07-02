@@ -1,13 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # (abc_1000) XSNOW
-# # (abc_1001) \n
-# # (abc_1002) XsnoW
-# # (abc_1003) Xscreensaver
-# # (abc_1004) Xsnow
-# # (abc_1005) %l#x
-# # (abc_1006) Rick Jansen
-# # (abc_1007) &#8195;
-# # (abc_1008) xsnow
+# # 'abc_1000' %l#x
+# # 'abc_1001' &#8195;
+# # 'abc_1002' XsnoW
+# # 'abc_1003' xscreensaver
+# # 'abc_1004' Xsnow
+# # 'abc_1005' Xscreensaver
+# # 'abc_1006' Rick Jansen
+# # 'abc_1007' xsnow
+# # 'abc_1008' XSNOW
+# # 'abc_1009' \n
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"PO-Revision-Date: 2026-05-08 08:55+0200\n"
+"PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: hu\n"
@@ -236,16 +237,21 @@ msgid "See also the man page."
 msgstr "Lásd még a man oldalt."
 
 #, c-format
-msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+msgid "Warning: -auroraleft is deprecated, use -aurorax 25 instead.\n"
 msgstr ""
+"Figyelmeztetés: -auroraleft elavult, használja helyette -aurorax 25-öt.\n"
 
 #, c-format
-msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+msgid "Warning: -auroramiddle is deprecated, use -aurorax 50 instead.\n"
 msgstr ""
+"Figyelmeztetés: -auroramiddle elavult, használja helyette az -aurorax 50-"
+"et.\n"
 
 #, c-format
-msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+msgid "Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"
 msgstr ""
+"Figyelmeztetés: az -auroraright elavult, használja helyette az -aurorax 75-"
+"öt.\n"
 
 msgid ""
 "\n"
@@ -1594,6 +1600,33 @@ msgstr "hu"
 
 msgid "it"
 msgstr "azt"
+
+#, c-format
+msgid "The system is too busy, suggest to lower 'cpu load' in 'settings'\n"
+msgstr ""
+"A rendszer túl elfoglalt, javasolja a 'cpu terhelés' csökkentését a "
+"'settings részben.\n"
+
+#, c-format
+msgid " or have a look at 'snow': 'Intensity', 'Max # of flakes', ...\n"
+msgstr ""
+" vagy nézze meg a 'hót': 'Intenzitás', 'Maximális pelyhek száma', ...\n"
+
+#, c-format
+msgid " or specify a smaller number of birds in 'birds'\n"
+msgstr " vagy adjon meg egy kisebb számú madarat a 'madarak'mezőben\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"
+#~ msgstr "Figyelmeztetés: az '-auroraleft' elavult, az '-aurorax 25' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroramiddle' is deprecated, using '-aurorax 50' .\n"
+#~ msgstr "Figyelmeztetés: az '-auroramiddle' elavult, az '-aurorax 50' .\n"
+
+#, c-format
+#~ msgid "Warning: '-auroraright' is deprecated, using '-aurorax 75' .\n"
+#~ msgstr "Figyelmeztetés: az '-auroraright' elavult, az '-aurorax 75' .\n"
 
 #, c-format
 #~ msgid "For optimal resuts, add to your %s:\n"

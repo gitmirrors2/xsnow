@@ -1,3 +1,7 @@
+version 3.9.3
+	01: add and correct some translations
+	    it has made it's point: remove surprises from scenery
+
 version 3.9.2
 	01: snow.c: add locks to not interfere with code in fallensnow.c
 	    Thanks to Marc Capella for reporting the bug.

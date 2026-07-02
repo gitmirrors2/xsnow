@@ -6,3 +6,4 @@ src/windows.c
 src/ui.c
 src/flags.c
 src/ui.glade
+src/loadmeasure.c
