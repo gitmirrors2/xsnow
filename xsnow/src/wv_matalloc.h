@@ -23,8 +23,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void *wv_matalloc(size_t size, void * data, unsigned int ndim, ...);
-extern void *wv_matallocv(size_t size, void * data, unsigned int ndim, unsigned int*d);
+extern void *wv_matalloc(size_t size, void * data, int ndim, ...);
+extern void *wv_matallocv(size_t size, void * data, int ndim, unsigned int*d);
 extern void wv_matfree(void *p);
 #ifdef __cplusplus
 }

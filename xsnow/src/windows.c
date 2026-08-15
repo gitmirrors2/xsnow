@@ -213,6 +213,7 @@ void *call_GetWindows(void *d)
       if(NWindows > 0)
       {
 	 orig = (WinInfo *)malloc(sizeof(WinInfo)*NWindows);
+	 assert(orig);
 	 memcpy(orig, Windows, sizeof(WinInfo)*NWindows);
       }
 
@@ -250,6 +251,8 @@ void *call_GetWindows(void *d)
 	    P("Not Using original xxid x: %d, y: %d, w: %d,xxid: %ld\n",x,y,w,xxid);
 	 }
 
+	 assert(Windows);
+
 	 Windows[i].xxid   = xxid;
 	 Windows[i].x      = x;
 	 Windows[i].y      = y;
@@ -278,6 +281,7 @@ void *call_GetWindows(void *d)
       }
       lock_Windows();
       Windows = (WinInfo *)realloc(Windows,sizeof(WinInfo)*n);
+      assert(Windows);
       for (int i=0; i<n; i++)
 	 Windows[i] = w[i];
       NWindows = n;

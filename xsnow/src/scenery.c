@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
+#include <time.h>
 #include <assert.h>
 
 #include "xsnow-constants.h"
@@ -52,6 +53,7 @@
 #include "xpm2cairo-gdk.h"
 
 static int              do_initbaum(void *);
+static int              do_redraw_scenery(void *d);
 static void             ReInitTree0(void);
 static void             InitTreePixmaps(void);
 static cairo_surface_t *tree_surface(int flip, const char **xpm, float scale);
@@ -109,6 +111,7 @@ void scenery_init()
    global.TreeRegion = cairo_region_create();
    InitTreePixmaps();
    add_to_mainloop(PRIORITY_DEFAULT, time_initbaum, do_initbaum);
+   add_to_mainloop(PRIORITY_DEFAULT, time_redraw_scenery, do_redraw_scenery);
 }
 
 void setScale()
@@ -156,6 +159,13 @@ void scenery_ui()
       RedrawTrees();
    }
 
+}
+
+int do_redraw_scenery(void *d)
+{
+   RedrawTrees();
+   return TRUE;
+   (void)d;
 }
 
 void RedrawTrees()
@@ -317,6 +327,30 @@ int do_initbaum(void *d)
       free(tmptreetype);
    }
 
+   int extratree = 0;
+   int days_fromXmas = 10;;
+#ifdef USE_EXTRATREE
+   // show extratree around Xmas. See the manpage: -xmastrees
+   // get month and day  source: w3schools
+   int month,day;
+   {
+      time_t now   = time(NULL);       // Get current time
+      struct tm *t = localtime(&now);  // Convert to local time structure
+      month        = t->tm_mon;
+      day          = t->tm_mday;
+   }
+   P("month: %d, day: %d\n",month,day);
+   if ((month == 11 && day > 18) || (month == 0 && day < 7))
+   {
+      if (strcmp(Flags.TreeType,"0,"))  // if not only vintage trees ...
+	 extratree = 1;
+   // number of days from xmas:
+   if (month == 11)
+      days_fromXmas = abs(25-day);
+   if (month == 0)
+      days_fromXmas = 31-25+day;
+   }
+#endif
    // determine placement of trees and NTrees:
 
    NTrees    = 0;
@@ -326,15 +360,8 @@ int do_initbaum(void *d)
 	 break;
 
       int tt = TreeType[randint(NtreeTypes)];
-#ifdef USE_EXTRATREE
-      if(!global.npw)
-      {
-	 if (global.Language && !strcmp(global.Language,"bla") && drand48() < 0.3)
-	    tt = MAXTREETYPE;
-	 if (drand48() < 0.02)
-	    tt = MAXTREETYPE;
-      }
-#endif
+      if (extratree && NTrees < Flags.XmasTrees)
+	 tt = MAXTREETYPE;
       w = TreeWidth[tt];
       h = TreeHeight[tt];
 
@@ -348,6 +375,14 @@ int do_initbaum(void *d)
       float myScale = (1-MinScale)*(y - y2)/(y1 - y2) + MinScale;
       P("%d myScale: %d %d %d %f\n",global.counter++,y,y1,y2,myScale);
       myScale *=treeScale*0.01*Flags.TreeScale;
+      if (tt == MAXTREETYPE) // Xmastree gets it's own scale
+      {
+	 float f = 0.9*0.1*(10 - days_fromXmas); 
+	 if (f < 0.2)
+	    f = 0.2;
+	 myScale *= f;
+	 P("f: %f\n",f);
+      }
       cairo_rectangle_int_t grect = {x-1,y-1,(int)(myScale*w+2),(int)(myScale*h+2)};
       cairo_region_overlap_t in   = cairo_region_contains_rectangle(global.TreeRegion,&grect);
 

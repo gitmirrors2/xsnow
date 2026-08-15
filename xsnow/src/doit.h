@@ -48,6 +48,7 @@
    DOIT_I(UseDouble           ,1  ,1 ) \
    DOIT_I(WindNow             ,0  ,0 ) \
    DOIT_I(XWinInfoHandling    ,0  ,0 ) \
+   DOIT_I(XmasTrees           ,1  ,0 ) \
    DOIT_L(WindowId            ,0  ,0 ) \
    DOIT_S(DisplayName         ,"" ,"") \
    DOIT

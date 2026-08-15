@@ -593,6 +593,7 @@ int main_c(int argc, char *argv[])
       {
 	 char *x = _("Configuration file: ");
 	 char *s = (char *) malloc(strlen(x) + strlen(global.FlagsFile) + 1); 
+	 assert(s);
 	 strcpy(s,x);
 	 strcat(s,global.FlagsFile);
 	 ui_show_something(s);

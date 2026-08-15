@@ -70,6 +70,7 @@
 #define time_measure              0.2    // time between cpu load measurements
 #define time_meteor               3.00   // time between meteors
 #define time_newwind              1.00   // time between changing wind
+#define time_redraw_scenery       3600*2 // time between spontaneous redraw scenery
 #define time_sendevent            0.5    // time between sendEvent() calls
 #define time_sfallen              2.30   // time between smoothing of fallen snow
 #define time_show_range_etc       0.50   // time between showing range etc.

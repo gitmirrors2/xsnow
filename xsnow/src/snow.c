@@ -779,8 +779,8 @@ void genxpmflake(char ***xpm, int w, int h)
 	 ymax = ya[i];
    }
 
-   int nw = ceilf(xmax - xmin + 1);
-   int nh = ceilf(ymax - ymin + 1);
+   int nw = (int)ceilf(xmax - xmin + 1);
+   int nh = (int)ceilf(ymax - ymin + 1);
 
    // for some reason, drawing of cairo_surfaces derived from 1x1 xpm slow down
    // the x server terribly. So, to be sure, I demand that none of

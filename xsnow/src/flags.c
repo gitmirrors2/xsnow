@@ -233,10 +233,7 @@ int HandleFlags(int argc, char*argv[])
 	       printf(_("Warning: -auroraright is deprecated, use -aurorax 75 instead.\n"));
 	    Flags.AuroraX = 75;
 	 }
-	 else if (strcmp(arg,"-npw") == 0)
-	 {
-	    global.npw = 1;
-	 }
+
 	 handle_ia(-allworkspaces       ,AllWorkspaces                    );
 	 handle_ia(-aurora              ,Aurora                           );
 	 handle_ia(-aurorawidth         ,AuroraWidth                      );
@@ -292,6 +289,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-outline             ,Outline                          );
 	 handle_ia(-enablesc2           ,UseColor2                        );
 	 handle_ia(-screenshot          ,Screenshots                      );
+	 handle_ia(-xmastrees           ,XmasTrees                        );
 
 
 	 handle_is(-display             ,DisplayName                      );
@@ -472,7 +470,7 @@ void ReadFlags()
    {                                 \
       intval = strtol(value,NULL,0); \
       Flags.x = intval;              \
-      free(value);              \
+      free(value);                   \
       value = NULL;                  \
    } 
 
@@ -481,7 +479,7 @@ void ReadFlags()
    findflag(f,# x,&value);     \
    if (value)                  \
    {                           \
-      free(Flags.x);      \
+      free(Flags.x);           \
       Flags.x = strdup(value); \
       free(value);             \
       value = NULL;            \

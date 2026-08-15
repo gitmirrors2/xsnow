@@ -128,7 +128,8 @@ fi
 waitfor()
 {
    local i
-   for i in `seq 20` ; do
+   for i in `seq 200` ; do  # we need a long wait to facilitate slow riscv64
+      # see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1142859
       #echo waitfor $1 $i
       sleep 1
       if test -f "$rcfile" ; then

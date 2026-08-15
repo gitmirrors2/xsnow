@@ -201,6 +201,8 @@ void docs_usage(int man)
    manout("-treescale <n>"          ,"Scale scenery (default: %d).",F(TreeScale));
    manout("-treeoverlap"            ,"Allow scenery items to overlap each other (default).");
    manout("-notreeoverlap"          ,"Do not allow scenery items to overlap each other.");
+   manout("-xmastrees <n>"          ,"Around Xmas: Show replace n scenery items with a nice Xmas-tree. Default %d.",F(XmasTrees));
+   manout("."                       ,"Thanks to Mujhaid Wakeel.");
 
    if(doman)
    {

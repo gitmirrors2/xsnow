@@ -932,6 +932,7 @@ void set_default_tab(int tab, int vintage)
 	 case xsnow_scenery:
 	    free(Flags.TreeType);
 	    Flags.TreeType = strdup(VINTAGE(TreeType));
+	    Flags.XmasTrees = VINTAGE(XmasTrees);
 	    break;
 	 case xsnow_snow:
 	    Flags.VintageFlakes = 1;
@@ -964,6 +965,7 @@ void set_default_tab(int tab, int vintage)
 	 case xsnow_scenery:
 	    free(Flags.TreeType);
 	    Flags.TreeType = strdup(DEFAULT(TreeType));
+	    Flags.XmasTrees = OldFlags.XmasTrees;
 	    break;
 	 case xsnow_snow:
 	    Flags.VintageFlakes = 0;

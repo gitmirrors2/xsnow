@@ -18,7 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 #-endcopyright-
-debroot=../xsnow-debian
+if [ -d ../xsnow-debian ]; then
+   debroot=../xsnow-debian
+else
+   debroot=../../xsnow-debian
+fi
+
 deb=$debroot/debian
 version=`getversion`
 

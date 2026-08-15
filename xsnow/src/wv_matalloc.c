@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include "wv_matalloc.h"
 /*
-   void *wv_matalloc (size_t size, void *data, unsigned int ndim, ...)
-   void *wv_matallocv (size_t size, void *data, unsigned int ndim, unsigned int*dims)
+   void *wv_matalloc (size_t size, void *data, int ndim, ...)
+   void *wv_matallocv (size_t size, void *data, int ndim, unsigned int*dims)
 
    allocates memory and builds pointerstructure for
    ndim dimensional matrix. 
@@ -95,7 +95,7 @@ wv_matfree(a);
 static void * wv_matalloc_1(unsigned int i,unsigned int size,unsigned int nd,
       unsigned int *d,void ***pp,char **q);
 
-void *wv_matallocv(size_t size, void *data, unsigned int ndim, unsigned int *d)
+void *wv_matallocv(size_t size, void *data, int ndim, unsigned int *d)
 {
    int i;
    int npad=64;
@@ -157,7 +157,7 @@ void *wv_matallocv(size_t size, void *data, unsigned int ndim, unsigned int *d)
    return r;
 }
 
-void *wv_matalloc(size_t size, void *data, unsigned int ndim, ...)
+void *wv_matalloc(size_t size, void *data, int ndim, ...)
 {
    va_list argp;
    int i;
