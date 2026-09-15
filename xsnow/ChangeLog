@@ -1,3 +1,10 @@
+version 3.9.5
+	01: configure.ac and others(search for SCREENSHOTS):
+	      by default: no option to use screenshots for window-locations.
+	      The experimental feature can be re-enabled by:
+	        ./configure --enable-screenshots
+	      If pkg-config opencv4 is not available, try opencv5.
+
 version 3.9.4
 	01: show Xmas trees around Xmas, number of Xmas trees is on the
 	    commandline: -xmastrees <n> .

@@ -28,9 +28,9 @@ games_PROGRAMS = xsnow
 
 noinst_PROGRAMS = makeman
 
-xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) $(CV_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
+xsnow_CPPFLAGS    = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
 		    -DLANGUAGES='"$(LANGUAGES)"'
-xsnow_LDADD       = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(CV_LIBS) $(LIBINTL)
+xsnow_LDADD       = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(LIBINTL)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 
 if USE_NLS
@@ -43,6 +43,12 @@ endif
 if MAKESELFREP
 xsnow_CPPFLAGS += -DSELFREP
 CFLAGS_FOR_BUILD += -DSELFREP
+endif
+
+if SCREENSHOTS
+xsnow_CPPFLAGS += -DSCREENSHOTS $(CV_CFLAGS)
+CFLAGS_FOR_BUILD += -DSCREENSHOTS $(CV_CFLAGS)
+xsnow_LDADD += $(CV_LIBS)
 endif
 
 noinst_LIBRARIES = libxdo.a
@@ -72,8 +78,11 @@ xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
 		spline_interpol.c spline_interpol.h \
 		safe_malloc.h mygettext.h gettext.h  \
 		xpm2cairo-gdk.c xpm2cairo-gdk.h \
-		scr2tops.cpp scr2tops.h \
 		wv_matalloc.c wv_matalloc.h
+
+if SCREENSHOTS
+xsnow_SOURCES += scr2tops.cpp scr2tops.h
+endif
 
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 

@@ -36,4 +36,4 @@
 
 #define VERSIONBY \
    "December 14th 2001 by Rick Jansen \n" \
-   "February 2024 by Willem Vermin"
+   "September 2026 by Willem Vermin"

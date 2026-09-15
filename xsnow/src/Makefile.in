@@ -97,6 +97,10 @@ noinst_PROGRAMS = makeman$(EXEEXT)
 @USE_NLS_TRUE@am__append_1 = -DENABLE_NLS=1
 @MAKESELFREP_TRUE@am__append_2 = -DSELFREP
 @MAKESELFREP_TRUE@am__append_3 = -DSELFREP
+@SCREENSHOTS_TRUE@am__append_4 = -DSCREENSHOTS $(CV_CFLAGS)
+@SCREENSHOTS_TRUE@am__append_5 = -DSCREENSHOTS $(CV_CFLAGS)
+@SCREENSHOTS_TRUE@am__append_6 = $(CV_LIBS)
+@SCREENSHOTS_TRUE@am__append_7 = scr2tops.cpp scr2tops.h
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -132,6 +136,23 @@ libxdo_a_OBJECTS = $(am_libxdo_a_OBJECTS)
 am_makeman_OBJECTS = makeman.$(OBJEXT) docs.$(OBJEXT) flags.$(OBJEXT)
 makeman_OBJECTS = $(am_makeman_OBJECTS)
 makeman_LDADD = $(LDADD)
+am__xsnow_SOURCES_DIST = clocks.c ixpm.c main.c fallensnow.c wmctrl.c \
+	docs.c clocks.h ixpm.h docs.h fallensnow.h pixmaps.h pixmaps.c \
+	version.h wmctrl.h xsnow.h xsnow-constants.h windows.c \
+	windows.h flags.c flags.h csvpos.c csvpos.h dsimple.c \
+	dsimple.h clientwin.c clientwin.h test1.sh test2.sh doit.h \
+	ui.c ui.h ui.glade debug.h mainstub.cpp mainstub.h birds.c \
+	kdtree.c birds.h kdtree.h birdglobals.h doitb.h hashtable.cpp \
+	hashtable.h Santa.c Santa.h utils.c utils.h scenery.c \
+	scenery.h snow.c snow.h meteor.c meteor.h wind.c wind.h \
+	stars.c stars.h blowoff.c blowoff.h treesnow.c treesnow.h \
+	loadmeasure.c loadmeasure.h snow_includes.h vroot.h moon.c \
+	moon.h buttons.h undefall.inc transwindow.c transwindow.h \
+	selfrep.c selfrep.h aurora.c aurora.h spline_interpol.c \
+	spline_interpol.h safe_malloc.h mygettext.h gettext.h \
+	xpm2cairo-gdk.c xpm2cairo-gdk.h wv_matalloc.c wv_matalloc.h \
+	scr2tops.cpp scr2tops.h
+@SCREENSHOTS_TRUE@am__objects_1 = xsnow-scr2tops.$(OBJEXT)
 am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-main.$(OBJEXT) xsnow-fallensnow.$(OBJEXT) \
 	xsnow-wmctrl.$(OBJEXT) xsnow-docs.$(OBJEXT) \
@@ -148,14 +169,15 @@ am_xsnow_OBJECTS = xsnow-clocks.$(OBJEXT) xsnow-ixpm.$(OBJEXT) \
 	xsnow-loadmeasure.$(OBJEXT) xsnow-moon.$(OBJEXT) \
 	xsnow-transwindow.$(OBJEXT) xsnow-selfrep.$(OBJEXT) \
 	xsnow-aurora.$(OBJEXT) xsnow-spline_interpol.$(OBJEXT) \
-	xsnow-xpm2cairo-gdk.$(OBJEXT) xsnow-scr2tops.$(OBJEXT) \
-	xsnow-wv_matalloc.$(OBJEXT)
+	xsnow-xpm2cairo-gdk.$(OBJEXT) xsnow-wv_matalloc.$(OBJEXT) \
+	$(am__objects_1)
 nodist_xsnow_OBJECTS =
 xsnow_OBJECTS = $(am_xsnow_OBJECTS) $(nodist_xsnow_OBJECTS)
 am__DEPENDENCIES_1 =
+@SCREENSHOTS_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 xsnow_DEPENDENCIES = libxdo.a $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -224,7 +246,8 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libxdo_a_SOURCES) $(makeman_SOURCES) $(xsnow_SOURCES) \
 	$(nodist_xsnow_SOURCES)
-DIST_SOURCES = $(libxdo_a_SOURCES) $(makeman_SOURCES) $(xsnow_SOURCES)
+DIST_SOURCES = $(libxdo_a_SOURCES) $(makeman_SOURCES) \
+	$(am__xsnow_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -519,7 +542,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
-CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@ $(am__append_3)
+CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@ $(am__append_3) $(am__append_5)
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
@@ -682,39 +705,29 @@ TOCC = $(top_srcdir)/src/tocc.sh
 TOASCII = $(top_srcdir)/src/toascii.sh
 gamesdir = $(exec_prefix)/games
 xsnow_CPPFLAGS = $(GTK_CFLAGS) $(X11_CFLAGS) $(GSL_CFLAGS) \
-	$(CV_CFLAGS) -DLOCALEDIR=\"$(LOCALEDIR)\" \
-	-DLANGUAGES='"$(LANGUAGES)"' $(am__append_1) $(am__append_2)
-xsnow_LDADD = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(CV_LIBS) $(LIBINTL)
+	-DLOCALEDIR=\"$(LOCALEDIR)\" -DLANGUAGES='"$(LANGUAGES)"' \
+	$(am__append_1) $(am__append_2) $(am__append_4)
+xsnow_LDADD = libxdo.a $(GTK_LIBS) $(X11_LIBS) $(GSL_LIBS) $(LIBINTL) \
+	$(am__append_6)
 libxdo_a_CPPFLAGS = $(X11_CFLAGS)
 noinst_LIBRARIES = libxdo.a
 libxdo_a_SOURCES = xdo.c xdo_search.c xdo.h xdo_util.h xdo_version.h
 xsnow_SOURCES = clocks.c ixpm.c main.c fallensnow.c wmctrl.c docs.c \
-		clocks.h ixpm.h docs.h fallensnow.h pixmaps.h \
-		pixmaps.c version.h wmctrl.h xsnow.h xsnow-constants.h windows.c windows.h\
-		flags.c flags.h csvpos.c csvpos.h \
-		dsimple.c dsimple.h clientwin.c clientwin.h \
-		test1.sh test2.sh \
-		doit.h ui.c ui.h ui.glade \
-		debug.h \
-		mainstub.cpp mainstub.h \
-		birds.c kdtree.c birds.h kdtree.h birdglobals.h doitb.h \
-		hashtable.cpp hashtable.h \
-		Santa.c Santa.h utils.c utils.h \
-		scenery.c scenery.h snow.c snow.h \
-		meteor.c meteor.h wind.c wind.h \
-		stars.c stars.h blowoff.c blowoff.h \
-		treesnow.c treesnow.h loadmeasure.c loadmeasure.h \
-		snow_includes.h vroot.h \
-		moon.c moon.h buttons.h undefall.inc \
-		transwindow.c transwindow.h \
-		selfrep.c selfrep.h \
-		aurora.c aurora.h \
-		spline_interpol.c spline_interpol.h \
-		safe_malloc.h mygettext.h gettext.h  \
-		xpm2cairo-gdk.c xpm2cairo-gdk.h \
-		scr2tops.cpp scr2tops.h \
-		wv_matalloc.c wv_matalloc.h
-
+	clocks.h ixpm.h docs.h fallensnow.h pixmaps.h pixmaps.c \
+	version.h wmctrl.h xsnow.h xsnow-constants.h windows.c \
+	windows.h flags.c flags.h csvpos.c csvpos.h dsimple.c \
+	dsimple.h clientwin.c clientwin.h test1.sh test2.sh doit.h \
+	ui.c ui.h ui.glade debug.h mainstub.cpp mainstub.h birds.c \
+	kdtree.c birds.h kdtree.h birdglobals.h doitb.h hashtable.cpp \
+	hashtable.h Santa.c Santa.h utils.c utils.h scenery.c \
+	scenery.h snow.c snow.h meteor.c meteor.h wind.c wind.h \
+	stars.c stars.h blowoff.c blowoff.h treesnow.c treesnow.h \
+	loadmeasure.c loadmeasure.h snow_includes.h vroot.h moon.c \
+	moon.h buttons.h undefall.inc transwindow.c transwindow.h \
+	selfrep.c selfrep.h aurora.c aurora.h spline_interpol.c \
+	spline_interpol.h safe_malloc.h mygettext.h gettext.h \
+	xpm2cairo-gdk.c xpm2cairo-gdk.h wv_matalloc.c wv_matalloc.h \
+	$(am__append_7)
 nodist_xsnow_SOURCES = ui_xml.h snow_includes.h
 makeman_SOURCES = makeman.c docs.c flags.c docs.h flags.h xsnow-constants.h \
 		  version.h doit.h

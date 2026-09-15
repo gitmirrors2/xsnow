@@ -288,7 +288,9 @@ int HandleFlags(int argc, char*argv[])
 	 handle_im(-screen              ,Screen                           );
 	 handle_ia(-outline             ,Outline                          );
 	 handle_ia(-enablesc2           ,UseColor2                        );
+#ifdef SCREENSHOTS
 	 handle_ia(-screenshot          ,Screenshots                      );
+#endif
 	 handle_ia(-xmastrees           ,XmasTrees                        );
 
 

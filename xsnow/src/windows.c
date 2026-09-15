@@ -43,7 +43,9 @@
 #include "dsimple.h"
 #include "xdo.h"
 #include "scenery.h"
+#ifdef SCREENSHOTS
 #include "scr2tops.h"
+#endif
 
 static int    do_sendevent(void *);
 static long   TransWorkSpace = -SOMENUMBER;  // workspace on which transparent window is placed
@@ -142,6 +144,7 @@ void *call_GetWindows(void *d)
       return NULL;
    }
 
+#ifdef SCREENSHOTS
    if(Flags.Screenshots)
    {
       /*
@@ -176,7 +179,6 @@ void *call_GetWindows(void *d)
 	    P("Using scrot for screenshot\n");
 	    usescrot = 1;
 	    break;
-
       }
 
       //global.WindowOffsetX = 0;
@@ -272,6 +274,7 @@ void *call_GetWindows(void *d)
       free(orig);
    }
    else
+#endif
    {
       P("Using GetWindows\n");
       if (GetWindows(&w, &n)<0)

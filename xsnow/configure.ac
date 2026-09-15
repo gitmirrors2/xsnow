@@ -23,7 +23,7 @@
 #-endcopyright-
 
 AC_PREREQ([2.69])
-AC_INIT([xsnow],[3.9.4],[wvermin@gmail.com])
+AC_INIT([xsnow],[3.9.5],[wvermin@gmail.com])
 AC_CONFIG_SRCDIR([src/xsnow.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -108,6 +108,9 @@ rm -r "$tardir"
 AC_ARG_ENABLE(selfrep, [AS_HELP_STRING([--enable-selfrep],[Build with self replicating mode @<:@default=yes@:>@])],[],[enable_selfrep=yes])
 AM_CONDITIONAL([MAKESELFREP],[test "x$enable_selfrep" = "xyes"])
 
+AC_ARG_ENABLE(screenshots, [AS_HELP_STRING([--enable-screenshots],[Enable experimental use of screenshots @<:@default=no@:>@])],[],[enable_screenshots=no])
+AM_CONDITIONAL([SCREENSHOTS],[test "x$enable_screenshots" = "xyes"])
+
 AC_SUBST([PACKAGE_VERSION])
 
 # ar:
@@ -136,7 +139,7 @@ AC_LANG_POP([C++])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 gmodule-2.0])
 PKG_CHECK_MODULES(X11, [x11 xpm xt xext xproto xinerama xtst])
 PKG_CHECK_MODULES(GSL, [gsl])
-PKG_CHECK_MODULES(CV, [opencv4])
+AS_IF([test "$enable_screenshots" = "yes"],[PKG_CHECK_MODULES(CV, [opencv4],,[PKG_CHECK_MODULES(CV, [opencv5])])])
 
 m4_include([m4/ax_pthread.m4])
 AX_PTHREAD()

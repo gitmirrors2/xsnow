@@ -464,6 +464,9 @@ int main_c(int argc, char *argv[])
 
    if (global.IsWayland)   // at this moment: cannot take screenshot in wayland
       Flags.Screenshots = 0;
+#ifndef SCREENSHOT
+      Flags.Screenshots = 0;
+#endif
 
    if (Flags.BelowAllForce)
       Flags.BelowAll = 0;

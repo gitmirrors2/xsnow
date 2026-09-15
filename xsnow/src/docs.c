@@ -157,7 +157,9 @@ void docs_usage(int man)
    manout("-noisy     "             ,"Write extra info about some mouse clicks, X errors etc, to stdout.");
    manout("-cpuload <n>"            ,"How busy is your system with xsnow:");
    manout(" "                       ,"the higher, the more load on the system (default: %d).",F(CpuLoad));
+#ifdef SCREENSHOTS
    manout("-screenshot <n>"         ,"1: use screenshots to find the windows, 0: use X11 (default: %d).",F(Screenshots));
+#endif
 
    if(doman)
    {

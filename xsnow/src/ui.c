@@ -1173,6 +1173,9 @@ void ui()
    set_buttons();
    if(global.IsWayland)
       gtk_widget_set_sensitive(Button.Screenshots,0);
+#ifndef SCREENSHOTS
+   gtk_widget_hide(Button.Screenshots);
+#endif
    preview = GTK_IMAGE(gtk_image_new());
    gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER(Button.BackgroundFile), GTK_WIDGET(preview));
    g_signal_connect (GTK_FILE_CHOOSER(Button.BackgroundFile), "update-preview",
