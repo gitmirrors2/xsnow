@@ -70,7 +70,7 @@ static Pixmap      TreeMaskPixmap[MAXTREETYPE+1][2];
 static int         TreeWidth[MAXTREETYPE+1], TreeHeight[MAXTREETYPE+1];
 static int        *TreeType = NULL;
 static int         NTrees     = 0;  // actual number of trees
-static int         Newtrees   = 1;  // switch to determine if trees are to be repositioned
+static int         Newtrees   = 0;  // switch to determine if trees are to be repositioned
 static Treeinfo  **Trees = NULL;
 static int         ExternalTree = False;
 
@@ -163,6 +163,7 @@ void scenery_ui()
 
 int do_redraw_scenery(void *d)
 {
+   P("do_redraw_scenery\n");
    RedrawTrees();
    return TRUE;
    (void)d;
@@ -170,6 +171,7 @@ int do_redraw_scenery(void *d)
 
 void RedrawTrees()
 {
+   P("RedrawTrees\n");
    Newtrees = 1;     // this signals do_initbaum to recreate the trees
    reinit_treesnow_region();
    ClearScreen();

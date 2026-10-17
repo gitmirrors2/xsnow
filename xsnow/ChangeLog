@@ -1,3 +1,18 @@
+version 3.9.7
+	01: cn -> zh
+	02: Faster startup: no more wait in main.c:drawit() and some
+	    tweaks in main.c, scenery.c. stars.c and moon.c
+	    Makefile.am, configure.ac: removed afterpo/ 
+	       ís use is obsolete.
+	03: main.c: do_fadein(), adapt_transparency(): 
+	    Added fade_in for transparancy.
+	05: main.c, ui.c: some code cleanup
+
+version 3.9.6
+	01: afterburner/Makefile.am: take care that the tar file from
+	    'make dist' is reproducible by surrounding gunzip and gzip
+	    with cats.
+
 version 3.9.5
 	01: configure.ac and others(search for SCREENSHOTS):
 	      by default: no option to use screenshots for window-locations.
@@ -239,6 +254,7 @@ version 3.7.4
 
 version 3.7.3
 	01: removed debug output
+
 version 3.7.2
 	01: make 'hide menu' button working in WM's that do not support
 	       iconify
@@ -412,7 +428,6 @@ version 3.5.0
 	    fallensnow.c: do not call XClearArea when double buffer is used.
 	    doit.h: Change aurora defaults.
 	   
-
 version 3.4.4
 	1: birds.c: attraction point goes now from 0.1..0.9 of the horizontal 
 	   dimension of the screen
@@ -435,6 +450,7 @@ version 3.4.3
 	2: implement -attrspace, including button and man page
 	   if Santa is not shown, let Him run anyway, so 'Follow Santa' has effect
 	3: somewhat better implementation of -attrspace
+
 version 3.4.2
 	1: fallensnow.c: other algorithm for drawing fallen snow
 	   Santa.c: Santa is now moon-seeking, also when birds are not showing 
@@ -448,10 +464,12 @@ version 3.4.2
 	5: fix issue that 'make install' always remakes selfrep.o
 	   selfrep.c: if sizeof(tarfile) < 1000 characters, assume that this 
 	      can be safely send to a tty
+
 version 3.4.1
 	1: ui.c: more checks on ui_running
 	2: configure.ac, Makefile.am, data: some small adaptions for
 	   freeBSD
+
 version 3.4.0
 	1: first try to add background to the xscreensaver mode:
 	   use ~/xsnowbackground.jpg
@@ -473,6 +491,7 @@ version 3.4.0
 	   prevent calling gtk_label_set_text() when there is no menu
 	7: ui.c: ui(): move setting of ui_running to start of ui(), in order
 	   to see version number in 'settings' tab
+
 version 3.3.6
 	1: selfrep.c, utils.c: better implementation of writing the tar ball.
 	2: windows.c: do_wupdate(): force update windows every 6th call
@@ -636,8 +655,10 @@ version 3.1.8
 version 3.1.7
 	1:windows.c: take care of redfining Rootwindow if xscreensaver
 	  is detected
+
 version 3.1.6
 	1:add xscreensaver support and vroot.h
+
 version 3.1.5
 	1:remove .png and .jpg from bootstrap and src/Pixmaps/ from tar.gz
 	2:main.c drawit(): draw stars and meteorites behind birds
@@ -648,10 +669,12 @@ version 3.1.5
 	     snow_includes.h
 	  Create script 'simplemake.sh', to be used on systems where the
 	    './configure;make;make install' suite does not work.
+
 version 3.1.4
 	1:remove AC_FUNC_MALLOC AC_FUNC_REALLOC AC_FUNC_ALLOCA from
 	   configure.ac (see comment there)
 	  Checked all malloc's, alloca's and realloc's for allocating >0 bytes
+
 version 3.1.3
 	1:add flag -showrudolph
 	  add flag -blowsnow
@@ -669,6 +692,7 @@ version 3.1.3
 	  add flag -meteorites
 	  stratified version.h
 	  moved PrintVersion to utils.c
+
 version 3.1.2
 	1:hashtable.cpp: do not use 'auto'
 	  docs.c: added note about no menu when files are present in
@@ -677,8 +701,10 @@ version 3.1.2
 	    without ui.
 	2:simplify code for running without menu if level of GTK is too low
 	3:stratify above mentioned code
+
 version 3.1.1
 	moved debian stuff out of the distribution
+
 version 3.1.0
 	1:change version number
 	  some trivia in transparent.c
@@ -725,6 +751,7 @@ version 3.1.0
 	15:trivia in snow.h
 	16:fixed serious bug in snow.c which caused freezing
 	   snow flakes when changing size of flakes
+
 version 3.0.10
 	1:Better icons
 	2:better flakes
@@ -740,12 +767,14 @@ version 3.0.10
 	  the first -copyright- line
 #-endcopyright-
 	9:some code clean up
+
 version 3.0.9
 	1:Windows.c: remove useless call to DisplayDimensions from do_wupdate()
 	2:fallensnow.c xsnow.h: shorter time between updates fallensnow
 	  better simulation of plowing
 	  3:snow.c: InitFlake takes now care of inserting flake in set
 	    of flakes
+
 version 3.0.8
 	1:check op _NET_WIM_WINDOW_TYPE_DOCK: do not fall snow on
 	  such a window
@@ -785,9 +814,11 @@ version 3.0.8
 	    Corrected two typos in flags.c
 	 18:take care that trees are not placed partially right from screen
 	    removed -noquiet flag
+
 version 3.0.7
 	1:adapt hovertext for 'Below windows' button.
 	some code-cleanup
+
 version 3.0.6
 	1:Correct some typo's
 	Removed memory-leak in birds.c: birds_draw
@@ -805,6 +836,7 @@ version 3.0.6
 	Removed unused CleanGC
 	transparent.c: simplified applying skip-taskbar-hint
 	               added skip-pager-hint
+
 version 3.0.5
 	New major release
 	transparent.c: Prevent icons for transparent windows showing up in taskbar
@@ -815,64 +847,85 @@ version 3.0.5
 	Stratified some code starting from main.c: drawit
 	wmctrl.c: also sticky=1 if (int)ws == -1
 	Adapt for uploading to debian
+
 version 3.0.4.30
 	Some trivial changes to settings tab.
 	Better handling of clicking BGColor button.
 	Removed root window choice.
 	Birds: set meanspeed before creation, not after.
+
 version 3.0.4.29
 	Gray out all birds buttons when appropriate
+
 version 3.0.4.28
 	In settings: gray out and make inactive not usable buttons
+
 version 3.0.4.27
 	better logic to determine what kind of windows are used
 	simplified ui settings window
+
 version 3.0.4.21
 	transparent.c: remove sticky hint for gdkwindow: this is ierreversible
 	made do_wupdate conform. Created windows.c. This is a mess, have to
 	look into it.
+
 version 3.0.4.20
 	ui: colors, and slight layout improvements
 	corrected error after going to full screen of behind windows
 	removed setting of kde background (kdesetbg)
+
 version 3.0.4.19
 	re-instated the stopafter functionality
 	ui: set colors
+
 version 3.0.4.18
 	added a warning for a too high system load
+
 version 3.0.4.17
 	convert snow_on_tree done, together with some other minor adjustments
+
 version 3.0.4.16
 	produce output with -h, -help, -H, -manpage, -v, -version without
 	    calling gtk_init()
 	made parsing of flags conformant with the docs: added -v
 	place test for wayland before gtk_init()
 	do not draw fallensnow when window is hidden (iconized)
+
 version 3.0.4.15
 	blowoff in standard
 	made timeout callbacks conform doc
+
 version 3.0.4.14
 	fallensnow in standard
+
 version 3.0.4.13
 	place gtk_init before handling the flags
 	changed code for 'on all workspaces' (settings)
 	do not collect snow if y <= 0
 	implemented part of standard form for fallensnow
 	  todo: snow disappears now from windows that show on all workspaces
+
 version 3.0.4.12
 	draw stars using surfaces
+
 version 3.0.4.11
 	added stdlkib.h where desirable
+
 version 3.0.4.10
 	stars done
+
 version 3.0.4.09
 	some minor things in snow.c
+
 version 3.0.4.08
 	wind done
+
 version 3.0.4.07
 	meteorite done
+
 version 3.0.4.06
 	snow in standard form for the major part
+
 version 3.0.4.05
 	start with snow in standard form.
 	hashtable.{cpp,h}: added set functions
@@ -881,20 +934,26 @@ version 3.0.4.05
 	added snow xpm's (it seems there is no standard function to convert
 	   bitmap to GdkPixbuf)
 	implemented canonical update of sreen, using gtk_widget_queue_draw()
+
 version 3.0.4.03/4
 	put birds in 'standard form'
+
 version 3.0.4.02
 	gtk-scenery working
 	use timeout time at computing birds position (contrary to 3.0.3)
+
 version 3.0.4.01
 	Santa.c: handle usage of user-defined Santa
 	if Flags.NoMenu: do not write to ui labels or make ui sticky/unsticky
 	Made start with gtk-ing scenery.
+
 version 3.0.3.01
 	All santa stuff moved from main.c to Santa.c
 	Added utils.c utils.h
+
 version 3.0.3-gtk-0.1
 	Santa runs in gtk
+
 version 3.0.3
 	birds.c: use actual time to compute bird positions instead of callback
 	time
@@ -926,12 +985,14 @@ version 2.0.22
 	fixed bug: when no desktop session can be determined
 	  from environment: make it 'unknown_desktop_session'
 	   - Thanks to Xose Vazquez Perez
+
 version 2.0.21
 	attempt better layout of settings screen
 	Somewhat better layout for all menus
 	Rudolf -> Rudolph in displayable strings
 	Show number of flakes in 'snow' tab
 	Added some id's in ui.glade
+
 version 2.0.20
 	replace timing loop with g_timeout_add()
 	add polarbear
@@ -952,8 +1013,10 @@ version 2.0.20
 	if FlakeCount > max, high probabilty to remove blown-off flakes
 	all scales show now numerical value
 	removed -showstats option
+
 version 2.0.19
 	debian/tests/control: removed test2.sh
+
 version 2.0.18
 	main.c: test if WAYLAND_DISPLAY is set before setting GDK_BACKEND
 	main.c: restart after changing display settings 
@@ -961,11 +1024,13 @@ version 2.0.18
 	docs.c: minor adjustments
 	debug.h: added
 	main.c, flags.c: do not assume getenv("HOME") works as expected.
+
 version 2.0.17
 	main.c: The output of PrintVersion() appeared in the top of the man page.
 	   Corrected this.
 	main.c: CleanFallenArea() marked the fallensnow region always as clean,
 	   but this must be done only when whole x-range is cleared.
+
 version 2.0.16
 	dsimple.c: int screen = 0; -> static int screen = 0;
 	   and move to the top of the file. Ticket 1: gcc-10 related
@@ -973,8 +1038,10 @@ version 2.0.16
 	  keep xsnow visible after 'show desktop', and show xsnow on all 
 	  desktops
 	wmctrl.c: special care for compiz
+
 version 2.0.15
 	ui.glade: added 'Donate' button
+
 version 2.0.14
 	src/Makefile.am: use exec_prefix in stead of prefix for gamesdir
 	transparent.c: simplify creation of transparent window
@@ -983,10 +1050,12 @@ version 2.0.14
 	test1.sh: check 'xsnow -h' if default values are substituted
 	main.c, ui.glade: better algorithm to determine number of flakes
 	    to generate
+
 version 2.0.13
 	main.c: do_genflakes(): take into account that do_genflakes()
 	   can be disabled by SnowRunning
 	flags.c: add forgotten -alpha flag
+
 version 2.0.12
 	pixmaps.c: corrected width and height for snow.
 	main.c: simplified create rectangular region
@@ -1018,11 +1087,14 @@ version 2.0.9
 	Snowflakes that touch fallen snow are not erased any more:
 	  erasure caused bad looking effects.
 	Removed 'showstats' from config
+
 version 2.0.8
 	some more debian stuff
 	add support for xfce desktop
+
 version 2.0.7
 	added some debian stuff
+
 version 2.05
 	Fixed issues when trees are not shown: snow was still
 	collecting on trees, snow was not visible after not-shown

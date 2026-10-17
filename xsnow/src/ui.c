@@ -197,7 +197,6 @@ static GtkWidget     *something;
 static GtkWidget     *moonxlabel;
 static GtkWidget     *moonylabel;
 static GtkContainer  *birdsgrid;
-//static GtkContainer  *moonbox;
 static GtkImage      *preview;
 static int Nscreens;
 static int HaveXinerama;
@@ -210,7 +209,6 @@ static void set_buttons1(void);
 static void set_santa_buttons(void);
 static void set_tree_buttons(void);
 static void handle_css(void);
-// static void birdscb(GtkWidget *w, void *m);
 static int  below_confirm_ticker(void *);
 static int  ui_running = False;
 static void show_bct_countdown(void);
@@ -273,13 +271,6 @@ void handle_screen()
 
 void handle_language(int restart)
 {
-   // the gettext machinery listens to the value of LANGUAGE
-   P("handle_language: %s\n",Flags.Language);
-   if (!strcmp(Flags.Language,"sys"))
-      unsetenv("LANGUAGE");
-   else
-      setenv("LANGUAGE",Flags.Language,1);
-
    if(restart)
       global.ForceRestart = 1;
 }
@@ -503,8 +494,6 @@ NEWLINE     if (m) { \
 #define scalecode(type,name,m) \
    NEWLINE P("range %s %s %d %d\n",#name,#type,m,Flags.name); \
 NEWLINE     gtk_range_set_value(GTK_RANGE(Button.name), m*((gdouble)Flags.name));
-//NEWLINE     if(gtk_orientable_get_orientation(GTK_ORIENTABLE(Button.name)) == GTK_ORIENTATION_HORIZONTAL) 
-//NEWLINE         gtk_widget_set_size_request(GTK_WIDGET(Button.name),100,-1);
 #define colorcode(type,name,m) \
    NEWLINE P("color %s %s %d %s\n",#name,#type,m,Flags.name); \
 NEWLINE     gdk_rgba_parse(&color,Flags.name); \
@@ -519,8 +508,6 @@ static void set_buttons1()
    ALL_BUTTONS
 }
 #include "undefall.inc"
-
-// define signal_connect
 
 #define togglecode(type,name,m) \
    NEWLINE P("%s %s\n",#name,#type); \
@@ -769,6 +756,7 @@ MODULE_EXPORT void combo_language(GtkComboBoxText *combo, gpointer data)
    int num = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
    P("combo_language:%d\n",num);
    Flags.Language = strdup(lang[num]);
+   P("combo_language:%s\n",Flags.Language);
 }
 
 
@@ -1147,8 +1135,6 @@ void ui()
    moonxlabel    = GTK_WIDGET   (gtk_builder_get_object(builder, "Label-MoonX"));
    moonylabel    = GTK_WIDGET   (gtk_builder_get_object(builder, "Label-MoonY"));
    birdsgrid     = GTK_CONTAINER(gtk_builder_get_object(builder, "grid_birds"));
-   //moonbox       = GTK_CONTAINER(gtk_builder_get_object(builder, "moon-box"));
-   P("moonbox: %p\n",(void*)moonbox);
    P("birdsgrid: %p\n",(void*)birdsgrid);
 
    {
@@ -1319,14 +1305,6 @@ static void apply_css_provider (GtkWidget *widget, GtkCssProvider *cssstyleProvi
 void handle_css()
 {
    const char *css     = 
-      // I wish how I could copy the Adwaita settings ...
-      //".xsnow button { padding-left: 16px; padding-right: 16px; padding-top: 4px; padding-bottom: 4px;}"
-      //".xsnow headerbar button { padding-left: 10px; padding-right: 10px; padding-top: 4px; padding-bottom: 4px;}"
-      //".xsnow headerbar.titlebar { border-color: rgb(213,208,204); border-style:solid; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 8px; border-top-right-radius: 8px;}"
-      //".xsnow headerbar label.title { padding-left: 12px; padding-right:12px;}"
-      //".xsnow button.color {padding: 4px; }"
-      //".xsnow headerbar stackswitcher button.radio label       { color: #065522;  }"   
-      //".xsnow headerbar stackswitcher button.radio        { box-shadow: 0px 0px; border-top-width: 0px;  }"   
 
       // These are not colors, but nevertheless I think we should do this always:
       "scale              { padding:       1em;                    }"   // padding in slider buttons
@@ -1420,21 +1398,6 @@ void ui_gray_moonpos(int m)
       gtk_widget_set_sensitive(GTK_WIDGET(Button.MoonY),FALSE);
    }
 }
-
-
-// void birdscb(GtkWidget *w, void *m)
-// {
-//    gtk_widget_set_sensitive(w,!(int *)m);
-// }
-
-//void ui_gray_birds(int m)
-//{
-//   if(!ui_running)
-//      return;
-//   P("ui_gray_birds: birdsgrid: %p, moonbox: %p\n",(void*)birdsgrid, (void*)moonbox);
-//   gtk_container_foreach(birdsgrid, birdscb, &m);
-//   gtk_container_foreach(moonbox, birdscb, &m);
-//}
 
 char * ui_gtk_version()
 {

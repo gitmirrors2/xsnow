@@ -259,6 +259,7 @@ int ScaleChanged(int *prevscale)
    int newscale;
    if (*prevscale != (newscale=(int)(Flags.Scale*global.WindowScale)))
    {
+      P("ScaleChanged: old new: %d %d\n",*prevscale, newscale);
       *prevscale = newscale;
       return TRUE;
    }
@@ -353,9 +354,10 @@ float gaussf(float x, float mu, float sigma)
 }
 // guess language. return string like "en", "nl" or NULL if no language can
 // be found
+// Language code: xx_blabla, where xx in en, nl etc
 char *guess_language()
 {
-   const char *tries[] = {"LANGUAGE","LANG","LC_ALL","LC_MESSAGES","LC_NAME","LC_TIME",NULL};
+   const char *tries[] = {"LANG","LC_ALL","LC_MESSAGES","LC_NAME","LC_TIME",NULL};
    char *a, *b;
    int i = 0;
    while (tries[i])
@@ -367,12 +369,6 @@ char *guess_language()
 	 P("found: %s\n",tries[i]);
 	 b = strdup(a);
 	 assert(b);
-	 if (strstr(b,"zh_CN"))
-	 {
-	    free(b);
-	    P("from %s: %s\n",tries[i],"cn");
-	    return "cn";
-	 }
 	 char *p = strchr(b,'_');
 	 if (p)
 	 {

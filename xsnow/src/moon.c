@@ -57,6 +57,7 @@ static double OldmoonX;
 static double OldmoonY;
 
 static float moonScale;
+static int   scaleok = 0;
 
 void moon_init(void)
 {
@@ -77,6 +78,8 @@ void moon_init(void)
 
 int moon_draw(cairo_t *cr)
 {
+   if(scaleok == 0) // wait until moon_ui got the correct scale
+      return TRUE;
    LEAVE_IF_INACTIVE;
    P("moon_draw %d %d %d\n",global.counter++,(int)global.moonX,(int)global.moonY);
    cairo_set_source_surface (cr, moon_surface, global.moonX, global.moonY);
@@ -143,7 +146,11 @@ void moon_ui()
    static int prevw = 0;
    static int prevh = 0;
 
-   static int prev;
+   static int prev   = 0;
+   if (scaleok == 0)
+      ScaleChanged(&prev);
+   scaleok = 1;
+   P("moon_ui calling ScaleChanged %d\n",prev);
    if(ScaleChanged(&prev))
    {
       P("%d moonscale\n",global.counter);

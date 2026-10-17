@@ -19,6 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-17 13:49+0200\n"
 "PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -143,9 +144,6 @@ msgstr "MERK: forvent litt flimmer.\n"
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr ""
 "Start på nytt på grunn av endring av skjerm- eller språkinnstillinger ...\n"
-
-msgid "Restart due to change of display settings...\n"
-msgstr "Start på nytt på grunn av endring av skjerminnstillinger...\n"
 
 msgid "Wayland (Expect some slugginess)"
 msgstr "Wayland (forvent litt treghet)"
@@ -1595,6 +1593,9 @@ msgstr " eller ta en titt på 'snø': 'Intensitet', 'Maks antall flak', ... \n"
 #, c-format
 msgid " or specify a smaller number of birds in 'birds'\n"
 msgstr " eller spesifiser et mindre antall fugler i 'fugler'\n"
+
+#~ msgid "Restart due to change of display settings...\n"
+#~ msgstr "Start på nytt på grunn av endring av skjerminnstillinger...\n"
 
 #, c-format
 #~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"

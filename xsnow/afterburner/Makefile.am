@@ -44,6 +44,9 @@ all-local:
 		if test "$(makeselfrep)" ; then                             \
 			echo "Creating tar file $(tarfile) ..." ;           \
 	                $(MAKE) -C "$(top_builddir)" AFTERBURNER=1 dist ;   \
+			cat "$(tarfile)" | gunzip | cat > "$(tarfile).tmp"; \
+			cat "$(tarfile).tmp" | gzip | cat > "$(tarfile)";   \
+			rm -f "$(tarfile).tmp";                             \
 			echo "Remaking xsnow, using real tar file ..." ;    \
 			ls -l "$(tarfile)" ;                                \
 			$(MAKE) -C "$(top_builddir)" AFTERBURNER=1 ;        \

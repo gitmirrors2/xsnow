@@ -19,6 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.9.2~pre02\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-17 13:49+0200\n"
 "PO-Revision-Date: 2026-06-28 13:54+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
@@ -152,9 +153,6 @@ msgstr "དྲན་ཐོ། འོད་མདངས་འགའ་ཤས་�
 
 msgid "Restart due to change of screen or language settings ...\n"
 msgstr "བརྙན་ཤེལ་ཡང་ན་སྐད་ཡིག་གི་སྒྲིག་སྟངས་བསྒྱུར་བའི་རྐྱེན་གྱིས་བསྐྱར་དུ་འགོ་འཛུགས། ...\n"
-
-msgid "Restart due to change of display settings...\n"
-msgstr "གསལ་སྟོན་སྒྲིག་སྟངས་བསྒྱུར་བའི་རྐྱེན་གྱིས་བསྐྱར་དུ་འགོ་འཛུགས།\n"
 
 msgid "Wayland (Expect some slugginess)"
 msgstr "ཝེ་ལན་ཌི། (མགྱོགས་པོ་འགའ་ཤས་རེ་བ་བྱེད།)"
@@ -1580,6 +1578,9 @@ msgstr " ཡང་ན་'གངས་'ལ་ལྟོས། 'ཤུགས་ཚ�
 #, c-format
 msgid " or specify a smaller number of birds in 'birds'\n"
 msgstr " ཡང་ན་ 'birds' ནང་བྱ་གྲངས་ཆུང་བ་གཏན་འཁེལ་བྱེད།\n"
+
+#~ msgid "Restart due to change of display settings...\n"
+#~ msgstr "གསལ་སྟོན་སྒྲིག་སྟངས་བསྒྱུར་བའི་རྐྱེན་གྱིས་བསྐྱར་དུ་འགོ་འཛུགས།\n"
 
 #, c-format
 #~ msgid "Warning: '-auroraleft' is deprecated, using '-aurorax 25' .\n"

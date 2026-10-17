@@ -61,7 +61,11 @@ static cairo_surface_t *surfaces[STARANIMATIONS];
 
 void stars_init()
 {
+   P("stars_init\n");
+#if 0
+   // superfluous, init_stars will be called by stars_ui
    init_stars();
+#endif
    for (int i=0; i<STARANIMATIONS; i++)
       surfaces[i] = NULL;
    set_star_surfaces();

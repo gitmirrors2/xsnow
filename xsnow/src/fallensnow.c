@@ -112,7 +112,7 @@ void fallensnow_draw(cairo_t *cr)
    lock_swap();
 
    // To avoid vertical line between blob and fallensnow when using transparency:
-   if (Flags.Transparency)
+   if (global.Transparency)
       cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
    else
       cairo_set_antialias(cr,CAIRO_ANTIALIAS_NONE);
@@ -652,7 +652,7 @@ void CreateSurfaceFromFallen(FallenSnow *f)
    short int *acth  = f->acth;
 
    // To avoid vertical line between blob and fallensnow when using transparency:
-   if (Flags.Transparency)
+   if (global.Transparency)
       cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
    else
       cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);

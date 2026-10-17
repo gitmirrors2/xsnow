@@ -63,11 +63,6 @@
 #include <assert.h>
 #include "mygettext.h"
 
-//#ifdef assert
-//#undef assert
-//#define assert(x) {} 
-//#endif
-
 #include "xsnow-constants.h"
 
 #include "aurora.h"
@@ -113,12 +108,17 @@
 
 struct _global global;
 
-int              SnowWinChanged = 1;
-cairo_t         *CairoDC = NULL;
-cairo_surface_t *CairoSurface = NULL;
+static int              SnowWinChanged = 1;
+static cairo_t         *CairoDC = NULL;
+static cairo_surface_t *CairoSurface = NULL;
 
+static struct _fadein {
+   int   counter;
+   int   count_max;
+   float step;
+} fadein;
 
-int lxdefound = False;
+static int lxdefound = False;
 // miscellaneous
 char       Copyright[] = "\nXsnow\nCopyright 1984,1988,1990,1993-1995,2000-2001 by Rick Jansen, all rights reserved, 2019,2020 also by Willem Vermin\n";
 
@@ -132,7 +132,6 @@ static int Argc;
 static int          DoRestart      = 0;
 static guint        draw_all_id    = 0;
 static guint        drawit_id      = 0;
-//static GtkWidget   *TransA         = NULL;
 GtkWidget   *TransA         = NULL;
 static char        *SnowWinName    = NULL;
 static int          wantx          = 0;
@@ -166,6 +165,7 @@ static void   PrintAbsoluteCoordinates(void);
 static void   DisplayDimensions(void);
 static void   InitDisplayDimensions();
 static void   make_fullmaxscreen(void);
+static void   adapt_transparency(void);
 
 // callbacks
 static int  do_displaychanged(void *);
@@ -181,8 +181,9 @@ static int  do_display_dimensions(void *);
 static int  do_drawit(void *);
 static int  do_check_stop(void *);
 static int  do_full_trans(gpointer widget);
+static int  do_fadein(gpointer);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-
+//static int  do_display_dimensions_ready = 0;
 static int signal_caught = 0;
 static char *StopFile;
 /**********************************************************************************************/
@@ -342,6 +343,8 @@ int main_c(int argc, char *argv[])
 
    global.FlagsFile           = strdup(FLAGSFILE);
 
+   global.Transparency        = 100;
+
    StopFile = (char*) malloc(sizeof(char)*(strlen(getenv("HOME"))+1+strlen(STOPFILE)+1));
    assert(StopFile);
    strcpy(StopFile,getenv("HOME"));
@@ -395,7 +398,6 @@ int main_c(int argc, char *argv[])
    switch(rc)
    {
       case -1:   // wrong flag
-		 //PrintVersion();
 	 Thanks();
 	 return 1;
 	 break;
@@ -404,7 +406,6 @@ int main_c(int argc, char *argv[])
 	 return 0;
 	 break;
       default:  // ditto
-		//PrintVersion();
 	 break;
    }
    PrintVersion();
@@ -415,6 +416,9 @@ int main_c(int argc, char *argv[])
    /* Eskimo warning */
    if (strstr(Flags.SnowColor,"yellow") != NULL)
       printf("\n%s\n\n",_("Warning: don't eat yellow snow!"));
+
+   // set global.Transparency equal to Flags.Transparency:
+   adapt_transparency();
 
    // make a copy of all flags, before gtk_init() maybe removes some.
    // we need this at a restart of the program.
@@ -465,7 +469,7 @@ int main_c(int argc, char *argv[])
    if (global.IsWayland)   // at this moment: cannot take screenshot in wayland
       Flags.Screenshots = 0;
 #ifndef SCREENSHOT
-      Flags.Screenshots = 0;
+   Flags.Screenshots = 0;
 #endif
 
    if (Flags.BelowAllForce)
@@ -797,10 +801,6 @@ int StartWindow()
       // default behaviour
       // try to create a transparent clickthrough window
       GtkWidget *gtkwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-      //gtk_widget_set_can_focus(gtkwin, TRUE);
-      //gtk_window_set_decorated(GTK_WINDOW(gtkwin), FALSE);
-      //gtk_window_set_type_hint(GTK_WINDOW(gtkwin), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
-
 
       GdkWindow *gdkwin; (void)gdkwin;
       int rc = make_trans_window(
@@ -968,8 +968,6 @@ void PrintAbsoluteCoordinates()
    // whereabouts of the snowwindow:
 
    if (global.Trans){
-      //XWindowAttributes xwa;
-      //XGetWindowAttributes(global.display, global.SnowWin, &xwa );
       int w,h;
       gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
       printf(_("Snowing in %#lx: %s size: %dx%d\n"),global.SnowWin,SnowWinName, 
@@ -1189,7 +1187,7 @@ int do_ui_check(void *d)
    ui_ui();
 
    UIDO (CpuLoad             , HandleCpuFactor();                 );
-   UIDO (Transparency        ,                                    );
+   UIDO (Transparency        , adapt_transparency();              );
    UIDO (Scale               ,                                    );
    UIDO (OffsetS             , DisplayDimensions();               );
    UIDO (OffsetY             , 
@@ -1263,23 +1261,6 @@ int do_displaychanged(void *d)
       DoRestart = 1;
       Flags.Done = 1;
       I(_("Restart due to change of screen or language settings ...\n"));
-   }
-   else
-   {
-      return TRUE; // TODO: disabling this section
-      unsigned int w,h;
-      Display* display = XOpenDisplay(Flags.DisplayName);
-      Screen* screen   = DefaultScreenOfDisplay(display);
-      w = WidthOfScreen(screen);
-      h = HeightOfScreen(screen);
-      P("w: %d, h: %d, Wroot: %d, Hroot: %d\n",w,h,global.Wroot,global.Hroot);
-      if(global.Wroot != w || global.Hroot != h)
-      {
-	 DoRestart = 1;
-	 Flags.Done = 1;
-	 I(_("Restart due to change of display settings...\n"));
-      }
-      XCloseDisplay(display);
    }
    return TRUE;
 }
@@ -1466,21 +1447,7 @@ int do_drawit(void *cr)
 
 void drawit(cairo_t *cr)
 {
-   static int counter = 0;
    P("drawit %d %p\n",global.counter++,(void *)cr);
-   // Due to instabilities at the start of xsnow: spurious detection of
-   //   user intervention; resizing of screen; etc.
-   //   placement of scenery, stars etc is repeated a few times at the
-   //   start of xsnow.
-   // This is not harmful, but a bit annoying, so we do not draw anything 
-   //   the first few times this function is called.
-
-
-   if (counter*time_draw_all < 1.5)
-   {
-      counter++;
-      return;
-   }
 
    if (Flags.Done)
       return;
@@ -1503,16 +1470,6 @@ void drawit(cairo_t *cr)
       aurora_erase();
       XFlush(global.display);
    }
-
-
-   /* clear snowwindow test */
-   /*
-      cairo_set_source_rgba(cr, 0, 0, 0, 1);
-      cairo_set_line_width(cr, 1);
-
-      cairo_rectangle(cr, 0, 0, global.SnowWinWidth, global.SnowWinHeight);
-      cairo_fill(cr);
-      */
 
    cairo_save(cr);
    int tx = 0;
@@ -1610,6 +1567,7 @@ int do_full_trans(gpointer widget)  // TODO can probably go
 int do_display_dimensions(void *d)
 {
    (void)d;
+   //do_display_dimensions_ready = 1;
    if (Flags.Done)
       return FALSE;
 
@@ -1720,6 +1678,7 @@ int do_stopafter(void *d)
 
 void mybindtestdomain()
 {
+   P("main: Flags.Language:%s\n",Flags.Language);
    if (!strcmp(Flags.Language,"sys"))
       global.Language = guess_language();
    else
@@ -1848,7 +1807,10 @@ void DisplayDimensions()
 
    UpdateFallenSnowAtBottom();
 
+#if 0
+   // not needed, will be taken care of by do_display_dimensions()->DisplayDimensions()
    RedrawTrees();
+#endif
 
    SetMaxScreenSnowDepth();
    SetMaxWinSnowDepth();
@@ -1896,5 +1858,30 @@ void make_fullmaxscreen()
    }
    else
       gtk_window_maximize(GTK_WINDOW(TransA));
+}
+
+void adapt_transparency()
+{
+   float dt         = 0.04;
+   fadein.count_max = time_fadein/dt;
+   fadein.counter   = 0;
+   fadein.step      = (Flags.Transparency-global.Transparency)/
+      (float)fadein.count_max;
+   add_to_mainloop1(PRIORITY_DEFAULT, dt, do_fadein, (gpointer)&fadein);
+}
+
+int do_fadein(gpointer d)
+{
+   struct _fadein* fadein = (struct _fadein*)d;
+
+   if (fadein->counter++ >= fadein->count_max)
+   {
+      global.Transparency = Flags.Transparency;
+      P("transp end: %d %f %d\n",global.Transparency,step,global.counter++);
+      return FALSE;
+   }
+   global.Transparency += fadein->step; 
+   P("transp: %f %f %d\n",global.Transparency,fadein->step,fadein->counter);
+   return TRUE;
 }
 

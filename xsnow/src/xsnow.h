@@ -91,8 +91,9 @@
 #define time_fallen               0.20   // time between recompute fallen snow surfaces
 #define time_snowflakes       (0.02 * global.cpufactor)  // time between updates of snowflakes positions etc
 #define time_draw_all         (0.04 * global.cpufactor)  // time between updates of screen
+#define time_fadein               2.0  // fade-in time 
 
-#define ALPHA (0.01*(100 - Flags.Transparency))
+#define ALPHA (0.01*(100 - global.Transparency))
 #define XPM_TYPE const char
 
 #define DOCAPELLA                  1  // to convert fallensnow into flakes or not when moving window
@@ -298,12 +299,13 @@ extern struct _global
 
    char           *Language;
 
-   int            DoCapella;  // if true, Marc Capella's method is used to
-			      // deal with fallensnow on resized or moved windows:
-			      // fallensnow is turned into flakes.
+   int            DoCapella;          // if true, Marc Capella's method is used to
+			              // deal with fallensnow on resized or moved windows:
+			              // fallensnow is turned into flakes.
    int            time_to_write_flags;
-   int            tolxyw;     // tolerance used by comparing position and width of windows
-   char*          FlagsFile;  // default: $HOME/.xsnowrc
+   int            tolxyw;             // tolerance used by comparing position and width of windows
+   char*          FlagsFile;          // default: $HOME/.xsnowrc
+   float          Transparency;       //transparency, after time_fadein copy of Flags.Transparency
 } global;
 
 extern int set_sticky(int s);
