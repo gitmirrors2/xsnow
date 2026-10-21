@@ -298,6 +298,12 @@ Or, you could force an X11 session, for example by tweaking /etc/gdm3/daemon.con
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="rotation_adjustment">
+    <property name="upper">100</property>
+    <property name="value">50</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="santascale-adjustment">
     <property name="lower">50</property>
     <property name="upper">200</property>
@@ -1723,30 +1729,6 @@ Flags: -fluffy, -nofluffy</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
-                <property name="use-markup">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">9</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">&amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195; &amp;#8195;</property>
-                <property name="use-markup">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">3</property>
-                <property name="top-attach">9</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkScale" id="id-SnowSpeedFactor">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -1916,6 +1898,40 @@ Flag: -enablesc2</property>
               <packing>
                 <property name="left-attach">2</property>
                 <property name="top-attach">11</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="width-request">100</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Rotation:</property>
+                <property name="xalign">0.89999997615814209</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="id-FlakeRotation">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="tooltip-text" translatable="yes">Rotation speed of snow flakes: the higher the faster.
+Flag: -flakerotation</property>
+                <property name="double-buffered">False</property>
+                <property name="valign">center</property>
+                <property name="adjustment">rotation_adjustment</property>
+                <property name="round-digits">0</property>
+                <property name="digits">0</property>
+                <property name="has-origin">False</property>
+                <property name="value-pos">left</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">9</property>
               </packing>
             </child>
             <child>

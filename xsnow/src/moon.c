@@ -78,6 +78,27 @@ void moon_init(void)
 
 int moon_draw(cairo_t *cr)
 {
+//#define moonturn
+#ifdef moonturn
+   // used as an exercise for creating rotating flakes
+   if(scaleok == 0) // wait until moon_ui got the correct scale
+      return TRUE;
+   LEAVE_IF_INACTIVE;
+   static double angle = 0;
+   angle += 0.04;
+   P("angle: %lf\n",angle);
+   P("moon_draw %d %d %d\n",global.counter++,(int)global.moonX,(int)global.moonY);
+   cairo_save(cr);
+   cairo_translate(cr,global.moonX+global.moonR,global.moonY+global.moonR);
+   cairo_rotate(cr,angle);
+   cairo_set_source_surface (cr, moon_surface, -global.moonR, -global.moonR);
+   my_cairo_paint_with_alpha(cr,ALPHA);
+   OldmoonX = global.moonX;
+   OldmoonY = global.moonY;
+   cairo_restore(cr);
+   halo_draw(cr);
+   return TRUE;
+#else
    if(scaleok == 0) // wait until moon_ui got the correct scale
       return TRUE;
    LEAVE_IF_INACTIVE;
@@ -88,6 +109,7 @@ int moon_draw(cairo_t *cr)
    OldmoonY = global.moonY;
    halo_draw(cr);
    return TRUE;
+#endif
 }
 
 int moon_erase(int force)
@@ -247,7 +269,8 @@ void init_halo_surface()
    haloR = 1.8*global.moonR;
    P("halo_draw %f %f \n",global.moonR,haloR);
    pattern = cairo_pattern_create_radial(haloR, haloR, global.moonR, haloR, haloR, haloR);  
-   double bright = Flags.HaloBright * ALPHA * 0.01;
+   double bright = Flags.HaloBright * 0.01;
+   P("init_halo_surface: bright: %lf\n",bright);
    //cairo_pattern_add_color_stop_rgba(pattern, 0.0, 1.0, 1.0, 1.0, 0.4*ALPHA);
    //cairo_pattern_add_color_stop_rgba(pattern, 1.0, 1.0, 1.0, 1.0, 0.0);
    //cairo_pattern_add_color_stop_rgba(pattern, 0.0, 0.9725, 0.9725, 1.0, 0.4*ALPHA);
@@ -283,7 +306,7 @@ void halo_draw(cairo_t *cr)
 {
    if (!Flags.Halo)
       return;
-   P("halo_draw %f %f \n", global.moonR, haloR);
+   P("halo_draw %f %f %f\n", global.moonR, haloR, ALPHA);
    double xc = global.moonX + global.moonR;
    double yc = global.moonY + global.moonR;
 

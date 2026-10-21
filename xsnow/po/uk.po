@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' XSNOW
-# # 'abc_1001' &#8195;
-# # 'abc_1002' \n
-# # 'abc_1003' xsnow
-# # 'abc_1004' Rick Jansen
-# # 'abc_1005' %l#x
-# # 'abc_1006' xscreensaver
-# # 'abc_1007' Xscreensaver
-# # 'abc_1008' XsnoW
-# # 'abc_1009' Xsnow
+# # 'abc_1000' XsnoW
+# # 'abc_1001' %l#x
+# # 'abc_1002' Rick Jansen
+# # 'abc_1003' Xscreensaver
+# # 'abc_1004' \n
+# # 'abc_1005' xscreensaver
+# # 'abc_1006' XSNOW
+# # 'abc_1007' Xsnow
+# # 'abc_1008' &#8195;
+# # 'abc_1009' xsnow
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,9 +18,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: uk\n"
@@ -536,9 +536,6 @@ msgstr ""
 "можливо. \n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -601,6 +598,16 @@ msgstr "Підніміть сніг у вікна або екран: натис�
 
 msgid "Settings"
 msgstr "Налаштування"
+
+msgid "Rotation:"
+msgstr "Обертання:"
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "Швидкість обертання снігових пластівців: чим вище, тим "
+"швидше.\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "сніг"
@@ -712,6 +719,9 @@ msgid ""
 msgstr ""
 "Показувати чи не показувати Санту.\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "Масштаб:"

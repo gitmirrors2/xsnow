@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
 # # 'abc_1000' XSNOW
-# # 'abc_1001' \n
+# # 'abc_1001' &#8195;
 # # 'abc_1002' Xscreensaver
-# # 'abc_1003' Rick Jansen
-# # 'abc_1004' %l#x
-# # 'abc_1005' Xsnow
+# # 'abc_1003' XsnoW
+# # 'abc_1004' xsnow
+# # 'abc_1005' %l#x
 # # 'abc_1006' xscreensaver
-# # 'abc_1007' &#8195;
-# # 'abc_1008' XsnoW
-# # 'abc_1009' xsnow
+# # 'abc_1007' Xsnow
+# # 'abc_1008' \n
+# # 'abc_1009' Rick Jansen
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,9 +18,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow 3.9.2~pre02\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: ja\n"
@@ -530,9 +530,6 @@ msgstr ""
 "さい。\n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -595,6 +592,15 @@ msgstr "窓または画面上の雪を持ち上げる: クリック "
 
 msgid "Settings"
 msgstr "設定"
+
+msgid "Rotation:"
+msgstr "回転："
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "雪の結晶の回転速度: 高いほど速くなります。\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "雪"
@@ -706,6 +712,9 @@ msgid ""
 msgstr ""
 "サンタさんを見せるか見せないか。\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "規模："

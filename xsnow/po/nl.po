@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' XsnoW
-# # 'abc_1001' Xsnow
-# # 'abc_1002' XSNOW
-# # 'abc_1003' Rick Jansen
+# # 'abc_1000' XSNOW
+# # 'abc_1001' XsnoW
+# # 'abc_1002' xsnow
+# # 'abc_1003' %l#x
 # # 'abc_1004' xscreensaver
-# # 'abc_1005' xsnow
-# # 'abc_1006' \n
-# # 'abc_1007' Xscreensaver
-# # 'abc_1008' %l#x
-# # 'abc_1009' &#8195;
+# # 'abc_1005' Xscreensaver
+# # 'abc_1006' &#8195;
+# # 'abc_1007' Rick Jansen
+# # 'abc_1008' Xsnow
+# # 'abc_1009' \n
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,9 +18,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: nl\n"
@@ -537,9 +537,6 @@ msgstr ""
 "bomen te laten zien.\n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -602,6 +599,16 @@ msgstr "Lift sneeuw op ramen of scherm: klik "
 
 msgid "Settings"
 msgstr "Instellingen"
+
+msgid "Rotation:"
+msgstr "Rotatie:"
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "Rotatiesnelheid van sneeuwvlokken: hoe hoger hoe "
+"sneller.\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "Sneeuw"
@@ -713,6 +720,9 @@ msgid ""
 msgstr ""
 "Wel of niet laten zien aan de Kerstman.\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "Schaal:"

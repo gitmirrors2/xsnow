@@ -177,6 +177,7 @@ void docs_usage(int man)
    manout("-enablesc2 <n> "       ,"1: enable usage of second color for the flakes (default: %d).",F(UseColor2));
    manout("-snowspeedfactor <n>"  ,"Multiply the speed of snow with this number/100 (default: %d).",F(SnowSpeedFactor));
    manout("-snowsize <n>"         ,"Set size of (non-vintage) snow flakes (default: %d).",F(SnowSize));
+   manout("-flakerotation <n>"    ,"Set rotation speed of flakes 0..100 (default: %d).",F(FlakeRotation));
    manout("-snow       "          ,"(Default) Show snow.");
    manout("-nosnow -nosnowflakes" ,"Do not show snow.");
    manout("-flakecountmax <n>"    ,"Maximum number of active flakes (default: %d).",F(FlakeCountMax));

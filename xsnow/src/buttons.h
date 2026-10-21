@@ -105,6 +105,7 @@
    BUTTON(scalecode      ,xsnow_snow        ,MaxWinSnowDepth      ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,SnowFlakesFactor     ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,SnowSize             ,1  )         \
+   BUTTON(scalecode      ,xsnow_snow        ,FlakeRotation        ,1  )         \
    BUTTON(scalecode      ,xsnow_snow        ,SnowSpeedFactor      ,1  )         \
    BUTTON(scalecode      ,xsnow_celestials  ,NStars               ,1  )         \
    BUTTON(scalecode      ,xsnow_scenery     ,DesiredNumberOfTrees ,1  )         \

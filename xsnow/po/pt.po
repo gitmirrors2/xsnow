@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' xsnow
-# # 'abc_1001' xscreensaver
-# # 'abc_1002' Xsnow
-# # 'abc_1003' XSNOW
-# # 'abc_1004' Rick Jansen
-# # 'abc_1005' &#8195;
-# # 'abc_1006' \n
-# # 'abc_1007' XsnoW
-# # 'abc_1008' Xscreensaver
-# # 'abc_1009' %l#x
+# # 'abc_1000' \n
+# # 'abc_1001' Xscreensaver
+# # 'abc_1002' xsnow
+# # 'abc_1003' xscreensaver
+# # 'abc_1004' XsnoW
+# # 'abc_1005' Xsnow
+# # 'abc_1006' %l#x
+# # 'abc_1007' &#8195;
+# # 'abc_1008' XSNOW
+# # 'abc_1009' Rick Jansen
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # This file is distributed under the same license as the xsnow package.
@@ -17,9 +17,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: pt\n"
@@ -531,9 +531,6 @@ msgstr ""
 "possível.\n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -597,6 +594,16 @@ msgstr "Levante a neve nas janelas ou na tela: clique "
 #
 msgid "Settings"
 msgstr "Configurações"
+
+msgid "Rotation:"
+msgstr "Rotação:"
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "Velocidade de rotação dos flocos de neve: quanto maior, "
+"mais rápido.\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "Neve"
@@ -708,6 +715,9 @@ msgid ""
 msgstr ""
 "Mostrar ou não mostrar o Pai Natal.\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "Escala:"

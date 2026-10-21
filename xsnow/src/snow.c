@@ -153,6 +153,8 @@ void snow_ui()
    UIDO (SnowSize                       , 
 	 SetSnowSize(); 
 	 Flags.VintageFlakes = 0;                                  );
+   UIDO (FlakeRotation                  ,                          );
+
    P("%d snow_ui\n",global.counter++);
 
    static int prev=100;
@@ -203,8 +205,55 @@ int snow_draw(cairo_t *cr)
 {
    if (Flags.NoSnowFlakes)
       return TRUE;
+   if (Flags.Done)
+      return FALSE;
    P("snow_draw %d\n",global.counter++);
 
+#define snowturn
+#ifdef snowturn
+   Lock_fallen();
+   set_begin();
+   Snow *flake;
+   while( (flake = (Snow *)set_next()) )
+   {
+      if (!flake->fluff)
+      {
+	 flake->rotation_angle += M_PI * 0.125 * 
+	    flake->rotation_speed * 0.01 * Flags.FlakeRotation;
+	 if (flake->rotation_angle < 0)
+	    flake->rotation_angle += 2*M_PI;
+	 else if(flake->rotation_angle > 2*M_PI)
+	    flake->rotation_angle -= 2*M_PI;
+	 flake->rotation_speed += (drand48()-0.5)*0.2;
+	 if (flake->rotation_speed > 1)
+	    flake->rotation_speed = 1;
+	 else if (flake->rotation_speed < -1)
+	    flake->rotation_speed = -1;
+      }
+      P("snow_draw %d %f\n",global.counter++,ALPHA);
+      int w = snowPix[flake->whatFlake].width;
+      int h = snowPix[flake->whatFlake].height;
+
+      cairo_matrix_t matrix;
+      cairo_get_matrix(cr, &matrix);
+      cairo_translate(cr,flake->rx+0.5*w, flake->ry+0.5*h);
+      cairo_rotate(cr,flake->rotation_angle);
+      cairo_set_source_surface (cr, snowPix[flake->whatFlake].surface, -0.5*w, -0.5*h);
+      cairo_set_matrix(cr,&matrix);
+
+      double alpha = ALPHA;
+      if (flake->fluff)
+	 alpha *= (1-flake->flufftimer/flake->flufftime);
+      if (alpha < 0)
+	 alpha = 0;
+      if (global.IsDouble || !(flake->freeze || flake->fluff))
+	 my_cairo_paint_with_alpha(cr,alpha);
+      flake->ix = lrint(flake->rx);
+      flake->iy = lrint(flake->ry);
+   }
+   Unlock_fallen();
+   return TRUE;
+#else
    Lock_fallen();
    set_begin();
    Snow *flake;
@@ -224,6 +273,7 @@ int snow_draw(cairo_t *cr)
    }
    Unlock_fallen();
    return TRUE;
+#endif
 }
 
 int snow_erase(int force)
@@ -625,26 +675,29 @@ void DelFlake(Snow *flake)
 
 void InitFlake(Snow *flake)
 {
-   int flakew        = snowPix[flake->whatFlake].width;
-   int flakeh        = snowPix[flake->whatFlake].height;
-   flake->rx         = randint(global.SnowWinWidth - flakew);
-   flake->ry         = -randint(global.SnowWinHeight/10)-flakeh;
-   flake->cyclic     = 1;
-   flake->fluff      = 0;
-   flake->accum      = 1;
-   flake->counter    = 0;
-   flake->flufftimer = 0;
-   flake->flufftime  = 0;
-   flake->m          = drand48()+0.1;
+   int flakew                = snowPix[flake->whatFlake].width;
+   int flakeh                = snowPix[flake->whatFlake].height;
+   flake->rx                 = randint(global.SnowWinWidth - flakew);
+   flake->ry                 = -randint(global.SnowWinHeight/10)-flakeh;
+   flake->cyclic             = 1;
+   flake->fluff              = 0;
+   flake->accum              = 1;
+   flake->counter            = 0;
+   flake->flufftimer         = 0;
+   flake->flufftime          = 0;
+   flake->rotation_speed     = 1-2*drand48();
+   flake->rotation_direction = (drand48() > 0.5);
+   flake->rotation_angle     = 0;
+   flake->m                  = drand48()+0.1;
    if(Flags.NoWind)
-      flake->vx      = 0; 
+      flake->vx              = 0; 
    else
-      flake->vx      = randint(global.NewWind)/2; 
-   flake->ivy        = INITIALYSPEED * sqrt(flake->m);
-   flake->vy         = flake->ivy;
-   flake->wsens      = drand48()*MAXWSENS;
-   flake->freeze     = 0;
-			    
+      flake->vx              = randint(global.NewWind)/2; 
+   flake->ivy                = INITIALYSPEED * sqrt(flake->m);
+   flake->vy                 = flake->ivy;
+   flake->wsens              = drand48()*MAXWSENS;
+   flake->freeze             = 0;
+
    set_insert(flake); // will be picked up by snow_draw()
    P("wsens: %f\n",flake->wsens);
 }

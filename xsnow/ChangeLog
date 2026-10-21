@@ -1,3 +1,11 @@
+version 3.9.9
+	01: snow.c, xsnow.h and others: implement rotating flakes, following
+	    the kind instructions of Rick Jansen, the godfather of xsnow.
+
+version 3.9.8
+	moon.c: init_halo_surface: use correct expression for
+	        initial brightness of halo.
+
 version 3.9.7
 	01: cn -> zh
 	02: Faster startup: no more wait in main.c:drawit() and some

@@ -107,6 +107,7 @@
    DOIT_I(SantaScale           ,100        ,100        ) \
    DOIT_I(SnowFlakesFactor     ,100        ,15         ) \
    DOIT_I(SnowSize             ,8          ,8          ) \
+   DOIT_I(FlakeRotation        ,50         ,0          ) \
    DOIT_I(SnowSpeedFactor      ,100        ,100        ) \
    DOIT_I(Stars                ,1          ,0          ) \
    DOIT_I(StarSize             ,50         ,50         ) \

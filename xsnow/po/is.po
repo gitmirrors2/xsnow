@@ -1,14 +1,14 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' XSNOW
-# # 'abc_1001' Xscreensaver
-# # 'abc_1002' Rick Jansen
-# # 'abc_1003' \n
-# # 'abc_1004' %l#x
-# # 'abc_1005' &#8195;
+# # 'abc_1000' \n
+# # 'abc_1001' Rick Jansen
+# # 'abc_1002' %l#x
+# # 'abc_1003' XsnoW
+# # 'abc_1004' Xscreensaver
+# # 'abc_1005' Xsnow
 # # 'abc_1006' xscreensaver
-# # 'abc_1007' XsnoW
+# # 'abc_1007' XSNOW
 # # 'abc_1008' xsnow
-# # 'abc_1009' Xsnow
+# # 'abc_1009' &#8195;
 # Language for xsnow
 # Copyright (C) 2023 Willem Vermin
 # Willem Vermin <wvermin@gmail.com>, 2023
@@ -18,9 +18,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.9.1~pre05\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: is\n"
@@ -526,9 +526,6 @@ msgstr ""
 "er.\n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -591,6 +588,15 @@ msgstr "Lyftu snjó á glugga eða skjá: smelltu "
 
 msgid "Settings"
 msgstr "Stillingar"
+
+msgid "Rotation:"
+msgstr "Snúningur:"
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "Snúningshraði snjóflaga: því hærra því hraðar.\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "Snjór"
@@ -702,6 +708,9 @@ msgid ""
 msgstr ""
 "Að sýna eða ekki sýna Jólasveininn.\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "Mælikvarði:"

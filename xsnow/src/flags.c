@@ -271,6 +271,7 @@ int HandleFlags(int argc, char*argv[])
 	 handle_ia(-snowflakes          ,SnowFlakesFactor                 );
 	 handle_ia(-snowspeedfactor     ,SnowSpeedFactor                  );
 	 handle_ia(-snowsize            ,SnowSize                         );
+	 handle_ia(-flakerotation       ,FlakeRotation                    );
 	 handle_ia(-ssnowdepth          ,MaxScrSnowDepth                  );
 	 handle_ia(-stars               ,NStars                           );
 	 handle_ia(-starsize            ,StarSize                         );
@@ -380,6 +381,11 @@ int HandleFlags(int argc, char*argv[])
    {
       printf("snowsize brought back from %d to 40\n",Flags.SnowSize);
       Flags.SnowSize = 40;
+   }
+   if (Flags.FlakeRotation < 0 || Flags.FlakeRotation > 100)
+   {
+      printf("flakerotation set to 50 from %d\n",Flags.FlakeRotation);
+      Flags.FlakeRotation = 50;
    }
    return 0;
 }

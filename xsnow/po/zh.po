@@ -1,20 +1,20 @@
 # # Sometimes the translations contain rubbish, please replace them.
-# # 'abc_1000' Rick Jansen
-# # 'abc_1001' &#8195;
-# # 'abc_1002' XSNOW
-# # 'abc_1003' \n
-# # 'abc_1004' XsnoW
-# # 'abc_1005' Xscreensaver
-# # 'abc_1006' Xsnow
-# # 'abc_1007' xscreensaver
+# # 'abc_1000' Xsnow
+# # 'abc_1001' Rick Jansen
+# # 'abc_1002' XsnoW
+# # 'abc_1003' &#8195;
+# # 'abc_1004' xscreensaver
+# # 'abc_1005' XSNOW
+# # 'abc_1006' \n
+# # 'abc_1007' xsnow
 # # 'abc_1008' %l#x
-# # 'abc_1009' xsnow
+# # 'abc_1009' Xscreensaver
 msgid ""
 msgstr ""
 "Project-Id-Version: xsnow-3.8.6\n"
-"Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
-"PO-Revision-Date: 2026-06-28 13:54+0200\n"
+"Report-Msgid-Bugs-To: Willem Vermin wvermin@gmail.com\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
+"PO-Revision-Date: 2026-10-19 15:02+0200\n"
 "Last-Translator: Willem Vermin wvermin@gmail.com\n"
 "Language-Team: None\n"
 "Language: zh\n"
@@ -515,9 +515,6 @@ msgstr ""
 "开启后，尽可能在积雪和树木上显示松散的碎雪效果。\n"
 "Flags: -fluffy, -nofluffy"
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -580,6 +577,15 @@ msgstr "清除窗口或屏幕上的积雪：单击 "
 
 msgid "Settings"
 msgstr "设置"
+
+msgid "Rotation:"
+msgstr "旋转："
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
+msgstr "雪花旋转速度：越高越快\n"
+"Flag: -flakerotation"
 
 msgid "Snow"
 msgstr "降雪"
@@ -690,6 +696,9 @@ msgid ""
 msgstr ""
 "显示或不显示圣诞老人。\n"
 "Flags: -showsanta, -nosanta"
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
+msgstr "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 
 msgid "Scale:"
 msgstr "规模："

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: xsnow 3.9.7\n"
+"Project-Id-Version: xsnow 3.9.9~pre01\n"
 "Report-Msgid-Bugs-To: wvermin@gmail.com\n"
-"POT-Creation-Date: 2026-10-17 13:49+0200\n"
+"POT-Creation-Date: 2026-10-19 15:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -456,9 +456,6 @@ msgid ""
 "Flags: -fluffy, -nofluffy"
 msgstr ""
 
-msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
-msgstr ""
-
 msgid ""
 "Speed of the snowflakes.\n"
 "Flag: -snowspeedfactor"
@@ -508,6 +505,14 @@ msgid "Lift snow on windows or screen: click "
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Rotation:"
+msgstr ""
+
+msgid ""
+"Rotation speed of snow flakes: the higher the faster.\n"
+"Flag: -flakerotation"
 msgstr ""
 
 msgid "Snow"
@@ -593,6 +598,9 @@ msgstr ""
 msgid ""
 "To show or not to show Santa.\n"
 "Flags: -showsanta, -nosanta"
+msgstr ""
+
+msgid "&#8195; &#8195; &#8195; &#8195; &#8195; &#8195; &#8195;"
 msgstr ""
 
 msgid "Scale:"

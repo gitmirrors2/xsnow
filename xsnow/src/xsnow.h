@@ -162,24 +162,27 @@ typedef struct Treeinfo {
 
 
 typedef struct _Snow {
-   float rx;                         // x position
-   float ry;                         // y position
+   float rx;                                 // x position
+   float ry;                                 // y position
    int   ix;
-   int   iy;                         // position after draw
-   int   counter;                    // counts updates
-   float vx;                         // speed in x-direction, pixels/second
-   float vy;                         // speed in y-direction, pixels/second
-   float m;                          // mass of flake
-   float ivy;                        // initial speed in y direction
-   float wsens;                      // wind dependency factor
-   float flufftimer;                 // fluff timeout timer
-   float flufftime;                  // fluff timeout
-   unsigned int whatFlake;           // snowflake index
-   unsigned int cyclic     BITS(1);  // flake is cyclic 
-   unsigned int fluff      BITS(1);  // flake is in fluff state
-   unsigned int freeze     BITS(1);  // flake does not move
-   unsigned int accum      BITS(1);  // flake does accumulate fallensnow
-   unsigned int snowtest   BITS(2);  // for testing purposes
+   int   iy;                                 // position after draw
+   int   counter;                            // counts updates
+   float vx;                                 // speed in x-direction, pixels/second
+   float vy;                                 // speed in y-direction, pixels/second
+   float m;                                  // mass of flake
+   float ivy;                                // initial speed in y direction
+   float wsens;                              // wind dependency factor
+   float flufftimer;                         // fluff timeout timer
+   float flufftime;                          // fluff timeout
+   float rotation_speed;                     // rotation speed
+   float rotation_angle;                     // current angle for rotation
+   unsigned int whatFlake;                   // snowflake index
+   unsigned int cyclic             BITS(1);  // flake is cyclic 
+   unsigned int fluff              BITS(1);  // flake is in fluff state
+   unsigned int freeze             BITS(1);  // flake does not move
+   unsigned int accum              BITS(1);  // flake does accumulate fallensnow
+   unsigned int rotation_direction BITS(1);         // rotation direction
+   unsigned int snowtest           BITS(2);  // for testing purposes
 
 } Snow;
 
@@ -300,8 +303,8 @@ extern struct _global
    char           *Language;
 
    int            DoCapella;          // if true, Marc Capella's method is used to
-			              // deal with fallensnow on resized or moved windows:
-			              // fallensnow is turned into flakes.
+				      // deal with fallensnow on resized or moved windows:
+				      // fallensnow is turned into flakes.
    int            time_to_write_flags;
    int            tolxyw;             // tolerance used by comparing position and width of windows
    char*          FlagsFile;          // default: $HOME/.xsnowrc
