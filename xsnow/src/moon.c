@@ -223,7 +223,7 @@ int do_umoon(void *d)
    (void)d;
    static int xdirection = 1;
    static int ydirection = 1;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    LEAVE_IF_INACTIVE;
    if(!Flags.Moon)

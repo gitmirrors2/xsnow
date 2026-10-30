@@ -197,7 +197,7 @@ void stars_ui()
 
 int do_ustars(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;

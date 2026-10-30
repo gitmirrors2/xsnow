@@ -205,7 +205,7 @@ int snow_draw(cairo_t *cr)
 {
    if (Flags.NoSnowFlakes)
       return TRUE;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    P("snow_draw %d\n",global.counter++);
 
@@ -296,7 +296,7 @@ int snow_erase(int force)
 
 int do_genflakes(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
 #define RETURN do {Prevtime = TNow; return TRUE;} while (0)
@@ -727,7 +727,7 @@ void InitSnowSpeedFactor()
 int do_initsnow(void *d)
 {
    P("initsnow %d %d\n",global.FlakeCount,counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    // first, kill all snowflakes
    KillFlakes = 1;
@@ -745,7 +745,7 @@ int do_initsnow(void *d)
 
 int do_show_flakecount(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    ui_show_nflakes(global.FlakeCount);
    return TRUE;

@@ -74,7 +74,7 @@ void treesnow_ui()
 int do_snow_on_trees(void *d)
 {
    P("do_snow_on_trees %d\n",counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;

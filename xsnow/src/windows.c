@@ -280,7 +280,7 @@ void *call_GetWindows(void *d)
       if (GetWindows(&w, &n)<0)
       {
 	 I("Cannot get windows\n");
-	 Flags.Done = 1;
+	 letshalt();
       }
       lock_Windows();
       Windows = (WinInfo *)realloc(Windows,sizeof(WinInfo)*n);
@@ -302,7 +302,7 @@ int do_wupdate(void *dummy)
    int got_Windows_lock = 0;
    static long PrevWorkSpace = -123;
    P("do_wupdate #%d %d\n",global.counter++,global.WindowsChanged);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
    if(Flags.NoKeepSWin) return TRUE;
@@ -344,7 +344,7 @@ int do_wupdate(void *dummy)
    else
    {
       I("Cannot get current workspace\n");
-      Flags.Done = 1;
+      letshalt();
       goto end;
    }
 
@@ -423,7 +423,7 @@ int do_wupdate(void *dummy)
 	 if (!global.Trans && !winfo)
 	 {
 	    I("No transparent window & no SnowWin %#lx found\n",global.SnowWin); 
-	    Flags.Done = 1;
+	    letshalt();
 	 }
    }
 

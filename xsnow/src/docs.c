@@ -408,6 +408,7 @@ void docs_usage(int man)
    manout(" ","is transparent, but not click-through.");
    manout(" ","Flags to be tried in this case include: -root, -doublebuffer, -xwininfo, -id.");
    manout(".","Here follow some window managers with their issues:");
+   manout(".","(Note: this list was made some years ago, it needs updating.)");
    manout("."," ");
    manout("Tiling window managers","Here you need to float windows with class=Xsnow.");
    manout("AWESOME","Without compositor: no issues.");
@@ -436,7 +437,7 @@ void docs_usage(int man)
    manout(" ","With compositor: no issues.");
    manout("MATE","No issues.");
    manout("OPENBOX","No issues.");
-   manout("PLASMA (KDE)","No issues.");
+   manout("PLASMA (KDE)","No issues, but see BUGS.");
    manout("SPECTRWM","Various issues. In any case you need in spectrwm.conf:");
    manout(".","    quirk[Xsnow] = FLOAT");
    manout("TWM","Without compositor: no issues.");
@@ -484,7 +485,7 @@ void docs_usage(int man)
    manout(".","- In XFCE, compositing must be enabled for xsnow.");
    manout(" ","    Settings -> Window Manager Tweaks -> Compositor -> Enable display compositing");
    manout(".","- Depending on the window manager, snowing in 'all monitors' results in snowing");
-   manout(" ","    in one of the monitors. This happens for example in KDE.");
+   manout(" ","    in one of the monitors. This happens for example in KDE/plasma.");
 
    manout(".","- In multi-screen environments, it depends on the display settings");
    manout(" ","    if it is snowing on all screens. Experiment!");

@@ -116,7 +116,7 @@ int do_emeteor(gpointer data)
 {
    (void)data;
    P("do_emeteor %d\n",global.counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (!meteor.active || NOTACTIVE)
       return TRUE;
@@ -151,7 +151,7 @@ int do_meteor(void *d)
 {
    (void)d;
    P("do_meteor %d\n",global.counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
    if (!(NOTACTIVE || meteor.active || Flags.NoMeteors))

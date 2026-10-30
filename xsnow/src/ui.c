@@ -805,8 +805,8 @@ void set_belowall_default()
    MODULE_EXPORT
 void button_quit()
 {
-   Flags.Done = 1;
-   P("button_quit: %d\n",Flags.Done);
+   letshalt();
+   P("button_quit: %d\n",global.Done);
 }
 
 
@@ -1158,7 +1158,8 @@ void ui()
    init_pixmaps();
    set_buttons();
    if(global.IsWayland)
-      gtk_widget_set_sensitive(Button.Screenshots,0);
+      if (!Flags.NoMenu)
+	 gtk_widget_set_sensitive(Button.Screenshots,0);
 #ifndef SCREENSHOTS
    gtk_widget_hide(Button.Screenshots);
 #endif
@@ -1186,7 +1187,8 @@ void ui()
 
    if (Nscreens < 2)
    {
-      gtk_widget_set_sensitive(GTK_WIDGET(ScreenButton),FALSE);
+      if (!Flags.NoMenu)
+	 gtk_widget_set_sensitive(GTK_WIDGET(ScreenButton),FALSE);
       Flags.Screen = -1;
    }
    if (Flags.Screen < -1)
@@ -1364,7 +1366,8 @@ void ui_background(int m)
 // however, see transparency and below 
 void ui_gray_erase(int m)
 {
-   gtk_widget_set_sensitive(Button.BelowAll,                      m);
+   if (!Flags.NoMenu)
+      gtk_widget_set_sensitive(Button.BelowAll,                      m);
    if(!Flags.BelowAllForce)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Button.BelowAll),1);
 }
@@ -1374,13 +1377,16 @@ void ui_gray_erase(int m)
 // m=1: make inactive
 void ui_gray_below(int m)
 {
-   gtk_widget_set_sensitive(Button.BelowAll, !m);
+   if (!Flags.NoMenu)
+      gtk_widget_set_sensitive(Button.BelowAll, !m);
 }
 
 // m=0: make active
 // m=1: make inactive
 void ui_gray_moonpos(int m)
 {
+   if(Flags.NoMenu)
+      return;
    GtkStyleContext *moonxlabelsc = gtk_widget_get_style_context(moonxlabel);
    GtkStyleContext *moonylabelsc = gtk_widget_get_style_context(moonylabel);
    if (m == 0)

@@ -291,7 +291,7 @@ void *do_update_speed_birds(void *d)
 {
    while(1)
    {
-      if (!(Flags.Done || INACTIVE))
+      if (!(global.Done || INACTIVE))
       {
 
 	 lock();
@@ -441,7 +441,7 @@ void *do_update_speed_birds(void *d)
 
 int do_update_pos_birds(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    LEAVE_IF_INACTIVE;
 
@@ -776,7 +776,7 @@ void init_birds(int start)
 
 static int do_wings(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    LEAVE_IF_INACTIVE;
 
@@ -946,7 +946,7 @@ int do_change_attr(void *d)
    // x: 0.1 .. 0.8
    // y: 0.4 .. 0.6
    // z: dependent on Flags.AttrSpace
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (Flags.FollowSanta && !Flags.BirdsOnly)
       return TRUE;

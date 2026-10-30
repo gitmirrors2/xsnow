@@ -1,3 +1,16 @@
+version 3.9.10
+	01: Again! some adaptions on determining the size of the transparent
+	    click-through window. Problem was that transparent panels loose
+	    the transparency in cinnamon.
+	    see: src/main.c: make_fullmaxscreen()
+	02: some code cleanup
+	    scenery.c: scenery_draw(): wait a little bit before drawing,
+	               with multiple monitors the scenery changes after
+		       startup.
+	    many files: change Flags.Done into global.Done
+	    main.c: sometimes, ending xsnow results in a core dump.
+	            - give threads some time o properly finish
+
 version 3.9.9
 	01: snow.c, xsnow.h and others: implement rotating flakes, following
 	    the kind instructions of Rick Jansen, the godfather of xsnow.

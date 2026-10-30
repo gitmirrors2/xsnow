@@ -244,7 +244,7 @@ void *do_fallen(void *d)
    (void)d;
    while(1)
    {
-      if (Flags.Done)
+      if (global.Done)
 	 pthread_exit(NULL);
       if (!NOTACTIVE)
       {

@@ -73,7 +73,7 @@ void draw_wind()
 int do_newwind(void *d)
 {
    P("newwind\n");
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;
@@ -113,7 +113,7 @@ int do_newwind(void *d)
 int do_wind(void *d)
 {
    P("wind\n");
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (NOTACTIVE)
       return TRUE;

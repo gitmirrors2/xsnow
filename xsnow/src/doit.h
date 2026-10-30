@@ -37,7 +37,6 @@
    DOIT_I(CheckGtk            ,1  ,1 ) \
    DOIT_I(Defaults            ,0  ,0 ) \
    DOIT_I(Desktop             ,0  ,0 ) \
-   DOIT_I(Done                ,0  ,0 ) \
    DOIT_I(ForceRoot           ,0  ,0 ) \
    DOIT_I(FullScreen          ,0  ,0 ) \
    DOIT_I(HideMenu            ,0  ,0 ) \

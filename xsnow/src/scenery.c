@@ -129,9 +129,13 @@ int compartrees(const void *a, const void *b)
 
 int scenery_draw(cairo_t *cr)
 {
-
    if(Flags.NoTrees)
       return TRUE;
+   if (!global.init_ready)
+      return TRUE;
+   //static int counter = 0;
+   //if (counter++ < 8)  // to prevent transients when using multiple monitors
+    //  return TRUE;
    for (int i=0; i<NTrees; i++)
    {
       Treeinfo *tree = Trees[i];
@@ -223,7 +227,7 @@ void create_tree_dimensions(int tt)
 int do_initbaum(void *d)
 {
    (void)d;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    P("%d do_initbaum %d %d\n",global.counter++,Newtrees, Flags.NoTrees);
 

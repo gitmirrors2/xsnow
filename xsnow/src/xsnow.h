@@ -37,6 +37,7 @@
 #endif
 
 #ifdef NO_USE_BITS
+// Just to practice bit fields, does very little with memory consumption or cpu time.
 #define BITS(n)
 #else
 #define BITS(n) :n
@@ -199,12 +200,14 @@ extern struct _global
    int testing             ;
    SnowMap        *fluffpix;
    int             counter;
-   unsigned int    xxposures BITS(1);
-   unsigned int    Desktop   BITS(1);
-   unsigned int    Trans     BITS(1);
-   unsigned int    UseDouble BITS(1);
-   unsigned int    IsDouble  BITS(1);
-   unsigned int    UseClip   BITS(1);
+   unsigned int    xxposures  BITS(1);
+   unsigned int    Desktop    BITS(1);
+   unsigned int    Trans      BITS(1);
+   unsigned int    UseDouble  BITS(1);
+   unsigned int    IsDouble   BITS(1);
+   unsigned int    UseClip    BITS(1);
+   unsigned int    init_ready BITS(1);   // to signal if initalization transparent window is ready
+   unsigned int    Done       BITS(1);   // Signal to stop activities
 
    int             XscreensaverMode;
 
@@ -308,7 +311,9 @@ extern struct _global
    int            time_to_write_flags;
    int            tolxyw;             // tolerance used by comparing position and width of windows
    char*          FlagsFile;          // default: $HOME/.xsnowrc
-   float          Transparency;       //transparency, after time_fadein copy of Flags.Transparency
+   float          Transparency;       // transparency, after time_fadein copy of Flags.Transparency
 } global;
 
 extern int set_sticky(int s);
+
+extern void letshalt(void);

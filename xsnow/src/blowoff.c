@@ -67,7 +67,7 @@ int BlowOff()
 // determine if fallensnow should be handled for fsnow
 int do_blowoff(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    if (NOTACTIVE || !Flags.BlowSnow)
       return TRUE;

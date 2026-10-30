@@ -264,7 +264,7 @@ int do_usanta(void *d)
 {
    (void) d;
    P("do_usanta %d\n",counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 #define RETURN do { return TRUE ; } while(0)
    if (NOTACTIVE)

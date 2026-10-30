@@ -111,6 +111,19 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
 		   // set full screen if so desired:
    P("xscreen: %d\n",xscreen);
 
+   gtk_window_set_default_size(GTK_WINDOW(transwindow),100,100);
+   gtk_window_move(GTK_WINDOW(transwindow),40,40);
+   gtk_widget_show(transwindow);
+   GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(transwindow));
+   P("gdkwin: %p %p\n",(void*)gdkwin,(void*)transwindow);
+
+   // Ok, I admit: this all is a mess. Here a first approximation is
+   // made for the location and size of the transparent window.
+   // Later on, if needed (especially when using multiple monitors),
+   // things will get the correct values as part of the first call to
+   // main.c: do_draw_all() in main.c: make_fullmaxscreen().
+   // Probably all this stuff below should go there, something for a future version?
+
    if(xscreen < 0)
    {
       P("fullscreen\n");
@@ -152,9 +165,9 @@ int make_trans_window(Display *display, GtkWidget *transwindow, int xscreen, int
       gtk_window_get_position (GTK_WINDOW(transwindow), &winx, &winy);
       P("winx winy: %d %d\n",winx,winy);
    }
+   P("gdkwin: %p %p\n",(void*)gdkwin,(void*)transwindow);
 
    gtk_widget_show_all(transwindow);
-   GdkWindow *gdkwin = gtk_widget_get_window(GTK_WIDGET(transwindow));
 
    // so that apps like xsnow will ignore this window:
    if(dock)

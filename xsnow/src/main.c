@@ -183,7 +183,6 @@ static int  do_check_stop(void *);
 static int  do_full_trans(gpointer widget);
 static int  do_fadein(gpointer);
 static gboolean     on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-//static int  do_display_dimensions_ready = 0;
 static int signal_caught = 0;
 static char *StopFile;
 /**********************************************************************************************/
@@ -345,6 +344,9 @@ int main_c(int argc, char *argv[])
 
    global.Transparency        = 100;
 
+   global.init_ready          = 0;
+
+
    StopFile = (char*) malloc(sizeof(char)*(strlen(getenv("HOME"))+1+strlen(STOPFILE)+1));
    assert(StopFile);
    strcpy(StopFile,getenv("HOME"));
@@ -416,9 +418,6 @@ int main_c(int argc, char *argv[])
    /* Eskimo warning */
    if (strstr(Flags.SnowColor,"yellow") != NULL)
       printf("\n%s\n\n",_("Warning: don't eat yellow snow!"));
-
-   // set global.Transparency equal to Flags.Transparency:
-   adapt_transparency();
 
    // make a copy of all flags, before gtk_init() maybe removes some.
    // we need this at a restart of the program.
@@ -610,7 +609,7 @@ int main_c(int argc, char *argv[])
       ui_set_sticky(Flags.AllWorkspaces);
       add_to_mainloop(PRIORITY_DEFAULT, time_desktop_type, do_show_desktop_type);
    }
-   Flags.Done = 0;
+   global.Done = 0;
    windows_init();
    moon_init();
    aurora_init();
@@ -655,11 +654,13 @@ int main_c(int argc, char *argv[])
    // main loop
    gtk_main();
 
-   if (SnowWinName) free(SnowWinName);
+   /*
+      if (SnowWinName) free(SnowWinName);
 
-   XClearWindow(global.display, global.SnowWin);
-   XFlush(global.display);
-   XCloseDisplay(global.display); //also frees the GC's, pixmaps and other resources on display
+      XClearWindow(global.display, global.SnowWin);
+      XFlush(global.display);
+      XCloseDisplay(global.display); //also frees the GC's, pixmaps and other resources on display
+      */
 
    if (DoRestart)
    {
@@ -1166,7 +1167,7 @@ int set_sticky(int s)
 //
 int do_ui_check(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       gtk_main_quit();
 
    if (Flags.NoMenu)
@@ -1249,7 +1250,7 @@ int do_displaychanged(void *d)
    // this can happen after changing of the displays settings
    // If the size has been changed, we restart the program
    (void)d;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    P("Trans: %d xxposures: %d Desktop: %d\n", global.Trans,   global.xxposures, global.Desktop);
 
@@ -1259,7 +1260,7 @@ int do_displaychanged(void *d)
    if (global.ForceRestart)
    {
       DoRestart = 1;
-      Flags.Done = 1;
+      letshalt();
       I(_("Restart due to change of screen or language settings ...\n"));
    }
    return TRUE;
@@ -1269,7 +1270,7 @@ int do_event(void *d)
 {
    (void)d;
    P("do_event %d\n",counter++);
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    XEvent ev;
    XFlush(global.display);
@@ -1319,7 +1320,7 @@ int do_check_stop(void*dummy)
    if (unlink(StopFile) != 0)
       return TRUE;
    printf("Xsnow: halting because of existence of '%s'\n",StopFile);
-   Flags.Done = 1;
+   letshalt();
    return FALSE;
 }
 
@@ -1347,7 +1348,7 @@ void RestartDisplay()
 
 int do_show_range_etc(void *d)
 {
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
    if (Flags.NoMenu)
@@ -1380,7 +1381,7 @@ int do_show_desktop_type(void *d)
 int do_testing(void *d)
 {
    (void)d;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
    P("SnowWinX: %d SnowWinY: %d SnowWinWidth: %d SnowWinHeight: %d\n",global.SnowWinX,global.SnowWinY,global.SnowWinWidth, global.SnowWinHeight);
@@ -1403,7 +1404,7 @@ void SigHandler(int signum)
       return;
    }
    global.HaltedByInterrupt = signum;
-   Flags.Done        = 1;
+   letshalt();
 }
 
 int XsnowErrors(Display *dpy, XErrorEvent *err)
@@ -1420,7 +1421,7 @@ int XsnowErrors(Display *dpy, XErrorEvent *err)
    if (++count > countmax)
    {
       snprintf(global.Message,sizeof(global.Message),_("More than %d errors, I quit!"),countmax);
-      Flags.Done = 1;
+      letshalt();
    }
    return 0;
 }
@@ -1447,10 +1448,13 @@ int do_drawit(void *cr)
 
 void drawit(cairo_t *cr)
 {
-   P("drawit %d %p\n",global.counter++,(void *)cr);
+   P("drawit %d %p %d\n",global.counter++,(void *)cr,global.init_ready);
 
-   if (Flags.Done)
+   if (global.Done)
       return;
+   if (!global.init_ready)
+      return;
+   P("drawit1 %d %p\n",global.counter++,(void *)cr);
 
    if(global.UseDouble)
    {
@@ -1550,12 +1554,6 @@ int do_full_trans(gpointer widget)  // TODO can probably go
    // Make sure TransA is fullscreen or maximized and below or above as desired.
    if(global.Trans)
    {
-      if (Flags.Screen < 0 && nscreens > 1) 
-      {
-	 make_fullmaxscreen();
-      }
-      else
-	 gtk_window_maximize(GTK_WINDOW(TransA));
       set_below_above();
    }
 
@@ -1567,12 +1565,21 @@ int do_full_trans(gpointer widget)  // TODO can probably go
 int do_display_dimensions(void *d)
 {
    (void)d;
-   //do_display_dimensions_ready = 1;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
 
+   static int counter = 0;
+
+   if(counter == 1)
+   // fade global.Transparency from 100 to Flags.Transparency:
+      adapt_transparency();
+
    if (!SnowWinChanged)
+   {
+      if (++counter >1)
+	 global.init_ready = 1;
       return TRUE;
+   }
    SnowWinChanged = 0;
 
    P("do_displaydimensions: calling DisplayDimensions()\n");
@@ -1600,18 +1607,22 @@ int do_display_dimensions(void *d)
       SetWindowScale();
    }
    fflush(stdout);
+   if (++counter >1)
+      global.init_ready = 1;
    return TRUE;
 }
 
 int do_draw_all(gpointer widget)
 {
    static int counter = 0;
-   if (Flags.Done)
+   if (global.Done)
       return FALSE;
    P("do_draw_all %d %p\n",global.counter++,(void *)widget);
-   if (global.Trans && counter < 4) // to be sure we repeat this 5 times
-      make_fullmaxscreen();  // a bit strange that we have to repeat this here ...
-   counter++;
+   if (global.Trans && counter < 1) 
+   {
+      make_fullmaxscreen();  
+      counter++;
+   }
 
    // this will result in a call of on_draw_event():
    gtk_widget_queue_draw(GTK_WIDGET(widget));
@@ -1670,10 +1681,17 @@ void rectangle_draw(cairo_t *cr)
 
 int do_stopafter(void *d)
 {
-   Flags.Done = 1;
+   letshalt();
+   sleep(1);  // give threads time to stop
    printf(_("Halting because of flag %s\n"),"-stopafter");
    return FALSE;
    (void)d;
+}
+
+void letshalt()
+{
+   global.Done = 1;
+   sleep(1);  // give threads time to stop
 }
 
 void mybindtestdomain()
@@ -1807,11 +1825,6 @@ void DisplayDimensions()
 
    UpdateFallenSnowAtBottom();
 
-#if 0
-   // not needed, will be taken care of by do_display_dimensions()->DisplayDimensions()
-   RedrawTrees();
-#endif
-
    SetMaxScreenSnowDepth();
    SetMaxWinSnowDepth();
    if(!global.IsDouble)
@@ -1843,25 +1856,63 @@ void make_fullmaxscreen()
    // prevent from appearing in taskbar:
    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(TransA),TRUE);
    gtk_window_set_skip_pager_hint  (GTK_WINDOW(TransA),TRUE);
-   if (Flags.Screen < 0)
+   GdkWindow *gdkwin = gtk_widget_get_window(TransA);
+   int nmonitors = xinerama(global.display, -1, NULL, NULL, NULL, NULL);
+   if (Flags.Screen < 0 && nmonitors>1)
    {
-      static GdkWindow *gdkwin = NULL;
-      static int nmonitors = 0;
-      if (!nmonitors)
-	 nmonitors = xinerama(global.display, -1, NULL, NULL, NULL, NULL);
-      if (nmonitors == 1)  // return if number of monitors == 1
-	 return;
-      if (!gdkwin)
-	 gdkwin = gtk_widget_get_window(TransA);
       gdk_window_set_fullscreen_mode(gdkwin,GDK_FULLSCREEN_ON_ALL_MONITORS);
-      gtk_window_fullscreen(GTK_WINDOW(TransA));
+      gdk_window_fullscreen(gdkwin);
+      int w, h, x, y, xo, yo;
+      for (int i=0; i<20; i++)
+      {
+	 // it seems that on my system, there must be at least
+	 // 300 microseconds delay after gdk_window_get_geometry()
+	 // to get the correct x, y, w and h values.
+	 // since this function is called only once, we execute
+	 // this silly loop.
+	 gdk_window_get_geometry(gdkwin, &x, &y, &w, &h);
+	 usleep(1000);
+      }
+      P("TransA, all monitors     fullscreen, w: %d, h: %d, x: %d, y: %d\n",w,h,x,y);
+      gdk_window_unfullscreen(gdkwin);
+      P("visible: %d\n",gdk_window_is_visible(gdkwin));
+      for (int i=0; i<20; i++) // once is not enough, it seems. why?
+      {
+	 // it seems that on my system, there must be at least
+	 // 300 microseconds delay after gdk_window_get_origin()
+	 // to get the correct xo and yo values.
+	 // since this function is called only once, we execute
+	 // this silly loop.
+	 gdk_window_get_origin(gdkwin, &xo, &yo);
+	 usleep(1000);
+      }
+      P("origin: %d %d\n",xo,yo);
+      gdk_window_move_resize(gdkwin,x,y,w-xo,h-yo);
+      gdk_window_get_geometry(gdkwin, &x, &y, &w, &h);
+      P("TransA, all monitors   unfullscreen, w: %d, h: %d, x: %d, y: %d\n",w,h,x,y);
+      gdk_window_get_origin(gdkwin, &xo, &yo);
+      P("origin: %d %d\n",xo,yo);
    }
    else
+   {
       gtk_window_maximize(GTK_WINDOW(TransA));
+      int w, h, x, y;
+      gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
+      gtk_window_get_position(GTK_WINDOW(TransA),&x,&y);
+      P("TransA,   maximized, w: %d, h: %d, x: %d, y: %d\n",w,h,x,y);
+      gtk_window_set_default_size(GTK_WINDOW(TransA),w,h);
+      gtk_window_unmaximize(GTK_WINDOW(TransA));
+      gdk_window_move_resize(gdkwin,x,y,w,h);
+      gtk_window_get_size(GTK_WINDOW(TransA),&w,&h);
+      gtk_window_get_position(GTK_WINDOW(TransA),&x,&y);
+      P("TransA, unmaximized, w: %d, h: %d, x: %d, y: %d\n",w,h,x,y);
+   }
+
 }
 
 void adapt_transparency()
 {
+   P("adapt_transparency\n");
    float dt         = 0.04;
    fadein.count_max = time_fadein/dt;
    fadein.counter   = 0;

@@ -216,6 +216,8 @@ void aurora_ui()
 void aurora_draw(cairo_t *cr)
 {
    P("aurora_draw %d %d\n",Flags.Aurora,global.counter++);
+   if (global.Done)
+      return;
    if(Flags.Aurora == 0)
       return;
    lock_copy();
@@ -245,7 +247,7 @@ void *do_aurora(void *d)
    P("do_aurora %d %d\n",Flags.Aurora,global.counter++);
    while(1)
    {
-      if (Flags.Done)
+      if (global.Done)
 	 pthread_exit(NULL);
       if(!(Flags.Aurora == 0 || NOTACTIVE))
       {
@@ -334,6 +336,8 @@ void *do_aurora(void *d)
 	    P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
 	    if(1)
 	    {
+	       if (global.Done)
+		  pthread_exit(NULL);
 	       // draw aurora
 	       cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->z[j].x, a->z[j].y - imax/scale);
 	       cairo_paint_with_alpha(aurora_cr,alpha*a->za[j]);
@@ -367,6 +371,8 @@ void *do_aurora(void *d)
 	       P("height: %d %f\n",j,scale*cairo_image_surface_get_height(vertsurf));
 	       if(1)
 	       {
+		  if (global.Done)
+		     pthread_exit(NULL);
 		  // draw fuzz
 		  cairo_set_source_surface (aurora_cr, vertsurf, a->step*a->fuzz[j].x, a->fuzz[j].y - imax/scale);
 		  cairo_paint_with_alpha(aurora_cr,alpha*a->fuzz[j].a);
